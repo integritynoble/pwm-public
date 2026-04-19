@@ -46,15 +46,20 @@ Read `CLAUDE.md` first (your role, domain list, and full JSON schemas). This fil
 ### Step A — Parse source .md → L1-NNN.json
 
 - [ ] **A.1** Read source file. Extract:
-  - `forward_model`: the governing equation (Schrödinger eq., DFT functional, force field, etc.)
-  - `dag`: operator chain (e.g., `"A.hamiltonian → B.solve_eigenstates → C.compute_spectrum"`)
+  - `P = (E, G, W, C)` quadruple explicitly:
+    - `E` (forward model): the governing equation (Schrödinger eq., DFT functional, force field, etc.)
+    - `G` (DAG): operator chain (e.g., `"A.hamiltonian → B.solve_eigenstates → C.compute_spectrum"`)
+    - `W` (well-posedness): existence, uniqueness, stability, condition_number
+    - `C` (convergence): solver_class, convergence_rate_q (2.0 for FEM/basis set convergence; varies for iterative solvers), error_bound, complexity
   - `world_state_x`: molecular geometry, electron density, atomic positions, wavefunction
   - `observation_y`: NMR spectrum, XRD pattern, absorption spectrum, binding energy
   - `physical_parameters_theta`: exchange-correlation functional, force field parameters, etc.
   - `mismatch_parameters`: which model parameters are uncertain
-  - `well_posedness`: existence, uniqueness, stability, condition_number
   - `error_metric`: primary (e.g., `MAE_eV`, `RMSE_angstrom`, `spectral_distance`) and secondary
-  - `convergence_rate_q`: 2.0 for FEM/basis set convergence; varies for iterative solvers
+  - `physics_fingerprint` block (all 7 fields):
+    - `carrier`, `sensing_mechanism`, `integration_axis`, `problem_class`, `noise_model`, `solution_space`, `primitives`
+  - `spec_range` block:
+    - `center_spec`, `allowed_forward_operators`, `allowed_problem_classes`, `allowed_omega_dimensions`, `omega_bounds`, `epsilon_bounds`
 - [ ] **A.2** Assign `difficulty_delta`: Trivial→1, Standard→3, Challenging→5, Hard→10, Frontier→50
 - [ ] **A.3** Write `principles/<domain>/L1-NNN.json`.
 - [ ] **A.4** Validate: every required field present, typed correctly.
@@ -68,8 +73,9 @@ Read `CLAUDE.md` first (your role, domain list, and full JSON schemas). This fil
   - Chemistry note: error metrics vary (MAE in eV, spectral overlap, RMSE in Å). Ensure epsilon_fn units match error_metric.
 - [ ] **B.3** Write S1-S4 gate justifications.
 - [ ] **B.4** Test `epsilon_fn` evaluates without error for 10 random Ω samples.
-- [ ] **B.5** Confirm `d_spec ≥ 0.35` from any other spec under same principle.
-- [ ] **B.6** Write `principles/<domain>/L2-NNN.json`.
+- [ ] **B.5** Include `ibenchmark_range` (center_ibenchmark, tier_bounds).
+- [ ] **B.6** Confirm `d_spec >= 0.15` from any other spec under same principle.
+- [ ] **B.7** Write `principles/<domain>/L2-NNN.json`.
 
 ### Step C — Write L3-NNN.json (Benchmark)
 
@@ -85,17 +91,23 @@ Read `CLAUDE.md` first (your role, domain list, and full JSON schemas). This fil
   - Quantum chemistry: HF, DFT-B3LYP, PM6, XTBGFN2
   - Materials: classical FF, DFTB, ML-FF (SchNet, DimeNet)
 - [ ] **C.4** Confirm tier spacing ≥10% in ≥1 Ω dimension.
-- [ ] **C.5** Write `principles/<domain>/L3-NNN.json`.
+- [ ] **C.5** Confirm `d_ibench >= 0.10` from existing I-benchmarks in same spec.
+- [ ] **C.6** Write `principles/<domain>/L3-NNN.json`.
 
 ### Step D — Self-Review Checklist
 
+- [ ] P = (E, G, W, C) quadruple complete with all certificates
+- [ ] physics_fingerprint block complete (all 7 fields)
+- [ ] spec_range and ibenchmark_range blocks complete
 - [ ] epsilon_fn evaluates without error for 10 random Ω samples
 - [ ] Hardness rule: no baseline passes epsilon_fn everywhere in Ω
-- [ ] d_spec ≥ 0.35 from any other spec under same principle
+- [ ] d_spec >= 0.15 from any other spec under same principle
+- [ ] d_ibench >= 0.10 from existing I-benchmarks in same spec
 - [ ] I-benchmark tiers: each omega_tier differs ≥10% in ≥1 Ω dimension
 - [ ] All JSON fields present and typed correctly
 - [ ] forward_model in L1 matches E.forward in L2
 - [ ] difficulty_delta consistent with system complexity
+- [ ] P1-P10 physics validity tests all PASS
 
 ---
 

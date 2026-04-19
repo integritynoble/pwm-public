@@ -42,7 +42,7 @@ Read `CLAUDE.md` first (your role and all contract specs). This file is your ste
 - [ ] **2.2** Implement:
   - `uint256 public constant M_POOL = 17_220_000 * 10**18`
   - `epochEmit() external` — Zeno emission: `A_k = (M_pool - M_emitted) * w_k / sum(w_j)`
-  - `updateActivity(uint256 principleId, uint256 events) external` (only PWMCertificate can call)
+  - `updateActivity(uint256 principleId, uint256 benchmarkId, uint256 events) external` (only PWMCertificate can call)
   - `promotionRegistry: mapping(uint256 => bool)` — only promoted principles receive A_k
   - `setPromotion(uint256 principleId, bool status) external` (only governance)
 - [ ] **2.3** Write tests: epochEmit distributes correct amounts; non-promoted principle gets 0.
@@ -54,7 +54,11 @@ Read `CLAUDE.md` first (your role and all contract specs). This file is your ste
 
 - [ ] **3.1** Create `contracts/PWMStaking.sol`.
 - [ ] **3.2** Implement:
-  - USD floors: L1=$50, L2=$5, L3=$1 (stored in contract, adjustable via governance)
+  - USD-denominated staking with formula `S = max(PWM_floor, ceil(USD_target / TWAP_30d))`:
+    - L2 spec: floor = 500 PWM, target = $50
+    - L3 benchmark: floor = 200 PWM, target = $20
+    - L4 solution: floor = 50 PWM, target = $5
+    (stored in contract, adjustable via governance)
   - Chainlink TWAP_30d oracle: `AggregatorV3Interface` for PWM/USD price
   - `stake(uint8 layer, bytes32 artifactHash) external payable`
   - On promotion: 50% → B-pool seed (`PWMReward.seedBPool()`), 50% burned (`address(0).transfer`)
@@ -67,12 +71,13 @@ Read `CLAUDE.md` first (your role and all contract specs). This file is your ste
 
 - [ ] **4.1** Create `contracts/PWMCertificate.sol`.
 - [ ] **4.2** Implement:
-  - `submit(bytes32 certHash, bytes32 benchmarkHash, uint8 Q_int, bytes calldata payload) external`
+  - `submit(bytes32 certHash, bytes32 benchmarkHash, uint8 Q_int, address acWallet, address cpWallet, uint16 shareRatioP) external`
+    - `shareRatioP = p × 10000`, where `p ∈ [0.10, 0.90]`
   - Challenge period: 7 days (standard), 14 days if benchmark delta ≥ 10
   - `finalize(bytes32 certHash) external` → callable after challenge period; calls `PWMReward.distribute()`
   - `challenge(bytes32 certHash, bytes calldata proof) external` → slashing if proof valid
   - `event CertificateSubmitted(bytes32 indexed certHash, bytes32 benchmarkHash, address submitter, uint8 Q_int)`
-  - `event DrawSettled(bytes32 indexed certHash, uint8 rank, uint256 amount)`
+  - `event DrawSettled(bytes32 indexed certHash, uint8 rank, uint256 amount, address ac, address cp)`
 - [ ] **4.3** Write tests: submit → finalize after 7 days → reward distributed. Challenge within period → slashing.
 - [ ] **4.4** `npx hardhat test test/PWMCertificate.test.js` → all pass.
 
@@ -83,7 +88,7 @@ Read `CLAUDE.md` first (your role and all contract specs). This file is your ste
 - [ ] **5.1** Create `contracts/PWMReward.sol`.
 - [ ] **5.2** Implement ranked draw:
   - Rank 1 = 40%, Rank 2 = 5%, Rank 3 = 2%, Rank 4–10 = 1% each → ~52% rollover
-  - Split per draw: SP p×55%, CP (1-p)×55%, L3 15%, L2 10%, L1 5%, T_k 15%
+  - Split per draw: AC p×55%, CP (1-p)×55%, L3 15%, L2 10%, L1 5%, T_k 15%
   - `distribute(bytes32 certHash) external` (only PWMCertificate can call)
   - `rollover(bytes32 benchmarkHash) internal`
   - `seedBPool(uint256 principleId) external payable` (receives promotion stake)
@@ -127,7 +132,7 @@ Read `CLAUDE.md` first (your role and all contract specs). This file is your ste
   3. Submit L4 certificate in PWMCertificate
   4. Advance time past challenge period (hardhat_mine)
   5. Finalize certificate → PWMReward.distribute() fires
-  6. Confirm SP, CP, L3, L2, L1 addresses received correct amounts
+  6. Confirm AC, CP, L3, L2, L1 addresses received correct amounts
   7. Confirm T_k balance increased in PWMTreasury
   8. Confirm rollover ~52% stays in benchmark pool
   ```

@@ -2,6 +2,8 @@
 
 Read `CLAUDE.md` first (your role and all command specs). This file is your step-by-step work order.
 
+> This is a **bounty reference implementation** (100,000 PWM). You are building a reference to validate the interface — third-party developers will compete to build the production version.
+
 ---
 
 ## Before You Start
@@ -151,8 +153,8 @@ Read `CLAUDE.md` first (your role and all command specs). This file is your step
 
 ## Step 8 — stake.py and agent.py
 
-- [ ] **8.1** `pwm-node sp register --entry-point <solve.py> --share-ratio <float> --min-vram-gb <int> --framework <str>`:
-  - Register SP profile on-chain
+- [ ] **8.1** `pwm-node ac register --entry-point <solve.py> --share-ratio <float> --min-vram-gb <int> --framework <str>`:
+  - Register AC (Algorithm Creator) profile on-chain
   - Store entry-point hash in PWMRegistry
 - [ ] **8.2** `pwm-node agent mine-all --domain <domain> --model <model_id>`:
   - Fetch all benchmarks for domain from PWMRegistry
@@ -189,7 +191,7 @@ Read `CLAUDE.md` first (your role and all command specs). This file is your step
 
 ## Step 11 — Signal Completion
 
-- [ ] **11.1** Update `../../coordination/agent-coord/progress.md` — mark M1.3 `DONE`.
+- [ ] **11.1** Update `../../coordination/agent-coord/progress.md` — mark CLI tasks `DONE`.
 - [ ] **11.2** Open PR: `feat/pwm-node-cli-v1`
   - Include: full `pwm_node/` package, `tests/`, `pyproject.toml`
   - PR description: end-to-end testnet result (benchmark_id, Q score, draw rank)

@@ -2,6 +2,8 @@
 
 Read `CLAUDE.md` first (your role and all security requirements). This file is your step-by-step work order.
 
+> This is a **bounty reference implementation** (80,000 PWM). You are building a reference to validate the interface — third-party developers will compete to build the production version.
+
 ---
 
 ## Before You Start
@@ -193,7 +195,7 @@ This is the anti-front-running protocol. Implement carefully.
 
 ## Step 9 — Signal Completion
 
-- [ ] **9.1** Update `../../coordination/agent-coord/progress.md` — mark M1.4 `DONE`.
+- [ ] **9.1** Update `../../coordination/agent-coord/progress.md` — mark mining client tasks `DONE`.
 - [ ] **9.2** Open PR: `feat/mining-client-v1`
   - Include: full `pwm_miner/` package, `docker/Dockerfile`, `tests/`
   - PR description: 100-job test result, race simulation result, sandbox verification

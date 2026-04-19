@@ -2,6 +2,8 @@
 
 Read `CLAUDE.md` first (your role and all page specs). This file is your step-by-step work order.
 
+> This is a **bounty reference implementation** (80,000 PWM). You are building a reference to validate the interface — third-party developers will compete to build the production version.
+
 ---
 
 ## Before You Start
@@ -106,7 +108,7 @@ Implement pages in order of importance:
   - Dataset description and stitching notes
 
 - [ ] **4.6** `/leaderboard/<benchmark_id>` — Full leaderboard:
-  - Columns: Rank | SP wallet | PSNR | Q | Draw amount | Date
+  - Columns: Rank | AC wallet | PSNR | Q | Draw amount | Date
 
 - [ ] **4.7** `/pools` — Pool overview:
   - Pool_k per principle (bar chart or table)
@@ -116,7 +118,7 @@ Implement pages in order of importance:
 - [ ] **4.8** `/cert/<hash>` — Certificate detail:
   - S1-S4 verdicts (green/red badges)
   - Q score
-  - Reward breakdown (SP%, CP%, L3%, L2%, L1%, T_k%)
+  - Reward breakdown (AC%, CP%, L3%, L2%, L1%, T_k%)
   - Challenge status (pending / finalized / challenged)
 
 - [ ] **4.9** `/bounties` — Open bounties:
@@ -170,7 +172,7 @@ Implement pages in order of importance:
 
 ## Step 8 — Signal Completion
 
-- [ ] **8.1** Update `../../coordination/agent-coord/progress.md` — mark M1.5 `DONE`.
+- [ ] **8.1** Update `../../coordination/agent-coord/progress.md` — mark web explorer tasks `DONE`.
 - [ ] **8.2** Open PR: `feat/web-explorer-v1`
   - Include: `frontend/`, `indexer/`, `api/`, `docker-compose.yml`
   - PR description: screenshot of /principles with 500 principles loaded; /cert/<hash> screenshot

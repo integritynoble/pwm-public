@@ -61,15 +61,20 @@ Read `CLAUDE.md` first (your role, domain list, and full JSON schemas). This fil
 ### Step A — Parse source .md → L1-NNN.json
 
 - [ ] **A.1** Read source file. Extract:
-  - `forward_model`: the governing equation (e.g., `y = Φx + ε`)
-  - `dag`: operator chain (e.g., `"A.coded_aperture → B.shear → C.spectral_unmix"`)
+  - `P = (E, G, W, C)` quadruple explicitly:
+    - `E` (forward model): the governing equation (e.g., `y = Φx + ε`)
+    - `G` (DAG): operator chain (e.g., `"A.coded_aperture → B.shear → C.spectral_unmix"`)
+    - `W` (well-posedness): existence, uniqueness, stability, condition_number
+    - `C` (convergence): solver_class, convergence_rate_q (2.0 unless source says otherwise), error_bound, complexity
   - `world_state_x`: what x represents physically
   - `observation_y`: what y represents physically
   - `physical_parameters_theta`: list of physical constants / system parameters
   - `mismatch_parameters`: which parameters are uncertain / mismatched
-  - `well_posedness`: existence, uniqueness, stability, condition_number
   - `error_metric`: primary (e.g., `PSNR_dB`) and secondary (e.g., `SSIM`)
-  - `convergence_rate_q`: 2.0 unless source says otherwise
+  - `physics_fingerprint` block (all 7 fields):
+    - `carrier`, `sensing_mechanism`, `integration_axis`, `problem_class`, `noise_model`, `solution_space`, `primitives`
+  - `spec_range` block:
+    - `center_spec`, `allowed_forward_operators`, `allowed_problem_classes`, `allowed_omega_dimensions`, `omega_bounds`, `epsilon_bounds`
 - [ ] **A.2** Assign `difficulty_delta` from source difficulty label:
   - Trivial → 1, Standard → 3, Challenging → 5, Hard → 10, Frontier → 50
 - [ ] **A.3** Write `principles/<domain>/L1-NNN.json` (follow schema in CLAUDE.md exactly).
@@ -90,8 +95,9 @@ Read `CLAUDE.md` first (your role, domain list, and full JSON schemas). This fil
   result = eval_epsilon(spec["E"]["epsilon_fn"], omega_centroid)
   assert isinstance(result, float)
   ```
-- [ ] **B.5** Confirm `d_spec ≥ 0.35` from any other spec under same principle.
-- [ ] **B.6** Write `principles/<domain>/L2-NNN.json`.
+- [ ] **B.5** Include `ibenchmark_range` (center_ibenchmark, tier_bounds).
+- [ ] **B.6** Confirm `d_spec >= 0.15` from any other spec under same principle.
+- [ ] **B.7** Write `principles/<domain>/L2-NNN.json`.
 
 ### Step C — Write L3-NNN.json (Benchmark)
 
@@ -108,17 +114,23 @@ Read `CLAUDE.md` first (your role, domain list, and full JSON schemas). This fil
   - Use domain-standard algorithms (e.g., GAP-TV for compressive imaging, FBP for CT)
   - Baselines must NOT all pass epsilon_fn everywhere (hardness rule)
 - [ ] **C.4** Confirm tier spacing: each omega_tier differs by ≥10% in ≥1 Ω dimension.
-- [ ] **C.5** Write `principles/<domain>/L3-NNN.json`.
+- [ ] **C.5** Confirm `d_ibench >= 0.10` from existing I-benchmarks in same spec.
+- [ ] **C.6** Write `principles/<domain>/L3-NNN.json`.
 
 ### Step D — Self-Review Checklist (before moving to next principle)
 
+- [ ] P = (E, G, W, C) quadruple complete with all certificates
+- [ ] physics_fingerprint block complete (all 7 fields)
+- [ ] spec_range and ibenchmark_range blocks complete
 - [ ] epsilon_fn evaluates without error for 10 random Ω samples
 - [ ] Hardness rule: no baseline passes epsilon_fn everywhere in Ω
-- [ ] d_spec ≥ 0.35 from any other spec under same principle
+- [ ] d_spec >= 0.15 from any other spec under same principle
+- [ ] d_ibench >= 0.10 from existing I-benchmarks in same spec
 - [ ] I-benchmark tiers: each omega_tier differs ≥10% in ≥1 Ω dimension
 - [ ] All JSON fields present and typed correctly
 - [ ] forward_model in L1 matches E.forward in L2
 - [ ] difficulty_delta in L1 consistent with L_DAG complexity
+- [ ] P1-P10 physics validity tests all PASS
 
 ---
 

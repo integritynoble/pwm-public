@@ -2,6 +2,8 @@
 
 Read `CLAUDE.md` first (your role and all interface specs). This file is your step-by-step work order.
 
+> This is a **bounty reference implementation** (200,000 PWM). You are building a reference to validate the interface — third-party developers will compete to build the production version.
+
 ---
 
 ## Before You Start
@@ -89,7 +91,9 @@ Read `CLAUDE.md` first (your role and all interface specs). This file is your st
   1. Run check_s1 through check_s4 (gates)
   2. If any gate fails: return SolutionScore with Q=0.0, gate_verdicts showing failure
   3. Run track_a, track_b, track_c
-  4. Q = weighted average: track_a 40% + track_b 40% + track_c 20% (0 if no track_c)
+  4. With Track C: Q_p = 0.35 × T_A + 0.45 × T_B + 0.20 × T_C
+     Without Track C: Q_p = 0.40 × T_A + 0.60 × T_B
+     Certification: Standard ≥ 0.55, Strong ≥ 0.75
   5. Build cert_payload matching cert_schema.json
   6. Return SolutionScore
   ```
@@ -137,7 +141,7 @@ Read `CLAUDE.md` first (your role and all interface specs). This file is your st
 
 ## Step 9 — Signal Completion
 
-- [ ] **9.1** Update `../../coordination/agent-coord/progress.md` — mark M1.2 `DONE`.
+- [ ] **9.1** Update `../../coordination/agent-coord/progress.md` — mark scoring engine tasks `DONE`.
 - [ ] **9.2** Open PR: `feat/scoring-engine-v1`
   - Include: full `pwm_scoring/` package + `tests/`
   - PR description: test count, CASSI integration test result (Q value), timing benchmark
