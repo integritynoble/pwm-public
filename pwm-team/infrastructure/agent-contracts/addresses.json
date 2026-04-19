@@ -1,0 +1,26 @@
+{
+  "testnet": {
+    "network": "sepolia",
+    "chainId": 11155111,
+    "PWMRegistry": "0x0000000000000000000000000000000000000000",
+    "PWMMinting": "0x0000000000000000000000000000000000000000",
+    "PWMStaking": "0x0000000000000000000000000000000000000000",
+    "PWMCertificate": "0x0000000000000000000000000000000000000000",
+    "PWMReward": "0x0000000000000000000000000000000000000000",
+    "PWMTreasury": "0x0000000000000000000000000000000000000000",
+    "PWMGovernance": "0x0000000000000000000000000000000000000000",
+    "deployedAt": null
+  },
+  "mainnet": {
+    "network": "mainnet",
+    "chainId": 1,
+    "PWMRegistry": null,
+    "PWMMinting": null,
+    "PWMStaking": null,
+    "PWMCertificate": null,
+    "PWMReward": null,
+    "PWMTreasury": null,
+    "PWMGovernance": null,
+    "deployedAt": null
+  }
+}
