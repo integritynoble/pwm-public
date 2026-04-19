@@ -1,180 +1,184 @@
-# Principle #1 — Widefield Fluorescence Microscopy
+# Widefield Fluorescence Microscopy — Complete Four-Layer Walkthrough
 
-**Domain:** Microscopy | **Carrier:** Photon | **Difficulty:** Textbook (δ=1)
-**DAG:** K.psf.airy --> ∫.temporal | **Reward:** 1× base
-
----
-
-## ASCII Pipeline
-
-```
-seed ──→ Principle ──→ spec.md ──→ Benchmark ──→ Solution
- │         (E,G,W,C)     (YAML)      (data+baselines)  (solver)
- │          K.psf.airy-->∫.temporal  WF-fluor  FluoCells-10  Deconv
- L1 seeds   L1 out       L2 out       L3 out            L4 out
- 200 PWM    immutable    150 PWM      100 PWM           R×δ×Q PWM
-```
+**Principle #1: Widefield Fluorescence Microscopy**
+Domain: Microscopy | Difficulty: Textbook (delta=1) | Carrier: Photon
 
 ---
 
-## Layer 1 — Seeds → Principle
+## The Four-Layer Pipeline for Widefield Fluorescence
 
-```
-┌──────────────────────────────────────────────────────────────────┐
-│  WIDEFIELD FLUORESCENCE   P = (E, G, W, C)   Principle #1      │
-├────────┬─────────────────────────────────────────────────────────┤
-│   E    │ y(r) = [PSF(r) ⊛ f(r)] + n(r)                        │
-│        │ PSF = Airy disk, NA-dependent; f = fluorophore density │
-│        │ Inverse: deconvolve f from blurred noisy snapshot y    │
-├────────┼─────────────────────────────────────────────────────────┤
-│   G    │ [K.psf.airy] ──→ [∫.temporal]                          │
-│        │  PSF-blur(Airy)   Accumulate(camera)                   │
-│        │ V={K.psf.airy, ∫.temporal}  A={K-->∫}   L_DAG=1.0    │
-├────────┼─────────────────────────────────────────────────────────┤
-│   W    │ Existence: YES (band-limited PSF, non-zero OTF)       │
-│        │ Uniqueness: YES within OTF support                     │
-│        │ Stability: κ ≈ 15 (well-sampled), κ ≈ 80 (under-sam.) │
-│        │ Mismatch: Δz (defocus), σ_bg (background)             │
-├────────┼─────────────────────────────────────────────────────────┤
-│   C    │ e = PSNR (primary), SSIM (secondary)                  │
-│        │ q = 2.0 (Richardson-Lucy O(1/k²) convergence)        │
-│        │ T = {residual_norm, fitted_rate, K_resolutions}       │
-└────────┴─────────────────────────────────────────────────────────┘
-```
-
-### S1-S4 Gate Checks (Layer 1)
-
-| Gate | Check | Result |
-|------|-------|--------|
-| S1 | PSF dimensions match spatial grid; OTF bandwidth consistent with NA | PASS |
-| S2 | OTF non-zero over support → bounded inverse with Wiener filter | PASS |
-| S3 | Richardson-Lucy converges monotonically for Poisson noise model | PASS |
-| S4 | PSNR ≥ 30 dB achievable for SNR > 20 images | PASS |
+_⟨draft⟩ TODO Task 4: ASCII diagram, cassi lines 10-31 pattern_
 
 ---
 
-## Layer 2 — Principle → spec.md
+## Layer 1: Seeds → Principle (The Physics Foundation)
 
-```yaml
-# widefield/fluocells_s1_ideal.yaml
-principle_ref: sha256:<p001_hash>
-omega:
-  grid: [512, 512]
-  pixel_nm: 65
-  emission_nm: 525
-  NA: 1.4
-E:
-  forward: "y = PSF ⊛ f + n"
-  PSF: "Airy, NA=1.4, λ_em=525 nm, pixel=65 nm"
-I:
-  dataset: FluoCells_10
-  images: 10
-  noise: {type: poisson, peak: 1000}
-  scenario: ideal
-O: [PSNR, SSIM]
-epsilon:
-  PSNR_min: 30.0
-  SSIM_min: 0.85
-```
+### What the domain expert writes (seeds)
 
-### S1-S4 Table (Layer 2)
+_⟨draft⟩ TODO Task 5_
 
-| Gate | Check on spec | Result |
-|------|---------------|--------|
-| S1 | Grid 512×512 at 65 nm satisfies Nyquist for NA=1.4, λ=525 nm | PASS |
-| S2 | κ ≈ 15 within well-posed regime | PASS |
-| S3 | Richardson-Lucy converges for Poisson model at these parameters | PASS |
-| S4 | PSNR ≥ 30 dB feasible for peak=1000 photons | PASS |
+### What S1-S4 discovers (the Principle)
 
-**Layer 2 reward:** 150 × φ(t) × 0.70 = 105 PWM (designer) + upstream 15% → L1
+_⟨draft⟩ TODO Task 5_
+
+### Physics fingerprint
+
+_⟨draft⟩ TODO Task 6_
+
+### Spec range declaration
+
+_⟨draft⟩ TODO Task 6_
+
+### What S1-S4 checks at Layer 1
+
+_⟨draft⟩ TODO Task 6_
+
+### Layer 1 reward
+
+_⟨draft⟩ TODO Task 6_
+
+### The Principle is now immutable
+
+_⟨draft⟩ TODO Task 6_
 
 ---
 
-## Layer 3 — spec → Benchmark
+## Layer 2: Principle + S1-S4 → spec.md (Task Design)
 
-```yaml
-# widefield/benchmark_s1_ideal.yaml
-spec_ref: sha256:<spec001_hash>
-principle_ref: sha256:<p001_hash>
-dataset:
-  name: FluoCells_10
-  images: 10
-  size: [512, 512]
-  data_hash: sha256:<dataset_hash>
-baselines:
-  - solver: Richardson-Lucy
-    params: {n_iter: 50}
-    results: {PSNR: 31.2, SSIM: 0.872}
-  - solver: Wiener
-    params: {lambda: 0.001}
-    results: {PSNR: 30.5, SSIM: 0.854}
-  - solver: CARE-UNet
-    params: {pretrained: true}
-    results: {PSNR: 35.8, SSIM: 0.941}
-quality_scoring:
-  - {min: 36.0, Q: 1.00}
-  - {min: 33.0, Q: 0.90}
-  - {min: 30.0, Q: 0.80}
-  - {min: 28.0, Q: 0.75}
-```
+### Who does this?
 
-**Baseline solver:** Richardson-Lucy — PSNR 31.2 dB
-**Layer 3 reward:** 100 × φ(t) × 0.60 = 60 PWM (builder) + upstream
+_⟨draft⟩ TODO Task 7_
+
+### What the task designer writes
+
+_⟨draft⟩ TODO Task 7_
+
+### Spec distance and duplicate prevention
+
+_⟨draft⟩ TODO Task 8_
+
+### What S1-S4 checks at Layer 2
+
+_⟨draft⟩ TODO Task 8_
+
+### Layer 2 reward
+
+_⟨draft⟩ TODO Task 8_
+
+### The spec.md is now immutable
+
+_⟨draft⟩ TODO Task 8_
 
 ---
 
-## Layer 4 — Benchmark → Solution
+## Layer 3: spec.md + Principle + S1-S4 → Benchmark (Data + Baselines)
 
-### Solver Comparison
+### Who does this?
 
-| Solver | PSNR (dB) | SSIM | Runtime | Q |
-|--------|-----------|------|---------|---|
-| Wiener | 30.5 | 0.854 | 0.1 s | 0.80 |
-| Richardson-Lucy | 31.2 | 0.872 | 2 s | 0.82 |
-| CARE-UNet | 35.8 | 0.941 | 0.5 s | 0.98 |
-| Noise2Void | 34.1 | 0.918 | 1.2 s | 0.92 |
+_⟨draft⟩ TODO Task 9_
 
-### Reward Calculation
+### P-benchmark vs. I-benchmark
 
-```
-R = R_base × φ(t) × δ × ν_c × Q
-  = 100 × 1.0 × 1 × 1.0 × Q
-Best case (CARE):  100 × 0.98 = 98 PWM
-Floor:             100 × 0.75 = 75 PWM
-```
+_⟨draft⟩ TODO Task 9_
 
-### Certificate Snippet
+### ibenchmark_range (declared inside the spec, repeated here for reference)
 
-```json
-{
-  "h_p": "sha256:<p001_hash>",
-  "h_s": "sha256:<spec001_hash>",
-  "h_b": "sha256:<bench001_hash>",
-  "r": {"residual_norm": 0.008, "error_bound": 0.02, "ratio": 0.40},
-  "c": {"fitted_rate": 1.95, "theoretical_rate": 2.0, "K": 3},
-  "Q": 0.98,
-  "gate_verdicts": {"S1":"pass","S2":"pass","S3":"pass","S4":"pass"}
-}
-```
+_⟨draft⟩ TODO Task 9_
+
+### What the benchmark builder creates
+
+_⟨draft⟩ TODO Task 10_
+
+### What S1-S4 checks at Layer 3
+
+_⟨draft⟩ TODO Task 10_
+
+### Layer 3 reward
+
+_⟨draft⟩ TODO Task 10_
+
+### The benchmark is now immutable
+
+_⟨draft⟩ TODO Task 10_
 
 ---
 
-## Reward Summary
+## Layer 4: spec.md + Benchmark + Principle + S1-S4 → Solution (Mining for PWM)
 
-| Layer | Seed Reward | Ongoing Royalties |
-|-------|-------------|-------------------|
-| L1 Principle | 200 PWM | 5% of L4 mints |
-| L2 spec.md | 105 PWM | 10% of L4 mints |
-| L3 Benchmark | 60 PWM | 15% of L4 mints |
-| L4 Solution | — | 75–98 PWM per solve |
+### Who does this?
+
+_⟨draft⟩ TODO Task 11_
+
+### Step-by-step mining
+
+_⟨draft⟩ TODO Task 11_
+
+### Cross-benchmark claims (P-benchmark bonus)
+
+_⟨draft⟩ TODO Task 12_
 
 ---
 
-## Quick-Start
+## Complete Hash Chain (Immutability Across All Four Layers)
 
-```bash
-pwm-node benchmarks | grep widefield
-pwm-node verify widefield/fluocells_s1_ideal.yaml
-pwm-node mine widefield/fluocells_s1_ideal.yaml
-pwm-node inspect sha256:<cert_hash>
-```
+_⟨draft⟩ TODO Task 14_
+
+---
+
+## I-Benchmark Tiers — Detailed Mining Guide
+
+### Mismatch-Only Spec: Tier T1 (Nominal — Start Here)
+
+_⟨draft⟩ TODO Task 13_
+
+### Mismatch-Only Spec: Tiers T2 / T3 (Low / Moderate Mismatch)
+
+_⟨draft⟩ TODO Task 13_
+
+### Mismatch-Only Spec: Tier T4 (Blind Calibration — Highest I-benchmark ρ)
+
+_⟨draft⟩ TODO Task 13_
+
+### Oracle-Assisted Spec: Tier T1 (Moderate Mismatch + Oracle — center I-bench)
+
+_⟨draft⟩ TODO Task 13_
+
+### Mismatch Recovery by Solver
+
+_⟨draft⟩ TODO Task 13_
+
+### P-benchmark (Highest Reward Overall, ρ=50)
+
+_⟨draft⟩ TODO Task 13_
+
+---
+
+## Complete Reward Summary (All Four Layers for Widefield Fluorescence)
+
+_⟨draft⟩ TODO Task 14_
+
+---
+
+## Mining Strategies
+
+### Recommended progression
+
+_⟨draft⟩ TODO Task 14_
+
+---
+
+## What You Cannot Do
+
+_⟨draft⟩ TODO Task 14_
+
+---
+
+## Quick-Start Commands
+
+_⟨draft⟩ TODO Task 14_
+
+---
+
+## Reference
+
+_⟨draft⟩ TODO Task 14_
