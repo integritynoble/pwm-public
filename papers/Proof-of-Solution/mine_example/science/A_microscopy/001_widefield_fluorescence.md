@@ -1349,7 +1349,14 @@ Anti-spam: after ~50 solutions at a given ρ=1 tier, per-solution reward falls b
 
 ### Cross-benchmark claims (P-benchmark bonus)
 
-_⟨draft⟩ TODO Task 12_
+Within **3 days** of passing the widefield P-benchmark (textbook tier has a short challenge window), the SP may optionally claim:
+
+1. Any I-benchmark of the same spec (auto-verified by re-running the solver on that tier's 20 dev scenes; pass → one ranked draw in that I-benchmark's independent pool)
+2. I-benchmarks of other specs under the same Principle — e.g. a solver that passes the mismatch-only P-benchmark may claim the oracle-assisted T1 (the oracle has more information, so passing should be strictly easier)
+
+Cross-claims are optional — failure has no penalty. The protocol enforces that a cross-claim run uses the *same* hash-locked binary as the original P-benchmark submission; no tuning or substitution is allowed. This is how the P-benchmark's ρ=50 reward cascades into cheap I-benchmark ranks for generalist solvers.
+
+**Worked example.** A CARE-UNet submission passes `widefield/mismatch_only_p_benchmark` (ρ=50) with Q=0.94. Within 72 hours the SP submits cross-claims for T1_nominal (ρ=1), T2_low (ρ=2), T3_moderate (ρ=4), T4_blind (ρ=10). All four auto-verifications pass (CARE-UNet is mismatch-robust by training). Result: five ranked draws from five independent pools in one epoch — the P-benchmark draw plus four I-benchmark draws at no additional compute cost beyond the four verification runs.
 
 ---
 
