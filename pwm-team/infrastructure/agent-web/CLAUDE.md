@@ -1,7 +1,9 @@
 # Agent Role: agent-web
-## Web Explorer Developer
+## Web Explorer — Bounty Reference Implementation
 
-You build the web explorer at pwm.platformai.org — the public face of PWM. It makes the protocol legible to researchers, miners, investors, and users without requiring them to run a CLI.
+This component is a **Reserve bounty target** (80,000 PWM). The founding team builds a reference implementation to validate the interface and acceptance criteria. Third-party developers compete to build the production implementation.
+
+You build the web explorer — the public face of PWM. It makes the protocol legible to researchers, miners, investors, and users without requiring them to run a CLI.
 
 ## You own
 - `frontend/` — React or Next.js app
@@ -10,27 +12,23 @@ You build the web explorer at pwm.platformai.org — the public face of PWM. It 
 
 ## You must NOT modify
 - `../agent-contracts/` — contracts
-- `../agent-scoring/` — scoring engine
-- `../agent-cli/` — CLI
-- `../agent-miner/` — mining client
-- `../agent-*/principles/` — content
+- `../../content/` — content agents' principles
+- `../../coordination/agent-coord/interfaces/` — coord manages these
 
 ## Interfaces you depend on
-- `../agent-coord/interfaces/contracts_abi/` — event log schemas
-- `../agent-coord/interfaces/addresses.json` — contract addresses
-
-## Unblocked at: M1.1 (contracts ABI for event log structure)
+- `../../coordination/agent-coord/interfaces/contracts_abi/` — event log schemas
+- `../../coordination/agent-coord/interfaces/addresses.json` — contract addresses
 
 ## Pages to implement
 
 | Route | Content |
 |---|---|
 | `/` | Protocol overview: total pool, active principles, recent draws |
-| `/principles` | All 500 principles: domain, δ, Pool_k, active benchmarks, top PSNR |
+| `/principles` | All 500 principles: domain, delta, Pool_k, active benchmarks, top PSNR |
 | `/principles/<id>` | Principle detail: L_DAG, forward model, all specs, benchmarks |
-| `/benchmarks` | All benchmarks: pool sizes, Rank 1 holder, ε, ρ weight |
+| `/benchmarks` | All benchmarks: pool sizes, Rank 1 holder, eps, rho weight |
 | `/benchmarks/<id>` | Benchmark detail: omega_tier, Track A/B/C pass rates, leaderboard |
-| `/leaderboard/<benchmark_id>` | Ranks 1–10: PSNR, Q, SP wallet, draw amount per epoch |
+| `/leaderboard/<benchmark_id>` | Ranks 1-10: PSNR, Q, SP wallet, draw amount per epoch |
 | `/pools` | Live pool sizes: Pool_k per principle, epoch rollover amounts, T_k balances |
 | `/cert/<hash>` | Certificate: S1-S4 verdicts, Q score, reward breakdown, challenge status |
 | `/submit` | Guided L2/L3 submission UI (calls pwm-node under the hood) |
@@ -40,21 +38,21 @@ You build the web explorer at pwm.platformai.org — the public face of PWM. It 
 - Subscribes to contract events via WebSocket RPC
 - Stores indexed data in a lightweight local DB (SQLite or Postgres)
 - Events to index:
-  - `PWMRegistry.ArtifactRegistered` → principles, specs, benchmarks
-  - `PWMCertificate.CertificateSubmitted` → pending solutions
-  - `PWMReward.DrawSettled` → rank, amount, SP/CP addresses
-- Updates within ≤5 minutes of on-chain event
+  - `PWMRegistry.ArtifactRegistered` -> principles, specs, benchmarks
+  - `PWMCertificate.CertificateSubmitted` -> pending solutions
+  - `PWMReward.DrawSettled` -> rank, amount, AC/CP addresses
+- Updates within <= 5 minutes of on-chain event
 
 ## api/
 REST endpoints (JSON):
 ```
-GET /api/principles              → list all principles with summary stats
-GET /api/principles/:id          → full principle detail
-GET /api/benchmarks              → list all benchmarks
-GET /api/benchmarks/:id          → benchmark detail + leaderboard
-GET /api/pools                   → current pool sizes
-GET /api/cert/:hash              → certificate detail
-GET /api/leaderboard/:benchmark  → ranks 1-10
+GET /api/principles              -> list all principles with summary stats
+GET /api/principles/:id          -> full principle detail
+GET /api/benchmarks              -> list all benchmarks
+GET /api/benchmarks/:id          -> benchmark detail + leaderboard
+GET /api/pools                   -> current pool sizes
+GET /api/cert/:hash              -> certificate detail
+GET /api/leaderboard/:benchmark  -> ranks 1-10
 ```
 
 ## Requirements
@@ -63,13 +61,13 @@ GET /api/leaderboard/:benchmark  → ranks 1-10
 - Mobile-responsive
 - No login required to view any data
 
-## Definition of done
+## Acceptance criteria (bounty)
 - All 500 genesis principles display correctly at /principles
 - Leaderboard updates within 10 minutes of draw settlement on testnet
 - Works on Chrome, Firefox, Safari (desktop + mobile)
 - /cert/<hash> shows correct S1-S4 verdicts and reward breakdown
-- Deployed at pwm.platformai.org (you handle the deployment config)
+- Works without MetaMask (read-only access does not require wallet)
 
 ## How to signal completion
-1. Update `../agent-coord/progress.md` — mark M1.5 DONE
+1. Update `../../coordination/agent-coord/progress.md`
 2. Open PR: `feat/web-explorer-v1`

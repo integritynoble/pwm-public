@@ -7,12 +7,12 @@ You convert source physics documents into formal L1/L2/L3 JSON artifacts for the
 - `principles/` — all L1/L2/L3 JSON output files for your domain cluster
 
 ## You must NOT modify
-- `../agent-contracts/` or any other infrastructure agent
+- `../../infrastructure/` or `../../coordination/` — other agents own these
 - Other content agents' principles/ folders
 - Source files in `source/` (read-only)
 
 ## Source material
-`source/` → symlink to `pwm/papers/Proof-of-Solution/mine_example/science/`
+`source/` -> symlink to `pwm/papers/Proof-of-Solution/mine_example/science/`
 
 Your domains and source folders:
 | Domain | Source folder | ~Count |
@@ -36,43 +36,79 @@ Your domains and source folders:
 
 For each source file, produce three JSON files:
 
-### L1-NNN.json (Principle)
+### L1-NNN.json (Principle — quadruple P = (E, G, W, C))
 ```json
 {
   "artifact_id": "L1-NNN",
   "layer": "L1",
-  "principle_number": NNN,
+  "principle_number": "NNN",
   "title": "...",
   "domain": "...",
   "sub_domain": "...",
   "source_file": "filename.md",
-  "carrier": "Photon|Electron|X-ray|...",
-  "carrier_family": "optical|...",
-  "difficulty": "Trivial|Standard|Challenging|Hard|Frontier",
-  "difficulty_delta": 1|3|5|10|50,
-  "difficulty_weight": 250,
-  "dag": "op1 → op2 → op3",
-  "forward_model": "y = ...",
-  "world_state_x": "...",
-  "observation_y": "...",
-  "physical_parameters_theta": [...],
-  "mismatch_parameters": [...],
-  "well_posedness": {
-    "existence": true,
-    "uniqueness": true|false,
-    "stability": "stable|conditional|unstable",
-    "condition_number_kappa": number|null
+
+  "E": {
+    "description": "Forward model operator E: X -> Y",
+    "forward_model": "y = E(x, theta)",
+    "world_state_x": "...",
+    "observation_y": "...",
+    "physical_parameters_theta": ["..."]
   },
-  "error_metric": "PSNR_dB|RMSE|...",
-  "error_metric_secondary": "SSIM|SAM_deg|...",
-  "convergence_rate_q": 2.0,
-  "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
-  "reward_base_pwm": 200,
+
+  "G": {
+    "dag": "op1 -> op2 -> op3",
+    "vertices": ["L.diag_binary", "L.shear_spectral", "int.spectral"],
+    "L_DAG": 3.0,
+    "n_c": 0
+  },
+
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "stable|conditional|unstable",
+    "condition_number_kappa": 100,
+    "regime": "..."
+  },
+
+  "C": {
+    "solver_class": "...",
+    "convergence_rate_q": 2.0,
+    "error_bound": "e(h) <= C h^alpha",
+    "complexity": "O(N^alpha)"
+  },
+
+  "physics_fingerprint": {
+    "carrier": "photon|electron|x_ray|acoustic|spin|...",
+    "sensing_mechanism": "coded_aperture|tomographic|interferometric|...",
+    "integration_axis": "spectral|temporal|spatial|angular|...",
+    "problem_class": "linear_inverse|nonlinear_inverse|forward|estimation",
+    "noise_model": "gaussian|poisson|shot_poisson|multiplicative",
+    "solution_space": "2D_spatial|3D_spectral|3D_temporal|...",
+    "primitives": ["L.diag.binary", "L.shear.spectral"]
+  },
+
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": ["disp_a1_error", "mask_dx", "..."],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+
+  "spec_range": {
+    "center_spec": { "problem_class": "...", "forward_operator": "...", "omega": {"H": 256, "W": 256} },
+    "allowed_forward_operators": ["..."],
+    "allowed_problem_classes": ["..."],
+    "allowed_omega_dimensions": ["H", "W", "N_bands", "noise_level", "..."],
+    "omega_bounds": {"H": [64, 2048], "W": [64, 2048]},
+    "epsilon_bounds": {"psnr_db": [20.0, 45.0]}
+  },
+
+  "p1_p10_tests": ["PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS"],
+  "s1_s4_gates": ["PASS", "PASS", "PASS", "PASS"],
   "ipfs_cid": null
 }
 ```
 
-### L2-NNN.json (Spec)
+### L2-NNN.json (Spec — six-tuple S = (Omega, E, B, I, O, epsilon))
 ```json
 {
   "artifact_id": "L2-NNN",
@@ -80,13 +116,33 @@ For each source file, produce three JSON files:
   "parent_l1": "L1-NNN",
   "title": "...",
   "spec_type": "mismatch_only|oracle_assisted",
-  "omega": { "H": [min,max], "W": [min,max], ... },
-  "epsilon_fn": "25.0 + 2.0 * log2(H / 64)",
-  "input_format": { ... },
-  "output_format": { ... },
-  "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
+
+  "six_tuple": {
+    "omega": {"H": [64, 512], "W": [64, 512], "N_bands": [8, 32], "noise_level": [0.001, 0.1]},
+    "E": "CASSI_forward(x, mask, wavelengths)",
+    "B": {"x": "non-negative", "spectral_sum": "<= 1.0"},
+    "I": {"strategy": "zero_init"},
+    "O": ["PSNR", "SSIM"],
+    "epsilon_fn": "25.0 + 2.0 * log2(H / 64) + 1.5 * log10(photon_count / 50)"
+  },
+
+  "protocol_fields": {
+    "input_format": {"measurement": "float32(H,W)", "mask": "bool(H,W)"},
+    "output_format": {"spectral_cube": "float32(H,W,N_bands)"},
+    "baselines": [
+      {"name": "GAP-TV", "expected_psnr": 24.0},
+      {"name": "ADMM-Net-8L", "expected_psnr": 28.0},
+      {"name": "DIP", "expected_psnr": 22.0}
+    ]
+  },
+
+  "ibenchmark_range": {
+    "center_ibenchmark": {"rho": 1, "omega_tier": {"H": 256, "N_bands": 28, "noise_level": 0.01}, "epsilon": 28.0},
+    "tier_bounds": {"H": [64, 256], "N_bands": [16, 28], "noise_level": [0.005, 0.1]}
+  },
+
   "d_spec": 0.45,
-  "baselines": ["GAP-TV", "..."],
+  "s1_s4_gates": ["PASS", "PASS", "PASS", "PASS"],
   "ipfs_cid": null
 }
 ```
@@ -98,36 +154,48 @@ For each source file, produce three JSON files:
   "layer": "L3",
   "parent_l2": "L2-NNN",
   "title": "...",
-  "dataset_name": "...",
-  "dataset_description": "... T1 nominal I-benchmark (ρ=1).",
-  "dataset_t4": "... T4 blind-calibration I-benchmark (ρ=10).",
-  "dataset_p_benchmark": "... P-benchmark (ρ=50) covers full Ω.",
-  "eval_metric": "PSNR_dB_per_channel",
-  "eval_metric_secondary": "SSIM",
-  "baseline_solvers": [
-    {"name": "GAP-TV", "metric": "PSNR_dB", "score": 24.0, "time_s": 180, "Q": 0.80}
+  "benchmark_type": "P-benchmark|I-benchmark",
+  "rho": 50,
+
+  "dataset": {
+    "name": "...",
+    "source": "...",
+    "construction_method": "crop|stitch|synthetic",
+    "num_dev_instances": 20
+  },
+
+  "omega_tier": {"H": 256, "N_bands": 28, "noise_level": 0.01},
+
+  "baselines": [
+    {"name": "GAP-TV", "metric": "PSNR_dB", "score": 24.0, "Q": 0.80},
+    {"name": "ADMM-Net-8L", "metric": "PSNR_dB", "score": 28.0, "Q": 0.90},
+    {"name": "DIP", "metric": "PSNR_dB", "score": 22.0, "Q": 0.70}
   ],
+
   "quality_thresholds": [
-    {"Q": 0.75, "condition": "PSNR ≥ 22 dB"},
-    {"Q": 0.80, "condition": "PSNR ≥ 24 dB"},
-    {"Q": 0.90, "condition": "PSNR ≥ 26 dB"},
-    {"Q": 1.00, "condition": "PSNR ≥ 30 dB"}
+    {"Q": 0.55, "tier": "Standard"},
+    {"Q": 0.75, "tier": "Strong"}
   ],
-  "solution_sketches": [...],
-  "reward_pwm": 100,
+
+  "d_ibench": 0.60,
   "ipfs_cid": null,
   "ground_truth_cid": null
 }
 ```
 
 ## Self-review checklist (run before every PR)
-- [ ] epsilon_fn evaluates without error for 10 random Ω samples
-- [ ] Hardness rule: no baseline passes epsilon_fn everywhere in Ω
-- [ ] d_spec ≥ 0.35 from any other spec under same principle
-- [ ] I-benchmark tiers: each omega_tier differs by ≥10% in ≥1 Ω dimension
+- [ ] P = (E, G, W, C) quadruple complete with all certificates
+- [ ] physics_fingerprint block complete (all 7 fields)
+- [ ] spec_range and ibenchmark_range blocks complete
+- [ ] epsilon_fn evaluates without error for 10 random Omega samples
+- [ ] Hardness rule: no baseline passes epsilon_fn everywhere in Omega
+- [ ] d_spec >= 0.15 from any other spec under same principle
+- [ ] d_ibench >= 0.10 from existing I-benchmarks in same spec
+- [ ] I-benchmark tiers: each omega_tier differs by >= 10% in >= 1 Omega dimension
 - [ ] All JSON fields present and typed correctly (validate against schema)
-- [ ] forward_model in L1 matches E.forward in L2
+- [ ] forward_model in L1 E matches E in L2 six_tuple
 - [ ] difficulty_delta consistent with L_DAG complexity
+- [ ] P1-P10 physics validity tests all PASS
 
 ## Reference: already-completed examples
 - CASSI: L1-003.json, L2-003.json (in genesis/l1/, genesis/l2/)
@@ -144,5 +212,5 @@ Then C_medical_imaging (41 files — largest, do in sub-batches of 10).
 - Self-review checklist passes for all
 
 ## How to signal completion
-1. Update `../agent-coord/progress.md` — mark imaging principles DONE
+1. Update `../../coordination/agent-coord/progress.md` — mark imaging principles DONE
 2. Open PR: `feat/genesis-principles-imaging`
