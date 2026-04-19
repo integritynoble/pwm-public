@@ -99,6 +99,7 @@ async function main() {
   await (await staking.setReward(rewardAddr)).wait();
   await (await certificate.setRegistry(registryAddr)).wait();
   await (await certificate.setReward(rewardAddr)).wait();
+  await (await certificate.setMinting(mintingAddr)).wait();
   await (await minting.setCertificate(certAddr)).wait();
   await (await minting.setReward(rewardAddr)).wait();
   console.log("  wiring complete.");

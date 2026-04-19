@@ -11,7 +11,11 @@ module.exports = {
     },
   },
   networks: {
-    hardhat: {},
+    hardhat: {
+      // Per-account balance large enough to fund Zeno emission tests where a
+      // single mintFor can move millions of "PWM" (native) into reward pools.
+      accounts: { count: 20, accountsBalance: "1000000000000000000000000000" }, // 1e9 ETH
+    },
     sepolia: {
       url: process.env.SEPOLIA_RPC_URL || "",
       accounts: process.env.DEPLOYER_PRIVATE_KEY ? [process.env.DEPLOYER_PRIVATE_KEY] : [],
