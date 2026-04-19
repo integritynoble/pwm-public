@@ -327,11 +327,207 @@ Once committed on-chain as `sha256:<widefield_principle_hash>`, the Widefield Fl
 
 ### Who does this?
 
-_⟨draft⟩ TODO Task 7_
+A **task designer** (can be the same domain expert or anyone else). They take the Widefield Fluorescence Principle and design specific, solvable tasks — concrete spec.md files that pin down grid size, pixel pitch, numerical aperture, emission wavelength, noise model, and tier-structured mismatch ranges. Accepted specs earn a **Reserve grant** (DAO vote) on submission plus ongoing upstream royalties on all future L4 events that reference the spec.
 
 ### What the task designer writes
 
-_⟨draft⟩ TODO Task 7_
+Each spec.md is a concrete instantiation of the Principle as a flat **six-tuple S = (Ω, E, B, I, O, ε) + principle_ref**. Items that live elsewhere:
+
+| Moved to Principle | Moved to Benchmark (L3) |
+|--------------------|------------------------|
+| `difficulty` (L_DAG, δ, tier) | `expert_baseline`, `evaluator` |
+| `primitives`, `carrier`, `modality` | quality scoring table |
+| `quality_metrics` (C field) | per-solver metrics |
+
+**Key insight: one spec, multiple I-benchmarks.** The widefield measurement-only spec covers all mismatch severity levels — the solver input format never changes (raw blurred image only). Each mismatch severity (nominal / low / moderate / blind) is a separate I-benchmark tier within the same spec, not a separate spec. The oracle scenario (solver given true NA, emission, defocus, background as input) requires a distinct spec because the input format changes.
+
+**Two natural specs under this Principle:**
+
+| Spec | Solver input | Ω dimensions | Center I-bench | Purpose |
+|------|-------------|--------------|----------------|---------|
+| #1 Mismatch-only | measurement only | H, W, pixel_nm, emission_nm, NA, peak_photons + 2 mismatch dims | Nominal (Δz=0, σ_bg=0, ρ=1) | Deconvolution under unknown calibration error |
+| #2 Oracle-assisted | measurement + true_phi | H, W, pixel_nm, peak_photons (no mismatch, no NA/emission) | H=128, pixel_nm=100, peak=500 (ρ=1) — tiers scale by H/peak_photons | Upper bound — solver knows exact PSF |
+
+```
+Widefield Fluorescence Principle (sha256:<principle_hash>)
+    │
+    ├──→ spec.md #1: Mismatch-only       sha256:<spec1_hash>
+    │       │   Ω = ranges; center I-bench at nominal (no mismatch)
+    │       ├──→ I-bench T1: Nominal (ρ=1)           ← center_ibenchmark
+    │       ├──→ I-bench T2: Low mismatch (ρ=2)
+    │       ├──→ I-bench T3: Moderate mismatch (ρ=4)
+    │       ├──→ I-bench T4: Blind/severe (ρ=10)
+    │       └──→ P-benchmark: Full Ω range (ρ=50)
+    │
+    └──→ spec.md #2: Oracle-assisted     sha256:<spec2_hash>
+            │   Ω = {H, W, pixel_nm, peak_photons} — no mismatch, no NA/λ
+            │   center I-bench at small/easy system params (ρ=1)
+            ├──→ I-bench T1: Small (H=128, pixel=100 nm, peak=500, ρ=1)  ← center_ibenchmark
+            ├──→ I-bench T2: Medium (H=512, pixel=65 nm, peak=1000, ρ=3)
+            ├──→ I-bench T3: Large (H=2048, pixel=32 nm, peak=5000, ρ=5)
+            └──→ P-benchmark: Full Ω range (ρ=50)
+```
+
+> **Ω in spec.md is always a range, not a fixed grid.** The spec declares the full parameter space the solver and P-benchmark must cover. The I-benchmark is pinned to a single `omega_tier` point within that range — that is the "center" the spec creator defines in `ibenchmark_range.center_ibenchmark`.
+
+#### spec.md #1: Mismatch-Only (Canonical Widefield Spec)
+
+```yaml
+# widefield/fluocells_mismatch_only.yaml
+# Layer 2 output — references the Widefield Fluorescence Principle
+
+principle_ref: sha256:<widefield_principle_hash>   # ← links to Layer 1
+
+# Ω = full parameter RANGE (not a fixed grid)
+omega:
+  H:             [128, 4096]      # spatial height range (pixels)
+  W:             [128, 4096]      # spatial width  range (pixels)
+  pixel_nm:      [30, 200]        # pixel size in object plane (nm)
+  emission_nm:   [400, 800]       # fluorescence emission wavelength (nm)
+  NA:            [0.4, 1.49]      # objective numerical aperture
+  peak_photons:  [50, 10000]      # peak signal strength
+  # Mismatch dims: zero = ideal, non-zero = calibration error
+  dz_nm:         [0.0, 1500.0]    # axial defocus (nm)
+  sigma_bg:      [0.0, 0.10]      # uniform background offset (fraction of peak)
+
+E:
+  forward:  "y(r) = [PSF_Airy(r; NA, λ_em, Δz) ⊛ f(r)] + σ_bg + n(r)"
+  operator: widefield_fluorescence_forward
+  primitive_chain: "K.psf.airy → ∫.temporal"
+  inverse: "recover f (H×W, non-negative) from single blurred noisy snapshot y (H×W)"
+
+B:
+  nonnegativity: true
+  band_limit:    true    # f approximately band-limited by OTF cutoff k_c
+
+I:
+  strategy: zero_init
+
+O: [PSNR, SSIM, resolution_nm, residual_norm, convergence_curve]
+
+# epsilon_fn maps any Ω point → minimum acceptable PSNR
+epsilon_fn: "22.0 + 2.0 * log2(H / 128) + 1.5 * log10(peak_photons / 50)"
+
+input_format:
+  measurement: float32(H, W)
+  psf_hint:    optional_float32(K, K)   # if PSF calibration known; else solver fits
+  # No mismatch params — solver must infer dz, sigma_bg, or be robust
+output_format:
+  intensity:   float32(H, W)
+
+baselines:
+  - Richardson-Lucy   # method_sig: I+M (iterative Poisson MLE)
+  - Wiener            # method_sig: L+R (linear + Tikhonov regularization)
+  - CARE-UNet         # method_sig: L+N (learned denoiser, domain-adapted)
+
+# ibenchmark_range — center I-bench at nominal Ω (all mismatch = 0)
+ibenchmark_range:
+  center_ibenchmark:
+    rho: 1
+    omega_tier:
+      H:             512
+      W:             512
+      pixel_nm:      65
+      emission_nm:   525
+      NA:            1.4
+      peak_photons:  1000
+      dz_nm:         0.0        # ← nominal center: zero mismatch
+      sigma_bg:      0.0
+    epsilon: 30.0                # fixed ε at this exact Ω tier point
+
+  tier_bounds:
+    H:             [128, 2048]
+    W:             [128, 2048]
+    pixel_nm:      [30, 200]
+    emission_nm:   [400, 800]
+    NA:            [0.4, 1.49]
+    peak_photons:  [50, 10000]
+    dz_nm:         [0.0, 1500.0]
+    sigma_bg:      [0.0, 0.10]
+
+  proximity_threshold: 0.10   # τ — new I-bench must differ by > 10% in ≥1 dim
+```
+
+**epsilon_fn example:**
+
+```
+At Ω = {H=256, peak_photons=200}:
+  ε = 22.0 + 2.0 × log2(256/128) + 1.5 × log10(200/50)
+    = 22.0 + 2.0 + 0.90 = 24.90 dB
+
+At the center I-bench Ω = {H=512, peak_photons=1000, dz_nm=0}:
+  ε ≈ 30.0 dB  ← this is what ibenchmark_range.center_ibenchmark.epsilon records
+```
+
+The `epsilon_fn` is an AST-sandboxed Python expression. For each I-benchmark, it is evaluated at that benchmark's fixed `omega_tier` to produce the single-value `epsilon` stored in that I-benchmark's `thresholds.yaml`. The P-benchmark uses the full `epsilon_fn` function across all Ω samples.
+
+#### spec.md #2: Oracle-Assisted (Separate Spec — Different Input Format)
+
+```yaml
+# widefield/fluocells_oracle_assisted.yaml
+
+principle_ref: sha256:<widefield_principle_hash>
+
+# Ω contains only intrinsic system parameters — NO mismatch dims
+# Calibration parameters (NA, emission, dz, sigma_bg) are INPUTS (true_phi),
+# not Ω dimensions
+omega:
+  H:             [128, 4096]
+  W:             [128, 4096]
+  pixel_nm:      [30, 200]
+  peak_photons:  [50, 10000]
+
+E:
+  forward: "y = PSF(r; true_phi) ⊛ f + true_phi.sigma_bg + n"
+  operator: widefield_fluorescence_forward_oracle
+
+B:
+  nonnegativity: true
+  band_limit:    true
+
+I:
+  strategy: zero_init
+
+O: [PSNR, SSIM, resolution_nm, residual_norm]
+
+epsilon_fn: "25.0 + 2.0 * log2(H / 128) + 1.5 * log10(peak_photons / 50)"
+# Same structure as mismatch spec but higher baseline —
+# solver has true calibration, so stricter threshold is appropriate
+
+input_format:
+  measurement:  float32(H, W)
+  true_phi:     dict    # ← oracle input: {NA, emission_nm, dz_nm, sigma_bg}
+  # This additional input field makes this a DIFFERENT spec from mismatch-only
+output_format:
+  intensity:    float32(H, W)
+
+baselines:
+  - Richardson-Lucy-oracle   # method_sig: I+M with true PSF
+  - Wiener-oracle            # method_sig: L+R with true OTF
+  - CARE-UNet-oracle         # method_sig: L+N conditioned on true_phi
+
+# ibenchmark_range — center I-bench at small/easy system params
+# No mismatch dims — mismatch is in true_phi input, not in Ω
+# I-benchmark difficulty scales with H, pixel_nm, peak_photons (larger H / smaller pixel / fewer photons = harder)
+ibenchmark_range:
+  center_ibenchmark:
+    rho: 1
+    omega_tier:
+      H:             128       # small spatial size → easy
+      W:             128
+      pixel_nm:      100       # coarse sampling → easy
+      peak_photons:  500
+    epsilon: 33.0               # ε at center Ω (higher than mismatch spec — oracle advantage)
+
+  tier_bounds:
+    H:             [128, 2048]
+    W:             [128, 2048]
+    pixel_nm:      [30, 200]
+    peak_photons:  [50, 10000]
+    # No mismatch dims — mismatch is in true_phi input, not in Ω
+
+  proximity_threshold: 0.10
+```
 
 ### Spec distance and duplicate prevention
 
