@@ -217,23 +217,109 @@ seeds. S1-S4 extracts the **Principle P = (E, G, W, C)**:
 
 ### Physics fingerprint
 
-_⟨draft⟩ TODO Task 6_
+Each Principle carries an immutable `physics_fingerprint` block committed with the Principle hash. It enables automatic deduplication across the registry (Jaccard distance on fingerprint sets):
+
+```yaml
+physics_fingerprint:
+  carrier:            photon
+  sensing_mechanism:  fluorescence_widefield
+  integration_axis:   temporal
+  problem_class:      linear_inverse_deconvolution
+  noise_model:        poisson_gaussian
+  solution_space:     2D_intensity
+  primitives:
+    - K.psf.airy
+    - "∫.temporal"
+```
+
+**Deduplication example**: Widefield vs. Confocal (point-scanning PSF, different subsub leaf) → d_principle ≈ 0.28 (Related — contributor may stake a new Principle). Widefield vs. CASSI → d_principle ≈ 0.72 (Distinct — proceeds ✓).
 
 ### Spec range declaration
 
-_⟨draft⟩ TODO Task 6_
+The Principle creator declares a `spec_range` block at registration. Only specs within this range earn protocol minting (A_k) and per-principle treasury (T_k). Specs outside the range are accepted but funded from contributor bounty only (B_k).
+
+```yaml
+spec_range:
+  center_spec:
+    problem_class:     fluorescence_deconvolution
+    forward_operator:  airy_psf_convolution
+    input_format:      measurement_only   # no oracle parameters
+    omega:
+      H:            512
+      W:            512
+      pixel_nm:     65
+      emission_nm:  525
+      NA:           1.4
+      peak_photons: 1000
+      dz_nm:        0.0      # defocus mismatch (nm)
+      sigma_bg:     0.0      # background offset (fraction of peak)
+    epsilon_fn_center: "30.0 dB PSNR"
+
+  allowed_forward_operators:
+    - airy_psf_convolution
+    - gaussian_psf_approx    # when NA << 1 and apodization is significant
+
+  allowed_problem_classes:
+    - fluorescence_deconvolution
+    - blind_deconvolution
+    - background_estimation
+
+  allowed_omega_dimensions:
+    - H
+    - W
+    - pixel_nm
+    - emission_nm
+    - NA
+    - peak_photons
+    - dz_nm              # defocus (mismatch)
+    - sigma_bg           # background offset (mismatch)
+
+  omega_bounds:
+    H:            [128, 4096]
+    W:            [128, 4096]
+    pixel_nm:     [30,  200]
+    emission_nm:  [400, 800]
+    NA:           [0.4, 1.49]
+    peak_photons: [50,  10000]
+    dz_nm:        [0.0, 1500.0]
+    sigma_bg:     [0.0, 0.10]
+
+  epsilon_bounds:
+    psnr_db: [20.0, 45.0]
+```
 
 ### What S1-S4 checks at Layer 1
 
-_⟨draft⟩ TODO Task 6_
+| Gate | What it checks on the widefield seeds | Result |
+|------|----------------------------------------|--------|
+| **S1** | Dimensions: PSF grid matches spatial grid; OTF cutoff k_c = 2·NA/λ_em within Nyquist band at declared pixel size; DAG nodes K.psf.airy and ∫.temporal are dimensionally consistent | PASS |
+| **S2** | Well-posedness: OTF is non-zero over its support ⇒ bounded pseudo-inverse via Wiener filter; Tikhonov regularization tames high-frequency noise amplification outside the support | PASS |
+| **S3** | Convergent solver exists: Richardson-Lucy monotonically improves Poisson likelihood; ADMM with TV prior converges with rate bounds known in the literature | PASS |
+| **S4** | Error is bounded: PSNR computable on recovered intensity; q=2.0 convergence rate confirmed by multi-resolution witness K_resolutions at three grid refinements | PASS |
 
 ### Layer 1 reward
 
-_⟨draft⟩ TODO Task 6_
+```
+L1 Principle creation:
+  One-time:  Reserve grant (DAO vote) when S4 gate passes
+             Size ∝ expected L4 activity; no fixed formula
+  Ongoing:   5% of every L4 minting draw under this Principle
+             5% of every L4 usage fee under this Principle
+
+Genesis Principles (#1–500): auto-promoted at launch; no staking required.
+Protocol minting (A_k) flows from day 1.
+```
+
+Closed-form seed reward + numeric substitution per STYLE_NOTES §4:
+
+```
+R_L1_seed = R_base × φ(t) × δ
+          = 200 × 1.0 × 1 = 200 PWM (one-time, at genesis)
+```
 
 ### The Principle is now immutable
 
-_⟨draft⟩ TODO Task 6_
+Once committed on-chain as `sha256:<widefield_principle_hash>`, the Widefield Fluorescence Principle **never changes**. All downstream spec.md files, benchmarks, and solutions reference this hash. Updating the physics — for example, extending to anisotropic PSFs or 3D z-stack forward models — means creating Principle v2 (a new hash), not modifying v1. The registry treats immutability as a first-class invariant.
 
 ---
 
