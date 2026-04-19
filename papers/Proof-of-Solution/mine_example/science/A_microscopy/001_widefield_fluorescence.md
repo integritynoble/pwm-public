@@ -1362,7 +1362,25 @@ Cross-claims are optional — failure has no penalty. The protocol enforces that
 
 ## Complete Hash Chain (Immutability Across All Four Layers)
 
-_⟨draft⟩ TODO Task 14_
+```
+Layer 1 ──→ Principle sha256:<widefield_principle_hash>     FIXED
+               │
+Layer 2 ──→ spec.md sha256:<widefield_spec1_hash>           FIXED
+               │   contains: principle_ref: sha256:<widefield_principle_hash>
+               │
+Layer 3 ──→ Benchmark sha256:<widefield_bench1_hash>        FIXED
+               │   contains: spec_ref: sha256:<widefield_spec1_hash>
+               │             principle_ref: sha256:<widefield_principle_hash>
+               │
+Layer 4 ──→ Certificate sha256:<widefield_cert_hash>        SUBMITTED
+                   contains: h_s: sha256:<widefield_spec1_hash>
+                             h_b: sha256:<widefield_bench1_hash>
+                             h_p: sha256:<widefield_principle_hash>
+                             h_x: sha256:<widefield_solution_hash>
+
+Tampering with ANY artifact changes its hash → breaks the chain.
+Every verifier can independently reconstruct this chain.
+```
 
 ---
 
@@ -1465,30 +1483,149 @@ The `true_phi` for a stitched scene includes a `seam_map` (binary mask of tile b
 
 ## Complete Reward Summary (All Four Layers for Widefield Fluorescence)
 
-_⟨draft⟩ TODO Task 14_
+```
+┌─────────┬──────────────────────────────┬──────────────────────────────────────────────┐
+│ Layer   │ One-time creation reward     │ Ongoing upstream royalties                   │
+├─────────┼──────────────────────────────┼──────────────────────────────────────────────┤
+│ L1      │ Reserve grant (DAO vote)     │ 5% of every L4 minting draw                  │
+│Principle│ when S4 gate passes          │ 5% of every L4 usage fee                     │
+│         │ (≈ 200 PWM for genesis)      │ → If 1,000 solutions at 50 PWM each:         │
+│         │                              │   2,500 PWM passively                        │
+├─────────┼──────────────────────────────┼──────────────────────────────────────────────┤
+│ L2      │ Reserve grant (DAO vote)     │ 10% of every L4 minting draw                 │
+│ spec.md │ when S4 gate passes          │ 10% of every L4 usage fee                    │
+│         │ Requires d_spec ≥ 0.35       │ → If 250 solutions at 50 PWM each:           │
+│         │ (≈ 105 PWM typical)          │   1,250 PWM per spec                         │
+├─────────┼──────────────────────────────┼──────────────────────────────────────────────┤
+│ L3      │ Reserve grant (DAO vote)     │ 15% of every L4 minting draw                 │
+│Benchmark│ when S4 gate passes          │ 15% of every L4 usage fee                    │
+│         │ Requires d_ibench ≥ 0.10     │ → If 250 solutions at 50 PWM each:           │
+│         │ (≈ 60 PWM typical)           │   1,875 PWM per benchmark                    │
+├─────────┼──────────────────────────────┼──────────────────────────────────────────────┤
+│ L4      │ N/A (no one-time grant)      │ Ranked draw from per-principle pool:         │
+│Solution │                              │   SP: p × 55% (passively)                    │
+│         │                              │   CP: (1−p) × 55% (per job executed)         │
+│         │                              │   Example: Rank 1, 100 PWM pool, p=0.5:      │
+│         │                              │   40 PWM draw → SP:11, CP:11                 │
+└─────────┴──────────────────────────────┴──────────────────────────────────────────────┘
+
+Token supply: 21M PWM total. Minting pool = 82% (17.22M PWM).
+Early miners earn more: Rank 1 draws 40% of remaining pool at time of solution.
+T_k (15% of every L4 event) accumulates per-Principle — self-funds adversarial bounties.
+Widefield (δ=1) draws are smaller than CASSI (δ=3) per-solution, but Widefield
+volume is expected to be higher (simpler problem, broader researcher base).
+```
 
 ---
 
 ## Mining Strategies
 
+| Strategy | Effect |
+|----------|--------|
+| Start with T1 Nominal | Lowest risk; Richardson-Lucy clears threshold at 31 dB |
+| Use CARE-UNet on T1 | PSNR ≈ 36 dB → Q ≈ 0.98 → larger pool share |
+| Solve T3 moderate with Blind-RL | ρ=65% recovery; demonstrates defocus robustness |
+| Solve T4 blind calibration | Highest I-benchmark ρ=10; strongest reputation signal |
+| Attempt P-benchmark | ρ=50; largest pool weight; cross-claim I-benchmarks after |
+| Be first solver in widefield domain | Novelty multiplier ν_c is highest for first solutions |
+| Submit across multiple resolutions | Convergence-based scoring (M2) rewards this |
+| Use a novel solver architecture | Method-signature diversity (M5) rewards novelty (e.g. a diffusion-prior deconvolver instead of yet-another U-Net) |
+
 ### Recommended progression
 
-_⟨draft⟩ TODO Task 14_
+| Stage | Task | Approx. reward (Rank 1, small pool) |
+|-------|------|--------------------------------------|
+| 1. Learn     | T1 Nominal with Richardson-Lucy | ~40 PWM |
+| 2. Improve   | T1 Nominal with CARE-UNet       | ~80 PWM |
+| 3. Challenge | T3 Moderate with Blind-RL       | ~120 PWM |
+| 4. Calibrate | T4 Blind calibration            | ~160 PWM |
+| 5. Frontier  | P-benchmark (full Ω range) + cross-claims | ~250 PWM + 4 cross-claim draws |
+
+Rewards scale with how many other solvers have attempted the same benchmark — first-mover bonuses are largest. Widefield is Principle #1 in the registry, so early miners in this domain also benefit from the "first-Principle" activity multiplier until more Principles accumulate L4 activity.
 
 ---
 
 ## What You Cannot Do
 
-_⟨draft⟩ TODO Task 14_
+- **Memorize benchmark outputs** — M1 generates test instances from an unmanipulable randomness source; you cannot predict which scenes you will be tested on.
+- **Fake the certificate** — Every full node checks it in O(1); forging is mathematically infeasible.
+- **Skip gates** — S3 convergence check catches solvers that produce good numbers without actually converging.
+- **Game the quality score** — Worst-case scoring across 20 dev scenes (M3) means one bad scene tanks your score.
+- **Reuse someone else's solution** — The certificate commits your SP identity and solution hash; duplicates are detected.
+- **Use PSF-oblivious methods for T4** — Wiener (0% mismatch recovery) cannot benefit from implicit PSF calibration; the protocol detects this via the cross-tier degradation curve.
+- **Tamper with upstream hashes** — Changing any artifact (Principle, spec, benchmark) breaks the hash chain; all verifiers detect it.
+- **Submit a near-duplicate spec** — d_spec < 0.15 is rejected outright; add an I-benchmark tier instead.
 
 ---
 
 ## Quick-Start Commands
 
-_⟨draft⟩ TODO Task 14_
+```bash
+# 1. Check available widefield tasks
+pwm-node benchmarks | grep widefield
+
+# 2. Pre-check gates (free, no compute)
+pwm-node verify widefield/mismatch_only_t1_nominal.yaml
+
+# 3. Mine the center I-benchmark (nominal, ρ=1)
+pwm-node mine widefield/mismatch_only_t1_nominal.yaml
+
+# 4. Inspect your certificate
+pwm-node inspect sha256:<your_cert_hash>
+
+# 5. Check balance after 3-day challenge period (textbook tier)
+pwm-node balance
+
+# 6. Mine moderate mismatch tier (ρ=4)
+pwm-node mine widefield/mismatch_only_t3_moderate.yaml
+
+# 7. Mine blind calibration tier (ρ=10, highest I-benchmark)
+pwm-node mine widefield/mismatch_only_t4_blind.yaml
+
+# 8. Mine oracle-assisted center I-benchmark (ρ=1, true_phi provided)
+pwm-node mine widefield/oracle_t1_h128_pix100.yaml
+
+# 9. Register as Solution Provider (SP) — after proving solution works locally
+#    Include compute manifest so CPs know hardware requirements
+pwm-node sp register \
+  --entry-point solve.py \
+  --share-ratio 0.50 \
+  --min-vram-gb 4 \
+  --expected-runtime-s 30 \
+  --framework pytorch
+
+# 10. Register as Compute Provider (CP)
+pwm-node cp register --gpu RTX4070 --vram 12
+```
 
 ---
 
 ## Reference
 
-_⟨draft⟩ TODO Task 14_
+| Topic | Where to find it |
+|-------|------------------|
+| Widefield Fluorescence Principle (#1) | `principle.md`, Section A (Microscopy) |
+| Four-layer pipeline | `pwm_overview.md` §2 |
+| Principle definition P=(E,G,W,C) | `pwm_overview.md` §3 |
+| L_DAG complexity score (κ₀=1000) | `pwm_overview.md` §3 Primitive Decomposition |
+| physics_fingerprint and spec_range | `pwm_overview.md` §3 |
+| Spec six-tuple S=(Ω,E,B,I,O,ε) | `pwm_overview.md` §4 |
+| epsilon_fn (AST-sandboxed) | `pwm_overview.md` §4 The epsilon_fn |
+| Spec distance formula (d_spec) | `pwm_overview.md` §4 Spec Distance / `spec_distance_design.md` |
+| P-benchmark vs. I-benchmark | `pwm_overview.md` §5 |
+| ibenchmark_range declaration | `pwm_overview.md` §5 |
+| Evaluation Tracks A/B/C | `pwm_overview.md` §5 / `pbenchmark_scoring.md` |
+| M1-M6 anti-overfitting mechanisms | `pwm_overview.md` §5 |
+| SP/CP dual-role architecture | `pwm_overview.md` §6 / `l4_dual_role.md` |
+| Ranked draws and T_k=15% | `pwm_overview.md` §9 Ranked Draws |
+| Reserve grants for L1/L2/L3 | `pwm_overview.md` §9 Early L1/L2/L3 Creation |
+| Token economics (82% minting pool) | `pwm_overview.md` §9 Supply Distribution / `token_supply.md` |
+| Upstream royalty split 5/10/15/15% | `pwm_overview.md` §10 |
+| Two-stage security model | `pwm_overview.md` §11 |
+| Hierarchical primitives (143-leaf) | `primitives.md` |
+| Condition number conventions (κ_sub, κ_sys, κ_eff) | `condition_number.md` |
+| Airy PSF theory | G. Airy, *Trans. Camb. Phil. Soc.*, 1835 ⟨draft — canonical optics textbook reference⟩ |
+| Richardson-Lucy deconvolution | W. H. Richardson, *J. Opt. Soc. Am.*, 1972; L. B. Lucy, *Astron. J.*, 1974 |
+| Poisson-likelihood convergence O(1/k²) | Shepp & Vardi, *IEEE Trans. Med. Imag.*, 1982 |
+| FluoCells dataset | Broad Bioimage Benchmark Collection ⟨draft — pending exact DOI / collection ID⟩ |
+| CARE-UNet content-aware restoration | M. Weigert et al., *Nature Methods*, 2018 |
