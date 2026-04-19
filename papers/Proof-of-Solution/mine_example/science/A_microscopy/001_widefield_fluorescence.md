@@ -7,7 +7,29 @@ Domain: Microscopy | Difficulty: Textbook (delta=1) | Carrier: Photon
 
 ## The Four-Layer Pipeline for Widefield Fluorescence
 
-_⟨draft⟩ TODO Task 4: ASCII diagram, cassi lines 10-31 pattern_
+```
+LAYER 1              LAYER 2              LAYER 3              LAYER 4
+seeds → Valid(B)     Principle + S1-S4    spec.md + Principle   spec.md + Benchmark
+designs the           designs              + S1-S4 builds &      + Principle + S1-S4
+PRINCIPLE             spec.md              verifies BENCHMARK    verifies SOLUTION
+
+┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐    ┌─────────────────┐
+│  LAYER 1        │    │  LAYER 2        │    │  LAYER 3        │    │  LAYER 4        │
+│  seed→Principle │    │  Principle→spec │    │  spec→Benchmark │    │  Bench→Solution │
+│                 │    │                 │    │                 │    │                 │
+│  Domain expert  │    │  Task designer  │    │  Data engineer  │    │  SP + CP        │
+│  writes seeds   │───>│  writes spec.md │───>│  builds dataset │───>│  solve task     │
+│  about Airy     │    │  for widefield  │    │  + baselines    │    │  + earn PWM     │
+│  PSF +          │    │  fluorescence   │    │  + thresholds   │    │                 │
+│  fluorophore    │    │  tasks          │    │                 │    │  (PoSol reward) │
+│  density        │    │                 │    │                 │    │                 │
+│                 │    │                 │    │                 │    │                 │
+│  Reward:        │    │  Reward:        │    │  Reward:        │    │  Reward: ranked │
+│  Reserve grant  │    │  Reserve grant  │    │  Reserve grant  │    │  draw from      │
+│  (DAO vote)     │    │  (DAO vote)     │    │  (DAO vote)     │    │  per-principle  │
+│  + 5% upstream  │    │  + 10% upstream │    │  + 15% upstream │    │  pool           │
+└─────────────────┘    └─────────────────┘    └─────────────────┘    └─────────────────┘
+```
 
 ---
 
