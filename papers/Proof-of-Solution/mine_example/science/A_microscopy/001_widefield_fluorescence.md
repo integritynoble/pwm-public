@@ -531,19 +531,203 @@ ibenchmark_range:
 
 ### Spec distance and duplicate prevention
 
-_⟨draft⟩ TODO Task 8_
+Before accepting a new spec, the protocol computes:
+
+```
+d_spec(S1, S2) = 0.50 · d_structural + 0.30 · d_omega + 0.20 · d_epsilon
+```
+
+---
+
+#### Component 1 — d_structural (weight 0.50)
+
+Jaccard distance on a flat set of `(field, value)` pairs from the S2/S3 spec parameters.
+Multi-valued fields contribute one pair per entry:
+
+```python
+def feature_set(spec) -> set:
+    F = set()
+    # Single-valued fields
+    F.add(("operator_class",         spec.operator_class))
+    F.add(("function_space",         spec.function_space))
+    F.add(("modulus_of_continuity",  spec.modulus_of_continuity))
+    F.add(("convergence_order_tier", spec.convergence_order_tier))
+    F.add(("condition_number_tier",  spec.condition_number_tier))
+    F.add(("certificate_procedure",  spec.certificate_procedure))
+    F.add(("noise_model",            spec.noise_model))
+    # Multi-valued fields
+    for obs  in spec.observables:            F.add(("observable",  obs))
+    for dc   in spec.discretization_classes: F.add(("discr_class", dc))
+    for name in spec.omega_dimension_names:  F.add(("omega_dim",   name))
+    return F
+
+d_structural = 1 − |F(S1) ∩ F(S2)| / |F(S1) ∪ F(S2)|
+```
+
+> **Key:** omega_dimension *names* are included, *values* (ranges) are excluded.
+> Two specs with the same dimension names but different ranges are the same
+> structural class — different ranges define different I-benchmark tiers.
+
+---
+
+#### Component 2 — d_omega (weight 0.30)
+
+Mean Ω range IoU gap over **shared dimensions only**:
+
+```
+For each shared dimension k:
+    IoU_k = |range_k(S1) ∩ range_k(S2)| / |range_k(S1) ∪ range_k(S2)|
+    continuous: intersection/union of intervals on the real line
+    discrete:   intersection/union of declared value sets
+
+d_omega = 1 − (1/|shared_dims|) × Σ_k IoU_k
+
+Special cases:
+    No shared dims   →  d_omega = 1.0  (completely different Ω spaces)
+    Identical ranges →  d_omega = 0.0  (complete overlap)
+```
+
+---
+
+#### Component 3 — d_epsilon (weight 0.20)
+
+Normalised ε threshold gap across all observables:
+
+```
+For each observable obs:
+    ε̄_i(obs) = median of epsilon_fn_i(Ω) over 50 uniform Ω samples
+                (representative threshold for spec i)
+
+    δ_ε(obs) = |ε̄_1(obs) − ε̄_2(obs)| / (sota_obs − floor_obs)
+
+d_epsilon = (1/|O|) × Σ_obs δ_ε(obs)
+```
+
+---
+
+#### Widefield Worked Example — Spec #1 (Mismatch-only) vs Spec #2 (Oracle-assisted)
+
+**d_structural:**
+
+| Feature | Spec #1 Mismatch-only | Spec #2 Oracle-assisted | Shared |
+|---|---|---|---|
+| operator_class | airy_psf_convolution | airy_psf_convolution | ✓ |
+| function_space | L2_spatial | L2_spatial | ✓ |
+| modulus_of_continuity | Lipschitz | Lipschitz | ✓ |
+| convergence_order_tier | O(1/k²) | O(1/k²) | ✓ |
+| condition_number_tier | **medium** (κ_eff≈50 with mismatch) | **low** (κ_eff≈5, oracle) | ✗ |
+| certificate_procedure | S1-S4_residual | S1-S4_residual | ✓ |
+| noise_model | poisson_gaussian | poisson_gaussian | ✓ |
+| observable | PSNR, SSIM, resolution_nm | PSNR, SSIM, resolution_nm | ✓×3 |
+| discr_class | Richardson-Lucy, Wiener, CARE-UNet, blind-RL, transformer | + operator_aware | ✓×5, ✗×1 |
+| omega_dim | H, W, pixel_nm, emission_nm, NA, peak_photons + 2 mismatch dims | H, W, pixel_nm, peak_photons only | ✓×4, ✗×4 |
+
+```
+|F1| = 7 scalars + 3 obs + 5 discr + 8 omega = 23
+|F2| = 7 scalars + 3 obs + 6 discr + 4 omega = 20
+|F1 ∩ F2| = 6 + 3 + 5 + 4 = 18
+|F1 ∪ F2| = 23 + 20 − 18 = 25
+
+d_structural = 1 − 18/25 = 0.28
+```
+
+**d_omega:**
+
+Shared dims: H, W, pixel_nm, peak_photons (both specs declare identical ranges)
+
+```
+H:            [128, 4096]  vs [128, 4096]  →  IoU = 1.0
+W:            [128, 4096]  vs [128, 4096]  →  IoU = 1.0
+pixel_nm:     [30,  200]   vs [30,  200]   →  IoU = 1.0
+peak_photons: [50,  10000] vs [50,  10000] →  IoU = 1.0
+
+d_omega = 1 − (1/4) × (1.0+1.0+1.0+1.0) = 0.0
+```
+
+The 4 dims unique to spec #1 (emission_nm, NA, dz_nm, sigma_bg) are not shared →
+not counted in IoU. Their absence is captured by d_structural (omega_dim names differ).
+
+**d_epsilon:**
+
+```
+PSNR: ε̄_1 ≈ 28.0 dB,  ε̄_2 ≈ 32.0 dB
+  sota ≈ 38 dB,  floor ≈ 20 dB
+  δ_ε(PSNR) = |28.0 − 32.0| / 18.0 = 0.22
+
+SSIM: ε̄_1 ≈ 0.85,  ε̄_2 ≈ 0.90
+  sota ≈ 0.98,  floor ≈ 0.60
+  δ_ε(SSIM) = |0.85 − 0.90| / 0.38 = 0.13
+
+resolution_nm: ε̄_1 ≈ 230 nm,  ε̄_2 ≈ 200 nm    (smaller is better)
+  sota ≈ 150 nm,  floor ≈ 400 nm
+  δ_ε(res) = |230 − 200| / 250 = 0.12
+
+d_epsilon = (0.22 + 0.13 + 0.12) / 3 ≈ 0.157
+```
+
+**Combined:**
+
+```
+d_spec = 0.50×0.28 + 0.30×0.0 + 0.20×0.157
+       = 0.140 + 0.000 + 0.031
+       = 0.17  →  "Similar" band (0.15–0.35)
+```
+
+The oracle spec is accepted (d_spec > 0.15) but with **reduced ν_c** (B_k only unless within
+the Principle's `spec_range`). It qualifies as a distinct spec — not an I-benchmark — because
+the input_format changes (solver receives `true_phi`).
+
+---
+
+#### Why mismatch severity variants are I-benchmarks, not separate specs
+
+Input format is identical (raw measurement only). Only the Ω tier *values* change
+(dz_nm, sigma_bg). d_spec ≈ 0.10 (omega_dim names are the same, only ranges differ;
+ranges are excluded from d_structural) → near-duplicate → **rejected as spec; submit
+as I-benchmark tier instead**.
+
+---
+
+| d_spec | Label | Action | ν_c multiplier |
+|--------|-------|--------|----------------|
+| < 0.15 | Near-duplicate | **Rejected** — submit as I-benchmark instead | — |
+| 0.15–0.35 | Similar | Accepted, B_k only | Reduced |
+| 0.35–0.65 | Related | Accepted, A_k + T_k eligible | Normal |
+| > 0.65 | Novel | Accepted, A_k + T_k eligible | Enhanced |
 
 ### What S1-S4 checks at Layer 2
 
-_⟨draft⟩ TODO Task 8_
+Each spec.md is validated against the Widefield Fluorescence Principle:
+
+| Gate | What it checks | Widefield spec result |
+|------|----------------|-----------------------|
+| **S1** | spec's Ω range [H∈128–4096, NA∈0.4–1.49, pixel∈30–200 nm] is consistent with the Principle's spatial + optical structure; pixel size satisfies Nyquist at OTF cutoff k_c = 2·NA/λ_em for the tightest configuration | PASS |
+| **S2** | spec's parameter bounds remain within the Principle's well-posedness regime; κ_eff < 200 across Ω for Wiener-regularized inverse; mismatch bounds [Δz ≤ 1500 nm, σ_bg ≤ 0.1] preserve existence | PASS |
+| **S3** | For all Ω in the declared range, at least one solver converges (Richardson-Lucy at O(1/k²)); epsilon_fn hardness rule is satisfied monotonically in H and peak_photons | PASS |
+| **S4** | epsilon_fn thresholds are feasible per the Principle's error bounds; expert baselines (Wiener, Richardson-Lucy) do not universally pass across the full Ω range — headroom exists for improved solvers | PASS |
 
 ### Layer 2 reward
 
-_⟨draft⟩ TODO Task 8_
+```
+L2 spec.md creation:
+  One-time:  Reserve grant (DAO vote) when S4 gate passes
+             Requires d_spec ≥ 0.35 to earn A_k + T_k (in-range)
+             No fixed formula — size ∝ expected L4 activity
+  Ongoing:   10% of every L4 minting draw under this spec
+             10% of every L4 usage fee under this spec
+```
+
+Closed-form seed reward + numeric substitution per STYLE_NOTES §4:
+
+```
+R_L2_seed = 150 × φ(t) × 0.70
+          = 150 × 1.0 × 0.70 = 105 PWM (designer, one-time at acceptance)
+        + 15% upstream royalty → Principle author (L1)
+```
 
 ### The spec.md is now immutable
 
-_⟨draft⟩ TODO Task 8_
+Once committed on-chain as `sha256:<widefield_spec_hash>`, the spec **never changes**. Miners know exactly what thresholds they must meet. No moving targets. Bug fixes to the spec yaml (typos, unit corrections) require a new spec ID; the old one is deprecated but its hash stays in the chain so certificates referencing it remain verifiable.
 
 ---
 
