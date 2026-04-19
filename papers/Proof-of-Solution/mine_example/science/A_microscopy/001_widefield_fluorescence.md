@@ -799,19 +799,268 @@ The two specs have **different Ω dimensions**: the mismatch spec's Ω has 8 dim
 
 ### What the benchmark builder creates
 
-_⟨draft⟩ TODO Task 10_
+Layer 3 outputs a **complete, self-contained directory** — hash-committed and immutable once published. The 20 pre-built dev instances are ready to use directly. All 6 anti-overfitting mechanisms (M1-M6) are embedded as concrete files.
+
+```
+benchmark_widefield_mismatch_only_t1_nominal/   ← I-benchmark T1
+│                                                 omega_tier = {H:512, NA:1.4, pixel:65,
+│                                                               emit:525, peak:1000,
+│                                                               dz:0, sigma_bg:0}
+│                                                 (grid sizes come from omega_tier, not the spec)
+├── manifest.yaml              # dataset identity + immutability hashes
+│
+├── instances/                  # 20 READY-TO-USE dev instances
+│   ├── dev_001/
+│   │   ├── input.npz          #   { "measurement": (512,512),
+│   │   │                      #     "psf_hint":    (65,65),    # optional
+│   │   │                      #     "emission_nm": 525 }
+│   │   ├── ground_truth.npz   #   { "intensity": (512,512) }
+│   │   └── params.yaml        #   full Ω instance: H=512, NA=1.4, pixel=65, dz=0, ...
+│   ├── dev_002/ … dev_020/
+│
+├── baselines/                  # expert solutions (M5: method diversity)
+│   ├── richardson_lucy/
+│   │   ├── solution.npz       #   reconstructed intensity maps
+│   │   ├── metrics.yaml       #   per-instance PSNR/SSIM/resolution_nm
+│   │   └── method.yaml        #   method_sig: "I+M" (iterative Poisson MLE)
+│   ├── wiener/
+│   │   ├── metrics.yaml       #   mean_PSNR: 30.5, worst_PSNR: 29.2
+│   │   └── method.yaml        #   method_sig: "L+R" (linear + Tikhonov)
+│   └── care_unet/
+│       ├── metrics.yaml       #   mean_PSNR: 35.8, worst_PSNR: 34.1
+│       └── method.yaml        #   method_sig: "L+N" (learned denoiser)
+│
+├── scoring/                    # deterministic evaluation (M3: worst-case)
+│   ├── score.py               #   per-scene PSNR, SSIM, resolution_nm
+│   ├── thresholds.yaml        #   epsilon at this Ω tier point
+│   └── worst_case.py          #   Q = f(worst_PSNR across 20 scenes)
+│
+├── convergence/               # M2: convergence-based scoring
+│   ├── check_convergence.py   #   verifies O(1/k²) rate across resolutions
+│   └── resolutions.yaml       #   spatial: [128, 256, 512, 1024]
+│
+├── generator/                  # M1: parameterized random instantiation
+│   ├── generate.py            #   deterministic G(θ), seeded by hash
+│   ├── params.yaml            #   scene diversity params (cell density, fluorophore dist.)
+│   ├── instantiate.py         #   G(SHA256(h_sub||k)) at submission time
+│   └── requirements.txt
+│
+├── adversarial/               # M4: community adversarial testing
+│   ├── submit_adversarial.py
+│   └── adversarial_log.yaml
+│
+├── gates/                      # M6: S1-S4 checks embedded
+│   ├── check_s1.py            #   dims: (512,512) matches spec grid
+│   ├── check_s2.py            #   OTF non-zero over support per Principle
+│   ├── check_s3.py            #   residual monotone decrease
+│   ├── check_s4.py            #   worst_PSNR ≥ ε(this Ω tier)
+│   └── run_all_gates.py
+│
+└── README.md
+
+WHERE ARE THE 6 MECHANISMS?
+
+M1  Random instantiation    generator/instantiate.py — G(SHA256(h_sub||k))
+M2  Convergence scoring     convergence/check_convergence.py
+M3  Worst-case eval         scoring/worst_case.py — Q = f(worst scene)
+M4  Community adversarial   adversarial/submit_adversarial.py (T_k-rewarded)
+M5  Method-sig diversity    baselines/*/method.yaml (I+M vs L+R vs L+N earn novelty bonus)
+M6  S1-S4 gate checks       gates/check_s1..s4.py
+```
+
+**Evaluation Tracks:**
+
+| Track | Method | Purpose |
+|-------|--------|---------|
+| **Track A** | Stratified worst-case — Q = min over Ω strata | Certifies no catastrophic failure region |
+| **Track B** | Uniform median — Q = median over sampled Ω | Typical-case performance benchmark |
+| **Track C** | Degradation curve — Q(mismatch_severity) | Measures robustness as mismatch increases |
+
+The **P-benchmark** uses all three tracks across the full Ω space. **I-benchmarks** use only Track A and Track B over their fixed dev/ set (20 scenes).
+
+---
+
+#### Track A — Stratified Worst-Case
+
+Divide Ω into 4 strata by primary difficulty dimension (H×W for widefield):
+
+| Stratum | H×W range | Representative difficulty |
+|---|---|---|
+| S1 small   | H×W ≤ 256²   | Easy — fits in GPU memory trivially |
+| S2 medium  | 256² < H×W ≤ 512²  | Standard — typical deployment size |
+| S3 large   | 512² < H×W ≤ 1024² | Hard — memory pressure, long runtime |
+| S4 x-large | H×W > 1024²  | Very hard — stitched fields of view, boundary effects |
+
+**Procedure (P-benchmark):**
+1. For each stratum, draw N_s = 5 random Ω points within that stratum (randomness from M1 seed)
+2. Run solver on all 5 instances → 5 PSNR scores
+3. Take the **worst** score from those 5
+4. Worst score must pass `epsilon_fn(Ω_centroid_s)` — threshold at stratum centre
+5. **All 4 strata must independently pass** — failing S4 fails Track A even if S1–S3 pass
+
+**For I-benchmarks (fixed dev/ set):**
+Track A = worst score across all 20 fixed dev scenes ≥ benchmark's fixed ε.
+
+Pass condition: `min_i(PSNR_i) / ε ≥ 1.0`
+
+---
+
+#### Track B — Uniform Median
+
+**Procedure (P-benchmark):**
+1. Sample N = 50 Ω points uniformly from the full declared Ω space (no stratification)
+2. Run solver on all 50 instances → 50 PSNR scores
+3. Take the **median** (25th value after sorting)
+4. Compute Ω_median = geometric centroid of the 50 sampled parameter vectors
+5. Median score must pass `epsilon_fn(Ω_median)`
+
+**For I-benchmarks:**
+Track B = median score across all 20 fixed dev scenes ≥ benchmark's fixed ε.
+
+Pass condition: `median_i(PSNR_i) / ε ≥ 1.0`
+
+Why both tracks: a solver can pass Track B (good median) but fail Track A (catastrophic at H=2048); or pass Track A (adequate worst-case per stratum) but fail Track B (mediocre everywhere). Both must pass for full certification.
+
+---
+
+#### Track C — Mismatch Degradation Curve (mismatch-only spec only)
+
+Sweeps mismatch severity φ ∈ [0, 1] where φ=0 is calibrated and φ=1 is the maximum declared mismatch bounds. Tests how gracefully quality degrades as calibration error increases.
+
+**Widefield mismatch sweep (5 points):**
+
+| φ | dz_nm | sigma_bg |
+|---|---|---|
+| 0.00 | 0    | 0.000 |
+| 0.25 | 375  | 0.025 |
+| 0.50 | 750  | 0.050 |
+| 0.75 | 1125 | 0.075 |
+| 1.00 | 1500 | 0.100 |
+
+At each φ point, 10 scenes are evaluated and the median PSNR recorded. The degradation curve Q(φ) is then normalised:
+
+```
+Q_norm(φ) = PSNR(φ) / epsilon_fn(Ω at φ)
+
+degradation_score = (1/4) × Σ_{i=1}^{4} [Q_norm(φ_i) + Q_norm(φ_{i+1})] / 2   (trapezoid AUC)
+```
+
+A flat curve (degradation_score ≈ 1.0) means the solver is mismatch-robust. A steep drop (degradation_score < 0.5) means it relies heavily on calibration.
+
+**Track C is only active when `difficulty_dims` is declared in the spec.** For the oracle-assisted spec, Track C is omitted (mismatch is an input, not an Ω dimension).
+
+---
+
+#### Combined Q_p Score
+
+```
+Without Track C:   Q_p = 0.40 × coverage + 0.40 × margin + 0.20 × stratum_pass_frac
+With Track C:      Q_p = 0.35 × coverage + 0.35 × margin + 0.15 × stratum_pass_frac
+                        + 0.15 × degradation_score
+```
+
+| Term | Meaning |
+|---|---|
+| `coverage` | Fraction of sampled Ω points where PSNR ≥ ε |
+| `margin` | Mean (PSNR/ε − 1) over passing instances |
+| `stratum_pass_frac` | Fraction of strata where worst instance passes (Track A) |
+| `degradation_score` | AUC of normalised Q(φ) curve (Track C) |
+
+#### manifest.yaml
+
+```yaml
+# benchmark_widefield_mismatch_only_t1_nominal/manifest.yaml
+
+benchmark_id:    "widefield_mismatch_only_t1_nominal_v1"
+type:            "I-benchmark"
+spec_ref:        "sha256:<widefield_spec1_hash>"       # mismatch-only spec
+principle_ref:   "sha256:<widefield_principle_hash>"
+# omega_tier: the single fixed Ω point this I-benchmark tests
+# (grid dimensions H=512, NA=1.4 come from here — NOT from the spec)
+omega_tier:
+  H:             512
+  W:             512
+  pixel_nm:      65
+  emission_nm:   525
+  NA:            1.4
+  peak_photons:  1000
+  dz_nm:         0.0
+  sigma_bg:      0.0
+rho:             1                           # ρ=1 pool weight for nominal tier
+epsilon:         30.0                        # epsilon_fn evaluated at this omega_tier
+dataset_hash:    "sha256:<widefield_dataset_hash>"
+generator_hash:  "sha256:<widefield_gen_hash>"
+created:         "2026-04-19T00:00:00Z"
+num_dev_instances: 20
+num_baselines:     3
+data_format:      "npz"
+mechanisms:       [M1, M2, M3, M4, M5, M6]
+```
+
+#### scoring/thresholds.yaml (from epsilon_fn at this Ω tier)
+
+```yaml
+# epsilon_fn evaluated at T1 nominal Ω point (H=512, peak_photons=1000, no mismatch)
+PSNR_min:     30.0     # primary metric PSNR ≥ 30 dB
+SSIM_min:     0.85
+resolution_nm_max: 230 # FWHM of recovered PSF ≤ 230 nm (Abbe-limited)
+residual_max: 0.05     # ||y - PSF ⊛ f̂|| / ||y||
+
+quality_scoring:
+  metric: worst_psnr           # M3: worst scene determines Q
+  thresholds:
+    - {min: 36.0, Q: 1.00}
+    - {min: 33.0, Q: 0.90}
+    - {min: 30.0, Q: 0.80}
+    - {min: 28.0, Q: 0.75}    # floor — always ≥ 0.75
+```
+
+**T3 Moderate mismatch I-benchmark** thresholds (same spec, different Ω tier):
+
+```yaml
+# epsilon_fn evaluated at T3 Ω point (dz_nm=600, sigma_bg=0.05)
+PSNR_min:     25.5     # lower threshold — mismatch degrades quality
+SSIM_min:     0.72
+residual_max: 0.08     # higher tolerance for mismatch scenario
+```
 
 ### What S1-S4 checks at Layer 3
 
-_⟨draft⟩ TODO Task 10_
+The benchmark is validated against **both** the spec.md and the Principle:
+
+| Gate | What it checks | Widefield benchmark result |
+|------|----------------|-----------------------------|
+| **S1** | `instances/dev_*/input.npz` shape (512,512) and `ground_truth.npz` shape (512,512) match spec's Ω dimensions; emission_nm=525 within spec range [400,800]; pixel=65 nm satisfies Nyquist at NA=1.4 | PASS |
+| **S2** | Problem defined by this data + Principle has bounded inverse; OTF cutoff k_c = 2·NA/λ = 2·1.4/525e-9 ≈ 5.3×10⁶ m⁻¹ is within the Principle's well-posed regime (`gates/check_s2.py`) | PASS |
+| **S3** | Richardson-Lucy residual decreases monotonically across iterations; `convergence/check_convergence.py` confirms O(1/k²) rate at 4 resolutions (M2) | PASS |
+| **S4** | Richardson-Lucy **worst_PSNR = 30.8 dB ≥ ε=30 dB** (M3: worst-case over 20 dev scenes); at least one solver clears ε, confirming task is feasible per Principle's error bounds | PASS |
 
 ### Layer 3 reward
 
-_⟨draft⟩ TODO Task 10_
+```
+L3 Benchmark creation:
+  One-time:  Reserve grant (DAO vote) when S4 gate passes
+             Requires d_ibench ≥ τ=0.10 to earn A_k + T_k (in-range)
+             No fixed formula — size ∝ expected L4 activity
+  Ongoing:   15% of every L4 minting draw under this benchmark
+             15% of every L4 usage fee under this benchmark
+
+Note: T_k (per-principle treasury, 15% of every L4 event) accumulates
+automatically and supplements B_k funding for new contributions without
+further DAO votes.
+```
+
+Closed-form seed reward + numeric substitution per STYLE_NOTES §4:
+
+```
+R_L3_seed = 100 × φ(t) × 0.60
+          = 100 × 1.0 × 0.60 = 60 PWM (builder, one-time at acceptance)
+        + 15% upstream royalty split 5% / 10% → Principle (L1) / spec (L2) authors
+```
 
 ### The benchmark is now immutable
 
-_⟨draft⟩ TODO Task 10_
+Once committed as `sha256:<widefield_bench_hash>`, the dataset, baselines, and scoring table are fixed. Miners compete against frozen targets. Additional datasets under the same spec (new cell lines, different fluorophores, new noise regimes) earn **new benchmark IDs** — they do not modify this one.
 
 ---
 
