@@ -6,6 +6,10 @@ Read `CLAUDE.md` first (your role, domain list, and full JSON schemas). This fil
 
 ## Before You Start
 
+> **← WAIT FOR:** Check `../../coordination/agent-coord/progress.md` for the line:
+> `REPO_READY = true`
+> Do not begin until agent-coord has set this flag (Day 2 at latest).
+
 - [ ] Read `CLAUDE.md` — all JSON field specs and the self-review checklist are there.
 - [ ] Read `../../papers/Proof-of-Solution/mine_example/cassi.md` and `cacti.md` — completed reference examples.
 - [ ] Read `../../papers/Proof-of-Solution/pwm_overview1.md` §Difficulty Score, §ρ Tier Mapping, §Track A/B/C.
@@ -140,3 +144,11 @@ After completing each domain, update `../../coordination/agent-coord/progress.md
 - [ ] Update `../../coordination/agent-coord/progress.md` — mark chemistry principles `DONE`.
 - [ ] Open PR: `feat/genesis-principles-chemistry`
   - PR description: count per domain, any quantum/Frontier principles flagged for review
+
+> **→ SIGNAL OUT (per batch):** After each domain cluster is complete, add to `progress.md`:
+> `agent-chemistry/<domain> = DONE  # <count> principles — <date>`
+> agent-coord watches these lines to know when to schedule reviews.
+
+> **→ SIGNAL OUT (final):** After PR is open, write in `progress.md`:
+> `agent-chemistry = PR_OPEN  # feat/genesis-principles-chemistry — <date>`
+> agent-coord will review and merge.

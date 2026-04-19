@@ -189,3 +189,7 @@ Read `CLAUDE.md` first (your role and all contract specs). This file is your ste
 - [ ] **11.2** Open PR: `feat/contracts-testnet-deploy`
   - Include: all 7 contracts, full test suite, addresses.json, ABI files
   - PR description: list each contract + its test count
+
+> **→ SIGNAL OUT (M1.1):** After step 10 (ABI files copied to `interfaces/`), write in `progress.md`:
+> `CONTRACTS_DEPLOYED = true  # Sepolia addresses: <address list> — <date>`
+> This is the green light for agent-coord to publish bounties and for bounty developers to start building scoring engine, CLI, mining client, and web explorer.
