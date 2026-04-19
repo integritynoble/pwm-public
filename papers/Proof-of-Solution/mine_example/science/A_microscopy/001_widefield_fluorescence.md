@@ -735,15 +735,67 @@ Once committed on-chain as `sha256:<widefield_spec_hash>`, the spec **never chan
 
 ### Who does this?
 
-_⟨draft⟩ TODO Task 9_
+A **data engineer** or **benchmark builder** (can be the task designer, a microscopy core facility, or someone else). They create the test data — real or simulated widefield images with ground-truth fluorophore distributions — run baseline solvers, and establish quality floors. Accepted benchmarks earn a **Reserve grant** (DAO vote) on submission plus ongoing upstream royalties on every L4 certificate that references them.
 
 ### P-benchmark vs. I-benchmark
 
-_⟨draft⟩ TODO Task 9_
+Every spec has exactly **one P-benchmark** and one or more **I-benchmarks**:
+
+| Type | Ω coverage | ρ weight | Quality threshold | Purpose |
+|------|-----------|----------|-------------------|---------|
+| **P-benchmark** | Full Ω range (parametric) | 50 (highest) | `epsilon_fn(Ω)` function | Tests generalization across entire parameter space |
+| **I-benchmark** | Single Ω tier point | 1/2/4/10 | Fixed ε at that Ω | Tests performance at one specific difficulty level |
+
+**Widefield I-benchmark tiers — mismatch-only spec** (each is a single fixed `omega_tier` point):
+
+| Tier | omega_tier (fixed Ω point) | mismatch severity | ρ | ε (from epsilon_fn at that Ω) |
+|------|---------------------------|------------------|----|-------------------------------|
+| T1 (Nominal) | H=512, NA=1.4, pixel=65, emit=525, peak=1000, dz=0, σ_bg=0 | None — calibrated | 1 | 30.0 dB |
+| T2 (Low) | …, dz=200 nm, σ_bg=0.02 | Small drift | 2 | 28.0 dB |
+| T3 (Moderate) | …, dz=600 nm, σ_bg=0.05 | Typical hardware | 4 | 25.5 dB |
+| T4 (Blind) | …, dz=1200 nm, σ_bg=0.08 | Large, unknown to solver | 10 | 22.0 dB |
+
+**Widefield I-benchmark tiers — oracle-assisted spec** (Ω = system params only; mismatch is in true_phi input, not omega_tier):
+
+| Tier | omega_tier (system params only) | ρ | ε |
+|------|---------------------------------|----|---|
+| T1 | H=128, pixel=100 nm, peak=500 | 1 | 33.0 dB |
+| T2 | H=512, pixel=65 nm, peak=1000 | 3 | 35.0 dB |
+| T3 | H=2048, pixel=32 nm, peak=5000 | 5 | 37.0 dB |
+
+**I-benchmark distance gate:** A new I-benchmark whose `omega_tier` point is within τ=0.10 of any existing I-benchmark in every Ω dimension is rejected as a near-duplicate. The proximity is measured as a fraction of each dimension's declared `tier_bounds` range.
 
 ### ibenchmark_range (declared inside the spec, repeated here for reference)
 
-_⟨draft⟩ TODO Task 9_
+The `ibenchmark_range` block is part of the spec.md (shown in full in the spec above). It tells the protocol which Ω tier points earn A_k + T_k. Key elements:
+
+| Field | Purpose |
+|-------|---------|
+| `center_ibenchmark` | The spec creator's canonical I-benchmark — a single fixed `omega_tier` point + `epsilon` (quality threshold at that Ω, from `epsilon_fn(omega_tier)`) + `rho` (benchmark pool weight ρ ∈ {1,2,4,10}). Contributors add higher-ρ I-benchmarks around this center. |
+| `tier_bounds` | Which Ω values are in-range for protocol funding (A_k + T_k) |
+| `proximity_threshold` | τ=0.10 — new I-bench must differ by > 10% of the declared range in ≥1 Ω dimension |
+
+**Widefield mismatch-only spec center** (T1, nominal):
+
+```yaml
+center_ibenchmark:
+  rho: 1
+  omega_tier: {H: 512, W: 512, pixel_nm: 65, emission_nm: 525,
+               NA: 1.4, peak_photons: 1000,
+               dz_nm: 0.0, sigma_bg: 0.0}
+  epsilon: 30.0     # ε = epsilon_fn evaluated at this exact Ω tier point
+```
+
+**Widefield oracle-assisted spec center** (T1, system params only — no mismatch in Ω):
+
+```yaml
+center_ibenchmark:
+  rho: 1
+  omega_tier: {H: 128, W: 128, pixel_nm: 100, peak_photons: 500}
+  epsilon: 33.0     # higher ε than mismatch spec — oracle advantage
+```
+
+The two specs have **different Ω dimensions**: the mismatch spec's Ω has 8 dimensions (6 system + 2 mismatch); the oracle spec's Ω has only 4 system dimensions. Mismatch values (NA, emission_nm, dz_nm, sigma_bg) in the oracle spec are instance-level `true_phi` inputs — they vary per instance but are not Ω coordinates, so they do not appear in `omega_tier` or `tier_bounds`.
 
 ### What the benchmark builder creates
 
