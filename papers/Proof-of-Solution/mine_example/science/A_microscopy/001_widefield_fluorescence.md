@@ -1068,11 +1068,284 @@ Once committed as `sha256:<widefield_bench_hash>`, the dataset, baselines, and s
 
 ### Who does this?
 
-_⟨draft⟩ TODO Task 11_
+**Two distinct roles** — a **Solution Provider (SP)** who creates the algorithm and a **Compute Provider (CP)** who executes it. They may be the same person or different people.
+
+**Solution Provider (SP):**
+1. Develops the solver algorithm locally and **proves it works** — runs against benchmark dev instances, confirms S1-S4 gates pass and Q ≥ 0.75
+2. Uploads the solution binary + model weights to IPFS
+3. Declares the **compute manifest** — specifies the hardware requirements CPs must meet to run this solution correctly:
+   ```yaml
+   compute_manifest:
+     min_vram_gb:      4          # minimum GPU VRAM (widefield is modest)
+     recommended_vram_gb: 8
+     cpu_only:         false      # GPU preferred; CPU fallback possible
+     min_ram_gb:       8
+     expected_runtime_s: 30       # per 512×512 instance on single GPU
+     expected_runtime_p_bench_s: 1200   # full P-benchmark run
+     precision:        float32
+     framework:        pytorch    # runtime dependency
+     entry_point:      solve.py
+     ipfs_cid:         "Qm..."    # hash-locked binary
+   ```
+4. Sets share ratio `p` (SP's fraction of the solver 55%) — determined by how compute-intensive the solution is
+5. Earns `p × 55%` of every L4 event **passively** — no action needed when jobs arrive
+6. Retains sole authority to upgrade or replace the solution
+7. Owns the Q quality score; appears on the leaderboard
+
+The SP does **not** need GPU hardware at submission time — the compute manifest tells CPs what they need. The protocol matches jobs to CPs whose registered hardware meets the manifest requirements.
+
+**Compute Provider (CP):**
+- Registers hardware capabilities (GPU model, VRAM, throughput, region)
+- Polls the on-chain job queue; executes SP's exact binary (hash-locked to IPFS CID) on instances that match its hardware against the SP's compute manifest
+- Competes with other CPs in a **commit-then-reveal race** for each benchmark job (both I-benchmark and P-benchmark verification runs)
+- Earns `(1 − p) × 55%` of each L4 event for jobs they complete
+- Applies to **both** benchmark minting draws and user usage fees
+
+**How the protocol calculates PWM distribution** — the SP does not calculate or claim manually. On certificate finalisation the smart contract splits automatically:
+
+```
+Per L4 event (minting draw or usage fee) of amount R:
+  SP  ←  p × 55% × R          (passive; no action needed)
+  CP  ←  (1−p) × 55% × R      (whoever executed the job)
+  L3  ←  15% × R
+  L2  ←  10% × R
+  L1  ←  5% × R
+  T_k ←  15% × R              (per-principle treasury)
+```
+
+**Share ratio guidance** — the SP sets `p` once at registration based on compute weight:
+
+| Solver type | Typical p | SP | CP | Example compute_manifest |
+|-------------|-----------|----|----|--------------------------|
+| CPU-only (SP = CP) | 1.0 | 100% | 0% | `cpu_only: true, expected_runtime_s: 2` |
+| Lightweight iterative | 0.80 | 80% | 20% | `min_vram_gb: 0, expected_runtime_s: 5` |
+| Single GPU | 0.50 | 50% | 50% | `min_vram_gb: 4, expected_runtime_s: 30` |
+| GPU cluster | 0.25 | 25% | 75% | `min_vram_gb: 24, expected_runtime_s: 300` |
 
 ### Step-by-step mining
 
-_⟨draft⟩ TODO Task 11_
+#### Step 1: Choose your task
+
+```bash
+pwm-node benchmarks | grep widefield
+```
+
+Output:
+```
+# Spec #1: Mismatch-only (measurement only input)
+widefield   mismatch_only_t1_nominal     ρ=1    mineable   (I-benchmark, ε=30.0 dB)
+widefield   mismatch_only_t2_low         ρ=2    mineable   (I-benchmark, ε=28.0 dB)
+widefield   mismatch_only_t3_moderate    ρ=4    mineable   (I-benchmark, ε=25.5 dB)
+widefield   mismatch_only_t4_blind       ρ=10   mineable   (I-benchmark, ε=22.0 dB)
+widefield   mismatch_only_p_benchmark    ρ=50   mineable   (P-benchmark, ε=epsilon_fn(Ω))
+
+# Spec #2: Oracle-assisted (measurement + true_phi input)
+# Ω varies H/pixel_nm/peak_photons only — no mismatch dims in Ω
+widefield   oracle_t1_h128_pix100        ρ=1    mineable   (I-benchmark, ε=33.0 dB)
+widefield   oracle_t2_h512_pix65         ρ=3    mineable   (I-benchmark, ε=35.0 dB)
+widefield   oracle_t3_h2048_pix32        ρ=5    mineable   (I-benchmark, ε=37.0 dB)
+widefield   oracle_p_benchmark           ρ=50   mineable   (P-benchmark, ε=epsilon_fn(Ω))
+```
+
+#### Step 2: Pre-check gates (free, no compute)
+
+```bash
+pwm-node verify widefield/fluocells_t1_nominal.yaml
+```
+
+Checks S1-S2 against the Principle before you spend GPU time.
+
+#### Step 3: Solve
+
+```bash
+pwm-node mine widefield/fluocells_t1_nominal.yaml
+```
+
+Under the hood:
+1. Downloads benchmark data (20 scenes + PSF hint + Ω params) from DA layer
+2. Runs your solver on all 20 scenes
+3. Produces 20 reconstructed intensity maps (512×512 each)
+4. Computes PSNR, SSIM, resolution_nm for each scene
+
+**You choose the solver.** The spec defines the problem, not the algorithm:
+
+| Solver | Expected PSNR | GPU Time | Quality Q | Notes |
+|--------|---------------|----------|-----------|-------|
+| Wiener            | ~30 dB | <1 s/scene   | 0.80 | Classical, closed-form Tikhonov |
+| Richardson-Lucy   | ~31 dB | 2–5 s/scene  | 0.82 | Iterative Poisson MLE |
+| Blind-RL          | ~29 dB | 20–60 s/scene| 0.78 | Joint PSF + intensity estimation |
+| CARE-UNet         | ~36 dB | 0.5 s/scene  | 0.98 | Learned, pretrained on FluoCells |
+| Noise2Void        | ~34 dB | 1 s/scene    | 0.92 | Self-supervised learned |
+
+Better solver → higher PSNR → higher Q → more PWM (via larger ranked draw fraction).
+
+#### Step 4: Local verification (S1-S4 on the solution)
+
+Your local Judge Agent checks the solution against **all three upstream artifacts**:
+
+```
+Solution verified from TWO directions simultaneously:
+
+Direction 1: BENCHMARK VERIFICATION
+  Compare PSNR, SSIM, resolution_nm against benchmark baselines
+  → Determines quality score Q ∈ [0.75, 1.0]
+  → "How good is the solution?"
+
+Direction 2: PRINCIPLE + S1-S4 VERIFICATION
+  Check solution against Widefield forward model directly
+  S1: output dimensions [512,512] match spec grid
+  S2: solver used method consistent with well-posedness
+  S3: residual ||y − PSF ⊛ f̂||₂ decreased monotonically
+  S4: PSNR ≥ ε(this Ω tier), SSIM ≥ 0.85, residual < error_bound
+  → Determines pass/fail
+  → "Is the solution mathematically correct?"
+
+BOTH must pass → S4 Certificate issued → PWM minted
+```
+
+| Gate | What it checks on the widefield solution | Expected |
+|------|-------------------------------------------|----------|
+| **S1** | Output shape [512,512] matches spec; non-negative intensity; emission_nm metadata preserved | PASS |
+| **S2** | Solver method is consistent with Principle's well-posedness (used Wiener/Tikhonov or equivalent regularization for underdetermined high-frequency recovery) | PASS |
+| **S3** | Solver residual ‖y − PSF ⊛ f̂‖₂ decreases monotonically; convergence rate matches Principle's q=2.0 to within 10% | PASS |
+| **S4** | Worst-case PSNR ≥ ε across all 20 scenes, SSIM ≥ 0.85, residual below error bound | PASS |
+
+#### Step 5: Certificate assembly and automatic reward routing
+
+```json
+{
+  "cert_hash": "sha256:...",
+  "h_s": "sha256:<widefield_spec1_hash>",
+  "h_b": "sha256:<widefield_bench1_hash>",
+  "h_p": "sha256:<widefield_principle_hash>",
+  "h_x": "sha256:... (reconstructed intensity maps hash)",
+  "r": {
+    "residual_norm": 0.018,
+    "error_bound": 0.05,
+    "ratio": 0.36
+  },
+  "c": {
+    "resolutions": [[128, 0.041], [256, 0.011], [512, 0.003]],
+    "fitted_rate": 1.95,
+    "theoretical_rate": 2.0,
+    "K": 3
+  },
+  "d": {"consistent": true},
+  "Q": 0.92,
+  "gate_verdicts": {"S1": "pass", "S2": "pass", "S3": "pass", "S4": "pass"},
+  "difficulty": {"tier": "textbook", "delta": 1},
+  "sp_wallet": "...",
+  "share_ratio_p": 0.50,
+  "sigma": "ed25519:..."
+}
+```
+
+The certificate contains **three upstream hashes** — proving it was verified against the immutable Principle, spec, and benchmark:
+
+```
+cert references:
+  h_p → Principle  sha256:<widefield_principle_hash>   (Layer 1, immutable)
+  h_s → spec.md    sha256:<widefield_spec1_hash>       (Layer 2, immutable)
+  h_b → Benchmark  sha256:<widefield_bench1_hash>      (Layer 3, immutable)
+  h_x → Solution   sha256:<widefield_solution_hash>    (Layer 4, this submission)
+```
+
+#### Step 6: Challenge period
+
+- **3-day window** for textbook-difficulty tasks (δ=1); 7-day for δ≥3
+- Any verifier can download all artifacts by hash and re-verify independently
+- If nobody challenges, the certificate finalizes
+
+#### Step 7: Reward settlement
+
+**Each benchmark has its own independent pool and rank list.** The P-benchmark and every I-benchmark (T1, T2, T3, T4) each maintain a separate pool. Rank 1 on the P-benchmark is the first solution to pass that P-benchmark; Rank 1 on I-benchmark T4 is the first solution to pass T4. A solver can hold Rank 1 on multiple benchmarks simultaneously and draws from each independently.
+
+**Subscript notation:**
+
+| Subscript | Meaning | Widefield example |
+|---|---|---|
+| `k` | Principle index | k=1 (Widefield Principle) |
+| `j` | Spec index within Principle k | j=1 (mismatch-only), j=2 (oracle-assisted) |
+| `b` | Benchmark index within Spec j | b=P (P-benchmark), b=T1…T4 (I-benchmarks) |
+
+The pool for one benchmark is `Pool_{k,j,b} = A_{k,j,b} + B_{k,j,b} + T_{k,j,b}`, computed in three stages:
+
+```
+A_k and T_k are only allocated to PROMOTED artifacts.
+Before promotion: Pool_{k,j,b} = B_{k,j,b} only.
+After promotion:  Pool_{k,j,b} = A_{k,j,b} + B_{k,j,b} + T_{k,j,b}.
+
+Stage 1 — Principle allocation (k level):   uses δ_k (Principle difficulty from L_DAG)
+  A_k        = (M_pool − M(t)) × w_k / Σ_k*(w_k)          (* promoted Principles only)
+  w_k        = δ_k × max(activity_k, 1)
+               δ_k = Principle difficulty tier (Widefield: δ=1); fixed at L1 from L_DAG
+               activity_k = L4 solutions under Principle k in last 90 days
+  T_k        = accumulated 15% of ALL L4 events under promoted Principle k
+
+Stage 2 — Spec allocation (j level, within promoted Principle k):   uses ρ
+  A_{k,j}    = A_k × Σ_b* ρ_{j,b} / Σ_{j'*,b'*} ρ_{j',b'}   (* promoted Specs/Benchmarks only)
+  T_{k,j}    = T_k × Σ_b* ρ_{j,b} / Σ_{j'*,b'*} ρ_{j',b'}
+
+Stage 3 — Benchmark allocation (b level, within promoted Spec j):   uses ρ
+  A_{k,j,b}  = A_{k,j} × ρ_{j,b} / Σ_b* ρ_{j,b}              (* promoted Benchmarks only)
+  T_{k,j,b}  = T_{k,j} × ρ_{j,b} / Σ_b* ρ_{j,b}
+               ρ_{j,b} = pool weight declared for benchmark b; P-benchmark ρ=50, I-benchmark ρ∈{1,2,4,10}
+
+Bounty term B_{k,j,b}:   available at all stages regardless of promotion status
+  B_k^P       = bounty staked at Principle level (flows to all promoted benchmarks under k by ρ)
+  B_{k,j}^S   = bounty staked at Spec j level   (flows to all promoted benchmarks under j by ρ)
+  B_{k,j,b}^D = bounty staked directly at Benchmark b (goes entirely to that benchmark)
+
+  B_{k,j,b}  = B_{k,j,b}^D
+              + B_{k,j}^S × ρ_{j,b} / Σ_b* ρ_{j,b}
+              + B_k^P      × ρ_{j,b} / Σ_{j'*,b'*} ρ_{j',b'}
+```
+
+> **δ vs ρ in pool allocation:** Stage 1 uses `δ_k` to compare Principles globally (physics difficulty, set at L1). Stages 2–3 use `ρ` to split a Principle's budget among its benchmarks (pool weight, declared at L3). Both use the same numeric scale {1,2,4,10,50} but at different hierarchy levels.
+
+**Widefield example** (mismatch-only spec, j=1; total ρ = 50+10+4+2+1 = 67):
+
+| Benchmark b | ρ | Pool share within spec (ρ / 67) |
+|---|---|---|
+| P-benchmark      | 50 | **74.6%** |
+| T4 (blind calib.)| 10 | 14.9% |
+| T3 (moderate)    | 4  | 6.0% |
+| T2 (low)         | 2  | 3.0% |
+| T1 (nominal)     | 1  | 1.5% |
+
+**Ranked draws:** Rank 10 is the last paid rank. Solutions ranked 11+ receive no draw; the remaining ~52% of the epoch pool rolls over to the next epoch.
+
+| Rank | Draw |
+|------|------|
+| Rank 1 (first solution) | 40% of current pool |
+| Rank 2 | 5% of remaining |
+| Rank 3 | 2% of remaining |
+| Rank 4–10 | 1% of remaining (each) |
+| Rank 11+ | No draw |
+
+**Example** (Pool_{k,j,b} = 100 PWM for one widefield benchmark, p=0.50, so SP=27.5%, CP=27.5%):
+
+| Rank | Draw (PWM) | SP (p×55%) | CP ((1−p)×55%) | L3 (15%) | L2 (10%) | L1 (5%) | T_k (15%) |
+|------|-----------|-----------|---------------|----------|----------|---------|-----------|
+| 1 | 40.00 | 11.00 | 11.00 | 6.00 | 4.00 | 2.00 | 6.00 |
+| 2 | 3.00  | 0.83  | 0.83  | 0.45 | 0.30 | 0.15 | 0.45 |
+| 3 | 1.14  | 0.31  | 0.31  | 0.17 | 0.11 | 0.06 | 0.17 |
+| 4 | 0.56  | 0.15  | 0.15  | 0.08 | 0.06 | 0.03 | 0.08 |
+| 5–10 | ~0.53 each | ~0.15 | ~0.15 | ~0.08 | ~0.05 | ~0.03 | ~0.08 |
+| **Rollover** | **~52.0** | — | — | — | — | — | — |
+
+**Upstream royalty split (same for minting draws and usage fees):**
+
+| Recipient | Share | Notes |
+|-----------|-------|-------|
+| SP (Algorithm Creator) | p × 55% | Earns passively; sets p at registration |
+| CP (Compute Provider)  | (1−p) × 55% | Earns by running jobs; distinct for mining vs. usage |
+| L3 Benchmark creator   | 15% | Upstream royalty |
+| L2 Spec author         | 10% | Upstream royalty |
+| L1 Principle creator   | 5%  | Upstream royalty |
+| T_k per-principle treasury | 15% | Self-funds adversarial bounties + validator fees |
+
+Anti-spam: after ~50 solutions at a given ρ=1 tier, per-solution reward falls below gas cost.
 
 ### Cross-benchmark claims (P-benchmark bonus)
 
