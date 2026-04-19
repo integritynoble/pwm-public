@@ -1370,27 +1370,96 @@ _⟨draft⟩ TODO Task 14_
 
 ### Mismatch-Only Spec: Tier T1 (Nominal — Start Here)
 
-_⟨draft⟩ TODO Task 13_
+The PSF is correctly calibrated, no defocus, no background drift. The simplest widefield deconvolution task.
+
+| Property | Value |
+|----------|-------|
+| omega_tier | H=512, NA=1.4, pixel=65 nm, emit=525 nm, peak=1000, dz=0, σ_bg=0 |
+| Operator | Calibrated PSF (Φ = Φ_true) |
+| Expert baseline | Richardson-Lucy: PSNR = 31.2 dB, SSIM = 0.872 |
+| ε | 30.0 dB (epsilon_fn at this Ω point) |
+| ρ | 1 |
+
+```bash
+pwm-node mine widefield/fluocells_mismatch_only_t1_nominal.yaml
+```
 
 ### Mismatch-Only Spec: Tiers T2 / T3 (Low / Moderate Mismatch)
 
-_⟨draft⟩ TODO Task 13_
+Same measurement-only input format — only the `omega_tier` point changes (defocus and background drift).
+
+| Property | T2 (Low) | T3 (Moderate) |
+|----------|----------|---------------|
+| omega_tier | dz=200 nm, σ_bg=0.02 | dz=600 nm, σ_bg=0.05 |
+| Expert baseline PSNR | Richardson-Lucy: ~29 dB | Richardson-Lucy: ~26 dB |
+| ε | 28.0 dB | 25.5 dB |
+| ρ | 2 | 4 |
+
+**Warning (T3):** Richardson-Lucy without a PSF hint barely clears at 26.1 dB. A PSF-calibration-aware solver (Blind-RL, learned denoiser with defocus-augmentation) is recommended. CARE-UNet trained on defocus-augmented data clears comfortably at ~33 dB.
 
 ### Mismatch-Only Spec: Tier T4 (Blind Calibration — Highest I-benchmark ρ)
 
-_⟨draft⟩ TODO Task 13_
+Solver must estimate PSF parameters (effective defocus, background level) from data, then deconvolve. Most practically valuable — matches real-world uncalibrated microscopy.
+
+| Property | Value |
+|----------|-------|
+| omega_tier | dz=1200 nm, σ_bg=0.08 |
+| Input | Measurement only (no defocus or background hints — solver must self-calibrate) |
+| ε | 22.0 dB |
+| ρ | 10 |
+| Dataset | FluoCells (40 scenes, 1024×1024 intensity + ground-truth fluorophore maps); cropped and resampled to 512×512; synthetic defocus + background applied at T4 parameters; fixed 20-scene eval set |
 
 ### Oracle-Assisted Spec: Tier T1 (Moderate Mismatch + Oracle — center I-bench)
 
-_⟨draft⟩ TODO Task 13_
+The center I-benchmark for the oracle spec is at small system size + moderate mismatch — where oracle information (true NA, emission, defocus, background) genuinely helps.
+
+| Property | Value |
+|----------|-------|
+| omega_tier | H=128, W=128, pixel_nm=100, peak_photons=500 |
+| true_phi (inputs, not Ω) | NA=1.4, emission_nm=525, dz_nm=400, sigma_bg=0.03 |
+| Input | Measurement + true_phi dict |
+| ε | 33.0 dB (epsilon_fn at this oracle Ω tier) |
+| ρ | 1 |
+
+Why oracle-assisted T1 is easier than mismatch-only T1: the solver receives the exact PSF parameters, eliminating the need for blind calibration and allowing tighter Wiener regularization. The threshold is correspondingly higher (33 vs 30 dB).
 
 ### Mismatch Recovery by Solver
 
-_⟨draft⟩ TODO Task 13_
+Not all solvers benefit equally from calibration information:
+
+| Solver | ρ (recovery %) | Why |
+|--------|----------------|-----|
+| Blind-RL                | 65% | Explicitly estimates defocus and background; uses them in the forward model each iteration |
+| Richardson-Lucy + hint  | 40% | Uses supplied PSF hint; partially compensates defocus but cannot adapt mid-iteration |
+| CARE-UNet (defocus-aug) | 28% | Trained on defocus-augmented data; robustness baked in but no explicit estimation |
+| Wiener                  | 0%  | Fixed Tikhonov filter; PSF-oblivious for mismatched cases |
+
+**Strategy:** Use Blind-RL for mismatch-heavy tiers (T3 / T4). CARE-UNet trained with defocus augmentation is a safer baseline for T2 / T3 if you lack the expertise to tune Blind-RL. Avoid Wiener for anything beyond T1 nominal.
 
 ### P-benchmark (Highest Reward Overall, ρ=50)
 
-_⟨draft⟩ TODO Task 13_
+Tests generalization across the **full** declared Ω space. The solver must work across all combinations of H∈[128,4096], pixel_nm∈[30,200], NA∈[0.4,1.49], emission_nm∈[400,800], peak_photons∈[50,10000], and mismatch dims within their declared bounds.
+
+```
+P-benchmark uses epsilon_fn(Ω) as threshold — not a fixed number.
+Quality is evaluated across all three Tracks (see Track A/B/C details above):
+  Track A: 4 strata by H×W; worst of 5 instances per stratum must pass ε
+  Track B: median of 50 uniform Ω samples must pass ε at Ω_median
+  Track C: mismatch degradation curve; φ swept 0→1 across 5 points (dz/σ_bg)
+```
+
+**Source dataset:** FluoCells-XL (500 scenes, 2048×2048 intensity + ground-truth fluorophore maps, CC-BY-NC). A subset of the Broad Bioimage Benchmark Collection's synthetic fluorescence library augmented with real confocal-derived ground truths for pairwise comparison.
+
+**Stitching for H×W > 1024:** Real widefield deployments tile multiple fields of view for large-area imaging (whole-well scans, tissue slides). The P-benchmark mirrors this: for target H or W > 1024, four FluoCells-XL scenes are tiled in a 2×2 arrangement (hard concatenation, no blending) and cropped to the target size. The seam at tile boundaries is a real spatial discontinuity — solvers that handle it score higher. FluoCells-XL at 2048×2048 per tile covers 2×2 → 4096×4096, sufficient for any target up to 4096.
+
+| Target H×W | Tile count | Source |
+|---|---|---|
+| [128, 1024] | 1 FluoCells-XL crop | No stitching |
+| (1024, 4096] | 4 FluoCells-XL scenes (2×2 hard stitch) | Seam at tile boundary |
+
+The `true_phi` for a stitched scene includes a `seam_map` (binary mask of tile boundaries) so oracle-assisted solvers can condition on it; mismatch-only solvers must infer or handle it blindly.
+
+ρ=50 makes the P-benchmark pool weight 50× higher than the T1 nominal I-benchmark. A solver that passes the P-benchmark earns substantially more than all I-benchmarks combined.
 
 ---
 
