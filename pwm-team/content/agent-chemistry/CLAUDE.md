@@ -17,7 +17,7 @@ You convert source physics documents into formal L1/L2/L3 JSON artifacts for the
 Your domains:
 | Domain | Source folder | ~Count |
 |---|---|---|
-| Computational chemistry | X_comp_chemistry/ | 18 |
+| Computational chemistry | X_computational_chemistry/ | 18 |
 | Quantum mechanics | Y_quantum_mechanics/ | 15 |
 | Materials science | Z_materials_science/ | 15 |
 | Polymer physics | AL_polymer_physics/ | 6 |
@@ -55,7 +55,7 @@ Use these as style and format reference (see agent-imaging CLAUDE.md for full JS
 
 ## Batch order
 Start with Z_materials_science (15 files — broad, well-defined inverse problems).
-Then X_comp_chemistry (18 files).
+Then X_computational_chemistry (18 files).
 Then Y_quantum_mechanics (15 files — most complex; do last to build context).
 
 ## Definition of done

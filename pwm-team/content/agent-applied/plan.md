@@ -27,10 +27,10 @@ Read `CLAUDE.md` first (your role, domain list, and full JSON schemas). This fil
 |---|---|---|---|
 | Astronomy | Q_astronomy/ | 4 | principles/Q_astronomy/ |
 | Astrophysics | AC_astrophysics/ | 18 | principles/AC_astrophysics/ |
-| Computational biology | AE_computational_bio/ | 18 | principles/AE_computational_bio/ |
-| Environmental science | AF_environmental_sci/ | 12 | principles/AF_environmental_sci/ |
+| Computational biology | AE_computational_biology/ | 18 | principles/AE_computational_biology/ |
+| Environmental science | AF_environmental_science/ | 12 | principles/AF_environmental_science/ |
 | Control theory | AG_control_theory/ | 12 | principles/AG_control_theory/ |
-| Computational finance | AH_comp_finance/ | 8 | principles/AH_comp_finance/ |
+| Computational finance | AH_computational_finance/ | 8 | principles/AH_computational_finance/ |
 | Robotics | AI_robotics/ | 12 | principles/AI_robotics/ |
 | Petroleum engineering | AJ_petroleum/ | 8 | principles/AJ_petroleum/ |
 | Geodesy | AK_geodesy/ | 8 | principles/AK_geodesy/ |
@@ -46,14 +46,14 @@ Read `CLAUDE.md` first (your role, domain list, and full JSON schemas). This fil
 1. **AO_optimization** (3 files) — start here, smallest
 2. **Q_astronomy** (4 files)
 3. **AK_geodesy** (8 files)
-4. **AH_comp_finance** (8 files)
+4. **AH_computational_finance** (8 files)
 5. **AJ_petroleum** (8 files)
 6. **AM_particle_physics** (8 files)
-7. **AF_environmental_sci** (12 files)
+7. **AF_environmental_science** (12 files)
 8. **AG_control_theory** (12 files) — clean mathematical structure
 9. **AI_robotics** (12 files)
 10. **AC_astrophysics** (18 files)
-11. **AE_computational_bio** (18 files) — most complex; do last
+11. **AE_computational_biology** (18 files) — most complex; do last
 
 ---
 

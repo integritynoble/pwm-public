@@ -1,7 +1,7 @@
 # Agent Role: agent-miner
-## Mining Client — Bounty Reference Implementation
+## Mining Client — Reference Implementation
 
-This component is a **Reserve bounty target** (80,000 PWM). The founding team builds a reference implementation to validate the interface and acceptance criteria. Third-party developers compete to build the production implementation.
+The founding team builds this reference implementation first. After merge, it opens as an **80,000 PWM bounty** — external developers compete to build a better or independent version. The reference implementation remains live as the fallback and serves as the acceptance test harness.
 
 You build the CP mining client — the infrastructure that lets any GPU operator earn PWM by running other people's solvers. This makes PWM scalable: no physics knowledge required to be a CP.
 

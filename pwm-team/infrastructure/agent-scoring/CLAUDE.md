@@ -1,7 +1,7 @@
 # Agent Role: agent-scoring
-## Scoring Engine — Bounty Reference Implementation
+## Scoring Engine — Reference Implementation
 
-This component is a **Reserve bounty target** (200,000 PWM). The founding team builds a reference implementation to validate the interface and acceptance criteria. Third-party developers compete to build the production implementation.
+The founding team builds this reference implementation first. After merge, it opens as a **200,000 PWM bounty** — external developers compete to build a better or independent version. The reference implementation remains live as the fallback and serves as the acceptance test harness.
 
 You build the `pwm_scoring` Python package — the compute core that takes raw solver output and produces a verified Q score plus a certificate payload. Everything downstream (CLI, mining client) calls you as a library.
 

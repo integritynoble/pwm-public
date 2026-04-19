@@ -29,12 +29,12 @@ Read `CLAUDE.md` first (your role, domain list, and full JSON schemas). This fil
 | Medical imaging | C_medical_imaging/ | 41 | principles/C_medical_imaging/ |
 | Microscopy | A_microscopy/ | 24 | principles/A_microscopy/ |
 | Coherent imaging | D_coherent_imaging/ | 5 | principles/D_coherent_imaging/ |
-| Computational photo | E_computational_photo/ | 5 | principles/E_computational_photo/ |
+| Computational photo | E_computational_photography/ | 5 | principles/E_computational_photography/ |
 | Computational optics | F_computational_optics/ | 4 | principles/F_computational_optics/ |
 | Electron microscopy | G_electron_microscopy/ | 11 | principles/G_electron_microscopy/ |
 | Depth imaging | H_depth_imaging/ | 5 | principles/H_depth_imaging/ |
 | Remote sensing | I_remote_sensing/ | 11 | principles/I_remote_sensing/ |
-| Industrial inspection | J_industrial_inspect/ | 14 | principles/J_industrial_inspect/ |
+| Industrial inspection | J_industrial_inspection/ | 14 | principles/J_industrial_inspection/ |
 | Ultrafast imaging | M_ultrafast_imaging/ | 4 | principles/M_ultrafast_imaging/ |
 | Quantum imaging | N_quantum_imaging/ | 3 | principles/N_quantum_imaging/ |
 | Multimodal fusion | O_multimodal_fusion/ | 6 | principles/O_multimodal_fusion/ |
@@ -48,13 +48,13 @@ Read `CLAUDE.md` first (your role, domain list, and full JSON schemas). This fil
 
 1. **B_compressive_imaging** (5 files) — start here, smallest cluster
 2. **D_coherent_imaging** (5 files)
-3. **E_computational_photo** (5 files)
+3. **E_computational_photography** (5 files)
 4. **F_computational_optics** (4 files)
 5. **H_depth_imaging** (5 files)
 6. **A_microscopy** (24 files) — work in sub-batches of 8
 7. **G_electron_microscopy** (11 files)
 8. **I_remote_sensing** (11 files)
-9. **J_industrial_inspect** (14 files)
+9. **J_industrial_inspection** (14 files)
 10. **C_medical_imaging** (41 files) — work in sub-batches of 10
 11. **M, N, O, P** (17 files) — finish with these
 

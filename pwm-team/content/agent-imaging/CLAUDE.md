@@ -21,12 +21,12 @@ Your domains and source folders:
 | Compressive imaging | B_compressive_imaging/ | 5 |
 | Medical imaging | C_medical_imaging/ | 41 |
 | Coherent imaging | D_coherent_imaging/ | 5 |
-| Computational photography | E_computational_photo/ | 5 |
+| Computational photography | E_computational_photography/ | 5 |
 | Computational optics | F_computational_optics/ | 4 |
 | Electron microscopy | G_electron_microscopy/ | 11 |
 | Depth imaging | H_depth_imaging/ | 5 |
 | Remote sensing | I_remote_sensing/ | 11 |
-| Industrial inspection | J_industrial_inspect/ | 14 |
+| Industrial inspection | J_industrial_inspection/ | 14 |
 | Ultrafast imaging | M_ultrafast_imaging/ | 4 |
 | Quantum imaging | N_quantum_imaging/ | 3 |
 | Multimodal fusion | O_multimodal_fusion/ | 6 |

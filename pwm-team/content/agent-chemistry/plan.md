@@ -28,7 +28,7 @@ Read `CLAUDE.md` first (your role, domain list, and full JSON schemas). This fil
 | Computational chemistry | X_computational_chemistry/ | ~18 | principles/X_computational_chemistry/ |
 | Quantum mechanics | Y_quantum_mechanics/ | ~16 | principles/Y_quantum_mechanics/ |
 | Materials science | Z_materials_science/ | ~14 | principles/Z_materials_science/ |
-| Polymer science | AL_polymer_science/ | ~8 | principles/AL_polymer_science/ |
+| Polymer science | AL_polymer_physics/ | ~8 | principles/AL_polymer_physics/ |
 | Semiconductor physics | AN_semiconductor/ | ~8 | principles/AN_semiconductor/ |
 
 **Total: ~64 principles**
@@ -37,7 +37,7 @@ Read `CLAUDE.md` first (your role, domain list, and full JSON schemas). This fil
 
 ## Batch Order (work in this order)
 
-1. **AL_polymer_science** (~8 files) — start here, smallest cluster
+1. **AL_polymer_physics** (~8 files) — start here, smallest cluster
 2. **AN_semiconductor** (~8 files)
 3. **Z_materials_science** (~14 files)
 4. **Y_quantum_mechanics** (~16 files)
@@ -131,7 +131,7 @@ After completing each domain, update `../../coordination/agent-coord/progress.md
 
 ```
 | agent-chemistry | X_computational_chemistry | 0/18 | IN_PROGRESS |
-| agent-chemistry | AL_polymer_science         | 8/8  | DONE |
+| agent-chemistry | AL_polymer_physics         | 8/8  | DONE |
 ```
 
 ---

@@ -17,7 +17,7 @@ You convert source physics documents into formal L1/L2/L3 JSON artifacts for the
 Your domains:
 | Domain | Source folder | ~Count |
 |---|---|---|
-| Scientific instrumentation | K_sci_instrumentation/ | 12 |
+| Scientific instrumentation | K_scientific_instrumentation/ | 12 |
 | Spectroscopy | L_spectroscopy/ | 12 |
 | Signal processing | AD_signal_processing/ | 14 |
 
@@ -55,7 +55,7 @@ Use these as style and format reference (see agent-imaging CLAUDE.md for full JS
 ## Batch order
 Start with AD_signal_processing (14 files — most generalizable, good warmup).
 Then L_spectroscopy (12 files).
-Then K_sci_instrumentation (12 files).
+Then K_scientific_instrumentation (12 files).
 
 ## Definition of done
 - All ~55 principles have L1/L2/L3 JSON in principles/<domain>/

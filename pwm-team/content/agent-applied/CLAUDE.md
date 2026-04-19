@@ -19,10 +19,10 @@ Your domains:
 |---|---|---|
 | Astronomy | Q_astronomy/ | 4 |
 | Astrophysics | AC_astrophysics/ | 18 |
-| Computational biology | AE_computational_bio/ | 18 |
-| Environmental science | AF_environmental_sci/ | 12 |
+| Computational biology | AE_computational_biologylogy/ | 18 |
+| Environmental science | AF_environmental_science/ | 12 |
 | Control theory | AG_control_theory/ | 12 |
-| Computational finance | AH_comp_finance/ | 8 |
+| Computational finance | AH_computational_finance/ | 8 |
 | Robotics | AI_robotics/ | 12 |
 | Petroleum engineering | AJ_petroleum/ | 8 |
 | Geodesy | AK_geodesy/ | 8 |
@@ -36,7 +36,7 @@ Applied-sciences-specific notes:
 - Carrier field varies widely: "Photon" (astrophysics), "Acoustic" (petroleum), "RF" (geodesy), "Particle" (particle physics), "N/A" (finance, optimization)
 - Some domains (finance, control theory) have non-physical forward models — express the forward operator mathematically even if not traditional physics
 - AO_optimization (3 files) may be abstract enough to require consultation with agent-coord for appropriate difficulty_delta assignment
-- AE_computational_bio includes protein folding, genomics — error_metric may be "TM_score" or "sequence_identity" not PSNR
+- AE_computational_biology includes protein folding, genomics — error_metric may be "TM_score" or "sequence_identity" not PSNR
 - AJ_petroleum (seismic inversion) overlaps with agent-physics W_geophysics — if you find duplicate principles, flag to agent-coord rather than creating both
 
 ## Self-review checklist (run before every PR)
@@ -62,7 +62,7 @@ Use these as style and format reference (see agent-imaging CLAUDE.md for full JS
 ## Batch order
 Start with AG_control_theory (12 files — clean mathematical structure).
 Then AC_astrophysics (18 files).
-Then AE_computational_bio (18 files — most complex; do last).
+Then AE_computational_biology (18 files — most complex; do last).
 
 ## Definition of done
 - All ~87 principles have L1/L2/L3 JSON in principles/<domain>/
