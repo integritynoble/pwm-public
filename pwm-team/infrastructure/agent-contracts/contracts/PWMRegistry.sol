@@ -1,12 +1,14 @@
 // SPDX-License-Identifier: MIT
-pragma solidity ^0.8.20;
+pragma solidity ^0.8.24;
 
-/// @title PWMRegistry — Immutable artifact hash store
-/// @notice Stores L1/L2/L3/L4 artifact hashes. Append-only. No delete, no update.
+/// @title PWMRegistry
+/// @notice Immutable artifact hash store for L1/L2/L3/L4 artifacts.
+///         Append-only: no delete, no update. Every PWM protocol reference
+///         resolves to an entry here.
 contract PWMRegistry {
     struct Artifact {
         bytes32 parentHash;
-        uint8   layer;          // 1=Principle, 2=Spec, 3=Benchmark, 4=Solution
+        uint8   layer;        // 1=Principle, 2=Spec, 3=Benchmark, 4=Solution
         address creator;
         uint256 timestamp;
     }
@@ -15,35 +17,51 @@ contract PWMRegistry {
 
     event ArtifactRegistered(
         bytes32 indexed hash,
-        uint8   layer,
+        uint8           layer,
         address indexed creator,
-        uint256 timestamp
+        uint256         timestamp
     );
 
-    /// @notice Register a new artifact. Reverts if hash already exists.
+    /// @notice Register a new artifact. Reverts if hash already exists or layer invalid.
     function register(
         bytes32 hash,
         bytes32 parentHash,
         uint8   layer,
         address creator
     ) external {
+        require(hash != bytes32(0), "PWMRegistry: zero hash");
         require(_artifacts[hash].timestamp == 0, "PWMRegistry: already registered");
         require(layer >= 1 && layer <= 4, "PWMRegistry: invalid layer");
-        // TODO: access control — only authorised callers (PWMStaking, PWMCertificate)
-        _artifacts[hash] = Artifact(parentHash, layer, creator, block.timestamp);
+        require(creator != address(0), "PWMRegistry: zero creator");
+        // L2/L3/L4 must reference a parent. L1 (Principle) is a root.
+        if (layer == 1) {
+            require(parentHash == bytes32(0), "PWMRegistry: L1 must have zero parent");
+        } else {
+            require(parentHash != bytes32(0), "PWMRegistry: parent required");
+            require(_artifacts[parentHash].timestamp != 0, "PWMRegistry: parent not registered");
+        }
+
+        _artifacts[hash] = Artifact({
+            parentHash: parentHash,
+            layer:      layer,
+            creator:    creator,
+            timestamp:  block.timestamp
+        });
+
         emit ArtifactRegistered(hash, layer, creator, block.timestamp);
     }
 
-    /// @notice Retrieve artifact metadata.
+    /// @notice Retrieve artifact metadata. Returns zero values if not registered.
     function getArtifact(bytes32 hash)
-        external view
+        external
+        view
         returns (bytes32 parentHash, uint8 layer, address creator, uint256 timestamp)
     {
-        Artifact memory a = _artifacts[hash];
+        Artifact storage a = _artifacts[hash];
         return (a.parentHash, a.layer, a.creator, a.timestamp);
     }
 
-    /// @notice Returns true if hash is registered.
+    /// @notice Returns true iff hash is registered.
     function exists(bytes32 hash) external view returns (bool) {
         return _artifacts[hash].timestamp != 0;
     }
