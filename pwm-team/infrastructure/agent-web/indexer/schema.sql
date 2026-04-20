@@ -91,3 +91,37 @@ CREATE TABLE IF NOT EXISTS treasury_events (
     timestamp INTEGER NOT NULL
 );
 CREATE INDEX IF NOT EXISTS idx_treasury_events_principle ON treasury_events(principle_id);
+
+-- Benchmark registry (from PWMMinting.BenchmarkRegistered): ties a benchmark
+-- hash to its owning principle plus current ρ weight. Removed benchmarks keep
+-- the row (with removed_at) so historical data stays linkable.
+CREATE TABLE IF NOT EXISTS benchmark_meta (
+    benchmark_hash TEXT PRIMARY KEY,
+    principle_id TEXT NOT NULL,
+    rho TEXT NOT NULL,
+    registered_at INTEGER NOT NULL,
+    removed_at INTEGER
+);
+CREATE INDEX IF NOT EXISTS idx_benchmark_meta_principle ON benchmark_meta(principle_id);
+
+-- Principle-scoped metadata updated by PWMMinting (δ, promotion flag).
+CREATE TABLE IF NOT EXISTS principle_meta (
+    principle_id TEXT PRIMARY KEY,
+    delta TEXT,
+    promoted INTEGER,
+    updated_at INTEGER NOT NULL
+);
+
+-- Mint events — cumulative A-pool emissions.
+CREATE TABLE IF NOT EXISTS mints (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    principle_id TEXT NOT NULL,
+    benchmark_hash TEXT NOT NULL,
+    a_k TEXT NOT NULL,
+    a_kjb TEXT NOT NULL,
+    remaining_after TEXT NOT NULL,
+    block_number INTEGER NOT NULL,
+    timestamp INTEGER NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_mints_principle ON mints(principle_id);
+CREATE INDEX IF NOT EXISTS idx_mints_benchmark ON mints(benchmark_hash);

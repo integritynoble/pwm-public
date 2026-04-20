@@ -162,3 +162,65 @@ def insert_treasury_event(conn: sqlite3.Connection, **row) -> None:
         """,
         row,
     )
+
+
+def upsert_benchmark_meta(conn: sqlite3.Connection, **row) -> None:
+    conn.execute(
+        """
+        INSERT INTO benchmark_meta(benchmark_hash, principle_id, rho, registered_at, removed_at)
+        VALUES(:benchmark_hash, :principle_id, :rho, :registered_at, NULL)
+        ON CONFLICT(benchmark_hash) DO UPDATE SET
+            principle_id = excluded.principle_id,
+            rho = excluded.rho,
+            registered_at = excluded.registered_at,
+            removed_at = NULL
+        """,
+        row,
+    )
+
+
+def set_benchmark_rho(conn: sqlite3.Connection, benchmark_hash: str, rho: str) -> None:
+    conn.execute(
+        "UPDATE benchmark_meta SET rho = ? WHERE benchmark_hash = ?",
+        (rho, benchmark_hash),
+    )
+
+
+def mark_benchmark_removed(conn: sqlite3.Connection, benchmark_hash: str, removed_at: int) -> None:
+    conn.execute(
+        "UPDATE benchmark_meta SET removed_at = ? WHERE benchmark_hash = ?",
+        (removed_at, benchmark_hash),
+    )
+
+
+def upsert_principle_meta(
+    conn: sqlite3.Connection,
+    principle_id: str,
+    updated_at: int,
+    *,
+    delta: str | None = None,
+    promoted: int | None = None,
+) -> None:
+    conn.execute(
+        """
+        INSERT INTO principle_meta(principle_id, delta, promoted, updated_at)
+        VALUES(?, ?, ?, ?)
+        ON CONFLICT(principle_id) DO UPDATE SET
+            delta    = COALESCE(excluded.delta,    principle_meta.delta),
+            promoted = COALESCE(excluded.promoted, principle_meta.promoted),
+            updated_at = excluded.updated_at
+        """,
+        (principle_id, delta, promoted, updated_at),
+    )
+
+
+def insert_mint(conn: sqlite3.Connection, **row) -> None:
+    conn.execute(
+        """
+        INSERT INTO mints(principle_id, benchmark_hash, a_k, a_kjb, remaining_after,
+                          block_number, timestamp)
+        VALUES(:principle_id, :benchmark_hash, :a_k, :a_kjb, :remaining_after,
+               :block_number, :timestamp)
+        """,
+        row,
+    )

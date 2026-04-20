@@ -176,6 +176,84 @@ def handle_bounty_paid(
     )
 
 
+# ---- PWMMinting: principle_id <-> benchmark_hash linkage + emissions ----
+
+def handle_benchmark_registered(
+    conn: sqlite3.Connection, args: dict[str, Any], ctx: EventContext
+) -> None:
+    """PWMMinting.BenchmarkRegistered(principleId, benchmarkHash, rho).
+
+    Canonical on-chain link from benchmark hash to its owning principle.
+    """
+    db.upsert_benchmark_meta(
+        conn,
+        benchmark_hash=to_hex(args["benchmarkHash"]),
+        principle_id=str(int(args["principleId"])),
+        rho=str(int(args["rho"])),
+        registered_at=ctx.timestamp,
+    )
+
+
+def handle_benchmark_rho_updated(
+    conn: sqlite3.Connection, args: dict[str, Any], ctx: EventContext
+) -> None:
+    db.set_benchmark_rho(
+        conn,
+        benchmark_hash=to_hex(args["benchmarkHash"]),
+        rho=str(int(args["rho"])),
+    )
+
+
+def handle_benchmark_removed(
+    conn: sqlite3.Connection, args: dict[str, Any], ctx: EventContext
+) -> None:
+    db.mark_benchmark_removed(
+        conn,
+        benchmark_hash=to_hex(args["benchmarkHash"]),
+        removed_at=ctx.timestamp,
+    )
+
+
+def handle_delta_set(
+    conn: sqlite3.Connection, args: dict[str, Any], ctx: EventContext
+) -> None:
+    """PWMMinting.DeltaSet(principleId, delta)."""
+    db.upsert_principle_meta(
+        conn,
+        principle_id=str(int(args["principleId"])),
+        updated_at=ctx.timestamp,
+        delta=str(int(args["delta"])),
+    )
+
+
+def handle_promotion_set(
+    conn: sqlite3.Connection, args: dict[str, Any], ctx: EventContext
+) -> None:
+    """PWMMinting.PromotionSet(principleId, promoted)."""
+    db.upsert_principle_meta(
+        conn,
+        principle_id=str(int(args["principleId"])),
+        updated_at=ctx.timestamp,
+        promoted=1 if bool(args["promoted"]) else 0,
+    )
+
+
+def handle_minted(
+    conn: sqlite3.Connection, args: dict[str, Any], ctx: EventContext
+) -> None:
+    """PWMMinting.Minted(principleId, benchmarkHash, A_k, A_kjb, remainingAfter)."""
+    db.insert_mint(
+        conn,
+        principle_id=str(int(args["principleId"])),
+        benchmark_hash=to_hex(args["benchmarkHash"]),
+        a_k=str(int(args["A_k"])),
+        a_kjb=str(int(args["A_kjb"])),
+        remaining_after=str(int(args["remainingAfter"])),
+        block_number=ctx.block_number,
+        timestamp=ctx.timestamp,
+    )
+
+
 # Lookup by (contract_name, event_name) — used by main.py.
 HANDLERS = {
     ("PWMRegistry", "ArtifactRegistered"): handle_artifact_registered,
@@ -188,4 +266,10 @@ HANDLERS = {
     ("PWMReward", "PoolSeeded"): handle_pool_seeded,
     ("PWMTreasury", "FundsReceived"): handle_funds_received,
     ("PWMTreasury", "BountyPaid"): handle_bounty_paid,
+    ("PWMMinting", "BenchmarkRegistered"): handle_benchmark_registered,
+    ("PWMMinting", "BenchmarkRhoUpdated"): handle_benchmark_rho_updated,
+    ("PWMMinting", "BenchmarkRemoved"): handle_benchmark_removed,
+    ("PWMMinting", "DeltaSet"): handle_delta_set,
+    ("PWMMinting", "PromotionSet"): handle_promotion_set,
+    ("PWMMinting", "Minted"): handle_minted,
 }

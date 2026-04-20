@@ -133,6 +133,56 @@ def test_pool_and_treasury(conn):
     assert treas["n"] == 2
 
 
+def test_minting_benchmark_registration_and_rho(conn):
+    bench = b"\xaa" * 32
+    handlers.handle_benchmark_registered(
+        conn, {"principleId": 3, "benchmarkHash": bench, "rho": 1}, _ctx(block=50, ts=1700)
+    )
+    row = conn.execute("SELECT * FROM benchmark_meta").fetchone()
+    assert row["principle_id"] == "3"
+    assert row["rho"] == "1"
+    assert row["removed_at"] is None
+
+    handlers.handle_benchmark_rho_updated(
+        conn, {"principleId": 3, "benchmarkHash": bench, "rho": 2}, _ctx()
+    )
+    assert conn.execute("SELECT rho FROM benchmark_meta").fetchone()["rho"] == "2"
+
+    handlers.handle_benchmark_removed(
+        conn, {"principleId": 3, "benchmarkHash": bench}, _ctx(ts=1800)
+    )
+    assert conn.execute("SELECT removed_at FROM benchmark_meta").fetchone()["removed_at"] == 1800
+
+
+def test_minting_delta_and_promotion(conn):
+    handlers.handle_delta_set(conn, {"principleId": 7, "delta": 3}, _ctx())
+    handlers.handle_promotion_set(conn, {"principleId": 7, "promoted": True}, _ctx())
+    row = conn.execute("SELECT * FROM principle_meta WHERE principle_id = '7'").fetchone()
+    assert row["delta"] == "3"
+    assert row["promoted"] == 1
+
+
+def test_minted_insert(conn):
+    handlers.handle_minted(
+        conn,
+        {"principleId": 3, "benchmarkHash": b"\xbb" * 32,
+         "A_k": 10**18, "A_kjb": 5 * 10**17, "remainingAfter": 42},
+        _ctx(block=60),
+    )
+    r = conn.execute("SELECT * FROM mints").fetchone()
+    assert r["a_k"] == str(10**18)
+    assert r["remaining_after"] == "42"
+
+
+def test_handlers_cover_minting_events():
+    expected = {
+        "BenchmarkRegistered", "BenchmarkRhoUpdated", "BenchmarkRemoved",
+        "DeltaSet", "PromotionSet", "Minted",
+    }
+    actual = {event for (contract, event) in handlers.HANDLERS if contract == "PWMMinting"}
+    assert expected <= actual
+
+
 def test_schema_is_idempotent(tmp_path):
     c = db.connect(tmp_path / "x.db")
     db.init_db(c)

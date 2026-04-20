@@ -50,6 +50,15 @@ export type PrincipleDetail = {
   principle: any;
   specs: Array<{ artifact_id: string; title: string; spec_type: string; d_spec?: number }>;
   treasury_balance_wei: string | null;
+  registered_benchmarks: Array<{
+    benchmark_hash: string;
+    principle_id: string;
+    rho: string;
+    registered_at: number;
+    removed_at: number | null;
+  }>;
+  chain_meta: { principle_id: string; delta: string | null; promoted: number | null; updated_at: number } | null;
+  total_minted_wei: string;
 };
 
 export type BenchmarkSummary = {

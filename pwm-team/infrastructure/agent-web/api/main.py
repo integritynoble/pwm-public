@@ -135,15 +135,23 @@ def principle_detail(principle_id: str):
     specs = [genesis.summarize_spec(s) for s in genesis.specs_for_principle(principle_id)]
     conn = store.get_conn()
     try:
-        # Treasury balance keyed by numeric principle index if available.
-        numeric = "".join(ch for ch in principle_id if ch.isdigit())
-        treasury = store.treasury_balance(conn, numeric) if numeric else None
+        # PWMMinting indexes principles by unpadded numeric id (e.g. "3" not "003").
+        # artifact_id looks like "L1-003" — take the part after the final "-".
+        tail = principle_id.rsplit("-", 1)[-1]
+        numeric = tail.lstrip("0") or "0"
+        treasury = store.treasury_balance(conn, numeric)
+        registered = store.benchmarks_for_principle(conn, numeric)
+        meta = store.principle_meta(conn, numeric)
+        total_minted = store.total_minted_for_principle(conn, numeric)
     finally:
         conn.close()
     return _cached({
         "principle": p,
         "specs": specs,
         "treasury_balance_wei": treasury,
+        "registered_benchmarks": registered,
+        "chain_meta": meta,
+        "total_minted_wei": total_minted,
     })
 
 
@@ -152,9 +160,13 @@ def benchmarks_list():
     conn = store.get_conn()
     try:
         chain_benchmarks = store.artifacts_by_layer(conn, 3)
-        # Attach current pool balance per benchmark.
+        # Attach pool balance + minting linkage per benchmark.
         for b in chain_benchmarks:
             b["pool_balance_wei"] = store.pool_balance(conn, b["hash"])
+            meta = store.benchmark_meta(conn, b["hash"])
+            b["principle_id"] = meta["principle_id"] if meta else None
+            b["rho"] = meta["rho"] if meta else None
+            b["registered"] = bool(meta and meta["removed_at"] is None)
     finally:
         conn.close()
     return _cached({

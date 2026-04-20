@@ -101,12 +101,56 @@ export default async function PrincipleDetail({
         )}
       </section>
 
-      <section className="pwm-card">
-        <h2 className="text-lg font-semibold mb-2">Treasury (T_k)</h2>
-        <p className="text-sm">
-          Balance: <span className="font-mono">{weiToPwm(data.treasury_balance_wei)} PWM</span>
-        </p>
+      <section className="grid md:grid-cols-2 gap-4">
+        <div className="pwm-card">
+          <h2 className="text-lg font-semibold mb-2">Treasury (T_k)</h2>
+          <p className="text-sm">
+            Balance: <span className="font-mono">{weiToPwm(data.treasury_balance_wei)} PWM</span>
+          </p>
+        </div>
+        <div className="pwm-card">
+          <h2 className="text-lg font-semibold mb-2">Minting</h2>
+          <p className="text-sm">
+            Total minted: <span className="font-mono">{weiToPwm(data.total_minted_wei)} PWM</span>
+          </p>
+          {data.chain_meta?.delta && (
+            <p className="text-sm mt-1">
+              On-chain δ: <span className="font-mono">{data.chain_meta.delta}</span>
+              {data.chain_meta.promoted === 1 && (
+                <span className="pwm-pill ml-2 !text-emerald-300">promoted</span>
+              )}
+            </p>
+          )}
+        </div>
       </section>
+
+      {data.registered_benchmarks?.length > 0 && (
+        <section>
+          <h2 className="text-lg font-semibold mb-3">Registered benchmarks (on-chain)</h2>
+          <div className="pwm-card overflow-x-auto">
+            <table className="pwm-table">
+              <thead>
+                <tr><th>Hash</th><th>ρ</th><th>Registered</th></tr>
+              </thead>
+              <tbody>
+                {data.registered_benchmarks.map((b) => (
+                  <tr key={b.benchmark_hash}>
+                    <td className="font-mono">
+                      <a className="pwm-link" href={`/benchmarks/${b.benchmark_hash}`}>
+                        {b.benchmark_hash.slice(0, 10)}…{b.benchmark_hash.slice(-6)}
+                      </a>
+                    </td>
+                    <td>{b.rho}</td>
+                    <td className="text-xs text-pwm-muted">
+                      {new Date(b.registered_at * 1000).toISOString().split('T')[0]}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      )}
     </div>
   );
 }

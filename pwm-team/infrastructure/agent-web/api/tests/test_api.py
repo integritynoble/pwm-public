@@ -69,6 +69,17 @@ def seeded_env(tmp_path, monkeypatch):
     idx_handlers.handle_funds_received(
         conn, {"principleId": 3, "amount": 10**18, "newBalance": 10**18}, ctx
     )
+    # Canonical principle_id ↔ benchmark linkage from PWMMinting.
+    idx_handlers.handle_benchmark_registered(
+        conn, {"principleId": 1, "benchmarkHash": bench_hash, "rho": 1}, ctx
+    )
+    idx_handlers.handle_delta_set(conn, {"principleId": 1, "delta": 2}, ctx)
+    idx_handlers.handle_minted(
+        conn,
+        {"principleId": 1, "benchmarkHash": bench_hash,
+         "A_k": 3 * 10**18, "A_kjb": 10**18, "remainingAfter": 100},
+        ctx,
+    )
     conn.commit()
     conn.close()
 
@@ -155,6 +166,11 @@ def test_principle_detail_found(seeded_env):
     body = r.json()
     assert body["principle"]["title"] == "Test Principle"
     assert len(body["specs"]) == 1
+    # PWMMinting-derived fields make it through:
+    assert len(body["registered_benchmarks"]) == 1
+    assert body["registered_benchmarks"][0]["rho"] == "1"
+    assert body["chain_meta"]["delta"] == "2"
+    assert body["total_minted_wei"] == str(3 * 10**18)
 
 
 def test_principle_detail_missing(seeded_env):
@@ -169,6 +185,17 @@ def test_benchmarks_list(seeded_env):
     body = r.json()
     assert body["genesis"][0]["artifact_id"] == "L3-001"
     assert body["chain"][0]["layer"] == 3
+    # Minting linkage surfaces on chain entries:
+    assert body["chain"][0]["principle_id"] == "1"
+    assert body["chain"][0]["rho"] == "1"
+    assert body["chain"][0]["registered"] is True
+
+
+def test_health_counts_include_minting(seeded_env):
+    client, _ = seeded_env
+    body = client.get("/api/health").json()
+    assert body["counts"]["registered_benchmarks"] == 1
+    assert body["counts"]["mints"] == 1
 
 
 def test_pools(seeded_env):

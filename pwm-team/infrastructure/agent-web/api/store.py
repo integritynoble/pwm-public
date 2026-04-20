@@ -125,4 +125,43 @@ def counts(conn: sqlite3.Connection) -> dict:
         "benchmarks": c("SELECT COUNT(*) FROM artifacts WHERE layer = 3"),
         "certificates": c("SELECT COUNT(*) FROM certificates"),
         "draws": c("SELECT COUNT(*) FROM draws"),
+        "registered_benchmarks": c(
+            "SELECT COUNT(*) FROM benchmark_meta WHERE removed_at IS NULL"
+        ),
+        "mints": c("SELECT COUNT(*) FROM mints"),
     }
+
+
+# ---- PWMMinting-side queries ----
+
+def benchmark_meta(conn: sqlite3.Connection, benchmark_hash: str) -> dict | None:
+    r = conn.execute(
+        "SELECT * FROM benchmark_meta WHERE benchmark_hash = ?",
+        (benchmark_hash.lower(),),
+    ).fetchone()
+    return dict(r) if r else None
+
+
+def benchmarks_for_principle(conn: sqlite3.Connection, principle_id: str) -> list[dict]:
+    rows = conn.execute(
+        "SELECT * FROM benchmark_meta WHERE principle_id = ? AND removed_at IS NULL "
+        "ORDER BY registered_at DESC",
+        (principle_id,),
+    ).fetchall()
+    return [dict(r) for r in rows]
+
+
+def principle_meta(conn: sqlite3.Connection, principle_id: str) -> dict | None:
+    r = conn.execute(
+        "SELECT * FROM principle_meta WHERE principle_id = ?",
+        (principle_id,),
+    ).fetchone()
+    return dict(r) if r else None
+
+
+def total_minted_for_principle(conn: sqlite3.Connection, principle_id: str) -> str:
+    r = conn.execute(
+        "SELECT COALESCE(SUM(CAST(a_k AS INTEGER)), 0) FROM mints WHERE principle_id = ?",
+        (principle_id,),
+    ).fetchone()
+    return str(int(r[0])) if r else "0"

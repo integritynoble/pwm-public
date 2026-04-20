@@ -43,7 +43,7 @@ log = logging.getLogger("pwm-indexer")
 
 
 # Contracts that emit the events we care about.
-CONTRACTS = ("PWMRegistry", "PWMCertificate", "PWMReward", "PWMTreasury")
+CONTRACTS = ("PWMRegistry", "PWMCertificate", "PWMReward", "PWMTreasury", "PWMMinting")
 
 
 class Indexer:
