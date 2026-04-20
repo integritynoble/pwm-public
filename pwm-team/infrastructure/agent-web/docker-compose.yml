@@ -1,0 +1,62 @@
+# PWM Web Explorer — one-command reference deployment.
+#
+#   PWM_RPC_URL=https://rpc.sepolia.org PWM_NETWORK=testnet docker-compose up
+#
+# Compose wires three services:
+#   * indexer: watches Sepolia and writes to a shared SQLite volume.
+#   * api:     reads the indexer DB + genesis JSONs, serves /api/*.
+#   * frontend: Next.js SSR, fetches from the api service by its internal DNS name.
+services:
+  indexer:
+    build:
+      context: ./indexer
+    environment:
+      PWM_NETWORK: ${PWM_NETWORK:-testnet}
+      PWM_RPC_URL: ${PWM_RPC_URL:-https://rpc.sepolia.org}
+      PWM_DB: /data/pwm_index.db
+      PWM_ABI_DIR: /coord/contracts_abi
+      PWM_ADDRESSES: /coord/addresses.json
+      PWM_POLL_SECONDS: "12"
+    volumes:
+      - pwm_data:/data
+      # Mount the shared coordination interfaces (ABIs + addresses) read-only.
+      - ../../coordination/agent-coord/interfaces:/coord:ro
+    restart: unless-stopped
+
+  api:
+    build:
+      context: .
+      dockerfile: api/Dockerfile
+    environment:
+      PWM_DB: /data/pwm_index.db
+      PWM_NETWORK: ${PWM_NETWORK:-testnet}
+      PWM_ADDRESSES: /coord/addresses.json
+      # Genesis JSONs + bounty specs are read directly from the repo.
+      PWM_GENESIS_DIR: /repo/pwm_product/genesis
+      PWM_BOUNTIES_DIR: /coord/bounties
+      PWM_CACHE_SECONDS: "60"
+    volumes:
+      - pwm_data:/data:ro
+      - ../../coordination/agent-coord/interfaces:/coord:ro
+      - ../../:/repo:ro
+    ports:
+      - "8000:8000"
+    depends_on:
+      - indexer
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: ./frontend
+    environment:
+      # Internal DNS: service-to-service traffic stays on the docker bridge.
+      PWM_API_URL: http://api:8000
+      NODE_ENV: production
+    ports:
+      - "3000:3000"
+    depends_on:
+      - api
+    restart: unless-stopped
+
+volumes:
+  pwm_data:

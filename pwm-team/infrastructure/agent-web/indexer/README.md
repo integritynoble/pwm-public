@@ -1,4 +1,8 @@
 # PWM Event Indexer
-Subscribes to PWMRegistry, PWMCertificate, PWMReward events.
-Stores indexed data in local DB. Updates within ≤5 min of on-chain event.
-TODO: implement per agent-web/CLAUDE.md
+
+`web3.py` + SQLite. Subscribes to `PWMRegistry`, `PWMCertificate`, `PWMReward`,
+and `PWMTreasury` events; backfills from the deployment block and then polls
+at 12 s intervals.
+
+See the top-level [README](../README.md) for the full data flow. Run from
+`infrastructure/agent-web/` with `PYTHONPATH=. python -m indexer.main`.

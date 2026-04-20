@@ -1,0 +1,13 @@
+# Indexer local DB (built at runtime from on-chain events).
+indexer/pwm_index.db
+indexer/pwm_index.db-*
+__pycache__/
+*.pyc
+*.pyo
+
+# Frontend build output is in frontend/.gitignore.
+
+# Editor / OS junk.
+.DS_Store
+.idea/
+.vscode/
