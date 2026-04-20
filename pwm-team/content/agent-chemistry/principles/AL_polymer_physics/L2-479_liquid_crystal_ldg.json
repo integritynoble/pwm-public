@@ -45,7 +45,7 @@
       "director_angular_error_deg",
       "topology_classification_accuracy"
     ],
-    "epsilon_fn": "0.012 + 0.01*abs(T_over_Tc - 0.98) + 0.005*log10(anchoring_W_error)"
+    "epsilon_fn": "0.012 + 0.01*abs(T_over_Tc - 0.98) + 0.005*abs(log10(anchoring_W_J_m2 / 1e-4))"
   },
   "protocol_fields": {
     "input_format": {
