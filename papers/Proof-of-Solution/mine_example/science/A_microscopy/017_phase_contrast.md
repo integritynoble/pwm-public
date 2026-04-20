@@ -2,6 +2,7 @@
 
 **Principle #17: Phase Contrast Microscopy**
 Domain: Microscopy | Difficulty: Textbook (delta=1) | Carrier: Photon
+Verification: draft — base-copy from pilot; needs physics + numerics + cross-domain verifier sign-off
 
 ---
 

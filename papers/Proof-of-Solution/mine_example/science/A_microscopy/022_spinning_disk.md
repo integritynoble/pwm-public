@@ -2,6 +2,7 @@
 
 **Principle #22: Spinning-Disk Confocal Microscopy**
 Domain: Microscopy | Difficulty: Standard (delta=2) | Carrier: Photon
+Verification: draft — base-copy from pilot; needs physics + numerics + cross-domain verifier sign-off
 
 ---
 
