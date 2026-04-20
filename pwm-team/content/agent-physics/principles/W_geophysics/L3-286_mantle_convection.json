@@ -1,0 +1,264 @@
+{
+  "artifact_id": "L3-286",
+  "layer": "L3",
+  "parent_l2": "L2-286",
+  "parent_l1": "L1-286",
+  "title": "Mantle Convection \u2014 high-Ra thermal convection Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "canonical Geophysics dataset for this principle",
+    "secondary": "simulated forward model at declared Omega",
+    "construction_method": "parametric forward synthesis + declared noise model",
+    "num_dev_instances_per_tier": 20,
+    "holdout_instances_per_tier": 10
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "H": 128,
+        "W": 128,
+        "Z": 128,
+        "N_times": 100,
+        "Ra": 10000000.0,
+        "SNR_dB": 25.0,
+        "rheology_error": 0.0,
+        "viscosity_contrast_error": 0.0,
+        "bc_error": 0.0,
+        "time_history_unknown": 0.0
+      },
+      "epsilon": 15.0,
+      "d_ibench": 0.14,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "CitcomS",
+          "metric": "flow_rel_error_percent",
+          "score": 16.0,
+          "Q": 0.88
+        },
+        {
+          "name": "ASPECT",
+          "metric": "flow_rel_error_percent",
+          "score": 15.5,
+          "Q": 0.88
+        },
+        {
+          "name": "StagYY",
+          "metric": "flow_rel_error_percent",
+          "score": 15.8,
+          "Q": 0.88
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "H": 128,
+        "W": 128,
+        "Z": 128,
+        "N_times": 100,
+        "Ra": 10000000.0,
+        "SNR_dB": 20.0,
+        "rheology_error": 0.075,
+        "viscosity_contrast_error": 0.125,
+        "bc_error": 0.075,
+        "time_history_unknown": 0.125
+      },
+      "epsilon": 21.0,
+      "d_ibench": 0.28,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "CitcomS",
+          "metric": "flow_rel_error_percent",
+          "score": 24.0,
+          "Q": 0.68
+        },
+        {
+          "name": "ASPECT",
+          "metric": "flow_rel_error_percent",
+          "score": 23.25,
+          "Q": 0.68
+        },
+        {
+          "name": "StagYY",
+          "metric": "flow_rel_error_percent",
+          "score": 23.7,
+          "Q": 0.68
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "H": 198,
+        "W": 198,
+        "Z": 198,
+        "N_times": 100,
+        "Ra": 10000000.0,
+        "SNR_dB": 5.0,
+        "rheology_error": 0.165,
+        "viscosity_contrast_error": 0.275,
+        "bc_error": 0.165,
+        "time_history_unknown": 0.275
+      },
+      "epsilon": 33.0,
+      "d_ibench": 0.48,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "CitcomS",
+          "metric": "flow_rel_error_percent",
+          "score": 33.6,
+          "Q": 0.48
+        },
+        {
+          "name": "ASPECT",
+          "metric": "flow_rel_error_percent",
+          "score": 32.55,
+          "Q": 0.48
+        },
+        {
+          "name": "StagYY",
+          "metric": "flow_rel_error_percent",
+          "score": 33.18,
+          "Q": 0.48
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "H": 256,
+        "W": 256,
+        "Z": 256,
+        "N_times": 100,
+        "Ra": 10000000.0,
+        "SNR_dB": -10,
+        "rheology_error": 0.3,
+        "viscosity_contrast_error": 0.5,
+        "bc_error": 0.3,
+        "time_history_unknown": 0.5
+      },
+      "epsilon": 52.5,
+      "d_ibench": 0.72,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "CitcomS",
+          "metric": "flow_rel_error_percent",
+          "score": 48.0,
+          "Q": 0.28
+        },
+        {
+          "name": "ASPECT",
+          "metric": "flow_rel_error_percent",
+          "score": 46.5,
+          "Q": 0.28
+        },
+        {
+          "name": "StagYY",
+          "metric": "flow_rel_error_percent",
+          "score": 47.4,
+          "Q": 0.28
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "full parametric sweep over ['H', 'W', 'Z', 'N_times', 'Ra']",
+      "construction_method": "uniform Omega sampling within declared bounds",
+      "num_dev_instances": 200,
+      "num_holdout_instances": 100
+    },
+    "tracks": {
+      "track_A_stratified_worst_case": {
+        "samples_per_stratum": 5,
+        "pass_condition": "min_i(metric_i) beats epsilon_fn at Omega_centroid across all strata"
+      },
+      "track_B_uniform_median": {
+        "num_samples": 50,
+        "pass_condition": "median metric beats epsilon_fn at Omega_median"
+      },
+      "track_C_mismatch_degradation": {
+        "sweep_points": [
+          0.0,
+          0.25,
+          0.5,
+          0.75,
+          1.0
+        ],
+        "scenes_per_point": 10,
+        "degradation_score": "mean Q_norm across sweep"
+      }
+    },
+    "baselines": [
+      {
+        "name": "CitcomS",
+        "overall_Q": 0.7
+      },
+      {
+        "name": "ASPECT",
+        "overall_Q": 0.6
+      },
+      {
+        "name": "StagYY",
+        "overall_Q": 0.5
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind Omega corner under max mismatch.",
+  "anti_overfitting_mechanisms": {
+    "M1_random_instantiation": "generator/instantiate.py uses G(SHA256(h_sub || k)) seeded per submission.",
+    "M2_convergence_scoring": "convergence/check_convergence.py verifies declared q-rate across mesh refinements.",
+    "M3_worst_case_eval": "scoring/worst_case.py returns min score over 20 fixed dev scenes per tier.",
+    "M4_community_adversarial": "adversarial submissions eligible under anti-overfitting bounty.",
+    "M5_method_sig_diversity": "baselines span classical (L+O), learned (L+N), and iterative (I+O) method signatures.",
+    "M6_gate_checks": "S1-S4 gate checks embedded with thresholds.yaml."
+  },
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

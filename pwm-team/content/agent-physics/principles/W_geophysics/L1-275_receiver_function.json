@@ -1,0 +1,170 @@
+{
+  "artifact_id": "L1-275",
+  "layer": "L1",
+  "principle_number": "275",
+  "title": "Receiver Function \u2014 teleseismic crust imaging",
+  "domain": "Geophysics",
+  "sub_domain": "P-to-S converted phase receiver function",
+  "source_file": "W_geophysics/275_receiver_function.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Receiver Function \u2014 teleseismic crust imaging forward model.",
+    "forward_model": "RF(t) = Z_r(t) deconvolved by Z_v(t); peaks at P-to-S converters at depth",
+    "world_state_x": "1D crust+mantle velocity profile Vp(z), Vs(z)",
+    "observation_y": "vertical + radial/transverse broadband seismograms",
+    "physical_parameters_theta": [
+      "N_events",
+      "N_samples",
+      "SNR_dB",
+      "p_slowness_error",
+      "bandwidth_error",
+      "bg_noise",
+      "multiples_contamination"
+    ]
+  },
+  "G": {
+    "dag": "L.deconvolve -> L.stack_back_azimuth -> L.invert_layers -> int.temporal",
+    "vertices": [
+      "L.deconvolve",
+      "L.stack_back_azimuth",
+      "L.invert_layers",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.deconvolve -> L.stack_back_azimuth",
+      "L.stack_back_azimuth -> L.invert_layers",
+      "L.invert_layers -> int.temporal"
+    ],
+    "L_DAG": 3.3,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 500,
+    "condition_number_effective": 25,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Iterative-deconv, H-k-stacking, RF-Net",
+    "convergence_rate_q": 1.5,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "acoustic",
+    "sensing_mechanism": "broadband_seismometer",
+    "integration_axis": "temporal",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "crust_velocity_discontinuities",
+    "primitives": [
+      "L.deconvolve",
+      "L.stack_back_azimuth",
+      "L.invert_layers",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "p_slowness_error",
+    "bandwidth_error",
+    "bg_noise",
+    "multiples_contamination"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "receiver_function",
+      "forward_operator": "receiver_function_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_events": 50,
+        "N_samples": 1024,
+        "SNR_dB": 25,
+        "p_slowness_error": 0.0,
+        "bandwidth_error": 0.0,
+        "bg_noise": 0.0,
+        "multiples_contamination": 0.0
+      },
+      "epsilon_fn_center": "22.0"
+    },
+    "allowed_forward_operators": [
+      "receiver_function_forward"
+    ],
+    "allowed_problem_classes": [
+      "receiver_function"
+    ],
+    "allowed_omega_dimensions": [
+      "N_events",
+      "N_samples",
+      "SNR_dB",
+      "p_slowness_error",
+      "bandwidth_error",
+      "bg_noise",
+      "multiples_contamination",
+      "p_slowness_error",
+      "bandwidth_error",
+      "bg_noise",
+      "multiples_contamination"
+    ],
+    "omega_bounds": {
+      "N_events": [
+        5,
+        1000
+      ],
+      "N_samples": [
+        128,
+        65536
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "p_slowness_error": [
+        0.0,
+        0.05
+      ],
+      "bandwidth_error": [
+        0.0,
+        0.3
+      ],
+      "bg_noise": [
+        0.0,
+        0.5
+      ],
+      "multiples_contamination": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

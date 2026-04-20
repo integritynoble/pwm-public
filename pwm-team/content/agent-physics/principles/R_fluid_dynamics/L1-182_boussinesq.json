@@ -1,0 +1,182 @@
+{
+  "artifact_id": "L1-182",
+  "layer": "L1",
+  "principle_number": "182",
+  "title": "Boussinesq Approximation \u2014 buoyant flow",
+  "domain": "Fluid Dynamics",
+  "sub_domain": "Boussinesq buoyancy-driven convection",
+  "source_file": "R_fluid_dynamics/182_boussinesq.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Boussinesq Approximation \u2014 buoyant flow forward model.",
+    "forward_model": "rho^0 du/dt + rho^0 u.grad u = -grad p + mu Laplacian u - rho^0 beta (T-T_0) g; energy; div u = 0",
+    "world_state_x": "velocity u, temperature T fields in buoyant flow",
+    "observation_y": "PIV + thermocouples",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "Z",
+      "N_times",
+      "Ra",
+      "SNR_dB",
+      "beta_error",
+      "Pr_error",
+      "bc_error"
+    ]
+  },
+  "G": {
+    "dag": "L.momentum_boussinesq -> L.continuity -> L.thermal_advection -> int.temporal",
+    "vertices": [
+      "L.momentum_boussinesq",
+      "L.continuity",
+      "L.thermal_advection",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.momentum_boussinesq -> L.continuity",
+      "L.continuity -> L.thermal_advection",
+      "L.thermal_advection -> int.temporal"
+    ],
+    "L_DAG": 3.3,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 400,
+    "condition_number_effective": 20,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Boussinesq-FEM, Boussinesq-SEM, Bouss-NN",
+    "convergence_rate_q": 1.5,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "mechanical",
+    "sensing_mechanism": "piv_thermocouples",
+    "integration_axis": "temporal",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "boussinesq_flow_T",
+    "primitives": [
+      "L.momentum_boussinesq",
+      "L.continuity",
+      "L.thermal_advection",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "beta_error",
+    "Pr_error",
+    "bc_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "boussinesq",
+      "forward_operator": "boussinesq_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 256,
+        "W": 256,
+        "Z": 128,
+        "N_times": 500,
+        "Ra": 1000000.0,
+        "SNR_dB": 30,
+        "beta_error": 0.0,
+        "Pr_error": 0.0,
+        "bc_error": 0.0
+      },
+      "epsilon_fn_center": "21.0"
+    },
+    "allowed_forward_operators": [
+      "boussinesq_forward"
+    ],
+    "allowed_problem_classes": [
+      "boussinesq"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "Z",
+      "N_times",
+      "Ra",
+      "SNR_dB",
+      "beta_error",
+      "Pr_error",
+      "bc_error",
+      "beta_error",
+      "Pr_error",
+      "bc_error"
+    ],
+    "omega_bounds": {
+      "H": [
+        32,
+        2048
+      ],
+      "W": [
+        32,
+        2048
+      ],
+      "Z": [
+        16,
+        1024
+      ],
+      "N_times": [
+        50,
+        100000
+      ],
+      "Ra": [
+        1000.0,
+        1000000000000.0
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "beta_error": [
+        0.0,
+        0.1
+      ],
+      "Pr_error": [
+        0.0,
+        0.1
+      ],
+      "bc_error": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

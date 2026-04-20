@@ -1,0 +1,191 @@
+{
+  "artifact_id": "L1-258",
+  "layer": "L1",
+  "principle_number": "258",
+  "title": "Helmholtz Equation \u2014 frequency-domain acoustic scattering / interior field",
+  "domain": "Acoustics",
+  "sub_domain": "Frequency-domain acoustic inverse scattering",
+  "source_file": "V_acoustics/258_helmholtz_acoustic.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Helmholtz Equation \u2014 frequency-domain acoustic scattering / interior field forward model.",
+    "forward_model": "(Laplacian + k^2(x)) p(x,omega) = s(x,omega), radiation BC at infinity",
+    "world_state_x": "complex pressure field p(x,omega) or wavenumber k^2(x) field in domain Omega_D",
+    "observation_y": "complex pressure at N_R receivers for N_F frequencies",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "N_receivers",
+      "N_freqs",
+      "k_mean",
+      "SNR_dB",
+      "k_error",
+      "geometry_error",
+      "impedance_BC_error",
+      "receiver_pos_error"
+    ]
+  },
+  "G": {
+    "dag": "L.source_injection -> L.helmholtz_solve -> S.record.receivers -> int.frequency",
+    "vertices": [
+      "L.source_injection",
+      "L.helmholtz_solve",
+      "S.record.receivers",
+      "int.frequency"
+    ],
+    "arcs": [
+      "L.source_injection -> L.helmholtz_solve",
+      "L.helmholtz_solve -> S.record.receivers",
+      "S.record.receivers -> int.frequency"
+    ],
+    "L_DAG": 3.3,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 1000,
+    "condition_number_effective": 50,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Born-approximation, MoM-Helmholtz, Helmholtz-UNet",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "acoustic",
+    "sensing_mechanism": "pressure_receivers",
+    "integration_axis": "frequency",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "complex_pressure_field_2D",
+    "primitives": [
+      "L.source_injection",
+      "L.helmholtz_solve",
+      "S.record.receivers",
+      "int.frequency"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "k_error",
+    "geometry_error",
+    "impedance_BC_error",
+    "receiver_pos_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "helmholtz",
+      "forward_operator": "helmholtz_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 256,
+        "W": 256,
+        "N_receivers": 32,
+        "N_freqs": 16,
+        "k_mean": 20,
+        "SNR_dB": 30,
+        "k_error": 0.0,
+        "geometry_error": 0.0,
+        "impedance_BC_error": 0.0,
+        "receiver_pos_error": 0.0
+      },
+      "epsilon_fn_center": "24.0"
+    },
+    "allowed_forward_operators": [
+      "helmholtz_forward"
+    ],
+    "allowed_problem_classes": [
+      "helmholtz"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "N_receivers",
+      "N_freqs",
+      "k_mean",
+      "SNR_dB",
+      "k_error",
+      "geometry_error",
+      "impedance_BC_error",
+      "receiver_pos_error",
+      "k_error",
+      "geometry_error",
+      "impedance_BC_error",
+      "receiver_pos_error"
+    ],
+    "omega_bounds": {
+      "H": [
+        64,
+        1024
+      ],
+      "W": [
+        64,
+        1024
+      ],
+      "N_receivers": [
+        8,
+        256
+      ],
+      "N_freqs": [
+        4,
+        128
+      ],
+      "k_mean": [
+        1,
+        200
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "k_error": [
+        0.0,
+        0.05
+      ],
+      "geometry_error": [
+        0.0,
+        0.05
+      ],
+      "impedance_BC_error": [
+        0.0,
+        0.3
+      ],
+      "receiver_pos_error": [
+        0.0,
+        0.02
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

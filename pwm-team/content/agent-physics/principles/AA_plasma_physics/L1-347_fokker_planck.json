@@ -1,0 +1,161 @@
+{
+  "artifact_id": "L1-347",
+  "layer": "L1",
+  "principle_number": "347",
+  "title": "Fokker-Planck \u2014 Coulomb-collision kinetic",
+  "domain": "Plasma Physics",
+  "sub_domain": "Plasma Coulomb collision operator",
+  "source_file": "AA_plasma_physics/347_fokker_planck.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Fokker-Planck \u2014 Coulomb-collision kinetic forward model.",
+    "forward_model": "df/dt|_coll = -div_v(A f - D grad_v f); A, D from Rosenbluth potentials h, g",
+    "world_state_x": "velocity-space distribution f(v,t) approaching Maxwellian",
+    "observation_y": "Thomson scattering spectrum / fast-ion D-alpha",
+    "physical_parameters_theta": [
+      "N_v",
+      "N_times",
+      "SNR_dB",
+      "log_lambda_error",
+      "mass_ratio_error",
+      "collision_freq_error"
+    ]
+  },
+  "G": {
+    "dag": "L.collision_operator -> L.drift_diffusion_v -> L.relaxation -> int.phase_space",
+    "vertices": [
+      "L.collision_operator",
+      "L.drift_diffusion_v",
+      "L.relaxation",
+      "int.phase_space"
+    ],
+    "arcs": [
+      "L.collision_operator -> L.drift_diffusion_v",
+      "L.drift_diffusion_v -> L.relaxation",
+      "L.relaxation -> int.phase_space"
+    ],
+    "L_DAG": 3.3,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 500,
+    "condition_number_effective": 25,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "CQL3D, NORSE, FP-Net",
+    "convergence_rate_q": 1.5,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "plasma",
+    "sensing_mechanism": "thomson_scattering_fast_diagnostics",
+    "integration_axis": "phase_space",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "distribution_f_with_collisions",
+    "primitives": [
+      "L.collision_operator",
+      "L.drift_diffusion_v",
+      "L.relaxation",
+      "int.phase_space"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "log_lambda_error",
+    "mass_ratio_error",
+    "collision_freq_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "fokker_planck",
+      "forward_operator": "fokker_planck_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_v": 128,
+        "N_times": 1000,
+        "SNR_dB": 25,
+        "log_lambda_error": 0.0,
+        "mass_ratio_error": 0.0,
+        "collision_freq_error": 0.0
+      },
+      "epsilon_fn_center": "22.0"
+    },
+    "allowed_forward_operators": [
+      "fokker_planck_forward"
+    ],
+    "allowed_problem_classes": [
+      "fokker_planck"
+    ],
+    "allowed_omega_dimensions": [
+      "N_v",
+      "N_times",
+      "SNR_dB",
+      "log_lambda_error",
+      "mass_ratio_error",
+      "collision_freq_error",
+      "log_lambda_error",
+      "mass_ratio_error",
+      "collision_freq_error"
+    ],
+    "omega_bounds": {
+      "N_v": [
+        16,
+        2048
+      ],
+      "N_times": [
+        50,
+        100000
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "log_lambda_error": [
+        0.0,
+        0.1
+      ],
+      "mass_ratio_error": [
+        0.0,
+        0.1
+      ],
+      "collision_freq_error": [
+        0.0,
+        0.2
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

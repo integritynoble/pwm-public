@@ -1,0 +1,175 @@
+{
+  "artifact_id": "L1-246",
+  "layer": "L1",
+  "principle_number": "246",
+  "title": "Holographic Reconstruction \u2014 wavefront from interference",
+  "domain": "Electromagnetics",
+  "sub_domain": "Digital holography reconstruction",
+  "source_file": "U_electromagnetics/246_holographic_recon.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Holographic Reconstruction \u2014 wavefront from interference forward model.",
+    "forward_model": "I = |O + R|^2; reconstruction via spatial filtering + Fresnel backpropagation",
+    "world_state_x": "complex object field O(x,y)",
+    "observation_y": "intensity hologram I(x,y) on CCD",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "lambda_nm",
+      "z_m",
+      "SNR_dB",
+      "ref_beam_tilt_error",
+      "z_focus_error",
+      "twin_image_error"
+    ]
+  },
+  "G": {
+    "dag": "L.interference -> L.fft_reconstruct -> L.demultiplex -> int.spatial",
+    "vertices": [
+      "L.interference",
+      "L.fft_reconstruct",
+      "L.demultiplex",
+      "int.spatial"
+    ],
+    "arcs": [
+      "L.interference -> L.fft_reconstruct",
+      "L.fft_reconstruct -> L.demultiplex",
+      "L.demultiplex -> int.spatial"
+    ],
+    "L_DAG": 3.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 240,
+    "condition_number_effective": 12,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Fresnel-BP, Phase-shift-holo, Holo-UNet",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "em",
+    "sensing_mechanism": "ccd",
+    "integration_axis": "spatial",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "complex_2D_field",
+    "primitives": [
+      "L.interference",
+      "L.fft_reconstruct",
+      "L.demultiplex",
+      "int.spatial"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "ref_beam_tilt_error",
+    "z_focus_error",
+    "twin_image_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "holo_recon",
+      "forward_operator": "holo_recon_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 1024,
+        "W": 1024,
+        "lambda_nm": 633,
+        "z_m": 0.1,
+        "SNR_dB": 30,
+        "ref_beam_tilt_error": 0.0,
+        "z_focus_error": 0.0,
+        "twin_image_error": 0.0
+      },
+      "epsilon_fn_center": "27.0"
+    },
+    "allowed_forward_operators": [
+      "holo_recon_forward"
+    ],
+    "allowed_problem_classes": [
+      "holo_recon"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "lambda_nm",
+      "z_m",
+      "SNR_dB",
+      "ref_beam_tilt_error",
+      "z_focus_error",
+      "twin_image_error",
+      "ref_beam_tilt_error",
+      "z_focus_error",
+      "twin_image_error"
+    ],
+    "omega_bounds": {
+      "H": [
+        128,
+        4096
+      ],
+      "W": [
+        128,
+        4096
+      ],
+      "lambda_nm": [
+        100,
+        10000
+      ],
+      "z_m": [
+        0.001,
+        10
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "ref_beam_tilt_error": [
+        0.0,
+        0.1
+      ],
+      "z_focus_error": [
+        0.0,
+        0.05
+      ],
+      "twin_image_error": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

@@ -1,0 +1,160 @@
+{
+  "artifact_id": "L2-264",
+  "layer": "L2",
+  "parent_l1": "L1-264",
+  "title": "Underwater Acoustics \u2014 Parabolic Equation (RAM) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "N_range": [
+        128,
+        8192
+      ],
+      "N_depth": [
+        64,
+        2048
+      ],
+      "freq_Hz": [
+        10,
+        2000
+      ],
+      "pade_order": [
+        1,
+        10
+      ],
+      "SNR_dB": [
+        -5,
+        40
+      ],
+      "ssp_error": [
+        0.0,
+        0.02
+      ],
+      "range_step_dr": [
+        0.0,
+        1.0
+      ],
+      "pade_order_truncation": [
+        0.0,
+        0.3
+      ],
+      "bottom_atten_error": [
+        0.0,
+        0.2
+      ]
+    },
+    "E": {
+      "forward": "dp/dr = i*k_0 * (sqrt(1 + X) - 1) * p, X = (1/k_0^2)(d^2/dz^2 + k^2(z,r) - k_0^2)",
+      "operator": "ram_pe_forward_mismatch",
+      "primitive_chain": "L.split_step_pe -> L.marching.range -> L.absorb_bottom -> int.range",
+      "inverse": "solve forward for declared state variable under Omega bounds"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR_dB",
+      "residual_norm"
+    ],
+    "epsilon_fn": "17.0 + 0.5*pade_order + 0.3*SNR_dB - 30.0*ssp_error - 15.0*bottom_atten_error"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "RAM-standard",
+        "method_sig": "L+O",
+        "expected_psnr": 22.5
+      },
+      {
+        "name": "WA-PE",
+        "method_sig": "L+O",
+        "expected_psnr": 23.0
+      },
+      {
+        "name": "RAM-NN",
+        "method_sig": "L+N",
+        "expected_psnr": 24.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_range": 1024,
+        "N_depth": 256,
+        "freq_Hz": 100,
+        "pade_order": 8,
+        "SNR_dB": 30,
+        "ssp_error": 0.0,
+        "range_step_dr": 0.0,
+        "pade_order_truncation": 0.0,
+        "bottom_atten_error": 0.0
+      },
+      "epsilon": 23.5
+    },
+    "tier_bounds": {
+      "N_range": [
+        128,
+        8192
+      ],
+      "N_depth": [
+        64,
+        2048
+      ],
+      "freq_Hz": [
+        10,
+        2000
+      ],
+      "pade_order": [
+        1,
+        10
+      ],
+      "SNR_dB": [
+        -5,
+        40
+      ],
+      "ssp_error": [
+        0.0,
+        0.02
+      ],
+      "range_step_dr": [
+        0.0,
+        1.0
+      ],
+      "pade_order_truncation": [
+        0.0,
+        0.3
+      ],
+      "bottom_atten_error": [
+        0.0,
+        0.2
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.48,
+  "d_spec_notes": "Distance computed from problem_class, forward_operator, carrier, integration_axis against neighboring specs; within same principle this spec is mismatch-only canonical and sits at the Omega centroid.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions are consistent across the DAG; forward operator maps state space to measurement space at declared shapes.",
+    "S2": "kappa_eff = 22 within tolerance after regularization; RIP-like or coercivity conditions satisfied over most of Omega.",
+    "S3": "Solvers converge at rate q=1.5 in well-posed regime; mismatch parameters degrade convergence but not divergence.",
+    "S4": "epsilon_fn evaluates across 10+ random Omega samples; hardness rule verified \u2014 no baseline passes everywhere."
+  },
+  "ipfs_cid": null
+}

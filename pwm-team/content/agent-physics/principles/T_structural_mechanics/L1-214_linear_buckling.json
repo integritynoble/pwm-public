@@ -1,0 +1,170 @@
+{
+  "artifact_id": "L1-214",
+  "layer": "L1",
+  "principle_number": "214",
+  "title": "Linear Buckling \u2014 eigenvalue stability analysis",
+  "domain": "Structural Mechanics",
+  "sub_domain": "Linear buckling load factor",
+  "source_file": "T_structural_mechanics/214_linear_buckling.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Linear Buckling \u2014 eigenvalue stability analysis forward model.",
+    "forward_model": "(K + lambda_cr K_G(u_0)) phi_cr = 0; smallest lambda_cr is buckling load factor",
+    "world_state_x": "critical load factor lambda_cr and buckling mode shape phi_cr",
+    "observation_y": "load-deflection test and observed buckling point",
+    "physical_parameters_theta": [
+      "N_DOF",
+      "N_modes",
+      "SNR_dB",
+      "geom_imperfect_error",
+      "material_error",
+      "bc_error",
+      "load_path_error"
+    ]
+  },
+  "G": {
+    "dag": "L.geom_stiffness -> L.eigenvalue -> L.critical_mode -> int.spatial",
+    "vertices": [
+      "L.geom_stiffness",
+      "L.eigenvalue",
+      "L.critical_mode",
+      "int.spatial"
+    ],
+    "arcs": [
+      "L.geom_stiffness -> L.eigenvalue",
+      "L.eigenvalue -> L.critical_mode",
+      "L.critical_mode -> int.spatial"
+    ],
+    "L_DAG": 3.2,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 400,
+    "condition_number_effective": 20,
+    "regime": "Sensitive to imperfections; Koiter analysis required for post-buckling."
+  },
+  "C": {
+    "solver_class": "Euler-formula, FEM-linear-buckle, Koiter-initial-post",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "mechanical",
+    "sensing_mechanism": "load_deflection",
+    "integration_axis": "spatial",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "buckling_load_factor_mode",
+    "primitives": [
+      "L.geom_stiffness",
+      "L.eigenvalue",
+      "L.critical_mode",
+      "int.spatial"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "geom_imperfect_error",
+    "material_error",
+    "bc_error",
+    "load_path_error"
+  ],
+  "error_metric": "lambda_cr_rel_error_percent",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "buckling",
+      "forward_operator": "buckling_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_DOF": 5000,
+        "N_modes": 10,
+        "SNR_dB": 30,
+        "geom_imperfect_error": 0.0,
+        "material_error": 0.0,
+        "bc_error": 0.0,
+        "load_path_error": 0.0
+      },
+      "epsilon_fn_center": "5.0"
+    },
+    "allowed_forward_operators": [
+      "buckling_forward"
+    ],
+    "allowed_problem_classes": [
+      "buckling"
+    ],
+    "allowed_omega_dimensions": [
+      "N_DOF",
+      "N_modes",
+      "SNR_dB",
+      "geom_imperfect_error",
+      "material_error",
+      "bc_error",
+      "load_path_error",
+      "geom_imperfect_error",
+      "material_error",
+      "bc_error",
+      "load_path_error"
+    ],
+    "omega_bounds": {
+      "N_DOF": [
+        100,
+        500000
+      ],
+      "N_modes": [
+        1,
+        50
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "geom_imperfect_error": [
+        0.0,
+        0.1
+      ],
+      "material_error": [
+        0.0,
+        0.1
+      ],
+      "bc_error": [
+        0.0,
+        0.2
+      ],
+      "load_path_error": [
+        0.0,
+        0.1
+      ]
+    },
+    "epsilon_bounds": {
+      "lambda_cr_rel": [
+        0.5,
+        50.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

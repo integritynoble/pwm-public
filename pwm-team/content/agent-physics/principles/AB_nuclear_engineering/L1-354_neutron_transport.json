@@ -1,0 +1,198 @@
+{
+  "artifact_id": "L1-354",
+  "layer": "L1",
+  "principle_number": "354",
+  "title": "Neutron Transport \u2014 linear Boltzmann equation",
+  "domain": "Nuclear Engineering",
+  "sub_domain": "Discrete-ordinates / SN neutron transport",
+  "source_file": "AB_nuclear_engineering/354_neutron_transport.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Neutron Transport \u2014 linear Boltzmann equation forward model.",
+    "forward_model": "Omega.grad psi + sigma_t psi = int sigma_s(E'->E, Omega'->Omega) psi dE' dOmega' + chi/(4pi) * int nu*sigma_f * phi dE'",
+    "world_state_x": "angular flux psi(r, Omega, E, t) in 6D phase space",
+    "observation_y": "fission chamber / foil activation / detector count rates at N_d positions",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "Z",
+      "N_energy_groups",
+      "N_angular_dir",
+      "N_detectors",
+      "SNR_dB",
+      "xs_data_error",
+      "source_spectrum_error",
+      "material_homo_error",
+      "boundary_albedo_error"
+    ]
+  },
+  "G": {
+    "dag": "L.streaming -> L.collision_scatter -> L.source_fission -> int.angular_energy",
+    "vertices": [
+      "L.streaming",
+      "L.collision_scatter",
+      "L.source_fission",
+      "int.angular_energy"
+    ],
+    "arcs": [
+      "L.streaming -> L.collision_scatter",
+      "L.collision_scatter -> L.source_fission",
+      "L.source_fission -> int.angular_energy"
+    ],
+    "L_DAG": 3.8,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 1200,
+    "condition_number_effective": 60,
+    "regime": "7D phase space (x, y, z, E, mu, phi, t); curse of dimensionality; ill-posed for sparse detector data."
+  },
+  "C": {
+    "solver_class": "SN-Denovo, MoC-OpenMOC, PN-legendre",
+    "convergence_rate_q": 1.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "neutron",
+    "sensing_mechanism": "flux_foils_detectors",
+    "integration_axis": "angular_energy",
+    "problem_class": "linear_inverse",
+    "noise_model": "poisson",
+    "solution_space": "angular_flux_phase_space",
+    "primitives": [
+      "L.streaming",
+      "L.collision_scatter",
+      "L.source_fission",
+      "int.angular_energy"
+    ]
+  },
+  "difficulty_delta": 10,
+  "difficulty_tier": "hard",
+  "mismatch_parameters": [
+    "xs_data_error",
+    "source_spectrum_error",
+    "material_homo_error",
+    "boundary_albedo_error"
+  ],
+  "error_metric": "flux_rel_error_percent",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "sn_transport",
+      "forward_operator": "sn_transport_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 64,
+        "W": 64,
+        "Z": 64,
+        "N_energy_groups": 47,
+        "N_angular_dir": 24,
+        "N_detectors": 16,
+        "SNR_dB": 25,
+        "xs_data_error": 0.0,
+        "source_spectrum_error": 0.0,
+        "material_homo_error": 0.0,
+        "boundary_albedo_error": 0.0
+      },
+      "epsilon_fn_center": "5.0"
+    },
+    "allowed_forward_operators": [
+      "sn_transport_forward"
+    ],
+    "allowed_problem_classes": [
+      "sn_transport"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "Z",
+      "N_energy_groups",
+      "N_angular_dir",
+      "N_detectors",
+      "SNR_dB",
+      "xs_data_error",
+      "source_spectrum_error",
+      "material_homo_error",
+      "boundary_albedo_error",
+      "xs_data_error",
+      "source_spectrum_error",
+      "material_homo_error",
+      "boundary_albedo_error"
+    ],
+    "omega_bounds": {
+      "H": [
+        16,
+        512
+      ],
+      "W": [
+        16,
+        512
+      ],
+      "Z": [
+        16,
+        512
+      ],
+      "N_energy_groups": [
+        1,
+        500
+      ],
+      "N_angular_dir": [
+        4,
+        288
+      ],
+      "N_detectors": [
+        4,
+        256
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "xs_data_error": [
+        0.0,
+        0.05
+      ],
+      "source_spectrum_error": [
+        0.0,
+        0.2
+      ],
+      "material_homo_error": [
+        0.0,
+        0.1
+      ],
+      "boundary_albedo_error": [
+        0.0,
+        0.2
+      ]
+    },
+    "epsilon_bounds": {
+      "flux_rel_error": [
+        1.0,
+        50.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

@@ -1,0 +1,191 @@
+{
+  "artifact_id": "L1-286",
+  "layer": "L1",
+  "principle_number": "286",
+  "title": "Mantle Convection \u2014 high-Ra thermal convection",
+  "domain": "Geophysics",
+  "sub_domain": "Extended Boussinesq mantle flow",
+  "source_file": "W_geophysics/286_mantle_convection.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Mantle Convection \u2014 high-Ra thermal convection forward model.",
+    "forward_model": "Stokes: -grad p + div(eta * eps_dot) = Ra*T*g; energy: dT/dt + u.grad T = Laplacian T + H",
+    "world_state_x": "mantle temperature T(x,t) + velocity u(x,t) + viscosity eta(T,p)",
+    "observation_y": "present-day seismic tomography + heat flux + plate velocities",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "Z",
+      "N_times",
+      "Ra",
+      "SNR_dB",
+      "rheology_error",
+      "viscosity_contrast_error",
+      "bc_error",
+      "time_history_unknown"
+    ]
+  },
+  "G": {
+    "dag": "L.stokes_infinite_prandtl -> L.energy -> L.rheology -> int.temporal",
+    "vertices": [
+      "L.stokes_infinite_prandtl",
+      "L.energy",
+      "L.rheology",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.stokes_infinite_prandtl -> L.energy",
+      "L.energy -> L.rheology",
+      "L.rheology -> int.temporal"
+    ],
+    "L_DAG": 4.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 1600,
+    "condition_number_effective": 80,
+    "regime": "Chaotic for Ra > 10^7; initial condition of mantle is unknown."
+  },
+  "C": {
+    "solver_class": "CitcomS, ASPECT, StagYY",
+    "convergence_rate_q": 1.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "thermal",
+    "sensing_mechanism": "seismic_tomography_constraint",
+    "integration_axis": "temporal",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "mantle_flow_and_thermal_structure",
+    "primitives": [
+      "L.stokes_infinite_prandtl",
+      "L.energy",
+      "L.rheology",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 10,
+  "difficulty_tier": "hard",
+  "mismatch_parameters": [
+    "rheology_error",
+    "viscosity_contrast_error",
+    "bc_error",
+    "time_history_unknown"
+  ],
+  "error_metric": "flow_rel_error_percent",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "mantle_convection",
+      "forward_operator": "mantle_convection_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 128,
+        "W": 128,
+        "Z": 128,
+        "N_times": 100,
+        "Ra": 10000000.0,
+        "SNR_dB": 25,
+        "rheology_error": 0.1,
+        "viscosity_contrast_error": 0.2,
+        "bc_error": 0.0,
+        "time_history_unknown": 0.3
+      },
+      "epsilon_fn_center": "15.0"
+    },
+    "allowed_forward_operators": [
+      "mantle_convection_forward"
+    ],
+    "allowed_problem_classes": [
+      "mantle_convection"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "Z",
+      "N_times",
+      "Ra",
+      "SNR_dB",
+      "rheology_error",
+      "viscosity_contrast_error",
+      "bc_error",
+      "time_history_unknown",
+      "rheology_error",
+      "viscosity_contrast_error",
+      "bc_error",
+      "time_history_unknown"
+    ],
+    "omega_bounds": {
+      "H": [
+        32,
+        1024
+      ],
+      "W": [
+        32,
+        1024
+      ],
+      "Z": [
+        32,
+        1024
+      ],
+      "N_times": [
+        10,
+        10000
+      ],
+      "Ra": [
+        100000.0,
+        1000000000.0
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "rheology_error": [
+        0.0,
+        0.3
+      ],
+      "viscosity_contrast_error": [
+        0.0,
+        0.5
+      ],
+      "bc_error": [
+        0.0,
+        0.3
+      ],
+      "time_history_unknown": [
+        0.0,
+        0.5
+      ]
+    },
+    "epsilon_bounds": {
+      "flow_rel": [
+        1.0,
+        60.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

@@ -1,0 +1,133 @@
+{
+  "artifact_id": "L2-221",
+  "layer": "L2",
+  "parent_l1": "L1-221",
+  "title": "Cohesive Zone Model \u2014 traction-separation interface Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "N_DOF": [
+        100,
+        1000000
+      ],
+      "N_inc": [
+        10,
+        10000
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "sigma_max_error": [
+        0.0,
+        0.2
+      ],
+      "G_c_error": [
+        0.0,
+        0.2
+      ],
+      "delta_0_error": [
+        0.0,
+        0.2
+      ]
+    },
+    "E": {
+      "forward": "T = T(delta) with max T at delta_0, integrate G_c = int T d delta = cohesive energy",
+      "operator": "czm_forward_mismatch",
+      "primitive_chain": "L.traction_separation -> L.damage_init -> L.soft_unload -> int.temporal",
+      "inverse": "solve forward for declared state variable under Omega bounds"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR_dB",
+      "residual_norm"
+    ],
+    "epsilon_fn": "15.0 + 0.3*SNR_dB - 15.0*sigma_max_error - 20.0*G_c_error - 10.0*delta_0_error"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "CZM-bilinear",
+        "method_sig": "I+O",
+        "expected_psnr": 19.5
+      },
+      {
+        "name": "CZM-trapezoidal",
+        "method_sig": "I+O",
+        "expected_psnr": 20.0
+      },
+      {
+        "name": "CZM-NN",
+        "method_sig": "L+N",
+        "expected_psnr": 22.0
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_DOF": 10000,
+        "N_inc": 200,
+        "SNR_dB": 30,
+        "sigma_max_error": 0.0,
+        "G_c_error": 0.0,
+        "delta_0_error": 0.0
+      },
+      "epsilon": 21.0
+    },
+    "tier_bounds": {
+      "N_DOF": [
+        100,
+        1000000
+      ],
+      "N_inc": [
+        10,
+        10000
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "sigma_max_error": [
+        0.0,
+        0.2
+      ],
+      "G_c_error": [
+        0.0,
+        0.2
+      ],
+      "delta_0_error": [
+        0.0,
+        0.2
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.48,
+  "d_spec_notes": "Distance computed from problem_class, forward_operator, carrier, integration_axis against neighboring specs; within same principle this spec is mismatch-only canonical and sits at the Omega centroid.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions are consistent across the DAG; forward operator maps state space to measurement space at declared shapes.",
+    "S2": "kappa_eff = 15 within tolerance after regularization; RIP-like or coercivity conditions satisfied over most of Omega.",
+    "S3": "Solvers converge at rate q=1.5 in well-posed regime; mismatch parameters degrade convergence but not divergence.",
+    "S4": "epsilon_fn evaluates across 10+ random Omega samples; hardness rule verified \u2014 no baseline passes everywhere."
+  },
+  "ipfs_cid": null
+}

@@ -1,0 +1,169 @@
+{
+  "artifact_id": "L2-232",
+  "layer": "L2",
+  "parent_l1": "L1-232",
+  "title": "Maxwell Full-Wave \u2014 time-domain 3D Maxwell equations Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        32,
+        1024
+      ],
+      "W": [
+        32,
+        1024
+      ],
+      "Z": [
+        32,
+        1024
+      ],
+      "N_samples": [
+        64,
+        10000
+      ],
+      "N_probes": [
+        4,
+        1024
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "eps_error": [
+        0.0,
+        0.1
+      ],
+      "mu_error": [
+        0.0,
+        0.05
+      ],
+      "sigma_error": [
+        0.0,
+        0.1
+      ],
+      "boundary_PML_error": [
+        0.0,
+        0.2
+      ]
+    },
+    "E": {
+      "forward": "curl E = -mu*dH/dt; curl H = eps*dE/dt + sigma*E + J_src",
+      "operator": "maxwell_tm_forward_mismatch",
+      "primitive_chain": "L.source_injection -> L.curl_curl -> L.constitutive -> int.temporal",
+      "inverse": "solve forward for declared state variable under Omega bounds"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR_dB",
+      "residual_norm"
+    ],
+    "epsilon_fn": "15.0 + 0.25*SNR_dB - 20.0*eps_error - 20.0*mu_error - 5.0*boundary_PML_error"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "FDTD-Yee",
+        "method_sig": "I+O",
+        "expected_psnr": 20.5
+      },
+      {
+        "name": "FEM-time-domain",
+        "method_sig": "I+O",
+        "expected_psnr": 22.0
+      },
+      {
+        "name": "DGTD",
+        "method_sig": "I+O",
+        "expected_psnr": 23.0
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 128,
+        "W": 128,
+        "Z": 128,
+        "N_samples": 512,
+        "N_probes": 16,
+        "SNR_dB": 30,
+        "eps_error": 0.0,
+        "mu_error": 0.0,
+        "sigma_error": 0.0,
+        "boundary_PML_error": 0.0
+      },
+      "epsilon": 22.0
+    },
+    "tier_bounds": {
+      "H": [
+        32,
+        1024
+      ],
+      "W": [
+        32,
+        1024
+      ],
+      "Z": [
+        32,
+        1024
+      ],
+      "N_samples": [
+        64,
+        10000
+      ],
+      "N_probes": [
+        4,
+        1024
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "eps_error": [
+        0.0,
+        0.1
+      ],
+      "mu_error": [
+        0.0,
+        0.05
+      ],
+      "sigma_error": [
+        0.0,
+        0.1
+      ],
+      "boundary_PML_error": [
+        0.0,
+        0.2
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.48,
+  "d_spec_notes": "Distance computed from problem_class, forward_operator, carrier, integration_axis against neighboring specs; within same principle this spec is mismatch-only canonical and sits at the Omega centroid.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions are consistent across the DAG; forward operator maps state space to measurement space at declared shapes.",
+    "S2": "kappa_eff = 80 within tolerance after regularization; RIP-like or coercivity conditions satisfied over most of Omega.",
+    "S3": "Solvers converge at rate q=2.0 in well-posed regime; mismatch parameters degrade convergence but not divergence.",
+    "S4": "epsilon_fn evaluates across 10+ random Omega samples; hardness rule verified \u2014 no baseline passes everywhere."
+  },
+  "ipfs_cid": null
+}

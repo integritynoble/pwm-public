@@ -1,0 +1,169 @@
+{
+  "artifact_id": "L2-200",
+  "layer": "L2",
+  "parent_l1": "L1-200",
+  "title": "Participating Media \u2014 RTE with gas/soot emission-absorption Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        32,
+        1024
+      ],
+      "W": [
+        32,
+        1024
+      ],
+      "Z": [
+        8,
+        256
+      ],
+      "N_species": [
+        1,
+        20
+      ],
+      "N_freqs": [
+        4,
+        1024
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "gas_conc_error": [
+        0.0,
+        0.2
+      ],
+      "T_nonuniformity": [
+        0.0,
+        0.3
+      ],
+      "soot_index_error": [
+        0.0,
+        0.3
+      ],
+      "band_model_error": [
+        0.0,
+        0.2
+      ]
+    },
+    "E": {
+      "forward": "I(lambda) = int_0^L kappa_lambda(T,xi) * I_b(lambda,T) * exp(-int_0^s kappa_lambda ds') ds",
+      "operator": "participating_media_forward_mismatch",
+      "primitive_chain": "L.gas_absorb -> L.soot_emit -> L.line_by_line -> int.spectral",
+      "inverse": "solve forward for declared state variable under Omega bounds"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR_dB",
+      "residual_norm"
+    ],
+    "epsilon_fn": "14.0 + 1.5*log2(N_freqs/4) + 0.25*SNR_dB - 15.0*gas_conc_error - 10.0*T_nonuniformity"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "WSGG",
+        "method_sig": "L+O",
+        "expected_psnr": 18.5
+      },
+      {
+        "name": "SLW",
+        "method_sig": "L+O",
+        "expected_psnr": 20.0
+      },
+      {
+        "name": "LBL-MC",
+        "method_sig": "I+O",
+        "expected_psnr": 21.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 128,
+        "W": 128,
+        "Z": 32,
+        "N_species": 4,
+        "N_freqs": 32,
+        "SNR_dB": 30,
+        "gas_conc_error": 0.0,
+        "T_nonuniformity": 0.0,
+        "soot_index_error": 0.0,
+        "band_model_error": 0.0
+      },
+      "epsilon": 20.0
+    },
+    "tier_bounds": {
+      "H": [
+        32,
+        1024
+      ],
+      "W": [
+        32,
+        1024
+      ],
+      "Z": [
+        8,
+        256
+      ],
+      "N_species": [
+        1,
+        20
+      ],
+      "N_freqs": [
+        4,
+        1024
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "gas_conc_error": [
+        0.0,
+        0.2
+      ],
+      "T_nonuniformity": [
+        0.0,
+        0.3
+      ],
+      "soot_index_error": [
+        0.0,
+        0.3
+      ],
+      "band_model_error": [
+        0.0,
+        0.2
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.48,
+  "d_spec_notes": "Distance computed from problem_class, forward_operator, carrier, integration_axis against neighboring specs; within same principle this spec is mismatch-only canonical and sits at the Omega centroid.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions are consistent across the DAG; forward operator maps state space to measurement space at declared shapes.",
+    "S2": "kappa_eff = 35 within tolerance after regularization; RIP-like or coercivity conditions satisfied over most of Omega.",
+    "S3": "Solvers converge at rate q=1.5 in well-posed regime; mismatch parameters degrade convergence but not divergence.",
+    "S4": "epsilon_fn evaluates across 10+ random Omega samples; hardness rule verified \u2014 no baseline passes everywhere."
+  },
+  "ipfs_cid": null
+}

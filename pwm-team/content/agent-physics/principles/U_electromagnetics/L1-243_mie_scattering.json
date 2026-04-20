@@ -1,0 +1,161 @@
+{
+  "artifact_id": "L1-243",
+  "layer": "L1",
+  "principle_number": "243",
+  "title": "Mie Scattering \u2014 rigorous spherical-particle scattering",
+  "domain": "Electromagnetics",
+  "sub_domain": "Particle size distribution from Mie pattern",
+  "source_file": "U_electromagnetics/243_mie_scattering.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Mie Scattering \u2014 rigorous spherical-particle scattering forward model.",
+    "forward_model": "sigma_scatter(theta) = (|S1|^2 + |S2|^2)/(2*k^2*r^2); S_n from Mie series in a_n, b_n",
+    "world_state_x": "particle size distribution N(d) and complex refractive index n + ik",
+    "observation_y": "angular scattering pattern at multiple wavelengths",
+    "physical_parameters_theta": [
+      "N_angles",
+      "N_wavelengths",
+      "SNR_dB",
+      "n_complex_error",
+      "polydispersity_width_error",
+      "concentration_error"
+    ]
+  },
+  "G": {
+    "dag": "L.mie_coeff -> L.series_sum -> L.polydispersity_average -> int.angular",
+    "vertices": [
+      "L.mie_coeff",
+      "L.series_sum",
+      "L.polydispersity_average",
+      "int.angular"
+    ],
+    "arcs": [
+      "L.mie_coeff -> L.series_sum",
+      "L.series_sum -> L.polydispersity_average",
+      "L.polydispersity_average -> int.angular"
+    ],
+    "L_DAG": 3.3,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 400,
+    "condition_number_effective": 20,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Mie-series, Mie-inversion, Mie-NN",
+    "convergence_rate_q": 1.5,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "em",
+    "sensing_mechanism": "angular_scatter_detector",
+    "integration_axis": "angular",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "particle_size_distribution",
+    "primitives": [
+      "L.mie_coeff",
+      "L.series_sum",
+      "L.polydispersity_average",
+      "int.angular"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "n_complex_error",
+    "polydispersity_width_error",
+    "concentration_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "mie",
+      "forward_operator": "mie_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_angles": 360,
+        "N_wavelengths": 3,
+        "SNR_dB": 30,
+        "n_complex_error": 0.0,
+        "polydispersity_width_error": 0.0,
+        "concentration_error": 0.0
+      },
+      "epsilon_fn_center": "22.0"
+    },
+    "allowed_forward_operators": [
+      "mie_forward"
+    ],
+    "allowed_problem_classes": [
+      "mie"
+    ],
+    "allowed_omega_dimensions": [
+      "N_angles",
+      "N_wavelengths",
+      "SNR_dB",
+      "n_complex_error",
+      "polydispersity_width_error",
+      "concentration_error",
+      "n_complex_error",
+      "polydispersity_width_error",
+      "concentration_error"
+    ],
+    "omega_bounds": {
+      "N_angles": [
+        18,
+        3600
+      ],
+      "N_wavelengths": [
+        1,
+        50
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "n_complex_error": [
+        0.0,
+        0.05
+      ],
+      "polydispersity_width_error": [
+        0.0,
+        0.3
+      ],
+      "concentration_error": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

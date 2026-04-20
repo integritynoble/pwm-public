@@ -1,0 +1,156 @@
+{
+  "artifact_id": "L2-254",
+  "layer": "L2",
+  "parent_l1": "L1-254",
+  "title": "X-ray Phase Contrast \u2014 propagation / grating / analyzer Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        256,
+        8192
+      ],
+      "W": [
+        256,
+        8192
+      ],
+      "Z": [
+        32,
+        1024
+      ],
+      "N_distances": [
+        1,
+        50
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "z_error": [
+        0.0,
+        0.1
+      ],
+      "coherence_error": [
+        0.0,
+        0.3
+      ],
+      "beam_harmonics_error": [
+        0.0,
+        0.2
+      ]
+    },
+    "E": {
+      "forward": "I_obs(x) = [(1 - z*Laplacian)/k^2] * I_0(x) * exp(-mu * L); TIE for phase retrieval",
+      "operator": "xray_pc_forward_mismatch",
+      "primitive_chain": "L.xray_source -> L.refract_sample -> L.propagate -> int.spatial",
+      "inverse": "solve forward for declared state variable under Omega bounds"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR_dB",
+      "residual_norm"
+    ],
+    "epsilon_fn": "18.0 + 0.3*SNR_dB - 15.0*z_error - 10.0*coherence_error - 5.0*beam_harmonics_error"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "TIE",
+        "method_sig": "L+O",
+        "expected_psnr": 23.0
+      },
+      {
+        "name": "CTF-retrieval",
+        "method_sig": "L+O",
+        "expected_psnr": 24.5
+      },
+      {
+        "name": "Paganin",
+        "method_sig": "L+O",
+        "expected_psnr": 25.0
+      },
+      {
+        "name": "PC-Net",
+        "method_sig": "L+N",
+        "expected_psnr": 26.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 2048,
+        "W": 2048,
+        "Z": 128,
+        "N_distances": 3,
+        "SNR_dB": 30,
+        "z_error": 0.0,
+        "coherence_error": 0.0,
+        "beam_harmonics_error": 0.0
+      },
+      "epsilon": 25.0
+    },
+    "tier_bounds": {
+      "H": [
+        256,
+        8192
+      ],
+      "W": [
+        256,
+        8192
+      ],
+      "Z": [
+        32,
+        1024
+      ],
+      "N_distances": [
+        1,
+        50
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "z_error": [
+        0.0,
+        0.1
+      ],
+      "coherence_error": [
+        0.0,
+        0.3
+      ],
+      "beam_harmonics_error": [
+        0.0,
+        0.2
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.48,
+  "d_spec_notes": "Distance computed from problem_class, forward_operator, carrier, integration_axis against neighboring specs; within same principle this spec is mismatch-only canonical and sits at the Omega centroid.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions are consistent across the DAG; forward operator maps state space to measurement space at declared shapes.",
+    "S2": "kappa_eff = 20 within tolerance after regularization; RIP-like or coercivity conditions satisfied over most of Omega.",
+    "S3": "Solvers converge at rate q=1.5 in well-posed regime; mismatch parameters degrade convergence but not divergence.",
+    "S4": "epsilon_fn evaluates across 10+ random Omega samples; hardness rule verified \u2014 no baseline passes everywhere."
+  },
+  "ipfs_cid": null
+}

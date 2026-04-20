@@ -1,0 +1,151 @@
+{
+  "artifact_id": "L2-246",
+  "layer": "L2",
+  "parent_l1": "L1-246",
+  "title": "Holographic Reconstruction \u2014 wavefront from interference Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        128,
+        4096
+      ],
+      "W": [
+        128,
+        4096
+      ],
+      "lambda_nm": [
+        100,
+        10000
+      ],
+      "z_m": [
+        0.001,
+        10
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "ref_beam_tilt_error": [
+        0.0,
+        0.1
+      ],
+      "z_focus_error": [
+        0.0,
+        0.05
+      ],
+      "twin_image_error": [
+        0.0,
+        0.3
+      ]
+    },
+    "E": {
+      "forward": "I = |O + R|^2; reconstruction via spatial filtering + Fresnel backpropagation",
+      "operator": "holo_recon_forward_mismatch",
+      "primitive_chain": "L.interference -> L.fft_reconstruct -> L.demultiplex -> int.spatial",
+      "inverse": "solve forward for declared state variable under Omega bounds"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR_dB",
+      "residual_norm"
+    ],
+    "epsilon_fn": "20.0 + 0.3*SNR_dB - 20.0*ref_beam_tilt_error - 25.0*z_focus_error - 10.0*twin_image_error"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Fresnel-BP",
+        "method_sig": "L+O",
+        "expected_psnr": 25.5
+      },
+      {
+        "name": "Phase-shift-holo",
+        "method_sig": "L+O",
+        "expected_psnr": 27.0
+      },
+      {
+        "name": "Holo-UNet",
+        "method_sig": "L+N",
+        "expected_psnr": 28.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 1024,
+        "W": 1024,
+        "lambda_nm": 633,
+        "z_m": 0.1,
+        "SNR_dB": 30,
+        "ref_beam_tilt_error": 0.0,
+        "z_focus_error": 0.0,
+        "twin_image_error": 0.0
+      },
+      "epsilon": 27.0
+    },
+    "tier_bounds": {
+      "H": [
+        128,
+        4096
+      ],
+      "W": [
+        128,
+        4096
+      ],
+      "lambda_nm": [
+        100,
+        10000
+      ],
+      "z_m": [
+        0.001,
+        10
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "ref_beam_tilt_error": [
+        0.0,
+        0.1
+      ],
+      "z_focus_error": [
+        0.0,
+        0.05
+      ],
+      "twin_image_error": [
+        0.0,
+        0.3
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.48,
+  "d_spec_notes": "Distance computed from problem_class, forward_operator, carrier, integration_axis against neighboring specs; within same principle this spec is mismatch-only canonical and sits at the Omega centroid.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions are consistent across the DAG; forward operator maps state space to measurement space at declared shapes.",
+    "S2": "kappa_eff = 12 within tolerance after regularization; RIP-like or coercivity conditions satisfied over most of Omega.",
+    "S3": "Solvers converge at rate q=2.0 in well-posed regime; mismatch parameters degrade convergence but not divergence.",
+    "S4": "epsilon_fn evaluates across 10+ random Omega samples; hardness rule verified \u2014 no baseline passes everywhere."
+  },
+  "ipfs_cid": null
+}

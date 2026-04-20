@@ -1,0 +1,168 @@
+{
+  "artifact_id": "L1-265",
+  "layer": "L1",
+  "principle_number": "265",
+  "title": "Acoustic Beamforming \u2014 DOA & imaging from array",
+  "domain": "Acoustics",
+  "sub_domain": "Sensor-array DOA estimation",
+  "source_file": "V_acoustics/265_acoustic_beamforming.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Acoustic Beamforming \u2014 DOA & imaging from array forward model.",
+    "forward_model": "P(theta) = a(theta)^H R_xx a(theta); R_xx = E[x x^H] for mic-array snapshots x",
+    "world_state_x": "angular power spectrum P(theta) and source positions theta_k",
+    "observation_y": "N_mic array snapshots x[n] in C^{N_mic}",
+    "physical_parameters_theta": [
+      "N_mic",
+      "N_snapshots",
+      "N_sources",
+      "SNR_dB",
+      "element_gain_error",
+      "element_phase_error",
+      "sensor_pos_error"
+    ]
+  },
+  "G": {
+    "dag": "S.array_capture -> L.steering_vector -> L.power_map -> int.spatial",
+    "vertices": [
+      "S.array_capture",
+      "L.steering_vector",
+      "L.power_map",
+      "int.spatial"
+    ],
+    "arcs": [
+      "S.array_capture -> L.steering_vector",
+      "L.steering_vector -> L.power_map",
+      "L.power_map -> int.spatial"
+    ],
+    "L_DAG": 3.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 240,
+    "condition_number_effective": 12,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Delay-and-Sum, MUSIC, ESPRIT, Deep-DOA",
+    "convergence_rate_q": 1.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "acoustic",
+    "sensing_mechanism": "microphone_array",
+    "integration_axis": "spatial",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "angular_power_spectrum",
+    "primitives": [
+      "S.array_capture",
+      "L.steering_vector",
+      "L.power_map",
+      "int.spatial"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "element_gain_error",
+    "element_phase_error",
+    "sensor_pos_error"
+  ],
+  "error_metric": "DOA_MAE_deg",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "doa_beamforming",
+      "forward_operator": "doa_beamforming_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_mic": 16,
+        "N_snapshots": 256,
+        "N_sources": 2,
+        "SNR_dB": 20,
+        "element_gain_error": 0.0,
+        "element_phase_error": 0.0,
+        "sensor_pos_error": 0.0
+      },
+      "epsilon_fn_center": "1.5"
+    },
+    "allowed_forward_operators": [
+      "doa_beamforming_forward"
+    ],
+    "allowed_problem_classes": [
+      "doa_beamforming"
+    ],
+    "allowed_omega_dimensions": [
+      "N_mic",
+      "N_snapshots",
+      "N_sources",
+      "SNR_dB",
+      "element_gain_error",
+      "element_phase_error",
+      "sensor_pos_error",
+      "element_gain_error",
+      "element_phase_error",
+      "sensor_pos_error"
+    ],
+    "omega_bounds": {
+      "N_mic": [
+        4,
+        256
+      ],
+      "N_snapshots": [
+        16,
+        8192
+      ],
+      "N_sources": [
+        1,
+        8
+      ],
+      "SNR_dB": [
+        -10,
+        40
+      ],
+      "element_gain_error": [
+        0.0,
+        0.2
+      ],
+      "element_phase_error": [
+        0.0,
+        0.3
+      ],
+      "sensor_pos_error": [
+        0.0,
+        0.1
+      ]
+    },
+    "epsilon_bounds": {
+      "doa_deg": [
+        0.1,
+        10.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

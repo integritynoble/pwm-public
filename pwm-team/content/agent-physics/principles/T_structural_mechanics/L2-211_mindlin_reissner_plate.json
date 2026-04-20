@@ -1,0 +1,151 @@
+{
+  "artifact_id": "L2-211",
+  "layer": "L2",
+  "parent_l1": "L1-211",
+  "title": "Mindlin-Reissner Plate \u2014 thick-plate with shear Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        16,
+        1024
+      ],
+      "W": [
+        16,
+        1024
+      ],
+      "N_sensors": [
+        4,
+        10000
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "k_shear_error": [
+        0.0,
+        0.1
+      ],
+      "D_error": [
+        0.0,
+        0.1
+      ],
+      "G_error": [
+        0.0,
+        0.1
+      ],
+      "bc_error": [
+        0.0,
+        0.2
+      ]
+    },
+    "E": {
+      "forward": "div(D (grad phi + grad phi^T)/2) - kGt(grad w - phi) = 0; div(kGt(grad w - phi)) + q = 0",
+      "operator": "mindlin_forward_mismatch",
+      "primitive_chain": "L.shear_factor -> L.bending -> L.coupled_w_phi -> int.spatial",
+      "inverse": "solve forward for declared state variable under Omega bounds"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR_dB",
+      "residual_norm"
+    ],
+    "epsilon_fn": "20.0 + 0.3*SNR_dB - 20.0*k_shear_error - 30.0*D_error - 20.0*G_error - 10.0*bc_error"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "MITC4",
+        "method_sig": "L+O",
+        "expected_psnr": 25.5
+      },
+      {
+        "name": "DSG",
+        "method_sig": "L+O",
+        "expected_psnr": 26.0
+      },
+      {
+        "name": "Mindlin-NN",
+        "method_sig": "L+N",
+        "expected_psnr": 27.0
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 64,
+        "W": 64,
+        "N_sensors": 64,
+        "SNR_dB": 30,
+        "k_shear_error": 0.0,
+        "D_error": 0.0,
+        "G_error": 0.0,
+        "bc_error": 0.0
+      },
+      "epsilon": 26.5
+    },
+    "tier_bounds": {
+      "H": [
+        16,
+        1024
+      ],
+      "W": [
+        16,
+        1024
+      ],
+      "N_sensors": [
+        4,
+        10000
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "k_shear_error": [
+        0.0,
+        0.1
+      ],
+      "D_error": [
+        0.0,
+        0.1
+      ],
+      "G_error": [
+        0.0,
+        0.1
+      ],
+      "bc_error": [
+        0.0,
+        0.2
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.48,
+  "d_spec_notes": "Distance computed from problem_class, forward_operator, carrier, integration_axis against neighboring specs; within same principle this spec is mismatch-only canonical and sits at the Omega centroid.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions are consistent across the DAG; forward operator maps state space to measurement space at declared shapes.",
+    "S2": "kappa_eff = 10 within tolerance after regularization; RIP-like or coercivity conditions satisfied over most of Omega.",
+    "S3": "Solvers converge at rate q=2.0 in well-posed regime; mismatch parameters degrade convergence but not divergence.",
+    "S4": "epsilon_fn evaluates across 10+ random Omega samples; hardness rule verified \u2014 no baseline passes everywhere."
+  },
+  "ipfs_cid": null
+}

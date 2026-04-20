@@ -1,0 +1,178 @@
+{
+  "artifact_id": "L2-195",
+  "layer": "L2",
+  "parent_l1": "L1-195",
+  "title": "Transient Heat Conduction \u2014 inverse heat conduction (IHCP) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        16,
+        512
+      ],
+      "W": [
+        16,
+        512
+      ],
+      "Z": [
+        8,
+        256
+      ],
+      "N_sensors": [
+        4,
+        256
+      ],
+      "N_samples": [
+        20,
+        10000
+      ],
+      "fs_Hz": [
+        0.1,
+        1000
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "k_error": [
+        0.0,
+        0.1
+      ],
+      "rho_cp_error": [
+        0.0,
+        0.1
+      ],
+      "sensor_pos_error": [
+        0.0,
+        0.02
+      ],
+      "bc_error": [
+        0.0,
+        0.5
+      ]
+    },
+    "E": {
+      "forward": "rho*cp*dT/dt = div(k grad T) + Q(x,t); BCs: Dirichlet/Neumann/Robin at boundaries",
+      "operator": "ihcp_forward_mismatch",
+      "primitive_chain": "L.initial_condition -> L.parabolic_propagate -> S.record.sensors -> int.temporal",
+      "inverse": "solve forward for declared state variable under Omega bounds"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR_dB",
+      "residual_norm"
+    ],
+    "epsilon_fn": "18.0 + 2.0*log2(N_sensors/4) + 0.3*SNR_dB - 50.0*k_error - 10.0*sensor_pos_error - 5.0*bc_error"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Beck-FTS",
+        "method_sig": "I+O",
+        "expected_psnr": 23.0
+      },
+      {
+        "name": "Tikhonov",
+        "method_sig": "L+O",
+        "expected_psnr": 24.5
+      },
+      {
+        "name": "PINN-IHCP",
+        "method_sig": "L+N",
+        "expected_psnr": 26.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 64,
+        "W": 64,
+        "Z": 64,
+        "N_sensors": 16,
+        "N_samples": 200,
+        "fs_Hz": 10,
+        "SNR_dB": 30,
+        "k_error": 0.0,
+        "rho_cp_error": 0.0,
+        "sensor_pos_error": 0.0,
+        "bc_error": 0.0
+      },
+      "epsilon": 25.0
+    },
+    "tier_bounds": {
+      "H": [
+        16,
+        512
+      ],
+      "W": [
+        16,
+        512
+      ],
+      "Z": [
+        8,
+        256
+      ],
+      "N_sensors": [
+        4,
+        256
+      ],
+      "N_samples": [
+        20,
+        10000
+      ],
+      "fs_Hz": [
+        0.1,
+        1000
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "k_error": [
+        0.0,
+        0.1
+      ],
+      "rho_cp_error": [
+        0.0,
+        0.1
+      ],
+      "sensor_pos_error": [
+        0.0,
+        0.02
+      ],
+      "bc_error": [
+        0.0,
+        0.5
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.48,
+  "d_spec_notes": "Distance computed from problem_class, forward_operator, carrier, integration_axis against neighboring specs; within same principle this spec is mismatch-only canonical and sits at the Omega centroid.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions are consistent across the DAG; forward operator maps state space to measurement space at declared shapes.",
+    "S2": "kappa_eff = 40 within tolerance after regularization; RIP-like or coercivity conditions satisfied over most of Omega.",
+    "S3": "Solvers converge at rate q=2.0 in well-posed regime; mismatch parameters degrade convergence but not divergence.",
+    "S4": "epsilon_fn evaluates across 10+ random Omega samples; hardness rule verified \u2014 no baseline passes everywhere."
+  },
+  "ipfs_cid": null
+}

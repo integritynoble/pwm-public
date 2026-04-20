@@ -1,0 +1,182 @@
+{
+  "artifact_id": "L1-255",
+  "layer": "L1",
+  "principle_number": "255",
+  "title": "Microwave Imaging \u2014 permittivity imaging for biomed/NDE",
+  "domain": "Electromagnetics",
+  "sub_domain": "Microwave tomography (biomedical/NDT)",
+  "source_file": "U_electromagnetics/255_microwave_imaging.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Microwave Imaging \u2014 permittivity imaging for biomed/NDE forward model.",
+    "forward_model": "E_scat(r_m) = int k_b^2 * contrast(r') * G_b(r_m, r') * E_total(r') dr'",
+    "world_state_x": "complex permittivity contrast (eps_r(x) + j*sigma(x)/omega*eps_0)",
+    "observation_y": "multistatic S-parameters at N_antennas x N_freqs",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "Z",
+      "N_antennas",
+      "N_freqs",
+      "SNR_dB",
+      "coupling_medium_error",
+      "antenna_pos_error",
+      "skin_effect_error"
+    ]
+  },
+  "G": {
+    "dag": "L.incident_field -> L.scatter_equation -> L.born_contrast -> int.frequency",
+    "vertices": [
+      "L.incident_field",
+      "L.scatter_equation",
+      "L.born_contrast",
+      "int.frequency"
+    ],
+    "arcs": [
+      "L.incident_field -> L.scatter_equation",
+      "L.scatter_equation -> L.born_contrast",
+      "L.born_contrast -> int.frequency"
+    ],
+    "L_DAG": 3.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "unstable",
+    "condition_number_kappa": 800,
+    "condition_number_effective": 40,
+    "regime": "Ill-posed, non-linear; limited data coverage typical."
+  },
+  "C": {
+    "solver_class": "Born-iterative, DBIM, MWT-Net",
+    "convergence_rate_q": 1.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "em",
+    "sensing_mechanism": "antenna_array",
+    "integration_axis": "frequency",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "3D_permittivity_conductivity",
+    "primitives": [
+      "L.incident_field",
+      "L.scatter_equation",
+      "L.born_contrast",
+      "int.frequency"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "coupling_medium_error",
+    "antenna_pos_error",
+    "skin_effect_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "microwave_tomo",
+      "forward_operator": "microwave_tomo_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 128,
+        "W": 128,
+        "Z": 32,
+        "N_antennas": 16,
+        "N_freqs": 16,
+        "SNR_dB": 25,
+        "coupling_medium_error": 0.0,
+        "antenna_pos_error": 0.0,
+        "skin_effect_error": 0.0
+      },
+      "epsilon_fn_center": "20.0"
+    },
+    "allowed_forward_operators": [
+      "microwave_tomo_forward"
+    ],
+    "allowed_problem_classes": [
+      "microwave_tomo"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "Z",
+      "N_antennas",
+      "N_freqs",
+      "SNR_dB",
+      "coupling_medium_error",
+      "antenna_pos_error",
+      "skin_effect_error",
+      "coupling_medium_error",
+      "antenna_pos_error",
+      "skin_effect_error"
+    ],
+    "omega_bounds": {
+      "H": [
+        32,
+        1024
+      ],
+      "W": [
+        32,
+        1024
+      ],
+      "Z": [
+        8,
+        512
+      ],
+      "N_antennas": [
+        4,
+        256
+      ],
+      "N_freqs": [
+        1,
+        256
+      ],
+      "SNR_dB": [
+        -5,
+        40
+      ],
+      "coupling_medium_error": [
+        0.0,
+        0.2
+      ],
+      "antenna_pos_error": [
+        0.0,
+        0.05
+      ],
+      "skin_effect_error": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

@@ -1,0 +1,169 @@
+{
+  "artifact_id": "L2-272",
+  "layer": "L2",
+  "parent_l1": "L1-272",
+  "title": "Seismic Travel-Time Tomography \u2014 ray-based velocity imaging Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        32,
+        1024
+      ],
+      "W": [
+        32,
+        1024
+      ],
+      "Z": [
+        16,
+        512
+      ],
+      "N_sources": [
+        4,
+        1024
+      ],
+      "N_receivers": [
+        16,
+        8192
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "velocity_prior_error": [
+        0.0,
+        0.2
+      ],
+      "source_error": [
+        0.0,
+        0.05
+      ],
+      "picker_error": [
+        0.0,
+        0.05
+      ],
+      "ray_coverage_gaps": [
+        0.0,
+        0.5
+      ]
+    },
+    "E": {
+      "forward": "t = int_ray 1/v(x) ds; linearized dt = int_ray (-1/v_0^2) dv(x) ds",
+      "operator": "traveltime_tomo_forward_mismatch",
+      "primitive_chain": "L.eikonal -> L.ray_trace -> L.linearize -> int.temporal",
+      "inverse": "solve forward for declared state variable under Omega bounds"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "velocity_rel_error_percent",
+      "residual_norm"
+    ],
+    "epsilon_fn": "2.5 + 20.0*velocity_prior_error + 10.0*source_error + 10.0*picker_error + 8.0*ray_coverage_gaps"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "SIRT",
+        "method_sig": "I+O",
+        "expected_psnr": 5.5
+      },
+      {
+        "name": "LSQR",
+        "method_sig": "I+O",
+        "expected_psnr": 5.0
+      },
+      {
+        "name": "Tomo-UNet",
+        "method_sig": "L+N",
+        "expected_psnr": 4.0
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 256,
+        "W": 256,
+        "Z": 128,
+        "N_sources": 32,
+        "N_receivers": 128,
+        "SNR_dB": 30,
+        "velocity_prior_error": 0.0,
+        "source_error": 0.0,
+        "picker_error": 0.0,
+        "ray_coverage_gaps": 0.0
+      },
+      "epsilon": 5.0
+    },
+    "tier_bounds": {
+      "H": [
+        32,
+        1024
+      ],
+      "W": [
+        32,
+        1024
+      ],
+      "Z": [
+        16,
+        512
+      ],
+      "N_sources": [
+        4,
+        1024
+      ],
+      "N_receivers": [
+        16,
+        8192
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "velocity_prior_error": [
+        0.0,
+        0.2
+      ],
+      "source_error": [
+        0.0,
+        0.05
+      ],
+      "picker_error": [
+        0.0,
+        0.05
+      ],
+      "ray_coverage_gaps": [
+        0.0,
+        0.5
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.48,
+  "d_spec_notes": "Distance computed from problem_class, forward_operator, carrier, integration_axis against neighboring specs; within same principle this spec is mismatch-only canonical and sits at the Omega centroid.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions are consistent across the DAG; forward operator maps state space to measurement space at declared shapes.",
+    "S2": "kappa_eff = 30 within tolerance after regularization; RIP-like or coercivity conditions satisfied over most of Omega.",
+    "S3": "Solvers converge at rate q=1.5 in well-posed regime; mismatch parameters degrade convergence but not divergence.",
+    "S4": "epsilon_fn evaluates across 10+ random Omega samples; hardness rule verified \u2014 no baseline passes everywhere."
+  },
+  "ipfs_cid": null
+}

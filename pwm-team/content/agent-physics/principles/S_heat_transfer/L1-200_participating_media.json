@@ -1,0 +1,191 @@
+{
+  "artifact_id": "L1-200",
+  "layer": "L1",
+  "principle_number": "200",
+  "title": "Participating Media \u2014 RTE with gas/soot emission-absorption",
+  "domain": "Heat Transfer",
+  "sub_domain": "Line-by-line gas spectroscopy + soot radiation",
+  "source_file": "S_heat_transfer/200_participating_media.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Participating Media \u2014 RTE with gas/soot emission-absorption forward model.",
+    "forward_model": "I(lambda) = int_0^L kappa_lambda(T,xi) * I_b(lambda,T) * exp(-int_0^s kappa_lambda ds') ds",
+    "world_state_x": "3D temperature + soot volume fraction + species concentration fields",
+    "observation_y": "multispectral pyrometer + tomographic line-of-sight integrated radiance",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "Z",
+      "N_species",
+      "N_freqs",
+      "SNR_dB",
+      "gas_conc_error",
+      "T_nonuniformity",
+      "soot_index_error",
+      "band_model_error"
+    ]
+  },
+  "G": {
+    "dag": "L.gas_absorb -> L.soot_emit -> L.line_by_line -> int.spectral",
+    "vertices": [
+      "L.gas_absorb",
+      "L.soot_emit",
+      "L.line_by_line",
+      "int.spectral"
+    ],
+    "arcs": [
+      "L.gas_absorb -> L.soot_emit",
+      "L.soot_emit -> L.line_by_line",
+      "L.line_by_line -> int.spectral"
+    ],
+    "L_DAG": 3.7,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 700,
+    "condition_number_effective": 35,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "WSGG, SLW, LBL-MC",
+    "convergence_rate_q": 1.5,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "thermal",
+    "sensing_mechanism": "multispectral_pyrometer",
+    "integration_axis": "spectral",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "3D_soot_concentration_and_temp",
+    "primitives": [
+      "L.gas_absorb",
+      "L.soot_emit",
+      "L.line_by_line",
+      "int.spectral"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "gas_conc_error",
+    "T_nonuniformity",
+    "soot_index_error",
+    "band_model_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "participating_media",
+      "forward_operator": "participating_media_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 128,
+        "W": 128,
+        "Z": 32,
+        "N_species": 4,
+        "N_freqs": 32,
+        "SNR_dB": 30,
+        "gas_conc_error": 0.0,
+        "T_nonuniformity": 0.0,
+        "soot_index_error": 0.0,
+        "band_model_error": 0.0
+      },
+      "epsilon_fn_center": "20.0"
+    },
+    "allowed_forward_operators": [
+      "participating_media_forward"
+    ],
+    "allowed_problem_classes": [
+      "participating_media"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "Z",
+      "N_species",
+      "N_freqs",
+      "SNR_dB",
+      "gas_conc_error",
+      "T_nonuniformity",
+      "soot_index_error",
+      "band_model_error",
+      "gas_conc_error",
+      "T_nonuniformity",
+      "soot_index_error",
+      "band_model_error"
+    ],
+    "omega_bounds": {
+      "H": [
+        32,
+        1024
+      ],
+      "W": [
+        32,
+        1024
+      ],
+      "Z": [
+        8,
+        256
+      ],
+      "N_species": [
+        1,
+        20
+      ],
+      "N_freqs": [
+        4,
+        1024
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "gas_conc_error": [
+        0.0,
+        0.2
+      ],
+      "T_nonuniformity": [
+        0.0,
+        0.3
+      ],
+      "soot_index_error": [
+        0.0,
+        0.3
+      ],
+      "band_model_error": [
+        0.0,
+        0.2
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

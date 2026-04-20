@@ -1,0 +1,168 @@
+{
+  "artifact_id": "L1-363",
+  "layer": "L1",
+  "principle_number": "363",
+  "title": "Decay Heat \u2014 residual power after reactor shutdown",
+  "domain": "Nuclear Engineering",
+  "sub_domain": "Summation calculation of post-shutdown decay heat",
+  "source_file": "AB_nuclear_engineering/363_decay_heat.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Decay Heat \u2014 residual power after reactor shutdown forward model.",
+    "forward_model": "P_decay(t) = sum_i N_i(t) * lambda_i * E_i; N_i from Bateman with irradiation history",
+    "world_state_x": "decay heat P_decay(t) vs time after shutdown",
+    "observation_y": "spent-fuel calorimetry + gamma spectroscopy",
+    "physical_parameters_theta": [
+      "N_nuclides",
+      "t_cooling_s",
+      "N_samples",
+      "SNR_dB",
+      "fy_error",
+      "decay_data_error",
+      "irradiation_history_error"
+    ]
+  },
+  "G": {
+    "dag": "L.inventory -> L.Q_decay -> L.summation -> int.temporal",
+    "vertices": [
+      "L.inventory",
+      "L.Q_decay",
+      "L.summation",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.inventory -> L.Q_decay",
+      "L.Q_decay -> L.summation",
+      "L.summation -> int.temporal"
+    ],
+    "L_DAG": 2.8,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 200,
+    "condition_number_effective": 10,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "ANSI-5.1, ORIGEN-S, JEFF-decay",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "calorimeter",
+    "integration_axis": "temporal",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "decay_power_time_curve",
+    "primitives": [
+      "L.inventory",
+      "L.Q_decay",
+      "L.summation",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "fy_error",
+    "decay_data_error",
+    "irradiation_history_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "decay_heat",
+      "forward_operator": "decay_heat_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_nuclides": 1000,
+        "t_cooling_s": 1000,
+        "N_samples": 200,
+        "SNR_dB": 30,
+        "fy_error": 0.0,
+        "decay_data_error": 0.0,
+        "irradiation_history_error": 0.0
+      },
+      "epsilon_fn_center": "25.0"
+    },
+    "allowed_forward_operators": [
+      "decay_heat_forward"
+    ],
+    "allowed_problem_classes": [
+      "decay_heat"
+    ],
+    "allowed_omega_dimensions": [
+      "N_nuclides",
+      "t_cooling_s",
+      "N_samples",
+      "SNR_dB",
+      "fy_error",
+      "decay_data_error",
+      "irradiation_history_error",
+      "fy_error",
+      "decay_data_error",
+      "irradiation_history_error"
+    ],
+    "omega_bounds": {
+      "N_nuclides": [
+        10,
+        3600
+      ],
+      "t_cooling_s": [
+        1,
+        1000000000.0
+      ],
+      "N_samples": [
+        10,
+        100000
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "fy_error": [
+        0.0,
+        0.1
+      ],
+      "decay_data_error": [
+        0.0,
+        0.05
+      ],
+      "irradiation_history_error": [
+        0.0,
+        0.1
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

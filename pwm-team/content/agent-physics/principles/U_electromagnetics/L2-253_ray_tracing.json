@@ -1,0 +1,151 @@
+{
+  "artifact_id": "L2-253",
+  "layer": "L2",
+  "parent_l1": "L1-253",
+  "title": "Ray Tracing (EM) \u2014 wireless propagation model Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "N_rays": [
+        1000,
+        100000000
+      ],
+      "N_walls": [
+        1,
+        100000
+      ],
+      "N_rx": [
+        1,
+        10000
+      ],
+      "freq_GHz": [
+        0.1,
+        300
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "material_eps_error": [
+        0.0,
+        0.3
+      ],
+      "geometry_error": [
+        0.0,
+        0.1
+      ],
+      "antenna_pattern_error": [
+        0.0,
+        0.3
+      ]
+    },
+    "E": {
+      "forward": "P_rx = |sum_paths A_path * exp(-j*k*L_path)|^2 * G_tx * G_rx * (lambda/4pi)^2",
+      "operator": "ray_tracing_em_forward_mismatch",
+      "primitive_chain": "L.source_emit -> L.reflect_diffract -> L.gather_paths -> int.spatial",
+      "inverse": "solve forward for declared state variable under Omega bounds"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "RSSI_error_dB",
+      "residual_norm"
+    ],
+    "epsilon_fn": "1.5 + 5.0*material_eps_error + 10.0*geometry_error + 4.0*antenna_pattern_error"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Image-theory-RT",
+        "method_sig": "L+O",
+        "expected_psnr": 3.5
+      },
+      {
+        "name": "SBR",
+        "method_sig": "L+O",
+        "expected_psnr": 2.8
+      },
+      {
+        "name": "RT-NN",
+        "method_sig": "L+N",
+        "expected_psnr": 2.3
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_rays": 100000,
+        "N_walls": 1000,
+        "N_rx": 64,
+        "freq_GHz": 3.5,
+        "SNR_dB": 30,
+        "material_eps_error": 0.0,
+        "geometry_error": 0.0,
+        "antenna_pattern_error": 0.0
+      },
+      "epsilon": 3.0
+    },
+    "tier_bounds": {
+      "N_rays": [
+        1000,
+        100000000
+      ],
+      "N_walls": [
+        1,
+        100000
+      ],
+      "N_rx": [
+        1,
+        10000
+      ],
+      "freq_GHz": [
+        0.1,
+        300
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "material_eps_error": [
+        0.0,
+        0.3
+      ],
+      "geometry_error": [
+        0.0,
+        0.1
+      ],
+      "antenna_pattern_error": [
+        0.0,
+        0.3
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.48,
+  "d_spec_notes": "Distance computed from problem_class, forward_operator, carrier, integration_axis against neighboring specs; within same principle this spec is mismatch-only canonical and sits at the Omega centroid.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions are consistent across the DAG; forward operator maps state space to measurement space at declared shapes.",
+    "S2": "kappa_eff = 18 within tolerance after regularization; RIP-like or coercivity conditions satisfied over most of Omega.",
+    "S3": "Solvers converge at rate q=1.0 in well-posed regime; mismatch parameters degrade convergence but not divergence.",
+    "S4": "epsilon_fn evaluates across 10+ random Omega samples; hardness rule verified \u2014 no baseline passes everywhere."
+  },
+  "ipfs_cid": null
+}

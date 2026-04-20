@@ -1,0 +1,177 @@
+{
+  "artifact_id": "L1-237",
+  "layer": "L1",
+  "principle_number": "237",
+  "title": "Radar Cross-Section \u2014 backscatter reconstruction",
+  "domain": "Electromagnetics",
+  "sub_domain": "Monostatic / bistatic RCS",
+  "source_file": "U_electromagnetics/237_rcs.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Radar Cross-Section \u2014 backscatter reconstruction forward model.",
+    "forward_model": "sigma_RCS = 4*pi*lim_{r->inf} r^2 * |E_scat|^2 / |E_inc|^2",
+    "world_state_x": "target RCS sigma(theta,phi,f) over aspect angles and frequencies",
+    "observation_y": "radar return amplitude+phase measurements",
+    "physical_parameters_theta": [
+      "N_freqs",
+      "N_angles",
+      "freq_GHz",
+      "SNR_dB",
+      "target_orientation_error",
+      "material_error",
+      "freq_error",
+      "range_error"
+    ]
+  },
+  "G": {
+    "dag": "L.incident_pw -> L.scatter_target -> L.coherent_sum -> int.spatial",
+    "vertices": [
+      "L.incident_pw",
+      "L.scatter_target",
+      "L.coherent_sum",
+      "int.spatial"
+    ],
+    "arcs": [
+      "L.incident_pw -> L.scatter_target",
+      "L.scatter_target -> L.coherent_sum",
+      "L.coherent_sum -> int.spatial"
+    ],
+    "L_DAG": 3.2,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 500,
+    "condition_number_effective": 25,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "PO, GO, Full-MoM",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "em",
+    "sensing_mechanism": "radar_echo",
+    "integration_axis": "spatial",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "rcs_vs_aspect",
+    "primitives": [
+      "L.incident_pw",
+      "L.scatter_target",
+      "L.coherent_sum",
+      "int.spatial"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "target_orientation_error",
+    "material_error",
+    "freq_error",
+    "range_error"
+  ],
+  "error_metric": "RCS_error_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "rcs",
+      "forward_operator": "rcs_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_freqs": 32,
+        "N_angles": 361,
+        "freq_GHz": 10,
+        "SNR_dB": 25,
+        "target_orientation_error": 0.0,
+        "material_error": 0.0,
+        "freq_error": 0.0,
+        "range_error": 0.0
+      },
+      "epsilon_fn_center": "3.0"
+    },
+    "allowed_forward_operators": [
+      "rcs_forward"
+    ],
+    "allowed_problem_classes": [
+      "rcs"
+    ],
+    "allowed_omega_dimensions": [
+      "N_freqs",
+      "N_angles",
+      "freq_GHz",
+      "SNR_dB",
+      "target_orientation_error",
+      "material_error",
+      "freq_error",
+      "range_error",
+      "target_orientation_error",
+      "material_error",
+      "freq_error",
+      "range_error"
+    ],
+    "omega_bounds": {
+      "N_freqs": [
+        1,
+        512
+      ],
+      "N_angles": [
+        36,
+        36000
+      ],
+      "freq_GHz": [
+        0.1,
+        300
+      ],
+      "SNR_dB": [
+        -5,
+        40
+      ],
+      "target_orientation_error": [
+        0.0,
+        0.1
+      ],
+      "material_error": [
+        0.0,
+        0.1
+      ],
+      "freq_error": [
+        0.0,
+        0.02
+      ],
+      "range_error": [
+        0.0,
+        1.0
+      ]
+    },
+    "epsilon_bounds": {
+      "RCS_dB": [
+        0.3,
+        20.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

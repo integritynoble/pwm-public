@@ -1,0 +1,151 @@
+{
+  "artifact_id": "L2-261",
+  "layer": "L2",
+  "parent_l1": "L1-261",
+  "title": "Acoustic Scattering \u2014 boundary element method (BEM) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "N_mesh": [
+        500,
+        200000
+      ],
+      "N_receivers": [
+        16,
+        512
+      ],
+      "N_freqs": [
+        4,
+        128
+      ],
+      "ka": [
+        0.1,
+        50
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "surface_mesh_error": [
+        0.0,
+        0.1
+      ],
+      "impedance_BC_error": [
+        0.0,
+        0.3
+      ],
+      "freq_error": [
+        0.0,
+        0.02
+      ]
+    },
+    "E": {
+      "forward": "p(x) = p_inc(x) - int_Gamma [G(x,y) dp/dn - p dG/dn] dy  (Helmholtz boundary integral)",
+      "operator": "bem_scatter_forward_mismatch",
+      "primitive_chain": "L.source_incident -> L.bem_surface_integral -> S.record.farfield -> int.frequency",
+      "inverse": "solve forward for declared state variable under Omega bounds"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR_dB",
+      "residual_norm"
+    ],
+    "epsilon_fn": "17.0 + 1.5*log2(N_mesh/500) + 0.25*SNR_dB - 25.0*surface_mesh_error - 10.0*impedance_BC_error"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Collocation-BEM",
+        "method_sig": "L+O",
+        "expected_psnr": 22.0
+      },
+      {
+        "name": "Galerkin-BEM",
+        "method_sig": "L+O",
+        "expected_psnr": 24.0
+      },
+      {
+        "name": "FMM-BEM",
+        "method_sig": "L+O",
+        "expected_psnr": 25.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_mesh": 5000,
+        "N_receivers": 64,
+        "N_freqs": 16,
+        "ka": 5,
+        "SNR_dB": 30,
+        "surface_mesh_error": 0.0,
+        "impedance_BC_error": 0.0,
+        "freq_error": 0.0
+      },
+      "epsilon": 24.0
+    },
+    "tier_bounds": {
+      "N_mesh": [
+        500,
+        200000
+      ],
+      "N_receivers": [
+        16,
+        512
+      ],
+      "N_freqs": [
+        4,
+        128
+      ],
+      "ka": [
+        0.1,
+        50
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "surface_mesh_error": [
+        0.0,
+        0.1
+      ],
+      "impedance_BC_error": [
+        0.0,
+        0.3
+      ],
+      "freq_error": [
+        0.0,
+        0.02
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.48,
+  "d_spec_notes": "Distance computed from problem_class, forward_operator, carrier, integration_axis against neighboring specs; within same principle this spec is mismatch-only canonical and sits at the Omega centroid.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions are consistent across the DAG; forward operator maps state space to measurement space at declared shapes.",
+    "S2": "kappa_eff = 35 within tolerance after regularization; RIP-like or coercivity conditions satisfied over most of Omega.",
+    "S3": "Solvers converge at rate q=2.0 in well-posed regime; mismatch parameters degrade convergence but not divergence.",
+    "S4": "epsilon_fn evaluates across 10+ random Omega samples; hardness rule verified \u2014 no baseline passes everywhere."
+  },
+  "ipfs_cid": null
+}

@@ -1,0 +1,182 @@
+{
+  "artifact_id": "L1-180",
+  "layer": "L1",
+  "principle_number": "180",
+  "title": "DNS \u2014 direct numerical simulation",
+  "domain": "Fluid Dynamics",
+  "sub_domain": "Full resolution of Kolmogorov scales",
+  "source_file": "R_fluid_dynamics/180_dns.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "DNS \u2014 direct numerical simulation forward model.",
+    "forward_model": "Full NS without any turbulence model; grid sufficient to resolve Kolmogorov eta",
+    "world_state_x": "instantaneous u(x,t), p(x,t) at all scales",
+    "observation_y": "reference DNS data (Johns Hopkins / Lawrence Livermore)",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "Z",
+      "N_times",
+      "Re_lambda",
+      "SNR_dB",
+      "grid_sufficiency_error",
+      "time_step_error",
+      "bc_error"
+    ]
+  },
+  "G": {
+    "dag": "L.momentum -> L.continuity -> L.spectral_or_fd -> int.temporal",
+    "vertices": [
+      "L.momentum",
+      "L.continuity",
+      "L.spectral_or_fd",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.momentum -> L.continuity",
+      "L.continuity -> L.spectral_or_fd",
+      "L.spectral_or_fd -> int.temporal"
+    ],
+    "L_DAG": 3.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 800,
+    "condition_number_effective": 40,
+    "regime": "Most-expensive; Re^{9/4} grid points required."
+  },
+  "C": {
+    "solver_class": "Pseudo-spectral, Nek5000-DNS, OpenFOAM-DNS",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "mechanical",
+    "sensing_mechanism": "dns_reference_data",
+    "integration_axis": "temporal",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "fully_resolved_NS_solution",
+    "primitives": [
+      "L.momentum",
+      "L.continuity",
+      "L.spectral_or_fd",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 10,
+  "difficulty_tier": "hard",
+  "mismatch_parameters": [
+    "grid_sufficiency_error",
+    "time_step_error",
+    "bc_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "dns",
+      "forward_operator": "dns_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 1024,
+        "W": 1024,
+        "Z": 512,
+        "N_times": 10000,
+        "Re_lambda": 100,
+        "SNR_dB": 40,
+        "grid_sufficiency_error": 0.0,
+        "time_step_error": 0.0,
+        "bc_error": 0.0
+      },
+      "epsilon_fn_center": "22.0"
+    },
+    "allowed_forward_operators": [
+      "dns_forward"
+    ],
+    "allowed_problem_classes": [
+      "dns"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "Z",
+      "N_times",
+      "Re_lambda",
+      "SNR_dB",
+      "grid_sufficiency_error",
+      "time_step_error",
+      "bc_error",
+      "grid_sufficiency_error",
+      "time_step_error",
+      "bc_error"
+    ],
+    "omega_bounds": {
+      "H": [
+        256,
+        16384
+      ],
+      "W": [
+        256,
+        16384
+      ],
+      "Z": [
+        128,
+        8192
+      ],
+      "N_times": [
+        1000,
+        10000000
+      ],
+      "Re_lambda": [
+        10,
+        2000
+      ],
+      "SNR_dB": [
+        10,
+        60
+      ],
+      "grid_sufficiency_error": [
+        0.0,
+        0.2
+      ],
+      "time_step_error": [
+        0.0,
+        0.1
+      ],
+      "bc_error": [
+        0.0,
+        0.2
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

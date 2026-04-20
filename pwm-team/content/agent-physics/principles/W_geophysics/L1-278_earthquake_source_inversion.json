@@ -1,0 +1,168 @@
+{
+  "artifact_id": "L1-278",
+  "layer": "L1",
+  "principle_number": "278",
+  "title": "Earthquake Source Inversion \u2014 finite-fault slip",
+  "domain": "Geophysics",
+  "sub_domain": "Finite-fault slip from teleseismic + strong-motion",
+  "source_file": "W_geophysics/278_earthquake_source_inversion.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Earthquake Source Inversion \u2014 finite-fault slip forward model.",
+    "forward_model": "u_obs(x_r, t) = int_fault G(x_r, x_s, t) * S(x_s, t) dA",
+    "world_state_x": "slip distribution S(x,y,t) on assumed fault plane",
+    "observation_y": "teleseismic + strong-motion + GPS / InSAR co-seismic",
+    "physical_parameters_theta": [
+      "N_subfaults",
+      "N_stations",
+      "N_samples",
+      "SNR_dB",
+      "green_function_error",
+      "rupture_velocity_error",
+      "fault_geometry_error"
+    ]
+  },
+  "G": {
+    "dag": "L.green_function -> L.source_time -> L.linearize -> int.temporal",
+    "vertices": [
+      "L.green_function",
+      "L.source_time",
+      "L.linearize",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.green_function -> L.source_time",
+      "L.source_time -> L.linearize",
+      "L.linearize -> int.temporal"
+    ],
+    "L_DAG": 3.7,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "unstable",
+    "condition_number_kappa": 800,
+    "condition_number_effective": 40,
+    "regime": "Ill-posed for finite-fault; regularization essential."
+  },
+  "C": {
+    "solver_class": "Linear-inverse, Non-negative-LS, SLIP-Net",
+    "convergence_rate_q": 1.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "acoustic",
+    "sensing_mechanism": "teleseismic_strong_motion_gps",
+    "integration_axis": "temporal",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "2D_slip_distribution",
+    "primitives": [
+      "L.green_function",
+      "L.source_time",
+      "L.linearize",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 10,
+  "difficulty_tier": "hard",
+  "mismatch_parameters": [
+    "green_function_error",
+    "rupture_velocity_error",
+    "fault_geometry_error"
+  ],
+  "error_metric": "slip_correlation_percent",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "finite_fault",
+      "forward_operator": "finite_fault_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_subfaults": 200,
+        "N_stations": 50,
+        "N_samples": 2048,
+        "SNR_dB": 25,
+        "green_function_error": 0.1,
+        "rupture_velocity_error": 0.0,
+        "fault_geometry_error": 0.0
+      },
+      "epsilon_fn_center": "25.0"
+    },
+    "allowed_forward_operators": [
+      "finite_fault_forward"
+    ],
+    "allowed_problem_classes": [
+      "finite_fault"
+    ],
+    "allowed_omega_dimensions": [
+      "N_subfaults",
+      "N_stations",
+      "N_samples",
+      "SNR_dB",
+      "green_function_error",
+      "rupture_velocity_error",
+      "fault_geometry_error",
+      "green_function_error",
+      "rupture_velocity_error",
+      "fault_geometry_error"
+    ],
+    "omega_bounds": {
+      "N_subfaults": [
+        10,
+        10000
+      ],
+      "N_stations": [
+        5,
+        1000
+      ],
+      "N_samples": [
+        100,
+        65536
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "green_function_error": [
+        0.0,
+        0.3
+      ],
+      "rupture_velocity_error": [
+        0.0,
+        0.3
+      ],
+      "fault_geometry_error": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

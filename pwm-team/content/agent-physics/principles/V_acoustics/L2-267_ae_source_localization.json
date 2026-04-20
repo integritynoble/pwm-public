@@ -1,0 +1,151 @@
+{
+  "artifact_id": "L2-267",
+  "layer": "L2",
+  "parent_l1": "L1-267",
+  "title": "Acoustic Emission \u2014 source localization Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "N_sensors": [
+        4,
+        128
+      ],
+      "N_events": [
+        10,
+        10000
+      ],
+      "fs_MHz": [
+        0.1,
+        40
+      ],
+      "SNR_dB": [
+        -5,
+        40
+      ],
+      "sensor_pos_error": [
+        0.0,
+        0.05
+      ],
+      "wave_speed_error": [
+        0.0,
+        0.1
+      ],
+      "pick_time_error": [
+        0.0,
+        10.0
+      ],
+      "anisotropy": [
+        0.0,
+        0.3
+      ]
+    },
+    "E": {
+      "forward": "t_i = t_0 + ||x_s - x_i|| / c; solve for x_s from TDOA = t_i - t_j",
+      "operator": "ae_tdoa_forward_mismatch",
+      "primitive_chain": "S.array_capture -> L.tdoa -> L.hyperboloid_intersect -> int.temporal",
+      "inverse": "solve forward for declared state variable under Omega bounds"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "localization_MAE_mm",
+      "residual_norm"
+    ],
+    "epsilon_fn": "2.0 + 100.0*sensor_pos_error + 30.0*wave_speed_error + 0.5*pick_time_error + 10.0*anisotropy"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Geiger-iterative",
+        "method_sig": "I+O",
+        "expected_psnr": 4.0
+      },
+      {
+        "name": "Akaike-AIC",
+        "method_sig": "L+O",
+        "expected_psnr": 3.5
+      },
+      {
+        "name": "Deep-AE-loc",
+        "method_sig": "L+N",
+        "expected_psnr": 2.8
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_sensors": 8,
+        "N_events": 100,
+        "fs_MHz": 1,
+        "SNR_dB": 20,
+        "sensor_pos_error": 0.0,
+        "wave_speed_error": 0.0,
+        "pick_time_error": 0.0,
+        "anisotropy": 0.0
+      },
+      "epsilon": 5.0
+    },
+    "tier_bounds": {
+      "N_sensors": [
+        4,
+        128
+      ],
+      "N_events": [
+        10,
+        10000
+      ],
+      "fs_MHz": [
+        0.1,
+        40
+      ],
+      "SNR_dB": [
+        -5,
+        40
+      ],
+      "sensor_pos_error": [
+        0.0,
+        0.05
+      ],
+      "wave_speed_error": [
+        0.0,
+        0.1
+      ],
+      "pick_time_error": [
+        0.0,
+        10.0
+      ],
+      "anisotropy": [
+        0.0,
+        0.3
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.48,
+  "d_spec_notes": "Distance computed from problem_class, forward_operator, carrier, integration_axis against neighboring specs; within same principle this spec is mismatch-only canonical and sits at the Omega centroid.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions are consistent across the DAG; forward operator maps state space to measurement space at declared shapes.",
+    "S2": "kappa_eff = 25 within tolerance after regularization; RIP-like or coercivity conditions satisfied over most of Omega.",
+    "S3": "Solvers converge at rate q=1.0 in well-posed regime; mismatch parameters degrade convergence but not divergence.",
+    "S4": "epsilon_fn evaluates across 10+ random Omega samples; hardness rule verified \u2014 no baseline passes everywhere."
+  },
+  "ipfs_cid": null
+}

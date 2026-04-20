@@ -1,0 +1,168 @@
+{
+  "artifact_id": "L1-346",
+  "layer": "L1",
+  "principle_number": "346",
+  "title": "PIC (Particle-in-Cell) \u2014 plasma kinetic simulation",
+  "domain": "Plasma Physics",
+  "sub_domain": "PIC kinetic plasma simulation",
+  "source_file": "AA_plasma_physics/346_pic.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "PIC (Particle-in-Cell) \u2014 plasma kinetic simulation forward model.",
+    "forward_model": "dm_i v_i/dt = q(E + v x B) at x_i; rho = sum_i q_i * S(x - x_i); Maxwell solver",
+    "world_state_x": "particle-cloud distribution + self-consistent E, B fields",
+    "observation_y": "probe currents + imaging cameras + Langmuir probes",
+    "physical_parameters_theta": [
+      "N_particles",
+      "N_cells",
+      "N_times",
+      "SNR_dB",
+      "statistical_noise",
+      "grid_dispersion_error",
+      "initial_dist_error"
+    ]
+  },
+  "G": {
+    "dag": "L.particle_push -> L.field_interpolate -> L.charge_deposit -> int.temporal",
+    "vertices": [
+      "L.particle_push",
+      "L.field_interpolate",
+      "L.charge_deposit",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.particle_push -> L.field_interpolate",
+      "L.field_interpolate -> L.charge_deposit",
+      "L.charge_deposit -> int.temporal"
+    ],
+    "L_DAG": 3.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 600,
+    "condition_number_effective": 30,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "VPIC, WarpX, OSIRIS",
+    "convergence_rate_q": 1.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "plasma",
+    "sensing_mechanism": "probes_cameras",
+    "integration_axis": "temporal",
+    "problem_class": "linear_inverse",
+    "noise_model": "poisson",
+    "solution_space": "particle_trajectories_plus_fields",
+    "primitives": [
+      "L.particle_push",
+      "L.field_interpolate",
+      "L.charge_deposit",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "statistical_noise",
+    "grid_dispersion_error",
+    "initial_dist_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "pic",
+      "forward_operator": "pic_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_particles": 100000000.0,
+        "N_cells": 1000000.0,
+        "N_times": 5000,
+        "SNR_dB": 25,
+        "statistical_noise": 0.0,
+        "grid_dispersion_error": 0.0,
+        "initial_dist_error": 0.0
+      },
+      "epsilon_fn_center": "22.0"
+    },
+    "allowed_forward_operators": [
+      "pic_forward"
+    ],
+    "allowed_problem_classes": [
+      "pic"
+    ],
+    "allowed_omega_dimensions": [
+      "N_particles",
+      "N_cells",
+      "N_times",
+      "SNR_dB",
+      "statistical_noise",
+      "grid_dispersion_error",
+      "initial_dist_error",
+      "statistical_noise",
+      "grid_dispersion_error",
+      "initial_dist_error"
+    ],
+    "omega_bounds": {
+      "N_particles": [
+        10000.0,
+        10000000000000.0
+      ],
+      "N_cells": [
+        1000.0,
+        10000000000.0
+      ],
+      "N_times": [
+        100,
+        10000000
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "statistical_noise": [
+        0.0,
+        0.3
+      ],
+      "grid_dispersion_error": [
+        0.0,
+        0.2
+      ],
+      "initial_dist_error": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

@@ -1,0 +1,151 @@
+{
+  "artifact_id": "L2-206",
+  "layer": "L2",
+  "parent_l1": "L1-206",
+  "title": "Cryogenic Storage Boiloff \u2014 MLI heat-leak estimation Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "N_layers": [
+        1,
+        100
+      ],
+      "T_h_K": [
+        77,
+        500
+      ],
+      "T_c_K": [
+        4,
+        250
+      ],
+      "N_samples": [
+        10,
+        10000
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "layer_emissivity_error": [
+        0.0,
+        0.3
+      ],
+      "vacuum_pressure_error": [
+        0.0,
+        0.001
+      ],
+      "layer_spacing_error": [
+        0.0,
+        0.3
+      ]
+    },
+    "E": {
+      "forward": "q_leak = q_rad + q_gas + q_solid; q_rad = sigma(T_h^4 - T_c^4)/((N-1)(2/eps - 1))",
+      "operator": "mli_boiloff_forward_mismatch",
+      "primitive_chain": "L.radiation_between_layers -> L.gas_conduction -> L.solid_conduction -> int.temporal",
+      "inverse": "solve forward for declared state variable under Omega bounds"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR_dB",
+      "residual_norm"
+    ],
+    "epsilon_fn": "18.0 + 0.3*SNR_dB - 15.0*layer_emissivity_error - 5000.0*vacuum_pressure_error - 8.0*layer_spacing_error"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Lockheed-eqn",
+        "method_sig": "L+O",
+        "expected_psnr": 22.0
+      },
+      {
+        "name": "MLI-net",
+        "method_sig": "L+N",
+        "expected_psnr": 25.0
+      },
+      {
+        "name": "Finite-layer",
+        "method_sig": "I+O",
+        "expected_psnr": 24.0
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_layers": 20,
+        "T_h_K": 300,
+        "T_c_K": 77,
+        "N_samples": 200,
+        "SNR_dB": 30,
+        "layer_emissivity_error": 0.0,
+        "vacuum_pressure_error": 0.0,
+        "layer_spacing_error": 0.0
+      },
+      "epsilon": 24.0
+    },
+    "tier_bounds": {
+      "N_layers": [
+        1,
+        100
+      ],
+      "T_h_K": [
+        77,
+        500
+      ],
+      "T_c_K": [
+        4,
+        250
+      ],
+      "N_samples": [
+        10,
+        10000
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "layer_emissivity_error": [
+        0.0,
+        0.3
+      ],
+      "vacuum_pressure_error": [
+        0.0,
+        0.001
+      ],
+      "layer_spacing_error": [
+        0.0,
+        0.3
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.48,
+  "d_spec_notes": "Distance computed from problem_class, forward_operator, carrier, integration_axis against neighboring specs; within same principle this spec is mismatch-only canonical and sits at the Omega centroid.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions are consistent across the DAG; forward operator maps state space to measurement space at declared shapes.",
+    "S2": "kappa_eff = 10 within tolerance after regularization; RIP-like or coercivity conditions satisfied over most of Omega.",
+    "S3": "Solvers converge at rate q=2.0 in well-posed regime; mismatch parameters degrade convergence but not divergence.",
+    "S4": "epsilon_fn evaluates across 10+ random Omega samples; hardness rule verified \u2014 no baseline passes everywhere."
+  },
+  "ipfs_cid": null
+}

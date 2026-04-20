@@ -1,0 +1,168 @@
+{
+  "artifact_id": "L1-213",
+  "layer": "L1",
+  "principle_number": "213",
+  "title": "Modal Analysis \u2014 natural frequencies and mode shapes",
+  "domain": "Structural Mechanics",
+  "sub_domain": "Generalized eigenvalue for structures",
+  "source_file": "T_structural_mechanics/213_modal_analysis.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Modal Analysis \u2014 natural frequencies and mode shapes forward model.",
+    "forward_model": "K phi_k = omega_k^2 M phi_k; modal superposition u(t) = sum_k q_k(t) phi_k",
+    "world_state_x": "modal frequencies omega_k and mode shapes phi_k(x)",
+    "observation_y": "FRF H(omega) at sensor set under impact hammer / shaker",
+    "physical_parameters_theta": [
+      "N_DOF",
+      "N_modes",
+      "N_sensors",
+      "SNR_dB",
+      "stiffness_error",
+      "mass_error",
+      "bc_error"
+    ]
+  },
+  "G": {
+    "dag": "L.mass_stiffness -> L.eigenvalue_solve -> L.mode_sort -> int.frequency",
+    "vertices": [
+      "L.mass_stiffness",
+      "L.eigenvalue_solve",
+      "L.mode_sort",
+      "int.frequency"
+    ],
+    "arcs": [
+      "L.mass_stiffness -> L.eigenvalue_solve",
+      "L.eigenvalue_solve -> L.mode_sort",
+      "L.mode_sort -> int.frequency"
+    ],
+    "L_DAG": 3.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 240,
+    "condition_number_effective": 12,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Lanczos, subspace-iter, AMLS",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "mechanical",
+    "sensing_mechanism": "accelerometers",
+    "integration_axis": "frequency",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "modal_set_frequencies_shapes",
+    "primitives": [
+      "L.mass_stiffness",
+      "L.eigenvalue_solve",
+      "L.mode_sort",
+      "int.frequency"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "stiffness_error",
+    "mass_error",
+    "bc_error"
+  ],
+  "error_metric": "freq_rel_error_percent",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "modal",
+      "forward_operator": "modal_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_DOF": 5000,
+        "N_modes": 30,
+        "N_sensors": 16,
+        "SNR_dB": 30,
+        "stiffness_error": 0.0,
+        "mass_error": 0.0,
+        "bc_error": 0.0
+      },
+      "epsilon_fn_center": "2.0"
+    },
+    "allowed_forward_operators": [
+      "modal_forward"
+    ],
+    "allowed_problem_classes": [
+      "modal"
+    ],
+    "allowed_omega_dimensions": [
+      "N_DOF",
+      "N_modes",
+      "N_sensors",
+      "SNR_dB",
+      "stiffness_error",
+      "mass_error",
+      "bc_error",
+      "stiffness_error",
+      "mass_error",
+      "bc_error"
+    ],
+    "omega_bounds": {
+      "N_DOF": [
+        100,
+        500000
+      ],
+      "N_modes": [
+        3,
+        500
+      ],
+      "N_sensors": [
+        2,
+        256
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "stiffness_error": [
+        0.0,
+        0.1
+      ],
+      "mass_error": [
+        0.0,
+        0.1
+      ],
+      "bc_error": [
+        0.0,
+        0.2
+      ]
+    },
+    "epsilon_bounds": {
+      "freq_rel_error": [
+        0.1,
+        20.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

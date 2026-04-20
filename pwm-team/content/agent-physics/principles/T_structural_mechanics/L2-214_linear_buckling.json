@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L2-214",
+  "layer": "L2",
+  "parent_l1": "L1-214",
+  "title": "Linear Buckling \u2014 eigenvalue stability analysis Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "N_DOF": [
+        100,
+        500000
+      ],
+      "N_modes": [
+        1,
+        50
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "geom_imperfect_error": [
+        0.0,
+        0.1
+      ],
+      "material_error": [
+        0.0,
+        0.1
+      ],
+      "bc_error": [
+        0.0,
+        0.2
+      ],
+      "load_path_error": [
+        0.0,
+        0.1
+      ]
+    },
+    "E": {
+      "forward": "(K + lambda_cr K_G(u_0)) phi_cr = 0; smallest lambda_cr is buckling load factor",
+      "operator": "buckling_forward_mismatch",
+      "primitive_chain": "L.geom_stiffness -> L.eigenvalue -> L.critical_mode -> int.spatial",
+      "inverse": "solve forward for declared state variable under Omega bounds"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "lambda_cr_rel_error_percent",
+      "residual_norm"
+    ],
+    "epsilon_fn": "2.0 + 30.0*geom_imperfect_error + 20.0*material_error + 10.0*bc_error + 10.0*load_path_error"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Euler-formula",
+        "method_sig": "L+O",
+        "expected_psnr": 6.0
+      },
+      {
+        "name": "FEM-linear-buckle",
+        "method_sig": "L+O",
+        "expected_psnr": 4.5
+      },
+      {
+        "name": "Koiter-initial-post",
+        "method_sig": "L+O",
+        "expected_psnr": 3.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_DOF": 5000,
+        "N_modes": 10,
+        "SNR_dB": 30,
+        "geom_imperfect_error": 0.0,
+        "material_error": 0.0,
+        "bc_error": 0.0,
+        "load_path_error": 0.0
+      },
+      "epsilon": 5.0
+    },
+    "tier_bounds": {
+      "N_DOF": [
+        100,
+        500000
+      ],
+      "N_modes": [
+        1,
+        50
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "geom_imperfect_error": [
+        0.0,
+        0.1
+      ],
+      "material_error": [
+        0.0,
+        0.1
+      ],
+      "bc_error": [
+        0.0,
+        0.2
+      ],
+      "load_path_error": [
+        0.0,
+        0.1
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.48,
+  "d_spec_notes": "Distance computed from problem_class, forward_operator, carrier, integration_axis against neighboring specs; within same principle this spec is mismatch-only canonical and sits at the Omega centroid.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions are consistent across the DAG; forward operator maps state space to measurement space at declared shapes.",
+    "S2": "kappa_eff = 20 within tolerance after regularization; RIP-like or coercivity conditions satisfied over most of Omega.",
+    "S3": "Solvers converge at rate q=2.0 in well-posed regime; mismatch parameters degrade convergence but not divergence.",
+    "S4": "epsilon_fn evaluates across 10+ random Omega samples; hardness rule verified \u2014 no baseline passes everywhere."
+  },
+  "ipfs_cid": null
+}

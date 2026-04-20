@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L2-346",
+  "layer": "L2",
+  "parent_l1": "L1-346",
+  "title": "PIC (Particle-in-Cell) \u2014 plasma kinetic simulation Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "N_particles": [
+        10000.0,
+        10000000000000.0
+      ],
+      "N_cells": [
+        1000.0,
+        10000000000.0
+      ],
+      "N_times": [
+        100,
+        10000000
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "statistical_noise": [
+        0.0,
+        0.3
+      ],
+      "grid_dispersion_error": [
+        0.0,
+        0.2
+      ],
+      "initial_dist_error": [
+        0.0,
+        0.3
+      ]
+    },
+    "E": {
+      "forward": "dm_i v_i/dt = q(E + v x B) at x_i; rho = sum_i q_i * S(x - x_i); Maxwell solver",
+      "operator": "pic_forward_mismatch",
+      "primitive_chain": "L.particle_push -> L.field_interpolate -> L.charge_deposit -> int.temporal",
+      "inverse": "solve forward for declared state variable under Omega bounds"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR_dB",
+      "residual_norm"
+    ],
+    "epsilon_fn": "15.0 + 0.3*SNR_dB - 10.0*statistical_noise - 15.0*grid_dispersion_error - 10.0*initial_dist_error"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "VPIC",
+        "method_sig": "I+O",
+        "expected_psnr": 20.5
+      },
+      {
+        "name": "WarpX",
+        "method_sig": "I+O",
+        "expected_psnr": 21.0
+      },
+      {
+        "name": "OSIRIS",
+        "method_sig": "I+O",
+        "expected_psnr": 21.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_particles": 100000000.0,
+        "N_cells": 1000000.0,
+        "N_times": 5000,
+        "SNR_dB": 25,
+        "statistical_noise": 0.0,
+        "grid_dispersion_error": 0.0,
+        "initial_dist_error": 0.0
+      },
+      "epsilon": 22.0
+    },
+    "tier_bounds": {
+      "N_particles": [
+        10000.0,
+        10000000000000.0
+      ],
+      "N_cells": [
+        1000.0,
+        10000000000.0
+      ],
+      "N_times": [
+        100,
+        10000000
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "statistical_noise": [
+        0.0,
+        0.3
+      ],
+      "grid_dispersion_error": [
+        0.0,
+        0.2
+      ],
+      "initial_dist_error": [
+        0.0,
+        0.3
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.48,
+  "d_spec_notes": "Distance computed from problem_class, forward_operator, carrier, integration_axis against neighboring specs; within same principle this spec is mismatch-only canonical and sits at the Omega centroid.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions are consistent across the DAG; forward operator maps state space to measurement space at declared shapes.",
+    "S2": "kappa_eff = 30 within tolerance after regularization; RIP-like or coercivity conditions satisfied over most of Omega.",
+    "S3": "Solvers converge at rate q=1.0 in well-posed regime; mismatch parameters degrade convergence but not divergence.",
+    "S4": "epsilon_fn evaluates across 10+ random Omega samples; hardness rule verified \u2014 no baseline passes everywhere."
+  },
+  "ipfs_cid": null
+}

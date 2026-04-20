@@ -1,0 +1,154 @@
+{
+  "artifact_id": "L1-293",
+  "layer": "L1",
+  "principle_number": "293",
+  "title": "Subsurface Temperature \u2014 geothermal gradient inversion",
+  "domain": "Geophysics",
+  "sub_domain": "Borehole temperature geothermal gradient",
+  "source_file": "W_geophysics/293_subsurface_temperature.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Subsurface Temperature \u2014 geothermal gradient inversion forward model.",
+    "forward_model": "q = -k * dT/dz; steady-state T(z) = T_surf + q/k * z + paleoclimate perturbation",
+    "world_state_x": "geothermal gradient dT/dz, heat flux q, paleoclimate history",
+    "observation_y": "borehole temperature log T(z) at multiple depths",
+    "physical_parameters_theta": [
+      "N_depths",
+      "SNR_dB",
+      "thermal_conductivity_error",
+      "surface_temp_error",
+      "terrain_error"
+    ]
+  },
+  "G": {
+    "dag": "L.1d_heat_conduction -> L.heat_flux -> L.paleoclimate_signal -> int.spatial",
+    "vertices": [
+      "L.1d_heat_conduction",
+      "L.heat_flux",
+      "L.paleoclimate_signal",
+      "int.spatial"
+    ],
+    "arcs": [
+      "L.1d_heat_conduction -> L.heat_flux",
+      "L.heat_flux -> L.paleoclimate_signal",
+      "L.paleoclimate_signal -> int.spatial"
+    ],
+    "L_DAG": 3.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 240,
+    "condition_number_effective": 12,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Linear-gradient, Paleoclim-inv, Temp-NN",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "thermal",
+    "sensing_mechanism": "borehole_temperature_log",
+    "integration_axis": "spatial",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "temperature_depth_profile",
+    "primitives": [
+      "L.1d_heat_conduction",
+      "L.heat_flux",
+      "L.paleoclimate_signal",
+      "int.spatial"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "thermal_conductivity_error",
+    "surface_temp_error",
+    "terrain_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "subsurface_temp",
+      "forward_operator": "subsurface_temp_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_depths": 500,
+        "SNR_dB": 40,
+        "thermal_conductivity_error": 0.0,
+        "surface_temp_error": 0.0,
+        "terrain_error": 0.0
+      },
+      "epsilon_fn_center": "26.0"
+    },
+    "allowed_forward_operators": [
+      "subsurface_temp_forward"
+    ],
+    "allowed_problem_classes": [
+      "subsurface_temp"
+    ],
+    "allowed_omega_dimensions": [
+      "N_depths",
+      "SNR_dB",
+      "thermal_conductivity_error",
+      "surface_temp_error",
+      "terrain_error",
+      "thermal_conductivity_error",
+      "surface_temp_error",
+      "terrain_error"
+    ],
+    "omega_bounds": {
+      "N_depths": [
+        10,
+        10000
+      ],
+      "SNR_dB": [
+        10,
+        60
+      ],
+      "thermal_conductivity_error": [
+        0.0,
+        0.1
+      ],
+      "surface_temp_error": [
+        0.0,
+        2.0
+      ],
+      "terrain_error": [
+        0.0,
+        0.2
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

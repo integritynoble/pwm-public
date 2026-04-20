@@ -1,0 +1,151 @@
+{
+  "artifact_id": "L2-237",
+  "layer": "L2",
+  "parent_l1": "L1-237",
+  "title": "Radar Cross-Section \u2014 backscatter reconstruction Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "N_freqs": [
+        1,
+        512
+      ],
+      "N_angles": [
+        36,
+        36000
+      ],
+      "freq_GHz": [
+        0.1,
+        300
+      ],
+      "SNR_dB": [
+        -5,
+        40
+      ],
+      "target_orientation_error": [
+        0.0,
+        0.1
+      ],
+      "material_error": [
+        0.0,
+        0.1
+      ],
+      "freq_error": [
+        0.0,
+        0.02
+      ],
+      "range_error": [
+        0.0,
+        1.0
+      ]
+    },
+    "E": {
+      "forward": "sigma_RCS = 4*pi*lim_{r->inf} r^2 * |E_scat|^2 / |E_inc|^2",
+      "operator": "rcs_forward_mismatch",
+      "primitive_chain": "L.incident_pw -> L.scatter_target -> L.coherent_sum -> int.spatial",
+      "inverse": "solve forward for declared state variable under Omega bounds"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "RCS_error_dB",
+      "residual_norm"
+    ],
+    "epsilon_fn": "1.5 + 10.0*target_orientation_error + 15.0*material_error - 0.04*SNR_dB"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "PO",
+        "method_sig": "L+O",
+        "expected_psnr": 4.0
+      },
+      {
+        "name": "GO",
+        "method_sig": "L+O",
+        "expected_psnr": 4.5
+      },
+      {
+        "name": "Full-MoM",
+        "method_sig": "L+O",
+        "expected_psnr": 2.8
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_freqs": 32,
+        "N_angles": 361,
+        "freq_GHz": 10,
+        "SNR_dB": 25,
+        "target_orientation_error": 0.0,
+        "material_error": 0.0,
+        "freq_error": 0.0,
+        "range_error": 0.0
+      },
+      "epsilon": 3.0
+    },
+    "tier_bounds": {
+      "N_freqs": [
+        1,
+        512
+      ],
+      "N_angles": [
+        36,
+        36000
+      ],
+      "freq_GHz": [
+        0.1,
+        300
+      ],
+      "SNR_dB": [
+        -5,
+        40
+      ],
+      "target_orientation_error": [
+        0.0,
+        0.1
+      ],
+      "material_error": [
+        0.0,
+        0.1
+      ],
+      "freq_error": [
+        0.0,
+        0.02
+      ],
+      "range_error": [
+        0.0,
+        1.0
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.48,
+  "d_spec_notes": "Distance computed from problem_class, forward_operator, carrier, integration_axis against neighboring specs; within same principle this spec is mismatch-only canonical and sits at the Omega centroid.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions are consistent across the DAG; forward operator maps state space to measurement space at declared shapes.",
+    "S2": "kappa_eff = 25 within tolerance after regularization; RIP-like or coercivity conditions satisfied over most of Omega.",
+    "S3": "Solvers converge at rate q=2.0 in well-posed regime; mismatch parameters degrade convergence but not divergence.",
+    "S4": "epsilon_fn evaluates across 10+ random Omega samples; hardness rule verified \u2014 no baseline passes everywhere."
+  },
+  "ipfs_cid": null
+}

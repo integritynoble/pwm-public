@@ -1,0 +1,161 @@
+{
+  "artifact_id": "L1-249",
+  "layer": "L1",
+  "principle_number": "249",
+  "title": "Metamaterial / Metasurface \u2014 effective medium inversion",
+  "domain": "Electromagnetics",
+  "sub_domain": "Effective permittivity/permeability retrieval",
+  "source_file": "U_electromagnetics/249_metamaterial.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Metamaterial / Metasurface \u2014 effective medium inversion forward model.",
+    "forward_model": "n_eff = (1/kd)*arccos((1 - S11^2 + S21^2)/(2*S21)); Z_eff from S-parameters",
+    "world_state_x": "effective eps_eff(omega), mu_eff(omega), n_eff(omega)",
+    "observation_y": "S11, S21 magnitude and phase vs frequency",
+    "physical_parameters_theta": [
+      "N_freqs",
+      "N_unit_cells",
+      "SNR_dB",
+      "unit_cell_geometry_error",
+      "spatial_dispersion_error",
+      "loss_error"
+    ]
+  },
+  "G": {
+    "dag": "L.unit_cell_sim -> L.s_param_extract -> L.n_eff_retrieve -> int.frequency",
+    "vertices": [
+      "L.unit_cell_sim",
+      "L.s_param_extract",
+      "L.n_eff_retrieve",
+      "int.frequency"
+    ],
+    "arcs": [
+      "L.unit_cell_sim -> L.s_param_extract",
+      "L.s_param_extract -> L.n_eff_retrieve",
+      "L.n_eff_retrieve -> int.frequency"
+    ],
+    "L_DAG": 3.2,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 400,
+    "condition_number_effective": 20,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "NRW-retrieval, Smith-retrieval, Meta-NN",
+    "convergence_rate_q": 1.5,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "em",
+    "sensing_mechanism": "s_params",
+    "integration_axis": "frequency",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "effective_medium_params",
+    "primitives": [
+      "L.unit_cell_sim",
+      "L.s_param_extract",
+      "L.n_eff_retrieve",
+      "int.frequency"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "unit_cell_geometry_error",
+    "spatial_dispersion_error",
+    "loss_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "meta_extract",
+      "forward_operator": "meta_extract_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_freqs": 401,
+        "N_unit_cells": 10,
+        "SNR_dB": 40,
+        "unit_cell_geometry_error": 0.0,
+        "spatial_dispersion_error": 0.0,
+        "loss_error": 0.0
+      },
+      "epsilon_fn_center": "24.0"
+    },
+    "allowed_forward_operators": [
+      "meta_extract_forward"
+    ],
+    "allowed_problem_classes": [
+      "meta_extract"
+    ],
+    "allowed_omega_dimensions": [
+      "N_freqs",
+      "N_unit_cells",
+      "SNR_dB",
+      "unit_cell_geometry_error",
+      "spatial_dispersion_error",
+      "loss_error",
+      "unit_cell_geometry_error",
+      "spatial_dispersion_error",
+      "loss_error"
+    ],
+    "omega_bounds": {
+      "N_freqs": [
+        11,
+        10001
+      ],
+      "N_unit_cells": [
+        1,
+        100
+      ],
+      "SNR_dB": [
+        10,
+        60
+      ],
+      "unit_cell_geometry_error": [
+        0.0,
+        0.05
+      ],
+      "spatial_dispersion_error": [
+        0.0,
+        0.3
+      ],
+      "loss_error": [
+        0.0,
+        0.2
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

@@ -1,0 +1,191 @@
+{
+  "artifact_id": "L1-361",
+  "layer": "L1",
+  "principle_number": "361",
+  "title": "Gamma-Ray Shielding \u2014 deep-penetration attenuation",
+  "domain": "Nuclear Engineering",
+  "sub_domain": "Deep-penetration point-kernel / SN for gamma shielding",
+  "source_file": "AB_nuclear_engineering/361_gamma_ray_shielding.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Gamma-Ray Shielding \u2014 deep-penetration attenuation forward model.",
+    "forward_model": "D(x) = B(mu*r, E) * S/(4*pi*r^2) * exp(-mu(E)*r); buildup B accounts for scatter",
+    "world_state_x": "gamma dose rate D(x,E) behind shield",
+    "observation_y": "dose rate / ion chamber readings at N_d monitor positions",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "Z",
+      "N_energies",
+      "N_detectors",
+      "SNR_dB",
+      "mu_error",
+      "buildup_factor_error",
+      "geometry_error",
+      "source_spectrum_error"
+    ]
+  },
+  "G": {
+    "dag": "L.source_emit -> L.exp_attenuation -> L.buildup_factor -> int.energy",
+    "vertices": [
+      "L.source_emit",
+      "L.exp_attenuation",
+      "L.buildup_factor",
+      "int.energy"
+    ],
+    "arcs": [
+      "L.source_emit -> L.exp_attenuation",
+      "L.exp_attenuation -> L.buildup_factor",
+      "L.buildup_factor -> int.energy"
+    ],
+    "L_DAG": 3.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 400,
+    "condition_number_effective": 20,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Point-kernel, ATTILA, MCNP-gamma",
+    "convergence_rate_q": 1.5,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "dose_rate_detectors",
+    "integration_axis": "energy",
+    "problem_class": "linear_inverse",
+    "noise_model": "poisson",
+    "solution_space": "dose_rate_map",
+    "primitives": [
+      "L.source_emit",
+      "L.exp_attenuation",
+      "L.buildup_factor",
+      "int.energy"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "mu_error",
+    "buildup_factor_error",
+    "geometry_error",
+    "source_spectrum_error"
+  ],
+  "error_metric": "dose_rate_rel_error_percent",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "gamma_shielding",
+      "forward_operator": "gamma_shielding_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 128,
+        "W": 128,
+        "Z": 128,
+        "N_energies": 32,
+        "N_detectors": 16,
+        "SNR_dB": 30,
+        "mu_error": 0.0,
+        "buildup_factor_error": 0.0,
+        "geometry_error": 0.0,
+        "source_spectrum_error": 0.0
+      },
+      "epsilon_fn_center": "3.0"
+    },
+    "allowed_forward_operators": [
+      "gamma_shielding_forward"
+    ],
+    "allowed_problem_classes": [
+      "gamma_shielding"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "Z",
+      "N_energies",
+      "N_detectors",
+      "SNR_dB",
+      "mu_error",
+      "buildup_factor_error",
+      "geometry_error",
+      "source_spectrum_error",
+      "mu_error",
+      "buildup_factor_error",
+      "geometry_error",
+      "source_spectrum_error"
+    ],
+    "omega_bounds": {
+      "H": [
+        16,
+        1024
+      ],
+      "W": [
+        16,
+        1024
+      ],
+      "Z": [
+        16,
+        1024
+      ],
+      "N_energies": [
+        1,
+        200
+      ],
+      "N_detectors": [
+        1,
+        256
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "mu_error": [
+        0.0,
+        0.05
+      ],
+      "buildup_factor_error": [
+        0.0,
+        0.3
+      ],
+      "geometry_error": [
+        0.0,
+        0.05
+      ],
+      "source_spectrum_error": [
+        0.0,
+        0.2
+      ]
+    },
+    "epsilon_bounds": {
+      "dose_rel": [
+        0.5,
+        50.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

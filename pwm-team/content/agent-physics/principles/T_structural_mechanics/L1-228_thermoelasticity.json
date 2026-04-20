@@ -1,0 +1,161 @@
+{
+  "artifact_id": "L1-228",
+  "layer": "L1",
+  "principle_number": "228",
+  "title": "Thermoelasticity \u2014 coupled thermal-mechanical",
+  "domain": "Structural Mechanics",
+  "sub_domain": "Classical weakly coupled thermoelasticity",
+  "source_file": "T_structural_mechanics/228_thermoelasticity.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Thermoelasticity \u2014 coupled thermal-mechanical forward model.",
+    "forward_model": "sigma = C : (eps - alpha_T * DT); rho cp dT/dt = div(k grad T) + Q",
+    "world_state_x": "displacement u(x,t) + temperature T(x,t)",
+    "observation_y": "strain gauge + thermocouples",
+    "physical_parameters_theta": [
+      "N_DOF",
+      "N_times",
+      "SNR_dB",
+      "alpha_T_error",
+      "k_error",
+      "E_error"
+    ]
+  },
+  "G": {
+    "dag": "L.thermal_strain -> L.heat_conduct -> L.weak_coupling -> int.temporal",
+    "vertices": [
+      "L.thermal_strain",
+      "L.heat_conduct",
+      "L.weak_coupling",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.thermal_strain -> L.heat_conduct",
+      "L.heat_conduct -> L.weak_coupling",
+      "L.weak_coupling -> int.temporal"
+    ],
+    "L_DAG": 3.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 240,
+    "condition_number_effective": 12,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "FEM-coupled, Staggered, TE-NN",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "mechanical",
+    "sensing_mechanism": "strain_gauge_thermocouple",
+    "integration_axis": "temporal",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "u_T_coupled_fields",
+    "primitives": [
+      "L.thermal_strain",
+      "L.heat_conduct",
+      "L.weak_coupling",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "alpha_T_error",
+    "k_error",
+    "E_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "thermoelastic",
+      "forward_operator": "thermoelastic_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_DOF": 10000,
+        "N_times": 500,
+        "SNR_dB": 30,
+        "alpha_T_error": 0.0,
+        "k_error": 0.0,
+        "E_error": 0.0
+      },
+      "epsilon_fn_center": "25.0"
+    },
+    "allowed_forward_operators": [
+      "thermoelastic_forward"
+    ],
+    "allowed_problem_classes": [
+      "thermoelastic"
+    ],
+    "allowed_omega_dimensions": [
+      "N_DOF",
+      "N_times",
+      "SNR_dB",
+      "alpha_T_error",
+      "k_error",
+      "E_error",
+      "alpha_T_error",
+      "k_error",
+      "E_error"
+    ],
+    "omega_bounds": {
+      "N_DOF": [
+        100,
+        1000000
+      ],
+      "N_times": [
+        10,
+        100000
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "alpha_T_error": [
+        0.0,
+        0.1
+      ],
+      "k_error": [
+        0.0,
+        0.1
+      ],
+      "E_error": [
+        0.0,
+        0.1
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

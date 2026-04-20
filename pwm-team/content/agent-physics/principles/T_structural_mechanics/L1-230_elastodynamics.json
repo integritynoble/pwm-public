@@ -1,0 +1,177 @@
+{
+  "artifact_id": "L1-230",
+  "layer": "L1",
+  "principle_number": "230",
+  "title": "Elastodynamics \u2014 dynamic wave propagation in solids",
+  "domain": "Structural Mechanics",
+  "sub_domain": "Elastic wave equation (P/S waves)",
+  "source_file": "T_structural_mechanics/230_elastodynamics.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Elastodynamics \u2014 dynamic wave propagation in solids forward model.",
+    "forward_model": "rho * d^2 u/dt^2 = div(C : eps(u)) + f; c_P = sqrt((lambda+2mu)/rho), c_S = sqrt(mu/rho)",
+    "world_state_x": "3D displacement field u(x,t) including P and S wave components",
+    "observation_y": "accelerometer arrays",
+    "physical_parameters_theta": [
+      "N_DOF",
+      "N_times",
+      "N_sensors",
+      "SNR_dB",
+      "rho_error",
+      "E_error",
+      "nu_error",
+      "BC_error"
+    ]
+  },
+  "G": {
+    "dag": "L.initial_condition -> L.hyperbolic_wave -> L.record.sensors -> int.temporal",
+    "vertices": [
+      "L.initial_condition",
+      "L.hyperbolic_wave",
+      "L.record.sensors",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.initial_condition -> L.hyperbolic_wave",
+      "L.hyperbolic_wave -> L.record.sensors",
+      "L.record.sensors -> int.temporal"
+    ],
+    "L_DAG": 3.3,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 500,
+    "condition_number_effective": 25,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "FDTD-elastic, Spectral-element, Elasto-NN",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "mechanical",
+    "sensing_mechanism": "accelerometers",
+    "integration_axis": "temporal",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "3D_displacement_spacetime",
+    "primitives": [
+      "L.initial_condition",
+      "L.hyperbolic_wave",
+      "L.record.sensors",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "rho_error",
+    "E_error",
+    "nu_error",
+    "BC_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "elastodynamics",
+      "forward_operator": "elastodynamics_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_DOF": 50000,
+        "N_times": 500,
+        "N_sensors": 32,
+        "SNR_dB": 30,
+        "rho_error": 0.0,
+        "E_error": 0.0,
+        "nu_error": 0.0,
+        "BC_error": 0.0
+      },
+      "epsilon_fn_center": "23.0"
+    },
+    "allowed_forward_operators": [
+      "elastodynamics_forward"
+    ],
+    "allowed_problem_classes": [
+      "elastodynamics"
+    ],
+    "allowed_omega_dimensions": [
+      "N_DOF",
+      "N_times",
+      "N_sensors",
+      "SNR_dB",
+      "rho_error",
+      "E_error",
+      "nu_error",
+      "BC_error",
+      "rho_error",
+      "E_error",
+      "nu_error",
+      "BC_error"
+    ],
+    "omega_bounds": {
+      "N_DOF": [
+        1000,
+        10000000
+      ],
+      "N_times": [
+        100,
+        100000
+      ],
+      "N_sensors": [
+        4,
+        4096
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "rho_error": [
+        0.0,
+        0.1
+      ],
+      "E_error": [
+        0.0,
+        0.1
+      ],
+      "nu_error": [
+        0.0,
+        0.05
+      ],
+      "BC_error": [
+        0.0,
+        0.2
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

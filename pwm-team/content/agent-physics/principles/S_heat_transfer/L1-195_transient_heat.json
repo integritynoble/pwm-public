@@ -1,0 +1,198 @@
+{
+  "artifact_id": "L1-195",
+  "layer": "L1",
+  "principle_number": "195",
+  "title": "Transient Heat Conduction \u2014 inverse heat conduction (IHCP)",
+  "domain": "Heat Transfer",
+  "sub_domain": "Parabolic PDE inverse source/BC estimation",
+  "source_file": "S_heat_transfer/195_transient_heat.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Transient Heat Conduction \u2014 inverse heat conduction (IHCP) forward model.",
+    "forward_model": "rho*cp*dT/dt = div(k grad T) + Q(x,t); BCs: Dirichlet/Neumann/Robin at boundaries",
+    "world_state_x": "3D temperature field T(x,t) and/or heat flux q''(x_b,t) at inaccessible boundary",
+    "observation_y": "thermocouple time series at N_s interior/accessible positions",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "Z",
+      "N_sensors",
+      "N_samples",
+      "fs_Hz",
+      "SNR_dB",
+      "k_error",
+      "rho_cp_error",
+      "sensor_pos_error",
+      "bc_error"
+    ]
+  },
+  "G": {
+    "dag": "L.initial_condition -> L.parabolic_propagate -> S.record.sensors -> int.temporal",
+    "vertices": [
+      "L.initial_condition",
+      "L.parabolic_propagate",
+      "S.record.sensors",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.initial_condition -> L.parabolic_propagate",
+      "L.parabolic_propagate -> S.record.sensors",
+      "S.record.sensors -> int.temporal"
+    ],
+    "L_DAG": 3.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "unstable",
+    "condition_number_kappa": 800,
+    "condition_number_effective": 40,
+    "regime": "IHCP is ill-posed (Hadamard): high-frequency BC content decays exponentially. Requires regularization (Tikhonov, future-time-stepping, PINN)."
+  },
+  "C": {
+    "solver_class": "Beck-FTS, Tikhonov, PINN-IHCP",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "thermal",
+    "sensing_mechanism": "thermocouples",
+    "integration_axis": "temporal",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "3D_temperature_field_spacetime",
+    "primitives": [
+      "L.initial_condition",
+      "L.parabolic_propagate",
+      "S.record.sensors",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "k_error",
+    "rho_cp_error",
+    "sensor_pos_error",
+    "bc_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "ihcp",
+      "forward_operator": "ihcp_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 64,
+        "W": 64,
+        "Z": 64,
+        "N_sensors": 16,
+        "N_samples": 200,
+        "fs_Hz": 10,
+        "SNR_dB": 30,
+        "k_error": 0.0,
+        "rho_cp_error": 0.0,
+        "sensor_pos_error": 0.0,
+        "bc_error": 0.0
+      },
+      "epsilon_fn_center": "25.0"
+    },
+    "allowed_forward_operators": [
+      "ihcp_forward"
+    ],
+    "allowed_problem_classes": [
+      "ihcp"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "Z",
+      "N_sensors",
+      "N_samples",
+      "fs_Hz",
+      "SNR_dB",
+      "k_error",
+      "rho_cp_error",
+      "sensor_pos_error",
+      "bc_error",
+      "k_error",
+      "rho_cp_error",
+      "sensor_pos_error",
+      "bc_error"
+    ],
+    "omega_bounds": {
+      "H": [
+        16,
+        512
+      ],
+      "W": [
+        16,
+        512
+      ],
+      "Z": [
+        8,
+        256
+      ],
+      "N_sensors": [
+        4,
+        256
+      ],
+      "N_samples": [
+        20,
+        10000
+      ],
+      "fs_Hz": [
+        0.1,
+        1000
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "k_error": [
+        0.0,
+        0.1
+      ],
+      "rho_cp_error": [
+        0.0,
+        0.1
+      ],
+      "sensor_pos_error": [
+        0.0,
+        0.02
+      ],
+      "bc_error": [
+        0.0,
+        0.5
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

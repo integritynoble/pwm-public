@@ -1,0 +1,191 @@
+{
+  "artifact_id": "L1-272",
+  "layer": "L1",
+  "principle_number": "272",
+  "title": "Seismic Travel-Time Tomography \u2014 ray-based velocity imaging",
+  "domain": "Geophysics",
+  "sub_domain": "First-arrival travel-time tomography",
+  "source_file": "W_geophysics/272_seismic_travel_time_tomography.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Seismic Travel-Time Tomography \u2014 ray-based velocity imaging forward model.",
+    "forward_model": "t = int_ray 1/v(x) ds; linearized dt = int_ray (-1/v_0^2) dv(x) ds",
+    "world_state_x": "3D seismic velocity v_P(x,y,z)",
+    "observation_y": "first-arrival picked travel times per source-receiver pair",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "Z",
+      "N_sources",
+      "N_receivers",
+      "SNR_dB",
+      "velocity_prior_error",
+      "source_error",
+      "picker_error",
+      "ray_coverage_gaps"
+    ]
+  },
+  "G": {
+    "dag": "L.eikonal -> L.ray_trace -> L.linearize -> int.temporal",
+    "vertices": [
+      "L.eikonal",
+      "L.ray_trace",
+      "L.linearize",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.eikonal -> L.ray_trace",
+      "L.ray_trace -> L.linearize",
+      "L.linearize -> int.temporal"
+    ],
+    "L_DAG": 3.3,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 600,
+    "condition_number_effective": 30,
+    "regime": "Ill-posed; null space for regions with no ray coverage."
+  },
+  "C": {
+    "solver_class": "SIRT, LSQR, Tomo-UNet",
+    "convergence_rate_q": 1.5,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "acoustic",
+    "sensing_mechanism": "geophones",
+    "integration_axis": "temporal",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "3D_velocity_field",
+    "primitives": [
+      "L.eikonal",
+      "L.ray_trace",
+      "L.linearize",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "velocity_prior_error",
+    "source_error",
+    "picker_error",
+    "ray_coverage_gaps"
+  ],
+  "error_metric": "velocity_rel_error_percent",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "traveltime_tomo",
+      "forward_operator": "traveltime_tomo_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 256,
+        "W": 256,
+        "Z": 128,
+        "N_sources": 32,
+        "N_receivers": 128,
+        "SNR_dB": 30,
+        "velocity_prior_error": 0.0,
+        "source_error": 0.0,
+        "picker_error": 0.0,
+        "ray_coverage_gaps": 0.0
+      },
+      "epsilon_fn_center": "5.0"
+    },
+    "allowed_forward_operators": [
+      "traveltime_tomo_forward"
+    ],
+    "allowed_problem_classes": [
+      "traveltime_tomo"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "Z",
+      "N_sources",
+      "N_receivers",
+      "SNR_dB",
+      "velocity_prior_error",
+      "source_error",
+      "picker_error",
+      "ray_coverage_gaps",
+      "velocity_prior_error",
+      "source_error",
+      "picker_error",
+      "ray_coverage_gaps"
+    ],
+    "omega_bounds": {
+      "H": [
+        32,
+        1024
+      ],
+      "W": [
+        32,
+        1024
+      ],
+      "Z": [
+        16,
+        512
+      ],
+      "N_sources": [
+        4,
+        1024
+      ],
+      "N_receivers": [
+        16,
+        8192
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "velocity_prior_error": [
+        0.0,
+        0.2
+      ],
+      "source_error": [
+        0.0,
+        0.05
+      ],
+      "picker_error": [
+        0.0,
+        0.05
+      ],
+      "ray_coverage_gaps": [
+        0.0,
+        0.5
+      ]
+    },
+    "epsilon_bounds": {
+      "velocity_rel_error": [
+        0.5,
+        50.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

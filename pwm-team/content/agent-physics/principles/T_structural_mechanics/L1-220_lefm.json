@@ -1,0 +1,161 @@
+{
+  "artifact_id": "L1-220",
+  "layer": "L1",
+  "principle_number": "220",
+  "title": "Linear Elastic Fracture Mechanics (LEFM) \u2014 K/J evaluation",
+  "domain": "Structural Mechanics",
+  "sub_domain": "SIF / J-integral extraction",
+  "source_file": "T_structural_mechanics/220_lefm.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Linear Elastic Fracture Mechanics (LEFM) \u2014 K/J evaluation forward model.",
+    "forward_model": "J = int_Gamma (W dy - T . du/dx ds); K = sqrt(E' J) for plane strain",
+    "world_state_x": "stress intensity factors K_I, K_II, K_III and J integral",
+    "observation_y": "DIC crack-tip displacement / caustic images",
+    "physical_parameters_theta": [
+      "N_DOF",
+      "N_contours",
+      "SNR_dB",
+      "crack_tip_pos_error",
+      "contour_size_error",
+      "material_error"
+    ]
+  },
+  "G": {
+    "dag": "L.contour_integral -> L.stress_intensity -> L.williams_expansion -> int.spatial",
+    "vertices": [
+      "L.contour_integral",
+      "L.stress_intensity",
+      "L.williams_expansion",
+      "int.spatial"
+    ],
+    "arcs": [
+      "L.contour_integral -> L.stress_intensity",
+      "L.stress_intensity -> L.williams_expansion",
+      "L.williams_expansion -> int.spatial"
+    ],
+    "L_DAG": 3.2,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 360,
+    "condition_number_effective": 18,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Domain-J-integral, XFEM, Phase-field-K",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "mechanical",
+    "sensing_mechanism": "dic_caustics",
+    "integration_axis": "spatial",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "sif_and_J_integral",
+    "primitives": [
+      "L.contour_integral",
+      "L.stress_intensity",
+      "L.williams_expansion",
+      "int.spatial"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "crack_tip_pos_error",
+    "contour_size_error",
+    "material_error"
+  ],
+  "error_metric": "K_rel_error_percent",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "lefm",
+      "forward_operator": "lefm_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_DOF": 50000,
+        "N_contours": 5,
+        "SNR_dB": 30,
+        "crack_tip_pos_error": 0.0,
+        "contour_size_error": 0.0,
+        "material_error": 0.0
+      },
+      "epsilon_fn_center": "4.0"
+    },
+    "allowed_forward_operators": [
+      "lefm_forward"
+    ],
+    "allowed_problem_classes": [
+      "lefm"
+    ],
+    "allowed_omega_dimensions": [
+      "N_DOF",
+      "N_contours",
+      "SNR_dB",
+      "crack_tip_pos_error",
+      "contour_size_error",
+      "material_error",
+      "crack_tip_pos_error",
+      "contour_size_error",
+      "material_error"
+    ],
+    "omega_bounds": {
+      "N_DOF": [
+        1000,
+        10000000
+      ],
+      "N_contours": [
+        1,
+        50
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "crack_tip_pos_error": [
+        0.0,
+        0.1
+      ],
+      "contour_size_error": [
+        0.0,
+        0.3
+      ],
+      "material_error": [
+        0.0,
+        0.1
+      ]
+    },
+    "epsilon_bounds": {
+      "K_rel": [
+        0.5,
+        30.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

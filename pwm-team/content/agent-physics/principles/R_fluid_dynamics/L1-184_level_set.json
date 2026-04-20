@@ -1,0 +1,168 @@
+{
+  "artifact_id": "L1-184",
+  "layer": "L1",
+  "principle_number": "184",
+  "title": "Level-Set Method \u2014 implicit interface evolution",
+  "domain": "Fluid Dynamics",
+  "sub_domain": "Level-set interface representation for multiphase",
+  "source_file": "R_fluid_dynamics/184_level_set.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Level-Set Method \u2014 implicit interface evolution forward model.",
+    "forward_model": "d phi/dt + u . grad phi = 0; reinitialize to |grad phi|=1",
+    "world_state_x": "signed-distance phi(x,t) capturing interface {phi=0}",
+    "observation_y": "imaging + PIV",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "N_times",
+      "SNR_dB",
+      "mass_loss_error",
+      "reinit_error",
+      "curvature_error"
+    ]
+  },
+  "G": {
+    "dag": "L.level_set_advect -> L.reinitialization -> L.curvature -> int.temporal",
+    "vertices": [
+      "L.level_set_advect",
+      "L.reinitialization",
+      "L.curvature",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.level_set_advect -> L.reinitialization",
+      "L.reinitialization -> L.curvature",
+      "L.curvature -> int.temporal"
+    ],
+    "L_DAG": 3.3,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 440,
+    "condition_number_effective": 22,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Level-set-5th, CLSVOF, LS-Net",
+    "convergence_rate_q": 1.5,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "mechanical",
+    "sensing_mechanism": "imaging_piv",
+    "integration_axis": "temporal",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "signed_distance_field",
+    "primitives": [
+      "L.level_set_advect",
+      "L.reinitialization",
+      "L.curvature",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "mass_loss_error",
+    "reinit_error",
+    "curvature_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "level_set",
+      "forward_operator": "level_set_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 512,
+        "W": 512,
+        "N_times": 1000,
+        "SNR_dB": 30,
+        "mass_loss_error": 0.0,
+        "reinit_error": 0.0,
+        "curvature_error": 0.0
+      },
+      "epsilon_fn_center": "22.0"
+    },
+    "allowed_forward_operators": [
+      "level_set_forward"
+    ],
+    "allowed_problem_classes": [
+      "level_set"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "N_times",
+      "SNR_dB",
+      "mass_loss_error",
+      "reinit_error",
+      "curvature_error",
+      "mass_loss_error",
+      "reinit_error",
+      "curvature_error"
+    ],
+    "omega_bounds": {
+      "H": [
+        32,
+        8192
+      ],
+      "W": [
+        32,
+        8192
+      ],
+      "N_times": [
+        100,
+        1000000
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "mass_loss_error": [
+        0.0,
+        0.3
+      ],
+      "reinit_error": [
+        0.0,
+        0.3
+      ],
+      "curvature_error": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

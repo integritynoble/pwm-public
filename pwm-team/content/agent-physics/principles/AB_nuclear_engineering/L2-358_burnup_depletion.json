@@ -1,0 +1,151 @@
+{
+  "artifact_id": "L2-358",
+  "layer": "L2",
+  "parent_l1": "L1-358",
+  "title": "Burnup / Depletion \u2014 fuel nuclide evolution Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "N_nuclides": [
+        10,
+        3600
+      ],
+      "N_timesteps": [
+        5,
+        1000
+      ],
+      "burnup_GWd_per_tU": [
+        1,
+        120
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "xs_microscopic_error": [
+        0.0,
+        0.05
+      ],
+      "decay_const_error": [
+        0.0,
+        0.02
+      ],
+      "flux_history_error": [
+        0.0,
+        0.1
+      ],
+      "fy_error": [
+        0.0,
+        0.1
+      ]
+    },
+    "E": {
+      "forward": "dN_i/dt = -lambda_i N_i - sigma_a_i phi N_i + sum_j (lambda_{j->i} + sigma_c,{j->i} phi) N_j",
+      "operator": "bateman_depletion_forward_mismatch",
+      "primitive_chain": "L.bateman -> L.cross_section_update -> L.flux_coupling -> int.temporal",
+      "inverse": "solve forward for declared state variable under Omega bounds"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "isotope_rel_error_percent",
+      "residual_norm"
+    ],
+    "epsilon_fn": "1.5 + 20.0*xs_microscopic_error + 10.0*flux_history_error + 10.0*fy_error"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "ORIGEN",
+        "method_sig": "L+O",
+        "expected_psnr": 2.8
+      },
+      {
+        "name": "SCALE-TRITON",
+        "method_sig": "L+O",
+        "expected_psnr": 2.5
+      },
+      {
+        "name": "Serpent-depletion",
+        "method_sig": "I+O",
+        "expected_psnr": 2.3
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_nuclides": 1500,
+        "N_timesteps": 50,
+        "burnup_GWd_per_tU": 40,
+        "SNR_dB": 30,
+        "xs_microscopic_error": 0.0,
+        "decay_const_error": 0.0,
+        "flux_history_error": 0.0,
+        "fy_error": 0.0
+      },
+      "epsilon": 3.0
+    },
+    "tier_bounds": {
+      "N_nuclides": [
+        10,
+        3600
+      ],
+      "N_timesteps": [
+        5,
+        1000
+      ],
+      "burnup_GWd_per_tU": [
+        1,
+        120
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "xs_microscopic_error": [
+        0.0,
+        0.05
+      ],
+      "decay_const_error": [
+        0.0,
+        0.02
+      ],
+      "flux_history_error": [
+        0.0,
+        0.1
+      ],
+      "fy_error": [
+        0.0,
+        0.1
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.48,
+  "d_spec_notes": "Distance computed from problem_class, forward_operator, carrier, integration_axis against neighboring specs; within same principle this spec is mismatch-only canonical and sits at the Omega centroid.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions are consistent across the DAG; forward operator maps state space to measurement space at declared shapes.",
+    "S2": "kappa_eff = 20 within tolerance after regularization; RIP-like or coercivity conditions satisfied over most of Omega.",
+    "S3": "Solvers converge at rate q=1.5 in well-posed regime; mismatch parameters degrade convergence but not divergence.",
+    "S4": "epsilon_fn evaluates across 10+ random Omega samples; hardness rule verified \u2014 no baseline passes everywhere."
+  },
+  "ipfs_cid": null
+}

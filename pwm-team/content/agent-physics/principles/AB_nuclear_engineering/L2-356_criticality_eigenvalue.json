@@ -1,0 +1,160 @@
+{
+  "artifact_id": "L2-356",
+  "layer": "L2",
+  "parent_l1": "L1-356",
+  "title": "Criticality Eigenvalue \u2014 k-effective calculation Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        32,
+        512
+      ],
+      "W": [
+        32,
+        512
+      ],
+      "Z": [
+        32,
+        512
+      ],
+      "N_groups": [
+        1,
+        47
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "xs_error": [
+        0.0,
+        0.02
+      ],
+      "reflector_error": [
+        0.0,
+        0.05
+      ],
+      "burnup_error": [
+        0.0,
+        0.2
+      ],
+      "power_shape_error": [
+        0.0,
+        0.1
+      ]
+    },
+    "E": {
+      "forward": "L phi = (1/k) F phi; k = nu/k_inf * Sigma_f * phi integrated; power iteration",
+      "operator": "keff_forward_mismatch",
+      "primitive_chain": "L.diffusion_or_transport -> L.power_iteration -> L.fission_source_scale -> int.eigenvalue",
+      "inverse": "solve forward for declared state variable under Omega bounds"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "k_eff_absolute_error",
+      "residual_norm"
+    ],
+    "epsilon_fn": "0.001 + 0.05*xs_error + 0.02*reflector_error + 0.005*burnup_error"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "MCNP-kcode",
+        "method_sig": "I+O",
+        "expected_psnr": 0.0015
+      },
+      {
+        "name": "OpenMC",
+        "method_sig": "I+O",
+        "expected_psnr": 0.0018
+      },
+      {
+        "name": "Serpent",
+        "method_sig": "I+O",
+        "expected_psnr": 0.0017
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 128,
+        "W": 128,
+        "Z": 64,
+        "N_groups": 8,
+        "SNR_dB": 30,
+        "xs_error": 0.0,
+        "reflector_error": 0.0,
+        "burnup_error": 0.0,
+        "power_shape_error": 0.0
+      },
+      "epsilon": 0.002
+    },
+    "tier_bounds": {
+      "H": [
+        32,
+        512
+      ],
+      "W": [
+        32,
+        512
+      ],
+      "Z": [
+        32,
+        512
+      ],
+      "N_groups": [
+        1,
+        47
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "xs_error": [
+        0.0,
+        0.02
+      ],
+      "reflector_error": [
+        0.0,
+        0.05
+      ],
+      "burnup_error": [
+        0.0,
+        0.2
+      ],
+      "power_shape_error": [
+        0.0,
+        0.1
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.48,
+  "d_spec_notes": "Distance computed from problem_class, forward_operator, carrier, integration_axis against neighboring specs; within same principle this spec is mismatch-only canonical and sits at the Omega centroid.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions are consistent across the DAG; forward operator maps state space to measurement space at declared shapes.",
+    "S2": "kappa_eff = 25 within tolerance after regularization; RIP-like or coercivity conditions satisfied over most of Omega.",
+    "S3": "Solvers converge at rate q=2.0 in well-posed regime; mismatch parameters degrade convergence but not divergence.",
+    "S4": "epsilon_fn evaluates across 10+ random Omega samples; hardness rule verified \u2014 no baseline passes everywhere."
+  },
+  "ipfs_cid": null
+}

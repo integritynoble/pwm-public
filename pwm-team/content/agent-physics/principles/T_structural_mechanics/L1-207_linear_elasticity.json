@@ -1,0 +1,170 @@
+{
+  "artifact_id": "L1-207",
+  "layer": "L1",
+  "principle_number": "207",
+  "title": "Linear Elasticity \u2014 Navier-Cauchy 3D solid mechanics",
+  "domain": "Structural Mechanics",
+  "sub_domain": "Infinitesimal-strain 3D linear elasticity",
+  "source_file": "T_structural_mechanics/207_linear_elasticity.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Linear Elasticity \u2014 Navier-Cauchy 3D solid mechanics forward model.",
+    "forward_model": "(lambda + mu) grad(div u) + mu Laplacian u + f = 0; sigma = C : eps(u)",
+    "world_state_x": "displacement u(x,y,z) + stress tensor sigma",
+    "observation_y": "strain gauge + DIC surface strain measurements",
+    "physical_parameters_theta": [
+      "N_DOF",
+      "N_sensors",
+      "SNR_dB",
+      "E_error",
+      "nu_error",
+      "boundary_error",
+      "load_error"
+    ]
+  },
+  "G": {
+    "dag": "L.fem_assemble -> L.constitutive -> L.solve -> int.spatial",
+    "vertices": [
+      "L.fem_assemble",
+      "L.constitutive",
+      "L.solve",
+      "int.spatial"
+    ],
+    "arcs": [
+      "L.fem_assemble -> L.constitutive",
+      "L.constitutive -> L.solve",
+      "L.solve -> int.spatial"
+    ],
+    "L_DAG": 3.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 240,
+    "condition_number_effective": 12,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "FEM-Abaqus, FEM-Calculix, PINN-elastic",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "mechanical",
+    "sensing_mechanism": "strain_gauges_dic",
+    "integration_axis": "spatial",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "3D_displacement_field",
+    "primitives": [
+      "L.fem_assemble",
+      "L.constitutive",
+      "L.solve",
+      "int.spatial"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "E_error",
+    "nu_error",
+    "boundary_error",
+    "load_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "linear_elasticity",
+      "forward_operator": "linear_elasticity_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_DOF": 10000,
+        "N_sensors": 32,
+        "SNR_dB": 30,
+        "E_error": 0.0,
+        "nu_error": 0.0,
+        "boundary_error": 0.0,
+        "load_error": 0.0
+      },
+      "epsilon_fn_center": "26.0"
+    },
+    "allowed_forward_operators": [
+      "linear_elasticity_forward"
+    ],
+    "allowed_problem_classes": [
+      "linear_elasticity"
+    ],
+    "allowed_omega_dimensions": [
+      "N_DOF",
+      "N_sensors",
+      "SNR_dB",
+      "E_error",
+      "nu_error",
+      "boundary_error",
+      "load_error",
+      "E_error",
+      "nu_error",
+      "boundary_error",
+      "load_error"
+    ],
+    "omega_bounds": {
+      "N_DOF": [
+        100,
+        1000000
+      ],
+      "N_sensors": [
+        4,
+        4096
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "E_error": [
+        0.0,
+        0.1
+      ],
+      "nu_error": [
+        0.0,
+        0.05
+      ],
+      "boundary_error": [
+        0.0,
+        0.2
+      ],
+      "load_error": [
+        0.0,
+        0.1
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

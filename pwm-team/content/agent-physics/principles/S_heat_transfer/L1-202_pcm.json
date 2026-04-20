@@ -1,0 +1,177 @@
+{
+  "artifact_id": "L1-202",
+  "layer": "L1",
+  "principle_number": "202",
+  "title": "Phase Change Material \u2014 Stefan moving-boundary problem",
+  "domain": "Heat Transfer",
+  "sub_domain": "Latent-heat tracking (melt/solid boundary)",
+  "source_file": "S_heat_transfer/202_pcm.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Phase Change Material \u2014 Stefan moving-boundary problem forward model.",
+    "forward_model": "rho_s c_s dT_s/dt = div(k_s grad T_s) in solid; rho_l c_l dT_l/dt = div(k_l grad T_l); Stefan BC: rho*L_f * dX/dt = (k_s dT_s - k_l dT_l)/dn",
+    "world_state_x": "moving phase boundary X(t) + T_s/T_l fields",
+    "observation_y": "thermocouple arrays + X-ray transmission visualization of interface",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "N_sensors",
+      "SNR_dB",
+      "latent_heat_error",
+      "k_liquid_error",
+      "k_solid_error",
+      "supercool_error"
+    ]
+  },
+  "G": {
+    "dag": "L.enthalpy -> L.interface_tracking -> L.heat_transport -> int.temporal",
+    "vertices": [
+      "L.enthalpy",
+      "L.interface_tracking",
+      "L.heat_transport",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.enthalpy -> L.interface_tracking",
+      "L.interface_tracking -> L.heat_transport",
+      "L.heat_transport -> int.temporal"
+    ],
+    "L_DAG": 3.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 700,
+    "condition_number_effective": 35,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Enthalpy-H, Level-set-PCM, PCM-NN",
+    "convergence_rate_q": 1.5,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "thermal",
+    "sensing_mechanism": "thermocouples_xray",
+    "integration_axis": "temporal",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "moving_interface_and_T_fields",
+    "primitives": [
+      "L.enthalpy",
+      "L.interface_tracking",
+      "L.heat_transport",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "latent_heat_error",
+    "k_liquid_error",
+    "k_solid_error",
+    "supercool_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "stefan",
+      "forward_operator": "stefan_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 128,
+        "W": 128,
+        "N_sensors": 16,
+        "SNR_dB": 30,
+        "latent_heat_error": 0.0,
+        "k_liquid_error": 0.0,
+        "k_solid_error": 0.0,
+        "supercool_error": 0.0
+      },
+      "epsilon_fn_center": "22.0"
+    },
+    "allowed_forward_operators": [
+      "stefan_forward"
+    ],
+    "allowed_problem_classes": [
+      "stefan"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "N_sensors",
+      "SNR_dB",
+      "latent_heat_error",
+      "k_liquid_error",
+      "k_solid_error",
+      "supercool_error",
+      "latent_heat_error",
+      "k_liquid_error",
+      "k_solid_error",
+      "supercool_error"
+    ],
+    "omega_bounds": {
+      "H": [
+        32,
+        1024
+      ],
+      "W": [
+        32,
+        1024
+      ],
+      "N_sensors": [
+        4,
+        256
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "latent_heat_error": [
+        0.0,
+        0.1
+      ],
+      "k_liquid_error": [
+        0.0,
+        0.1
+      ],
+      "k_solid_error": [
+        0.0,
+        0.1
+      ],
+      "supercool_error": [
+        0.0,
+        5.0
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

@@ -1,0 +1,151 @@
+{
+  "artifact_id": "L2-208b",
+  "layer": "L2",
+  "parent_l1": "L1-208b",
+  "title": "Euler-Bernoulli Beam \u2014 energy (variational) formulation Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "N_elements": [
+        5,
+        10000
+      ],
+      "N_basis": [
+        2,
+        100
+      ],
+      "N_sensors": [
+        2,
+        256
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "EI_error": [
+        0.0,
+        0.1
+      ],
+      "bc_error": [
+        0.0,
+        0.2
+      ],
+      "load_error": [
+        0.0,
+        0.1
+      ],
+      "discretization_error": [
+        0.0,
+        0.1
+      ]
+    },
+    "E": {
+      "forward": "Pi = (1/2) int EI (w'')^2 dx - int q*w dx; stationary => Galerkin FEM system",
+      "operator": "euler_bernoulli_energy_forward_mismatch",
+      "primitive_chain": "L.min_potential_energy -> L.rayleigh_ritz -> L.galerkin -> int.spatial",
+      "inverse": "solve forward for declared state variable under Omega bounds"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR_dB",
+      "residual_norm"
+    ],
+    "epsilon_fn": "21.5 + 0.3*SNR_dB - 40.0*EI_error - 10.0*bc_error - 20.0*load_error - 30.0*discretization_error"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Rayleigh-Ritz",
+        "method_sig": "L+O",
+        "expected_psnr": 26.5
+      },
+      {
+        "name": "FEM-variational",
+        "method_sig": "L+O",
+        "expected_psnr": 27.0
+      },
+      {
+        "name": "Beam-energy-NN",
+        "method_sig": "L+N",
+        "expected_psnr": 28.0
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_elements": 50,
+        "N_basis": 8,
+        "N_sensors": 16,
+        "SNR_dB": 30,
+        "EI_error": 0.0,
+        "bc_error": 0.0,
+        "load_error": 0.0,
+        "discretization_error": 0.0
+      },
+      "epsilon": 27.5
+    },
+    "tier_bounds": {
+      "N_elements": [
+        5,
+        10000
+      ],
+      "N_basis": [
+        2,
+        100
+      ],
+      "N_sensors": [
+        2,
+        256
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "EI_error": [
+        0.0,
+        0.1
+      ],
+      "bc_error": [
+        0.0,
+        0.2
+      ],
+      "load_error": [
+        0.0,
+        0.1
+      ],
+      "discretization_error": [
+        0.0,
+        0.1
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.17,
+  "d_spec_notes": "Distance computed from problem_class, forward_operator, carrier, integration_axis against neighboring specs; within same principle this spec is mismatch-only canonical and sits at the Omega centroid.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions are consistent across the DAG; forward operator maps state space to measurement space at declared shapes.",
+    "S2": "kappa_eff = 8 within tolerance after regularization; RIP-like or coercivity conditions satisfied over most of Omega.",
+    "S3": "Solvers converge at rate q=2.0 in well-posed regime; mismatch parameters degrade convergence but not divergence.",
+    "S4": "epsilon_fn evaluates across 10+ random Omega samples; hardness rule verified \u2014 no baseline passes everywhere."
+  },
+  "ipfs_cid": null
+}

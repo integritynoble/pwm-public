@@ -1,0 +1,161 @@
+{
+  "artifact_id": "L1-215",
+  "layer": "L1",
+  "principle_number": "215",
+  "title": "Hyperelasticity \u2014 large-deformation rubber-like",
+  "domain": "Structural Mechanics",
+  "sub_domain": "Neo-Hookean / Mooney-Rivlin / Ogden",
+  "source_file": "T_structural_mechanics/215_hyperelasticity.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Hyperelasticity \u2014 large-deformation rubber-like forward model.",
+    "forward_model": "S = dW/dC; W(F) for Neo-Hookean: mu/2(I1-3) + K/2(J-1)^2",
+    "world_state_x": "displacement field u(X) at large strain and material params",
+    "observation_y": "DIC field + load cell measurements",
+    "physical_parameters_theta": [
+      "N_DOF",
+      "N_sensors",
+      "SNR_dB",
+      "mu_error",
+      "bulk_modulus_error",
+      "param_choice_error"
+    ]
+  },
+  "G": {
+    "dag": "L.deformation_gradient -> L.strain_energy -> L.piola_stress -> int.spatial",
+    "vertices": [
+      "L.deformation_gradient",
+      "L.strain_energy",
+      "L.piola_stress",
+      "int.spatial"
+    ],
+    "arcs": [
+      "L.deformation_gradient -> L.strain_energy",
+      "L.strain_energy -> L.piola_stress",
+      "L.piola_stress -> int.spatial"
+    ],
+    "L_DAG": 3.2,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 400,
+    "condition_number_effective": 20,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "FEM-NewtonRaphson, Ogden-fit, Hyper-NN",
+    "convergence_rate_q": 1.5,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "mechanical",
+    "sensing_mechanism": "dic_strain_stress",
+    "integration_axis": "spatial",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "strain_energy_params",
+    "primitives": [
+      "L.deformation_gradient",
+      "L.strain_energy",
+      "L.piola_stress",
+      "int.spatial"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "mu_error",
+    "bulk_modulus_error",
+    "param_choice_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "hyperelastic",
+      "forward_operator": "hyperelastic_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_DOF": 10000,
+        "N_sensors": 64,
+        "SNR_dB": 30,
+        "mu_error": 0.0,
+        "bulk_modulus_error": 0.0,
+        "param_choice_error": 0.0
+      },
+      "epsilon_fn_center": "22.0"
+    },
+    "allowed_forward_operators": [
+      "hyperelastic_forward"
+    ],
+    "allowed_problem_classes": [
+      "hyperelastic"
+    ],
+    "allowed_omega_dimensions": [
+      "N_DOF",
+      "N_sensors",
+      "SNR_dB",
+      "mu_error",
+      "bulk_modulus_error",
+      "param_choice_error",
+      "mu_error",
+      "bulk_modulus_error",
+      "param_choice_error"
+    ],
+    "omega_bounds": {
+      "N_DOF": [
+        100,
+        1000000
+      ],
+      "N_sensors": [
+        4,
+        4096
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "mu_error": [
+        0.0,
+        0.1
+      ],
+      "bulk_modulus_error": [
+        0.0,
+        0.1
+      ],
+      "param_choice_error": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

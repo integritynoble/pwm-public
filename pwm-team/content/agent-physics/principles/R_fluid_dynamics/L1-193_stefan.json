@@ -1,0 +1,184 @@
+{
+  "artifact_id": "L1-193",
+  "layer": "L1",
+  "principle_number": "193",
+  "title": "Stefan Problem \u2014 fluid-side melt-front tracking",
+  "domain": "Fluid Dynamics",
+  "sub_domain": "Phase-change with fluid convection",
+  "source_file": "R_fluid_dynamics/193_stefan.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Stefan Problem \u2014 fluid-side melt-front tracking forward model.",
+    "forward_model": "Solid + liquid regions coupled via energy balance at moving interface; natural convection in liquid",
+    "world_state_x": "moving liquid-solid interface + u, T in liquid",
+    "observation_y": "thermocouples + PIV",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "N_times",
+      "Ra",
+      "SNR_dB",
+      "latent_heat_error",
+      "k_liquid_error",
+      "k_solid_error",
+      "natural_convection_error"
+    ]
+  },
+  "G": {
+    "dag": "L.heat_transport -> L.convect -> L.stefan_condition -> int.temporal",
+    "vertices": [
+      "L.heat_transport",
+      "L.convect",
+      "L.stefan_condition",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.heat_transport -> L.convect",
+      "L.convect -> L.stefan_condition",
+      "L.stefan_condition -> int.temporal"
+    ],
+    "L_DAG": 3.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 500,
+    "condition_number_effective": 25,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Enthalpy-porosity, Level-set-PCM, Stefan-Net",
+    "convergence_rate_q": 1.5,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "mechanical",
+    "sensing_mechanism": "thermocouples_piv",
+    "integration_axis": "temporal",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "moving_interface_and_flow",
+    "primitives": [
+      "L.heat_transport",
+      "L.convect",
+      "L.stefan_condition",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "latent_heat_error",
+    "k_liquid_error",
+    "k_solid_error",
+    "natural_convection_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "stefan_fluid",
+      "forward_operator": "stefan_fluid_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 256,
+        "W": 256,
+        "N_times": 2000,
+        "Ra": 100000.0,
+        "SNR_dB": 30,
+        "latent_heat_error": 0.0,
+        "k_liquid_error": 0.0,
+        "k_solid_error": 0.0,
+        "natural_convection_error": 0.0
+      },
+      "epsilon_fn_center": "22.0"
+    },
+    "allowed_forward_operators": [
+      "stefan_fluid_forward"
+    ],
+    "allowed_problem_classes": [
+      "stefan_fluid"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "N_times",
+      "Ra",
+      "SNR_dB",
+      "latent_heat_error",
+      "k_liquid_error",
+      "k_solid_error",
+      "natural_convection_error",
+      "latent_heat_error",
+      "k_liquid_error",
+      "k_solid_error",
+      "natural_convection_error"
+    ],
+    "omega_bounds": {
+      "H": [
+        32,
+        2048
+      ],
+      "W": [
+        32,
+        2048
+      ],
+      "N_times": [
+        100,
+        1000000
+      ],
+      "Ra": [
+        10,
+        10000000000.0
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "latent_heat_error": [
+        0.0,
+        0.2
+      ],
+      "k_liquid_error": [
+        0.0,
+        0.2
+      ],
+      "k_solid_error": [
+        0.0,
+        0.2
+      ],
+      "natural_convection_error": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

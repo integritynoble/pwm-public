@@ -1,0 +1,151 @@
+{
+  "artifact_id": "L2-271",
+  "layer": "L2",
+  "parent_l1": "L1-271",
+  "title": "Outdoor Noise Propagation \u2014 atmospheric refraction + ground effect Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "r_max_m": [
+        50,
+        20000
+      ],
+      "N_stations": [
+        4,
+        128
+      ],
+      "freq_Hz": [
+        20,
+        10000
+      ],
+      "SNR_dB": [
+        -10,
+        40
+      ],
+      "wind_profile_error": [
+        0.0,
+        0.5
+      ],
+      "temp_profile_error": [
+        0.0,
+        0.3
+      ],
+      "ground_impedance_error": [
+        0.0,
+        0.5
+      ],
+      "terrain_error": [
+        0.0,
+        0.3
+      ]
+    },
+    "E": {
+      "forward": "L_p(r) = L_W - 20 log10(r) - A_atm(r,f,T,RH) - A_gr - A_barrier + A_refraction",
+      "operator": "outdoor_propagation_forward_mismatch",
+      "primitive_chain": "L.source_emit -> L.atmos_absorb -> L.ground_reflect -> L.diffract.barrier -> int.range",
+      "inverse": "solve forward for declared state variable under Omega bounds"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "SPL_error_dB",
+      "residual_norm"
+    ],
+    "epsilon_fn": "2.0 + 10.0*wind_profile_error + 8.0*temp_profile_error + 6.0*ground_impedance_error"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "ISO-9613",
+        "method_sig": "L+O",
+        "expected_psnr": 4.0
+      },
+      {
+        "name": "PE-outdoor",
+        "method_sig": "L+O",
+        "expected_psnr": 2.8
+      },
+      {
+        "name": "Nord2000",
+        "method_sig": "L+O",
+        "expected_psnr": 3.2
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "r_max_m": 1000,
+        "N_stations": 16,
+        "freq_Hz": 500,
+        "SNR_dB": 20,
+        "wind_profile_error": 0.05,
+        "temp_profile_error": 0.1,
+        "ground_impedance_error": 0.1,
+        "terrain_error": 0.1
+      },
+      "epsilon": 3.0
+    },
+    "tier_bounds": {
+      "r_max_m": [
+        50,
+        20000
+      ],
+      "N_stations": [
+        4,
+        128
+      ],
+      "freq_Hz": [
+        20,
+        10000
+      ],
+      "SNR_dB": [
+        -10,
+        40
+      ],
+      "wind_profile_error": [
+        0.0,
+        0.5
+      ],
+      "temp_profile_error": [
+        0.0,
+        0.3
+      ],
+      "ground_impedance_error": [
+        0.0,
+        0.5
+      ],
+      "terrain_error": [
+        0.0,
+        0.3
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.48,
+  "d_spec_notes": "Distance computed from problem_class, forward_operator, carrier, integration_axis against neighboring specs; within same principle this spec is mismatch-only canonical and sits at the Omega centroid.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions are consistent across the DAG; forward operator maps state space to measurement space at declared shapes.",
+    "S2": "kappa_eff = 35 within tolerance after regularization; RIP-like or coercivity conditions satisfied over most of Omega.",
+    "S3": "Solvers converge at rate q=1.5 in well-posed regime; mismatch parameters degrade convergence but not divergence.",
+    "S4": "epsilon_fn evaluates across 10+ random Omega samples; hardness rule verified \u2014 no baseline passes everywhere."
+  },
+  "ipfs_cid": null
+}

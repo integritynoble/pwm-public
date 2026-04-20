@@ -1,0 +1,178 @@
+{
+  "artifact_id": "L2-354",
+  "layer": "L2",
+  "parent_l1": "L1-354",
+  "title": "Neutron Transport \u2014 linear Boltzmann equation Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        16,
+        512
+      ],
+      "W": [
+        16,
+        512
+      ],
+      "Z": [
+        16,
+        512
+      ],
+      "N_energy_groups": [
+        1,
+        500
+      ],
+      "N_angular_dir": [
+        4,
+        288
+      ],
+      "N_detectors": [
+        4,
+        256
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "xs_data_error": [
+        0.0,
+        0.05
+      ],
+      "source_spectrum_error": [
+        0.0,
+        0.2
+      ],
+      "material_homo_error": [
+        0.0,
+        0.1
+      ],
+      "boundary_albedo_error": [
+        0.0,
+        0.2
+      ]
+    },
+    "E": {
+      "forward": "Omega.grad psi + sigma_t psi = int sigma_s(E'->E, Omega'->Omega) psi dE' dOmega' + chi/(4pi) * int nu*sigma_f * phi dE'",
+      "operator": "sn_transport_forward_mismatch",
+      "primitive_chain": "L.streaming -> L.collision_scatter -> L.source_fission -> int.angular_energy",
+      "inverse": "solve forward for declared state variable under Omega bounds"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "flux_rel_error_percent",
+      "residual_norm"
+    ],
+    "epsilon_fn": "3.0 + 50.0*xs_data_error + 15.0*source_spectrum_error + 20.0*material_homo_error"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "SN-Denovo",
+        "method_sig": "I+O",
+        "expected_psnr": 4.5
+      },
+      {
+        "name": "MoC-OpenMOC",
+        "method_sig": "L+O",
+        "expected_psnr": 4.0
+      },
+      {
+        "name": "PN-legendre",
+        "method_sig": "L+O",
+        "expected_psnr": 5.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 64,
+        "W": 64,
+        "Z": 64,
+        "N_energy_groups": 47,
+        "N_angular_dir": 24,
+        "N_detectors": 16,
+        "SNR_dB": 25,
+        "xs_data_error": 0.0,
+        "source_spectrum_error": 0.0,
+        "material_homo_error": 0.0,
+        "boundary_albedo_error": 0.0
+      },
+      "epsilon": 5.0
+    },
+    "tier_bounds": {
+      "H": [
+        16,
+        512
+      ],
+      "W": [
+        16,
+        512
+      ],
+      "Z": [
+        16,
+        512
+      ],
+      "N_energy_groups": [
+        1,
+        500
+      ],
+      "N_angular_dir": [
+        4,
+        288
+      ],
+      "N_detectors": [
+        4,
+        256
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "xs_data_error": [
+        0.0,
+        0.05
+      ],
+      "source_spectrum_error": [
+        0.0,
+        0.2
+      ],
+      "material_homo_error": [
+        0.0,
+        0.1
+      ],
+      "boundary_albedo_error": [
+        0.0,
+        0.2
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.48,
+  "d_spec_notes": "Distance computed from problem_class, forward_operator, carrier, integration_axis against neighboring specs; within same principle this spec is mismatch-only canonical and sits at the Omega centroid.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions are consistent across the DAG; forward operator maps state space to measurement space at declared shapes.",
+    "S2": "kappa_eff = 60 within tolerance after regularization; RIP-like or coercivity conditions satisfied over most of Omega.",
+    "S3": "Solvers converge at rate q=1.0 in well-posed regime; mismatch parameters degrade convergence but not divergence.",
+    "S4": "epsilon_fn evaluates across 10+ random Omega samples; hardness rule verified \u2014 no baseline passes everywhere."
+  },
+  "ipfs_cid": null
+}

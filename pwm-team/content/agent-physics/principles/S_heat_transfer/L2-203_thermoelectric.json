@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L2-203",
+  "layer": "L2",
+  "parent_l1": "L1-203",
+  "title": "Thermoelectric Transport \u2014 coupled Seebeck-Peltier Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "N_probes": [
+        2,
+        64
+      ],
+      "T_K": [
+        4,
+        1500
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "sigma_error": [
+        0.0,
+        0.1
+      ],
+      "alpha_error": [
+        0.0,
+        0.1
+      ],
+      "kappa_error": [
+        0.0,
+        0.1
+      ],
+      "contact_R_error": [
+        0.0,
+        0.3
+      ]
+    },
+    "E": {
+      "forward": "J = sigma(E - alpha grad T); q = Pi J - kappa grad T; coupled continuity + heat",
+      "operator": "thermoelectric_forward_mismatch",
+      "primitive_chain": "L.onsager_coupling -> L.peltier_flux -> L.seebeck_emf -> int.frequency",
+      "inverse": "solve forward for declared state variable under Omega bounds"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR_dB",
+      "residual_norm"
+    ],
+    "epsilon_fn": "19.0 + 0.3*SNR_dB - 25.0*sigma_error - 30.0*alpha_error - 10.0*contact_R_error"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Harman",
+        "method_sig": "L+O",
+        "expected_psnr": 23.0
+      },
+      {
+        "name": "3-omega",
+        "method_sig": "L+O",
+        "expected_psnr": 25.0
+      },
+      {
+        "name": "ZT-net",
+        "method_sig": "L+N",
+        "expected_psnr": 26.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_probes": 8,
+        "T_K": 300,
+        "SNR_dB": 30,
+        "sigma_error": 0.0,
+        "alpha_error": 0.0,
+        "kappa_error": 0.0,
+        "contact_R_error": 0.0
+      },
+      "epsilon": 25.0
+    },
+    "tier_bounds": {
+      "N_probes": [
+        2,
+        64
+      ],
+      "T_K": [
+        4,
+        1500
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "sigma_error": [
+        0.0,
+        0.1
+      ],
+      "alpha_error": [
+        0.0,
+        0.1
+      ],
+      "kappa_error": [
+        0.0,
+        0.1
+      ],
+      "contact_R_error": [
+        0.0,
+        0.3
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.48,
+  "d_spec_notes": "Distance computed from problem_class, forward_operator, carrier, integration_axis against neighboring specs; within same principle this spec is mismatch-only canonical and sits at the Omega centroid.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions are consistent across the DAG; forward operator maps state space to measurement space at declared shapes.",
+    "S2": "kappa_eff = 12 within tolerance after regularization; RIP-like or coercivity conditions satisfied over most of Omega.",
+    "S3": "Solvers converge at rate q=2.0 in well-posed regime; mismatch parameters degrade convergence but not divergence.",
+    "S4": "epsilon_fn evaluates across 10+ random Omega samples; hardness rule verified \u2014 no baseline passes everywhere."
+  },
+  "ipfs_cid": null
+}

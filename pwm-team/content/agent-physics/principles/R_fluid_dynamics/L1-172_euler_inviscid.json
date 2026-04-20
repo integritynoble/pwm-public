@@ -1,0 +1,168 @@
+{
+  "artifact_id": "L1-172",
+  "layer": "L1",
+  "principle_number": "172",
+  "title": "Euler Equations \u2014 inviscid compressible",
+  "domain": "Fluid Dynamics",
+  "sub_domain": "Inviscid compressible Euler",
+  "source_file": "R_fluid_dynamics/172_euler_inviscid.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Euler Equations \u2014 inviscid compressible forward model.",
+    "forward_model": "d/dt U + div F(U) = 0 with U = [rho, rho u, rho E]; Riemann solver / flux limiter",
+    "world_state_x": "rho, u, p with discontinuities (shocks, contacts, rarefactions)",
+    "observation_y": "pressure + schlieren",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "N_times",
+      "SNR_dB",
+      "eos_error",
+      "bc_error",
+      "limiter_error"
+    ]
+  },
+  "G": {
+    "dag": "L.continuity -> L.momentum -> L.energy_inviscid -> int.temporal",
+    "vertices": [
+      "L.continuity",
+      "L.momentum",
+      "L.energy_inviscid",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.continuity -> L.momentum",
+      "L.momentum -> L.energy_inviscid",
+      "L.energy_inviscid -> int.temporal"
+    ],
+    "L_DAG": 3.3,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 500,
+    "condition_number_effective": 25,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Godunov, Roe-FVM, DG-Euler",
+    "convergence_rate_q": 1.5,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "mechanical",
+    "sensing_mechanism": "pressure_schlieren",
+    "integration_axis": "temporal",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "rho_u_p_inviscid",
+    "primitives": [
+      "L.continuity",
+      "L.momentum",
+      "L.energy_inviscid",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "eos_error",
+    "bc_error",
+    "limiter_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "euler",
+      "forward_operator": "euler_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 512,
+        "W": 512,
+        "N_times": 1000,
+        "SNR_dB": 30,
+        "eos_error": 0.0,
+        "bc_error": 0.0,
+        "limiter_error": 0.0
+      },
+      "epsilon_fn_center": "23.0"
+    },
+    "allowed_forward_operators": [
+      "euler_forward"
+    ],
+    "allowed_problem_classes": [
+      "euler"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "N_times",
+      "SNR_dB",
+      "eos_error",
+      "bc_error",
+      "limiter_error",
+      "eos_error",
+      "bc_error",
+      "limiter_error"
+    ],
+    "omega_bounds": {
+      "H": [
+        32,
+        8192
+      ],
+      "W": [
+        32,
+        8192
+      ],
+      "N_times": [
+        100,
+        1000000
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "eos_error": [
+        0.0,
+        0.1
+      ],
+      "bc_error": [
+        0.0,
+        0.3
+      ],
+      "limiter_error": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

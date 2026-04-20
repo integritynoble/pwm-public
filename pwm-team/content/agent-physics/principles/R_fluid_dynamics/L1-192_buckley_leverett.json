@@ -1,0 +1,161 @@
+{
+  "artifact_id": "L1-192",
+  "layer": "L1",
+  "principle_number": "192",
+  "title": "Buckley-Leverett \u2014 two-phase displacement saturation",
+  "domain": "Fluid Dynamics",
+  "sub_domain": "Buckley-Leverett in petroleum reservoirs",
+  "source_file": "R_fluid_dynamics/192_buckley_leverett.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Buckley-Leverett \u2014 two-phase displacement saturation forward model.",
+    "forward_model": "d S_w/dt + d/dx (f_w(S_w)) = 0; f_w = lambda_w/(lambda_w + lambda_o)",
+    "world_state_x": "saturation front S_w(x,t) with shock",
+    "observation_y": "well production cuts + tracer profiles",
+    "physical_parameters_theta": [
+      "N_cells",
+      "N_times",
+      "SNR_dB",
+      "relperm_error",
+      "capillary_error",
+      "mobility_ratio_error"
+    ]
+  },
+  "G": {
+    "dag": "L.flux_function -> L.shock_admissible -> L.fractional_flow -> int.temporal",
+    "vertices": [
+      "L.flux_function",
+      "L.shock_admissible",
+      "L.fractional_flow",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.flux_function -> L.shock_admissible",
+      "L.shock_admissible -> L.fractional_flow",
+      "L.fractional_flow -> int.temporal"
+    ],
+    "L_DAG": 3.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 300,
+    "condition_number_effective": 15,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Godunov-BL, Eclipse, BL-Net",
+    "convergence_rate_q": 1.5,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "mechanical",
+    "sensing_mechanism": "well_production",
+    "integration_axis": "temporal",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "saturation_shock",
+    "primitives": [
+      "L.flux_function",
+      "L.shock_admissible",
+      "L.fractional_flow",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "relperm_error",
+    "capillary_error",
+    "mobility_ratio_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "bl",
+      "forward_operator": "bl_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_cells": 100,
+        "N_times": 1000,
+        "SNR_dB": 30,
+        "relperm_error": 0.0,
+        "capillary_error": 0.0,
+        "mobility_ratio_error": 0.0
+      },
+      "epsilon_fn_center": "24.0"
+    },
+    "allowed_forward_operators": [
+      "bl_forward"
+    ],
+    "allowed_problem_classes": [
+      "bl"
+    ],
+    "allowed_omega_dimensions": [
+      "N_cells",
+      "N_times",
+      "SNR_dB",
+      "relperm_error",
+      "capillary_error",
+      "mobility_ratio_error",
+      "relperm_error",
+      "capillary_error",
+      "mobility_ratio_error"
+    ],
+    "omega_bounds": {
+      "N_cells": [
+        10,
+        100000
+      ],
+      "N_times": [
+        100,
+        100000
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "relperm_error": [
+        0.0,
+        0.3
+      ],
+      "capillary_error": [
+        0.0,
+        0.3
+      ],
+      "mobility_ratio_error": [
+        0.0,
+        0.2
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

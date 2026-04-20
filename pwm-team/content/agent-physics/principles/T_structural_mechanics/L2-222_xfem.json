@@ -1,0 +1,133 @@
+{
+  "artifact_id": "L2-222",
+  "layer": "L2",
+  "parent_l1": "L1-222",
+  "title": "XFEM \u2014 extended finite element for cracks Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "N_DOF": [
+        1000,
+        10000000
+      ],
+      "N_enrich": [
+        1,
+        10000
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "level_set_error": [
+        0.0,
+        0.1
+      ],
+      "enrichment_error": [
+        0.0,
+        0.2
+      ],
+      "quadrature_error": [
+        0.0,
+        0.1
+      ]
+    },
+    "E": {
+      "forward": "u_h = sum N_i u_i + sum N_j (H(x) - H_j) a_j + sum N_k F_l(x) b_kl (crack-tip enrichment)",
+      "operator": "xfem_forward_mismatch",
+      "primitive_chain": "L.level_set -> L.enrich_shape -> L.heaviside_branch -> int.spatial",
+      "inverse": "solve forward for declared state variable under Omega bounds"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR_dB",
+      "residual_norm"
+    ],
+    "epsilon_fn": "17.0 + 0.3*SNR_dB - 20.0*level_set_error - 10.0*enrichment_error - 20.0*quadrature_error"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Abaqus-XFEM",
+        "method_sig": "L+O",
+        "expected_psnr": 21.5
+      },
+      {
+        "name": "Goftit-XFEM",
+        "method_sig": "L+O",
+        "expected_psnr": 22.0
+      },
+      {
+        "name": "XFEM-NN",
+        "method_sig": "L+N",
+        "expected_psnr": 23.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_DOF": 50000,
+        "N_enrich": 100,
+        "SNR_dB": 30,
+        "level_set_error": 0.0,
+        "enrichment_error": 0.0,
+        "quadrature_error": 0.0
+      },
+      "epsilon": 23.0
+    },
+    "tier_bounds": {
+      "N_DOF": [
+        1000,
+        10000000
+      ],
+      "N_enrich": [
+        1,
+        10000
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "level_set_error": [
+        0.0,
+        0.1
+      ],
+      "enrichment_error": [
+        0.0,
+        0.2
+      ],
+      "quadrature_error": [
+        0.0,
+        0.1
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.48,
+  "d_spec_notes": "Distance computed from problem_class, forward_operator, carrier, integration_axis against neighboring specs; within same principle this spec is mismatch-only canonical and sits at the Omega centroid.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions are consistent across the DAG; forward operator maps state space to measurement space at declared shapes.",
+    "S2": "kappa_eff = 18 within tolerance after regularization; RIP-like or coercivity conditions satisfied over most of Omega.",
+    "S3": "Solvers converge at rate q=2.0 in well-posed regime; mismatch parameters degrade convergence but not divergence.",
+    "S4": "epsilon_fn evaluates across 10+ random Omega samples; hardness rule verified \u2014 no baseline passes everywhere."
+  },
+  "ipfs_cid": null
+}

@@ -1,0 +1,168 @@
+{
+  "artifact_id": "L1-348",
+  "layer": "L1",
+  "principle_number": "348",
+  "title": "Grad-Shafranov \u2014 tokamak equilibrium",
+  "domain": "Plasma Physics",
+  "sub_domain": "Tokamak 2D magnetostatic equilibrium",
+  "source_file": "AA_plasma_physics/348_grad_shafranov.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Grad-Shafranov \u2014 tokamak equilibrium forward model.",
+    "forward_model": "Delta* psi = -mu_0 R^2 dp/dpsi - F dF/dpsi; axisymmetric equilibrium",
+    "world_state_x": "poloidal flux psi(R,Z), pressure p(psi), q-profile",
+    "observation_y": "magnetic pickup + MSE + Thomson scattering",
+    "physical_parameters_theta": [
+      "N_R",
+      "N_Z",
+      "N_magnetics",
+      "SNR_dB",
+      "pressure_prior_error",
+      "current_prior_error",
+      "boundary_error"
+    ]
+  },
+  "G": {
+    "dag": "L.gs_elliptic -> L.pressure_profile -> L.current_profile -> int.spatial",
+    "vertices": [
+      "L.gs_elliptic",
+      "L.pressure_profile",
+      "L.current_profile",
+      "int.spatial"
+    ],
+    "arcs": [
+      "L.gs_elliptic -> L.pressure_profile",
+      "L.pressure_profile -> L.current_profile",
+      "L.current_profile -> int.spatial"
+    ],
+    "L_DAG": 3.2,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 440,
+    "condition_number_effective": 22,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "EFIT, VMEC, EQDSK-Net",
+    "convergence_rate_q": 1.5,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "plasma",
+    "sensing_mechanism": "magnetics_mse_thomson",
+    "integration_axis": "spatial",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "poloidal_flux_function",
+    "primitives": [
+      "L.gs_elliptic",
+      "L.pressure_profile",
+      "L.current_profile",
+      "int.spatial"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "pressure_prior_error",
+    "current_prior_error",
+    "boundary_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "grad_shafranov",
+      "forward_operator": "grad_shafranov_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_R": 128,
+        "N_Z": 128,
+        "N_magnetics": 64,
+        "SNR_dB": 25,
+        "pressure_prior_error": 0.0,
+        "current_prior_error": 0.0,
+        "boundary_error": 0.0
+      },
+      "epsilon_fn_center": "25.0"
+    },
+    "allowed_forward_operators": [
+      "grad_shafranov_forward"
+    ],
+    "allowed_problem_classes": [
+      "grad_shafranov"
+    ],
+    "allowed_omega_dimensions": [
+      "N_R",
+      "N_Z",
+      "N_magnetics",
+      "SNR_dB",
+      "pressure_prior_error",
+      "current_prior_error",
+      "boundary_error",
+      "pressure_prior_error",
+      "current_prior_error",
+      "boundary_error"
+    ],
+    "omega_bounds": {
+      "N_R": [
+        32,
+        1024
+      ],
+      "N_Z": [
+        32,
+        1024
+      ],
+      "N_magnetics": [
+        8,
+        1024
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "pressure_prior_error": [
+        0.0,
+        0.2
+      ],
+      "current_prior_error": [
+        0.0,
+        0.2
+      ],
+      "boundary_error": [
+        0.0,
+        0.2
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

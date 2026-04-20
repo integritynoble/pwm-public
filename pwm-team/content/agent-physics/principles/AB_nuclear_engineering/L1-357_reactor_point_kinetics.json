@@ -1,0 +1,170 @@
+{
+  "artifact_id": "L1-357",
+  "layer": "L1",
+  "principle_number": "357",
+  "title": "Point Reactor Kinetics \u2014 power transient modeling",
+  "domain": "Nuclear Engineering",
+  "sub_domain": "Coupled precursor/power ODEs for reactivity insertion",
+  "source_file": "AB_nuclear_engineering/357_reactor_point_kinetics.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Point Reactor Kinetics \u2014 power transient modeling forward model.",
+    "forward_model": "dP/dt = (rho(t) - beta_eff)/Lambda * P + sum_i lambda_i C_i; dC_i/dt = beta_i/Lambda * P - lambda_i C_i",
+    "world_state_x": "power P(t), precursor concentrations C_i(t), reactivity rho(t)",
+    "observation_y": "ex-core neutron detector time-series during transient",
+    "physical_parameters_theta": [
+      "N_groups",
+      "N_samples",
+      "SNR_dB",
+      "beta_eff_error",
+      "lambda_error",
+      "generation_time_error",
+      "rho_error"
+    ]
+  },
+  "G": {
+    "dag": "L.precursor_balance -> L.power_balance -> L.delayed_neutrons -> int.temporal",
+    "vertices": [
+      "L.precursor_balance",
+      "L.power_balance",
+      "L.delayed_neutrons",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.precursor_balance -> L.power_balance",
+      "L.power_balance -> L.delayed_neutrons",
+      "L.delayed_neutrons -> int.temporal"
+    ],
+    "L_DAG": 3.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 160,
+    "condition_number_effective": 8,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Prompt-jump-approx, Implicit-Euler-PK, Runge-Kutta-stiff",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "neutron",
+    "sensing_mechanism": "ex_core_detectors",
+    "integration_axis": "temporal",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "reactivity_time_and_power",
+    "primitives": [
+      "L.precursor_balance",
+      "L.power_balance",
+      "L.delayed_neutrons",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "beta_eff_error",
+    "lambda_error",
+    "generation_time_error",
+    "rho_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "pointkinetics",
+      "forward_operator": "pointkinetics_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_groups": 6,
+        "N_samples": 1000,
+        "SNR_dB": 30,
+        "beta_eff_error": 0.0,
+        "lambda_error": 0.0,
+        "generation_time_error": 0.0,
+        "rho_error": 0.0
+      },
+      "epsilon_fn_center": "25.0"
+    },
+    "allowed_forward_operators": [
+      "pointkinetics_forward"
+    ],
+    "allowed_problem_classes": [
+      "pointkinetics"
+    ],
+    "allowed_omega_dimensions": [
+      "N_groups",
+      "N_samples",
+      "SNR_dB",
+      "beta_eff_error",
+      "lambda_error",
+      "generation_time_error",
+      "rho_error",
+      "beta_eff_error",
+      "lambda_error",
+      "generation_time_error",
+      "rho_error"
+    ],
+    "omega_bounds": {
+      "N_groups": [
+        1,
+        10
+      ],
+      "N_samples": [
+        100,
+        100000
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "beta_eff_error": [
+        0.0,
+        0.1
+      ],
+      "lambda_error": [
+        0.0,
+        0.1
+      ],
+      "generation_time_error": [
+        0.0,
+        0.2
+      ],
+      "rho_error": [
+        0.0,
+        0.1
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

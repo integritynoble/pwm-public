@@ -1,0 +1,160 @@
+{
+  "artifact_id": "L2-345",
+  "layer": "L2",
+  "parent_l1": "L1-345",
+  "title": "Gyrokinetic \u2014 5D reduced plasma kinetic Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "N_radial": [
+        32,
+        2048
+      ],
+      "N_binormal": [
+        16,
+        2048
+      ],
+      "N_parallel": [
+        8,
+        256
+      ],
+      "N_v": [
+        8,
+        128
+      ],
+      "N_mu": [
+        4,
+        64
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "gyroaverage_error": [
+        0.0,
+        0.2
+      ],
+      "closure_error": [
+        0.0,
+        0.3
+      ],
+      "fluctuation_prior_error": [
+        0.0,
+        0.3
+      ]
+    },
+    "E": {
+      "forward": "dF/dt + (v_||*b + v_E + v_grad_B + v_curv).grad F + ... = 0; Poisson solves E field",
+      "operator": "gyrokinetic_forward_mismatch",
+      "primitive_chain": "L.gyroaverage -> L.drift_kinetic -> L.nonlinear_coupling -> int.phase_space",
+      "inverse": "solve forward for declared state variable under Omega bounds"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR_dB",
+      "residual_norm"
+    ],
+    "epsilon_fn": "10.0 + 0.3*SNR_dB - 10.0*gyroaverage_error - 10.0*closure_error - 8.0*fluctuation_prior_error"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "GENE",
+        "method_sig": "I+O",
+        "expected_psnr": 15.0
+      },
+      {
+        "name": "GYRO",
+        "method_sig": "I+O",
+        "expected_psnr": 15.5
+      },
+      {
+        "name": "GX",
+        "method_sig": "I+O",
+        "expected_psnr": 15.8
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_radial": 256,
+        "N_binormal": 128,
+        "N_parallel": 64,
+        "N_v": 24,
+        "N_mu": 8,
+        "SNR_dB": 25,
+        "gyroaverage_error": 0.0,
+        "closure_error": 0.0,
+        "fluctuation_prior_error": 0.0
+      },
+      "epsilon": 16.0
+    },
+    "tier_bounds": {
+      "N_radial": [
+        32,
+        2048
+      ],
+      "N_binormal": [
+        16,
+        2048
+      ],
+      "N_parallel": [
+        8,
+        256
+      ],
+      "N_v": [
+        8,
+        128
+      ],
+      "N_mu": [
+        4,
+        64
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "gyroaverage_error": [
+        0.0,
+        0.2
+      ],
+      "closure_error": [
+        0.0,
+        0.3
+      ],
+      "fluctuation_prior_error": [
+        0.0,
+        0.3
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.48,
+  "d_spec_notes": "Distance computed from problem_class, forward_operator, carrier, integration_axis against neighboring specs; within same principle this spec is mismatch-only canonical and sits at the Omega centroid.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions are consistent across the DAG; forward operator maps state space to measurement space at declared shapes.",
+    "S2": "kappa_eff = 55 within tolerance after regularization; RIP-like or coercivity conditions satisfied over most of Omega.",
+    "S3": "Solvers converge at rate q=1.0 in well-posed regime; mismatch parameters degrade convergence but not divergence.",
+    "S4": "epsilon_fn evaluates across 10+ random Omega samples; hardness rule verified \u2014 no baseline passes everywhere."
+  },
+  "ipfs_cid": null
+}

@@ -1,0 +1,182 @@
+{
+  "artifact_id": "L1-179",
+  "layer": "L1",
+  "principle_number": "179",
+  "title": "LES \u2014 large-eddy simulation",
+  "domain": "Fluid Dynamics",
+  "sub_domain": "Subgrid-scale modeling for turbulence",
+  "source_file": "R_fluid_dynamics/179_les.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "LES \u2014 large-eddy simulation forward model.",
+    "forward_model": "d/dt u_bar + div(u_bar u_bar) = -grad p_bar + div(2 (nu + nu_t) S_bar); nu_t from SGS model",
+    "world_state_x": "filtered 3D velocity field u_bar(x,t)",
+    "observation_y": "PIV + hot-wire instantaneous",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "Z",
+      "N_times",
+      "Re",
+      "SNR_dB",
+      "sgs_model_error",
+      "grid_resolution_error",
+      "filter_width_error"
+    ]
+  },
+  "G": {
+    "dag": "L.filter -> L.sgs_model -> L.momentum -> int.temporal",
+    "vertices": [
+      "L.filter",
+      "L.sgs_model",
+      "L.momentum",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.filter -> L.sgs_model",
+      "L.sgs_model -> L.momentum",
+      "L.momentum -> int.temporal"
+    ],
+    "L_DAG": 3.8,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 800,
+    "condition_number_effective": 40,
+    "regime": "Resolved scales > filter; SGS model for unresolved; expensive near walls."
+  },
+  "C": {
+    "solver_class": "Smagorinsky, WALE, Dynamic-SGS",
+    "convergence_rate_q": 1.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "mechanical",
+    "sensing_mechanism": "piv_hot_wire",
+    "integration_axis": "temporal",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "filtered_velocity_field_spacetime",
+    "primitives": [
+      "L.filter",
+      "L.sgs_model",
+      "L.momentum",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 10,
+  "difficulty_tier": "hard",
+  "mismatch_parameters": [
+    "sgs_model_error",
+    "grid_resolution_error",
+    "filter_width_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "les",
+      "forward_operator": "les_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 512,
+        "W": 512,
+        "Z": 128,
+        "N_times": 1000,
+        "Re": 100000,
+        "SNR_dB": 30,
+        "sgs_model_error": 0.0,
+        "grid_resolution_error": 0.0,
+        "filter_width_error": 0.0
+      },
+      "epsilon_fn_center": "19.0"
+    },
+    "allowed_forward_operators": [
+      "les_forward"
+    ],
+    "allowed_problem_classes": [
+      "les"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "Z",
+      "N_times",
+      "Re",
+      "SNR_dB",
+      "sgs_model_error",
+      "grid_resolution_error",
+      "filter_width_error",
+      "sgs_model_error",
+      "grid_resolution_error",
+      "filter_width_error"
+    ],
+    "omega_bounds": {
+      "H": [
+        64,
+        8192
+      ],
+      "W": [
+        64,
+        8192
+      ],
+      "Z": [
+        32,
+        2048
+      ],
+      "N_times": [
+        100,
+        1000000
+      ],
+      "Re": [
+        1000,
+        1000000000.0
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "sgs_model_error": [
+        0.0,
+        0.3
+      ],
+      "grid_resolution_error": [
+        0.0,
+        0.3
+      ],
+      "filter_width_error": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

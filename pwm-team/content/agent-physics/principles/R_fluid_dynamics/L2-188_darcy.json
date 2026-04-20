@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L2-188",
+  "layer": "L2",
+  "parent_l1": "L1-188",
+  "title": "Darcy Flow \u2014 low-Re porous-medium flow Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        16,
+        1024
+      ],
+      "W": [
+        16,
+        1024
+      ],
+      "Z": [
+        8,
+        512
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "permeability_error": [
+        0.0,
+        0.3
+      ],
+      "viscosity_error": [
+        0.0,
+        0.1
+      ],
+      "bc_error": [
+        0.0,
+        0.2
+      ]
+    },
+    "E": {
+      "forward": "u = -k/mu * grad p; div(u) = 0 (steady); BCs on inflow/outflow",
+      "operator": "darcy_forward_mismatch",
+      "primitive_chain": "L.darcy_linear -> L.mass_conservation -> L.bc -> int.spatial",
+      "inverse": "solve forward for declared state variable under Omega bounds"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR_dB",
+      "residual_norm"
+    ],
+    "epsilon_fn": "20.0 + 0.3*SNR_dB - 15.0*permeability_error - 30.0*viscosity_error - 10.0*bc_error"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "FEM-Darcy",
+        "method_sig": "L+O",
+        "expected_psnr": 25.0
+      },
+      {
+        "name": "MixedFEM",
+        "method_sig": "L+O",
+        "expected_psnr": 25.5
+      },
+      {
+        "name": "Darcy-NN",
+        "method_sig": "L+N",
+        "expected_psnr": 26.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 128,
+        "W": 128,
+        "Z": 32,
+        "SNR_dB": 30,
+        "permeability_error": 0.0,
+        "viscosity_error": 0.0,
+        "bc_error": 0.0
+      },
+      "epsilon": 26.0
+    },
+    "tier_bounds": {
+      "H": [
+        16,
+        1024
+      ],
+      "W": [
+        16,
+        1024
+      ],
+      "Z": [
+        8,
+        512
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "permeability_error": [
+        0.0,
+        0.3
+      ],
+      "viscosity_error": [
+        0.0,
+        0.1
+      ],
+      "bc_error": [
+        0.0,
+        0.2
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.48,
+  "d_spec_notes": "Distance computed from problem_class, forward_operator, carrier, integration_axis against neighboring specs; within same principle this spec is mismatch-only canonical and sits at the Omega centroid.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions are consistent across the DAG; forward operator maps state space to measurement space at declared shapes.",
+    "S2": "kappa_eff = 10 within tolerance after regularization; RIP-like or coercivity conditions satisfied over most of Omega.",
+    "S3": "Solvers converge at rate q=2.0 in well-posed regime; mismatch parameters degrade convergence but not divergence.",
+    "S4": "epsilon_fn evaluates across 10+ random Omega samples; hardness rule verified \u2014 no baseline passes everywhere."
+  },
+  "ipfs_cid": null
+}

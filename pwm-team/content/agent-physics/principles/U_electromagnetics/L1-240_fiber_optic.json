@@ -1,0 +1,170 @@
+{
+  "artifact_id": "L1-240",
+  "layer": "L1",
+  "principle_number": "240",
+  "title": "Fiber Optic \u2014 nonlinear Schrodinger pulse propagation",
+  "domain": "Electromagnetics",
+  "sub_domain": "NLSE / GNLSE optical-fiber pulse dynamics",
+  "source_file": "U_electromagnetics/240_fiber_optic.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Fiber Optic \u2014 nonlinear Schrodinger pulse propagation forward model.",
+    "forward_model": "dA/dz = i*sum_n (beta_n/n!) * (i*d/dt)^n A + i*gamma*|A|^2 A - alpha/2 * A + Raman term",
+    "world_state_x": "complex pulse envelope A(z,t) through fiber",
+    "observation_y": "OSA + oscilloscope measurements of pulse at output",
+    "physical_parameters_theta": [
+      "N_samples",
+      "L_fiber_km",
+      "SNR_dB",
+      "beta2_error",
+      "gamma_error",
+      "loss_error",
+      "raman_frac_error"
+    ]
+  },
+  "G": {
+    "dag": "L.dispersion -> L.kerr_nonlinear -> L.raman -> int.temporal",
+    "vertices": [
+      "L.dispersion",
+      "L.kerr_nonlinear",
+      "L.raman",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.dispersion -> L.kerr_nonlinear",
+      "L.kerr_nonlinear -> L.raman",
+      "L.raman -> int.temporal"
+    ],
+    "L_DAG": 3.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 500,
+    "condition_number_effective": 25,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Split-step-Fourier, GNLSE-RK4IP, NLSE-UNet",
+    "convergence_rate_q": 1.5,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "em",
+    "sensing_mechanism": "optical_sampling",
+    "integration_axis": "temporal",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "complex_optical_pulse_envelope",
+    "primitives": [
+      "L.dispersion",
+      "L.kerr_nonlinear",
+      "L.raman",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "beta2_error",
+    "gamma_error",
+    "loss_error",
+    "raman_frac_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "gnlse",
+      "forward_operator": "gnlse_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_samples": 4096,
+        "L_fiber_km": 10,
+        "SNR_dB": 30,
+        "beta2_error": 0.0,
+        "gamma_error": 0.0,
+        "loss_error": 0.0,
+        "raman_frac_error": 0.0
+      },
+      "epsilon_fn_center": "24.0"
+    },
+    "allowed_forward_operators": [
+      "gnlse_forward"
+    ],
+    "allowed_problem_classes": [
+      "gnlse"
+    ],
+    "allowed_omega_dimensions": [
+      "N_samples",
+      "L_fiber_km",
+      "SNR_dB",
+      "beta2_error",
+      "gamma_error",
+      "loss_error",
+      "raman_frac_error",
+      "beta2_error",
+      "gamma_error",
+      "loss_error",
+      "raman_frac_error"
+    ],
+    "omega_bounds": {
+      "N_samples": [
+        256,
+        1048576
+      ],
+      "L_fiber_km": [
+        0.001,
+        10000
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "beta2_error": [
+        0.0,
+        0.1
+      ],
+      "gamma_error": [
+        0.0,
+        0.1
+      ],
+      "loss_error": [
+        0.0,
+        0.1
+      ],
+      "raman_frac_error": [
+        0.0,
+        0.2
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

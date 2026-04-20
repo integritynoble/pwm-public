@@ -1,0 +1,168 @@
+{
+  "artifact_id": "L1-247",
+  "layer": "L1",
+  "principle_number": "247",
+  "title": "Phase Retrieval \u2014 Gerchberg-Saxton / hybrid input-output",
+  "domain": "Electromagnetics",
+  "sub_domain": "Non-convex phase recovery from intensity",
+  "source_file": "U_electromagnetics/247_phase_retrieval.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Phase Retrieval \u2014 Gerchberg-Saxton / hybrid input-output forward model.",
+    "forward_model": "y = |F{x}|^2 + n; recover phase(F{x}) via alternating projection",
+    "world_state_x": "complex-valued 2D object x(r)",
+    "observation_y": "intensity |F{x}|^2 in far/near field",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "oversampling",
+      "SNR_dB",
+      "support_error",
+      "oversampling_error",
+      "stagnation_risk"
+    ]
+  },
+  "G": {
+    "dag": "L.fourier_transform -> L.modulus_projection -> L.support_projection -> int.spatial",
+    "vertices": [
+      "L.fourier_transform",
+      "L.modulus_projection",
+      "L.support_projection",
+      "int.spatial"
+    ],
+    "arcs": [
+      "L.fourier_transform -> L.modulus_projection",
+      "L.modulus_projection -> L.support_projection",
+      "L.support_projection -> int.spatial"
+    ],
+    "L_DAG": 3.3,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 600,
+    "condition_number_effective": 30,
+    "regime": "Non-convex; stagnation in local minima common without good initialization."
+  },
+  "C": {
+    "solver_class": "GS, HIO, RAAR, PhaseGAN",
+    "convergence_rate_q": 1.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "em",
+    "sensing_mechanism": "intensity_camera",
+    "integration_axis": "spatial",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "poisson",
+    "solution_space": "complex_2D_field",
+    "primitives": [
+      "L.fourier_transform",
+      "L.modulus_projection",
+      "L.support_projection",
+      "int.spatial"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "support_error",
+    "oversampling_error",
+    "stagnation_risk"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "phase_retrieval",
+      "forward_operator": "phase_retrieval_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 512,
+        "W": 512,
+        "oversampling": 2.0,
+        "SNR_dB": 30,
+        "support_error": 0.0,
+        "oversampling_error": 0.0,
+        "stagnation_risk": 0.0
+      },
+      "epsilon_fn_center": "24.0"
+    },
+    "allowed_forward_operators": [
+      "phase_retrieval_forward"
+    ],
+    "allowed_problem_classes": [
+      "phase_retrieval"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "oversampling",
+      "SNR_dB",
+      "support_error",
+      "oversampling_error",
+      "stagnation_risk",
+      "support_error",
+      "oversampling_error",
+      "stagnation_risk"
+    ],
+    "omega_bounds": {
+      "H": [
+        64,
+        4096
+      ],
+      "W": [
+        64,
+        4096
+      ],
+      "oversampling": [
+        1.0,
+        10.0
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "support_error": [
+        0.0,
+        0.2
+      ],
+      "oversampling_error": [
+        0.0,
+        0.2
+      ],
+      "stagnation_risk": [
+        0.0,
+        0.5
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

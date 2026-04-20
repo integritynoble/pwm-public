@@ -1,0 +1,175 @@
+{
+  "artifact_id": "L1-261",
+  "layer": "L1",
+  "principle_number": "261",
+  "title": "Acoustic Scattering \u2014 boundary element method (BEM)",
+  "domain": "Acoustics",
+  "sub_domain": "Exterior BEM for acoustic scattering",
+  "source_file": "V_acoustics/261_acoustic_scattering_bem.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Acoustic Scattering \u2014 boundary element method (BEM) forward model.",
+    "forward_model": "p(x) = p_inc(x) - int_Gamma [G(x,y) dp/dn - p dG/dn] dy  (Helmholtz boundary integral)",
+    "world_state_x": "complex pressure on scatterer surface Gamma + radiated far-field pattern",
+    "observation_y": "far-field pressure at N_R receivers across N_F frequencies",
+    "physical_parameters_theta": [
+      "N_mesh",
+      "N_receivers",
+      "N_freqs",
+      "ka",
+      "SNR_dB",
+      "surface_mesh_error",
+      "impedance_BC_error",
+      "freq_error"
+    ]
+  },
+  "G": {
+    "dag": "L.source_incident -> L.bem_surface_integral -> S.record.farfield -> int.frequency",
+    "vertices": [
+      "L.source_incident",
+      "L.bem_surface_integral",
+      "S.record.farfield",
+      "int.frequency"
+    ],
+    "arcs": [
+      "L.source_incident -> L.bem_surface_integral",
+      "L.bem_surface_integral -> S.record.farfield",
+      "S.record.farfield -> int.frequency"
+    ],
+    "L_DAG": 3.3,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 700,
+    "condition_number_effective": 35,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Collocation-BEM, Galerkin-BEM, FMM-BEM",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "acoustic",
+    "sensing_mechanism": "pressure_array",
+    "integration_axis": "frequency",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "complex_pressure_field_2D",
+    "primitives": [
+      "L.source_incident",
+      "L.bem_surface_integral",
+      "S.record.farfield",
+      "int.frequency"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "surface_mesh_error",
+    "impedance_BC_error",
+    "freq_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "bem_scatter",
+      "forward_operator": "bem_scatter_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_mesh": 5000,
+        "N_receivers": 64,
+        "N_freqs": 16,
+        "ka": 5,
+        "SNR_dB": 30,
+        "surface_mesh_error": 0.0,
+        "impedance_BC_error": 0.0,
+        "freq_error": 0.0
+      },
+      "epsilon_fn_center": "24.0"
+    },
+    "allowed_forward_operators": [
+      "bem_scatter_forward"
+    ],
+    "allowed_problem_classes": [
+      "bem_scatter"
+    ],
+    "allowed_omega_dimensions": [
+      "N_mesh",
+      "N_receivers",
+      "N_freqs",
+      "ka",
+      "SNR_dB",
+      "surface_mesh_error",
+      "impedance_BC_error",
+      "freq_error",
+      "surface_mesh_error",
+      "impedance_BC_error",
+      "freq_error"
+    ],
+    "omega_bounds": {
+      "N_mesh": [
+        500,
+        200000
+      ],
+      "N_receivers": [
+        16,
+        512
+      ],
+      "N_freqs": [
+        4,
+        128
+      ],
+      "ka": [
+        0.1,
+        50
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "surface_mesh_error": [
+        0.0,
+        0.1
+      ],
+      "impedance_BC_error": [
+        0.0,
+        0.3
+      ],
+      "freq_error": [
+        0.0,
+        0.02
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

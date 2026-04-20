@@ -1,0 +1,184 @@
+{
+  "artifact_id": "L1-264",
+  "layer": "L1",
+  "principle_number": "264",
+  "title": "Underwater Acoustics \u2014 Parabolic Equation (RAM)",
+  "domain": "Acoustics",
+  "sub_domain": "Pade-expansion split-step PE",
+  "source_file": "V_acoustics/264_underwater_parabolic_eq.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Underwater Acoustics \u2014 Parabolic Equation (RAM) forward model.",
+    "forward_model": "dp/dr = i*k_0 * (sqrt(1 + X) - 1) * p, X = (1/k_0^2)(d^2/dz^2 + k^2(z,r) - k_0^2)",
+    "world_state_x": "complex acoustic pressure p(r,z) in range-depth domain",
+    "observation_y": "complex pressure at receiver array at (r_i, z_j) for one or several frequencies",
+    "physical_parameters_theta": [
+      "N_range",
+      "N_depth",
+      "freq_Hz",
+      "pade_order",
+      "SNR_dB",
+      "ssp_error",
+      "range_step_dr",
+      "pade_order_truncation",
+      "bottom_atten_error"
+    ]
+  },
+  "G": {
+    "dag": "L.split_step_pe -> L.marching.range -> L.absorb_bottom -> int.range",
+    "vertices": [
+      "L.split_step_pe",
+      "L.marching.range",
+      "L.absorb_bottom",
+      "int.range"
+    ],
+    "arcs": [
+      "L.split_step_pe -> L.marching.range",
+      "L.marching.range -> L.absorb_bottom",
+      "L.absorb_bottom -> int.range"
+    ],
+    "L_DAG": 3.3,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 440,
+    "condition_number_effective": 22,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "RAM-standard, WA-PE, RAM-NN",
+    "convergence_rate_q": 1.5,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "acoustic",
+    "sensing_mechanism": "hydrophones",
+    "integration_axis": "range",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "complex_pressure_range_depth_2D",
+    "primitives": [
+      "L.split_step_pe",
+      "L.marching.range",
+      "L.absorb_bottom",
+      "int.range"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "ssp_error",
+    "range_step_dr",
+    "pade_order_truncation",
+    "bottom_atten_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "ram_pe",
+      "forward_operator": "ram_pe_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_range": 1024,
+        "N_depth": 256,
+        "freq_Hz": 100,
+        "pade_order": 8,
+        "SNR_dB": 30,
+        "ssp_error": 0.0,
+        "range_step_dr": 0.0,
+        "pade_order_truncation": 0.0,
+        "bottom_atten_error": 0.0
+      },
+      "epsilon_fn_center": "23.5"
+    },
+    "allowed_forward_operators": [
+      "ram_pe_forward"
+    ],
+    "allowed_problem_classes": [
+      "ram_pe"
+    ],
+    "allowed_omega_dimensions": [
+      "N_range",
+      "N_depth",
+      "freq_Hz",
+      "pade_order",
+      "SNR_dB",
+      "ssp_error",
+      "range_step_dr",
+      "pade_order_truncation",
+      "bottom_atten_error",
+      "ssp_error",
+      "range_step_dr",
+      "pade_order_truncation",
+      "bottom_atten_error"
+    ],
+    "omega_bounds": {
+      "N_range": [
+        128,
+        8192
+      ],
+      "N_depth": [
+        64,
+        2048
+      ],
+      "freq_Hz": [
+        10,
+        2000
+      ],
+      "pade_order": [
+        1,
+        10
+      ],
+      "SNR_dB": [
+        -5,
+        40
+      ],
+      "ssp_error": [
+        0.0,
+        0.02
+      ],
+      "range_step_dr": [
+        0.0,
+        1.0
+      ],
+      "pade_order_truncation": [
+        0.0,
+        0.3
+      ],
+      "bottom_atten_error": [
+        0.0,
+        0.2
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

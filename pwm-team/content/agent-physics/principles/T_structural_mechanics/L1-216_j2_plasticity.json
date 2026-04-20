@@ -1,0 +1,161 @@
+{
+  "artifact_id": "L1-216",
+  "layer": "L1",
+  "principle_number": "216",
+  "title": "J2 Plasticity \u2014 von Mises rate-independent",
+  "domain": "Structural Mechanics",
+  "sub_domain": "Rate-independent J2 plasticity with hardening",
+  "source_file": "T_structural_mechanics/216_j2_plasticity.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "J2 Plasticity \u2014 von Mises rate-independent forward model.",
+    "forward_model": "f = sqrt(3/2 s:s) - sigma_y(eps_p); dot eps_p = gamma * df/dsigma; return mapping",
+    "world_state_x": "plastic strain eps_p(x) + updated yield surface",
+    "observation_y": "stress-strain curve + strain fields",
+    "physical_parameters_theta": [
+      "N_DOF",
+      "N_inc",
+      "SNR_dB",
+      "sigma_y_error",
+      "H_hardening_error",
+      "E_error"
+    ]
+  },
+  "G": {
+    "dag": "L.yield_function -> L.flow_rule -> L.return_map -> int.spatial",
+    "vertices": [
+      "L.yield_function",
+      "L.flow_rule",
+      "L.return_map",
+      "int.spatial"
+    ],
+    "arcs": [
+      "L.yield_function -> L.flow_rule",
+      "L.flow_rule -> L.return_map",
+      "L.return_map -> int.spatial"
+    ],
+    "L_DAG": 3.3,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 360,
+    "condition_number_effective": 18,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Return-mapping, FEM-Newton, Plast-NN",
+    "convergence_rate_q": 1.5,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "mechanical",
+    "sensing_mechanism": "strain_dic",
+    "integration_axis": "spatial",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "plastic_strain_history",
+    "primitives": [
+      "L.yield_function",
+      "L.flow_rule",
+      "L.return_map",
+      "int.spatial"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "sigma_y_error",
+    "H_hardening_error",
+    "E_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "j2_plasticity",
+      "forward_operator": "j2_plasticity_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_DOF": 10000,
+        "N_inc": 100,
+        "SNR_dB": 30,
+        "sigma_y_error": 0.0,
+        "H_hardening_error": 0.0,
+        "E_error": 0.0
+      },
+      "epsilon_fn_center": "22.0"
+    },
+    "allowed_forward_operators": [
+      "j2_plasticity_forward"
+    ],
+    "allowed_problem_classes": [
+      "j2_plasticity"
+    ],
+    "allowed_omega_dimensions": [
+      "N_DOF",
+      "N_inc",
+      "SNR_dB",
+      "sigma_y_error",
+      "H_hardening_error",
+      "E_error",
+      "sigma_y_error",
+      "H_hardening_error",
+      "E_error"
+    ],
+    "omega_bounds": {
+      "N_DOF": [
+        100,
+        1000000
+      ],
+      "N_inc": [
+        10,
+        10000
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "sigma_y_error": [
+        0.0,
+        0.1
+      ],
+      "H_hardening_error": [
+        0.0,
+        0.2
+      ],
+      "E_error": [
+        0.0,
+        0.1
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

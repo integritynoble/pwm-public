@@ -1,0 +1,182 @@
+{
+  "artifact_id": "L1-283",
+  "layer": "L1",
+  "principle_number": "283",
+  "title": "Electrical Resistivity Tomography (ERT) \u2014 near-surface",
+  "domain": "Geophysics",
+  "sub_domain": "DC-resistivity near-surface imaging",
+  "source_file": "W_geophysics/283_electrical_resistivity_tomography.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Electrical Resistivity Tomography (ERT) \u2014 near-surface forward model.",
+    "forward_model": "div(sigma grad phi) = -I delta(x_src); measure V at remote electrodes",
+    "world_state_x": "3D resistivity (surface-down to ~100 m depth)",
+    "observation_y": "N_quadrupole apparent resistivity measurements",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "Z",
+      "N_electrodes",
+      "N_quadrupoles",
+      "SNR_dB",
+      "electrode_contact_error",
+      "topography_error",
+      "anisotropy_unmodelled"
+    ]
+  },
+  "G": {
+    "dag": "L.current_injection -> L.poisson_steady -> L.regularize -> int.spatial",
+    "vertices": [
+      "L.current_injection",
+      "L.poisson_steady",
+      "L.regularize",
+      "int.spatial"
+    ],
+    "arcs": [
+      "L.current_injection -> L.poisson_steady",
+      "L.poisson_steady -> L.regularize",
+      "L.regularize -> int.spatial"
+    ],
+    "L_DAG": 3.2,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 500,
+    "condition_number_effective": 25,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "ResIPy, BERT, ERT-Net",
+    "convergence_rate_q": 1.5,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "em",
+    "sensing_mechanism": "dc_electrodes",
+    "integration_axis": "spatial",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "3D_resistivity_shallow",
+    "primitives": [
+      "L.current_injection",
+      "L.poisson_steady",
+      "L.regularize",
+      "int.spatial"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "electrode_contact_error",
+    "topography_error",
+    "anisotropy_unmodelled"
+  ],
+  "error_metric": "res_rel_error_percent",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "ert",
+      "forward_operator": "ert_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 128,
+        "W": 128,
+        "Z": 32,
+        "N_electrodes": 64,
+        "N_quadrupoles": 1000,
+        "SNR_dB": 30,
+        "electrode_contact_error": 0.0,
+        "topography_error": 0.0,
+        "anisotropy_unmodelled": 0.0
+      },
+      "epsilon_fn_center": "6.0"
+    },
+    "allowed_forward_operators": [
+      "ert_forward"
+    ],
+    "allowed_problem_classes": [
+      "ert"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "Z",
+      "N_electrodes",
+      "N_quadrupoles",
+      "SNR_dB",
+      "electrode_contact_error",
+      "topography_error",
+      "anisotropy_unmodelled",
+      "electrode_contact_error",
+      "topography_error",
+      "anisotropy_unmodelled"
+    ],
+    "omega_bounds": {
+      "H": [
+        16,
+        1024
+      ],
+      "W": [
+        16,
+        1024
+      ],
+      "Z": [
+        4,
+        256
+      ],
+      "N_electrodes": [
+        4,
+        1024
+      ],
+      "N_quadrupoles": [
+        10,
+        100000
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "electrode_contact_error": [
+        0.0,
+        0.2
+      ],
+      "topography_error": [
+        0.0,
+        0.2
+      ],
+      "anisotropy_unmodelled": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "res_rel": [
+        0.5,
+        40.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

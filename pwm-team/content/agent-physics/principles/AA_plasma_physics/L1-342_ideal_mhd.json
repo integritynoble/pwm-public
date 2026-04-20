@@ -1,0 +1,184 @@
+{
+  "artifact_id": "L1-342",
+  "layer": "L1",
+  "principle_number": "342",
+  "title": "Ideal MHD \u2014 magnetohydrodynamics infinite-conductivity limit",
+  "domain": "Plasma Physics",
+  "sub_domain": "Ideal MHD plasma simulation",
+  "source_file": "AA_plasma_physics/342_ideal_mhd.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Ideal MHD \u2014 magnetohydrodynamics infinite-conductivity limit forward model.",
+    "forward_model": "d rho/dt + div(rho u)=0; rho du/dt = -grad p + J x B; dB/dt = curl(u x B); E + u x B = 0",
+    "world_state_x": "plasma density rho, velocity u, magnetic field B, pressure p",
+    "observation_y": "Langmuir probes + B-dot coils + Thomson scattering",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "Z",
+      "N_times",
+      "SNR_dB",
+      "B_field_error",
+      "rho_error",
+      "temperature_error",
+      "bc_error"
+    ]
+  },
+  "G": {
+    "dag": "L.continuity -> L.momentum_lorentz -> L.induction -> int.temporal",
+    "vertices": [
+      "L.continuity",
+      "L.momentum_lorentz",
+      "L.induction",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.continuity -> L.momentum_lorentz",
+      "L.momentum_lorentz -> L.induction",
+      "L.induction -> int.temporal"
+    ],
+    "L_DAG": 3.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 700,
+    "condition_number_effective": 35,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "FLASH-MHD, Athena-MHD, MHD-Net",
+    "convergence_rate_q": 1.5,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "plasma",
+    "sensing_mechanism": "langmuir_probe_bdotfield",
+    "integration_axis": "temporal",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "plasma_B_u_rho_T_spacetime",
+    "primitives": [
+      "L.continuity",
+      "L.momentum_lorentz",
+      "L.induction",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "B_field_error",
+    "rho_error",
+    "temperature_error",
+    "bc_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "ideal_mhd",
+      "forward_operator": "ideal_mhd_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 256,
+        "W": 256,
+        "Z": 128,
+        "N_times": 500,
+        "SNR_dB": 25,
+        "B_field_error": 0.0,
+        "rho_error": 0.0,
+        "temperature_error": 0.0,
+        "bc_error": 0.0
+      },
+      "epsilon_fn_center": "22.0"
+    },
+    "allowed_forward_operators": [
+      "ideal_mhd_forward"
+    ],
+    "allowed_problem_classes": [
+      "ideal_mhd"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "Z",
+      "N_times",
+      "SNR_dB",
+      "B_field_error",
+      "rho_error",
+      "temperature_error",
+      "bc_error",
+      "B_field_error",
+      "rho_error",
+      "temperature_error",
+      "bc_error"
+    ],
+    "omega_bounds": {
+      "H": [
+        32,
+        2048
+      ],
+      "W": [
+        32,
+        2048
+      ],
+      "Z": [
+        16,
+        1024
+      ],
+      "N_times": [
+        50,
+        100000
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "B_field_error": [
+        0.0,
+        0.1
+      ],
+      "rho_error": [
+        0.0,
+        0.2
+      ],
+      "temperature_error": [
+        0.0,
+        0.2
+      ],
+      "bc_error": [
+        0.0,
+        0.2
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

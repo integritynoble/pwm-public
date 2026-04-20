@@ -1,0 +1,177 @@
+{
+  "artifact_id": "L1-288",
+  "layer": "L1",
+  "principle_number": "288",
+  "title": "Volcanic Deformation \u2014 InSAR/GPS source modeling",
+  "domain": "Geophysics",
+  "sub_domain": "Mogi / dike / sill source inversion",
+  "source_file": "W_geophysics/288_volcanic_deformation.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Volcanic Deformation \u2014 InSAR/GPS source modeling forward model.",
+    "forward_model": "u_z = (1-nu)*a^3 * dP / (mu * R^3); Mogi point-source closed form",
+    "world_state_x": "volumetric source geometry (depth, volume change) beneath volcano",
+    "observation_y": "InSAR displacement interferograms + GPS velocities",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "N_gps",
+      "SNR_dB",
+      "atmospheric_noise",
+      "topography_error",
+      "ionospheric_delay",
+      "unwrap_error"
+    ]
+  },
+  "G": {
+    "dag": "L.elastic_halfspace -> L.mogi_source -> L.nonlinear_inversion -> int.spatial",
+    "vertices": [
+      "L.elastic_halfspace",
+      "L.mogi_source",
+      "L.nonlinear_inversion",
+      "int.spatial"
+    ],
+    "arcs": [
+      "L.elastic_halfspace -> L.mogi_source",
+      "L.mogi_source -> L.nonlinear_inversion",
+      "L.nonlinear_inversion -> int.spatial"
+    ],
+    "L_DAG": 3.3,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 500,
+    "condition_number_effective": 25,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Mogi-fit, Yang-Okada, VolcDef-Net",
+    "convergence_rate_q": 1.5,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "em",
+    "sensing_mechanism": "insar_gps",
+    "integration_axis": "spatial",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "source_geometry_and_pressure",
+    "primitives": [
+      "L.elastic_halfspace",
+      "L.mogi_source",
+      "L.nonlinear_inversion",
+      "int.spatial"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "atmospheric_noise",
+    "topography_error",
+    "ionospheric_delay",
+    "unwrap_error"
+  ],
+  "error_metric": "volume_rel_error_percent",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "mogi",
+      "forward_operator": "mogi_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 1024,
+        "W": 1024,
+        "N_gps": 20,
+        "SNR_dB": 25,
+        "atmospheric_noise": 0.0,
+        "topography_error": 0.0,
+        "ionospheric_delay": 0.0,
+        "unwrap_error": 0.0
+      },
+      "epsilon_fn_center": "3.0"
+    },
+    "allowed_forward_operators": [
+      "mogi_forward"
+    ],
+    "allowed_problem_classes": [
+      "mogi"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "N_gps",
+      "SNR_dB",
+      "atmospheric_noise",
+      "topography_error",
+      "ionospheric_delay",
+      "unwrap_error",
+      "atmospheric_noise",
+      "topography_error",
+      "ionospheric_delay",
+      "unwrap_error"
+    ],
+    "omega_bounds": {
+      "H": [
+        128,
+        8192
+      ],
+      "W": [
+        128,
+        8192
+      ],
+      "N_gps": [
+        1,
+        1000
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "atmospheric_noise": [
+        0.0,
+        0.3
+      ],
+      "topography_error": [
+        0.0,
+        0.2
+      ],
+      "ionospheric_delay": [
+        0.0,
+        0.3
+      ],
+      "unwrap_error": [
+        0.0,
+        0.2
+      ]
+    },
+    "epsilon_bounds": {
+      "volume_rel": [
+        0.5,
+        40.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

@@ -1,0 +1,133 @@
+{
+  "artifact_id": "L2-228",
+  "layer": "L2",
+  "parent_l1": "L1-228",
+  "title": "Thermoelasticity \u2014 coupled thermal-mechanical Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "N_DOF": [
+        100,
+        1000000
+      ],
+      "N_times": [
+        10,
+        100000
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "alpha_T_error": [
+        0.0,
+        0.1
+      ],
+      "k_error": [
+        0.0,
+        0.1
+      ],
+      "E_error": [
+        0.0,
+        0.1
+      ]
+    },
+    "E": {
+      "forward": "sigma = C : (eps - alpha_T * DT); rho cp dT/dt = div(k grad T) + Q",
+      "operator": "thermoelastic_forward_mismatch",
+      "primitive_chain": "L.thermal_strain -> L.heat_conduct -> L.weak_coupling -> int.temporal",
+      "inverse": "solve forward for declared state variable under Omega bounds"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR_dB",
+      "residual_norm"
+    ],
+    "epsilon_fn": "19.0 + 0.3*SNR_dB - 30.0*alpha_T_error - 25.0*k_error - 25.0*E_error"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "FEM-coupled",
+        "method_sig": "L+O",
+        "expected_psnr": 24.0
+      },
+      {
+        "name": "Staggered",
+        "method_sig": "L+O",
+        "expected_psnr": 24.5
+      },
+      {
+        "name": "TE-NN",
+        "method_sig": "L+N",
+        "expected_psnr": 26.0
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_DOF": 10000,
+        "N_times": 500,
+        "SNR_dB": 30,
+        "alpha_T_error": 0.0,
+        "k_error": 0.0,
+        "E_error": 0.0
+      },
+      "epsilon": 25.0
+    },
+    "tier_bounds": {
+      "N_DOF": [
+        100,
+        1000000
+      ],
+      "N_times": [
+        10,
+        100000
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "alpha_T_error": [
+        0.0,
+        0.1
+      ],
+      "k_error": [
+        0.0,
+        0.1
+      ],
+      "E_error": [
+        0.0,
+        0.1
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.48,
+  "d_spec_notes": "Distance computed from problem_class, forward_operator, carrier, integration_axis against neighboring specs; within same principle this spec is mismatch-only canonical and sits at the Omega centroid.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions are consistent across the DAG; forward operator maps state space to measurement space at declared shapes.",
+    "S2": "kappa_eff = 12 within tolerance after regularization; RIP-like or coercivity conditions satisfied over most of Omega.",
+    "S3": "Solvers converge at rate q=2.0 in well-posed regime; mismatch parameters degrade convergence but not divergence.",
+    "S4": "epsilon_fn evaluates across 10+ random Omega samples; hardness rule verified \u2014 no baseline passes everywhere."
+  },
+  "ipfs_cid": null
+}

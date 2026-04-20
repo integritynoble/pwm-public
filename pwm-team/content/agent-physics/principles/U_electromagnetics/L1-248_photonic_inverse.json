@@ -1,0 +1,175 @@
+{
+  "artifact_id": "L1-248",
+  "layer": "L1",
+  "principle_number": "248",
+  "title": "Photonic Inverse Design \u2014 nanostructure topology optimization",
+  "domain": "Electromagnetics",
+  "sub_domain": "Adjoint-based photonic topology optimization",
+  "source_file": "U_electromagnetics/248_photonic_inverse.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Photonic Inverse Design \u2014 nanostructure topology optimization forward model.",
+    "forward_model": "grad FOM / grad eps = Re{ - E_fwd . E_adj * j*omega * delta_eps }; update eps via gradient",
+    "world_state_x": "eps(x,y) distribution optimized for a device figure of merit (FOM)",
+    "observation_y": "target scattering / transmission S-parameters",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "N_freqs",
+      "N_iter",
+      "SNR_dB",
+      "fab_discretization_error",
+      "material_error",
+      "source_error"
+    ]
+  },
+  "G": {
+    "dag": "L.fdfd -> L.adjoint -> L.density_filter -> int.frequency",
+    "vertices": [
+      "L.fdfd",
+      "L.adjoint",
+      "L.density_filter",
+      "int.frequency"
+    ],
+    "arcs": [
+      "L.fdfd -> L.adjoint",
+      "L.adjoint -> L.density_filter",
+      "L.density_filter -> int.frequency"
+    ],
+    "L_DAG": 3.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 500,
+    "condition_number_effective": 25,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "TopOpt-MMA, Density-filter, DL-inverse",
+    "convergence_rate_q": 1.5,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "em",
+    "sensing_mechanism": "fdfd_simulation",
+    "integration_axis": "frequency",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "binary_permittivity_map",
+    "primitives": [
+      "L.fdfd",
+      "L.adjoint",
+      "L.density_filter",
+      "int.frequency"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "fab_discretization_error",
+    "material_error",
+    "source_error"
+  ],
+  "error_metric": "FOM_rel_score",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "photonic_adjoint",
+      "forward_operator": "photonic_adjoint_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 256,
+        "W": 256,
+        "N_freqs": 16,
+        "N_iter": 500,
+        "SNR_dB": 40,
+        "fab_discretization_error": 0.0,
+        "material_error": 0.0,
+        "source_error": 0.0
+      },
+      "epsilon_fn_center": "0.8"
+    },
+    "allowed_forward_operators": [
+      "photonic_adjoint_forward"
+    ],
+    "allowed_problem_classes": [
+      "photonic_adjoint"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "N_freqs",
+      "N_iter",
+      "SNR_dB",
+      "fab_discretization_error",
+      "material_error",
+      "source_error",
+      "fab_discretization_error",
+      "material_error",
+      "source_error"
+    ],
+    "omega_bounds": {
+      "H": [
+        32,
+        2048
+      ],
+      "W": [
+        32,
+        2048
+      ],
+      "N_freqs": [
+        1,
+        256
+      ],
+      "N_iter": [
+        10,
+        100000
+      ],
+      "SNR_dB": [
+        10,
+        60
+      ],
+      "fab_discretization_error": [
+        0.0,
+        0.2
+      ],
+      "material_error": [
+        0.0,
+        0.1
+      ],
+      "source_error": [
+        0.0,
+        0.1
+      ]
+    },
+    "epsilon_bounds": {
+      "FOM": [
+        0.1,
+        1.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

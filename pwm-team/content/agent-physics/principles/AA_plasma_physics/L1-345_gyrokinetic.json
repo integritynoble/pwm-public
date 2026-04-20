@@ -1,0 +1,182 @@
+{
+  "artifact_id": "L1-345",
+  "layer": "L1",
+  "principle_number": "345",
+  "title": "Gyrokinetic \u2014 5D reduced plasma kinetic",
+  "domain": "Plasma Physics",
+  "sub_domain": "Magnetic-fusion gyrokinetic simulation",
+  "source_file": "AA_plasma_physics/345_gyrokinetic.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Gyrokinetic \u2014 5D reduced plasma kinetic forward model.",
+    "forward_model": "dF/dt + (v_||*b + v_E + v_grad_B + v_curv).grad F + ... = 0; Poisson solves E field",
+    "world_state_x": "5D gyrocenter distribution + fluctuating phi, A_||",
+    "observation_y": "BES + CECE + reflectometer fluctuation amplitudes",
+    "physical_parameters_theta": [
+      "N_radial",
+      "N_binormal",
+      "N_parallel",
+      "N_v",
+      "N_mu",
+      "SNR_dB",
+      "gyroaverage_error",
+      "closure_error",
+      "fluctuation_prior_error"
+    ]
+  },
+  "G": {
+    "dag": "L.gyroaverage -> L.drift_kinetic -> L.nonlinear_coupling -> int.phase_space",
+    "vertices": [
+      "L.gyroaverage",
+      "L.drift_kinetic",
+      "L.nonlinear_coupling",
+      "int.phase_space"
+    ],
+    "arcs": [
+      "L.gyroaverage -> L.drift_kinetic",
+      "L.drift_kinetic -> L.nonlinear_coupling",
+      "L.nonlinear_coupling -> int.phase_space"
+    ],
+    "L_DAG": 3.8,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 1100,
+    "condition_number_effective": 55,
+    "regime": "Drift-wave turbulence; nonlinear coupling between Alfven / drift waves."
+  },
+  "C": {
+    "solver_class": "GENE, GYRO, GX",
+    "convergence_rate_q": 1.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "plasma",
+    "sensing_mechanism": "beam_emission_spectroscopy",
+    "integration_axis": "phase_space",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "gk_distribution_function_5D",
+    "primitives": [
+      "L.gyroaverage",
+      "L.drift_kinetic",
+      "L.nonlinear_coupling",
+      "int.phase_space"
+    ]
+  },
+  "difficulty_delta": 10,
+  "difficulty_tier": "hard",
+  "mismatch_parameters": [
+    "gyroaverage_error",
+    "closure_error",
+    "fluctuation_prior_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "gyrokinetic",
+      "forward_operator": "gyrokinetic_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_radial": 256,
+        "N_binormal": 128,
+        "N_parallel": 64,
+        "N_v": 24,
+        "N_mu": 8,
+        "SNR_dB": 25,
+        "gyroaverage_error": 0.0,
+        "closure_error": 0.0,
+        "fluctuation_prior_error": 0.0
+      },
+      "epsilon_fn_center": "16.0"
+    },
+    "allowed_forward_operators": [
+      "gyrokinetic_forward"
+    ],
+    "allowed_problem_classes": [
+      "gyrokinetic"
+    ],
+    "allowed_omega_dimensions": [
+      "N_radial",
+      "N_binormal",
+      "N_parallel",
+      "N_v",
+      "N_mu",
+      "SNR_dB",
+      "gyroaverage_error",
+      "closure_error",
+      "fluctuation_prior_error",
+      "gyroaverage_error",
+      "closure_error",
+      "fluctuation_prior_error"
+    ],
+    "omega_bounds": {
+      "N_radial": [
+        32,
+        2048
+      ],
+      "N_binormal": [
+        16,
+        2048
+      ],
+      "N_parallel": [
+        8,
+        256
+      ],
+      "N_v": [
+        8,
+        128
+      ],
+      "N_mu": [
+        4,
+        64
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "gyroaverage_error": [
+        0.0,
+        0.2
+      ],
+      "closure_error": [
+        0.0,
+        0.3
+      ],
+      "fluctuation_prior_error": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

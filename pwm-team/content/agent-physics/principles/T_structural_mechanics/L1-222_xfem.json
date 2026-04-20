@@ -1,0 +1,161 @@
+{
+  "artifact_id": "L1-222",
+  "layer": "L1",
+  "principle_number": "222",
+  "title": "XFEM \u2014 extended finite element for cracks",
+  "domain": "Structural Mechanics",
+  "sub_domain": "Enriched FE with discontinuous shape functions",
+  "source_file": "T_structural_mechanics/222_xfem.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "XFEM \u2014 extended finite element for cracks forward model.",
+    "forward_model": "u_h = sum N_i u_i + sum N_j (H(x) - H_j) a_j + sum N_k F_l(x) b_kl (crack-tip enrichment)",
+    "world_state_x": "crack path phi(x) + enriched displacement coefficients",
+    "observation_y": "DIC near crack + global response",
+    "physical_parameters_theta": [
+      "N_DOF",
+      "N_enrich",
+      "SNR_dB",
+      "level_set_error",
+      "enrichment_error",
+      "quadrature_error"
+    ]
+  },
+  "G": {
+    "dag": "L.level_set -> L.enrich_shape -> L.heaviside_branch -> int.spatial",
+    "vertices": [
+      "L.level_set",
+      "L.enrich_shape",
+      "L.heaviside_branch",
+      "int.spatial"
+    ],
+    "arcs": [
+      "L.level_set -> L.enrich_shape",
+      "L.enrich_shape -> L.heaviside_branch",
+      "L.heaviside_branch -> int.spatial"
+    ],
+    "L_DAG": 3.3,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 360,
+    "condition_number_effective": 18,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Abaqus-XFEM, Goftit-XFEM, XFEM-NN",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "mechanical",
+    "sensing_mechanism": "dic",
+    "integration_axis": "spatial",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "crack_field_enriched",
+    "primitives": [
+      "L.level_set",
+      "L.enrich_shape",
+      "L.heaviside_branch",
+      "int.spatial"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "level_set_error",
+    "enrichment_error",
+    "quadrature_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "xfem",
+      "forward_operator": "xfem_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_DOF": 50000,
+        "N_enrich": 100,
+        "SNR_dB": 30,
+        "level_set_error": 0.0,
+        "enrichment_error": 0.0,
+        "quadrature_error": 0.0
+      },
+      "epsilon_fn_center": "23.0"
+    },
+    "allowed_forward_operators": [
+      "xfem_forward"
+    ],
+    "allowed_problem_classes": [
+      "xfem"
+    ],
+    "allowed_omega_dimensions": [
+      "N_DOF",
+      "N_enrich",
+      "SNR_dB",
+      "level_set_error",
+      "enrichment_error",
+      "quadrature_error",
+      "level_set_error",
+      "enrichment_error",
+      "quadrature_error"
+    ],
+    "omega_bounds": {
+      "N_DOF": [
+        1000,
+        10000000
+      ],
+      "N_enrich": [
+        1,
+        10000
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "level_set_error": [
+        0.0,
+        0.1
+      ],
+      "enrichment_error": [
+        0.0,
+        0.2
+      ],
+      "quadrature_error": [
+        0.0,
+        0.1
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

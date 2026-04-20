@@ -1,0 +1,191 @@
+{
+  "artifact_id": "L1-281",
+  "layer": "L1",
+  "principle_number": "281",
+  "title": "Magnetotelluric Inversion \u2014 resistivity imaging",
+  "domain": "Geophysics",
+  "sub_domain": "Deep-Earth resistivity via natural-source EM",
+  "source_file": "W_geophysics/281_magnetotelluric_inversion.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Magnetotelluric Inversion \u2014 resistivity imaging forward model.",
+    "forward_model": "Z(omega) = E_t / H_t; impedance tensor depends on 3D sigma distribution",
+    "world_state_x": "3D electrical resistivity rho(x,y,z)",
+    "observation_y": "MT impedance tensor Z(omega) + tipper at N_stations",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "Z",
+      "N_stations",
+      "N_freqs",
+      "SNR_dB",
+      "impedance_error",
+      "static_shift",
+      "galvanic_distortion",
+      "topography_error"
+    ]
+  },
+  "G": {
+    "dag": "L.maxwell_freq -> L.impedance_tensor -> L.nlcg -> int.frequency",
+    "vertices": [
+      "L.maxwell_freq",
+      "L.impedance_tensor",
+      "L.nlcg",
+      "int.frequency"
+    ],
+    "arcs": [
+      "L.maxwell_freq -> L.impedance_tensor",
+      "L.impedance_tensor -> L.nlcg",
+      "L.nlcg -> int.frequency"
+    ],
+    "L_DAG": 3.7,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "unstable",
+    "condition_number_kappa": 1000,
+    "condition_number_effective": 50,
+    "regime": "Non-linear ill-posed; static shift and galvanic distortion degrade images."
+  },
+  "C": {
+    "solver_class": "ModEM, WSINV3D, MT-Net",
+    "convergence_rate_q": 1.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "em",
+    "sensing_mechanism": "mt_station",
+    "integration_axis": "frequency",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "3D_resistivity_field",
+    "primitives": [
+      "L.maxwell_freq",
+      "L.impedance_tensor",
+      "L.nlcg",
+      "int.frequency"
+    ]
+  },
+  "difficulty_delta": 10,
+  "difficulty_tier": "hard",
+  "mismatch_parameters": [
+    "impedance_error",
+    "static_shift",
+    "galvanic_distortion",
+    "topography_error"
+  ],
+  "error_metric": "resistivity_rel_error_percent",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "mt_inversion",
+      "forward_operator": "mt_inversion_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 128,
+        "W": 128,
+        "Z": 64,
+        "N_stations": 50,
+        "N_freqs": 30,
+        "SNR_dB": 25,
+        "impedance_error": 0.0,
+        "static_shift": 0.0,
+        "galvanic_distortion": 0.0,
+        "topography_error": 0.0
+      },
+      "epsilon_fn_center": "8.0"
+    },
+    "allowed_forward_operators": [
+      "mt_inversion_forward"
+    ],
+    "allowed_problem_classes": [
+      "mt_inversion"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "Z",
+      "N_stations",
+      "N_freqs",
+      "SNR_dB",
+      "impedance_error",
+      "static_shift",
+      "galvanic_distortion",
+      "topography_error",
+      "impedance_error",
+      "static_shift",
+      "galvanic_distortion",
+      "topography_error"
+    ],
+    "omega_bounds": {
+      "H": [
+        16,
+        1024
+      ],
+      "W": [
+        16,
+        1024
+      ],
+      "Z": [
+        8,
+        512
+      ],
+      "N_stations": [
+        5,
+        10000
+      ],
+      "N_freqs": [
+        1,
+        200
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "impedance_error": [
+        0.0,
+        0.2
+      ],
+      "static_shift": [
+        0.0,
+        0.5
+      ],
+      "galvanic_distortion": [
+        0.0,
+        0.3
+      ],
+      "topography_error": [
+        0.0,
+        0.2
+      ]
+    },
+    "epsilon_bounds": {
+      "res_rel": [
+        1.0,
+        50.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

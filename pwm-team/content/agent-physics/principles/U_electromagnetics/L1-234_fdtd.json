@@ -1,0 +1,182 @@
+{
+  "artifact_id": "L1-234",
+  "layer": "L1",
+  "principle_number": "234",
+  "title": "FDTD \u2014 finite-difference time-domain Maxwell",
+  "domain": "Electromagnetics",
+  "sub_domain": "Yee-grid explicit FDTD",
+  "source_file": "U_electromagnetics/234_fdtd.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "FDTD \u2014 finite-difference time-domain Maxwell forward model.",
+    "forward_model": "E(n+1) = E(n) + (dt/eps) * curl H - (dt*sigma/eps)*E; H(n+0.5) = H(n-0.5) - (dt/mu)*curl E",
+    "world_state_x": "E, H fields at Yee grid positions through time",
+    "observation_y": "field probes + far-field NTF transform",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "Z",
+      "N_samples",
+      "dt_fs",
+      "SNR_dB",
+      "grid_aniso_error",
+      "pml_error",
+      "dispersion_error"
+    ]
+  },
+  "G": {
+    "dag": "L.yee_grid_update -> L.pml_absorb -> L.source_inject -> int.temporal",
+    "vertices": [
+      "L.yee_grid_update",
+      "L.pml_absorb",
+      "L.source_inject",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.yee_grid_update -> L.pml_absorb",
+      "L.pml_absorb -> L.source_inject",
+      "L.source_inject -> int.temporal"
+    ],
+    "L_DAG": 3.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 300,
+    "condition_number_effective": 15,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "FDTD-Meep, FDTD-Lumerical, FDTD-GPU",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "em",
+    "sensing_mechanism": "near_field_probes",
+    "integration_axis": "temporal",
+    "problem_class": "forward",
+    "noise_model": "gaussian",
+    "solution_space": "3D_E_H_field_spacetime",
+    "primitives": [
+      "L.yee_grid_update",
+      "L.pml_absorb",
+      "L.source_inject",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "grid_aniso_error",
+    "pml_error",
+    "dispersion_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "fdtd",
+      "forward_operator": "fdtd_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 256,
+        "W": 256,
+        "Z": 128,
+        "N_samples": 2000,
+        "dt_fs": 1.0,
+        "SNR_dB": 30,
+        "grid_aniso_error": 0.0,
+        "pml_error": 0.0,
+        "dispersion_error": 0.0
+      },
+      "epsilon_fn_center": "25.0"
+    },
+    "allowed_forward_operators": [
+      "fdtd_forward"
+    ],
+    "allowed_problem_classes": [
+      "fdtd"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "Z",
+      "N_samples",
+      "dt_fs",
+      "SNR_dB",
+      "grid_aniso_error",
+      "pml_error",
+      "dispersion_error",
+      "grid_aniso_error",
+      "pml_error",
+      "dispersion_error"
+    ],
+    "omega_bounds": {
+      "H": [
+        64,
+        2048
+      ],
+      "W": [
+        64,
+        2048
+      ],
+      "Z": [
+        32,
+        1024
+      ],
+      "N_samples": [
+        100,
+        100000
+      ],
+      "dt_fs": [
+        0.01,
+        1000
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "grid_aniso_error": [
+        0.0,
+        0.1
+      ],
+      "pml_error": [
+        0.0,
+        0.2
+      ],
+      "dispersion_error": [
+        0.0,
+        0.2
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

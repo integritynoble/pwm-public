@@ -1,0 +1,175 @@
+{
+  "artifact_id": "L1-189",
+  "layer": "L1",
+  "principle_number": "189",
+  "title": "Richards Equation \u2014 unsaturated variably-saturated flow",
+  "domain": "Fluid Dynamics",
+  "sub_domain": "Richards eqn for unsaturated flow",
+  "source_file": "R_fluid_dynamics/189_richards.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Richards Equation \u2014 unsaturated variably-saturated flow forward model.",
+    "forward_model": "d theta/dt = div(K(h) * grad(h + z)); h = suction head, theta(h) from van Genuchten",
+    "world_state_x": "water content theta(x,t) or suction h(x,t) in unsaturated soil",
+    "observation_y": "TDR + tensiometers",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "Z",
+      "N_times",
+      "SNR_dB",
+      "vg_alpha_error",
+      "vg_n_error",
+      "K_sat_error"
+    ]
+  },
+  "G": {
+    "dag": "L.nonlinear_conductivity -> L.continuity -> L.capillary_pressure -> int.temporal",
+    "vertices": [
+      "L.nonlinear_conductivity",
+      "L.continuity",
+      "L.capillary_pressure",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.nonlinear_conductivity -> L.continuity",
+      "L.continuity -> L.capillary_pressure",
+      "L.capillary_pressure -> int.temporal"
+    ],
+    "L_DAG": 3.3,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 440,
+    "condition_number_effective": 22,
+    "regime": "Highly nonlinear; degenerate in dry limit."
+  },
+  "C": {
+    "solver_class": "HYDRUS, ParFlow, Richards-Net",
+    "convergence_rate_q": 1.5,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "mechanical",
+    "sensing_mechanism": "tdr_tensiometer",
+    "integration_axis": "temporal",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "saturation_field_in_soil",
+    "primitives": [
+      "L.nonlinear_conductivity",
+      "L.continuity",
+      "L.capillary_pressure",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "vg_alpha_error",
+    "vg_n_error",
+    "K_sat_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "richards",
+      "forward_operator": "richards_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 128,
+        "W": 128,
+        "Z": 32,
+        "N_times": 1000,
+        "SNR_dB": 30,
+        "vg_alpha_error": 0.0,
+        "vg_n_error": 0.0,
+        "K_sat_error": 0.0
+      },
+      "epsilon_fn_center": "22.0"
+    },
+    "allowed_forward_operators": [
+      "richards_forward"
+    ],
+    "allowed_problem_classes": [
+      "richards"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "Z",
+      "N_times",
+      "SNR_dB",
+      "vg_alpha_error",
+      "vg_n_error",
+      "K_sat_error",
+      "vg_alpha_error",
+      "vg_n_error",
+      "K_sat_error"
+    ],
+    "omega_bounds": {
+      "H": [
+        16,
+        1024
+      ],
+      "W": [
+        16,
+        1024
+      ],
+      "Z": [
+        8,
+        512
+      ],
+      "N_times": [
+        10,
+        100000
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "vg_alpha_error": [
+        0.0,
+        0.3
+      ],
+      "vg_n_error": [
+        0.0,
+        0.3
+      ],
+      "K_sat_error": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

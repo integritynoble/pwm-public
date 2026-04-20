@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L2-263",
+  "layer": "L2",
+  "parent_l1": "L1-263",
+  "title": "Underwater Normal Modes \u2014 modal propagation (KRAKEN) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "N_modes": [
+        3,
+        100
+      ],
+      "N_depth": [
+        32,
+        1024
+      ],
+      "freq_Hz": [
+        20,
+        5000
+      ],
+      "SNR_dB": [
+        -5,
+        40
+      ],
+      "ssp_error": [
+        0.0,
+        0.02
+      ],
+      "waveguide_depth_error": [
+        0.0,
+        5.0
+      ],
+      "bottom_sound_speed_error": [
+        0.0,
+        0.2
+      ]
+    },
+    "E": {
+      "forward": "p(r,z) = sum_m Psi_m(z_s) Psi_m(z) * H_0(k_rm r) / sqrt(r); (d^2/dz^2 + k^2(z) - k_rm^2) Psi_m = 0",
+      "operator": "kraken_normal_modes_forward_mismatch",
+      "primitive_chain": "L.eigenvalue_solve -> L.mode_sum -> L.range_propagate -> int.frequency",
+      "inverse": "solve forward for declared state variable under Omega bounds"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR_dB",
+      "residual_norm"
+    ],
+    "epsilon_fn": "17.0 + 1.5*log2(N_modes/3) + 0.25*SNR_dB - 30.0*ssp_error - 15.0*bottom_sound_speed_error"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "KRAKEN",
+        "method_sig": "L+O",
+        "expected_psnr": 22.0
+      },
+      {
+        "name": "ORCA",
+        "method_sig": "L+O",
+        "expected_psnr": 23.0
+      },
+      {
+        "name": "PE-modal",
+        "method_sig": "L+O",
+        "expected_psnr": 23.8
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_modes": 20,
+        "N_depth": 256,
+        "freq_Hz": 500,
+        "SNR_dB": 30,
+        "ssp_error": 0.0,
+        "waveguide_depth_error": 0.0,
+        "bottom_sound_speed_error": 0.0
+      },
+      "epsilon": 23.0
+    },
+    "tier_bounds": {
+      "N_modes": [
+        3,
+        100
+      ],
+      "N_depth": [
+        32,
+        1024
+      ],
+      "freq_Hz": [
+        20,
+        5000
+      ],
+      "SNR_dB": [
+        -5,
+        40
+      ],
+      "ssp_error": [
+        0.0,
+        0.02
+      ],
+      "waveguide_depth_error": [
+        0.0,
+        5.0
+      ],
+      "bottom_sound_speed_error": [
+        0.0,
+        0.2
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.48,
+  "d_spec_notes": "Distance computed from problem_class, forward_operator, carrier, integration_axis against neighboring specs; within same principle this spec is mismatch-only canonical and sits at the Omega centroid.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions are consistent across the DAG; forward operator maps state space to measurement space at declared shapes.",
+    "S2": "kappa_eff = 20 within tolerance after regularization; RIP-like or coercivity conditions satisfied over most of Omega.",
+    "S3": "Solvers converge at rate q=2.0 in well-posed regime; mismatch parameters degrade convergence but not divergence.",
+    "S4": "epsilon_fn evaluates across 10+ random Omega samples; hardness rule verified \u2014 no baseline passes everywhere."
+  },
+  "ipfs_cid": null
+}

@@ -1,0 +1,168 @@
+{
+  "artifact_id": "L1-183",
+  "layer": "L1",
+  "principle_number": "183",
+  "title": "Volume of Fluid (VOF) \u2014 multiphase interface tracking",
+  "domain": "Fluid Dynamics",
+  "sub_domain": "Interface-capturing VOF for multiphase",
+  "source_file": "R_fluid_dynamics/183_vof.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Volume of Fluid (VOF) \u2014 multiphase interface tracking forward model.",
+    "forward_model": "d alpha/dt + u.grad alpha = 0; alpha in [0,1]; piecewise-linear interface reconstruction",
+    "world_state_x": "phase-indicator field alpha(x,t) + coupled u, p",
+    "observation_y": "high-speed imaging of interface + PIV",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "N_times",
+      "SNR_dB",
+      "interface_thickness_error",
+      "surface_tension_error",
+      "coalescence_artifact"
+    ]
+  },
+  "G": {
+    "dag": "L.vof_advect -> L.interface_recon -> L.surface_tension -> int.temporal",
+    "vertices": [
+      "L.vof_advect",
+      "L.interface_recon",
+      "L.surface_tension",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.vof_advect -> L.interface_recon",
+      "L.interface_recon -> L.surface_tension",
+      "L.surface_tension -> int.temporal"
+    ],
+    "L_DAG": 3.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 500,
+    "condition_number_effective": 25,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "OpenFOAM-VOF, Basilisk, VOF-Net",
+    "convergence_rate_q": 1.5,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "mechanical",
+    "sensing_mechanism": "high_speed_camera_piv",
+    "integration_axis": "temporal",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "interface_phase_field_multiphase",
+    "primitives": [
+      "L.vof_advect",
+      "L.interface_recon",
+      "L.surface_tension",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "interface_thickness_error",
+    "surface_tension_error",
+    "coalescence_artifact"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "vof",
+      "forward_operator": "vof_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 512,
+        "W": 512,
+        "N_times": 2000,
+        "SNR_dB": 30,
+        "interface_thickness_error": 0.0,
+        "surface_tension_error": 0.0,
+        "coalescence_artifact": 0.0
+      },
+      "epsilon_fn_center": "22.0"
+    },
+    "allowed_forward_operators": [
+      "vof_forward"
+    ],
+    "allowed_problem_classes": [
+      "vof"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "N_times",
+      "SNR_dB",
+      "interface_thickness_error",
+      "surface_tension_error",
+      "coalescence_artifact",
+      "interface_thickness_error",
+      "surface_tension_error",
+      "coalescence_artifact"
+    ],
+    "omega_bounds": {
+      "H": [
+        32,
+        8192
+      ],
+      "W": [
+        32,
+        8192
+      ],
+      "N_times": [
+        100,
+        1000000
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "interface_thickness_error": [
+        0.0,
+        0.3
+      ],
+      "surface_tension_error": [
+        0.0,
+        0.3
+      ],
+      "coalescence_artifact": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

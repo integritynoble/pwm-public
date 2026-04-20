@@ -1,0 +1,168 @@
+{
+  "artifact_id": "L1-188",
+  "layer": "L1",
+  "principle_number": "188",
+  "title": "Darcy Flow \u2014 low-Re porous-medium flow",
+  "domain": "Fluid Dynamics",
+  "sub_domain": "Linear Darcy's law in porous media",
+  "source_file": "R_fluid_dynamics/188_darcy.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Darcy Flow \u2014 low-Re porous-medium flow forward model.",
+    "forward_model": "u = -k/mu * grad p; div(u) = 0 (steady); BCs on inflow/outflow",
+    "world_state_x": "pressure p(x), velocity u(x) in porous medium",
+    "observation_y": "piezometer + tracer concentration",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "Z",
+      "SNR_dB",
+      "permeability_error",
+      "viscosity_error",
+      "bc_error"
+    ]
+  },
+  "G": {
+    "dag": "L.darcy_linear -> L.mass_conservation -> L.bc -> int.spatial",
+    "vertices": [
+      "L.darcy_linear",
+      "L.mass_conservation",
+      "L.bc",
+      "int.spatial"
+    ],
+    "arcs": [
+      "L.darcy_linear -> L.mass_conservation",
+      "L.mass_conservation -> L.bc",
+      "L.bc -> int.spatial"
+    ],
+    "L_DAG": 2.8,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 200,
+    "condition_number_effective": 10,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "FEM-Darcy, MixedFEM, Darcy-NN",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "mechanical",
+    "sensing_mechanism": "piezometers_tracer",
+    "integration_axis": "spatial",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "pressure_velocity_in_porous",
+    "primitives": [
+      "L.darcy_linear",
+      "L.mass_conservation",
+      "L.bc",
+      "int.spatial"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "permeability_error",
+    "viscosity_error",
+    "bc_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "darcy",
+      "forward_operator": "darcy_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 128,
+        "W": 128,
+        "Z": 32,
+        "SNR_dB": 30,
+        "permeability_error": 0.0,
+        "viscosity_error": 0.0,
+        "bc_error": 0.0
+      },
+      "epsilon_fn_center": "26.0"
+    },
+    "allowed_forward_operators": [
+      "darcy_forward"
+    ],
+    "allowed_problem_classes": [
+      "darcy"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "Z",
+      "SNR_dB",
+      "permeability_error",
+      "viscosity_error",
+      "bc_error",
+      "permeability_error",
+      "viscosity_error",
+      "bc_error"
+    ],
+    "omega_bounds": {
+      "H": [
+        16,
+        1024
+      ],
+      "W": [
+        16,
+        1024
+      ],
+      "Z": [
+        8,
+        512
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "permeability_error": [
+        0.0,
+        0.3
+      ],
+      "viscosity_error": [
+        0.0,
+        0.1
+      ],
+      "bc_error": [
+        0.0,
+        0.2
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

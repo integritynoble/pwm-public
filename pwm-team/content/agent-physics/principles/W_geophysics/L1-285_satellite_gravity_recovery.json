@@ -1,0 +1,170 @@
+{
+  "artifact_id": "L1-285",
+  "layer": "L1",
+  "principle_number": "285",
+  "title": "Satellite Gravity Recovery \u2014 GRACE/GRACE-FO mass change",
+  "domain": "Geophysics",
+  "sub_domain": "Time-variable gravity (mass change) from GRACE",
+  "source_file": "W_geophysics/285_satellite_gravity_recovery.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Satellite Gravity Recovery \u2014 GRACE/GRACE-FO mass change forward model.",
+    "forward_model": "delta_g / g = (R/r)^n * C_nm * P_nm(cos theta); monthly Stokes coeff from inter-satellite K/Ka ranging",
+    "world_state_x": "monthly mass anomaly dm(phi, lambda, t) at Earth's surface",
+    "observation_y": "inter-satellite range-rate KBR / laser-ranging interferometer",
+    "physical_parameters_theta": [
+      "N_months",
+      "N_harmonics",
+      "SNR_dB",
+      "orbit_error",
+      "striping_error",
+      "leakage_error",
+      "glacial_isostatic_bias"
+    ]
+  },
+  "G": {
+    "dag": "L.orbit_perturbation -> L.spherical_harm_decomp -> L.destripe -> int.temporal",
+    "vertices": [
+      "L.orbit_perturbation",
+      "L.spherical_harm_decomp",
+      "L.destripe",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.orbit_perturbation -> L.spherical_harm_decomp",
+      "L.spherical_harm_decomp -> L.destripe",
+      "L.destripe -> int.temporal"
+    ],
+    "L_DAG": 3.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 600,
+    "condition_number_effective": 30,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "CSR-mascon, JPL-RL06, GRACE-NN",
+    "convergence_rate_q": 1.5,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "mechanical",
+    "sensing_mechanism": "grace_lri",
+    "integration_axis": "temporal",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "monthly_mass_anomaly_grid",
+    "primitives": [
+      "L.orbit_perturbation",
+      "L.spherical_harm_decomp",
+      "L.destripe",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "orbit_error",
+    "striping_error",
+    "leakage_error",
+    "glacial_isostatic_bias"
+  ],
+  "error_metric": "mass_anomaly_rel_error_percent",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "grace",
+      "forward_operator": "grace_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_months": 200,
+        "N_harmonics": 60,
+        "SNR_dB": 30,
+        "orbit_error": 0.0,
+        "striping_error": 0.0,
+        "leakage_error": 0.0,
+        "glacial_isostatic_bias": 0.0
+      },
+      "epsilon_fn_center": "3.0"
+    },
+    "allowed_forward_operators": [
+      "grace_forward"
+    ],
+    "allowed_problem_classes": [
+      "grace"
+    ],
+    "allowed_omega_dimensions": [
+      "N_months",
+      "N_harmonics",
+      "SNR_dB",
+      "orbit_error",
+      "striping_error",
+      "leakage_error",
+      "glacial_isostatic_bias",
+      "orbit_error",
+      "striping_error",
+      "leakage_error",
+      "glacial_isostatic_bias"
+    ],
+    "omega_bounds": {
+      "N_months": [
+        24,
+        400
+      ],
+      "N_harmonics": [
+        10,
+        300
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "orbit_error": [
+        0.0,
+        0.1
+      ],
+      "striping_error": [
+        0.0,
+        0.3
+      ],
+      "leakage_error": [
+        0.0,
+        0.3
+      ],
+      "glacial_isostatic_bias": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "mass_rel": [
+        0.5,
+        30.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}
