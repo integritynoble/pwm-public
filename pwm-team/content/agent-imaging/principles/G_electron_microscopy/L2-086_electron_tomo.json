@@ -1,0 +1,169 @@
+{
+  "artifact_id": "L2-086",
+  "layer": "L2",
+  "parent_l1": "L1-086",
+  "title": "Electron Tomography \u2014 tilt-series 3D reconstruction Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        512,
+        4096
+      ],
+      "W": [
+        512,
+        4096
+      ],
+      "Z": [
+        32,
+        512
+      ],
+      "N_tilts": [
+        20,
+        200
+      ],
+      "tilt_range_deg": [
+        40,
+        80
+      ],
+      "kV": [
+        200,
+        300
+      ],
+      "peak_electrons": [
+        1,
+        500
+      ],
+      "tilt_angle_error": [
+        0.0,
+        0.5
+      ],
+      "missing_wedge": [
+        0.1,
+        0.6
+      ],
+      "beam_damage": [
+        0.0,
+        0.5
+      ],
+      "alignment_error": [
+        0.0,
+        5.0
+      ]
+    },
+    "E": {
+      "forward": "y_theta(r) = integral along ray at angle theta [rho(r)] * envelope; missing wedge at +/-60 to 70 deg",
+      "operator": "etomo_tilt_series_forward_mismatch",
+      "primitive_chain": "L.transmit_sample -> S.scan.angular -> L.backproject -> int.angular",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "16.0 + 3.0 * log2(N_tilts / 20) - 12.0 * missing_wedge - 0.3 * alignment_error"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "WBP",
+        "method_sig": "L+O",
+        "expected_psnr": 23.0
+      },
+      {
+        "name": "SIRT",
+        "method_sig": "I+O",
+        "expected_psnr": 24.5
+      },
+      {
+        "name": "IsoNet",
+        "method_sig": "L+N",
+        "expected_psnr": 27.0
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 2048,
+        "W": 2048,
+        "Z": 128,
+        "N_tilts": 61,
+        "tilt_range_deg": 60,
+        "kV": 300,
+        "peak_electrons": 30,
+        "tilt_angle_error": 0.0,
+        "missing_wedge": 0.33
+      },
+      "epsilon": 24.0
+    },
+    "tier_bounds": {
+      "H": [
+        512,
+        4096
+      ],
+      "W": [
+        512,
+        4096
+      ],
+      "Z": [
+        32,
+        512
+      ],
+      "N_tilts": [
+        20,
+        200
+      ],
+      "tilt_range_deg": [
+        40,
+        80
+      ],
+      "kV": [
+        200,
+        300
+      ],
+      "peak_electrons": [
+        1,
+        500
+      ],
+      "tilt_angle_error": [
+        0.0,
+        0.5
+      ],
+      "missing_wedge": [
+        0.1,
+        0.6
+      ],
+      "beam_damage": [
+        0.0,
+        0.5
+      ],
+      "alignment_error": [
+        0.0,
+        5.0
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.48,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

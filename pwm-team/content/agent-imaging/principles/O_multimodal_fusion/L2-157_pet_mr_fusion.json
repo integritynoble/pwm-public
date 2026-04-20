@@ -1,0 +1,132 @@
+{
+  "artifact_id": "L2-157",
+  "layer": "L2",
+  "parent_l1": "L1-157",
+  "title": "PET-MR Fusion (molecular + multi-contrast soft tissue) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": 128,
+      "W": 128,
+      "Z": [
+        32,
+        512
+      ],
+      "mr_based_attenuation_error": [
+        0.0,
+        0.3
+      ],
+      "motion_between_scans": [
+        0.0,
+        10.0
+      ],
+      "truncation": [
+        0.0,
+        0.3
+      ],
+      "susceptibility_distortion": [
+        0.0,
+        0.3
+      ],
+      "SNR_dB": [
+        0.0,
+        35.0
+      ]
+    },
+    "E": {
+      "forward": "F = PET_recon(attenuation_from_MR, A) + MR_weighting(T1, T2); joint registration",
+      "operator": "pet_mr_fusion_forward_mismatch",
+      "primitive_chain": "L.mr_multi_contrast -> L.pet_activity_map -> L.registration -> L.attenuation_from_mr -> int.spatial",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "16.0 + 0.3 * SNR_dB - 10.0 * mr_based_attenuation_error - 0.5 * motion_between_scans - 6.0 * susceptibility_distortion"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Segment-AC",
+        "method_sig": "L+O",
+        "expected_psnr": 21.5
+      },
+      {
+        "name": "Dixon-AC",
+        "method_sig": "L+O",
+        "expected_psnr": 24.0
+      },
+      {
+        "name": "DeepAC-PET-MR",
+        "method_sig": "L+N",
+        "expected_psnr": 26.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 256,
+        "W": 256,
+        "Z": 128,
+        "mr_based_attenuation_error": 0.0,
+        "motion_between_scans": 0.0,
+        "truncation": 0.0,
+        "susceptibility_distortion": 0.0,
+        "SNR_dB": 22
+      },
+      "epsilon": 24.0
+    },
+    "tier_bounds": {
+      "H": 128,
+      "W": 128,
+      "Z": [
+        32,
+        512
+      ],
+      "mr_based_attenuation_error": [
+        0.0,
+        0.3
+      ],
+      "motion_between_scans": [
+        0.0,
+        10.0
+      ],
+      "truncation": [
+        0.0,
+        0.3
+      ],
+      "susceptibility_distortion": [
+        0.0,
+        0.3
+      ],
+      "SNR_dB": [
+        0.0,
+        35.0
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.55,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

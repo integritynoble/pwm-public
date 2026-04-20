@@ -1,0 +1,132 @@
+{
+  "artifact_id": "L2-153",
+  "layer": "L2",
+  "parent_l1": "L1-153",
+  "title": "Ghost Imaging (correlated-photon imaging) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": 32,
+      "W": 32,
+      "N_pairs": [
+        1000,
+        100000000
+      ],
+      "bucket_SNR_dB": [
+        0.0,
+        30.0
+      ],
+      "photon_pair_rate": [
+        0.1,
+        10.0
+      ],
+      "accidental_coincidences": [
+        0.0,
+        0.5
+      ],
+      "reference_calibration": [
+        0.3,
+        1.0
+      ],
+      "environmental_decoherence": [
+        0.0,
+        0.5
+      ]
+    },
+    "E": {
+      "forward": "<y_bucket * y_ref(r)> - <y_bucket><y_ref(r)> ~ object(r); requires N correlated pairs",
+      "operator": "ghost_imaging_forward_mismatch",
+      "primitive_chain": "L.photon_pair_source -> D.bucket_detector -> D.reference_imaging -> L.correlation -> int.temporal",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "8.0 + 2.5 * log10(N_pairs / 1000) - 10.0 * accidental_coincidences + 6.0 * reference_calibration - 6.0 * environmental_decoherence"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Direct-Correlation",
+        "method_sig": "L+O",
+        "expected_psnr": 15.0
+      },
+      {
+        "name": "Computational-Ghost",
+        "method_sig": "L+O",
+        "expected_psnr": 18.0
+      },
+      {
+        "name": "Ghost-Net",
+        "method_sig": "L+N",
+        "expected_psnr": 20.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 128,
+        "W": 128,
+        "N_pairs": 100000,
+        "bucket_SNR_dB": 10,
+        "photon_pair_rate": 1.0,
+        "accidental_coincidences": 0.1,
+        "reference_calibration": 1.0,
+        "environmental_decoherence": 0.0
+      },
+      "epsilon": 18.0
+    },
+    "tier_bounds": {
+      "H": 32,
+      "W": 32,
+      "N_pairs": [
+        1000,
+        100000000
+      ],
+      "bucket_SNR_dB": [
+        0.0,
+        30.0
+      ],
+      "photon_pair_rate": [
+        0.1,
+        10.0
+      ],
+      "accidental_coincidences": [
+        0.0,
+        0.5
+      ],
+      "reference_calibration": [
+        0.3,
+        1.0
+      ],
+      "environmental_decoherence": [
+        0.0,
+        0.5
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.55,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

@@ -1,0 +1,79 @@
+{
+  "artifact_id": "L3-025",
+  "layer": "L3",
+  "parent_l2": "L2-025",
+  "parent_l1": "L1-025",
+  "canonical_reference": "pwm_product/genesis/l3/L3-003.json",
+  "title": "CASSI Mismatch-Only Benchmark Suite (4 I-benchmark tiers + P-benchmark)",
+  "benchmark_type": "combined_P_and_I",
+
+  "dataset_registry": {
+    "primary": "KAIST hyperspectral 30 (2017)",
+    "secondary": "CAVE multispectral dataset",
+    "tertiary": "ICVL hyperspectral dataset",
+    "construction_method": "center crop + 28-band downselect; 2x2 hard stitch when H*W > 480*480",
+    "num_dev_instances_per_tier": 20,
+    "holdout_instances_per_tier": 10
+  },
+
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal", "rho": 1,
+      "omega_tier": {"H": 256, "W": 256, "N_bands": 28, "mask_density": 0.5, "noise_level": 0.01, "disp_a1_error": 0.0, "disp_alpha_error": 0.0, "mask_dx": 0.0, "mask_dy": 0.0, "mask_theta": 0.0},
+      "epsilon": 28.0, "d_ibench": 0.15,
+      "baselines": [
+        {"name": "GAP-TV",     "score": 26.0, "Q": 0.62},
+        {"name": "ADMM-CASSI", "score": 28.5, "Q": 0.76},
+        {"name": "PnP-HSICNN", "score": 31.8, "Q": 0.89}
+      ]
+    },
+    {
+      "tier": "T2_low", "rho": 3,
+      "omega_tier": {"H": 256, "W": 256, "N_bands": 28, "mask_density": 0.5, "noise_level": 0.02, "disp_a1_error": 0.01, "disp_alpha_error": 0.05, "mask_dx": 0.2, "mask_dy": 0.2, "mask_theta": 0.02},
+      "epsilon": 25.5, "d_ibench": 0.32,
+      "baselines": [
+        {"name": "GAP-TV",     "score": 23.8, "Q": 0.48},
+        {"name": "ADMM-CASSI", "score": 25.9, "Q": 0.58},
+        {"name": "PnP-HSICNN", "score": 28.3, "Q": 0.74}
+      ]
+    },
+    {
+      "tier": "T3_moderate", "rho": 5,
+      "omega_tier": {"H": 512, "W": 512, "N_bands": 28, "mask_density": 0.5, "noise_level": 0.05, "disp_a1_error": 0.025, "disp_alpha_error": 0.12, "mask_dx": 0.5, "mask_dy": 0.5, "mask_theta": 0.07},
+      "epsilon": 23.0, "d_ibench": 0.51,
+      "baselines": [
+        {"name": "GAP-TV",     "score": 21.5, "Q": 0.40},
+        {"name": "ADMM-CASSI", "score": 23.2, "Q": 0.51},
+        {"name": "PnP-HSICNN", "score": 25.4, "Q": 0.64}
+      ]
+    },
+    {
+      "tier": "T4_blind", "rho": 10,
+      "omega_tier": {"H": 1024, "W": 1024, "N_bands": 28, "mask_density": 0.5, "noise_level": 0.08, "disp_a1_error": 0.05, "disp_alpha_error": 0.28, "mask_dx": 1.0, "mask_dy": 1.0, "mask_theta": 0.14},
+      "epsilon": 21.5, "d_ibench": 0.72,
+      "baselines": [
+        {"name": "GAP-TV",     "score": 19.2, "Q": 0.28},
+        {"name": "ADMM-CASSI", "score": 20.8, "Q": 0.38},
+        {"name": "PnP-HSICNN", "score": 22.5, "Q": 0.52}
+      ]
+    }
+  ],
+
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "KAIST-30 + CAVE + ICVL union",
+      "num_dev_instances": 200,
+      "construction_method": "parametric Omega sampling; 2x2 hard stitch when H*W > 480*480"
+    },
+    "baselines": [
+      {"name": "GAP-TV",     "overall_Q": 0.46},
+      {"name": "ADMM-CASSI", "overall_Q": 0.58},
+      {"name": "PnP-HSICNN", "overall_Q": 0.70}
+    ]
+  },
+
+  "hardness_rule_check": "SATISFIED — PnP-HSICNN fails at T4_blind (22.5 dB < 23.8 epsilon).",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

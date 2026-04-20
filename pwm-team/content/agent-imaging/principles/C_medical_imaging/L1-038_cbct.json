@@ -1,0 +1,201 @@
+{
+  "artifact_id": "L1-038",
+  "layer": "L1",
+  "principle_number": "038",
+  "title": "Cone-Beam CT (CBCT) \u2014 dental / interventional",
+  "domain": "Medical Imaging",
+  "sub_domain": "Flat-panel cone-beam CT reconstruction",
+  "source_file": "C_medical_imaging/038_cbct.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical medical-imaging literature for this principle.",
+  "E": {
+    "description": "Cone-Beam CT (CBCT) \u2014 dental / interventional forward model.",
+    "forward_model": "y_theta(u,v) = I_0 exp(-integral mu ds) + scatter_cone + n; FDK reconstruct",
+    "world_state_x": "Patient-side quantity of interest (attenuation / activity / perfusion / stiffness etc.)",
+    "observation_y": "Clinical sensor output at declared resolution + noise",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "Z",
+      "N_projections",
+      "kVp",
+      "mAs",
+      "pixel_mm",
+      "scatter",
+      "truncation",
+      "patient_motion",
+      "geometric_misalignment"
+    ]
+  },
+  "G": {
+    "dag": "L.xray_source -> L.cone_beam_geometry -> S.scan.angular -> L.FDK_backproject -> int.angular",
+    "vertices": [
+      "L.xray_source",
+      "L.cone_beam_geometry",
+      "S.scan.angular",
+      "L.FDK_backproject",
+      "int.angular"
+    ],
+    "arcs": [
+      "L.xray_source -> L.cone_beam_geometry",
+      "L.cone_beam_geometry -> S.scan.angular",
+      "S.scan.angular -> L.FDK_backproject",
+      "L.FDK_backproject -> int.angular"
+    ],
+    "L_DAG": 4.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 400,
+    "condition_number_effective": 20,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "FDK, Iterative-CBCT, CBCT-Net",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sensor SNR + mismatch bias + regularisation.",
+    "complexity": "O(H W) to O(H W Z) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "x_ray",
+    "sensing_mechanism": "xray_ct",
+    "integration_axis": "angular",
+    "problem_class": "linear_inverse",
+    "noise_model": "shot_poisson",
+    "solution_space": "3D_attenuation",
+    "primitives": [
+      "L.xray_source",
+      "L.cone_beam_geometry",
+      "S.scan.angular",
+      "L.FDK_backproject",
+      "int.angular"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "scatter",
+    "truncation",
+    "beam_hardening",
+    "patient_motion",
+    "geometric_misalignment"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "cbct",
+      "forward_operator": "cbct_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 512,
+        "W": 512,
+        "Z": 512,
+        "N_projections": 400,
+        "kVp": 90,
+        "mAs": 20,
+        "pixel_mm": 0.3,
+        "scatter": 0.2,
+        "truncation": 0.0,
+        "patient_motion": 0.0,
+        "geometric_misalignment": 0.0
+      },
+      "epsilon_fn_center": "27.0"
+    },
+    "allowed_forward_operators": [
+      "cbct_forward"
+    ],
+    "allowed_problem_classes": [
+      "cbct"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "Z",
+      "N_projections",
+      "kVp",
+      "mAs",
+      "pixel_mm",
+      "scatter",
+      "truncation",
+      "patient_motion",
+      "geometric_misalignment",
+      "scatter",
+      "truncation",
+      "beam_hardening",
+      "patient_motion",
+      "geometric_misalignment"
+    ],
+    "omega_bounds": {
+      "H": 256,
+      "W": 256,
+      "Z": [
+        64,
+        2048
+      ],
+      "N_projections": [
+        100,
+        2000
+      ],
+      "kVp": [
+        60,
+        120
+      ],
+      "mAs": [
+        1,
+        200
+      ],
+      "pixel_mm": [
+        0.1,
+        2.0
+      ],
+      "scatter": [
+        0.0,
+        0.5
+      ],
+      "truncation": [
+        0.0,
+        0.3
+      ],
+      "beam_hardening": [
+        0.0,
+        0.3
+      ],
+      "patient_motion": [
+        0.0,
+        0.3
+      ],
+      "geometric_misalignment": [
+        0.0,
+        2.0
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        5.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

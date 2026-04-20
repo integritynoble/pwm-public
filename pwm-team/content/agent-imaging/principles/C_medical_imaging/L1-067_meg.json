@@ -1,0 +1,174 @@
+{
+  "artifact_id": "L1-067",
+  "layer": "L1",
+  "principle_number": "067",
+  "title": "Magnetoencephalography (MEG)",
+  "domain": "Medical Imaging",
+  "sub_domain": "Squid-array picotesla brain magnetic-field imaging",
+  "source_file": "C_medical_imaging/067_meg.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical medical-imaging literature for this principle.",
+  "E": {
+    "description": "Magnetoencephalography (MEG) forward model.",
+    "forward_model": "B_sensor(t) = L * j(r, t) + interference + n; invert for cortical current j",
+    "world_state_x": "Patient-side quantity of interest (attenuation / activity / perfusion / stiffness etc.)",
+    "observation_y": "Clinical sensor output at declared resolution + noise",
+    "physical_parameters_theta": [
+      "N_sensors",
+      "N_time",
+      "sampling_Hz",
+      "SNR_dB",
+      "environmental_interference",
+      "head_movement",
+      "sensor_crosstalk",
+      "signal_space_leakage"
+    ]
+  },
+  "G": {
+    "dag": "D.squid_array -> L.inverse_source_localization -> int.temporal",
+    "vertices": [
+      "D.squid_array",
+      "L.inverse_source_localization",
+      "int.temporal"
+    ],
+    "arcs": [
+      "D.squid_array -> L.inverse_source_localization",
+      "L.inverse_source_localization -> int.temporal"
+    ],
+    "L_DAG": 4.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 700,
+    "condition_number_effective": 35,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "MNE, dSPM, MEG-Net",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sensor SNR + mismatch bias + regularisation.",
+    "complexity": "O(H W) to O(H W Z) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "radio_wave",
+    "sensing_mechanism": "meg_squid_array",
+    "integration_axis": "temporal",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "4D_cortical_current",
+    "primitives": [
+      "D.squid_array",
+      "L.inverse_source_localization",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 10,
+  "difficulty_tier": "hard",
+  "mismatch_parameters": [
+    "environmental_interference",
+    "head_movement",
+    "sensor_crosstalk",
+    "signal_space_leakage"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "meg",
+      "forward_operator": "meg_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_sensors": 300,
+        "N_time": 10000,
+        "sampling_Hz": 1000,
+        "SNR_dB": 15,
+        "environmental_interference": 0.05,
+        "head_movement": 0.0,
+        "sensor_crosstalk": 0.0,
+        "signal_space_leakage": 0.0
+      },
+      "epsilon_fn_center": "12.0"
+    },
+    "allowed_forward_operators": [
+      "meg_forward"
+    ],
+    "allowed_problem_classes": [
+      "meg"
+    ],
+    "allowed_omega_dimensions": [
+      "N_sensors",
+      "N_time",
+      "sampling_Hz",
+      "SNR_dB",
+      "environmental_interference",
+      "head_movement",
+      "sensor_crosstalk",
+      "signal_space_leakage",
+      "environmental_interference",
+      "head_movement",
+      "sensor_crosstalk",
+      "signal_space_leakage"
+    ],
+    "omega_bounds": {
+      "N_sensors": [
+        64,
+        1024
+      ],
+      "N_time": [
+        1000,
+        1000000
+      ],
+      "sampling_Hz": [
+        100,
+        10000
+      ],
+      "SNR_dB": [
+        0.0,
+        30.0
+      ],
+      "environmental_interference": [
+        0.0,
+        0.5
+      ],
+      "head_movement": [
+        0.0,
+        0.3
+      ],
+      "sensor_crosstalk": [
+        0.0,
+        0.3
+      ],
+      "signal_space_leakage": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        5.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

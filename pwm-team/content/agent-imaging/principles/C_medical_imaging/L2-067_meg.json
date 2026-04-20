@@ -1,0 +1,144 @@
+{
+  "artifact_id": "L2-067",
+  "layer": "L2",
+  "parent_l1": "L1-067",
+  "title": "Magnetoencephalography (MEG) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "N_sensors": [
+        64,
+        1024
+      ],
+      "N_time": [
+        1000,
+        1000000
+      ],
+      "sampling_Hz": [
+        100,
+        10000
+      ],
+      "SNR_dB": [
+        0.0,
+        30.0
+      ],
+      "environmental_interference": [
+        0.0,
+        0.5
+      ],
+      "head_movement": [
+        0.0,
+        0.3
+      ],
+      "sensor_crosstalk": [
+        0.0,
+        0.3
+      ],
+      "signal_space_leakage": [
+        0.0,
+        0.3
+      ]
+    },
+    "E": {
+      "forward": "B_sensor(t) = L * j(r, t) + interference + n; invert for cortical current j",
+      "operator": "meg_forward_mismatch",
+      "primitive_chain": "D.squid_array -> L.inverse_source_localization -> int.temporal",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "5.0 + 0.3 * SNR_dB - 10.0 * environmental_interference - 8.0 * head_movement - 6.0 * sensor_crosstalk"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "MNE",
+        "method_sig": "L+O",
+        "expected_psnr": 10.0
+      },
+      {
+        "name": "dSPM",
+        "method_sig": "L+O",
+        "expected_psnr": 12.0
+      },
+      {
+        "name": "MEG-Net",
+        "method_sig": "L+N",
+        "expected_psnr": 14.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_sensors": 300,
+        "N_time": 10000,
+        "sampling_Hz": 1000,
+        "SNR_dB": 15,
+        "environmental_interference": 0.05,
+        "head_movement": 0.0,
+        "sensor_crosstalk": 0.0,
+        "signal_space_leakage": 0.0
+      },
+      "epsilon": 12.0
+    },
+    "tier_bounds": {
+      "N_sensors": [
+        64,
+        1024
+      ],
+      "N_time": [
+        1000,
+        1000000
+      ],
+      "sampling_Hz": [
+        100,
+        10000
+      ],
+      "SNR_dB": [
+        0.0,
+        30.0
+      ],
+      "environmental_interference": [
+        0.0,
+        0.5
+      ],
+      "head_movement": [
+        0.0,
+        0.3
+      ],
+      "sensor_crosstalk": [
+        0.0,
+        0.3
+      ],
+      "signal_space_leakage": [
+        0.0,
+        0.3
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.5,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

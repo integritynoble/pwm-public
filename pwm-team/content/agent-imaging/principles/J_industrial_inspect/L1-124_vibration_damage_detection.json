@@ -1,0 +1,180 @@
+{
+  "artifact_id": "L1-124",
+  "layer": "L1",
+  "principle_number": "124",
+  "title": "Vibration-Based Damage Detection (modal analysis NDT)",
+  "domain": "Industrial Inspection",
+  "sub_domain": "Modal / operational deflection shape damage ID",
+  "source_file": "J_industrial_inspect/124_vibration_damage_detection.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical NDT/NDE literature for this principle.",
+  "E": {
+    "description": "Vibration-Based Damage Detection (modal analysis NDT) forward model.",
+    "forward_model": "x(t) = sum_k phi_k * q_k(t); modal parameters (omega_k, zeta_k, phi_k) shift under damage; detect via change",
+    "world_state_x": "Defect / strain / composition map depending on principle",
+    "observation_y": "Sensor output at declared geometry",
+    "physical_parameters_theta": [
+      "N_sensors",
+      "N_modes",
+      "f_range_Hz",
+      "SNR_dB",
+      "T_acquire_s",
+      "environmental_variability",
+      "operational_load_variation",
+      "mode_truncation"
+    ]
+  },
+  "G": {
+    "dag": "L.excite.broadband -> D.accelerometer_array -> L.modal_extract -> int.temporal",
+    "vertices": [
+      "L.excite.broadband",
+      "D.accelerometer_array",
+      "L.modal_extract",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.excite.broadband -> D.accelerometer_array",
+      "D.accelerometer_array -> L.modal_extract",
+      "L.modal_extract -> int.temporal"
+    ],
+    "L_DAG": 3.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 240,
+    "condition_number_effective": 12,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Frequency-Shift, Mode-Shape-Curvature, AE-NN-Damage",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sensor SNR + mismatch bias.",
+    "complexity": "O(H W) to O(H W Z) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "acoustic",
+    "sensing_mechanism": "modal_vibration_analysis",
+    "integration_axis": "temporal",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "damage_location_severity",
+    "primitives": [
+      "L.excite.broadband",
+      "D.accelerometer_array",
+      "L.modal_extract",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "environmental_variability",
+    "operational_load_variation",
+    "sensor_noise",
+    "mode_truncation"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "vibration_damage",
+      "forward_operator": "vibration_damage_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_sensors": 32,
+        "N_modes": 10,
+        "f_range_Hz": [
+          0.1,
+          200
+        ],
+        "SNR_dB": 25,
+        "T_acquire_s": 60,
+        "environmental_variability": 0.0,
+        "operational_load_variation": 0.0,
+        "mode_truncation": 0.0
+      },
+      "epsilon_fn_center": "20.0"
+    },
+    "allowed_forward_operators": [
+      "vibration_damage_forward"
+    ],
+    "allowed_problem_classes": [
+      "vibration_damage"
+    ],
+    "allowed_omega_dimensions": [
+      "N_sensors",
+      "N_modes",
+      "f_range_Hz",
+      "SNR_dB",
+      "T_acquire_s",
+      "environmental_variability",
+      "operational_load_variation",
+      "mode_truncation",
+      "environmental_variability",
+      "operational_load_variation",
+      "sensor_noise",
+      "mode_truncation"
+    ],
+    "omega_bounds": {
+      "N_sensors": [
+        4,
+        500
+      ],
+      "N_modes": [
+        3,
+        50
+      ],
+      "SNR_dB": [
+        0.0,
+        40.0
+      ],
+      "T_acquire_s": [
+        5,
+        3600
+      ],
+      "environmental_variability": [
+        0.0,
+        0.2
+      ],
+      "operational_load_variation": [
+        0.0,
+        0.3
+      ],
+      "sensor_noise": [
+        0.0,
+        0.2
+      ],
+      "mode_truncation": [
+        0.0,
+        0.5
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        5.0,
+        40.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

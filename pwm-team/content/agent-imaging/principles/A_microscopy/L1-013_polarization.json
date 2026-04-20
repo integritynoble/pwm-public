@@ -1,0 +1,169 @@
+{
+  "artifact_id": "L1-013",
+  "layer": "L1",
+  "principle_number": "013",
+  "title": "Polarization Microscopy (Stokes / birefringence imaging)",
+  "domain": "Microscopy",
+  "sub_domain": "Polarization-sensitive optical imaging",
+  "source_file": "A_microscopy/013_polarization.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical domain literature for this specific principle.",
+  "E": {
+    "description": "Polarization Microscopy (Stokes / birefringence imaging) forward model.",
+    "forward_model": "I_k(r) = M_k . S(r) + n, k = 1..N_states; S = (I, Q, U, V) Stokes vector",
+    "world_state_x": "Scene parameter of interest (density / complex field / lifetime / normals depending on spec).",
+    "observation_y": "Measured intensity or photon counts from the imaging system.",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "N_pol_states",
+      "lambda_nm",
+      "photon_count",
+      "polarizer_alignment_error",
+      "retarder_drift"
+    ]
+  },
+  "G": {
+    "dag": "L.polarizer -> L.analyzer -> int.temporal",
+    "vertices": [
+      "L.polarizer",
+      "L.analyzer",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.polarizer -> L.analyzer",
+      "L.analyzer -> int.temporal"
+    ],
+    "L_DAG": 3.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 200,
+    "condition_number_effective": 10,
+    "regime": "Conditional stability; principle-specific mismatch dominates at Omega bounds (see `mismatch_parameters`)."
+  },
+  "C": {
+    "solver_class": "LS-Stokes, TV-ADMM-Pol, PolDenoise-Net",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(photon_count) + mismatch-induced bias.",
+    "complexity": "O(H W) to O(H W Z) per iteration depending on dimensionality"
+  },
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "polarization_stokes",
+    "integration_axis": "temporal",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "stokes_triplet",
+    "primitives": [
+      "L.polarizer",
+      "L.analyzer",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "polarizer_alignment_error",
+    "retarder_drift",
+    "intrinsic_birefringence_background"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "stokes_polarimetry",
+      "forward_operator": "stokes_polarimetry_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 1024,
+        "W": 1024,
+        "N_pol_states": 4,
+        "lambda_nm": 550,
+        "photon_count": 1000,
+        "polarizer_alignment_error": 0.0,
+        "retarder_drift": 0.0
+      },
+      "epsilon_fn_center": "30.0"
+    },
+    "allowed_forward_operators": [
+      "stokes_polarimetry_forward"
+    ],
+    "allowed_problem_classes": [
+      "stokes_polarimetry"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "N_pol_states",
+      "lambda_nm",
+      "photon_count",
+      "polarizer_alignment_error",
+      "retarder_drift",
+      "polarizer_alignment_error",
+      "retarder_drift",
+      "intrinsic_birefringence_background"
+    ],
+    "omega_bounds": {
+      "H": [
+        256,
+        4096
+      ],
+      "W": [
+        256,
+        4096
+      ],
+      "N_pol_states": [
+        3,
+        16
+      ],
+      "lambda_nm": [
+        400,
+        900
+      ],
+      "photon_count": [
+        50,
+        20000
+      ],
+      "polarizer_alignment_error": [
+        0.0,
+        0.05
+      ],
+      "retarder_drift": [
+        0.0,
+        0.1
+      ],
+      "intrinsic_birefringence_background": [
+        0.0,
+        0.2
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        12.0,
+        42.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

@@ -1,0 +1,152 @@
+{
+  "artifact_id": "L2-123",
+  "layer": "L2",
+  "parent_l1": "L1-123",
+  "title": "Digital Image Correlation (DIC) for full-field strain Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        512,
+        8192
+      ],
+      "W": [
+        512,
+        8192
+      ],
+      "subset_px": [
+        9,
+        81
+      ],
+      "pixel_um": [
+        1,
+        50
+      ],
+      "SNR_dB": [
+        10.0,
+        40.0
+      ],
+      "speckle_size_variation": [
+        0.0,
+        0.3
+      ],
+      "illumination_non_uniformity": [
+        0.0,
+        0.3
+      ],
+      "out_of_plane_motion": [
+        0.0,
+        0.3
+      ],
+      "camera_calibration_error": [
+        0.0,
+        0.05
+      ]
+    },
+    "E": {
+      "forward": "y_def(r) = y_ref(r - u(r)) + n; recover u(r) per subset via NCC/ZNCC; differentiate for strain",
+      "operator": "dic_forward_mismatch",
+      "primitive_chain": "L.speckle_pattern -> L.reference_deformed -> L.subset_correlation -> int.spatial",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "20.0 + 0.3 * SNR_dB + 0.5 * log2(subset_px / 9) - 8.0 * speckle_size_variation - 6.0 * out_of_plane_motion"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "NCC-Subset",
+        "method_sig": "L+O",
+        "expected_psnr": 25.5
+      },
+      {
+        "name": "ZNCC-Subpixel",
+        "method_sig": "L+O",
+        "expected_psnr": 28.0
+      },
+      {
+        "name": "DIC-Net",
+        "method_sig": "L+N",
+        "expected_psnr": 30.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 2048,
+        "W": 2048,
+        "subset_px": 21,
+        "pixel_um": 5,
+        "SNR_dB": 30,
+        "speckle_size_variation": 0.0,
+        "illumination_non_uniformity": 0.0,
+        "out_of_plane_motion": 0.0
+      },
+      "epsilon": 28.0
+    },
+    "tier_bounds": {
+      "H": [
+        512,
+        8192
+      ],
+      "W": [
+        512,
+        8192
+      ],
+      "subset_px": [
+        9,
+        81
+      ],
+      "pixel_um": [
+        1,
+        50
+      ],
+      "SNR_dB": [
+        10.0,
+        40.0
+      ],
+      "speckle_size_variation": [
+        0.0,
+        0.3
+      ],
+      "illumination_non_uniformity": [
+        0.0,
+        0.3
+      ],
+      "out_of_plane_motion": [
+        0.0,
+        0.3
+      ],
+      "camera_calibration_error": [
+        0.0,
+        0.05
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.5,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

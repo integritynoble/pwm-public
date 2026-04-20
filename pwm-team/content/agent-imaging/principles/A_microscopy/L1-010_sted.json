@@ -1,0 +1,172 @@
+{
+  "artifact_id": "L1-010",
+  "layer": "L1",
+  "principle_number": "010",
+  "title": "Stimulated Emission Depletion (STED) \u2014 donut super-resolution",
+  "domain": "Microscopy",
+  "sub_domain": "Donut-PSF super-resolution microscopy",
+  "source_file": "A_microscopy/010_sted.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical domain literature for this specific principle.",
+  "E": {
+    "description": "Stimulated Emission Depletion (STED) \u2014 donut super-resolution forward model.",
+    "forward_model": "y(r) = [PSF_sted(r; P_depl) conv f(r)] + n; effective FWHM = FWHM_0 / sqrt(1 + P_depl/P_sat)",
+    "world_state_x": "Scene parameter of interest (density / complex field / lifetime / normals depending on spec).",
+    "observation_y": "Measured intensity or photon counts from the imaging system.",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "pixel_nm",
+      "NA",
+      "P_depl_over_sat",
+      "peak_photons",
+      "donut_zero_depth",
+      "depletion_power_drift"
+    ]
+  },
+  "G": {
+    "dag": "L.excitation.focused -> L.depletion.donut -> int.temporal",
+    "vertices": [
+      "L.excitation.focused",
+      "L.depletion.donut",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.excitation.focused -> L.depletion.donut",
+      "L.depletion.donut -> int.temporal"
+    ],
+    "L_DAG": 3.8,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 400,
+    "condition_number_effective": 20,
+    "regime": "Conditional stability; principle-specific mismatch dominates at Omega bounds (see `mismatch_parameters`)."
+  },
+  "C": {
+    "solver_class": "Richardson-Lucy-STED, TV-ADMM-STED, STED-Net",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(photon_count) + mismatch-induced bias.",
+    "complexity": "O(H W) to O(H W Z) per iteration depending on dimensionality"
+  },
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "sted_donut_depletion",
+    "integration_axis": "temporal",
+    "problem_class": "linear_inverse",
+    "noise_model": "shot_poisson",
+    "solution_space": "2D_intensity",
+    "primitives": [
+      "L.excitation.focused",
+      "L.depletion.donut",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "donut_zero_depth",
+    "depletion_power_drift",
+    "anti_stokes_leakage"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "sted",
+      "forward_operator": "sted_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 512,
+        "W": 512,
+        "pixel_nm": 20,
+        "NA": 1.4,
+        "P_depl_over_sat": 10,
+        "peak_photons": 200,
+        "donut_zero_depth": 0.001,
+        "depletion_power_drift": 0.0
+      },
+      "epsilon_fn_center": "26.0"
+    },
+    "allowed_forward_operators": [
+      "sted_forward"
+    ],
+    "allowed_problem_classes": [
+      "sted"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "pixel_nm",
+      "NA",
+      "P_depl_over_sat",
+      "peak_photons",
+      "donut_zero_depth",
+      "depletion_power_drift",
+      "donut_zero_depth",
+      "depletion_power_drift",
+      "anti_stokes_leakage"
+    ],
+    "omega_bounds": {
+      "H": [
+        128,
+        2048
+      ],
+      "W": [
+        128,
+        2048
+      ],
+      "pixel_nm": [
+        10,
+        100
+      ],
+      "NA": [
+        1.2,
+        1.49
+      ],
+      "P_depl_over_sat": [
+        1,
+        100
+      ],
+      "peak_photons": [
+        20,
+        2000
+      ],
+      "donut_zero_depth": [
+        0.0,
+        0.05
+      ],
+      "depletion_power_drift": [
+        0.0,
+        0.15
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        12.0,
+        42.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

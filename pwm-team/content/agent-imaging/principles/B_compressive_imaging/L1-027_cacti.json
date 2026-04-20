@@ -1,0 +1,90 @@
+{
+  "artifact_id": "L1-027",
+  "layer": "L1",
+  "principle_number": "027",
+  "title": "Coded Aperture Compressive Temporal Imaging (CACTI)",
+  "domain": "Compressive Imaging",
+  "sub_domain": "Video snapshot compressive sensing",
+  "source_file": "B_compressive_imaging/027_cacti.md",
+  "canonical_reference": "pwm_product/genesis/l1/L1-004.json",
+
+  "E": {
+    "description": "Single-shot compressive video forward model: a temporally varying binary coded mask gates photons per-pixel for each sub-frame, and the detector integrates all B masked sub-frames into a single 2D snapshot.",
+    "forward_model": "y(i,j) = sum_{b=1}^{B} C_b(i,j) * x(i,j,b) + n(i,j)",
+    "world_state_x": "3D video cube x in R^{H x W x B}, non-negative, compressible in spatio-temporal basis",
+    "observation_y": "2D sensor snapshot y in R^{H x W} (Poisson+Gaussian noise)",
+    "physical_parameters_theta": [
+      "C_b: binary coded mask per sub-frame b in {0,1}^{H x W}",
+      "B: compression ratio (sub-frames per snapshot)",
+      "detector exposure T, sensor gain gamma, offset o, duty cycle eta, clock offset dt",
+      "sub-pixel registration (dx, dy) and rotation theta",
+      "read noise sigma_n"
+    ]
+  },
+
+  "G": {
+    "dag": "S.temporal.coded -> int.temporal",
+    "vertices": ["S.temporal.coded", "int.temporal"],
+    "arcs": ["S.temporal.coded -> int.temporal"],
+    "L_DAG": 2.0,
+    "n_c": 0
+  },
+
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 2500,
+    "condition_number_effective": 30,
+    "condition_number_mismatched": 300,
+    "regime": "B:1 underdetermined compressive video recovery; temporally varying binary masks satisfy RIP-like conditions; sub-pixel mask mismatch is dominant stability risk (EfficientSCI drops 20.58 dB under severe mismatch)."
+  },
+
+  "C": {
+    "solver_class": "iterative_proximal (GAP-TV, DeSCI) or plug-and-play (PnP-FFDNet) or learned unrolling (EfficientSCI, BIRNAT)",
+    "convergence_rate_q": 2.0,
+    "error_bound": "||x_hat - x||_2 <= C1 * sigma / sqrt(m) + C2 * ||x - x_s||_1; GAP-TV achieves 100% oracle-ceiling recovery at 60s calibration.",
+    "complexity": "O(H * W * B * log(H*W*B)) per iteration"
+  },
+
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "coded_aperture_temporal",
+    "integration_axis": "temporal",
+    "problem_class": "linear_inverse",
+    "noise_model": "shot_poisson",
+    "solution_space": "3D_temporal",
+    "primitives": ["S.temporal.coded", "int.temporal"]
+  },
+
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+
+  "mismatch_parameters": ["dx", "dy", "theta", "dt", "eta", "gamma", "offset", "sigma_n"],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "error_metric_tertiary": "temporal_consistency",
+
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "temporal_video_reconstruction",
+      "forward_operator": "cacti_forward",
+      "input_format": "measurement_only",
+      "omega": {"H": 256, "W": 256, "B": 8, "noise_level": 0.01, "dx": 0.0, "dy": 0.0, "theta": 0.0, "dt": 0.0, "eta": 1.0, "gamma": 1.0, "offset": 0.0, "sigma_n": 1.0},
+      "epsilon_fn_center": "26.0 dB PSNR"
+    },
+    "allowed_forward_operators": ["cacti_forward", "cacti_forward_oracle"],
+    "allowed_problem_classes": ["temporal_video_reconstruction", "high_speed_video_sci"],
+    "allowed_omega_dimensions": ["H", "W", "B", "noise_level", "dx", "dy", "theta", "dt", "eta", "gamma", "offset", "sigma_n"],
+    "omega_bounds": {
+      "H": [32, 1024], "W": [32, 1024], "B": [4, 32], "noise_level": [0.001, 0.1],
+      "dx": [0.0, 1.0], "dy": [0.0, 1.0], "theta": [0.0, 0.15], "dt": [0.0, 0.1],
+      "eta": [0.90, 1.0], "gamma": [0.95, 1.05], "offset": [0.0, 0.01], "sigma_n": [0.5, 2.0]
+    },
+    "epsilon_bounds": {"psnr_db": [20.0, 40.0]}
+  },
+
+  "p1_p10_tests": ["PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS"],
+  "s1_s4_gates": ["PASS", "PASS", "PASS", "PASS"],
+  "ipfs_cid": null
+}

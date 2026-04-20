@@ -1,0 +1,177 @@
+{
+  "artifact_id": "L1-149",
+  "layer": "L1",
+  "principle_number": "149",
+  "title": "Streak Camera \u2014 picosecond 1D time-resolved imaging",
+  "domain": "Ultrafast Imaging",
+  "sub_domain": "1D time-resolved photoelectron streaking",
+  "source_file": "M_ultrafast_imaging/149_streak_camera.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
+  "E": {
+    "description": "Streak Camera \u2014 picosecond 1D time-resolved imaging forward model.",
+    "forward_model": "y(t, x) = sum_tau I_source(tau, x) * sweep_response(t - tau) + space_charge + n",
+    "world_state_x": "Principle-specific quantity of interest",
+    "observation_y": "Detector output at declared geometry",
+    "physical_parameters_theta": [
+      "N_x",
+      "N_t",
+      "sweep_ps",
+      "photon_count",
+      "sweep_nonlinearity",
+      "photocathode_jitter",
+      "space_charge",
+      "afterglow"
+    ]
+  },
+  "G": {
+    "dag": "L.photocathode -> L.sweep_voltage -> D.streaked_phosphor -> int.temporal",
+    "vertices": [
+      "L.photocathode",
+      "L.sweep_voltage",
+      "D.streaked_phosphor",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.photocathode -> L.sweep_voltage",
+      "L.sweep_voltage -> D.streaked_phosphor",
+      "D.streaked_phosphor -> int.temporal"
+    ],
+    "L_DAG": 3.3,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 240,
+    "condition_number_effective": 12,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Simple-Transform, TV-ADMM-Streak, Streak-Net",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sensor SNR + mismatch bias + regularization.",
+    "complexity": "principle-dependent"
+  },
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "streak_tube_time_resolved",
+    "integration_axis": "temporal",
+    "problem_class": "linear_inverse",
+    "noise_model": "shot_poisson",
+    "solution_space": "1D_time_trace",
+    "primitives": [
+      "L.photocathode",
+      "L.sweep_voltage",
+      "D.streaked_phosphor",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "sweep_nonlinearity",
+    "photocathode_jitter",
+    "space_charge",
+    "afterglow"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "streak_camera",
+      "forward_operator": "streak_camera_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_x": 1024,
+        "N_t": 1024,
+        "sweep_ps": 100,
+        "photon_count": 500,
+        "sweep_nonlinearity": 0.0,
+        "photocathode_jitter": 0.5,
+        "space_charge": 0.0,
+        "afterglow": 0.0
+      },
+      "epsilon_fn_center": "26.0"
+    },
+    "allowed_forward_operators": [
+      "streak_camera_forward"
+    ],
+    "allowed_problem_classes": [
+      "streak_camera"
+    ],
+    "allowed_omega_dimensions": [
+      "N_x",
+      "N_t",
+      "sweep_ps",
+      "photon_count",
+      "sweep_nonlinearity",
+      "photocathode_jitter",
+      "space_charge",
+      "afterglow",
+      "sweep_nonlinearity",
+      "photocathode_jitter",
+      "space_charge",
+      "afterglow"
+    ],
+    "omega_bounds": {
+      "N_x": [
+        128,
+        4096
+      ],
+      "N_t": [
+        128,
+        4096
+      ],
+      "sweep_ps": [
+        1,
+        1000
+      ],
+      "photon_count": [
+        10,
+        10000
+      ],
+      "sweep_nonlinearity": [
+        0.0,
+        0.3
+      ],
+      "photocathode_jitter": [
+        0.0,
+        5.0
+      ],
+      "space_charge": [
+        0.0,
+        0.3
+      ],
+      "afterglow": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        5.0,
+        40.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

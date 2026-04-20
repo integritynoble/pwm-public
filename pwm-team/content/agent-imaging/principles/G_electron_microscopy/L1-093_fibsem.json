@@ -1,0 +1,198 @@
+{
+  "artifact_id": "L1-093",
+  "layer": "L1",
+  "principle_number": "093",
+  "title": "Focused Ion Beam SEM (FIB-SEM) \u2014 serial sectioning 3D imaging",
+  "domain": "Electron Microscopy",
+  "sub_domain": "Ion-mill serial sectioning + SEM",
+  "source_file": "G_electron_microscopy/093_fibsem.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical electron-microscopy literature for this principle.",
+  "E": {
+    "description": "Focused Ion Beam SEM (FIB-SEM) \u2014 serial sectioning 3D imaging forward model.",
+    "forward_model": "y(r, z_k) = [SEM forward at slice k] where z_k has milling variance; assemble into 3D volume",
+    "world_state_x": "Scene parameter (density / orientation / spectrum / complex field depending on principle)",
+    "observation_y": "Electron detector output at declared geometry + noise",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "Z",
+      "pixel_nm",
+      "z_step_nm",
+      "kV",
+      "peak_electrons",
+      "milling_step_variance",
+      "curtain_artifact",
+      "z_alignment_error"
+    ]
+  },
+  "G": {
+    "dag": "L.ion_milling -> L.excitation.electron_beam -> S.scan.raster -> S.scan.axial -> int.temporal",
+    "vertices": [
+      "L.ion_milling",
+      "L.excitation.electron_beam",
+      "S.scan.raster",
+      "S.scan.axial",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.ion_milling -> L.excitation.electron_beam",
+      "L.excitation.electron_beam -> S.scan.raster",
+      "S.scan.raster -> S.scan.axial",
+      "S.scan.axial -> int.temporal"
+    ],
+    "L_DAG": 4.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 300,
+    "condition_number_effective": 15,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "BM3D-FIBSEM, DeepCurtain-Remove, 3D-UNet-FIBSEM",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(electron_count) + mismatch bias.",
+    "complexity": "O(H W) to O(H W Z) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "electron",
+    "sensing_mechanism": "fib_milling_sem",
+    "integration_axis": "axial",
+    "problem_class": "linear_inverse",
+    "noise_model": "shot_poisson",
+    "solution_space": "3D_intensity",
+    "primitives": [
+      "L.ion_milling",
+      "L.excitation.electron_beam",
+      "S.scan.raster",
+      "S.scan.axial",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "milling_step_variance",
+    "curtain_artifact",
+    "charging",
+    "z_alignment_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "fibsem_serial_section",
+      "forward_operator": "fibsem_serial_section_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 2048,
+        "W": 2048,
+        "Z": 500,
+        "pixel_nm": 5,
+        "z_step_nm": 5,
+        "kV": 2,
+        "peak_electrons": 100,
+        "milling_step_variance": 0.1,
+        "curtain_artifact": 0.0,
+        "z_alignment_error": 0.0
+      },
+      "epsilon_fn_center": "26.0"
+    },
+    "allowed_forward_operators": [
+      "fibsem_serial_section_forward"
+    ],
+    "allowed_problem_classes": [
+      "fibsem_serial_section"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "Z",
+      "pixel_nm",
+      "z_step_nm",
+      "kV",
+      "peak_electrons",
+      "milling_step_variance",
+      "curtain_artifact",
+      "z_alignment_error",
+      "milling_step_variance",
+      "curtain_artifact",
+      "charging",
+      "z_alignment_error"
+    ],
+    "omega_bounds": {
+      "H": [
+        512,
+        4096
+      ],
+      "W": [
+        512,
+        4096
+      ],
+      "Z": [
+        50,
+        2000
+      ],
+      "pixel_nm": [
+        1,
+        50
+      ],
+      "z_step_nm": [
+        1,
+        50
+      ],
+      "kV": [
+        1,
+        5
+      ],
+      "peak_electrons": [
+        10,
+        2000
+      ],
+      "milling_step_variance": [
+        0.0,
+        0.3
+      ],
+      "curtain_artifact": [
+        0.0,
+        0.3
+      ],
+      "charging": [
+        0.0,
+        0.3
+      ],
+      "z_alignment_error": [
+        0.0,
+        2.0
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        40.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

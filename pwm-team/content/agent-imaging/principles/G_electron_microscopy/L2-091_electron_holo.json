@@ -1,0 +1,152 @@
+{
+  "artifact_id": "L2-091",
+  "layer": "L2",
+  "parent_l1": "L1-091",
+  "title": "Off-Axis Electron Holography \u2014 nanoscale phase imaging Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        512,
+        4096
+      ],
+      "W": [
+        512,
+        4096
+      ],
+      "pixel_A": [
+        0.1,
+        5.0
+      ],
+      "fringe_spacing_nm": [
+        0.5,
+        10
+      ],
+      "kV": [
+        200,
+        300
+      ],
+      "peak_electrons": [
+        10,
+        5000
+      ],
+      "biprism_stability": [
+        0.5,
+        1.0
+      ],
+      "fringe_contrast_loss": [
+        0.0,
+        0.5
+      ],
+      "reference_drift": [
+        0.0,
+        0.01
+      ]
+    },
+    "E": {
+      "forward": "I(r) = |psi_obj + psi_ref * exp(i*q_c*r)|^2 + n; Fourier sideband filter recovers phase",
+      "operator": "electron_holography_forward_mismatch",
+      "primitive_chain": "L.biprism -> L.add_coherent -> L.modulus_squared -> int.temporal",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "18.0 + 2.0 * log10(peak_electrons / 10) + 10.0 * biprism_stability - 15.0 * fringe_contrast_loss"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Fourier-Sideband",
+        "method_sig": "L+O",
+        "expected_psnr": 23.5
+      },
+      {
+        "name": "Iterative-Holo",
+        "method_sig": "I+O",
+        "expected_psnr": 25.0
+      },
+      {
+        "name": "EHolo-Net",
+        "method_sig": "L+N",
+        "expected_psnr": 27.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 2048,
+        "W": 2048,
+        "pixel_A": 0.5,
+        "fringe_spacing_nm": 2,
+        "kV": 300,
+        "peak_electrons": 100,
+        "biprism_stability": 1.0,
+        "fringe_contrast_loss": 0.0
+      },
+      "epsilon": 25.0
+    },
+    "tier_bounds": {
+      "H": [
+        512,
+        4096
+      ],
+      "W": [
+        512,
+        4096
+      ],
+      "pixel_A": [
+        0.1,
+        5.0
+      ],
+      "fringe_spacing_nm": [
+        0.5,
+        10
+      ],
+      "kV": [
+        200,
+        300
+      ],
+      "peak_electrons": [
+        10,
+        5000
+      ],
+      "biprism_stability": [
+        0.5,
+        1.0
+      ],
+      "fringe_contrast_loss": [
+        0.0,
+        0.5
+      ],
+      "reference_drift": [
+        0.0,
+        0.01
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.48,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

@@ -1,0 +1,176 @@
+{
+  "artifact_id": "L1-014",
+  "layer": "L1",
+  "principle_number": "014",
+  "title": "Expansion Microscopy (ExM) \u2014 physical hydrogel expansion",
+  "domain": "Microscopy",
+  "sub_domain": "Sample-side super-resolution via isotropic swelling",
+  "source_file": "A_microscopy/014_expansion.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical domain literature for this specific principle.",
+  "E": {
+    "description": "Expansion Microscopy (ExM) \u2014 physical hydrogel expansion forward model.",
+    "forward_model": "y(r) = [PSF conv f(r / F_expand)] + n; effective resolution = lambda / (2 NA F_expand)",
+    "world_state_x": "Scene parameter of interest (density / complex field / lifetime / normals depending on spec).",
+    "observation_y": "Measured intensity or photon counts from the imaging system.",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "pixel_nm",
+      "NA",
+      "F_expand",
+      "peak_photons",
+      "expansion_anisotropy",
+      "expansion_factor_drift"
+    ]
+  },
+  "G": {
+    "dag": "L.sample_expansion -> K.psf.airy -> int.temporal",
+    "vertices": [
+      "L.sample_expansion",
+      "K.psf.airy",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.sample_expansion -> K.psf.airy",
+      "K.psf.airy -> int.temporal"
+    ],
+    "L_DAG": 2.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 180,
+    "condition_number_effective": 9,
+    "regime": "Conditional stability; principle-specific mismatch dominates at Omega bounds (see `mismatch_parameters`)."
+  },
+  "C": {
+    "solver_class": "Richardson-Lucy, SRRF-ExM, CARE-ExM",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(photon_count) + mismatch-induced bias.",
+    "complexity": "O(H W) to O(H W Z) per iteration depending on dimensionality"
+  },
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "fluorescence_widefield",
+    "integration_axis": "temporal",
+    "problem_class": "linear_inverse",
+    "noise_model": "poisson_gaussian",
+    "solution_space": "2D_intensity",
+    "primitives": [
+      "L.sample_expansion",
+      "K.psf.airy",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "expansion_anisotropy",
+    "expansion_factor_drift",
+    "labeling_loss"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "exm",
+      "forward_operator": "exm_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 1024,
+        "W": 1024,
+        "pixel_nm": 65,
+        "NA": 1.4,
+        "F_expand": 4.0,
+        "peak_photons": 500,
+        "expansion_anisotropy": 0.01,
+        "expansion_factor_drift": 0.01
+      },
+      "epsilon_fn_center": "29.0"
+    },
+    "allowed_forward_operators": [
+      "exm_forward"
+    ],
+    "allowed_problem_classes": [
+      "exm"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "pixel_nm",
+      "NA",
+      "F_expand",
+      "peak_photons",
+      "expansion_anisotropy",
+      "expansion_factor_drift",
+      "expansion_anisotropy",
+      "expansion_factor_drift",
+      "labeling_loss"
+    ],
+    "omega_bounds": {
+      "H": [
+        256,
+        4096
+      ],
+      "W": [
+        256,
+        4096
+      ],
+      "pixel_nm": [
+        30,
+        200
+      ],
+      "NA": [
+        1.0,
+        1.49
+      ],
+      "F_expand": [
+        2.0,
+        20.0
+      ],
+      "peak_photons": [
+        50,
+        5000
+      ],
+      "expansion_anisotropy": [
+        0.0,
+        0.1
+      ],
+      "expansion_factor_drift": [
+        0.0,
+        0.1
+      ],
+      "labeling_loss": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        12.0,
+        42.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

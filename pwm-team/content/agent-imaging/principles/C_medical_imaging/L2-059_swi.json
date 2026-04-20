@@ -1,0 +1,141 @@
+{
+  "artifact_id": "L2-059",
+  "layer": "L2",
+  "parent_l1": "L1-059",
+  "title": "Susceptibility-Weighted Imaging (SWI) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": 128,
+      "W": 128,
+      "Z": [
+        16,
+        256
+      ],
+      "TE_ms": [
+        10,
+        80
+      ],
+      "SNR_dB": [
+        0.0,
+        35.0
+      ],
+      "B0_inhomogeneity": [
+        0.0,
+        0.3
+      ],
+      "air_tissue_boundaries": [
+        0.0,
+        0.5
+      ],
+      "phase_wrap": [
+        0.0,
+        0.3
+      ],
+      "coil_phase_error": [
+        0.0,
+        0.3
+      ]
+    },
+    "E": {
+      "forward": "Magnitude * phase_mask^n; phase tied to local susceptibility via convolution with dipole kernel",
+      "operator": "swi_forward_mismatch",
+      "primitive_chain": "L.rf_excitation -> L.gradient_echo -> L.phase_mask -> int.spatial",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "16.0 + 0.3 * SNR_dB - 10.0 * B0_inhomogeneity - 6.0 * air_tissue_boundaries - 5.0 * phase_wrap"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Homodyne-Filter",
+        "method_sig": "L+O",
+        "expected_psnr": 21.5
+      },
+      {
+        "name": "QSM",
+        "method_sig": "L+O",
+        "expected_psnr": 24.0
+      },
+      {
+        "name": "SWI-Net",
+        "method_sig": "L+N",
+        "expected_psnr": 26.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 256,
+        "W": 256,
+        "Z": 64,
+        "TE_ms": 25,
+        "SNR_dB": 22,
+        "B0_inhomogeneity": 0.0,
+        "air_tissue_boundaries": 0.0,
+        "phase_wrap": 0.0,
+        "coil_phase_error": 0.0
+      },
+      "epsilon": 24.0
+    },
+    "tier_bounds": {
+      "H": 128,
+      "W": 128,
+      "Z": [
+        16,
+        256
+      ],
+      "TE_ms": [
+        10,
+        80
+      ],
+      "SNR_dB": [
+        0.0,
+        35.0
+      ],
+      "B0_inhomogeneity": [
+        0.0,
+        0.3
+      ],
+      "air_tissue_boundaries": [
+        0.0,
+        0.5
+      ],
+      "phase_wrap": [
+        0.0,
+        0.3
+      ],
+      "coil_phase_error": [
+        0.0,
+        0.3
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.5,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

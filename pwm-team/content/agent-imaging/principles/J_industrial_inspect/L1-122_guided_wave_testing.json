@@ -1,0 +1,181 @@
+{
+  "artifact_id": "L1-122",
+  "layer": "L1",
+  "principle_number": "122",
+  "title": "Guided-Wave Ultrasonic Testing (long-range pipe/rail inspection)",
+  "domain": "Industrial Inspection",
+  "sub_domain": "Dispersive Lamb/torsional wave NDT",
+  "source_file": "J_industrial_inspect/122_guided_wave_testing.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical NDT/NDE literature for this principle.",
+  "E": {
+    "description": "Guided-Wave Ultrasonic Testing (long-range pipe/rail inspection) forward model.",
+    "forward_model": "y(t) = sum_r reflectivity(r) * dispersive_pulse(t - 2r/c_g(f)) + mode_mix + n; dispersive over frequency-thickness",
+    "world_state_x": "Defect / strain / composition map depending on principle",
+    "observation_y": "Sensor output at declared geometry",
+    "physical_parameters_theta": [
+      "N_time",
+      "f_kHz",
+      "range_m",
+      "N_modes",
+      "SNR_dB",
+      "mode_mixing",
+      "temperature_drift",
+      "coating_attenuation"
+    ]
+  },
+  "G": {
+    "dag": "L.emit.guided_wave -> L.dispersive_propagation -> D.reflection_transmission -> int.temporal",
+    "vertices": [
+      "L.emit.guided_wave",
+      "L.dispersive_propagation",
+      "D.reflection_transmission",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.emit.guided_wave -> L.dispersive_propagation",
+      "L.dispersive_propagation -> D.reflection_transmission",
+      "D.reflection_transmission -> int.temporal"
+    ],
+    "L_DAG": 3.6,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 280,
+    "condition_number_effective": 14,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Matched-Filter, Dispersion-Compensation, GW-RNN",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sensor SNR + mismatch bias.",
+    "complexity": "O(H W) to O(H W Z) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "acoustic",
+    "sensing_mechanism": "guided_wave_ultrasonics",
+    "integration_axis": "temporal",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "1D_axial_defect_profile",
+    "primitives": [
+      "L.emit.guided_wave",
+      "L.dispersive_propagation",
+      "D.reflection_transmission",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "mode_mixing",
+    "temperature_drift",
+    "coating_attenuation",
+    "support_reflections"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "guided_wave",
+      "forward_operator": "guided_wave_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_time": 4096,
+        "f_kHz": 40,
+        "range_m": 30,
+        "N_modes": 2,
+        "SNR_dB": 25,
+        "mode_mixing": 0.0,
+        "temperature_drift": 0.0,
+        "coating_attenuation": 0.0
+      },
+      "epsilon_fn_center": "22.0"
+    },
+    "allowed_forward_operators": [
+      "guided_wave_forward"
+    ],
+    "allowed_problem_classes": [
+      "guided_wave"
+    ],
+    "allowed_omega_dimensions": [
+      "N_time",
+      "f_kHz",
+      "range_m",
+      "N_modes",
+      "SNR_dB",
+      "mode_mixing",
+      "temperature_drift",
+      "coating_attenuation",
+      "mode_mixing",
+      "temperature_drift",
+      "coating_attenuation",
+      "support_reflections"
+    ],
+    "omega_bounds": {
+      "N_time": [
+        512,
+        16384
+      ],
+      "f_kHz": [
+        10,
+        500
+      ],
+      "range_m": [
+        1,
+        200
+      ],
+      "N_modes": [
+        1,
+        5
+      ],
+      "SNR_dB": [
+        0.0,
+        35.0
+      ],
+      "mode_mixing": [
+        0.0,
+        0.5
+      ],
+      "temperature_drift": [
+        0.0,
+        30.0
+      ],
+      "coating_attenuation": [
+        0.0,
+        0.5
+      ],
+      "support_reflections": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        5.0,
+        40.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

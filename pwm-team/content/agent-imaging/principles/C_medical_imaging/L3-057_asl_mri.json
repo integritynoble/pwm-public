@@ -1,0 +1,181 @@
+{
+  "artifact_id": "L3-057",
+  "layer": "L3",
+  "parent_l2": "L2-057",
+  "parent_l1": "L1-057",
+  "title": "Arterial Spin Labeling (ASL) MRI Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "canonical clinical/public dataset for this modality",
+    "secondary": "simulated forward synthesis at declared Omega",
+    "construction_method": "parametric forward + declared noise",
+    "num_dev_instances_per_tier": 20
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "H": 96,
+        "W": 96,
+        "Z": 16,
+        "N_label_control_pairs": 30,
+        "PLD_ms": 1800,
+        "SNR_dB": 15.0,
+        "arterial_transit_time": 500.0,
+        "labeling_efficiency": 0.5,
+        "motion": 0.0,
+        "noise_amplification": 0.0
+      },
+      "epsilon": 14.0,
+      "d_ibench": 0.14,
+      "baselines": [
+        {
+          "name": "Simple-Subtract",
+          "score": 11.5,
+          "Q": 0.88
+        },
+        {
+          "name": "Kinetic-Model",
+          "score": 14.0,
+          "Q": 0.88
+        },
+        {
+          "name": "ASL-Net",
+          "score": 16.5,
+          "Q": 0.88
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "H": 96,
+        "W": 96,
+        "Z": 16,
+        "N_label_control_pairs": 30,
+        "PLD_ms": 1800,
+        "SNR_dB": 12.0,
+        "arterial_transit_time": 1000.0,
+        "labeling_efficiency": 0.6,
+        "motion": 0.1,
+        "noise_amplification": 0.06
+      },
+      "epsilon": 11.48,
+      "d_ibench": 0.28,
+      "baselines": [
+        {
+          "name": "Simple-Subtract",
+          "score": 9.5,
+          "Q": 0.68
+        },
+        {
+          "name": "Kinetic-Model",
+          "score": 12.0,
+          "Q": 0.68
+        },
+        {
+          "name": "ASL-Net",
+          "score": 14.5,
+          "Q": 0.68
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "H": 96,
+        "W": 96,
+        "Z": 16,
+        "N_label_control_pairs": 30,
+        "PLD_ms": 1800,
+        "SNR_dB": 3.0,
+        "arterial_transit_time": 1750.0,
+        "labeling_efficiency": 0.75,
+        "motion": 0.25,
+        "noise_amplification": 0.15
+      },
+      "epsilon": 8.96,
+      "d_ibench": 0.48,
+      "baselines": [
+        {
+          "name": "Simple-Subtract",
+          "score": 7.5,
+          "Q": 0.48
+        },
+        {
+          "name": "Kinetic-Model",
+          "score": 10.0,
+          "Q": 0.48
+        },
+        {
+          "name": "ASL-Net",
+          "score": 12.5,
+          "Q": 0.48
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "H": 96,
+        "W": 96,
+        "Z": 16,
+        "N_label_control_pairs": 30,
+        "PLD_ms": 1800,
+        "SNR_dB": 0.0,
+        "arterial_transit_time": 3000.0,
+        "labeling_efficiency": 1.0,
+        "motion": 0.5,
+        "noise_amplification": 0.3
+      },
+      "epsilon": 6.44,
+      "d_ibench": 0.72,
+      "baselines": [
+        {
+          "name": "Simple-Subtract",
+          "score": 5.5,
+          "Q": 0.28
+        },
+        {
+          "name": "Kinetic-Model",
+          "score": 8.0,
+          "Q": 0.28
+        },
+        {
+          "name": "ASL-Net",
+          "score": 10.5,
+          "Q": 0.28
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "full parametric sweep",
+      "num_dev_instances": 200,
+      "construction_method": "parametric Omega sweep"
+    },
+    "baselines": [
+      {
+        "name": "Simple-Subtract",
+        "overall_Q": 0.7
+      },
+      {
+        "name": "Kinetic-Model",
+        "overall_Q": 0.6
+      },
+      {
+        "name": "ASL-Net",
+        "overall_Q": 0.5
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind strata corner.",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

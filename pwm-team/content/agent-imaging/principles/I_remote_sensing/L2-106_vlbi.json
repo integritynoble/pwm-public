@@ -1,0 +1,165 @@
+{
+  "artifact_id": "L2-106",
+  "layer": "L2",
+  "parent_l1": "L1-106",
+  "title": "Very Long Baseline Interferometry (VLBI) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "N_antennas": [
+        4,
+        100
+      ],
+      "N_baselines": [
+        6,
+        4950
+      ],
+      "N_time": [
+        60,
+        3600
+      ],
+      "lambda_cm": [
+        0.01,
+        500
+      ],
+      "UV_coverage_fraction": [
+        0.005,
+        0.5
+      ],
+      "SNR_dB": [
+        0.0,
+        30.0
+      ],
+      "ionospheric_delay": [
+        0.0,
+        1.0
+      ],
+      "atomic_clock_drift": [
+        0.0,
+        0.01
+      ],
+      "station_position_error": [
+        0.0,
+        10.0
+      ],
+      "RFI": [
+        0.0,
+        0.5
+      ]
+    },
+    "E": {
+      "forward": "V(u,v) = integral I(l,m) * exp(-2*pi*i*(u*l + v*m)) dl dm; sparse (u,v) sampling",
+      "operator": "vlbi_synthesis_forward_mismatch",
+      "primitive_chain": "L.radio_antenna_array -> L.cross_correlation -> L.fourier_synthesis -> int.spatial",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "10.0 + 0.3 * SNR_dB + 5.0 * log10(N_antennas / 4) - 4.0 * ionospheric_delay - 3.0 * RFI"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "CLEAN",
+        "method_sig": "I+O",
+        "expected_psnr": 14.5
+      },
+      {
+        "name": "MS-CLEAN",
+        "method_sig": "I+O",
+        "expected_psnr": 16.0
+      },
+      {
+        "name": "Compressed-Sensing-VLBI",
+        "method_sig": "L+O",
+        "expected_psnr": 17.5
+      },
+      {
+        "name": "EHT-RML",
+        "method_sig": "L+O",
+        "expected_psnr": 18.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_antennas": 10,
+        "N_baselines": 45,
+        "N_time": 360,
+        "lambda_cm": 1.3,
+        "UV_coverage_fraction": 0.1,
+        "SNR_dB": 15.0,
+        "ionospheric_delay": 0.0,
+        "atomic_clock_drift": 0.0
+      },
+      "epsilon": 16.0
+    },
+    "tier_bounds": {
+      "N_antennas": [
+        4,
+        100
+      ],
+      "N_baselines": [
+        6,
+        4950
+      ],
+      "N_time": [
+        60,
+        3600
+      ],
+      "lambda_cm": [
+        0.01,
+        500
+      ],
+      "UV_coverage_fraction": [
+        0.005,
+        0.5
+      ],
+      "SNR_dB": [
+        0.0,
+        30.0
+      ],
+      "ionospheric_delay": [
+        0.0,
+        1.0
+      ],
+      "atomic_clock_drift": [
+        0.0,
+        0.01
+      ],
+      "station_position_error": [
+        0.0,
+        10.0
+      ],
+      "RFI": [
+        0.0,
+        0.5
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.5,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

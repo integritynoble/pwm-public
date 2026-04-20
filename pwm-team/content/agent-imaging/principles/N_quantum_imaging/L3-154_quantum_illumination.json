@@ -1,0 +1,177 @@
+{
+  "artifact_id": "L3-154",
+  "layer": "L3",
+  "parent_l2": "L2-154",
+  "parent_l1": "L1-154",
+  "title": "Quantum Illumination \u2014 entanglement-enhanced target detection Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "canonical dataset for this principle",
+    "secondary": "simulated forward synthesis at declared Omega",
+    "construction_method": "parametric forward + declared noise",
+    "num_dev_instances_per_tier": 20
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "H": 128,
+        "W": 128,
+        "N_modes": 1000000,
+        "eta_signal": 0.1,
+        "eta_idler": 0.9,
+        "thermal_photons_per_mode": 1,
+        "loss_and_noise_decoherence": 0.0,
+        "phase_drift": 0.0,
+        "mode_mismatch": 0.0
+      },
+      "epsilon": 16.0,
+      "d_ibench": 0.14,
+      "baselines": [
+        {
+          "name": "Sum-Frequency-Gen",
+          "score": 14.0,
+          "Q": 0.88
+        },
+        {
+          "name": "Optical-Parametric",
+          "score": 16.5,
+          "Q": 0.88
+        },
+        {
+          "name": "QI-Decoder-Net",
+          "score": 18.5,
+          "Q": 0.88
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "H": 128,
+        "W": 128,
+        "N_modes": 500000,
+        "eta_signal": 0.1,
+        "eta_idler": 0.9,
+        "thermal_photons_per_mode": 1,
+        "loss_and_noise_decoherence": 0.1,
+        "phase_drift": 0.1,
+        "mode_mismatch": 0.06
+      },
+      "epsilon": 13.12,
+      "d_ibench": 0.28,
+      "baselines": [
+        {
+          "name": "Sum-Frequency-Gen",
+          "score": 12.0,
+          "Q": 0.68
+        },
+        {
+          "name": "Optical-Parametric",
+          "score": 14.5,
+          "Q": 0.68
+        },
+        {
+          "name": "QI-Decoder-Net",
+          "score": 16.5,
+          "Q": 0.68
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "H": 128,
+        "W": 128,
+        "N_modes": 200000,
+        "eta_signal": 0.1,
+        "eta_idler": 0.9,
+        "thermal_photons_per_mode": 1,
+        "loss_and_noise_decoherence": 0.25,
+        "phase_drift": 0.25,
+        "mode_mismatch": 0.15
+      },
+      "epsilon": 10.24,
+      "d_ibench": 0.48,
+      "baselines": [
+        {
+          "name": "Sum-Frequency-Gen",
+          "score": 10.0,
+          "Q": 0.48
+        },
+        {
+          "name": "Optical-Parametric",
+          "score": 12.5,
+          "Q": 0.48
+        },
+        {
+          "name": "QI-Decoder-Net",
+          "score": 14.5,
+          "Q": 0.48
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "H": 128,
+        "W": 128,
+        "N_modes": 100000,
+        "eta_signal": 0.1,
+        "eta_idler": 0.9,
+        "thermal_photons_per_mode": 1,
+        "loss_and_noise_decoherence": 0.5,
+        "phase_drift": 0.5,
+        "mode_mismatch": 0.3
+      },
+      "epsilon": 7.36,
+      "d_ibench": 0.72,
+      "baselines": [
+        {
+          "name": "Sum-Frequency-Gen",
+          "score": 8.0,
+          "Q": 0.28
+        },
+        {
+          "name": "Optical-Parametric",
+          "score": 10.5,
+          "Q": 0.28
+        },
+        {
+          "name": "QI-Decoder-Net",
+          "score": 12.5,
+          "Q": 0.28
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "full parametric sweep",
+      "num_dev_instances": 200,
+      "construction_method": "parametric Omega sweep"
+    },
+    "baselines": [
+      {
+        "name": "Sum-Frequency-Gen",
+        "overall_Q": 0.7
+      },
+      {
+        "name": "Optical-Parametric",
+        "overall_Q": 0.6
+      },
+      {
+        "name": "QI-Decoder-Net",
+        "overall_Q": 0.5
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind strata corner.",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

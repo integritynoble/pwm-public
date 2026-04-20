@@ -1,0 +1,175 @@
+{
+  "artifact_id": "L2-111",
+  "layer": "L2",
+  "parent_l1": "L1-111",
+  "title": "Industrial Computed Tomography (high-res x-ray CT for NDT) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        512,
+        8192
+      ],
+      "W": [
+        512,
+        8192
+      ],
+      "Z": [
+        64,
+        4096
+      ],
+      "N_projections": [
+        180,
+        4320
+      ],
+      "kV": [
+        20,
+        450
+      ],
+      "pixel_um": [
+        0.5,
+        500
+      ],
+      "photon_count_per_ray": [
+        100,
+        100000
+      ],
+      "beam_hardening": [
+        0.0,
+        0.3
+      ],
+      "scatter": [
+        0.0,
+        0.4
+      ],
+      "ring_artifact": [
+        0.0,
+        0.2
+      ],
+      "misalignment": [
+        0.0,
+        5.0
+      ]
+    },
+    "E": {
+      "forward": "y_theta(u,v) = I_0 * exp(-integral mu(r) ds) + scatter + n; reconstruct 3D mu(r) via FBP/iterative",
+      "operator": "industrial_ct_forward_mismatch",
+      "primitive_chain": "L.xray_source -> S.scan.angular -> L.beer_lambert -> L.backproject -> int.angular",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "20.0 + 2.0 * log10(photon_count_per_ray / 100) - 10.0 * beam_hardening - 8.0 * scatter - 0.5 * misalignment"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "FDK",
+        "method_sig": "L+O",
+        "expected_psnr": 25.5
+      },
+      {
+        "name": "SART",
+        "method_sig": "I+O",
+        "expected_psnr": 27.5
+      },
+      {
+        "name": "MBIR-CT",
+        "method_sig": "L+O",
+        "expected_psnr": 29.5
+      },
+      {
+        "name": "CT-UNet",
+        "method_sig": "L+N",
+        "expected_psnr": 31.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 2048,
+        "W": 2048,
+        "Z": 512,
+        "N_projections": 720,
+        "kV": 150,
+        "pixel_um": 50,
+        "photon_count_per_ray": 10000,
+        "beam_hardening": 0.0,
+        "scatter": 0.0,
+        "misalignment": 0.0
+      },
+      "epsilon": 28.0
+    },
+    "tier_bounds": {
+      "H": [
+        512,
+        8192
+      ],
+      "W": [
+        512,
+        8192
+      ],
+      "Z": [
+        64,
+        4096
+      ],
+      "N_projections": [
+        180,
+        4320
+      ],
+      "kV": [
+        20,
+        450
+      ],
+      "pixel_um": [
+        0.5,
+        500
+      ],
+      "photon_count_per_ray": [
+        100,
+        100000
+      ],
+      "beam_hardening": [
+        0.0,
+        0.3
+      ],
+      "scatter": [
+        0.0,
+        0.4
+      ],
+      "ring_artifact": [
+        0.0,
+        0.2
+      ],
+      "misalignment": [
+        0.0,
+        5.0
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.5,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

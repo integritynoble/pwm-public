@@ -1,0 +1,158 @@
+{
+  "artifact_id": "L2-042",
+  "layer": "L2",
+  "parent_l1": "L1-042",
+  "title": "Optical Coherence Tomography (OCT) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": 128,
+      "W": 128,
+      "Z": [
+        256,
+        4096
+      ],
+      "lambda_center_nm": [
+        830,
+        1310
+      ],
+      "lambda_bw_nm": [
+        20,
+        200
+      ],
+      "pixel_um": [
+        1,
+        20
+      ],
+      "SNR_dB": [
+        10.0,
+        45.0
+      ],
+      "dispersion_mismatch": [
+        0.0,
+        0.3
+      ],
+      "motion_artifacts": [
+        0.0,
+        0.3
+      ],
+      "speckle_noise": [
+        0.0,
+        0.3
+      ],
+      "signal_roll_off": [
+        0.0,
+        0.3
+      ]
+    },
+    "E": {
+      "forward": "I(k) = |E_ref + sum_z E(z) exp(i 2 k z)|^2 + n; IFT to recover depth profile",
+      "operator": "oct_forward_mismatch",
+      "primitive_chain": "L.sd_oct_spectral -> L.fourier_transform -> S.scan.raster -> int.spectral",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "20.0 + 0.3 * SNR_dB - 10.0 * dispersion_mismatch - 6.0 * motion_artifacts - 5.0 * speckle_noise"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "IFFT-Filtering",
+        "method_sig": "L+O",
+        "expected_psnr": 25.5
+      },
+      {
+        "name": "Dispersion-Correct",
+        "method_sig": "L+O",
+        "expected_psnr": 27.5
+      },
+      {
+        "name": "OCT-Net",
+        "method_sig": "L+N",
+        "expected_psnr": 30.0
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "Z": 1024,
+        "lambda_center_nm": 840,
+        "lambda_bw_nm": 50,
+        "pixel_um": 5,
+        "SNR_dB": 30,
+        "dispersion_mismatch": 0.0,
+        "motion_artifacts": 0.0,
+        "speckle_noise": 0.0
+      },
+      "epsilon": 28.0
+    },
+    "tier_bounds": {
+      "H": 128,
+      "W": 128,
+      "Z": [
+        256,
+        4096
+      ],
+      "lambda_center_nm": [
+        830,
+        1310
+      ],
+      "lambda_bw_nm": [
+        20,
+        200
+      ],
+      "pixel_um": [
+        1,
+        20
+      ],
+      "SNR_dB": [
+        10.0,
+        45.0
+      ],
+      "dispersion_mismatch": [
+        0.0,
+        0.3
+      ],
+      "motion_artifacts": [
+        0.0,
+        0.3
+      ],
+      "speckle_noise": [
+        0.0,
+        0.3
+      ],
+      "signal_roll_off": [
+        0.0,
+        0.3
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.5,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

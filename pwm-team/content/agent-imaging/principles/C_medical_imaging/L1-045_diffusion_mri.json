@@ -1,0 +1,185 @@
+{
+  "artifact_id": "L1-045",
+  "layer": "L1",
+  "principle_number": "045",
+  "title": "Diffusion MRI (DWI / DTI / HARDI)",
+  "domain": "Medical Imaging",
+  "sub_domain": "Water-diffusion-weighted MRI for microstructure/tractography",
+  "source_file": "C_medical_imaging/045_diffusion_mri.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical medical-imaging literature for this principle.",
+  "E": {
+    "description": "Diffusion MRI (DWI / DTI / HARDI) forward model.",
+    "forward_model": "S(b, g) = S_0 exp(-b * g^T D g) + n; fit D(r) (DTI) or ODF (HARDI)",
+    "world_state_x": "Patient-side quantity of interest (attenuation / activity / perfusion / stiffness etc.)",
+    "observation_y": "Clinical sensor output at declared resolution + noise",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "Z",
+      "N_directions",
+      "b_max_s_per_mm2",
+      "SNR_dB",
+      "eddy_currents",
+      "motion",
+      "B0_distortion",
+      "partial_volume_CSF"
+    ]
+  },
+  "G": {
+    "dag": "L.rf_excitation -> L.diffusion_gradient -> L.gradient_encoding -> int.angular",
+    "vertices": [
+      "L.rf_excitation",
+      "L.diffusion_gradient",
+      "L.gradient_encoding",
+      "int.angular"
+    ],
+    "arcs": [
+      "L.rf_excitation -> L.diffusion_gradient",
+      "L.diffusion_gradient -> L.gradient_encoding",
+      "L.gradient_encoding -> int.angular"
+    ],
+    "L_DAG": 3.8,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 360,
+    "condition_number_effective": 18,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "DTI-LLS, HARDI-CSD, dMRI-Net",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sensor SNR + mismatch bias + regularisation.",
+    "complexity": "O(H W) to O(H W Z) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "radio_wave",
+    "sensing_mechanism": "mri_fourier_encoding",
+    "integration_axis": "angular",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "4D_diffusion_tensor_or_ODF",
+    "primitives": [
+      "L.rf_excitation",
+      "L.diffusion_gradient",
+      "L.gradient_encoding",
+      "int.angular"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "eddy_currents",
+    "motion",
+    "B0_distortion",
+    "partial_volume_CSF"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "dmri",
+      "forward_operator": "dmri_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 128,
+        "W": 128,
+        "Z": 64,
+        "N_directions": 32,
+        "b_max_s_per_mm2": 1000,
+        "SNR_dB": 20,
+        "eddy_currents": 0.0,
+        "motion": 0.0,
+        "B0_distortion": 0.0,
+        "partial_volume_CSF": 0.0
+      },
+      "epsilon_fn_center": "20.0"
+    },
+    "allowed_forward_operators": [
+      "dmri_forward"
+    ],
+    "allowed_problem_classes": [
+      "dmri"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "Z",
+      "N_directions",
+      "b_max_s_per_mm2",
+      "SNR_dB",
+      "eddy_currents",
+      "motion",
+      "B0_distortion",
+      "partial_volume_CSF",
+      "eddy_currents",
+      "motion",
+      "B0_distortion",
+      "partial_volume_CSF"
+    ],
+    "omega_bounds": {
+      "H": 64,
+      "W": 64,
+      "Z": [
+        16,
+        256
+      ],
+      "N_directions": [
+        6,
+        256
+      ],
+      "b_max_s_per_mm2": [
+        100,
+        5000
+      ],
+      "SNR_dB": [
+        0.0,
+        35.0
+      ],
+      "eddy_currents": [
+        0.0,
+        0.3
+      ],
+      "motion": [
+        0.0,
+        0.5
+      ],
+      "B0_distortion": [
+        0.0,
+        0.3
+      ],
+      "partial_volume_CSF": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        5.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

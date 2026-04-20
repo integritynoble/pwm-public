@@ -1,0 +1,188 @@
+{
+  "artifact_id": "L1-163",
+  "layer": "L1",
+  "principle_number": "163",
+  "title": "Scanning Tunneling Microscopy (STM)",
+  "domain": "Scanning Probe",
+  "sub_domain": "Tunneling-current atomic-resolution imaging",
+  "source_file": "P_scanning_probe/163_stm.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
+  "E": {
+    "description": "Scanning Tunneling Microscopy (STM) forward model.",
+    "forward_model": "I_t = I_0 * exp(-2*kappa*d) * LDOS(E_F); constant-current mode gives z(x,y) map",
+    "world_state_x": "Principle-specific quantity of interest",
+    "observation_y": "Detector output at declared geometry",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "pixel_A",
+      "bias_mV",
+      "setpoint_pA",
+      "tip_apex_geometry",
+      "thermal_drift",
+      "piezo_nonlinearity",
+      "electronic_noise",
+      "SNR_dB"
+    ]
+  },
+  "G": {
+    "dag": "L.bias_voltage -> L.quantum_tunneling -> S.scan.raster -> D.tunneling_current -> int.spatial",
+    "vertices": [
+      "L.bias_voltage",
+      "L.quantum_tunneling",
+      "S.scan.raster",
+      "D.tunneling_current",
+      "int.spatial"
+    ],
+    "arcs": [
+      "L.bias_voltage -> L.quantum_tunneling",
+      "L.quantum_tunneling -> S.scan.raster",
+      "S.scan.raster -> D.tunneling_current",
+      "D.tunneling_current -> int.spatial"
+    ],
+    "L_DAG": 3.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 300,
+    "condition_number_effective": 15,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Simple-Height, Drift-Correct, STM-Net",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sensor SNR + mismatch bias + regularization.",
+    "complexity": "principle-dependent"
+  },
+  "physics_fingerprint": {
+    "carrier": "none",
+    "sensing_mechanism": "scanning_tunneling_microscopy",
+    "integration_axis": "spatial",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "2D_local_DOS_map",
+    "primitives": [
+      "L.bias_voltage",
+      "L.quantum_tunneling",
+      "S.scan.raster",
+      "D.tunneling_current",
+      "int.spatial"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "tip_apex_geometry",
+    "thermal_drift",
+    "piezo_nonlinearity",
+    "electronic_noise"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "stm",
+      "forward_operator": "stm_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 512,
+        "W": 512,
+        "pixel_A": 0.5,
+        "bias_mV": 100,
+        "setpoint_pA": 100,
+        "tip_apex_geometry": 1.0,
+        "thermal_drift": 0.0,
+        "piezo_nonlinearity": 0.0,
+        "electronic_noise": 0.0,
+        "SNR_dB": 30
+      },
+      "epsilon_fn_center": "29.0"
+    },
+    "allowed_forward_operators": [
+      "stm_forward"
+    ],
+    "allowed_problem_classes": [
+      "stm"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "pixel_A",
+      "bias_mV",
+      "setpoint_pA",
+      "tip_apex_geometry",
+      "thermal_drift",
+      "piezo_nonlinearity",
+      "electronic_noise",
+      "SNR_dB",
+      "tip_apex_geometry",
+      "thermal_drift",
+      "piezo_nonlinearity",
+      "electronic_noise"
+    ],
+    "omega_bounds": {
+      "H": 64,
+      "W": 64,
+      "pixel_A": [
+        0.05,
+        5.0
+      ],
+      "bias_mV": [
+        1,
+        3000
+      ],
+      "setpoint_pA": [
+        1,
+        10000
+      ],
+      "tip_apex_geometry": [
+        0.3,
+        1.0
+      ],
+      "thermal_drift": [
+        0.0,
+        5
+      ],
+      "piezo_nonlinearity": [
+        0.0,
+        0.3
+      ],
+      "electronic_noise": [
+        0.0,
+        0.3
+      ],
+      "SNR_dB": [
+        0.0,
+        40.0
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        5.0,
+        40.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

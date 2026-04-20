@@ -1,0 +1,205 @@
+{
+  "artifact_id": "L3-106",
+  "layer": "L3",
+  "parent_l2": "L2-106",
+  "parent_l1": "L1-106",
+  "title": "Very Long Baseline Interferometry (VLBI) Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "canonical remote-sensing dataset for this principle",
+    "secondary": "simulated forward synthesis at declared Omega",
+    "construction_method": "parametric forward + declared noise model",
+    "num_dev_instances_per_tier": 20
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "N_antennas": 10,
+        "N_baselines": 45,
+        "N_time": 360,
+        "lambda_cm": 1.3,
+        "UV_coverage_fraction": 0.1,
+        "SNR_dB": 15.0,
+        "ionospheric_delay": 0.0,
+        "atomic_clock_drift": 0.0,
+        "station_position_error": 0.0,
+        "RFI": 0.0
+      },
+      "epsilon": 16.0,
+      "d_ibench": 0.14,
+      "baselines": [
+        {
+          "name": "CLEAN",
+          "score": 14.5,
+          "Q": 0.88
+        },
+        {
+          "name": "MS-CLEAN",
+          "score": 16.0,
+          "Q": 0.88
+        },
+        {
+          "name": "Compressed-Sensing-VLBI",
+          "score": 17.5,
+          "Q": 0.88
+        },
+        {
+          "name": "EHT-RML",
+          "score": 18.5,
+          "Q": 0.88
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "N_antennas": 10,
+        "N_baselines": 45,
+        "N_time": 360,
+        "lambda_cm": 1.3,
+        "UV_coverage_fraction": 0.1,
+        "SNR_dB": 12.0,
+        "ionospheric_delay": 0.2,
+        "atomic_clock_drift": 0.002,
+        "station_position_error": 2.0,
+        "RFI": 0.1
+      },
+      "epsilon": 13.12,
+      "d_ibench": 0.28,
+      "baselines": [
+        {
+          "name": "CLEAN",
+          "score": 12.5,
+          "Q": 0.68
+        },
+        {
+          "name": "MS-CLEAN",
+          "score": 14.0,
+          "Q": 0.68
+        },
+        {
+          "name": "Compressed-Sensing-VLBI",
+          "score": 15.5,
+          "Q": 0.68
+        },
+        {
+          "name": "EHT-RML",
+          "score": 16.5,
+          "Q": 0.68
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "N_antennas": 10,
+        "N_baselines": 45,
+        "N_time": 360,
+        "lambda_cm": 1.3,
+        "UV_coverage_fraction": 0.1,
+        "SNR_dB": 3.0,
+        "ionospheric_delay": 0.5,
+        "atomic_clock_drift": 0.005,
+        "station_position_error": 5.0,
+        "RFI": 0.25
+      },
+      "epsilon": 10.24,
+      "d_ibench": 0.48,
+      "baselines": [
+        {
+          "name": "CLEAN",
+          "score": 10.5,
+          "Q": 0.48
+        },
+        {
+          "name": "MS-CLEAN",
+          "score": 12.0,
+          "Q": 0.48
+        },
+        {
+          "name": "Compressed-Sensing-VLBI",
+          "score": 13.5,
+          "Q": 0.48
+        },
+        {
+          "name": "EHT-RML",
+          "score": 14.5,
+          "Q": 0.48
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "N_antennas": 10,
+        "N_baselines": 45,
+        "N_time": 360,
+        "lambda_cm": 1.3,
+        "UV_coverage_fraction": 0.1,
+        "SNR_dB": 0.0,
+        "ionospheric_delay": 1.0,
+        "atomic_clock_drift": 0.01,
+        "station_position_error": 10.0,
+        "RFI": 0.5
+      },
+      "epsilon": 7.36,
+      "d_ibench": 0.72,
+      "baselines": [
+        {
+          "name": "CLEAN",
+          "score": 8.5,
+          "Q": 0.28
+        },
+        {
+          "name": "MS-CLEAN",
+          "score": 10.0,
+          "Q": 0.28
+        },
+        {
+          "name": "Compressed-Sensing-VLBI",
+          "score": 11.5,
+          "Q": 0.28
+        },
+        {
+          "name": "EHT-RML",
+          "score": 12.5,
+          "Q": 0.28
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "full parametric sweep",
+      "num_dev_instances": 200,
+      "construction_method": "parametric Omega sweep"
+    },
+    "baselines": [
+      {
+        "name": "CLEAN",
+        "overall_Q": 0.7
+      },
+      {
+        "name": "MS-CLEAN",
+        "overall_Q": 0.6
+      },
+      {
+        "name": "Compressed-Sensing-VLBI",
+        "overall_Q": 0.5
+      },
+      {
+        "name": "EHT-RML",
+        "overall_Q": 0.4
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind strata corner.",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

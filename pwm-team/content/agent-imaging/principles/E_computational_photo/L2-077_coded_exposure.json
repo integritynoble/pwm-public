@@ -1,0 +1,55 @@
+{
+  "artifact_id": "L2-077",
+  "layer": "L2",
+  "parent_l1": "L1-077",
+  "title": "Coded-Exposure Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+
+  "six_tuple": {
+    "omega": {
+      "H": [256, 4096], "W": [256, 4096], "T_ms": [5, 200],
+      "code_length_bits": [16, 128], "velocity_px": [1.0, 100.0],
+      "photon_count": [50, 10000], "motion_velocity_error": [0.0, 0.5],
+      "motion_direction_error": [0.0, 0.3], "exposure_duration_error": [0.0, 0.2],
+      "saturation_clip": [0.0, 0.1]
+    },
+    "E": {
+      "forward": "y = int_0^T c(t) * x(u - v_t*t, v) dt + n; broadband OTF via coded shutter",
+      "operator": "coded_exposure_convolution_mismatch",
+      "primitive_chain": "S.temporal.coded -> L.conv.motion -> int.temporal",
+      "inverse": "recover sharp x(u,v) from single coded-exposure frame"
+    },
+    "B": {"intensity_bounded": "x in [0, 1]", "motion_1d_or_2d": true},
+    "I": {"strategy": "wiener_init_plus_regularized_refinement"},
+    "O": ["PSNR", "SSIM", "residual_norm"],
+    "epsilon_fn": "22.0 + 3.0 * log10(photon_count / 50) - 10.0 * motion_velocity_error - 10.0 * motion_direction_error / 0.3"
+  },
+
+  "protocol_fields": {
+    "input_format": {"blurred_image": "float32(H, W, 3)", "shutter_code": "bool(code_length_bits)", "motion_hint": "optional_float32(2)"},
+    "output_format": {"sharp_image": "float32(H, W, 3)"},
+    "baselines": [
+      {"name": "Wiener-coded",     "method_sig": "L+O", "expected_psnr": 25.0},
+      {"name": "BM3D-deconv",      "method_sig": "L+R", "expected_psnr": 27.0},
+      {"name": "DeepDeblur-coded", "method_sig": "L+N", "expected_psnr": 30.5}
+    ]
+  },
+
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {"H": 1024, "W": 1024, "T_ms": 52, "code_length_bits": 52, "velocity_px": 20.0, "photon_count": 1000, "motion_velocity_error": 0.0, "motion_direction_error": 0.0, "exposure_duration_error": 0.0, "saturation_clip": 0.0},
+      "epsilon": 28.0
+    },
+    "tier_bounds": {
+      "H": [256, 2048], "W": [256, 2048], "T_ms": [10, 200],
+      "velocity_px": [5.0, 100.0], "photon_count": [100, 10000],
+      "motion_velocity_error": [0.0, 0.5], "motion_direction_error": [0.0, 0.3]
+    },
+    "proximity_threshold": 0.10
+  },
+
+  "d_spec": 0.45,
+  "s1_s4_gates": ["PASS", "PASS", "PASS", "PASS"],
+  "ipfs_cid": null
+}

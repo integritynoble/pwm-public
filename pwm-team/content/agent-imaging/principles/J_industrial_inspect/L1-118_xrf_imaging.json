@@ -1,0 +1,188 @@
+{
+  "artifact_id": "L1-118",
+  "layer": "L1",
+  "principle_number": "118",
+  "title": "X-Ray Fluorescence (XRF) Mapping",
+  "domain": "Industrial Inspection",
+  "sub_domain": "Elemental mapping via characteristic X-ray fluorescence",
+  "source_file": "J_industrial_inspect/118_xrf_imaging.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical NDT/NDE literature for this principle.",
+  "E": {
+    "description": "X-Ray Fluorescence (XRF) Mapping forward model.",
+    "forward_model": "I_K(x,y) = c_el(x,y) * fundamental_parameters(K, matrix) + bremsstrahlung + n; unmix per element",
+    "world_state_x": "Defect / strain / composition map depending on principle",
+    "observation_y": "Sensor output at declared geometry",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "N_elements",
+      "kV",
+      "dwell_ms",
+      "peak_counts",
+      "matrix_effect",
+      "detector_dead_time",
+      "peak_overlap"
+    ]
+  },
+  "G": {
+    "dag": "L.xray_excitation -> L.fluorescence_emission -> D.energy_dispersive -> int.spectral",
+    "vertices": [
+      "L.xray_excitation",
+      "L.fluorescence_emission",
+      "D.energy_dispersive",
+      "int.spectral"
+    ],
+    "arcs": [
+      "L.xray_excitation -> L.fluorescence_emission",
+      "L.fluorescence_emission -> D.energy_dispersive",
+      "D.energy_dispersive -> int.spectral"
+    ],
+    "L_DAG": 3.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 200,
+    "condition_number_effective": 10,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Fundamental-Parameters, NMF-XRF, XRF-Net",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sensor SNR + mismatch bias.",
+    "complexity": "O(H W) to O(H W Z) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "x_ray",
+    "sensing_mechanism": "xrf_characteristic_xray",
+    "integration_axis": "spectral",
+    "problem_class": "linear_inverse",
+    "noise_model": "shot_poisson",
+    "solution_space": "elemental_concentration_map",
+    "primitives": [
+      "L.xray_excitation",
+      "L.fluorescence_emission",
+      "D.energy_dispersive",
+      "int.spectral"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "matrix_effect",
+    "detector_dead_time",
+    "peak_overlap",
+    "self_absorption"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "xrf_mapping",
+      "forward_operator": "xrf_mapping_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 512,
+        "W": 512,
+        "N_elements": 10,
+        "kV": 30,
+        "dwell_ms": 100,
+        "peak_counts": 1000,
+        "matrix_effect": 0.0,
+        "detector_dead_time": 0.05,
+        "peak_overlap": 0.0
+      },
+      "epsilon_fn_center": "26.0"
+    },
+    "allowed_forward_operators": [
+      "xrf_mapping_forward"
+    ],
+    "allowed_problem_classes": [
+      "xrf_mapping"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "N_elements",
+      "kV",
+      "dwell_ms",
+      "peak_counts",
+      "matrix_effect",
+      "detector_dead_time",
+      "peak_overlap",
+      "matrix_effect",
+      "detector_dead_time",
+      "peak_overlap",
+      "self_absorption"
+    ],
+    "omega_bounds": {
+      "H": [
+        64,
+        4096
+      ],
+      "W": [
+        64,
+        4096
+      ],
+      "N_elements": [
+        2,
+        30
+      ],
+      "kV": [
+        10,
+        50
+      ],
+      "dwell_ms": [
+        1,
+        10000
+      ],
+      "peak_counts": [
+        20,
+        100000
+      ],
+      "matrix_effect": [
+        0.0,
+        0.3
+      ],
+      "detector_dead_time": [
+        0.0,
+        0.5
+      ],
+      "peak_overlap": [
+        0.0,
+        0.5
+      ],
+      "self_absorption": [
+        0.0,
+        0.5
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        5.0,
+        40.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

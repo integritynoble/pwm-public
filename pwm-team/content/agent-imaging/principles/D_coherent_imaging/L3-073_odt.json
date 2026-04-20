@@ -1,0 +1,77 @@
+{
+  "artifact_id": "L3-073",
+  "layer": "L3",
+  "parent_l2": "L2-073",
+  "parent_l1": "L1-073",
+  "title": "ODT Rytov-Regime Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+
+  "dataset_registry": {
+    "primary": "Nanolive CX-A quantitative phase / ODT test set (HeLa, RBC, MCF-7)",
+    "secondary": "Tomocube HT-2 reference (live cells + synthetic phantoms)",
+    "tertiary": "Synthetic Rytov fields on 3D cell phantoms (Mie scatterers + index gradients)",
+    "construction_method": "Simulate K holographic scans at declared NA/K_angles; add Gaussian measurement noise at declared level; inject angle_error as mismatch",
+    "num_dev_instances_per_tier": 20
+  },
+
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal", "rho": 1,
+      "omega_tier": {"H": 512, "W": 512, "D": 128, "K_angles": 90, "NA_illum": 1.0, "illumination_angle_error": 0.0, "limited_angle_range": 360},
+      "epsilon": 27.0, "d_ibench": 0.15,
+      "baselines": [
+        {"name": "FBP-ODT",     "score": 25.5, "Q": 0.62},
+        {"name": "TV-ADMM-ODT", "score": 28.0, "Q": 0.78},
+        {"name": "DeepODT",     "score": 31.5, "Q": 0.93}
+      ]
+    },
+    {
+      "tier": "T2_low", "rho": 3,
+      "omega_tier": {"H": 512, "W": 512, "D": 128, "K_angles": 60, "NA_illum": 0.9, "illumination_angle_error": 0.5, "limited_angle_range": 270},
+      "epsilon": 24.0, "d_ibench": 0.30,
+      "baselines": [
+        {"name": "FBP-ODT",     "score": 22.0, "Q": 0.42},
+        {"name": "TV-ADMM-ODT", "score": 24.8, "Q": 0.58},
+        {"name": "DeepODT",     "score": 27.8, "Q": 0.74}
+      ]
+    },
+    {
+      "tier": "T3_moderate", "rho": 5,
+      "omega_tier": {"H": 1024, "W": 1024, "D": 256, "K_angles": 45, "NA_illum": 0.8, "illumination_angle_error": 1.0, "limited_angle_range": 180},
+      "epsilon": 20.5, "d_ibench": 0.48,
+      "baselines": [
+        {"name": "FBP-ODT",     "score": 18.0, "Q": 0.30},
+        {"name": "TV-ADMM-ODT", "score": 21.0, "Q": 0.48},
+        {"name": "DeepODT",     "score": 23.8, "Q": 0.60}
+      ]
+    },
+    {
+      "tier": "T4_missing_cone", "rho": 10,
+      "omega_tier": {"H": 2048, "W": 2048, "D": 512, "K_angles": 30, "NA_illum": 0.6, "illumination_angle_error": 2.0, "limited_angle_range": 120},
+      "epsilon": 16.5, "d_ibench": 0.72,
+      "baselines": [
+        {"name": "FBP-ODT",     "score": 13.5, "Q": 0.15},
+        {"name": "TV-ADMM-ODT", "score": 16.2, "Q": 0.28},
+        {"name": "DeepODT",     "score": 18.5, "Q": 0.42}
+      ]
+    }
+  ],
+
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "Nanolive + Tomocube + synthetic-phantom union",
+      "num_dev_instances": 200,
+      "construction_method": "parametric (K_angles, NA_illum, angle_error, limited_angle_range) sweep"
+    },
+    "baselines": [
+      {"name": "FBP-ODT",     "overall_Q": 0.40},
+      {"name": "TV-ADMM-ODT", "overall_Q": 0.55},
+      {"name": "DeepODT",     "overall_Q": 0.72}
+    ]
+  },
+
+  "hardness_rule_check": "SATISFIED — DeepODT fails at T4_missing_cone strata (NA<=0.6 + limited_angle<=120 deg corner yields unresolvable missing cone).",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

@@ -1,0 +1,198 @@
+{
+  "artifact_id": "L1-054",
+  "layer": "L1",
+  "principle_number": "054",
+  "title": "Photon-Counting CT (PCCT) \u2014 spectral detector CT",
+  "domain": "Medical Imaging",
+  "sub_domain": "Energy-resolved direct-conversion CT",
+  "source_file": "C_medical_imaging/054_photon_counting_ct.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical medical-imaging literature for this principle.",
+  "E": {
+    "description": "Photon-Counting CT (PCCT) \u2014 spectral detector CT forward model.",
+    "forward_model": "y_theta_{E_bin}(u,v) = integral mu(E, r) ds over bin + charge_sharing + pileup + n; spectral MBIR",
+    "world_state_x": "Patient-side quantity of interest (attenuation / activity / perfusion / stiffness etc.)",
+    "observation_y": "Clinical sensor output at declared resolution + noise",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "Z",
+      "N_projections",
+      "N_energy_bins",
+      "mAs",
+      "pixel_mm",
+      "charge_sharing",
+      "pulse_pileup",
+      "beam_hardening",
+      "k_edge_calibration"
+    ]
+  },
+  "G": {
+    "dag": "L.xray_source -> S.scan.angular -> D.pcd_detector -> L.spectral_decompose -> L.backproject -> int.angular",
+    "vertices": [
+      "L.xray_source",
+      "S.scan.angular",
+      "D.pcd_detector",
+      "L.spectral_decompose",
+      "L.backproject",
+      "int.angular"
+    ],
+    "arcs": [
+      "L.xray_source -> S.scan.angular",
+      "S.scan.angular -> D.pcd_detector",
+      "D.pcd_detector -> L.spectral_decompose",
+      "L.spectral_decompose -> L.backproject",
+      "L.backproject -> int.angular"
+    ],
+    "L_DAG": 4.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 500,
+    "condition_number_effective": 25,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "FBP-Spectral, Spectral-MBIR, PCCT-Net",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sensor SNR + mismatch bias + regularisation.",
+    "complexity": "O(H W) to O(H W Z) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "x_ray",
+    "sensing_mechanism": "photon_counting_ct",
+    "integration_axis": "angular",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "shot_poisson",
+    "solution_space": "3D_material_decomposition",
+    "primitives": [
+      "L.xray_source",
+      "S.scan.angular",
+      "D.pcd_detector",
+      "L.spectral_decompose",
+      "L.backproject",
+      "int.angular"
+    ]
+  },
+  "difficulty_delta": 10,
+  "difficulty_tier": "hard",
+  "mismatch_parameters": [
+    "charge_sharing",
+    "pulse_pileup",
+    "beam_hardening",
+    "k_edge_calibration"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "pcct",
+      "forward_operator": "pcct_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 512,
+        "W": 512,
+        "Z": 256,
+        "N_projections": 720,
+        "N_energy_bins": 5,
+        "mAs": 100,
+        "pixel_mm": 0.25,
+        "charge_sharing": 0.05,
+        "pulse_pileup": 0.0,
+        "beam_hardening": 0.0,
+        "k_edge_calibration": 0.0
+      },
+      "epsilon_fn_center": "28.0"
+    },
+    "allowed_forward_operators": [
+      "pcct_forward"
+    ],
+    "allowed_problem_classes": [
+      "pcct"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "Z",
+      "N_projections",
+      "N_energy_bins",
+      "mAs",
+      "pixel_mm",
+      "charge_sharing",
+      "pulse_pileup",
+      "beam_hardening",
+      "k_edge_calibration",
+      "charge_sharing",
+      "pulse_pileup",
+      "beam_hardening",
+      "k_edge_calibration"
+    ],
+    "omega_bounds": {
+      "H": 256,
+      "W": 256,
+      "Z": [
+        64,
+        2048
+      ],
+      "N_projections": [
+        180,
+        2880
+      ],
+      "N_energy_bins": [
+        2,
+        16
+      ],
+      "mAs": [
+        1,
+        500
+      ],
+      "pixel_mm": [
+        0.05,
+        1.0
+      ],
+      "charge_sharing": [
+        0.0,
+        0.3
+      ],
+      "pulse_pileup": [
+        0.0,
+        0.5
+      ],
+      "beam_hardening": [
+        0.0,
+        0.3
+      ],
+      "k_edge_calibration": [
+        0.0,
+        0.1
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        5.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

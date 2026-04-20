@@ -1,0 +1,158 @@
+{
+  "artifact_id": "L2-040",
+  "layer": "L2",
+  "parent_l1": "L1-040",
+  "title": "Diffuse Optical Tomography (DOT) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "N_sources": [
+        8,
+        256
+      ],
+      "N_detectors": [
+        8,
+        256
+      ],
+      "lambda_nm": [
+        650,
+        900
+      ],
+      "source_distance_cm": [
+        1.0,
+        10.0
+      ],
+      "SNR_dB": [
+        0.0,
+        35.0
+      ],
+      "tissue_scattering": [
+        5.0,
+        20.0
+      ],
+      "anatomical_prior_error": [
+        0.0,
+        0.5
+      ],
+      "partial_volume": [
+        0.0,
+        0.5
+      ],
+      "motion": [
+        0.0,
+        0.3
+      ]
+    },
+    "E": {
+      "forward": "y_sd(t) = integral G(source, detector, mu_a, mu_s) + n; invert mu_a(r) via Rytov/Born + regularization",
+      "operator": "dot_forward_mismatch",
+      "primitive_chain": "L.nir_source -> L.diffusion_propagation -> S.scan.source_detector -> int.spatial",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "10.0 + 0.3 * SNR_dB - 12.0 * anatomical_prior_error - 10.0 * partial_volume"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Born-Linear",
+        "method_sig": "L+O",
+        "expected_psnr": 15.5
+      },
+      {
+        "name": "Rytov",
+        "method_sig": "L+O",
+        "expected_psnr": 17.0
+      },
+      {
+        "name": "NIRFAST",
+        "method_sig": "I+O",
+        "expected_psnr": 18.0
+      },
+      {
+        "name": "DOT-Net",
+        "method_sig": "L+N",
+        "expected_psnr": 20.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_sources": 32,
+        "N_detectors": 32,
+        "lambda_nm": 760,
+        "source_distance_cm": 3.5,
+        "SNR_dB": 25,
+        "tissue_scattering": 10.0,
+        "anatomical_prior_error": 0.0,
+        "partial_volume": 0.1,
+        "motion": 0.0
+      },
+      "epsilon": 18.0
+    },
+    "tier_bounds": {
+      "N_sources": [
+        8,
+        256
+      ],
+      "N_detectors": [
+        8,
+        256
+      ],
+      "lambda_nm": [
+        650,
+        900
+      ],
+      "source_distance_cm": [
+        1.0,
+        10.0
+      ],
+      "SNR_dB": [
+        0.0,
+        35.0
+      ],
+      "tissue_scattering": [
+        5.0,
+        20.0
+      ],
+      "anatomical_prior_error": [
+        0.0,
+        0.5
+      ],
+      "partial_volume": [
+        0.0,
+        0.5
+      ],
+      "motion": [
+        0.0,
+        0.3
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.5,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

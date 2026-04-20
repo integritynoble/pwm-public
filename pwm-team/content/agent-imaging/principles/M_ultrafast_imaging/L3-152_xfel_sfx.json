@@ -1,0 +1,173 @@
+{
+  "artifact_id": "L3-152",
+  "layer": "L3",
+  "parent_l2": "L2-152",
+  "parent_l1": "L1-152",
+  "title": "XFEL Serial Femtosecond Crystallography (SFX) Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "canonical dataset for this principle",
+    "secondary": "simulated forward synthesis at declared Omega",
+    "construction_method": "parametric forward + declared noise",
+    "num_dev_instances_per_tier": 20
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "N_patterns": 100000,
+        "H": 2048,
+        "W": 2048,
+        "pulse_fs": 10,
+        "hit_rate": 0.001,
+        "detector_dynamic_range": 100.0,
+        "partial_reflection": 0.0,
+        "beam_pointing_jitter": 0.0
+      },
+      "epsilon": 18.0,
+      "d_ibench": 0.14,
+      "baselines": [
+        {
+          "name": "CrystFEL",
+          "score": 16.0,
+          "Q": 0.88
+        },
+        {
+          "name": "CCTBX-SFX",
+          "score": 18.5,
+          "Q": 0.88
+        },
+        {
+          "name": "XFEL-Net",
+          "score": 20.5,
+          "Q": 0.88
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "N_patterns": 50000,
+        "H": 2048,
+        "W": 2048,
+        "pulse_fs": 10,
+        "hit_rate": 0.1008,
+        "detector_dynamic_range": 20080.0,
+        "partial_reflection": 0.16000000000000003,
+        "beam_pointing_jitter": 0.1
+      },
+      "epsilon": 14.76,
+      "d_ibench": 0.28,
+      "baselines": [
+        {
+          "name": "CrystFEL",
+          "score": 14.0,
+          "Q": 0.68
+        },
+        {
+          "name": "CCTBX-SFX",
+          "score": 16.5,
+          "Q": 0.68
+        },
+        {
+          "name": "XFEL-Net",
+          "score": 18.5,
+          "Q": 0.68
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "N_patterns": 20000,
+        "H": 2048,
+        "W": 2048,
+        "pulse_fs": 10,
+        "hit_rate": 0.2505,
+        "detector_dynamic_range": 50050.0,
+        "partial_reflection": 0.4,
+        "beam_pointing_jitter": 0.25
+      },
+      "epsilon": 11.52,
+      "d_ibench": 0.48,
+      "baselines": [
+        {
+          "name": "CrystFEL",
+          "score": 12.0,
+          "Q": 0.48
+        },
+        {
+          "name": "CCTBX-SFX",
+          "score": 14.5,
+          "Q": 0.48
+        },
+        {
+          "name": "XFEL-Net",
+          "score": 16.5,
+          "Q": 0.48
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "N_patterns": 10000,
+        "H": 2048,
+        "W": 2048,
+        "pulse_fs": 10,
+        "hit_rate": 0.5,
+        "detector_dynamic_range": 100000.0,
+        "partial_reflection": 0.8,
+        "beam_pointing_jitter": 0.5
+      },
+      "epsilon": 8.28,
+      "d_ibench": 0.72,
+      "baselines": [
+        {
+          "name": "CrystFEL",
+          "score": 10.0,
+          "Q": 0.28
+        },
+        {
+          "name": "CCTBX-SFX",
+          "score": 12.5,
+          "Q": 0.28
+        },
+        {
+          "name": "XFEL-Net",
+          "score": 14.5,
+          "Q": 0.28
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "full parametric sweep",
+      "num_dev_instances": 200,
+      "construction_method": "parametric Omega sweep"
+    },
+    "baselines": [
+      {
+        "name": "CrystFEL",
+        "overall_Q": 0.7
+      },
+      {
+        "name": "CCTBX-SFX",
+        "overall_Q": 0.6
+      },
+      {
+        "name": "XFEL-Net",
+        "overall_Q": 0.5
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind strata corner.",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

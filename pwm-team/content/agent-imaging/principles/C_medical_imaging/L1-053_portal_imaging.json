@@ -1,0 +1,175 @@
+{
+  "artifact_id": "L1-053",
+  "layer": "L1",
+  "principle_number": "053",
+  "title": "Electronic Portal Imaging (EPID)",
+  "domain": "Medical Imaging",
+  "sub_domain": "MV X-ray treatment-verification imaging",
+  "source_file": "C_medical_imaging/053_portal_imaging.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical medical-imaging literature for this principle.",
+  "E": {
+    "description": "Electronic Portal Imaging (EPID) forward model.",
+    "forward_model": "y(u,v) = I_0 exp(-integral mu_MV(r) ds) + glare + n; cone-beam geometry at iso-centre",
+    "world_state_x": "Patient-side quantity of interest (attenuation / activity / perfusion / stiffness etc.)",
+    "observation_y": "Clinical sensor output at declared resolution + noise",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "MV_energy",
+      "MU",
+      "pixel_mm",
+      "scatter",
+      "optical_glare",
+      "panel_saturation"
+    ]
+  },
+  "G": {
+    "dag": "L.mv_xray_source -> L.patient_attenuation -> D.amorphous_silicon_panel -> int.spatial",
+    "vertices": [
+      "L.mv_xray_source",
+      "L.patient_attenuation",
+      "D.amorphous_silicon_panel",
+      "int.spatial"
+    ],
+    "arcs": [
+      "L.mv_xray_source -> L.patient_attenuation",
+      "L.patient_attenuation -> D.amorphous_silicon_panel",
+      "D.amorphous_silicon_panel -> int.spatial"
+    ],
+    "L_DAG": 2.8,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 180,
+    "condition_number_effective": 9,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Simple-Subtract, Scatter-Correct, Portal-Net",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sensor SNR + mismatch bias + regularisation.",
+    "complexity": "O(H W) to O(H W Z) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "x_ray",
+    "sensing_mechanism": "portal_imaging_mv",
+    "integration_axis": "spatial",
+    "problem_class": "linear_inverse",
+    "noise_model": "shot_poisson",
+    "solution_space": "2D_attenuation_projection",
+    "primitives": [
+      "L.mv_xray_source",
+      "L.patient_attenuation",
+      "D.amorphous_silicon_panel",
+      "int.spatial"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "scatter",
+    "optical_glare",
+    "panel_saturation",
+    "beam_energy_drift"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "portal_imaging",
+      "forward_operator": "portal_imaging_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 1024,
+        "W": 1024,
+        "MV_energy": 6,
+        "MU": 5,
+        "pixel_mm": 0.4,
+        "scatter": 0.2,
+        "optical_glare": 0.0,
+        "panel_saturation": 0.0
+      },
+      "epsilon_fn_center": "25.0"
+    },
+    "allowed_forward_operators": [
+      "portal_imaging_forward"
+    ],
+    "allowed_problem_classes": [
+      "portal_imaging"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "MV_energy",
+      "MU",
+      "pixel_mm",
+      "scatter",
+      "optical_glare",
+      "panel_saturation",
+      "scatter",
+      "optical_glare",
+      "panel_saturation",
+      "beam_energy_drift"
+    ],
+    "omega_bounds": {
+      "H": 512,
+      "W": 512,
+      "MV_energy": [
+        4,
+        18
+      ],
+      "MU": [
+        0.1,
+        200
+      ],
+      "pixel_mm": [
+        0.1,
+        2.0
+      ],
+      "scatter": [
+        0.0,
+        0.5
+      ],
+      "optical_glare": [
+        0.0,
+        0.3
+      ],
+      "panel_saturation": [
+        0.0,
+        0.3
+      ],
+      "beam_energy_drift": [
+        0.0,
+        0.05
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        5.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

@@ -1,0 +1,160 @@
+{
+  "artifact_id": "L2-032",
+  "layer": "L2",
+  "parent_l1": "L1-032",
+  "title": "Clinical B-mode Ultrasound Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "N_elements": [
+        32,
+        512
+      ],
+      "N_lines": [
+        64,
+        1024
+      ],
+      "f_MHz": [
+        1,
+        30
+      ],
+      "depth_cm": [
+        1,
+        30
+      ],
+      "SNR_dB": [
+        0.0,
+        40.0
+      ],
+      "acoustic_attenuation": [
+        0.1,
+        1.5
+      ],
+      "speed_of_sound_error": [
+        0.0,
+        0.05
+      ],
+      "shadowing": [
+        0.0,
+        0.5
+      ],
+      "reverberation": [
+        0.0,
+        0.3
+      ],
+      "probe_pressure": [
+        0.0,
+        0.3
+      ]
+    },
+    "E": {
+      "forward": "y(t, theta) = sum_r scatter(r) * pulse(t - 2r/c) * attenuation + reverb + n",
+      "operator": "clinical_ultrasound_forward_mismatch",
+      "primitive_chain": "L.emit.acoustic_pulse -> S.scan.beam -> L.beamform -> L.envelope_detect -> int.temporal",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "20.0 + 0.3 * SNR_dB - 3.0 * acoustic_attenuation - 20.0 * speed_of_sound_error - 4.0 * shadowing"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Delay-Sum",
+        "method_sig": "L+O",
+        "expected_psnr": 26.0
+      },
+      {
+        "name": "MVDR",
+        "method_sig": "L+O",
+        "expected_psnr": 27.5
+      },
+      {
+        "name": "US-UNet",
+        "method_sig": "L+N",
+        "expected_psnr": 29.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_elements": 128,
+        "N_lines": 256,
+        "f_MHz": 5,
+        "depth_cm": 15,
+        "SNR_dB": 25,
+        "acoustic_attenuation": 0.5,
+        "speed_of_sound_error": 0.0,
+        "shadowing": 0.0
+      },
+      "epsilon": 28.0
+    },
+    "tier_bounds": {
+      "N_elements": [
+        32,
+        512
+      ],
+      "N_lines": [
+        64,
+        1024
+      ],
+      "f_MHz": [
+        1,
+        30
+      ],
+      "depth_cm": [
+        1,
+        30
+      ],
+      "SNR_dB": [
+        0.0,
+        40.0
+      ],
+      "acoustic_attenuation": [
+        0.1,
+        1.5
+      ],
+      "speed_of_sound_error": [
+        0.0,
+        0.05
+      ],
+      "shadowing": [
+        0.0,
+        0.5
+      ],
+      "reverberation": [
+        0.0,
+        0.3
+      ],
+      "probe_pressure": [
+        0.0,
+        0.3
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.5,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

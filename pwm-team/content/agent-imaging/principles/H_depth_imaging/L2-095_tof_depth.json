@@ -1,0 +1,57 @@
+{
+  "artifact_id": "L2-095",
+  "layer": "L2",
+  "parent_l1": "L1-095",
+  "title": "AMCW-ToF Depth Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+
+  "six_tuple": {
+    "omega": {
+      "H": [240, 1080], "W": [320, 1920],
+      "f_mod_MHz": [10, 200], "K_buckets": [3, 9], "N_freq": [1, 5],
+      "T_int_ms": [1, 100], "photon_count": [20, 5000],
+      "multipath_interference": [0.0, 0.3], "motion_jitter": [0.0, 0.05],
+      "ambient_light": [0.0, 50000], "mixed_pixels_at_edges": [0.0, 0.1],
+      "temperature_drift": [0.0, 0.05]
+    },
+    "E": {
+      "forward": "I_k = A cos(phi - psi_k) + B + n; MPI adds bias on reflected path; motion smears phi",
+      "operator": "amcw_tof_forward_mismatch",
+      "primitive_chain": "L.modulate.amcw -> L.reflect_scene -> L.demodulate -> int.temporal",
+      "inverse": "recover depth d and amplitude A from K demodulation frames"
+    },
+    "B": {"nonneg_amplitude": true, "positive_depth": "d > 0", "phase_bounded": "phi in [0, 2 pi)"},
+    "I": {"strategy": "four_bucket_quadrature_plus_CRT_unwrap"},
+    "O": ["depth_RMSE_mm", "depth_MAE_mm", "outlier_fraction", "amplitude_PSNR"],
+    "epsilon_fn": "4.0 + 0.002 * (100 - f_mod_MHz) * (100 - f_mod_MHz) / 50 - 2.0 * log10(photon_count / 20) + 30.0 * multipath_interference"
+  },
+
+  "protocol_fields": {
+    "input_format": {"bucket_frames": "uint16(H, W, K_buckets)", "modulation_params": "dict"},
+    "output_format": {"depth_map": "float32(H, W)", "amplitude_map": "float32(H, W)"},
+    "baselines": [
+      {"name": "Quadrature-CRT",  "method_sig": "A+O", "expected_rmse_mm": 12.0},
+      {"name": "SRA-MPI",         "method_sig": "L+O", "expected_rmse_mm": 9.0},
+      {"name": "ToF-DeepNet",     "method_sig": "L+N", "expected_rmse_mm": 6.5},
+      {"name": "RADU-ToF",        "method_sig": "L+N", "expected_rmse_mm": 5.5}
+    ]
+  },
+
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {"H": 424, "W": 512, "f_mod_MHz": 80, "K_buckets": 4, "N_freq": 3, "T_int_ms": 10, "photon_count": 500, "multipath_interference": 0.0, "motion_jitter": 0.0, "ambient_light": 0.0},
+      "epsilon": 8.0
+    },
+    "tier_bounds": {
+      "H": [240, 1080], "W": [320, 1920],
+      "f_mod_MHz": [20, 150], "N_freq": [1, 4],
+      "photon_count": [50, 2000], "multipath_interference": [0.0, 0.3]
+    },
+    "proximity_threshold": 0.10
+  },
+
+  "d_spec": 0.60,
+  "s1_s4_gates": ["PASS", "PASS", "PASS", "PASS"],
+  "ipfs_cid": null
+}

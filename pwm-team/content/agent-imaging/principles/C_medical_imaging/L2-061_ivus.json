@@ -1,0 +1,144 @@
+{
+  "artifact_id": "L2-061",
+  "layer": "L2",
+  "parent_l1": "L1-061",
+  "title": "Intravascular Ultrasound (IVUS) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "N_lines": [
+        64,
+        1024
+      ],
+      "f_MHz": [
+        20,
+        60
+      ],
+      "depth_mm": [
+        2,
+        20
+      ],
+      "SNR_dB": [
+        0.0,
+        40.0
+      ],
+      "catheter_motion": [
+        0.0,
+        0.5
+      ],
+      "non_uniform_rotation": [
+        0.0,
+        0.3
+      ],
+      "guidewire_artifact": [
+        0.0,
+        0.3
+      ],
+      "blood_speckle": [
+        0.0,
+        0.3
+      ]
+    },
+    "E": {
+      "forward": "y(t, theta) = sum_r reflectivity(r, theta) * pulse(t - 2r/c) + blood_speckle + n; rotate catheter",
+      "operator": "ivus_forward_mismatch",
+      "primitive_chain": "L.emit.acoustic_pulse_40MHz -> L.catheter_rotate -> L.pulse_echo -> int.temporal",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "16.0 + 0.3 * SNR_dB - 8.0 * catheter_motion - 6.0 * non_uniform_rotation - 4.0 * blood_speckle"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Envelope-Demod",
+        "method_sig": "L+O",
+        "expected_psnr": 21.5
+      },
+      {
+        "name": "MVDR-IVUS",
+        "method_sig": "L+O",
+        "expected_psnr": 24.0
+      },
+      {
+        "name": "IVUS-Net",
+        "method_sig": "L+N",
+        "expected_psnr": 26.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_lines": 256,
+        "f_MHz": 40,
+        "depth_mm": 8,
+        "SNR_dB": 25,
+        "catheter_motion": 0.0,
+        "non_uniform_rotation": 0.0,
+        "guidewire_artifact": 0.0,
+        "blood_speckle": 0.1
+      },
+      "epsilon": 24.0
+    },
+    "tier_bounds": {
+      "N_lines": [
+        64,
+        1024
+      ],
+      "f_MHz": [
+        20,
+        60
+      ],
+      "depth_mm": [
+        2,
+        20
+      ],
+      "SNR_dB": [
+        0.0,
+        40.0
+      ],
+      "catheter_motion": [
+        0.0,
+        0.5
+      ],
+      "non_uniform_rotation": [
+        0.0,
+        0.3
+      ],
+      "guidewire_artifact": [
+        0.0,
+        0.3
+      ],
+      "blood_speckle": [
+        0.0,
+        0.3
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.5,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

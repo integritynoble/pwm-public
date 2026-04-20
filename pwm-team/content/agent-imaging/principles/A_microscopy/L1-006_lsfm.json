@@ -1,0 +1,182 @@
+{
+  "artifact_id": "L1-006",
+  "layer": "L1",
+  "principle_number": "006",
+  "title": "Light Sheet Fluorescence Microscopy (LSFM / SPIM)",
+  "domain": "Microscopy",
+  "sub_domain": "Selective plane illumination 3D imaging",
+  "source_file": "A_microscopy/006_lsfm.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical domain literature for this specific principle.",
+  "E": {
+    "description": "Light Sheet Fluorescence Microscopy (LSFM / SPIM) forward model.",
+    "forward_model": "y(r,z) = integral [sheet(r,z - z_k) * f(r,z) * PSF_det(r,z)] + n",
+    "world_state_x": "Scene parameter of interest (density / complex field / lifetime / normals depending on spec).",
+    "observation_y": "Measured intensity or photon counts from the imaging system.",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "Z",
+      "sheet_nm",
+      "z_step_nm",
+      "NA_det",
+      "peak_photons",
+      "sheet_tilt",
+      "sample_induced_aberration"
+    ]
+  },
+  "G": {
+    "dag": "L.illumination.sheet -> K.psf.detection -> S.scan.axial -> int.temporal",
+    "vertices": [
+      "L.illumination.sheet",
+      "K.psf.detection",
+      "S.scan.axial",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.illumination.sheet -> K.psf.detection",
+      "K.psf.detection -> S.scan.axial",
+      "S.scan.axial -> int.temporal"
+    ],
+    "L_DAG": 3.2,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 200,
+    "condition_number_effective": 10,
+    "regime": "Conditional stability; principle-specific mismatch dominates at Omega bounds (see `mismatch_parameters`)."
+  },
+  "C": {
+    "solver_class": "Richardson-Lucy-LSFM, Multiview-Fusion, Content-Aware-LSFM",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(photon_count) + mismatch-induced bias.",
+    "complexity": "O(H W) to O(H W Z) per iteration depending on dimensionality"
+  },
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "light_sheet_illumination",
+    "integration_axis": "axial",
+    "problem_class": "linear_inverse",
+    "noise_model": "poisson_gaussian",
+    "solution_space": "3D_intensity",
+    "primitives": [
+      "L.illumination.sheet",
+      "K.psf.detection",
+      "S.scan.axial",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "sheet_thickness_nm",
+    "sheet_tilt",
+    "sample_induced_aberration"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "lsfm",
+      "forward_operator": "lsfm_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 2048,
+        "W": 2048,
+        "Z": 200,
+        "sheet_nm": 2000,
+        "z_step_nm": 500,
+        "NA_det": 1.0,
+        "peak_photons": 500,
+        "sheet_tilt": 0.0,
+        "sample_induced_aberration": 0.0
+      },
+      "epsilon_fn_center": "29.0"
+    },
+    "allowed_forward_operators": [
+      "lsfm_forward"
+    ],
+    "allowed_problem_classes": [
+      "lsfm"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "Z",
+      "sheet_nm",
+      "z_step_nm",
+      "NA_det",
+      "peak_photons",
+      "sheet_tilt",
+      "sample_induced_aberration",
+      "sheet_thickness_nm",
+      "sheet_tilt",
+      "sample_induced_aberration"
+    ],
+    "omega_bounds": {
+      "H": [
+        512,
+        4096
+      ],
+      "W": [
+        512,
+        4096
+      ],
+      "Z": [
+        32,
+        1024
+      ],
+      "sheet_nm": [
+        500,
+        5000
+      ],
+      "z_step_nm": [
+        200,
+        2000
+      ],
+      "NA_det": [
+        0.8,
+        1.2
+      ],
+      "peak_photons": [
+        50,
+        5000
+      ],
+      "sheet_tilt": [
+        0.0,
+        0.05
+      ],
+      "sample_induced_aberration": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        12.0,
+        42.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

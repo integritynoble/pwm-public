@@ -1,0 +1,181 @@
+{
+  "artifact_id": "L3-034",
+  "layer": "L3",
+  "parent_l2": "L2-034",
+  "parent_l1": "L1-034",
+  "title": "Single-Photon Emission Computed Tomography (SPECT) Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "canonical clinical/public dataset for this modality",
+    "secondary": "simulated forward synthesis at declared Omega",
+    "construction_method": "parametric forward + declared noise",
+    "num_dev_instances_per_tier": 20
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "H": 128,
+        "W": 128,
+        "Z": 64,
+        "N_angles": 64,
+        "counts_per_pixel": 100,
+        "SNR_dB": 18.0,
+        "collimator_blur": 0.0,
+        "attenuation_correction_error": 0.0,
+        "scatter": 0.0,
+        "patient_motion": 0.0
+      },
+      "epsilon": 22.0,
+      "d_ibench": 0.14,
+      "baselines": [
+        {
+          "name": "FBP-SPECT",
+          "score": 19.5,
+          "Q": 0.88
+        },
+        {
+          "name": "MLEM",
+          "score": 22.0,
+          "Q": 0.88
+        },
+        {
+          "name": "SPECT-Net",
+          "score": 24.5,
+          "Q": 0.88
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "H": 128,
+        "W": 128,
+        "Z": 64,
+        "N_angles": 64,
+        "counts_per_pixel": 50,
+        "SNR_dB": 15.0,
+        "collimator_blur": 0.06,
+        "attenuation_correction_error": 0.06,
+        "scatter": 0.1,
+        "patient_motion": 0.06
+      },
+      "epsilon": 18.04,
+      "d_ibench": 0.28,
+      "baselines": [
+        {
+          "name": "FBP-SPECT",
+          "score": 17.5,
+          "Q": 0.68
+        },
+        {
+          "name": "MLEM",
+          "score": 20.0,
+          "Q": 0.68
+        },
+        {
+          "name": "SPECT-Net",
+          "score": 22.5,
+          "Q": 0.68
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "H": 128,
+        "W": 128,
+        "Z": 64,
+        "N_angles": 64,
+        "counts_per_pixel": 20,
+        "SNR_dB": 6.0,
+        "collimator_blur": 0.15,
+        "attenuation_correction_error": 0.15,
+        "scatter": 0.25,
+        "patient_motion": 0.15
+      },
+      "epsilon": 14.08,
+      "d_ibench": 0.48,
+      "baselines": [
+        {
+          "name": "FBP-SPECT",
+          "score": 15.5,
+          "Q": 0.48
+        },
+        {
+          "name": "MLEM",
+          "score": 18.0,
+          "Q": 0.48
+        },
+        {
+          "name": "SPECT-Net",
+          "score": 20.5,
+          "Q": 0.48
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "H": 128,
+        "W": 128,
+        "Z": 64,
+        "N_angles": 64,
+        "counts_per_pixel": 10,
+        "SNR_dB": 0.0,
+        "collimator_blur": 0.3,
+        "attenuation_correction_error": 0.3,
+        "scatter": 0.5,
+        "patient_motion": 0.3
+      },
+      "epsilon": 10.12,
+      "d_ibench": 0.72,
+      "baselines": [
+        {
+          "name": "FBP-SPECT",
+          "score": 13.5,
+          "Q": 0.28
+        },
+        {
+          "name": "MLEM",
+          "score": 16.0,
+          "Q": 0.28
+        },
+        {
+          "name": "SPECT-Net",
+          "score": 18.5,
+          "Q": 0.28
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "full parametric sweep",
+      "num_dev_instances": 200,
+      "construction_method": "parametric Omega sweep"
+    },
+    "baselines": [
+      {
+        "name": "FBP-SPECT",
+        "overall_Q": 0.7
+      },
+      {
+        "name": "MLEM",
+        "overall_Q": 0.6
+      },
+      {
+        "name": "SPECT-Net",
+        "overall_Q": 0.5
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind strata corner.",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

@@ -1,0 +1,184 @@
+{
+  "artifact_id": "L1-066",
+  "layer": "L1",
+  "principle_number": "066",
+  "title": "Electrical Impedance Tomography (EIT)",
+  "domain": "Medical Imaging",
+  "sub_domain": "Electrical-conductivity internal imaging via surface electrodes",
+  "source_file": "C_medical_imaging/066_eit.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical medical-imaging literature for this principle.",
+  "E": {
+    "description": "Electrical Impedance Tomography (EIT) forward model.",
+    "forward_model": "V_m = R(sigma) * I_applied + n; recover sigma(r) via regularized inverse Poisson",
+    "world_state_x": "Patient-side quantity of interest (attenuation / activity / perfusion / stiffness etc.)",
+    "observation_y": "Clinical sensor output at declared resolution + noise",
+    "physical_parameters_theta": [
+      "N_electrodes",
+      "N_patterns",
+      "H",
+      "W",
+      "SNR_dB",
+      "electrode_contact",
+      "model_geometry_error",
+      "noise_amplification",
+      "drift"
+    ]
+  },
+  "G": {
+    "dag": "L.current_injection -> D.voltage_measure -> L.inverse_poisson -> int.spatial",
+    "vertices": [
+      "L.current_injection",
+      "D.voltage_measure",
+      "L.inverse_poisson",
+      "int.spatial"
+    ],
+    "arcs": [
+      "L.current_injection -> D.voltage_measure",
+      "D.voltage_measure -> L.inverse_poisson",
+      "L.inverse_poisson -> int.spatial"
+    ],
+    "L_DAG": 4.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 600,
+    "condition_number_effective": 30,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "GN-EIT, TV-EIT, EIT-Net",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sensor SNR + mismatch bias + regularisation.",
+    "complexity": "O(H W) to O(H W Z) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "radio_wave",
+    "sensing_mechanism": "electrical_impedance",
+    "integration_axis": "spatial",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "2D_conductivity_map",
+    "primitives": [
+      "L.current_injection",
+      "D.voltage_measure",
+      "L.inverse_poisson",
+      "int.spatial"
+    ]
+  },
+  "difficulty_delta": 10,
+  "difficulty_tier": "hard",
+  "mismatch_parameters": [
+    "electrode_contact",
+    "model_geometry_error",
+    "noise_amplification",
+    "drift"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "eit",
+      "forward_operator": "eit_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_electrodes": 32,
+        "N_patterns": 16,
+        "H": 128,
+        "W": 128,
+        "SNR_dB": 25,
+        "electrode_contact": 1.0,
+        "model_geometry_error": 0.05,
+        "noise_amplification": 0.1,
+        "drift": 0.0
+      },
+      "epsilon_fn_center": "14.0"
+    },
+    "allowed_forward_operators": [
+      "eit_forward"
+    ],
+    "allowed_problem_classes": [
+      "eit"
+    ],
+    "allowed_omega_dimensions": [
+      "N_electrodes",
+      "N_patterns",
+      "H",
+      "W",
+      "SNR_dB",
+      "electrode_contact",
+      "model_geometry_error",
+      "noise_amplification",
+      "drift",
+      "electrode_contact",
+      "model_geometry_error",
+      "noise_amplification",
+      "drift"
+    ],
+    "omega_bounds": {
+      "N_electrodes": [
+        8,
+        256
+      ],
+      "N_patterns": [
+        4,
+        128
+      ],
+      "H": [
+        32,
+        512
+      ],
+      "W": [
+        32,
+        512
+      ],
+      "SNR_dB": [
+        0.0,
+        40.0
+      ],
+      "electrode_contact": [
+        0.3,
+        1.0
+      ],
+      "model_geometry_error": [
+        0.0,
+        0.3
+      ],
+      "noise_amplification": [
+        0.0,
+        0.5
+      ],
+      "drift": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        5.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

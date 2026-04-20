@@ -1,0 +1,152 @@
+{
+  "artifact_id": "L2-012",
+  "layer": "L2",
+  "parent_l1": "L1-012",
+  "title": "Total Internal Reflection Fluorescence (TIRF) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        128,
+        4096
+      ],
+      "W": [
+        128,
+        4096
+      ],
+      "pixel_nm": [
+        50,
+        300
+      ],
+      "NA": [
+        1.4,
+        1.49
+      ],
+      "d_p_nm": [
+        50,
+        300
+      ],
+      "peak_photons": [
+        50,
+        5000
+      ],
+      "coverslip_angle_drift": [
+        0.0,
+        0.5
+      ],
+      "penetration_depth_error": [
+        0.0,
+        0.3
+      ],
+      "background_volume_fluorescence": [
+        0.0,
+        0.3
+      ]
+    },
+    "E": {
+      "forward": "y(r) = [PSF conv (f(r,z=0) * exp(-z / d_p))] + n",
+      "operator": "tirf_forward_mismatch",
+      "primitive_chain": "L.excitation.evanescent -> K.psf.airy -> int.temporal",
+      "inverse": "solve forward model for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "22.0 + 1.8 * log10(peak_photons / 50) - 5.0 * coverslip_angle_drift - 8.0 * background_volume_fluorescence"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Wiener-TIRF",
+        "method_sig": "L+R",
+        "expected_psnr": 26.0
+      },
+      {
+        "name": "BALM",
+        "method_sig": "L+O",
+        "expected_psnr": 28.5
+      },
+      {
+        "name": "CARE-TIRF",
+        "method_sig": "L+N",
+        "expected_psnr": 31.0
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "pixel_nm": 100,
+        "NA": 1.49,
+        "d_p_nm": 100,
+        "peak_photons": 500,
+        "coverslip_angle_drift": 0.0,
+        "background_volume_fluorescence": 0.0
+      },
+      "epsilon": 28.0
+    },
+    "tier_bounds": {
+      "H": [
+        128,
+        4096
+      ],
+      "W": [
+        128,
+        4096
+      ],
+      "pixel_nm": [
+        50,
+        300
+      ],
+      "NA": [
+        1.4,
+        1.49
+      ],
+      "d_p_nm": [
+        50,
+        300
+      ],
+      "peak_photons": [
+        50,
+        5000
+      ],
+      "coverslip_angle_drift": [
+        0.0,
+        0.5
+      ],
+      "penetration_depth_error": [
+        0.0,
+        0.3
+      ],
+      "background_volume_fluorescence": [
+        0.0,
+        0.3
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.45,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

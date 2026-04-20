@@ -1,0 +1,53 @@
+{
+  "artifact_id": "L2-080",
+  "layer": "L2",
+  "parent_l1": "L1-080",
+  "title": "Light-Field Decoding Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+
+  "six_tuple": {
+    "omega": {
+      "H": [128, 2048], "W": [128, 2048], "U": [3, 17], "V": [3, 17],
+      "photon_count": [50, 10000], "mla_rotation": [0.0, 0.05],
+      "mla_offset": [0.0, 2.0], "vignetting_per_subaperture": [0.0, 0.20],
+      "disparity_range_error": [0.0, 2.0]
+    },
+    "E": {
+      "forward": "raw(x,y) = mla_encode(L(u,v,s,t), mla_nominal + {rotation, offset}) + n",
+      "operator": "plenoptic_mla_forward_mismatch",
+      "primitive_chain": "L.project.pupil -> S.scan.angular -> F.shear -> int.angular",
+      "inverse": "recover 4D LF L(u,v,s,t) from raw mosaic + calibration"
+    },
+    "B": {"intensity_bounded": "L in [0, 1]", "angular_smooth": true, "spatial_bandlimit": true},
+    "I": {"strategy": "nearest_microlens_decode_plus_calibration_refine"},
+    "O": ["LF_PSNR_dB", "refocus_PSNR_dB", "disparity_MAE_px"],
+    "epsilon_fn": "26.0 + 2.0 * log2(U / 3) + 3.0 * log10(photon_count / 50) - 8.0 * mla_rotation / 0.05 - 4.0 * mla_offset / 2.0"
+  },
+
+  "protocol_fields": {
+    "input_format": {"raw_mosaic": "float32(H_s, W_s)", "calibration": "dict: {mla_pitch, rotation_nominal, offset_nominal}"},
+    "output_format": {"light_field": "float32(H, W, U, V, 3)"},
+    "baselines": [
+      {"name": "Shear-Sum-Refocus",  "method_sig": "A+O", "expected_lf_psnr": 30.0},
+      {"name": "EPI-Depth-Guided",   "method_sig": "L+O", "expected_lf_psnr": 32.5},
+      {"name": "DistgLF",            "method_sig": "L+N", "expected_lf_psnr": 36.0}
+    ]
+  },
+
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {"H": 625, "W": 434, "U": 9, "V": 9, "photon_count": 1000, "mla_rotation": 0.0, "mla_offset": 0.0, "vignetting_per_subaperture": 0.0, "disparity_range_error": 0.0},
+      "epsilon": 32.0
+    },
+    "tier_bounds": {
+      "H": [128, 1024], "W": [128, 1024], "U": [5, 15], "V": [5, 15],
+      "photon_count": [100, 5000], "mla_rotation": [0.0, 0.05], "mla_offset": [0.0, 2.0]
+    },
+    "proximity_threshold": 0.10
+  },
+
+  "d_spec": 0.50,
+  "s1_s4_gates": ["PASS", "PASS", "PASS", "PASS"],
+  "ipfs_cid": null
+}

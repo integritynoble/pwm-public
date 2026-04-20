@@ -1,0 +1,144 @@
+{
+  "artifact_id": "L2-068",
+  "layer": "L2",
+  "parent_l1": "L1-068",
+  "title": "Electroencephalography (EEG) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "N_channels": [
+        8,
+        256
+      ],
+      "N_time": [
+        1000,
+        1000000
+      ],
+      "sampling_Hz": [
+        100,
+        10000
+      ],
+      "SNR_dB": [
+        0.0,
+        30.0
+      ],
+      "electrode_contact": [
+        0.3,
+        1.0
+      ],
+      "muscle_artifact": [
+        0.0,
+        0.5
+      ],
+      "volume_conduction": [
+        0.1,
+        0.5
+      ],
+      "reference_electrode_bias": [
+        0.0,
+        0.3
+      ]
+    },
+    "E": {
+      "forward": "V_scalp(t) = LF * j_cortex + muscle + ocular + line_noise + n; inverse source localization",
+      "operator": "eeg_forward_mismatch",
+      "primitive_chain": "D.scalp_electrode_array -> L.inverse_source_localization -> int.temporal",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "6.0 + 0.3 * SNR_dB + 6.0 * electrode_contact - 10.0 * muscle_artifact - 6.0 * volume_conduction"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "LORETA",
+        "method_sig": "L+O",
+        "expected_psnr": 11.0
+      },
+      {
+        "name": "eLORETA",
+        "method_sig": "L+O",
+        "expected_psnr": 13.0
+      },
+      {
+        "name": "EEG-Net",
+        "method_sig": "L+N",
+        "expected_psnr": 15.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_channels": 64,
+        "N_time": 10000,
+        "sampling_Hz": 1000,
+        "SNR_dB": 15,
+        "electrode_contact": 1.0,
+        "muscle_artifact": 0.0,
+        "volume_conduction": 0.3,
+        "reference_electrode_bias": 0.0
+      },
+      "epsilon": 13.0
+    },
+    "tier_bounds": {
+      "N_channels": [
+        8,
+        256
+      ],
+      "N_time": [
+        1000,
+        1000000
+      ],
+      "sampling_Hz": [
+        100,
+        10000
+      ],
+      "SNR_dB": [
+        0.0,
+        30.0
+      ],
+      "electrode_contact": [
+        0.3,
+        1.0
+      ],
+      "muscle_artifact": [
+        0.0,
+        0.5
+      ],
+      "volume_conduction": [
+        0.1,
+        0.5
+      ],
+      "reference_electrode_bias": [
+        0.0,
+        0.3
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.5,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

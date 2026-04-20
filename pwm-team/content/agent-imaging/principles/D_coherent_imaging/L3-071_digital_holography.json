@@ -1,0 +1,77 @@
+{
+  "artifact_id": "L3-071",
+  "layer": "L3",
+  "parent_l2": "L2-071",
+  "parent_l1": "L1-071",
+  "title": "Off-Axis Digital Holography Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+
+  "dataset_registry": {
+    "primary": "HoloDeep test set (USAF-1951, cell phantoms, phase targets)",
+    "secondary": "DigitalHolography-2022 competition dataset",
+    "tertiary": "Synthetic propagated fields (angular spectrum) with controlled aberrations",
+    "construction_method": "Synthesize I = |O + R_tilted|^2 with Poisson photon counting at declared photon_count; sub-pixel tilt error injected as mismatch",
+    "num_dev_instances_per_tier": 20
+  },
+
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal", "rho": 1,
+      "omega_tier": {"H": 1024, "W": 1024, "tilt_angle_mrad": 10.0, "wavelength_nm": 632.8, "z_mm": 100.0, "photon_count": 1000, "reference_tilt_error": 0.0, "propagation_distance_error": 0.0},
+      "epsilon": 32.0, "d_ibench": 0.15,
+      "baselines": [
+        {"name": "FourierDemodulation", "score": 29.5, "Q": 0.65},
+        {"name": "ADMM-TV-Holo",        "score": 32.0, "Q": 0.82},
+        {"name": "DH-Net",              "score": 35.2, "Q": 0.94}
+      ]
+    },
+    {
+      "tier": "T2_low", "rho": 3,
+      "omega_tier": {"H": 1024, "W": 1024, "tilt_angle_mrad": 10.0, "wavelength_nm": 632.8, "z_mm": 100.0, "photon_count": 500, "reference_tilt_error": 0.3, "propagation_distance_error": 0.5},
+      "epsilon": 28.0, "d_ibench": 0.28,
+      "baselines": [
+        {"name": "FourierDemodulation", "score": 26.3, "Q": 0.48},
+        {"name": "ADMM-TV-Holo",        "score": 28.8, "Q": 0.62},
+        {"name": "DH-Net",              "score": 31.5, "Q": 0.78}
+      ]
+    },
+    {
+      "tier": "T3_moderate", "rho": 5,
+      "omega_tier": {"H": 2048, "W": 2048, "tilt_angle_mrad": 7.0, "wavelength_nm": 632.8, "z_mm": 200.0, "photon_count": 200, "reference_tilt_error": 1.0, "propagation_distance_error": 2.0},
+      "epsilon": 24.0, "d_ibench": 0.48,
+      "baselines": [
+        {"name": "FourierDemodulation", "score": 22.0, "Q": 0.35},
+        {"name": "ADMM-TV-Holo",        "score": 24.5, "Q": 0.51},
+        {"name": "DH-Net",              "score": 26.8, "Q": 0.62}
+      ]
+    },
+    {
+      "tier": "T4_blind", "rho": 10,
+      "omega_tier": {"H": 4096, "W": 4096, "tilt_angle_mrad": 3.0, "wavelength_nm": 1064, "z_mm": 400.0, "photon_count": 50, "reference_tilt_error": 2.0, "propagation_distance_error": 5.0},
+      "epsilon": 20.0, "d_ibench": 0.72,
+      "baselines": [
+        {"name": "FourierDemodulation", "score": 17.2, "Q": 0.20},
+        {"name": "ADMM-TV-Holo",        "score": 19.4, "Q": 0.32},
+        {"name": "DH-Net",              "score": 21.5, "Q": 0.44}
+      ]
+    }
+  ],
+
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "HoloDeep + DigitalHolography-2022 + synthetic-propagated union",
+      "num_dev_instances": 200,
+      "construction_method": "parametric Omega sampling with Fresnel propagation synthesis"
+    },
+    "baselines": [
+      {"name": "FourierDemodulation", "overall_Q": 0.42},
+      {"name": "ADMM-TV-Holo",        "overall_Q": 0.58},
+      {"name": "DH-Net",              "overall_Q": 0.72}
+    ]
+  },
+
+  "hardness_rule_check": "SATISFIED — DH-Net fails at T4_blind (21.5 dB > 20.0 epsilon here but fails the S4_xlarge stratum with simultaneous low-tilt + low-photon corner).",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

@@ -1,0 +1,175 @@
+{
+  "artifact_id": "L1-052",
+  "layer": "L1",
+  "principle_number": "052",
+  "title": "Brachytherapy Dose Imaging",
+  "domain": "Medical Imaging",
+  "sub_domain": "Sealed-source close-range radiotherapy dose",
+  "source_file": "C_medical_imaging/052_brachytherapy.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical medical-imaging literature for this principle.",
+  "E": {
+    "description": "Brachytherapy Dose Imaging forward model.",
+    "forward_model": "D(r) = sum_i A_i / |r - r_i|^2 * tissue_correction + n; TG-43 formalism",
+    "world_state_x": "Patient-side quantity of interest (attenuation / activity / perfusion / stiffness etc.)",
+    "observation_y": "Clinical sensor output at declared resolution + noise",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "Z",
+      "N_sources",
+      "SNR_dB",
+      "source_position_error",
+      "tissue_heterogeneity",
+      "inter_source_shielding",
+      "applicator_motion"
+    ]
+  },
+  "G": {
+    "dag": "L.sealed_gamma_source -> L.inverse_square_decay -> int.spatial",
+    "vertices": [
+      "L.sealed_gamma_source",
+      "L.inverse_square_decay",
+      "int.spatial"
+    ],
+    "arcs": [
+      "L.sealed_gamma_source -> L.inverse_square_decay",
+      "L.inverse_square_decay -> int.spatial"
+    ],
+    "L_DAG": 3.2,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 200,
+    "condition_number_effective": 10,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "TG-43, Model-Based, Brachy-Net",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sensor SNR + mismatch bias + regularisation.",
+    "complexity": "O(H W) to O(H W Z) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "brachytherapy_dose",
+    "integration_axis": "spatial",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "3D_dose_distribution",
+    "primitives": [
+      "L.sealed_gamma_source",
+      "L.inverse_square_decay",
+      "int.spatial"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "source_position_error",
+    "tissue_heterogeneity",
+    "inter_source_shielding",
+    "applicator_motion"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "brachytherapy",
+      "forward_operator": "brachytherapy_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 256,
+        "W": 256,
+        "Z": 128,
+        "N_sources": 20,
+        "SNR_dB": 30,
+        "source_position_error": 0.0,
+        "tissue_heterogeneity": 0.05,
+        "inter_source_shielding": 0.0,
+        "applicator_motion": 0.0
+      },
+      "epsilon_fn_center": "26.0"
+    },
+    "allowed_forward_operators": [
+      "brachytherapy_forward"
+    ],
+    "allowed_problem_classes": [
+      "brachytherapy"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "Z",
+      "N_sources",
+      "SNR_dB",
+      "source_position_error",
+      "tissue_heterogeneity",
+      "inter_source_shielding",
+      "applicator_motion",
+      "source_position_error",
+      "tissue_heterogeneity",
+      "inter_source_shielding",
+      "applicator_motion"
+    ],
+    "omega_bounds": {
+      "H": 128,
+      "W": 128,
+      "Z": [
+        32,
+        512
+      ],
+      "N_sources": [
+        1,
+        100
+      ],
+      "SNR_dB": [
+        15.0,
+        40.0
+      ],
+      "source_position_error": [
+        0.0,
+        3.0
+      ],
+      "tissue_heterogeneity": [
+        0.0,
+        0.3
+      ],
+      "inter_source_shielding": [
+        0.0,
+        0.3
+      ],
+      "applicator_motion": [
+        0.0,
+        3.0
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        5.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

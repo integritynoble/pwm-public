@@ -1,0 +1,182 @@
+{
+  "artifact_id": "L1-024",
+  "layer": "L1",
+  "principle_number": "024",
+  "title": "DNA-PAINT (transient DNA-hybridization localization microscopy)",
+  "domain": "Microscopy",
+  "sub_domain": "Programmable-blinking single-molecule super-resolution",
+  "source_file": "A_microscopy/024_dna_paint.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical domain literature for this specific principle.",
+  "E": {
+    "description": "DNA-PAINT (transient DNA-hybridization localization microscopy) forward model.",
+    "forward_model": "y_t(r) = sum_i 1_{bound_i,t} * PSF(r - r_i) * A + n; programmable k_on/k_off via [strand]",
+    "world_state_x": "Scene parameter of interest (density / complex field / lifetime / normals depending on spec).",
+    "observation_y": "Measured intensity or photon counts from the imaging system.",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "T_frames",
+      "pixel_nm",
+      "NA",
+      "photons_per_binding",
+      "strand_concentration_nM",
+      "drift_nm_per_frame",
+      "non_specific_binding"
+    ]
+  },
+  "G": {
+    "dag": "L.dna_hybridization_blinking -> K.psf.airy -> L.gaussian_fit -> int.temporal",
+    "vertices": [
+      "L.dna_hybridization_blinking",
+      "K.psf.airy",
+      "L.gaussian_fit",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.dna_hybridization_blinking -> K.psf.airy",
+      "K.psf.airy -> L.gaussian_fit",
+      "L.gaussian_fit -> int.temporal"
+    ],
+    "L_DAG": 4.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 560,
+    "condition_number_effective": 28,
+    "regime": "Conditional stability; principle-specific mismatch dominates at Omega bounds (see `mismatch_parameters`)."
+  },
+  "C": {
+    "solver_class": "Picasso, DECODE-DNAPAINT, DNAPAINT-Net",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(photon_count) + mismatch-induced bias.",
+    "complexity": "O(H W) to O(H W Z) per iteration depending on dimensionality"
+  },
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "single_molecule_localization",
+    "integration_axis": "temporal",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "shot_poisson",
+    "solution_space": "point_list",
+    "primitives": [
+      "L.dna_hybridization_blinking",
+      "K.psf.airy",
+      "L.gaussian_fit",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 10,
+  "difficulty_tier": "hard",
+  "mismatch_parameters": [
+    "docking_strand_concentration",
+    "drift_nm_per_frame",
+    "non_specific_binding"
+  ],
+  "error_metric": "localization_precision_nm",
+  "error_metric_secondary": "detection_recall",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "dnapaint",
+      "forward_operator": "dnapaint_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 256,
+        "W": 256,
+        "T_frames": 30000,
+        "pixel_nm": 160,
+        "NA": 1.49,
+        "photons_per_binding": 5000,
+        "strand_concentration_nM": 5,
+        "drift_nm_per_frame": 0.0,
+        "non_specific_binding": 0.02
+      },
+      "epsilon_fn_center": "8.0"
+    },
+    "allowed_forward_operators": [
+      "dnapaint_forward"
+    ],
+    "allowed_problem_classes": [
+      "dnapaint"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "T_frames",
+      "pixel_nm",
+      "NA",
+      "photons_per_binding",
+      "strand_concentration_nM",
+      "drift_nm_per_frame",
+      "non_specific_binding",
+      "docking_strand_concentration",
+      "drift_nm_per_frame",
+      "non_specific_binding"
+    ],
+    "omega_bounds": {
+      "H": [
+        64,
+        2048
+      ],
+      "W": [
+        64,
+        2048
+      ],
+      "T_frames": [
+        5000,
+        200000
+      ],
+      "pixel_nm": [
+        80,
+        300
+      ],
+      "NA": [
+        1.3,
+        1.49
+      ],
+      "photons_per_binding": [
+        500,
+        50000
+      ],
+      "strand_concentration_nM": [
+        0.5,
+        50
+      ],
+      "drift_nm_per_frame": [
+        0.0,
+        3.0
+      ],
+      "non_specific_binding": [
+        0.0,
+        0.2
+      ]
+    },
+    "epsilon_bounds": {
+      "localization_nm": [
+        0.5,
+        50.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

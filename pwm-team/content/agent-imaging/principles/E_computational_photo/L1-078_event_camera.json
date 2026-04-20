@@ -1,0 +1,97 @@
+{
+  "artifact_id": "L1-078",
+  "layer": "L1",
+  "principle_number": "078",
+  "title": "Event Camera (DVS) — intensity reconstruction from asynchronous events",
+  "domain": "Computational Photography",
+  "sub_domain": "Asynchronous neuromorphic imaging",
+  "source_file": "E_computational_photo/078_event_camera.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical event-based vision literature (Lichtsteiner-Posch-Delbruck 2008 DVS, Rebecq E2VID, Scheerlinck FireNet).",
+
+  "E": {
+    "description": "Each pixel of an event sensor (DVS / DAVIS) independently emits an event e = (t, u, v, p) with polarity p = +/-1 whenever the log-intensity change since the last event at that pixel crosses a contrast threshold C. The asynchronous event stream encodes temporal brightness changes at microsecond resolution but not absolute intensity. Reconstructing a standard intensity video I(u,v,t) from the event stream is an ill-posed temporal inverse problem.",
+    "forward_model": "emit e_k = (t_k, u_k, v_k, p_k)  iff  |log(I(u,v,t_k)) - log(I(u,v,t_k^last))| >= C",
+    "world_state_x": "Dense intensity video I(u,v,t) in R^{H x W x N_t}, non-negative",
+    "observation_y": "Asynchronous event stream E = {e_k = (t_k, u_k, v_k, p_k)}, k = 1..N_events",
+    "physical_parameters_theta": [
+      "Contrast threshold C (typ. 0.15-0.3 in log units) with per-pixel variance sigma_C",
+      "Refractory period tau_r (microseconds) limiting event rate per pixel",
+      "Noise events (background-activity rate) r_noise",
+      "Bias currents controlling contrast / bandwidth trade-off",
+      "Optics (lens, aperture) and sensor resolution H x W"
+    ]
+  },
+
+  "G": {
+    "dag": "L.log_intensity -> D.threshold.delta -> S.stream.asynchronous",
+    "vertices": ["L.log_intensity", "D.threshold.delta", "S.stream.asynchronous"],
+    "arcs": [
+      "L.log_intensity -> D.threshold.delta",
+      "D.threshold.delta -> S.stream.asynchronous"
+    ],
+    "L_DAG": 2.8,
+    "n_c": 1
+  },
+
+  "W": {
+    "existence": true,
+    "uniqueness": false,
+    "stability": "conditional",
+    "condition_number_kappa": 4000,
+    "condition_number_effective": 50,
+    "regime": "Intensity reconstruction is ill-posed (DC level is unobservable; only log-differentials are sampled). Unique reconstruction requires an anchor frame (DAVIS hybrid output) or a strong prior (video smoothness, learned models). Contrast-threshold variance sigma_C and noise events add strong instability at low event rates."
+  },
+
+  "C": {
+    "solver_class": "E2VID (recurrent neural net), FireNet (U-Net), EV-Gait (Poisson-Events), event-to-frame reconstruction with optical-flow prior",
+    "convergence_rate_q": 1.5,
+    "error_bound": "||I_hat - I||_2 <= C1 * sigma_C + C2 / sqrt(event_rate) + C3 * anchor_interval; higher motion -> more events -> better reconstruction",
+    "complexity": "O(N_events) for async integration; O(H * W * N_t) for recurrent reconstruction"
+  },
+
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "asynchronous_log_intensity_change",
+    "integration_axis": "temporal",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "asynchronous_event",
+    "solution_space": "2D_plus_time_video",
+    "primitives": ["L.log_intensity", "D.threshold.delta", "S.stream.asynchronous"]
+  },
+
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+
+  "mismatch_parameters": ["contrast_threshold_variance", "noise_event_rate", "refractory_period_drift", "hot_pixels"],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "error_metric_tertiary": "temporal_LPIPS",
+
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "event_to_intensity_reconstruction",
+      "forward_operator": "dvs_log_intensity_threshold",
+      "input_format": "event_stream_plus_optional_anchor_frame",
+      "omega": {"H": 640, "W": 480, "N_events_per_sec": 1000000, "contrast_threshold_C": 0.20, "reconstruction_rate_Hz": 60, "contrast_threshold_variance": 0.0, "noise_event_rate": 0.0},
+      "epsilon_fn_center": "22.0 dB PSNR"
+    },
+    "allowed_forward_operators": ["dvs_log_intensity_threshold", "atis_time_contrast", "celex_fovea"],
+    "allowed_problem_classes": ["event_to_intensity_reconstruction", "event_based_deblur", "event_optical_flow"],
+    "allowed_omega_dimensions": ["H", "W", "N_events_per_sec", "contrast_threshold_C", "reconstruction_rate_Hz", "contrast_threshold_variance", "noise_event_rate", "refractory_period_drift", "hot_pixels"],
+    "omega_bounds": {
+      "H": [240, 1280], "W": [180, 960],
+      "N_events_per_sec": [10000, 100000000],
+      "contrast_threshold_C": [0.05, 0.50],
+      "reconstruction_rate_Hz": [15, 240],
+      "contrast_threshold_variance": [0.0, 0.10],
+      "noise_event_rate": [0.0, 100000],
+      "refractory_period_drift": [0.0, 1000],
+      "hot_pixels": [0, 100]
+    },
+    "epsilon_bounds": {"psnr_db": [12.0, 32.0]}
+  },
+
+  "p1_p10_tests": ["PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS"],
+  "s1_s4_gates": ["PASS", "PASS", "PASS", "PASS"],
+  "ipfs_cid": null
+}

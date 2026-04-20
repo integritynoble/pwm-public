@@ -1,0 +1,171 @@
+{
+  "artifact_id": "L1-152",
+  "layer": "L1",
+  "principle_number": "152",
+  "title": "XFEL Serial Femtosecond Crystallography (SFX)",
+  "domain": "Ultrafast Imaging",
+  "sub_domain": "Single-pulse diffraction from microcrystals at XFEL",
+  "source_file": "M_ultrafast_imaging/152_xfel_sfx.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
+  "E": {
+    "description": "XFEL Serial Femtosecond Crystallography (SFX) forward model.",
+    "forward_model": "I_bragg(h, k, l) = |F(h, k, l)|^2 * partial_factor + n; merge thousands of single-pulse patterns",
+    "world_state_x": "Principle-specific quantity of interest",
+    "observation_y": "Detector output at declared geometry",
+    "physical_parameters_theta": [
+      "N_patterns",
+      "H",
+      "W",
+      "pulse_fs",
+      "hit_rate",
+      "detector_dynamic_range",
+      "partial_reflection",
+      "beam_pointing_jitter"
+    ]
+  },
+  "G": {
+    "dag": "L.xfel_pulse -> L.microcrystal_diffraction -> L.bragg_indexing -> int.spatial",
+    "vertices": [
+      "L.xfel_pulse",
+      "L.microcrystal_diffraction",
+      "L.bragg_indexing",
+      "int.spatial"
+    ],
+    "arcs": [
+      "L.xfel_pulse -> L.microcrystal_diffraction",
+      "L.microcrystal_diffraction -> L.bragg_indexing",
+      "L.bragg_indexing -> int.spatial"
+    ],
+    "L_DAG": 4.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 640,
+    "condition_number_effective": 32,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "CrystFEL, CCTBX-SFX, XFEL-Net",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sensor SNR + mismatch bias + regularization.",
+    "complexity": "principle-dependent"
+  },
+  "physics_fingerprint": {
+    "carrier": "x_ray",
+    "sensing_mechanism": "xfel_serial_crystallography",
+    "integration_axis": "angular",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "shot_poisson",
+    "solution_space": "3D_electron_density",
+    "primitives": [
+      "L.xfel_pulse",
+      "L.microcrystal_diffraction",
+      "L.bragg_indexing",
+      "int.spatial"
+    ]
+  },
+  "difficulty_delta": 10,
+  "difficulty_tier": "hard",
+  "mismatch_parameters": [
+    "hit_rate",
+    "detector_dynamic_range",
+    "partial_reflection",
+    "beam_pointing_jitter"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "xfel_sfx",
+      "forward_operator": "xfel_sfx_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_patterns": 100000,
+        "H": 2048,
+        "W": 2048,
+        "pulse_fs": 10,
+        "hit_rate": 0.1,
+        "detector_dynamic_range": 1000,
+        "partial_reflection": 0.3,
+        "beam_pointing_jitter": 0.0
+      },
+      "epsilon_fn_center": "18.0"
+    },
+    "allowed_forward_operators": [
+      "xfel_sfx_forward"
+    ],
+    "allowed_problem_classes": [
+      "xfel_sfx"
+    ],
+    "allowed_omega_dimensions": [
+      "N_patterns",
+      "H",
+      "W",
+      "pulse_fs",
+      "hit_rate",
+      "detector_dynamic_range",
+      "partial_reflection",
+      "beam_pointing_jitter",
+      "hit_rate",
+      "detector_dynamic_range",
+      "partial_reflection",
+      "beam_pointing_jitter"
+    ],
+    "omega_bounds": {
+      "N_patterns": [
+        1000,
+        10000000
+      ],
+      "H": 512,
+      "W": 512,
+      "pulse_fs": [
+        1,
+        100
+      ],
+      "hit_rate": [
+        0.001,
+        0.5
+      ],
+      "detector_dynamic_range": [
+        100,
+        100000
+      ],
+      "partial_reflection": [
+        0.0,
+        0.8
+      ],
+      "beam_pointing_jitter": [
+        0.0,
+        0.5
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        5.0,
+        40.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

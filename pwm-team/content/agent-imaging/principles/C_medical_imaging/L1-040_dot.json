@@ -1,0 +1,184 @@
+{
+  "artifact_id": "L1-040",
+  "layer": "L1",
+  "principle_number": "040",
+  "title": "Diffuse Optical Tomography (DOT)",
+  "domain": "Medical Imaging",
+  "sub_domain": "Near-IR scattering-based functional imaging",
+  "source_file": "C_medical_imaging/040_dot.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical medical-imaging literature for this principle.",
+  "E": {
+    "description": "Diffuse Optical Tomography (DOT) forward model.",
+    "forward_model": "y_sd(t) = integral G(source, detector, mu_a, mu_s) + n; invert mu_a(r) via Rytov/Born + regularization",
+    "world_state_x": "Patient-side quantity of interest (attenuation / activity / perfusion / stiffness etc.)",
+    "observation_y": "Clinical sensor output at declared resolution + noise",
+    "physical_parameters_theta": [
+      "N_sources",
+      "N_detectors",
+      "lambda_nm",
+      "source_distance_cm",
+      "SNR_dB",
+      "tissue_scattering",
+      "anatomical_prior_error",
+      "partial_volume",
+      "motion"
+    ]
+  },
+  "G": {
+    "dag": "L.nir_source -> L.diffusion_propagation -> S.scan.source_detector -> int.spatial",
+    "vertices": [
+      "L.nir_source",
+      "L.diffusion_propagation",
+      "S.scan.source_detector",
+      "int.spatial"
+    ],
+    "arcs": [
+      "L.nir_source -> L.diffusion_propagation",
+      "L.diffusion_propagation -> S.scan.source_detector",
+      "S.scan.source_detector -> int.spatial"
+    ],
+    "L_DAG": 4.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 600,
+    "condition_number_effective": 30,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Born-Linear, Rytov, NIRFAST, DOT-Net",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sensor SNR + mismatch bias + regularisation.",
+    "complexity": "O(H W) to O(H W Z) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "near_infrared_diffusion",
+    "integration_axis": "spatial",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "shot_poisson",
+    "solution_space": "3D_optical_absorption",
+    "primitives": [
+      "L.nir_source",
+      "L.diffusion_propagation",
+      "S.scan.source_detector",
+      "int.spatial"
+    ]
+  },
+  "difficulty_delta": 10,
+  "difficulty_tier": "hard",
+  "mismatch_parameters": [
+    "tissue_scattering",
+    "anatomical_prior_error",
+    "partial_volume",
+    "motion"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "dot",
+      "forward_operator": "dot_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_sources": 32,
+        "N_detectors": 32,
+        "lambda_nm": 760,
+        "source_distance_cm": 3.5,
+        "SNR_dB": 25,
+        "tissue_scattering": 10.0,
+        "anatomical_prior_error": 0.0,
+        "partial_volume": 0.1,
+        "motion": 0.0
+      },
+      "epsilon_fn_center": "18.0"
+    },
+    "allowed_forward_operators": [
+      "dot_forward"
+    ],
+    "allowed_problem_classes": [
+      "dot"
+    ],
+    "allowed_omega_dimensions": [
+      "N_sources",
+      "N_detectors",
+      "lambda_nm",
+      "source_distance_cm",
+      "SNR_dB",
+      "tissue_scattering",
+      "anatomical_prior_error",
+      "partial_volume",
+      "motion",
+      "tissue_scattering",
+      "anatomical_prior_error",
+      "partial_volume",
+      "motion"
+    ],
+    "omega_bounds": {
+      "N_sources": [
+        8,
+        256
+      ],
+      "N_detectors": [
+        8,
+        256
+      ],
+      "lambda_nm": [
+        650,
+        900
+      ],
+      "source_distance_cm": [
+        1.0,
+        10.0
+      ],
+      "SNR_dB": [
+        0.0,
+        35.0
+      ],
+      "tissue_scattering": [
+        5.0,
+        20.0
+      ],
+      "anatomical_prior_error": [
+        0.0,
+        0.5
+      ],
+      "partial_volume": [
+        0.0,
+        0.5
+      ],
+      "motion": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        5.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

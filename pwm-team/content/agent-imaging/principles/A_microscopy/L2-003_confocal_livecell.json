@@ -1,0 +1,144 @@
+{
+  "artifact_id": "L2-003",
+  "layer": "L2",
+  "parent_l1": "L1-003",
+  "title": "Confocal Fluorescence (pinhole-rejection livecell imaging) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        256,
+        4096
+      ],
+      "W": [
+        256,
+        4096
+      ],
+      "pixel_nm": [
+        50,
+        300
+      ],
+      "NA": [
+        0.8,
+        1.45
+      ],
+      "pinhole_AU": [
+        0.5,
+        3.0
+      ],
+      "peak_photons": [
+        20,
+        2000
+      ],
+      "scan_jitter": [
+        0.0,
+        2.0
+      ],
+      "photobleaching_rate": [
+        0.0,
+        0.3
+      ]
+    },
+    "E": {
+      "forward": "y(r) = [PSF_confocal(r; AU) conv f(r)] + n",
+      "operator": "confocal_livecell_forward_mismatch",
+      "primitive_chain": "K.psf.confocal -> S.scan.raster -> int.temporal",
+      "inverse": "solve forward model for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "22.0 + 1.5 * log10(peak_photons / 20) - 5.0 * photobleaching_rate"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Richardson-Lucy",
+        "method_sig": "I+M",
+        "expected_psnr": 26.0
+      },
+      {
+        "name": "TV-ADMM",
+        "method_sig": "L+O",
+        "expected_psnr": 27.5
+      },
+      {
+        "name": "CARE-Confocal",
+        "method_sig": "L+N",
+        "expected_psnr": 31.0
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 1024,
+        "W": 1024,
+        "pixel_nm": 100,
+        "NA": 1.3,
+        "pinhole_AU": 1.0,
+        "peak_photons": 300,
+        "scan_jitter": 0.0,
+        "photobleaching_rate": 0.0
+      },
+      "epsilon": 28.0
+    },
+    "tier_bounds": {
+      "H": [
+        256,
+        4096
+      ],
+      "W": [
+        256,
+        4096
+      ],
+      "pixel_nm": [
+        50,
+        300
+      ],
+      "NA": [
+        0.8,
+        1.45
+      ],
+      "pinhole_AU": [
+        0.5,
+        3.0
+      ],
+      "peak_photons": [
+        20,
+        2000
+      ],
+      "scan_jitter": [
+        0.0,
+        2.0
+      ],
+      "photobleaching_rate": [
+        0.0,
+        0.3
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.45,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

@@ -1,0 +1,153 @@
+{
+  "artifact_id": "L2-021",
+  "layer": "L2",
+  "parent_l1": "L1-021",
+  "title": "Second Harmonic Generation (SHG) Microscopy Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        128,
+        2048
+      ],
+      "W": [
+        128,
+        2048
+      ],
+      "pixel_nm": [
+        200,
+        1000
+      ],
+      "NA": [
+        0.6,
+        1.1
+      ],
+      "lambda_ex_nm": [
+        800,
+        1100
+      ],
+      "peak_photons": [
+        10,
+        2000
+      ],
+      "pulse_width_fs": [
+        50,
+        500
+      ],
+      "sample_scattering": [
+        0.0,
+        0.5
+      ],
+      "quasi_phase_mismatch": [
+        0.0,
+        0.3
+      ]
+    },
+    "E": {
+      "forward": "y(r) ~ |chi2(r)|^2 * I_ex^2(r) at lambda_SHG = lambda_ex / 2; polarization-sensitive",
+      "operator": "shg_forward_mismatch",
+      "primitive_chain": "L.excitation.nonlinear_chi2 -> S.scan.raster -> int.temporal",
+      "inverse": "solve forward model for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "18.0 + 2.0 * log10(peak_photons / 10) - 8.0 * sample_scattering - 2.0 * log10(pulse_width_fs / 50)"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Richardson-Lucy-SHG",
+        "method_sig": "I+M",
+        "expected_psnr": 22.5
+      },
+      {
+        "name": "TV-ADMM-SHG",
+        "method_sig": "L+O",
+        "expected_psnr": 23.8
+      },
+      {
+        "name": "SHG-Net",
+        "method_sig": "L+N",
+        "expected_psnr": 26.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "pixel_nm": 500,
+        "NA": 1.0,
+        "lambda_ex_nm": 920,
+        "peak_photons": 100,
+        "pulse_width_fs": 100,
+        "sample_scattering": 0.0,
+        "quasi_phase_mismatch": 0.0
+      },
+      "epsilon": 24.0
+    },
+    "tier_bounds": {
+      "H": [
+        128,
+        2048
+      ],
+      "W": [
+        128,
+        2048
+      ],
+      "pixel_nm": [
+        200,
+        1000
+      ],
+      "NA": [
+        0.6,
+        1.1
+      ],
+      "lambda_ex_nm": [
+        800,
+        1100
+      ],
+      "peak_photons": [
+        10,
+        2000
+      ],
+      "pulse_width_fs": [
+        50,
+        500
+      ],
+      "sample_scattering": [
+        0.0,
+        0.5
+      ],
+      "quasi_phase_mismatch": [
+        0.0,
+        0.3
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.45,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

@@ -1,0 +1,193 @@
+{
+  "artifact_id": "L3-090",
+  "layer": "L3",
+  "parent_l2": "L2-090",
+  "parent_l1": "L1-090",
+  "title": "Electron Energy Loss Spectroscopy (EELS) Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "canonical EM dataset for this principle (EMPIAR / CEM500K / etc.)",
+    "secondary": "simulated forward model at declared Omega",
+    "construction_method": "parametric forward synthesis + Poisson counting",
+    "num_dev_instances_per_tier": 20
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "H": 256,
+        "W": 256,
+        "N_E": 2048,
+        "E_range_eV": [
+          0,
+          2000
+        ],
+        "pixel_nm": 1.0,
+        "kV": 200,
+        "peak_electrons": 500,
+        "zero_loss_drift": 0.0,
+        "plural_scattering": 0.0,
+        "edge_overlap": 0.0
+      },
+      "epsilon": 22.0,
+      "d_ibench": 0.14,
+      "baselines": [
+        {
+          "name": "Power-Law-BG",
+          "score": 20.0,
+          "Q": 0.88
+        },
+        {
+          "name": "MLLS",
+          "score": 22.5,
+          "Q": 0.88
+        },
+        {
+          "name": "EELS-UNet",
+          "score": 25.5,
+          "Q": 0.88
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "H": 256,
+        "W": 256,
+        "N_E": 2048,
+        "E_range_eV": [
+          0,
+          2000
+        ],
+        "pixel_nm": 1.0,
+        "kV": 200,
+        "peak_electrons": 250,
+        "zero_loss_drift": 1.0,
+        "plural_scattering": 0.1,
+        "edge_overlap": 0.06
+      },
+      "epsilon": 17.6,
+      "d_ibench": 0.28,
+      "baselines": [
+        {
+          "name": "Power-Law-BG",
+          "score": 17.5,
+          "Q": 0.68
+        },
+        {
+          "name": "MLLS",
+          "score": 20.0,
+          "Q": 0.68
+        },
+        {
+          "name": "EELS-UNet",
+          "score": 23.0,
+          "Q": 0.68
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "H": 256,
+        "W": 256,
+        "N_E": 2048,
+        "E_range_eV": [
+          0,
+          2000
+        ],
+        "pixel_nm": 1.0,
+        "kV": 200,
+        "peak_electrons": 100,
+        "zero_loss_drift": 2.5,
+        "plural_scattering": 0.25,
+        "edge_overlap": 0.15
+      },
+      "epsilon": 14.3,
+      "d_ibench": 0.48,
+      "baselines": [
+        {
+          "name": "Power-Law-BG",
+          "score": 15.0,
+          "Q": 0.48
+        },
+        {
+          "name": "MLLS",
+          "score": 17.5,
+          "Q": 0.48
+        },
+        {
+          "name": "EELS-UNet",
+          "score": 20.5,
+          "Q": 0.48
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "H": 256,
+        "W": 256,
+        "N_E": 2048,
+        "E_range_eV": [
+          0,
+          2000
+        ],
+        "pixel_nm": 1.0,
+        "kV": 200,
+        "peak_electrons": 41,
+        "zero_loss_drift": 5.0,
+        "plural_scattering": 0.5,
+        "edge_overlap": 0.3
+      },
+      "epsilon": 11.0,
+      "d_ibench": 0.72,
+      "baselines": [
+        {
+          "name": "Power-Law-BG",
+          "score": 12.5,
+          "Q": 0.28
+        },
+        {
+          "name": "MLLS",
+          "score": 15.0,
+          "Q": 0.28
+        },
+        {
+          "name": "EELS-UNet",
+          "score": 18.0,
+          "Q": 0.28
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "full parametric sweep",
+      "num_dev_instances": 200,
+      "construction_method": "parametric Omega sweep"
+    },
+    "baselines": [
+      {
+        "name": "Power-Law-BG",
+        "overall_Q": 0.7
+      },
+      {
+        "name": "MLLS",
+        "overall_Q": 0.6
+      },
+      {
+        "name": "EELS-UNet",
+        "overall_Q": 0.5
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind strata corner.",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

@@ -1,0 +1,183 @@
+{
+  "artifact_id": "L1-005",
+  "layer": "L1",
+  "principle_number": "005",
+  "title": "Structured Illumination Microscopy (SIM) \u2014 lateral 2x resolution",
+  "domain": "Microscopy",
+  "sub_domain": "Super-resolution via spatial-frequency demodulation",
+  "source_file": "A_microscopy/005_sim.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical domain literature for this specific principle.",
+  "E": {
+    "description": "Structured Illumination Microscopy (SIM) \u2014 lateral 2x resolution forward model.",
+    "forward_model": "y_k(r) = [PSF conv (f * (1 + cos(k_p . r + phi_k)))] + n, k = 1..9 (3 phases x 3 angles)",
+    "world_state_x": "Scene parameter of interest (density / complex field / lifetime / normals depending on spec).",
+    "observation_y": "Measured intensity or photon counts from the imaging system.",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "N_phase",
+      "N_angle",
+      "pixel_nm",
+      "NA",
+      "peak_photons",
+      "pattern_phase_error",
+      "pattern_angle_error"
+    ]
+  },
+  "G": {
+    "dag": "L.modulation.grating -> K.psf.airy -> int.temporal",
+    "vertices": [
+      "L.modulation.grating",
+      "K.psf.airy",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.modulation.grating -> K.psf.airy",
+      "K.psf.airy -> int.temporal"
+    ],
+    "L_DAG": 2.8,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 500,
+    "condition_number_effective": 25,
+    "regime": "Conditional stability; principle-specific mismatch dominates at Omega bounds (see `mismatch_parameters`)."
+  },
+  "C": {
+    "solver_class": "fairSIM, HiFi-SIM, DeepSIM",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(photon_count) + mismatch-induced bias.",
+    "complexity": "O(H W) to O(H W Z) per iteration depending on dimensionality"
+  },
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "structured_illumination",
+    "integration_axis": "temporal",
+    "problem_class": "linear_inverse",
+    "noise_model": "poisson_gaussian",
+    "solution_space": "2D_intensity",
+    "primitives": [
+      "L.modulation.grating",
+      "K.psf.airy",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "pattern_phase_error",
+    "pattern_angle_error",
+    "pattern_frequency_drift"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "sim_3phase_3angle",
+      "forward_operator": "sim_forward_3phase_3angle",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 512,
+        "W": 512,
+        "N_phase": 3,
+        "N_angle": 3,
+        "pixel_nm": 32,
+        "NA": 1.4,
+        "peak_photons": 500,
+        "pattern_phase_error": 0.0,
+        "pattern_angle_error": 0.0
+      },
+      "epsilon_fn_center": "27.0"
+    },
+    "allowed_forward_operators": [
+      "sim_forward_3phase_3angle"
+    ],
+    "allowed_problem_classes": [
+      "sim_3phase_3angle"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "N_phase",
+      "N_angle",
+      "pixel_nm",
+      "NA",
+      "peak_photons",
+      "pattern_phase_error",
+      "pattern_angle_error",
+      "pattern_phase_error",
+      "pattern_angle_error",
+      "pattern_frequency_drift"
+    ],
+    "omega_bounds": {
+      "H": [
+        128,
+        2048
+      ],
+      "W": [
+        128,
+        2048
+      ],
+      "N_phase": [
+        3,
+        5
+      ],
+      "N_angle": [
+        3,
+        5
+      ],
+      "pixel_nm": [
+        20,
+        100
+      ],
+      "NA": [
+        1.0,
+        1.49
+      ],
+      "peak_photons": [
+        50,
+        5000
+      ],
+      "pattern_phase_error": [
+        0.0,
+        0.15
+      ],
+      "pattern_angle_error": [
+        0.0,
+        0.05
+      ],
+      "pattern_frequency_drift": [
+        0.0,
+        0.02
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        12.0,
+        42.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

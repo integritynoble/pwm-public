@@ -1,0 +1,53 @@
+{
+  "artifact_id": "L2-071",
+  "layer": "L2",
+  "parent_l1": "L1-071",
+  "title": "Off-Axis Digital Holography Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+
+  "six_tuple": {
+    "omega": {
+      "H": [256, 4096], "W": [256, 4096], "tilt_angle_mrad": [1.0, 50.0],
+      "wavelength_nm": [400, 1550], "z_mm": [1.0, 500.0], "photon_count": [10, 50000],
+      "reference_tilt_error": [0.0, 2.0], "wavelength_drift": [0.0, 0.002],
+      "propagation_distance_error": [0.0, 5.0]
+    },
+    "E": {
+      "forward": "I(x,y) = |O(x,y) + R_tilted(x,y)|^2 + n; Fourier-domain separates O*R into an isolated sideband for off-axis geometry",
+      "operator": "off_axis_hologram_forward_mismatch",
+      "primitive_chain": "L.modulation.reference -> L.add_coherent -> L.modulus_squared -> int.spatial",
+      "inverse": "recover O(x,y) (amplitude + phase) from single intensity hologram"
+    },
+    "B": {"complex_domain": true, "bandlimited": true},
+    "I": {"strategy": "fourier_quadrant_filter_plus_phase_unwrap"},
+    "O": ["PSNR", "phase_L2_error", "residual_norm", "unwrapped_phase_range"],
+    "epsilon_fn": "22.0 + 4.0 * log10(photon_count / 10) - 10.0 * max(0, reference_tilt_error / 2.0)"
+  },
+
+  "protocol_fields": {
+    "input_format": {"hologram": "float32(H, W)", "reference_params": "dict: {tilt_angle_mrad, wavelength_nm, z_mm}"},
+    "output_format": {"object_field": "complex64(H, W)"},
+    "baselines": [
+      {"name": "FourierDemodulation", "method_sig": "L+O", "expected_psnr": 28.5},
+      {"name": "ADMM-TV-Holo",        "method_sig": "L+O", "expected_psnr": 30.8},
+      {"name": "DH-Net",              "method_sig": "L+N", "expected_psnr": 33.5}
+    ]
+  },
+
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {"H": 1024, "W": 1024, "tilt_angle_mrad": 10.0, "wavelength_nm": 632.8, "z_mm": 100.0, "photon_count": 1000, "reference_tilt_error": 0.0, "wavelength_drift": 0.0, "propagation_distance_error": 0.0},
+      "epsilon": 32.0
+    },
+    "tier_bounds": {
+      "H": [256, 2048], "W": [256, 2048], "tilt_angle_mrad": [2.0, 30.0],
+      "wavelength_nm": [405, 1064], "z_mm": [10.0, 300.0], "photon_count": [50, 10000]
+    },
+    "proximity_threshold": 0.10
+  },
+
+  "d_spec": 0.50,
+  "s1_s4_gates": ["PASS", "PASS", "PASS", "PASS"],
+  "ipfs_cid": null
+}

@@ -1,0 +1,189 @@
+{
+  "artifact_id": "L3-102",
+  "layer": "L3",
+  "parent_l2": "L2-102",
+  "parent_l1": "L1-102",
+  "title": "Hyperspectral Imaging (pushbroom / AVIRIS-style) Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "canonical remote-sensing dataset for this principle",
+    "secondary": "simulated forward synthesis at declared Omega",
+    "construction_method": "parametric forward + declared noise model",
+    "num_dev_instances_per_tier": 20
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "H": 512,
+        "W": 640,
+        "N_bands": 224,
+        "lambda_range_nm": [
+          400,
+          2500
+        ],
+        "GSD_m": 30,
+        "SNR_dB": 35.0,
+        "atmospheric_water_vapor": 0.0,
+        "smile_distortion": 0.0,
+        "spectral_mixing": 0.0
+      },
+      "epsilon": 30.0,
+      "d_ibench": 0.14,
+      "baselines": [
+        {
+          "name": "FLAASH",
+          "score": 27.5,
+          "Q": 0.88
+        },
+        {
+          "name": "SCAPE-M",
+          "score": 29.5,
+          "Q": 0.88
+        },
+        {
+          "name": "HSI-CNN",
+          "score": 32.5,
+          "Q": 0.88
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "H": 512,
+        "W": 640,
+        "N_bands": 224,
+        "lambda_range_nm": [
+          400,
+          2500
+        ],
+        "GSD_m": 30,
+        "SNR_dB": 32.0,
+        "atmospheric_water_vapor": 0.06,
+        "smile_distortion": 0.020000000000000004,
+        "spectral_mixing": 0.06
+      },
+      "epsilon": 24.6,
+      "d_ibench": 0.28,
+      "baselines": [
+        {
+          "name": "FLAASH",
+          "score": 25.5,
+          "Q": 0.68
+        },
+        {
+          "name": "SCAPE-M",
+          "score": 27.5,
+          "Q": 0.68
+        },
+        {
+          "name": "HSI-CNN",
+          "score": 30.5,
+          "Q": 0.68
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "H": 512,
+        "W": 640,
+        "N_bands": 224,
+        "lambda_range_nm": [
+          400,
+          2500
+        ],
+        "GSD_m": 30,
+        "SNR_dB": 23.0,
+        "atmospheric_water_vapor": 0.15,
+        "smile_distortion": 0.05,
+        "spectral_mixing": 0.15
+      },
+      "epsilon": 19.2,
+      "d_ibench": 0.48,
+      "baselines": [
+        {
+          "name": "FLAASH",
+          "score": 23.5,
+          "Q": 0.48
+        },
+        {
+          "name": "SCAPE-M",
+          "score": 25.5,
+          "Q": 0.48
+        },
+        {
+          "name": "HSI-CNN",
+          "score": 28.5,
+          "Q": 0.48
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "H": 512,
+        "W": 640,
+        "N_bands": 224,
+        "lambda_range_nm": [
+          400,
+          2500
+        ],
+        "GSD_m": 30,
+        "SNR_dB": 10.0,
+        "atmospheric_water_vapor": 0.3,
+        "smile_distortion": 0.1,
+        "spectral_mixing": 0.3
+      },
+      "epsilon": 13.8,
+      "d_ibench": 0.72,
+      "baselines": [
+        {
+          "name": "FLAASH",
+          "score": 21.5,
+          "Q": 0.28
+        },
+        {
+          "name": "SCAPE-M",
+          "score": 23.5,
+          "Q": 0.28
+        },
+        {
+          "name": "HSI-CNN",
+          "score": 26.5,
+          "Q": 0.28
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "full parametric sweep",
+      "num_dev_instances": 200,
+      "construction_method": "parametric Omega sweep"
+    },
+    "baselines": [
+      {
+        "name": "FLAASH",
+        "overall_Q": 0.7
+      },
+      {
+        "name": "SCAPE-M",
+        "overall_Q": 0.6
+      },
+      {
+        "name": "HSI-CNN",
+        "overall_Q": 0.5
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind strata corner.",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

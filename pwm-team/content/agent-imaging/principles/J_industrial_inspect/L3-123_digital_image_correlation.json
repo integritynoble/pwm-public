@@ -1,0 +1,177 @@
+{
+  "artifact_id": "L3-123",
+  "layer": "L3",
+  "parent_l2": "L2-123",
+  "parent_l1": "L1-123",
+  "title": "Digital Image Correlation (DIC) for full-field strain Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "canonical NDT / NDE dataset for this principle",
+    "secondary": "simulated forward synthesis at declared Omega",
+    "construction_method": "parametric forward + declared noise",
+    "num_dev_instances_per_tier": 20
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "H": 2048,
+        "W": 2048,
+        "subset_px": 21,
+        "pixel_um": 5,
+        "SNR_dB": 30.0,
+        "speckle_size_variation": 0.0,
+        "illumination_non_uniformity": 0.0,
+        "out_of_plane_motion": 0.0,
+        "camera_calibration_error": 0.0
+      },
+      "epsilon": 28.0,
+      "d_ibench": 0.14,
+      "baselines": [
+        {
+          "name": "NCC-Subset",
+          "score": 25.5,
+          "Q": 0.88
+        },
+        {
+          "name": "ZNCC-Subpixel",
+          "score": 28.0,
+          "Q": 0.88
+        },
+        {
+          "name": "DIC-Net",
+          "score": 30.5,
+          "Q": 0.88
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "H": 2048,
+        "W": 2048,
+        "subset_px": 21,
+        "pixel_um": 5,
+        "SNR_dB": 27.0,
+        "speckle_size_variation": 0.06,
+        "illumination_non_uniformity": 0.06,
+        "out_of_plane_motion": 0.06,
+        "camera_calibration_error": 0.010000000000000002
+      },
+      "epsilon": 22.96,
+      "d_ibench": 0.28,
+      "baselines": [
+        {
+          "name": "NCC-Subset",
+          "score": 23.5,
+          "Q": 0.68
+        },
+        {
+          "name": "ZNCC-Subpixel",
+          "score": 26.0,
+          "Q": 0.68
+        },
+        {
+          "name": "DIC-Net",
+          "score": 28.5,
+          "Q": 0.68
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "H": 2048,
+        "W": 2048,
+        "subset_px": 21,
+        "pixel_um": 5,
+        "SNR_dB": 18.0,
+        "speckle_size_variation": 0.15,
+        "illumination_non_uniformity": 0.15,
+        "out_of_plane_motion": 0.15,
+        "camera_calibration_error": 0.025
+      },
+      "epsilon": 17.92,
+      "d_ibench": 0.48,
+      "baselines": [
+        {
+          "name": "NCC-Subset",
+          "score": 21.5,
+          "Q": 0.48
+        },
+        {
+          "name": "ZNCC-Subpixel",
+          "score": 24.0,
+          "Q": 0.48
+        },
+        {
+          "name": "DIC-Net",
+          "score": 26.5,
+          "Q": 0.48
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "H": 2048,
+        "W": 2048,
+        "subset_px": 21,
+        "pixel_um": 5,
+        "SNR_dB": 10.0,
+        "speckle_size_variation": 0.3,
+        "illumination_non_uniformity": 0.3,
+        "out_of_plane_motion": 0.3,
+        "camera_calibration_error": 0.05
+      },
+      "epsilon": 12.88,
+      "d_ibench": 0.72,
+      "baselines": [
+        {
+          "name": "NCC-Subset",
+          "score": 19.5,
+          "Q": 0.28
+        },
+        {
+          "name": "ZNCC-Subpixel",
+          "score": 22.0,
+          "Q": 0.28
+        },
+        {
+          "name": "DIC-Net",
+          "score": 24.5,
+          "Q": 0.28
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "full parametric sweep",
+      "num_dev_instances": 200,
+      "construction_method": "parametric Omega sweep"
+    },
+    "baselines": [
+      {
+        "name": "NCC-Subset",
+        "overall_Q": 0.7
+      },
+      {
+        "name": "ZNCC-Subpixel",
+        "overall_Q": 0.6
+      },
+      {
+        "name": "DIC-Net",
+        "overall_Q": 0.5
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind strata corner.",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

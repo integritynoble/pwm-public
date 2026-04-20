@@ -1,0 +1,177 @@
+{
+  "artifact_id": "L3-104",
+  "layer": "L3",
+  "parent_l2": "L2-104",
+  "parent_l1": "L1-104",
+  "title": "Ground Penetrating Radar (GPR) Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "canonical remote-sensing dataset for this principle",
+    "secondary": "simulated forward synthesis at declared Omega",
+    "construction_method": "parametric forward + declared noise model",
+    "num_dev_instances_per_tier": 20
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "N_samples": 512,
+        "N_traces": 256,
+        "f_MHz": 250,
+        "depth_range_m": 10,
+        "SNR_dB": 15.0,
+        "soil_permittivity_variation": 0.0,
+        "clutter": 0.0,
+        "attenuation_depth": 0.1,
+        "antenna_coupling": 0.0
+      },
+      "epsilon": 18.0,
+      "d_ibench": 0.14,
+      "baselines": [
+        {
+          "name": "Kirchhoff-Migration",
+          "score": 16.5,
+          "Q": 0.88
+        },
+        {
+          "name": "Reverse-Time-Migration",
+          "score": 18.5,
+          "Q": 0.88
+        },
+        {
+          "name": "GPR-Net",
+          "score": 21.0,
+          "Q": 0.88
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "N_samples": 512,
+        "N_traces": 256,
+        "f_MHz": 250,
+        "depth_range_m": 10,
+        "SNR_dB": 12.0,
+        "soil_permittivity_variation": 0.06,
+        "clutter": 0.1,
+        "attenuation_depth": 0.48,
+        "antenna_coupling": 0.06
+      },
+      "epsilon": 14.76,
+      "d_ibench": 0.28,
+      "baselines": [
+        {
+          "name": "Kirchhoff-Migration",
+          "score": 14.5,
+          "Q": 0.68
+        },
+        {
+          "name": "Reverse-Time-Migration",
+          "score": 16.5,
+          "Q": 0.68
+        },
+        {
+          "name": "GPR-Net",
+          "score": 19.0,
+          "Q": 0.68
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "N_samples": 512,
+        "N_traces": 256,
+        "f_MHz": 250,
+        "depth_range_m": 10,
+        "SNR_dB": 3.0,
+        "soil_permittivity_variation": 0.15,
+        "clutter": 0.25,
+        "attenuation_depth": 1.05,
+        "antenna_coupling": 0.15
+      },
+      "epsilon": 11.52,
+      "d_ibench": 0.48,
+      "baselines": [
+        {
+          "name": "Kirchhoff-Migration",
+          "score": 12.5,
+          "Q": 0.48
+        },
+        {
+          "name": "Reverse-Time-Migration",
+          "score": 14.5,
+          "Q": 0.48
+        },
+        {
+          "name": "GPR-Net",
+          "score": 17.0,
+          "Q": 0.48
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "N_samples": 512,
+        "N_traces": 256,
+        "f_MHz": 250,
+        "depth_range_m": 10,
+        "SNR_dB": 0.0,
+        "soil_permittivity_variation": 0.3,
+        "clutter": 0.5,
+        "attenuation_depth": 2.0,
+        "antenna_coupling": 0.3
+      },
+      "epsilon": 8.28,
+      "d_ibench": 0.72,
+      "baselines": [
+        {
+          "name": "Kirchhoff-Migration",
+          "score": 10.5,
+          "Q": 0.28
+        },
+        {
+          "name": "Reverse-Time-Migration",
+          "score": 12.5,
+          "Q": 0.28
+        },
+        {
+          "name": "GPR-Net",
+          "score": 15.0,
+          "Q": 0.28
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "full parametric sweep",
+      "num_dev_instances": 200,
+      "construction_method": "parametric Omega sweep"
+    },
+    "baselines": [
+      {
+        "name": "Kirchhoff-Migration",
+        "overall_Q": 0.7
+      },
+      {
+        "name": "Reverse-Time-Migration",
+        "overall_Q": 0.6
+      },
+      {
+        "name": "GPR-Net",
+        "overall_Q": 0.5
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind strata corner.",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

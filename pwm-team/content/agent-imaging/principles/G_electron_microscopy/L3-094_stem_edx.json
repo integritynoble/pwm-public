@@ -1,0 +1,177 @@
+{
+  "artifact_id": "L3-094",
+  "layer": "L3",
+  "parent_l2": "L2-094",
+  "parent_l1": "L1-094",
+  "title": "STEM-EDX \u2014 X-ray energy-dispersive elemental mapping Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "canonical EM dataset for this principle (EMPIAR / CEM500K / etc.)",
+    "secondary": "simulated forward model at declared Omega",
+    "construction_method": "parametric forward synthesis + Poisson counting",
+    "num_dev_instances_per_tier": 20
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "N_elements": 6,
+        "kV": 200,
+        "dwell_ms": 5,
+        "peak_electrons": 1000,
+        "detector_dead_time": 0.0,
+        "peak_overlap": 0.0,
+        "absorption_correction": 0.0
+      },
+      "epsilon": 25.0,
+      "d_ibench": 0.14,
+      "baselines": [
+        {
+          "name": "Background-subtract",
+          "score": 22.0,
+          "Q": 0.88
+        },
+        {
+          "name": "NMF-EDX",
+          "score": 24.5,
+          "Q": 0.88
+        },
+        {
+          "name": "EDX-Net",
+          "score": 27.5,
+          "Q": 0.88
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "N_elements": 6,
+        "kV": 200,
+        "dwell_ms": 5,
+        "peak_electrons": 500,
+        "detector_dead_time": 0.1,
+        "peak_overlap": 0.1,
+        "absorption_correction": 0.06
+      },
+      "epsilon": 20.0,
+      "d_ibench": 0.28,
+      "baselines": [
+        {
+          "name": "Background-subtract",
+          "score": 19.5,
+          "Q": 0.68
+        },
+        {
+          "name": "NMF-EDX",
+          "score": 22.0,
+          "Q": 0.68
+        },
+        {
+          "name": "EDX-Net",
+          "score": 25.0,
+          "Q": 0.68
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "N_elements": 6,
+        "kV": 200,
+        "dwell_ms": 5,
+        "peak_electrons": 200,
+        "detector_dead_time": 0.25,
+        "peak_overlap": 0.25,
+        "absorption_correction": 0.15
+      },
+      "epsilon": 16.25,
+      "d_ibench": 0.48,
+      "baselines": [
+        {
+          "name": "Background-subtract",
+          "score": 17.0,
+          "Q": 0.48
+        },
+        {
+          "name": "NMF-EDX",
+          "score": 19.5,
+          "Q": 0.48
+        },
+        {
+          "name": "EDX-Net",
+          "score": 22.5,
+          "Q": 0.48
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "N_elements": 6,
+        "kV": 200,
+        "dwell_ms": 5,
+        "peak_electrons": 83,
+        "detector_dead_time": 0.5,
+        "peak_overlap": 0.5,
+        "absorption_correction": 0.3
+      },
+      "epsilon": 12.5,
+      "d_ibench": 0.72,
+      "baselines": [
+        {
+          "name": "Background-subtract",
+          "score": 14.5,
+          "Q": 0.28
+        },
+        {
+          "name": "NMF-EDX",
+          "score": 17.0,
+          "Q": 0.28
+        },
+        {
+          "name": "EDX-Net",
+          "score": 20.0,
+          "Q": 0.28
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "full parametric sweep",
+      "num_dev_instances": 200,
+      "construction_method": "parametric Omega sweep"
+    },
+    "baselines": [
+      {
+        "name": "Background-subtract",
+        "overall_Q": 0.7
+      },
+      {
+        "name": "NMF-EDX",
+        "overall_Q": 0.6
+      },
+      {
+        "name": "EDX-Net",
+        "overall_Q": 0.5
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind strata corner.",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

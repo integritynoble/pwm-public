@@ -1,0 +1,143 @@
+{
+  "artifact_id": "L2-103",
+  "layer": "L2",
+  "parent_l1": "L1-103",
+  "title": "Multispectral Imaging (Landsat/Sentinel-2) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        256,
+        16384
+      ],
+      "W": [
+        256,
+        16384
+      ],
+      "N_bands": [
+        3,
+        20
+      ],
+      "GSD_m": [
+        0.3,
+        1000
+      ],
+      "SNR_dB": [
+        15.0,
+        45.0
+      ],
+      "atmospheric_correction_error": [
+        0.0,
+        0.2
+      ],
+      "bidirectional_reflectance": [
+        0.0,
+        0.2
+      ],
+      "cloud_contamination": [
+        0.0,
+        0.5
+      ]
+    },
+    "E": {
+      "forward": "y_b(x,y) = integral R(x,y,lambda) * filter_b(lambda) * atm_b dlambda + path_radiance_b + n",
+      "operator": "multispectral_forward_mismatch",
+      "primitive_chain": "L.band_filter -> S.scan.pushbroom -> int.spatial",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "25.0 + 0.2 * SNR_dB - 12.0 * atmospheric_correction_error - 10.0 * cloud_contamination"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "DOS",
+        "method_sig": "L+O",
+        "expected_psnr": 30.0
+      },
+      {
+        "name": "Sen2Cor",
+        "method_sig": "L+O",
+        "expected_psnr": 32.0
+      },
+      {
+        "name": "MSI-UNet",
+        "method_sig": "L+N",
+        "expected_psnr": 35.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 1024,
+        "W": 1024,
+        "N_bands": 13,
+        "GSD_m": 10,
+        "SNR_dB": 40.0,
+        "atmospheric_correction_error": 0.0,
+        "cloud_contamination": 0.0
+      },
+      "epsilon": 33.0
+    },
+    "tier_bounds": {
+      "H": [
+        256,
+        16384
+      ],
+      "W": [
+        256,
+        16384
+      ],
+      "N_bands": [
+        3,
+        20
+      ],
+      "GSD_m": [
+        0.3,
+        1000
+      ],
+      "SNR_dB": [
+        15.0,
+        45.0
+      ],
+      "atmospheric_correction_error": [
+        0.0,
+        0.2
+      ],
+      "bidirectional_reflectance": [
+        0.0,
+        0.2
+      ],
+      "cloud_contamination": [
+        0.0,
+        0.5
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.5,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

@@ -1,0 +1,209 @@
+{
+  "artifact_id": "L3-111",
+  "layer": "L3",
+  "parent_l2": "L2-111",
+  "parent_l1": "L1-111",
+  "title": "Industrial Computed Tomography (high-res x-ray CT for NDT) Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "canonical NDT / NDE dataset for this principle",
+    "secondary": "simulated forward synthesis at declared Omega",
+    "construction_method": "parametric forward + declared noise",
+    "num_dev_instances_per_tier": 20
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "H": 2048,
+        "W": 2048,
+        "Z": 512,
+        "N_projections": 720,
+        "kV": 150,
+        "pixel_um": 50,
+        "photon_count_per_ray": 10000,
+        "beam_hardening": 0.0,
+        "scatter": 0.0,
+        "misalignment": 0.0,
+        "ring_artifact": 0.0
+      },
+      "epsilon": 28.0,
+      "d_ibench": 0.14,
+      "baselines": [
+        {
+          "name": "FDK",
+          "score": 25.5,
+          "Q": 0.88
+        },
+        {
+          "name": "SART",
+          "score": 27.5,
+          "Q": 0.88
+        },
+        {
+          "name": "MBIR-CT",
+          "score": 29.5,
+          "Q": 0.88
+        },
+        {
+          "name": "CT-UNet",
+          "score": 31.5,
+          "Q": 0.88
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "H": 2048,
+        "W": 2048,
+        "Z": 512,
+        "N_projections": 720,
+        "kV": 150,
+        "pixel_um": 50,
+        "photon_count_per_ray": 5000,
+        "beam_hardening": 0.06,
+        "scatter": 0.08000000000000002,
+        "misalignment": 1.0,
+        "ring_artifact": 0.04000000000000001
+      },
+      "epsilon": 22.96,
+      "d_ibench": 0.28,
+      "baselines": [
+        {
+          "name": "FDK",
+          "score": 23.5,
+          "Q": 0.68
+        },
+        {
+          "name": "SART",
+          "score": 25.5,
+          "Q": 0.68
+        },
+        {
+          "name": "MBIR-CT",
+          "score": 27.5,
+          "Q": 0.68
+        },
+        {
+          "name": "CT-UNet",
+          "score": 29.5,
+          "Q": 0.68
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "H": 2048,
+        "W": 2048,
+        "Z": 512,
+        "N_projections": 720,
+        "kV": 150,
+        "pixel_um": 50,
+        "photon_count_per_ray": 2000,
+        "beam_hardening": 0.15,
+        "scatter": 0.2,
+        "misalignment": 2.5,
+        "ring_artifact": 0.1
+      },
+      "epsilon": 17.92,
+      "d_ibench": 0.48,
+      "baselines": [
+        {
+          "name": "FDK",
+          "score": 21.5,
+          "Q": 0.48
+        },
+        {
+          "name": "SART",
+          "score": 23.5,
+          "Q": 0.48
+        },
+        {
+          "name": "MBIR-CT",
+          "score": 25.5,
+          "Q": 0.48
+        },
+        {
+          "name": "CT-UNet",
+          "score": 27.5,
+          "Q": 0.48
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "H": 2048,
+        "W": 2048,
+        "Z": 512,
+        "N_projections": 720,
+        "kV": 150,
+        "pixel_um": 50,
+        "photon_count_per_ray": 1000,
+        "beam_hardening": 0.3,
+        "scatter": 0.4,
+        "misalignment": 5.0,
+        "ring_artifact": 0.2
+      },
+      "epsilon": 12.88,
+      "d_ibench": 0.72,
+      "baselines": [
+        {
+          "name": "FDK",
+          "score": 19.5,
+          "Q": 0.28
+        },
+        {
+          "name": "SART",
+          "score": 21.5,
+          "Q": 0.28
+        },
+        {
+          "name": "MBIR-CT",
+          "score": 23.5,
+          "Q": 0.28
+        },
+        {
+          "name": "CT-UNet",
+          "score": 25.5,
+          "Q": 0.28
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "full parametric sweep",
+      "num_dev_instances": 200,
+      "construction_method": "parametric Omega sweep"
+    },
+    "baselines": [
+      {
+        "name": "FDK",
+        "overall_Q": 0.7
+      },
+      {
+        "name": "SART",
+        "overall_Q": 0.6
+      },
+      {
+        "name": "MBIR-CT",
+        "overall_Q": 0.5
+      },
+      {
+        "name": "CT-UNet",
+        "overall_Q": 0.4
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind strata corner.",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

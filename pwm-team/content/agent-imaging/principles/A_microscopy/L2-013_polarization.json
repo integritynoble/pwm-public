@@ -1,0 +1,143 @@
+{
+  "artifact_id": "L2-013",
+  "layer": "L2",
+  "parent_l1": "L1-013",
+  "title": "Polarization Microscopy (Stokes / birefringence imaging) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        256,
+        4096
+      ],
+      "W": [
+        256,
+        4096
+      ],
+      "N_pol_states": [
+        3,
+        16
+      ],
+      "lambda_nm": [
+        400,
+        900
+      ],
+      "photon_count": [
+        50,
+        20000
+      ],
+      "polarizer_alignment_error": [
+        0.0,
+        0.05
+      ],
+      "retarder_drift": [
+        0.0,
+        0.1
+      ],
+      "intrinsic_birefringence_background": [
+        0.0,
+        0.2
+      ]
+    },
+    "E": {
+      "forward": "I_k(r) = M_k . S(r) + n, k = 1..N_states; S = (I, Q, U, V) Stokes vector",
+      "operator": "stokes_polarimetry_forward_mismatch",
+      "primitive_chain": "L.polarizer -> L.analyzer -> int.temporal",
+      "inverse": "solve forward model for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "24.0 + 2.0 * log10(photon_count / 50) - 15.0 * polarizer_alignment_error - 10.0 * retarder_drift"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "LS-Stokes",
+        "method_sig": "L+O",
+        "expected_psnr": 27.5
+      },
+      {
+        "name": "TV-ADMM-Pol",
+        "method_sig": "L+O",
+        "expected_psnr": 30.2
+      },
+      {
+        "name": "PolDenoise-Net",
+        "method_sig": "L+N",
+        "expected_psnr": 33.0
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 1024,
+        "W": 1024,
+        "N_pol_states": 4,
+        "lambda_nm": 550,
+        "photon_count": 1000,
+        "polarizer_alignment_error": 0.0,
+        "retarder_drift": 0.0
+      },
+      "epsilon": 30.0
+    },
+    "tier_bounds": {
+      "H": [
+        256,
+        4096
+      ],
+      "W": [
+        256,
+        4096
+      ],
+      "N_pol_states": [
+        3,
+        16
+      ],
+      "lambda_nm": [
+        400,
+        900
+      ],
+      "photon_count": [
+        50,
+        20000
+      ],
+      "polarizer_alignment_error": [
+        0.0,
+        0.05
+      ],
+      "retarder_drift": [
+        0.0,
+        0.1
+      ],
+      "intrinsic_birefringence_background": [
+        0.0,
+        0.2
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.45,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

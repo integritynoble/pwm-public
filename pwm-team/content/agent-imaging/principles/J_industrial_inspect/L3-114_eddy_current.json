@@ -1,0 +1,177 @@
+{
+  "artifact_id": "L3-114",
+  "layer": "L3",
+  "parent_l2": "L2-114",
+  "parent_l1": "L1-114",
+  "title": "Eddy-Current Testing (near-surface metallic defect detection) Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "canonical NDT / NDE dataset for this principle",
+    "secondary": "simulated forward synthesis at declared Omega",
+    "construction_method": "parametric forward + declared noise",
+    "num_dev_instances_per_tier": 20
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "H": 256,
+        "W": 256,
+        "f_kHz": 100,
+        "lift_off_mm": 0.5,
+        "SNR_dB": 25.0,
+        "lift_off_variation": 0.0,
+        "conductivity_variation": 0.0,
+        "probe_tilt": 0.0,
+        "edge_effect": 0.0
+      },
+      "epsilon": 25.0,
+      "d_ibench": 0.14,
+      "baselines": [
+        {
+          "name": "Impedance-Plane",
+          "score": 22.5,
+          "Q": 0.88
+        },
+        {
+          "name": "Kalman-Compensation",
+          "score": 24.0,
+          "Q": 0.88
+        },
+        {
+          "name": "EC-CNN",
+          "score": 27.0,
+          "Q": 0.88
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "H": 256,
+        "W": 256,
+        "f_kHz": 100,
+        "lift_off_mm": 0.5,
+        "SNR_dB": 22.0,
+        "lift_off_variation": 0.1,
+        "conductivity_variation": 0.06,
+        "probe_tilt": 0.020000000000000004,
+        "edge_effect": 0.06
+      },
+      "epsilon": 20.5,
+      "d_ibench": 0.28,
+      "baselines": [
+        {
+          "name": "Impedance-Plane",
+          "score": 20.5,
+          "Q": 0.68
+        },
+        {
+          "name": "Kalman-Compensation",
+          "score": 22.0,
+          "Q": 0.68
+        },
+        {
+          "name": "EC-CNN",
+          "score": 25.0,
+          "Q": 0.68
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "H": 256,
+        "W": 256,
+        "f_kHz": 100,
+        "lift_off_mm": 0.5,
+        "SNR_dB": 13.0,
+        "lift_off_variation": 0.25,
+        "conductivity_variation": 0.15,
+        "probe_tilt": 0.05,
+        "edge_effect": 0.15
+      },
+      "epsilon": 16.0,
+      "d_ibench": 0.48,
+      "baselines": [
+        {
+          "name": "Impedance-Plane",
+          "score": 18.5,
+          "Q": 0.48
+        },
+        {
+          "name": "Kalman-Compensation",
+          "score": 20.0,
+          "Q": 0.48
+        },
+        {
+          "name": "EC-CNN",
+          "score": 23.0,
+          "Q": 0.48
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "H": 256,
+        "W": 256,
+        "f_kHz": 100,
+        "lift_off_mm": 0.5,
+        "SNR_dB": 0.0,
+        "lift_off_variation": 0.5,
+        "conductivity_variation": 0.3,
+        "probe_tilt": 0.1,
+        "edge_effect": 0.3
+      },
+      "epsilon": 11.5,
+      "d_ibench": 0.72,
+      "baselines": [
+        {
+          "name": "Impedance-Plane",
+          "score": 16.5,
+          "Q": 0.28
+        },
+        {
+          "name": "Kalman-Compensation",
+          "score": 18.0,
+          "Q": 0.28
+        },
+        {
+          "name": "EC-CNN",
+          "score": 21.0,
+          "Q": 0.28
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "full parametric sweep",
+      "num_dev_instances": 200,
+      "construction_method": "parametric Omega sweep"
+    },
+    "baselines": [
+      {
+        "name": "Impedance-Plane",
+        "overall_Q": 0.7
+      },
+      {
+        "name": "Kalman-Compensation",
+        "overall_Q": 0.6
+      },
+      {
+        "name": "EC-CNN",
+        "overall_Q": 0.5
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind strata corner.",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

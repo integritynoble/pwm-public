@@ -1,0 +1,159 @@
+{
+  "artifact_id": "L2-054",
+  "layer": "L2",
+  "parent_l1": "L1-054",
+  "title": "Photon-Counting CT (PCCT) \u2014 spectral detector CT Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": 256,
+      "W": 256,
+      "Z": [
+        64,
+        2048
+      ],
+      "N_projections": [
+        180,
+        2880
+      ],
+      "N_energy_bins": [
+        2,
+        16
+      ],
+      "mAs": [
+        1,
+        500
+      ],
+      "pixel_mm": [
+        0.05,
+        1.0
+      ],
+      "charge_sharing": [
+        0.0,
+        0.3
+      ],
+      "pulse_pileup": [
+        0.0,
+        0.5
+      ],
+      "beam_hardening": [
+        0.0,
+        0.3
+      ],
+      "k_edge_calibration": [
+        0.0,
+        0.1
+      ]
+    },
+    "E": {
+      "forward": "y_theta_{E_bin}(u,v) = integral mu(E, r) ds over bin + charge_sharing + pileup + n; spectral MBIR",
+      "operator": "pcct_forward_mismatch",
+      "primitive_chain": "L.xray_source -> S.scan.angular -> D.pcd_detector -> L.spectral_decompose -> L.backproject -> int.angular",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "20.0 + 2.0 * log10(mAs / 1) - 10.0 * charge_sharing - 15.0 * pulse_pileup - 8.0 * beam_hardening"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "FBP-Spectral",
+        "method_sig": "L+O",
+        "expected_psnr": 25.5
+      },
+      {
+        "name": "Spectral-MBIR",
+        "method_sig": "L+O",
+        "expected_psnr": 28.0
+      },
+      {
+        "name": "PCCT-Net",
+        "method_sig": "L+N",
+        "expected_psnr": 30.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "Z": 256,
+        "N_projections": 720,
+        "N_energy_bins": 5,
+        "mAs": 100,
+        "pixel_mm": 0.25,
+        "charge_sharing": 0.05,
+        "pulse_pileup": 0.0,
+        "beam_hardening": 0.0,
+        "k_edge_calibration": 0.0
+      },
+      "epsilon": 28.0
+    },
+    "tier_bounds": {
+      "H": 256,
+      "W": 256,
+      "Z": [
+        64,
+        2048
+      ],
+      "N_projections": [
+        180,
+        2880
+      ],
+      "N_energy_bins": [
+        2,
+        16
+      ],
+      "mAs": [
+        1,
+        500
+      ],
+      "pixel_mm": [
+        0.05,
+        1.0
+      ],
+      "charge_sharing": [
+        0.0,
+        0.3
+      ],
+      "pulse_pileup": [
+        0.0,
+        0.5
+      ],
+      "beam_hardening": [
+        0.0,
+        0.3
+      ],
+      "k_edge_calibration": [
+        0.0,
+        0.1
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.5,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

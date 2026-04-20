@@ -1,0 +1,192 @@
+{
+  "artifact_id": "L1-011",
+  "layer": "L1",
+  "principle_number": "011",
+  "title": "PALM / STORM (single-molecule localization microscopy)",
+  "domain": "Microscopy",
+  "sub_domain": "Single-molecule localization super-resolution",
+  "source_file": "A_microscopy/011_palm_storm.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical domain literature for this specific principle.",
+  "E": {
+    "description": "PALM / STORM (single-molecule localization microscopy) forward model.",
+    "forward_model": "y_t(r) = sum_i 1_{active_i,t} * PSF(r - r_i) * A_i + n; recover {r_i} over T frames",
+    "world_state_x": "Scene parameter of interest (density / complex field / lifetime / normals depending on spec).",
+    "observation_y": "Measured intensity or photon counts from the imaging system.",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "T_frames",
+      "pixel_nm",
+      "NA",
+      "photons_per_molecule",
+      "N_emitters_per_frame",
+      "drift_nm_per_frame",
+      "background_bias"
+    ]
+  },
+  "G": {
+    "dag": "K.psf.airy -> D.threshold.isolated -> L.gaussian_fit -> int.temporal",
+    "vertices": [
+      "K.psf.airy",
+      "D.threshold.isolated",
+      "L.gaussian_fit",
+      "int.temporal"
+    ],
+    "arcs": [
+      "K.psf.airy -> D.threshold.isolated",
+      "D.threshold.isolated -> L.gaussian_fit",
+      "L.gaussian_fit -> int.temporal"
+    ],
+    "L_DAG": 4.2,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 600,
+    "condition_number_effective": 30,
+    "regime": "Conditional stability; principle-specific mismatch dominates at Omega bounds (see `mismatch_parameters`)."
+  },
+  "C": {
+    "solver_class": "ThunderSTORM, DECODE, DeepSTORM",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(photon_count) + mismatch-induced bias.",
+    "complexity": "O(H W) to O(H W Z) per iteration depending on dimensionality"
+  },
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "single_molecule_localization",
+    "integration_axis": "temporal",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "shot_poisson",
+    "solution_space": "point_list",
+    "primitives": [
+      "K.psf.airy",
+      "D.threshold.isolated",
+      "L.gaussian_fit",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 10,
+  "difficulty_tier": "hard",
+  "mismatch_parameters": [
+    "drift_nm_per_frame",
+    "multi_emitter_overlap",
+    "background_bias",
+    "blinking_kinetics"
+  ],
+  "error_metric": "localization_precision_nm",
+  "error_metric_secondary": "detection_recall",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "smlm",
+      "forward_operator": "smlm_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 256,
+        "W": 256,
+        "T_frames": 10000,
+        "pixel_nm": 160,
+        "NA": 1.49,
+        "photons_per_molecule": 3000,
+        "N_emitters_per_frame": 50,
+        "drift_nm_per_frame": 0.0,
+        "background_bias": 50
+      },
+      "epsilon_fn_center": "15.0"
+    },
+    "allowed_forward_operators": [
+      "smlm_forward"
+    ],
+    "allowed_problem_classes": [
+      "smlm"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "T_frames",
+      "pixel_nm",
+      "NA",
+      "photons_per_molecule",
+      "N_emitters_per_frame",
+      "drift_nm_per_frame",
+      "background_bias",
+      "drift_nm_per_frame",
+      "multi_emitter_overlap",
+      "background_bias",
+      "blinking_kinetics"
+    ],
+    "omega_bounds": {
+      "H": [
+        64,
+        2048
+      ],
+      "W": [
+        64,
+        2048
+      ],
+      "T_frames": [
+        1000,
+        100000
+      ],
+      "pixel_nm": [
+        80,
+        300
+      ],
+      "NA": [
+        1.3,
+        1.49
+      ],
+      "photons_per_molecule": [
+        500,
+        20000
+      ],
+      "N_emitters_per_frame": [
+        5,
+        500
+      ],
+      "drift_nm_per_frame": [
+        0.0,
+        5.0
+      ],
+      "multi_emitter_overlap": [
+        0.0,
+        0.5
+      ],
+      "background_bias": [
+        10,
+        500
+      ],
+      "blinking_kinetics": [
+        0.0,
+        0.2
+      ]
+    },
+    "epsilon_bounds": {
+      "localization_nm": [
+        0.5,
+        50.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

@@ -1,0 +1,177 @@
+{
+  "artifact_id": "L3-012",
+  "layer": "L3",
+  "parent_l2": "L2-012",
+  "parent_l1": "L1-012",
+  "title": "Total Internal Reflection Fluorescence (TIRF) Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "principle-appropriate canonical dataset (domain-standard)",
+    "secondary": "published follow-up benchmark dataset",
+    "construction_method": "parametric forward synthesis at declared Omega; Poisson/Gaussian noise at declared level",
+    "num_dev_instances_per_tier": 20
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "pixel_nm": 100,
+        "NA": 1.49,
+        "d_p_nm": 100,
+        "peak_photons": 500,
+        "coverslip_angle_drift": 0.0,
+        "background_volume_fluorescence": 0.0,
+        "penetration_depth_error": 0.0
+      },
+      "epsilon": 28.0,
+      "d_ibench": 0.14,
+      "baselines": [
+        {
+          "name": "Wiener-TIRF",
+          "score": 26.0,
+          "Q": 0.8
+        },
+        {
+          "name": "BALM",
+          "score": 28.5,
+          "Q": 0.85
+        },
+        {
+          "name": "CARE-TIRF",
+          "score": 31.0,
+          "Q": 0.9
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "pixel_nm": 100,
+        "NA": 1.49,
+        "d_p_nm": 100,
+        "peak_photons": 250,
+        "coverslip_angle_drift": 0.1,
+        "background_volume_fluorescence": 0.06,
+        "penetration_depth_error": 0.06
+      },
+      "epsilon": 22.4,
+      "d_ibench": 0.28,
+      "baselines": [
+        {
+          "name": "Wiener-TIRF",
+          "score": 23.5,
+          "Q": 0.6
+        },
+        {
+          "name": "BALM",
+          "score": 26.0,
+          "Q": 0.65
+        },
+        {
+          "name": "CARE-TIRF",
+          "score": 28.5,
+          "Q": 0.7
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "pixel_nm": 100,
+        "NA": 1.49,
+        "d_p_nm": 100,
+        "peak_photons": 100,
+        "coverslip_angle_drift": 0.25,
+        "background_volume_fluorescence": 0.15,
+        "penetration_depth_error": 0.15
+      },
+      "epsilon": 16.8,
+      "d_ibench": 0.48,
+      "baselines": [
+        {
+          "name": "Wiener-TIRF",
+          "score": 21.0,
+          "Q": 0.4
+        },
+        {
+          "name": "BALM",
+          "score": 23.5,
+          "Q": 0.45
+        },
+        {
+          "name": "CARE-TIRF",
+          "score": 26.0,
+          "Q": 0.5
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "pixel_nm": 100,
+        "NA": 1.49,
+        "d_p_nm": 100,
+        "peak_photons": 41,
+        "coverslip_angle_drift": 0.5,
+        "background_volume_fluorescence": 0.3,
+        "penetration_depth_error": 0.3
+      },
+      "epsilon": 11.2,
+      "d_ibench": 0.72,
+      "baselines": [
+        {
+          "name": "Wiener-TIRF",
+          "score": 18.5,
+          "Q": 0.2
+        },
+        {
+          "name": "BALM",
+          "score": 21.0,
+          "Q": 0.25
+        },
+        {
+          "name": "CARE-TIRF",
+          "score": 23.5,
+          "Q": 0.3
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "full Omega parametric sweep",
+      "num_dev_instances": 200,
+      "construction_method": "parametric sweep of all declared Omega dimensions"
+    },
+    "baselines": [
+      {
+        "name": "Wiener-TIRF",
+        "overall_Q": 0.7
+      },
+      {
+        "name": "BALM",
+        "overall_Q": 0.6
+      },
+      {
+        "name": "CARE-TIRF",
+        "overall_Q": 0.5
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind strata with simultaneous worst-case mismatch + low photon corner.",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

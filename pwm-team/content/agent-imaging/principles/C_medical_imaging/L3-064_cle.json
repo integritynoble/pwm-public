@@ -1,0 +1,181 @@
+{
+  "artifact_id": "L3-064",
+  "layer": "L3",
+  "parent_l2": "L2-064",
+  "parent_l1": "L1-064",
+  "title": "Confocal Laser Endomicroscopy (CLE) Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "canonical clinical/public dataset for this modality",
+    "secondary": "simulated forward synthesis at declared Omega",
+    "construction_method": "parametric forward + declared noise",
+    "num_dev_instances_per_tier": 20
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "H": 1024,
+        "W": 1024,
+        "pixel_um": 1.0,
+        "NA": 0.7,
+        "peak_photons": 200,
+        "f_MHz": 1,
+        "motion": 0.0,
+        "photobleaching": 0.0,
+        "tissue_contact_pressure": 0.0,
+        "fluorophore_uptake_variation": 0.0
+      },
+      "epsilon": 26.0,
+      "d_ibench": 0.14,
+      "baselines": [
+        {
+          "name": "Wiener-CLE",
+          "score": 23.5,
+          "Q": 0.88
+        },
+        {
+          "name": "RL-Confocal",
+          "score": 25.0,
+          "Q": 0.88
+        },
+        {
+          "name": "CLE-Net",
+          "score": 27.5,
+          "Q": 0.88
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "H": 1024,
+        "W": 1024,
+        "pixel_um": 1.0,
+        "NA": 0.7,
+        "peak_photons": 100,
+        "f_MHz": 1,
+        "motion": 0.1,
+        "photobleaching": 0.1,
+        "tissue_contact_pressure": 0.06,
+        "fluorophore_uptake_variation": 0.06
+      },
+      "epsilon": 21.32,
+      "d_ibench": 0.28,
+      "baselines": [
+        {
+          "name": "Wiener-CLE",
+          "score": 21.5,
+          "Q": 0.68
+        },
+        {
+          "name": "RL-Confocal",
+          "score": 23.0,
+          "Q": 0.68
+        },
+        {
+          "name": "CLE-Net",
+          "score": 25.5,
+          "Q": 0.68
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "H": 1024,
+        "W": 1024,
+        "pixel_um": 1.0,
+        "NA": 0.7,
+        "peak_photons": 40,
+        "f_MHz": 1,
+        "motion": 0.25,
+        "photobleaching": 0.25,
+        "tissue_contact_pressure": 0.15,
+        "fluorophore_uptake_variation": 0.15
+      },
+      "epsilon": 16.64,
+      "d_ibench": 0.48,
+      "baselines": [
+        {
+          "name": "Wiener-CLE",
+          "score": 19.5,
+          "Q": 0.48
+        },
+        {
+          "name": "RL-Confocal",
+          "score": 21.0,
+          "Q": 0.48
+        },
+        {
+          "name": "CLE-Net",
+          "score": 23.5,
+          "Q": 0.48
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "H": 1024,
+        "W": 1024,
+        "pixel_um": 1.0,
+        "NA": 0.7,
+        "peak_photons": 20,
+        "f_MHz": 1,
+        "motion": 0.5,
+        "photobleaching": 0.5,
+        "tissue_contact_pressure": 0.3,
+        "fluorophore_uptake_variation": 0.3
+      },
+      "epsilon": 11.96,
+      "d_ibench": 0.72,
+      "baselines": [
+        {
+          "name": "Wiener-CLE",
+          "score": 17.5,
+          "Q": 0.28
+        },
+        {
+          "name": "RL-Confocal",
+          "score": 19.0,
+          "Q": 0.28
+        },
+        {
+          "name": "CLE-Net",
+          "score": 21.5,
+          "Q": 0.28
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "full parametric sweep",
+      "num_dev_instances": 200,
+      "construction_method": "parametric Omega sweep"
+    },
+    "baselines": [
+      {
+        "name": "Wiener-CLE",
+        "overall_Q": 0.7
+      },
+      {
+        "name": "RL-Confocal",
+        "overall_Q": 0.6
+      },
+      {
+        "name": "CLE-Net",
+        "overall_Q": 0.5
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind strata corner.",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

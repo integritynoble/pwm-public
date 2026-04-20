@@ -1,0 +1,153 @@
+{
+  "artifact_id": "L2-094",
+  "layer": "L2",
+  "parent_l1": "L1-094",
+  "title": "STEM-EDX \u2014 X-ray energy-dispersive elemental mapping Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        128,
+        2048
+      ],
+      "W": [
+        128,
+        2048
+      ],
+      "N_elements": [
+        2,
+        30
+      ],
+      "kV": [
+        60,
+        300
+      ],
+      "dwell_ms": [
+        0.1,
+        1000
+      ],
+      "peak_electrons": [
+        50,
+        100000
+      ],
+      "detector_dead_time": [
+        0.0,
+        0.5
+      ],
+      "peak_overlap": [
+        0.0,
+        0.5
+      ],
+      "absorption_correction": [
+        0.0,
+        0.3
+      ]
+    },
+    "E": {
+      "forward": "S(E, r) = sum_el c_el(r) * phi_el(E) + bremsstrahlung + n; unmix per element via reference peaks",
+      "operator": "stem_edx_forward_mismatch",
+      "primitive_chain": "L.illumination.convergent_probe -> S.scan.raster -> D.edx_detector -> int.spectral",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "18.0 + 2.5 * log10(peak_electrons / 50) - 8.0 * peak_overlap - 5.0 * detector_dead_time"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Background-subtract",
+        "method_sig": "L+O",
+        "expected_psnr": 22.0
+      },
+      {
+        "name": "NMF-EDX",
+        "method_sig": "L+O",
+        "expected_psnr": 24.5
+      },
+      {
+        "name": "EDX-Net",
+        "method_sig": "L+N",
+        "expected_psnr": 27.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "N_elements": 6,
+        "kV": 200,
+        "dwell_ms": 5,
+        "peak_electrons": 1000,
+        "detector_dead_time": 0.1,
+        "peak_overlap": 0.0,
+        "absorption_correction": 0.0
+      },
+      "epsilon": 25.0
+    },
+    "tier_bounds": {
+      "H": [
+        128,
+        2048
+      ],
+      "W": [
+        128,
+        2048
+      ],
+      "N_elements": [
+        2,
+        30
+      ],
+      "kV": [
+        60,
+        300
+      ],
+      "dwell_ms": [
+        0.1,
+        1000
+      ],
+      "peak_electrons": [
+        50,
+        100000
+      ],
+      "detector_dead_time": [
+        0.0,
+        0.5
+      ],
+      "peak_overlap": [
+        0.0,
+        0.5
+      ],
+      "absorption_correction": [
+        0.0,
+        0.3
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.48,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

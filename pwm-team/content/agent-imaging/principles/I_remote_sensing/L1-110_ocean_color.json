@@ -1,0 +1,184 @@
+{
+  "artifact_id": "L1-110",
+  "layer": "L1",
+  "principle_number": "110",
+  "title": "Ocean Color Remote Sensing (chlorophyll / CDOM / TSM)",
+  "domain": "Remote Sensing",
+  "sub_domain": "Coastal/ocean bio-optics via satellite",
+  "source_file": "I_remote_sensing/110_ocean_color.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical remote-sensing literature for this principle.",
+  "E": {
+    "description": "Ocean Color Remote Sensing (chlorophyll / CDOM / TSM) forward model.",
+    "forward_model": "L_TOA(lambda) = L_atm + t * (L_w(chl, CDOM, TSM; lambda) + L_glint); invert for chl, CDOM, TSM",
+    "world_state_x": "Scene-side quantity of interest (reflectance / velocity / phase / concentration)",
+    "observation_y": "Sensor output at declared resolution + noise",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "N_bands",
+      "GSD_m",
+      "SNR_dB",
+      "atmospheric_aerosol",
+      "glint",
+      "whitecaps",
+      "bottom_reflectance"
+    ]
+  },
+  "G": {
+    "dag": "L.multispectral_sensor -> L.atmospheric_correction -> L.bio_optical_inversion -> int.spatial",
+    "vertices": [
+      "L.multispectral_sensor",
+      "L.atmospheric_correction",
+      "L.bio_optical_inversion",
+      "int.spatial"
+    ],
+    "arcs": [
+      "L.multispectral_sensor -> L.atmospheric_correction",
+      "L.atmospheric_correction -> L.bio_optical_inversion",
+      "L.bio_optical_inversion -> int.spatial"
+    ],
+    "L_DAG": 3.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 240,
+    "condition_number_effective": 12,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "NASA-OC3M, QAA, OceanColor-Net",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sensor SNR + mismatch-induced bias.",
+    "complexity": "O(H W) to O(H W N_bands) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "ocean_color_multispectral",
+    "integration_axis": "spatial",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "ocean_iop_map",
+    "primitives": [
+      "L.multispectral_sensor",
+      "L.atmospheric_correction",
+      "L.bio_optical_inversion",
+      "int.spatial"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "atmospheric_aerosol",
+    "glint",
+    "whitecaps",
+    "bottom_reflectance"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "ocean_color",
+      "forward_operator": "ocean_color_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 1024,
+        "W": 1024,
+        "N_bands": 9,
+        "GSD_m": 1000,
+        "SNR_dB": 40.0,
+        "atmospheric_aerosol": 0.1,
+        "glint": 0.0,
+        "whitecaps": 0.0,
+        "bottom_reflectance": 0.0
+      },
+      "epsilon_fn_center": "25.0"
+    },
+    "allowed_forward_operators": [
+      "ocean_color_forward"
+    ],
+    "allowed_problem_classes": [
+      "ocean_color"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "N_bands",
+      "GSD_m",
+      "SNR_dB",
+      "atmospheric_aerosol",
+      "glint",
+      "whitecaps",
+      "bottom_reflectance",
+      "atmospheric_aerosol",
+      "glint",
+      "whitecaps",
+      "bottom_reflectance"
+    ],
+    "omega_bounds": {
+      "H": [
+        256,
+        8192
+      ],
+      "W": [
+        256,
+        8192
+      ],
+      "N_bands": [
+        4,
+        20
+      ],
+      "GSD_m": [
+        10,
+        5000
+      ],
+      "SNR_dB": [
+        15.0,
+        45.0
+      ],
+      "atmospheric_aerosol": [
+        0.0,
+        0.5
+      ],
+      "glint": [
+        0.0,
+        0.3
+      ],
+      "whitecaps": [
+        0.0,
+        0.2
+      ],
+      "bottom_reflectance": [
+        0.0,
+        0.5
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        5.0,
+        40.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

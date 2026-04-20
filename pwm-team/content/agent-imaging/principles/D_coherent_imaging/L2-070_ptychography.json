@@ -1,0 +1,54 @@
+{
+  "artifact_id": "L2-070",
+  "layer": "L2",
+  "parent_l1": "L1-070",
+  "title": "Ptychography Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+
+  "six_tuple": {
+    "omega": {
+      "H": [128, 4096], "W": [128, 4096], "probe_size": [32, 512], "J_scan": [50, 10000],
+      "overlap_fraction": [0.30, 0.85], "photon_count": [10, 100000],
+      "probe_position_error": [0.0, 2.0], "probe_shape_drift": [0.0, 0.2],
+      "partial_coherence": [0.70, 1.0], "background_scatter": [0.0, 0.10]
+    },
+    "E": {
+      "forward": "I_j(k) = |F{P(r - r_j) * O(r)}|^2 + n_j(k)",
+      "operator": "ptychographic_forward_mismatch",
+      "primitive_chain": "S.scan.grid -> L.hadamard.complex -> F.fourier -> L.modulus_squared -> int.spatial",
+      "inverse": "jointly recover O(r), P(r) from J diffraction intensities"
+    },
+    "B": {"modulus_positive": true, "support_compact": true, "complex_domain": true},
+    "I": {"strategy": "random_complex_init_plus_scan_refinement"},
+    "O": ["PSNR", "FRC_half_bit", "phase_L2_error", "residual_norm"],
+    "epsilon_fn": "24.0 + 3.0 * log2(J_scan / 50) + 2.0 * log10(photon_count / 10) - 15.0 * max(0, 0.5 - overlap_fraction)"
+  },
+
+  "protocol_fields": {
+    "input_format": {"diffractions": "float32(J, K, K)", "scan_positions": "float32(J, 2)", "probe_init": "complex64(P, P) optional"},
+    "output_format": {"object": "complex64(H, W)", "probe_refined": "complex64(P, P)"},
+    "baselines": [
+      {"name": "ePIE",         "method_sig": "I+O", "expected_psnr": 28.0},
+      {"name": "DM (difference map)", "method_sig": "I+O", "expected_psnr": 29.5},
+      {"name": "ADMM-ptycho",  "method_sig": "L+O", "expected_psnr": 30.8},
+      {"name": "PtychoNN",     "method_sig": "L+N", "expected_psnr": 33.0}
+    ]
+  },
+
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {"H": 512, "W": 512, "probe_size": 128, "J_scan": 400, "overlap_fraction": 0.70, "photon_count": 1000, "probe_position_error": 0.0, "probe_shape_drift": 0.0, "partial_coherence": 1.0, "background_scatter": 0.0},
+      "epsilon": 30.0
+    },
+    "tier_bounds": {
+      "H": [128, 2048], "W": [128, 2048], "J_scan": [100, 5000], "overlap_fraction": [0.40, 0.85],
+      "photon_count": [50, 100000], "probe_position_error": [0.0, 2.0], "partial_coherence": [0.70, 1.0]
+    },
+    "proximity_threshold": 0.10
+  },
+
+  "d_spec": 0.58,
+  "s1_s4_gates": ["PASS", "PASS", "PASS", "PASS"],
+  "ipfs_cid": null
+}

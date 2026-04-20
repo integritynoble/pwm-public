@@ -1,0 +1,181 @@
+{
+  "artifact_id": "L3-069",
+  "layer": "L3",
+  "parent_l2": "L2-069",
+  "parent_l1": "L1-069",
+  "title": "Magnetic Particle Imaging (MPI) Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "canonical clinical/public dataset for this modality",
+    "secondary": "simulated forward synthesis at declared Omega",
+    "construction_method": "parametric forward + declared noise",
+    "num_dev_instances_per_tier": 20
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "H": 128,
+        "W": 128,
+        "Z": 64,
+        "N_harmonics": 20,
+        "f_drive_kHz": 25,
+        "SNR_dB": 20.0,
+        "spatial_relaxation": 0.0,
+        "tracer_distribution": 0.0,
+        "drive_field_harmonics": 0.0,
+        "coil_sensitivity_error": 0.0
+      },
+      "epsilon": 20.0,
+      "d_ibench": 0.14,
+      "baselines": [
+        {
+          "name": "Kaczmarz",
+          "score": 17.5,
+          "Q": 0.88
+        },
+        {
+          "name": "ADMM-MPI",
+          "score": 20.0,
+          "Q": 0.88
+        },
+        {
+          "name": "MPI-Net",
+          "score": 22.5,
+          "Q": 0.88
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "H": 128,
+        "W": 128,
+        "Z": 64,
+        "N_harmonics": 20,
+        "f_drive_kHz": 25,
+        "SNR_dB": 17.0,
+        "spatial_relaxation": 0.06,
+        "tracer_distribution": 0.06,
+        "drive_field_harmonics": 0.06,
+        "coil_sensitivity_error": 0.06
+      },
+      "epsilon": 16.4,
+      "d_ibench": 0.28,
+      "baselines": [
+        {
+          "name": "Kaczmarz",
+          "score": 15.5,
+          "Q": 0.68
+        },
+        {
+          "name": "ADMM-MPI",
+          "score": 18.0,
+          "Q": 0.68
+        },
+        {
+          "name": "MPI-Net",
+          "score": 20.5,
+          "Q": 0.68
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "H": 128,
+        "W": 128,
+        "Z": 64,
+        "N_harmonics": 20,
+        "f_drive_kHz": 25,
+        "SNR_dB": 8.0,
+        "spatial_relaxation": 0.15,
+        "tracer_distribution": 0.15,
+        "drive_field_harmonics": 0.15,
+        "coil_sensitivity_error": 0.15
+      },
+      "epsilon": 12.8,
+      "d_ibench": 0.48,
+      "baselines": [
+        {
+          "name": "Kaczmarz",
+          "score": 13.5,
+          "Q": 0.48
+        },
+        {
+          "name": "ADMM-MPI",
+          "score": 16.0,
+          "Q": 0.48
+        },
+        {
+          "name": "MPI-Net",
+          "score": 18.5,
+          "Q": 0.48
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "H": 128,
+        "W": 128,
+        "Z": 64,
+        "N_harmonics": 20,
+        "f_drive_kHz": 25,
+        "SNR_dB": 0.0,
+        "spatial_relaxation": 0.3,
+        "tracer_distribution": 0.3,
+        "drive_field_harmonics": 0.3,
+        "coil_sensitivity_error": 0.3
+      },
+      "epsilon": 9.2,
+      "d_ibench": 0.72,
+      "baselines": [
+        {
+          "name": "Kaczmarz",
+          "score": 11.5,
+          "Q": 0.28
+        },
+        {
+          "name": "ADMM-MPI",
+          "score": 14.0,
+          "Q": 0.28
+        },
+        {
+          "name": "MPI-Net",
+          "score": 16.5,
+          "Q": 0.28
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "full parametric sweep",
+      "num_dev_instances": 200,
+      "construction_method": "parametric Omega sweep"
+    },
+    "baselines": [
+      {
+        "name": "Kaczmarz",
+        "overall_Q": 0.7
+      },
+      {
+        "name": "ADMM-MPI",
+        "overall_Q": 0.6
+      },
+      {
+        "name": "MPI-Net",
+        "overall_Q": 0.5
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind strata corner.",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

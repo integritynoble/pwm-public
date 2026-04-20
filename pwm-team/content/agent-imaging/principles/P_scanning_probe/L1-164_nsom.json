@@ -1,0 +1,185 @@
+{
+  "artifact_id": "L1-164",
+  "layer": "L1",
+  "principle_number": "164",
+  "title": "Near-Field Scanning Optical Microscopy (NSOM/SNOM)",
+  "domain": "Scanning Probe",
+  "sub_domain": "Sub-diffraction optical microscopy via near-field aperture",
+  "source_file": "P_scanning_probe/164_nsom.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
+  "E": {
+    "description": "Near-Field Scanning Optical Microscopy (NSOM/SNOM) forward model.",
+    "forward_model": "y(r) = integral E_near(r - r', aperture) * chi(r') dr' + n; sub-lambda resolution ~lambda/20",
+    "world_state_x": "Principle-specific quantity of interest",
+    "observation_y": "Detector output at declared geometry",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "aperture_nm",
+      "pixel_nm",
+      "peak_photons",
+      "tip_sample_distance",
+      "aperture_contamination",
+      "vibrational_noise",
+      "optical_coupling",
+      "SNR_dB"
+    ]
+  },
+  "G": {
+    "dag": "L.aperture_near_field -> L.evanescent_coupling -> S.scan.raster -> int.spatial",
+    "vertices": [
+      "L.aperture_near_field",
+      "L.evanescent_coupling",
+      "S.scan.raster",
+      "int.spatial"
+    ],
+    "arcs": [
+      "L.aperture_near_field -> L.evanescent_coupling",
+      "L.evanescent_coupling -> S.scan.raster",
+      "S.scan.raster -> int.spatial"
+    ],
+    "L_DAG": 3.8,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 360,
+    "condition_number_effective": 18,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Deconv-NSOM, TV-ADMM-NSOM, NSOM-Net",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sensor SNR + mismatch bias + regularization.",
+    "complexity": "principle-dependent"
+  },
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "near_field_scanning_optical",
+    "integration_axis": "spatial",
+    "problem_class": "linear_inverse",
+    "noise_model": "shot_poisson",
+    "solution_space": "2D_intensity",
+    "primitives": [
+      "L.aperture_near_field",
+      "L.evanescent_coupling",
+      "S.scan.raster",
+      "int.spatial"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "tip_sample_distance",
+    "aperture_contamination",
+    "vibrational_noise",
+    "optical_coupling"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "nsom",
+      "forward_operator": "nsom_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 256,
+        "W": 256,
+        "aperture_nm": 50,
+        "pixel_nm": 10,
+        "peak_photons": 500,
+        "tip_sample_distance": 5,
+        "aperture_contamination": 0.0,
+        "vibrational_noise": 0.0,
+        "optical_coupling": 1.0,
+        "SNR_dB": 25
+      },
+      "epsilon_fn_center": "22.0"
+    },
+    "allowed_forward_operators": [
+      "nsom_forward"
+    ],
+    "allowed_problem_classes": [
+      "nsom"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "aperture_nm",
+      "pixel_nm",
+      "peak_photons",
+      "tip_sample_distance",
+      "aperture_contamination",
+      "vibrational_noise",
+      "optical_coupling",
+      "SNR_dB",
+      "tip_sample_distance",
+      "aperture_contamination",
+      "vibrational_noise",
+      "optical_coupling"
+    ],
+    "omega_bounds": {
+      "H": 64,
+      "W": 64,
+      "aperture_nm": [
+        10,
+        500
+      ],
+      "pixel_nm": [
+        1,
+        100
+      ],
+      "peak_photons": [
+        10,
+        10000
+      ],
+      "tip_sample_distance": [
+        1,
+        50
+      ],
+      "aperture_contamination": [
+        0.0,
+        0.5
+      ],
+      "vibrational_noise": [
+        0.0,
+        0.3
+      ],
+      "optical_coupling": [
+        0.3,
+        1.0
+      ],
+      "SNR_dB": [
+        0.0,
+        40.0
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        5.0,
+        40.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

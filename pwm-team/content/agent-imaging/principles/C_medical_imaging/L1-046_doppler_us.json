@@ -1,0 +1,178 @@
+{
+  "artifact_id": "L1-046",
+  "layer": "L1",
+  "principle_number": "046",
+  "title": "Doppler Ultrasound (color / spectral)",
+  "domain": "Medical Imaging",
+  "sub_domain": "Blood-flow velocity via Doppler shift",
+  "source_file": "C_medical_imaging/046_doppler_us.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical medical-imaging literature for this principle.",
+  "E": {
+    "description": "Doppler Ultrasound (color / spectral) forward model.",
+    "forward_model": "delta_f = 2 v cos(theta) f_0 / c; autocorrelate packet for velocity estimate",
+    "world_state_x": "Patient-side quantity of interest (attenuation / activity / perfusion / stiffness etc.)",
+    "observation_y": "Clinical sensor output at declared resolution + noise",
+    "physical_parameters_theta": [
+      "N_elements",
+      "PRF_kHz",
+      "f_MHz",
+      "depth_cm",
+      "SNR_dB",
+      "angle_correction",
+      "wall_filter_bleedthrough",
+      "aliasing"
+    ]
+  },
+  "G": {
+    "dag": "L.emit.acoustic_pulse -> L.doppler_autocorrelation -> int.temporal",
+    "vertices": [
+      "L.emit.acoustic_pulse",
+      "L.doppler_autocorrelation",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.emit.acoustic_pulse -> L.doppler_autocorrelation",
+      "L.doppler_autocorrelation -> int.temporal"
+    ],
+    "L_DAG": 3.2,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 200,
+    "condition_number_effective": 10,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Autocorrelation, PCA-Wall-Filter, Doppler-Net",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sensor SNR + mismatch bias + regularisation.",
+    "complexity": "O(H W) to O(H W Z) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "acoustic",
+    "sensing_mechanism": "doppler_ultrasound",
+    "integration_axis": "temporal",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "2D_velocity_map",
+    "primitives": [
+      "L.emit.acoustic_pulse",
+      "L.doppler_autocorrelation",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "angle_correction",
+    "wall_filter_bleedthrough",
+    "aliasing",
+    "low_velocity_sensitivity"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "doppler_us",
+      "forward_operator": "doppler_us_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_elements": 128,
+        "PRF_kHz": 5,
+        "f_MHz": 5,
+        "depth_cm": 10,
+        "SNR_dB": 22,
+        "angle_correction": 0.0,
+        "wall_filter_bleedthrough": 0.0,
+        "aliasing": 0.0
+      },
+      "epsilon_fn_center": "24.0"
+    },
+    "allowed_forward_operators": [
+      "doppler_us_forward"
+    ],
+    "allowed_problem_classes": [
+      "doppler_us"
+    ],
+    "allowed_omega_dimensions": [
+      "N_elements",
+      "PRF_kHz",
+      "f_MHz",
+      "depth_cm",
+      "SNR_dB",
+      "angle_correction",
+      "wall_filter_bleedthrough",
+      "aliasing",
+      "angle_correction",
+      "wall_filter_bleedthrough",
+      "aliasing",
+      "low_velocity_sensitivity"
+    ],
+    "omega_bounds": {
+      "N_elements": [
+        32,
+        256
+      ],
+      "PRF_kHz": [
+        0.5,
+        20
+      ],
+      "f_MHz": [
+        1,
+        15
+      ],
+      "depth_cm": [
+        1,
+        25
+      ],
+      "SNR_dB": [
+        0.0,
+        35.0
+      ],
+      "angle_correction": [
+        0.0,
+        0.5
+      ],
+      "wall_filter_bleedthrough": [
+        0.0,
+        0.3
+      ],
+      "aliasing": [
+        0.0,
+        0.5
+      ],
+      "low_velocity_sensitivity": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        5.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

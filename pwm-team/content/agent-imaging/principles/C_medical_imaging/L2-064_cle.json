@@ -1,0 +1,149 @@
+{
+  "artifact_id": "L2-064",
+  "layer": "L2",
+  "parent_l1": "L1-064",
+  "title": "Confocal Laser Endomicroscopy (CLE) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": 256,
+      "W": 256,
+      "pixel_um": [
+        0.5,
+        5.0
+      ],
+      "NA": [
+        0.5,
+        1.2
+      ],
+      "peak_photons": [
+        20,
+        2000
+      ],
+      "f_MHz": [
+        0.1,
+        10
+      ],
+      "motion": [
+        0.0,
+        0.5
+      ],
+      "photobleaching": [
+        0.0,
+        0.5
+      ],
+      "tissue_contact_pressure": [
+        0.0,
+        0.3
+      ],
+      "fluorophore_uptake_variation": [
+        0.0,
+        0.3
+      ]
+    },
+    "E": {
+      "forward": "y(r) = [PSF_confocal conv f(r)] + n; in-vivo via probe tip",
+      "operator": "cle_forward_mismatch",
+      "primitive_chain": "L.laser_excitation -> K.psf.confocal -> S.scan.raster -> int.temporal",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "18.0 + 1.5 * log10(peak_photons / 20) - 10.0 * motion - 8.0 * photobleaching"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Wiener-CLE",
+        "method_sig": "L+R",
+        "expected_psnr": 23.5
+      },
+      {
+        "name": "RL-Confocal",
+        "method_sig": "I+M",
+        "expected_psnr": 25.0
+      },
+      {
+        "name": "CLE-Net",
+        "method_sig": "L+N",
+        "expected_psnr": 27.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 1024,
+        "W": 1024,
+        "pixel_um": 1.0,
+        "NA": 0.7,
+        "peak_photons": 200,
+        "f_MHz": 1,
+        "motion": 0.0,
+        "photobleaching": 0.0,
+        "tissue_contact_pressure": 0.0
+      },
+      "epsilon": 26.0
+    },
+    "tier_bounds": {
+      "H": 256,
+      "W": 256,
+      "pixel_um": [
+        0.5,
+        5.0
+      ],
+      "NA": [
+        0.5,
+        1.2
+      ],
+      "peak_photons": [
+        20,
+        2000
+      ],
+      "f_MHz": [
+        0.1,
+        10
+      ],
+      "motion": [
+        0.0,
+        0.5
+      ],
+      "photobleaching": [
+        0.0,
+        0.5
+      ],
+      "tissue_contact_pressure": [
+        0.0,
+        0.3
+      ],
+      "fluorophore_uptake_variation": [
+        0.0,
+        0.3
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.5,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

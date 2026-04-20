@@ -1,0 +1,195 @@
+{
+  "artifact_id": "L1-043",
+  "layer": "L1",
+  "principle_number": "043",
+  "title": "Functional MRI (BOLD)",
+  "domain": "Medical Imaging",
+  "sub_domain": "BOLD-contrast brain functional imaging",
+  "source_file": "C_medical_imaging/043_fmri.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical medical-imaging literature for this principle.",
+  "E": {
+    "description": "Functional MRI (BOLD) forward model.",
+    "forward_model": "s(k, t) = integral rho(r) exp(-t/T2*(r, BOLD(t))) exp(-2pi i k.r) dr + n; GLM to recover BOLD",
+    "world_state_x": "Patient-side quantity of interest (attenuation / activity / perfusion / stiffness etc.)",
+    "observation_y": "Clinical sensor output at declared resolution + noise",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "Z",
+      "N_frames",
+      "TR_s",
+      "TE_ms",
+      "SNR_dB",
+      "physiological_noise",
+      "motion",
+      "susceptibility_artifact"
+    ]
+  },
+  "G": {
+    "dag": "L.rf_excitation -> L.gradient_encoding -> L.T2_star_weighting -> int.temporal",
+    "vertices": [
+      "L.rf_excitation",
+      "L.gradient_encoding",
+      "L.T2_star_weighting",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.rf_excitation -> L.gradient_encoding",
+      "L.gradient_encoding -> L.T2_star_weighting",
+      "L.T2_star_weighting -> int.temporal"
+    ],
+    "L_DAG": 4.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 500,
+    "condition_number_effective": 25,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "GLM-OLS, GLM-AR1, Deep-fMRI",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sensor SNR + mismatch bias + regularisation.",
+    "complexity": "O(H W) to O(H W Z) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "radio_wave",
+    "sensing_mechanism": "mri_fourier_encoding",
+    "integration_axis": "temporal",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "4D_BOLD_signal",
+    "primitives": [
+      "L.rf_excitation",
+      "L.gradient_encoding",
+      "L.T2_star_weighting",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 10,
+  "difficulty_tier": "hard",
+  "mismatch_parameters": [
+    "physiological_noise",
+    "motion",
+    "susceptibility_artifact",
+    "acquisition_jitter",
+    "multi_echo_bias"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "fmri",
+      "forward_operator": "fmri_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 64,
+        "W": 64,
+        "Z": 40,
+        "N_frames": 300,
+        "TR_s": 2.0,
+        "TE_ms": 30,
+        "SNR_dB": 15,
+        "physiological_noise": 0.02,
+        "motion": 0.0,
+        "susceptibility_artifact": 0.0
+      },
+      "epsilon_fn_center": "12.0"
+    },
+    "allowed_forward_operators": [
+      "fmri_forward"
+    ],
+    "allowed_problem_classes": [
+      "fmri"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "Z",
+      "N_frames",
+      "TR_s",
+      "TE_ms",
+      "SNR_dB",
+      "physiological_noise",
+      "motion",
+      "susceptibility_artifact",
+      "physiological_noise",
+      "motion",
+      "susceptibility_artifact",
+      "acquisition_jitter",
+      "multi_echo_bias"
+    ],
+    "omega_bounds": {
+      "H": 32,
+      "W": 32,
+      "Z": [
+        16,
+        100
+      ],
+      "N_frames": [
+        50,
+        1000
+      ],
+      "TR_s": [
+        0.5,
+        5.0
+      ],
+      "TE_ms": [
+        15,
+        80
+      ],
+      "SNR_dB": [
+        0.0,
+        30.0
+      ],
+      "physiological_noise": [
+        0.0,
+        0.2
+      ],
+      "motion": [
+        0.0,
+        0.5
+      ],
+      "susceptibility_artifact": [
+        0.0,
+        0.3
+      ],
+      "acquisition_jitter": [
+        0.0,
+        0.1
+      ],
+      "multi_echo_bias": [
+        0.0,
+        0.2
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        5.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

@@ -1,0 +1,172 @@
+{
+  "artifact_id": "L1-015",
+  "layer": "L1",
+  "principle_number": "015",
+  "title": "MINFLUX (minimum-photon single-molecule localization)",
+  "domain": "Microscopy",
+  "sub_domain": "Doughnut-beam nanometer localization",
+  "source_file": "A_microscopy/015_minflux.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical domain literature for this specific principle.",
+  "E": {
+    "description": "MINFLUX (minimum-photon single-molecule localization) forward model.",
+    "forward_model": "p_k = CRB(r_mol | r_donut_k, L); recover r_mol from ~50 photons vs 1000 for STORM",
+    "world_state_x": "Scene parameter of interest (density / complex field / lifetime / normals depending on spec).",
+    "observation_y": "Measured intensity or photon counts from the imaging system.",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "N_beams",
+      "L_nm",
+      "photons_per_localization",
+      "beam_position_error",
+      "background_count",
+      "drift_nm"
+    ]
+  },
+  "G": {
+    "dag": "L.excitation.donut_array -> D.threshold.photon -> int.temporal",
+    "vertices": [
+      "L.excitation.donut_array",
+      "D.threshold.photon",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.excitation.donut_array -> D.threshold.photon",
+      "D.threshold.photon -> int.temporal"
+    ],
+    "L_DAG": 4.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 500,
+    "condition_number_effective": 25,
+    "regime": "Conditional stability; principle-specific mismatch dominates at Omega bounds (see `mismatch_parameters`)."
+  },
+  "C": {
+    "solver_class": "MINFLUX-MLE, MINFLUX-Bayes, MINFLUX-Net",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(photon_count) + mismatch-induced bias.",
+    "complexity": "O(H W) to O(H W Z) per iteration depending on dimensionality"
+  },
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "minflux_targeted_donut",
+    "integration_axis": "temporal",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "shot_poisson",
+    "solution_space": "point_list",
+    "primitives": [
+      "L.excitation.donut_array",
+      "D.threshold.photon",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 10,
+  "difficulty_tier": "hard",
+  "mismatch_parameters": [
+    "beam_position_error",
+    "background_count",
+    "drift_nm"
+  ],
+  "error_metric": "localization_precision_nm",
+  "error_metric_secondary": "detection_recall",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "minflux",
+      "forward_operator": "minflux_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 64,
+        "W": 64,
+        "N_beams": 4,
+        "L_nm": 150,
+        "photons_per_localization": 50,
+        "beam_position_error": 0.5,
+        "background_count": 1,
+        "drift_nm": 0.0
+      },
+      "epsilon_fn_center": "2.0"
+    },
+    "allowed_forward_operators": [
+      "minflux_forward"
+    ],
+    "allowed_problem_classes": [
+      "minflux"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "N_beams",
+      "L_nm",
+      "photons_per_localization",
+      "beam_position_error",
+      "background_count",
+      "drift_nm",
+      "beam_position_error",
+      "background_count",
+      "drift_nm"
+    ],
+    "omega_bounds": {
+      "H": [
+        32,
+        256
+      ],
+      "W": [
+        32,
+        256
+      ],
+      "N_beams": [
+        4,
+        6
+      ],
+      "L_nm": [
+        50,
+        500
+      ],
+      "photons_per_localization": [
+        20,
+        500
+      ],
+      "beam_position_error": [
+        0.0,
+        3.0
+      ],
+      "background_count": [
+        0,
+        20
+      ],
+      "drift_nm": [
+        0.0,
+        3.0
+      ]
+    },
+    "epsilon_bounds": {
+      "localization_nm": [
+        0.5,
+        50.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

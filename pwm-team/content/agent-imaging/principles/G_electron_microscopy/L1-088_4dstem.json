@@ -1,0 +1,187 @@
+{
+  "artifact_id": "L1-088",
+  "layer": "L1",
+  "principle_number": "088",
+  "title": "4D-STEM \u2014 pixelated-detector scanning diffraction imaging",
+  "domain": "Electron Microscopy",
+  "sub_domain": "Momentum-resolved electron ptychography",
+  "source_file": "G_electron_microscopy/088_4dstem.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical electron-microscopy literature for this principle.",
+  "E": {
+    "description": "4D-STEM \u2014 pixelated-detector scanning diffraction imaging forward model.",
+    "forward_model": "I(q, r) = |F{Psi_probe(r' - r) * O(r')}|^2 + n, recover O(r) via ptychography",
+    "world_state_x": "Scene parameter (density / orientation / spectrum / complex field depending on principle)",
+    "observation_y": "Electron detector output at declared geometry + noise",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "N_q",
+      "pixel_A",
+      "kV",
+      "dose_e_per_A2",
+      "probe_aberration",
+      "scan_distortion",
+      "partial_coherence"
+    ]
+  },
+  "G": {
+    "dag": "L.illumination.convergent_probe -> S.scan.raster -> L.diffraction -> L.modulus_squared -> int.spatial",
+    "vertices": [
+      "L.illumination.convergent_probe",
+      "S.scan.raster",
+      "L.diffraction",
+      "L.modulus_squared",
+      "int.spatial"
+    ],
+    "arcs": [
+      "L.illumination.convergent_probe -> S.scan.raster",
+      "S.scan.raster -> L.diffraction",
+      "L.diffraction -> L.modulus_squared",
+      "L.modulus_squared -> int.spatial"
+    ],
+    "L_DAG": 4.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 800,
+    "condition_number_effective": 40,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Single-Side-Band, EPIE-4DSTEM, Ptycho-Net",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(electron_count) + mismatch bias.",
+    "complexity": "O(H W) to O(H W Z) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "electron",
+    "sensing_mechanism": "4d_stem_diffraction",
+    "integration_axis": "angular",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "shot_poisson",
+    "solution_space": "complex_2D",
+    "primitives": [
+      "L.illumination.convergent_probe",
+      "S.scan.raster",
+      "L.diffraction",
+      "L.modulus_squared",
+      "int.spatial"
+    ]
+  },
+  "difficulty_delta": 10,
+  "difficulty_tier": "hard",
+  "mismatch_parameters": [
+    "probe_aberration",
+    "scan_distortion",
+    "detector_gain",
+    "partial_coherence"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "stem_ptychography",
+      "forward_operator": "stem_ptychography_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 128,
+        "W": 128,
+        "N_q": 128,
+        "pixel_A": 0.3,
+        "kV": 200,
+        "dose_e_per_A2": 10000,
+        "probe_aberration": 0.0,
+        "scan_distortion": 0.0,
+        "partial_coherence": 1.0
+      },
+      "epsilon_fn_center": "24.0"
+    },
+    "allowed_forward_operators": [
+      "stem_ptychography_forward"
+    ],
+    "allowed_problem_classes": [
+      "stem_ptychography"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "N_q",
+      "pixel_A",
+      "kV",
+      "dose_e_per_A2",
+      "probe_aberration",
+      "scan_distortion",
+      "partial_coherence",
+      "probe_aberration",
+      "scan_distortion",
+      "detector_gain",
+      "partial_coherence"
+    ],
+    "omega_bounds": {
+      "H": [
+        32,
+        1024
+      ],
+      "W": [
+        32,
+        1024
+      ],
+      "N_q": [
+        32,
+        1024
+      ],
+      "pixel_A": [
+        0.1,
+        2.0
+      ],
+      "kV": [
+        60,
+        300
+      ],
+      "dose_e_per_A2": [
+        100,
+        100000
+      ],
+      "probe_aberration": [
+        0.0,
+        0.3
+      ],
+      "scan_distortion": [
+        0.0,
+        0.05
+      ],
+      "partial_coherence": [
+        0.6,
+        1.0
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        40.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

@@ -1,0 +1,92 @@
+{
+  "artifact_id": "L1-028",
+  "layer": "L1",
+  "principle_number": "028",
+  "title": "Low-Rank Matrix Sensing (compressive matrix recovery)",
+  "domain": "Compressive Imaging",
+  "sub_domain": "Low-rank linear inverse problems",
+  "source_file": "B_compressive_imaging/028_matrix_sensing.md",
+  "source_data_quality_note": "Source MD contains the widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in the canonical matrix sensing / low-rank recovery literature (Recht-Fazel-Parrilo 2010, Candes-Plan 2011).",
+
+  "E": {
+    "description": "Recover a low-rank matrix X in R^{n1 x n2} of rank r from m linear measurements y_k = <A_k, X> + n_k; measurement operators A_k are typically drawn from i.i.d. Gaussian/Bernoulli ensembles or structured (partial Fourier, matrix completion patterns). Specializes to matrix completion when A_k are canonical basis matrices e_{i_k} e_{j_k}^T (single-entry observation).",
+    "forward_model": "y_k = <A_k, X> + n_k,  k = 1..m,  X = U * V^T,  rank(X) = r",
+    "world_state_x": "Matrix X in R^{n1 x n2} with rank r << min(n1, n2); e.g., phase-retrieval intensity matrix, video cube reshape, recommender ratings.",
+    "observation_y": "m scalar linear measurements y in R^m (Gaussian/Bernoulli observation noise).",
+    "physical_parameters_theta": [
+      "n1, n2: matrix dimensions",
+      "r: target rank",
+      "m: number of measurements (typical regime m = O(r * (n1 + n2)))",
+      "measurement ensemble type (Gaussian, Bernoulli, partial_Fourier, entry_sampling)",
+      "noise std sigma"
+    ]
+  },
+
+  "G": {
+    "dag": "S.pattern.structured -> L.trace_inner_product -> int.temporal -> D.scalar",
+    "vertices": ["S.pattern.structured", "L.trace_inner_product", "int.temporal", "D.scalar"],
+    "arcs": [
+      "S.pattern.structured -> L.trace_inner_product",
+      "L.trace_inner_product -> int.temporal",
+      "int.temporal -> D.scalar"
+    ],
+    "L_DAG": 3.2,
+    "n_c": 0
+  },
+
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 6000,
+    "condition_number_effective": 60,
+    "regime": "Recovery guaranteed w.h.p. when m >= C * r * (n1 + n2) and A satisfies matrix-RIP; nuclear-norm minimization is exact for noiseless case; stability bound ||X_hat - X||_F <= C * sigma * sqrt(m) / smallest_singular_value."
+  },
+
+  "C": {
+    "solver_class": "nuclear-norm minimization (SVT, FPC), Burer-Monteiro factorization (alternating GD, ProcGenRAM), Riemannian optimization on fixed-rank manifolds",
+    "convergence_rate_q": 2.0,
+    "error_bound": "||X_hat - X||_F <= C1 * sigma * sqrt(r * (n1+n2)) / sqrt(m) + C2 * ||X - X_r||_* (best rank-r approx)",
+    "complexity": "O(m * n1 * n2) per iteration for dense; O(r * (n1+n2)) per iteration for factorized Burer-Monteiro"
+  },
+
+  "physics_fingerprint": {
+    "carrier": "none",
+    "sensing_mechanism": "linear_projection",
+    "integration_axis": "basis",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "low_rank_matrix",
+    "primitives": ["S.pattern.structured", "L.trace_inner_product", "int.temporal", "D.scalar"]
+  },
+
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+
+  "mismatch_parameters": ["rank_misspec", "measurement_noise_tail"],
+  "error_metric": "relative_Frobenius_error",
+  "error_metric_secondary": "rank_recovery_accuracy",
+
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "low_rank_recovery",
+      "forward_operator": "gaussian_matrix_sensing",
+      "input_format": "measurement_plus_operator_set",
+      "omega": {"n1": 256, "n2": 256, "rank_r": 5, "m_over_minmn": 6, "noise_level": 0.01, "rank_misspec": 0, "measurement_noise_tail": 0.0},
+      "epsilon_fn_center": "relative_error <= 0.05"
+    },
+    "allowed_forward_operators": ["gaussian_matrix_sensing", "bernoulli_matrix_sensing", "partial_fourier", "entry_sampling_matrix_completion"],
+    "allowed_problem_classes": ["low_rank_recovery", "matrix_completion", "phase_retrieval_lifted", "video_low_rank"],
+    "allowed_omega_dimensions": ["n1", "n2", "rank_r", "m_over_minmn", "noise_level", "rank_misspec", "measurement_noise_tail"],
+    "omega_bounds": {
+      "n1": [32, 2048], "n2": [32, 2048], "rank_r": [1, 50],
+      "m_over_minmn": [2, 30], "noise_level": [0.001, 0.1],
+      "rank_misspec": [0, 10], "measurement_noise_tail": [0.0, 0.2]
+    },
+    "epsilon_bounds": {"relative_error": [0.01, 0.50]}
+  },
+
+  "p1_p10_tests": ["PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS"],
+  "s1_s4_gates": ["PASS", "PASS", "PASS", "PASS"],
+  "ipfs_cid": null
+}

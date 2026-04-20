@@ -1,0 +1,141 @@
+{
+  "artifact_id": "L2-154",
+  "layer": "L2",
+  "parent_l1": "L1-154",
+  "title": "Quantum Illumination \u2014 entanglement-enhanced target detection Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": 32,
+      "W": 32,
+      "N_modes": [
+        10000,
+        1000000000
+      ],
+      "eta_signal": [
+        0.01,
+        1.0
+      ],
+      "eta_idler": [
+        0.3,
+        1.0
+      ],
+      "thermal_photons_per_mode": [
+        0.01,
+        100
+      ],
+      "loss_and_noise_decoherence": [
+        0.0,
+        0.5
+      ],
+      "phase_drift": [
+        0.0,
+        0.5
+      ],
+      "mode_mismatch": [
+        0.0,
+        0.3
+      ]
+    },
+    "E": {
+      "forward": "P_detect(target) via joint measurement of idler and return; 6 dB advantage over classical at low transmissivity",
+      "operator": "quantum_illumination_forward_mismatch",
+      "primitive_chain": "L.entangled_photon_source -> L.signal_probe_return -> L.joint_detection -> int.temporal",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "8.0 + 2.0 * log10(N_modes / 10000) + 4.0 * eta_signal - 2.0 * log10(thermal_photons_per_mode + 1) - 6.0 * phase_drift"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Sum-Frequency-Gen",
+        "method_sig": "L+O",
+        "expected_psnr": 14.0
+      },
+      {
+        "name": "Optical-Parametric",
+        "method_sig": "L+O",
+        "expected_psnr": 16.5
+      },
+      {
+        "name": "QI-Decoder-Net",
+        "method_sig": "L+N",
+        "expected_psnr": 18.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 128,
+        "W": 128,
+        "N_modes": 1000000,
+        "eta_signal": 0.1,
+        "eta_idler": 0.9,
+        "thermal_photons_per_mode": 1,
+        "loss_and_noise_decoherence": 0.0,
+        "phase_drift": 0.0,
+        "mode_mismatch": 0.0
+      },
+      "epsilon": 16.0
+    },
+    "tier_bounds": {
+      "H": 32,
+      "W": 32,
+      "N_modes": [
+        10000,
+        1000000000
+      ],
+      "eta_signal": [
+        0.01,
+        1.0
+      ],
+      "eta_idler": [
+        0.3,
+        1.0
+      ],
+      "thermal_photons_per_mode": [
+        0.01,
+        100
+      ],
+      "loss_and_noise_decoherence": [
+        0.0,
+        0.5
+      ],
+      "phase_drift": [
+        0.0,
+        0.5
+      ],
+      "mode_mismatch": [
+        0.0,
+        0.3
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.55,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

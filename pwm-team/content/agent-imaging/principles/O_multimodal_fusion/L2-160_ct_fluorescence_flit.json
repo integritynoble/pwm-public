@@ -1,0 +1,150 @@
+{
+  "artifact_id": "L2-160",
+  "layer": "L2",
+  "parent_l1": "L1-160",
+  "title": "CT-FLIT (Fluorescence Lifetime Imaging Tomography) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": 32,
+      "W": 32,
+      "Z": [
+        16,
+        256
+      ],
+      "N_sources": [
+        4,
+        64
+      ],
+      "N_detectors": [
+        4,
+        128
+      ],
+      "SNR_dB": [
+        0.0,
+        35.0
+      ],
+      "tissue_scattering_model": [
+        0.0,
+        0.5
+      ],
+      "CT_prior_mismatch": [
+        0.0,
+        0.5
+      ],
+      "fluorophore_leakage": [
+        0.0,
+        0.3
+      ],
+      "registration_error": [
+        0.0,
+        5.0
+      ]
+    },
+    "E": {
+      "forward": "F(r) = DOT-solve(mu_a(r), source, detector, prior=CT) + n; CT-regularized fluorescence tomography",
+      "operator": "ct_flit_forward_mismatch",
+      "primitive_chain": "L.ct_structure -> L.diffuse_fluorescence_tomo -> L.regularize_with_ct -> int.spatial",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "8.0 + 0.3 * SNR_dB - 8.0 * tissue_scattering_model - 10.0 * CT_prior_mismatch - 1.5 * registration_error"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Born-Linear",
+        "method_sig": "L+O",
+        "expected_psnr": 13.5
+      },
+      {
+        "name": "CT-Regularized",
+        "method_sig": "L+O",
+        "expected_psnr": 16.0
+      },
+      {
+        "name": "Joint-FLIT-Net",
+        "method_sig": "L+N",
+        "expected_psnr": 18.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 128,
+        "W": 128,
+        "Z": 64,
+        "N_sources": 16,
+        "N_detectors": 32,
+        "SNR_dB": 20,
+        "tissue_scattering_model": 0.0,
+        "CT_prior_mismatch": 0.0,
+        "fluorophore_leakage": 0.0,
+        "registration_error": 0.0
+      },
+      "epsilon": 16.0
+    },
+    "tier_bounds": {
+      "H": 32,
+      "W": 32,
+      "Z": [
+        16,
+        256
+      ],
+      "N_sources": [
+        4,
+        64
+      ],
+      "N_detectors": [
+        4,
+        128
+      ],
+      "SNR_dB": [
+        0.0,
+        35.0
+      ],
+      "tissue_scattering_model": [
+        0.0,
+        0.5
+      ],
+      "CT_prior_mismatch": [
+        0.0,
+        0.5
+      ],
+      "fluorophore_leakage": [
+        0.0,
+        0.3
+      ],
+      "registration_error": [
+        0.0,
+        5.0
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.55,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

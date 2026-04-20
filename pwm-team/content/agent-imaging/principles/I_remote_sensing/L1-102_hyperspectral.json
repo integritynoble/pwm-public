@@ -1,0 +1,175 @@
+{
+  "artifact_id": "L1-102",
+  "layer": "L1",
+  "principle_number": "102",
+  "title": "Hyperspectral Imaging (pushbroom / AVIRIS-style)",
+  "domain": "Remote Sensing",
+  "sub_domain": "Airborne/satellite hyperspectral",
+  "source_file": "I_remote_sensing/102_hyperspectral.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical remote-sensing literature for this principle.",
+  "E": {
+    "description": "Hyperspectral Imaging (pushbroom / AVIRIS-style) forward model.",
+    "forward_model": "y(x, y, lambda) = R(x,y,lambda) * atm_trans(lambda) * solar_irr(lambda) + path_radiance + n",
+    "world_state_x": "Scene-side quantity of interest (reflectance / velocity / phase / concentration)",
+    "observation_y": "Sensor output at declared resolution + noise",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "N_bands",
+      "lambda_range_nm",
+      "GSD_m",
+      "SNR_dB",
+      "atmospheric_water_vapor",
+      "smile_distortion"
+    ]
+  },
+  "G": {
+    "dag": "L.spectral_disperse -> S.scan.pushbroom -> int.spatial",
+    "vertices": [
+      "L.spectral_disperse",
+      "S.scan.pushbroom",
+      "int.spatial"
+    ],
+    "arcs": [
+      "L.spectral_disperse -> S.scan.pushbroom",
+      "S.scan.pushbroom -> int.spatial"
+    ],
+    "L_DAG": 3.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 200,
+    "condition_number_effective": 10,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "FLAASH, SCAPE-M, HSI-CNN",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sensor SNR + mismatch-induced bias.",
+    "complexity": "O(H W) to O(H W N_bands) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "pushbroom_spectrograph",
+    "integration_axis": "spatial",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "3D_spectral_image",
+    "primitives": [
+      "L.spectral_disperse",
+      "S.scan.pushbroom",
+      "int.spatial"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "atmospheric_water_vapor",
+    "smile_distortion",
+    "spectral_mixing"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "hyperspectral_pushbroom",
+      "forward_operator": "hyperspectral_pushbroom_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 512,
+        "W": 640,
+        "N_bands": 224,
+        "lambda_range_nm": [
+          400,
+          2500
+        ],
+        "GSD_m": 30,
+        "SNR_dB": 35.0,
+        "atmospheric_water_vapor": 0.0,
+        "smile_distortion": 0.0
+      },
+      "epsilon_fn_center": "30.0"
+    },
+    "allowed_forward_operators": [
+      "hyperspectral_pushbroom_forward"
+    ],
+    "allowed_problem_classes": [
+      "hyperspectral_pushbroom"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "N_bands",
+      "lambda_range_nm",
+      "GSD_m",
+      "SNR_dB",
+      "atmospheric_water_vapor",
+      "smile_distortion",
+      "atmospheric_water_vapor",
+      "smile_distortion",
+      "spectral_mixing"
+    ],
+    "omega_bounds": {
+      "H": [
+        128,
+        8192
+      ],
+      "W": [
+        128,
+        8192
+      ],
+      "N_bands": [
+        32,
+        500
+      ],
+      "GSD_m": [
+        1,
+        1000
+      ],
+      "SNR_dB": [
+        10.0,
+        45.0
+      ],
+      "atmospheric_water_vapor": [
+        0.0,
+        0.3
+      ],
+      "smile_distortion": [
+        0.0,
+        0.1
+      ],
+      "spectral_mixing": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        5.0,
+        40.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

@@ -1,0 +1,176 @@
+{
+  "artifact_id": "L1-017",
+  "layer": "L1",
+  "principle_number": "017",
+  "title": "Zernike Phase-Contrast Microscopy",
+  "domain": "Microscopy",
+  "sub_domain": "Label-free phase visualization",
+  "source_file": "A_microscopy/017_phase_contrast.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical domain literature for this specific principle.",
+  "E": {
+    "description": "Zernike Phase-Contrast Microscopy forward model.",
+    "forward_model": "I(r) = |1 + i exp(i*phi(r)) + halo|^2; ~2 phi(r) for small phi",
+    "world_state_x": "Scene parameter of interest (density / complex field / lifetime / normals depending on spec).",
+    "observation_y": "Measured intensity or photon counts from the imaging system.",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "pixel_nm",
+      "NA",
+      "lambda_nm",
+      "photon_count",
+      "phase_plate_alignment",
+      "halo_artifact"
+    ]
+  },
+  "G": {
+    "dag": "L.phase_plate -> L.modulus_squared -> int.temporal",
+    "vertices": [
+      "L.phase_plate",
+      "L.modulus_squared",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.phase_plate -> L.modulus_squared",
+      "L.modulus_squared -> int.temporal"
+    ],
+    "L_DAG": 3.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 200,
+    "condition_number_effective": 10,
+    "regime": "Conditional stability; principle-specific mismatch dominates at Omega bounds (see `mismatch_parameters`)."
+  },
+  "C": {
+    "solver_class": "TIE-Phase, PhaseCNN, Gerchberg-Saxton",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(photon_count) + mismatch-induced bias.",
+    "complexity": "O(H W) to O(H W Z) per iteration depending on dimensionality"
+  },
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "phase_plate_interference",
+    "integration_axis": "temporal",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "2D_phase",
+    "primitives": [
+      "L.phase_plate",
+      "L.modulus_squared",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "phase_plate_alignment",
+    "halo_artifact",
+    "annulus_diaphragm_drift"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "zernike_phase_contrast",
+      "forward_operator": "zernike_phase_contrast_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 1024,
+        "W": 1024,
+        "pixel_nm": 200,
+        "NA": 0.75,
+        "lambda_nm": 550,
+        "photon_count": 1000,
+        "phase_plate_alignment": 0.0,
+        "halo_artifact": 0.0
+      },
+      "epsilon_fn_center": "28.0"
+    },
+    "allowed_forward_operators": [
+      "zernike_phase_contrast_forward"
+    ],
+    "allowed_problem_classes": [
+      "zernike_phase_contrast"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "pixel_nm",
+      "NA",
+      "lambda_nm",
+      "photon_count",
+      "phase_plate_alignment",
+      "halo_artifact",
+      "phase_plate_alignment",
+      "halo_artifact",
+      "annulus_diaphragm_drift"
+    ],
+    "omega_bounds": {
+      "H": [
+        256,
+        4096
+      ],
+      "W": [
+        256,
+        4096
+      ],
+      "pixel_nm": [
+        100,
+        500
+      ],
+      "NA": [
+        0.3,
+        1.0
+      ],
+      "lambda_nm": [
+        400,
+        700
+      ],
+      "photon_count": [
+        100,
+        20000
+      ],
+      "phase_plate_alignment": [
+        0.0,
+        0.1
+      ],
+      "halo_artifact": [
+        0.0,
+        0.5
+      ],
+      "annulus_diaphragm_drift": [
+        0.0,
+        0.1
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        12.0,
+        42.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

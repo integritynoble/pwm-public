@@ -1,0 +1,172 @@
+{
+  "artifact_id": "L1-049",
+  "layer": "L1",
+  "principle_number": "049",
+  "title": "Fundus Imaging (retinal photography)",
+  "domain": "Medical Imaging",
+  "sub_domain": "Non-mydriatic retinal colour imaging",
+  "source_file": "C_medical_imaging/049_fundus.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical medical-imaging literature for this principle.",
+  "E": {
+    "description": "Fundus Imaging (retinal photography) forward model.",
+    "forward_model": "y(r) = [PSF_eye conv retinal_reflectance] + flash_reflex + n",
+    "world_state_x": "Patient-side quantity of interest (attenuation / activity / perfusion / stiffness etc.)",
+    "observation_y": "Clinical sensor output at declared resolution + noise",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "fov_deg",
+      "pupil_mm",
+      "SNR_dB",
+      "cataract_opacity",
+      "reflex_artifact",
+      "misalignment"
+    ]
+  },
+  "G": {
+    "dag": "L.fundus_flash -> K.psf.eye_pupil -> int.spatial",
+    "vertices": [
+      "L.fundus_flash",
+      "K.psf.eye_pupil",
+      "int.spatial"
+    ],
+    "arcs": [
+      "L.fundus_flash -> K.psf.eye_pupil",
+      "K.psf.eye_pupil -> int.spatial"
+    ],
+    "L_DAG": 2.2,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 120,
+    "condition_number_effective": 6,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Vignette-Correct, CLAHE-Fundus, Fundus-Net",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sensor SNR + mismatch bias + regularisation.",
+    "complexity": "O(H W) to O(H W Z) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "fundus_imaging",
+    "integration_axis": "spatial",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "2D_retinal_image",
+    "primitives": [
+      "L.fundus_flash",
+      "K.psf.eye_pupil",
+      "int.spatial"
+    ]
+  },
+  "difficulty_delta": 1,
+  "difficulty_tier": "textbook",
+  "mismatch_parameters": [
+    "cataract_opacity",
+    "reflex_artifact",
+    "misalignment",
+    "pupil_size_variation"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "fundus",
+      "forward_operator": "fundus_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 3000,
+        "W": 3000,
+        "fov_deg": 45,
+        "pupil_mm": 4.0,
+        "SNR_dB": 35,
+        "cataract_opacity": 0.0,
+        "reflex_artifact": 0.0,
+        "misalignment": 0.0
+      },
+      "epsilon_fn_center": "33.0"
+    },
+    "allowed_forward_operators": [
+      "fundus_forward"
+    ],
+    "allowed_problem_classes": [
+      "fundus"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "fov_deg",
+      "pupil_mm",
+      "SNR_dB",
+      "cataract_opacity",
+      "reflex_artifact",
+      "misalignment",
+      "cataract_opacity",
+      "reflex_artifact",
+      "misalignment",
+      "pupil_size_variation"
+    ],
+    "omega_bounds": {
+      "H": 1024,
+      "W": 1024,
+      "fov_deg": [
+        20,
+        60
+      ],
+      "pupil_mm": [
+        2.0,
+        8.0
+      ],
+      "SNR_dB": [
+        15.0,
+        45.0
+      ],
+      "cataract_opacity": [
+        0.0,
+        0.5
+      ],
+      "reflex_artifact": [
+        0.0,
+        0.3
+      ],
+      "misalignment": [
+        0.0,
+        0.5
+      ],
+      "pupil_size_variation": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        5.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

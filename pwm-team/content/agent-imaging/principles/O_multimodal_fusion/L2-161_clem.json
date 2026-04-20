@@ -1,0 +1,154 @@
+{
+  "artifact_id": "L2-161",
+  "layer": "L2",
+  "parent_l1": "L1-161",
+  "title": "Correlative Light-Electron Microscopy (CLEM) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H_lm": [
+        512,
+        8192
+      ],
+      "W_lm": [
+        512,
+        8192
+      ],
+      "H_em": [
+        1024,
+        16384
+      ],
+      "W_em": [
+        1024,
+        16384
+      ],
+      "pixel_em_nm": [
+        0.5,
+        10
+      ],
+      "scale_mismatch": [
+        0.0,
+        0.5
+      ],
+      "sample_preparation_artifact": [
+        0.0,
+        0.5
+      ],
+      "registration_error": [
+        0.0,
+        50
+      ],
+      "photobleaching_pre_em": [
+        0.0,
+        0.8
+      ]
+    },
+    "E": {
+      "forward": "F(r_LM, r_EM) = align(LM_channels, EM_image, fiducials); scale ratio ~100x-1000x",
+      "operator": "clem_forward_mismatch",
+      "primitive_chain": "L.fluorescence_imaging -> L.em_imaging -> L.multi_scale_registration -> int.spatial",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "14.0 - 8.0 * scale_mismatch - 10.0 * sample_preparation_artifact - 0.2 * registration_error - 5.0 * photobleaching_pre_em"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Fiducial-Register",
+        "method_sig": "L+O",
+        "expected_psnr": 19.5
+      },
+      {
+        "name": "Feature-Match",
+        "method_sig": "L+O",
+        "expected_psnr": 22.0
+      },
+      {
+        "name": "CLEM-Net",
+        "method_sig": "L+N",
+        "expected_psnr": 24.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H_lm": 2048,
+        "W_lm": 2048,
+        "H_em": 4096,
+        "W_em": 4096,
+        "pixel_lm_nm": 100,
+        "pixel_em_nm": 2,
+        "scale_mismatch": 0.0,
+        "sample_preparation_artifact": 0.0,
+        "registration_error": 0.0,
+        "photobleaching_pre_em": 0.0
+      },
+      "epsilon": 22.0
+    },
+    "tier_bounds": {
+      "H_lm": [
+        512,
+        8192
+      ],
+      "W_lm": [
+        512,
+        8192
+      ],
+      "H_em": [
+        1024,
+        16384
+      ],
+      "W_em": [
+        1024,
+        16384
+      ],
+      "pixel_em_nm": [
+        0.5,
+        10
+      ],
+      "scale_mismatch": [
+        0.0,
+        0.5
+      ],
+      "sample_preparation_artifact": [
+        0.0,
+        0.5
+      ],
+      "registration_error": [
+        0.0,
+        50
+      ],
+      "photobleaching_pre_em": [
+        0.0,
+        0.8
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.55,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

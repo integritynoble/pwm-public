@@ -1,0 +1,177 @@
+{
+  "artifact_id": "L1-061",
+  "layer": "L1",
+  "principle_number": "061",
+  "title": "Intravascular Ultrasound (IVUS)",
+  "domain": "Medical Imaging",
+  "sub_domain": "Catheter-based high-frequency ultrasound of coronary arteries",
+  "source_file": "C_medical_imaging/061_ivus.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical medical-imaging literature for this principle.",
+  "E": {
+    "description": "Intravascular Ultrasound (IVUS) forward model.",
+    "forward_model": "y(t, theta) = sum_r reflectivity(r, theta) * pulse(t - 2r/c) + blood_speckle + n; rotate catheter",
+    "world_state_x": "Patient-side quantity of interest (attenuation / activity / perfusion / stiffness etc.)",
+    "observation_y": "Clinical sensor output at declared resolution + noise",
+    "physical_parameters_theta": [
+      "N_lines",
+      "f_MHz",
+      "depth_mm",
+      "SNR_dB",
+      "catheter_motion",
+      "non_uniform_rotation",
+      "guidewire_artifact",
+      "blood_speckle"
+    ]
+  },
+  "G": {
+    "dag": "L.emit.acoustic_pulse_40MHz -> L.catheter_rotate -> L.pulse_echo -> int.temporal",
+    "vertices": [
+      "L.emit.acoustic_pulse_40MHz",
+      "L.catheter_rotate",
+      "L.pulse_echo",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.emit.acoustic_pulse_40MHz -> L.catheter_rotate",
+      "L.catheter_rotate -> L.pulse_echo",
+      "L.pulse_echo -> int.temporal"
+    ],
+    "L_DAG": 3.8,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 260,
+    "condition_number_effective": 13,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Envelope-Demod, MVDR-IVUS, IVUS-Net",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sensor SNR + mismatch bias + regularisation.",
+    "complexity": "O(H W) to O(H W Z) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "acoustic",
+    "sensing_mechanism": "intravascular_ultrasound",
+    "integration_axis": "temporal",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "2D_vessel_cross_section",
+    "primitives": [
+      "L.emit.acoustic_pulse_40MHz",
+      "L.catheter_rotate",
+      "L.pulse_echo",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "catheter_motion",
+    "non_uniform_rotation",
+    "guidewire_artifact",
+    "blood_speckle"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "ivus",
+      "forward_operator": "ivus_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_lines": 256,
+        "f_MHz": 40,
+        "depth_mm": 8,
+        "SNR_dB": 25,
+        "catheter_motion": 0.0,
+        "non_uniform_rotation": 0.0,
+        "guidewire_artifact": 0.0,
+        "blood_speckle": 0.1
+      },
+      "epsilon_fn_center": "24.0"
+    },
+    "allowed_forward_operators": [
+      "ivus_forward"
+    ],
+    "allowed_problem_classes": [
+      "ivus"
+    ],
+    "allowed_omega_dimensions": [
+      "N_lines",
+      "f_MHz",
+      "depth_mm",
+      "SNR_dB",
+      "catheter_motion",
+      "non_uniform_rotation",
+      "guidewire_artifact",
+      "blood_speckle",
+      "catheter_motion",
+      "non_uniform_rotation",
+      "guidewire_artifact",
+      "blood_speckle"
+    ],
+    "omega_bounds": {
+      "N_lines": [
+        64,
+        1024
+      ],
+      "f_MHz": [
+        20,
+        60
+      ],
+      "depth_mm": [
+        2,
+        20
+      ],
+      "SNR_dB": [
+        0.0,
+        40.0
+      ],
+      "catheter_motion": [
+        0.0,
+        0.5
+      ],
+      "non_uniform_rotation": [
+        0.0,
+        0.3
+      ],
+      "guidewire_artifact": [
+        0.0,
+        0.3
+      ],
+      "blood_speckle": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        5.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

@@ -1,0 +1,189 @@
+{
+  "artifact_id": "L3-038",
+  "layer": "L3",
+  "parent_l2": "L2-038",
+  "parent_l1": "L1-038",
+  "title": "Cone-Beam CT (CBCT) \u2014 dental / interventional Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "canonical clinical/public dataset for this modality",
+    "secondary": "simulated forward synthesis at declared Omega",
+    "construction_method": "parametric forward + declared noise",
+    "num_dev_instances_per_tier": 20
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "Z": 512,
+        "N_projections": 400,
+        "kVp": 90,
+        "mAs": 20,
+        "pixel_mm": 0.3,
+        "scatter": 0.0,
+        "truncation": 0.0,
+        "patient_motion": 0.0,
+        "geometric_misalignment": 0.0,
+        "beam_hardening": 0.0
+      },
+      "epsilon": 27.0,
+      "d_ibench": 0.14,
+      "baselines": [
+        {
+          "name": "FDK",
+          "score": 24.5,
+          "Q": 0.88
+        },
+        {
+          "name": "Iterative-CBCT",
+          "score": 27.0,
+          "Q": 0.88
+        },
+        {
+          "name": "CBCT-Net",
+          "score": 30.0,
+          "Q": 0.88
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "Z": 512,
+        "N_projections": 400,
+        "kVp": 90,
+        "mAs": 10,
+        "pixel_mm": 0.3,
+        "scatter": 0.1,
+        "truncation": 0.06,
+        "patient_motion": 0.06,
+        "geometric_misalignment": 0.4,
+        "beam_hardening": 0.06
+      },
+      "epsilon": 22.14,
+      "d_ibench": 0.28,
+      "baselines": [
+        {
+          "name": "FDK",
+          "score": 22.5,
+          "Q": 0.68
+        },
+        {
+          "name": "Iterative-CBCT",
+          "score": 25.0,
+          "Q": 0.68
+        },
+        {
+          "name": "CBCT-Net",
+          "score": 28.0,
+          "Q": 0.68
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "Z": 512,
+        "N_projections": 400,
+        "kVp": 90,
+        "mAs": 4,
+        "pixel_mm": 0.3,
+        "scatter": 0.25,
+        "truncation": 0.15,
+        "patient_motion": 0.15,
+        "geometric_misalignment": 1.0,
+        "beam_hardening": 0.15
+      },
+      "epsilon": 17.28,
+      "d_ibench": 0.48,
+      "baselines": [
+        {
+          "name": "FDK",
+          "score": 20.5,
+          "Q": 0.48
+        },
+        {
+          "name": "Iterative-CBCT",
+          "score": 23.0,
+          "Q": 0.48
+        },
+        {
+          "name": "CBCT-Net",
+          "score": 26.0,
+          "Q": 0.48
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "Z": 512,
+        "N_projections": 400,
+        "kVp": 90,
+        "mAs": 2,
+        "pixel_mm": 0.3,
+        "scatter": 0.5,
+        "truncation": 0.3,
+        "patient_motion": 0.3,
+        "geometric_misalignment": 2.0,
+        "beam_hardening": 0.3
+      },
+      "epsilon": 12.42,
+      "d_ibench": 0.72,
+      "baselines": [
+        {
+          "name": "FDK",
+          "score": 18.5,
+          "Q": 0.28
+        },
+        {
+          "name": "Iterative-CBCT",
+          "score": 21.0,
+          "Q": 0.28
+        },
+        {
+          "name": "CBCT-Net",
+          "score": 24.0,
+          "Q": 0.28
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "full parametric sweep",
+      "num_dev_instances": 200,
+      "construction_method": "parametric Omega sweep"
+    },
+    "baselines": [
+      {
+        "name": "FDK",
+        "overall_Q": 0.7
+      },
+      {
+        "name": "Iterative-CBCT",
+        "overall_Q": 0.6
+      },
+      {
+        "name": "CBCT-Net",
+        "overall_Q": 0.5
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind strata corner.",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

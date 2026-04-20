@@ -1,0 +1,140 @@
+{
+  "artifact_id": "L2-048",
+  "layer": "L2",
+  "parent_l1": "L1-048",
+  "title": "Fiber-Optic Endoscopy Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": 128,
+      "W": 128,
+      "N_fibers": [
+        1000,
+        100000
+      ],
+      "pixel_um": [
+        2,
+        50
+      ],
+      "SNR_dB": [
+        0.0,
+        40.0
+      ],
+      "fiber_bending": [
+        0.0,
+        0.3
+      ],
+      "pixelation_comb": [
+        0.0,
+        0.5
+      ],
+      "dynamic_range_compression": [
+        0.0,
+        0.3
+      ],
+      "fiber_attenuation": [
+        0.0,
+        0.3
+      ]
+    },
+    "E": {
+      "forward": "y(r) = [PSF_bundle conv f(r)] + comb_pattern(r) + n; undo pixelation + attenuation",
+      "operator": "fiber_endoscopy_forward_mismatch",
+      "primitive_chain": "L.fiber_illumination -> L.fiber_transmission -> K.psf.bundle -> int.spatial",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "18.0 + 0.3 * SNR_dB - 6.0 * fiber_bending - 8.0 * pixelation_comb"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Comb-Interp",
+        "method_sig": "L+O",
+        "expected_psnr": 23.0
+      },
+      {
+        "name": "Wiener-Bundle",
+        "method_sig": "L+R",
+        "expected_psnr": 25.5
+      },
+      {
+        "name": "FiberNet",
+        "method_sig": "L+N",
+        "expected_psnr": 28.0
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "N_fibers": 30000,
+        "pixel_um": 10,
+        "SNR_dB": 25,
+        "fiber_bending": 0.0,
+        "pixelation_comb": 0.0,
+        "dynamic_range_compression": 0.0
+      },
+      "epsilon": 26.0
+    },
+    "tier_bounds": {
+      "H": 128,
+      "W": 128,
+      "N_fibers": [
+        1000,
+        100000
+      ],
+      "pixel_um": [
+        2,
+        50
+      ],
+      "SNR_dB": [
+        0.0,
+        40.0
+      ],
+      "fiber_bending": [
+        0.0,
+        0.3
+      ],
+      "pixelation_comb": [
+        0.0,
+        0.5
+      ],
+      "dynamic_range_compression": [
+        0.0,
+        0.3
+      ],
+      "fiber_attenuation": [
+        0.0,
+        0.3
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.5,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

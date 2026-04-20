@@ -1,0 +1,153 @@
+{
+  "artifact_id": "L2-016",
+  "layer": "L2",
+  "parent_l1": "L1-016",
+  "title": "Image Scanning Microscopy (ISM) \u2014 pixel reassignment super-resolution Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        256,
+        4096
+      ],
+      "W": [
+        256,
+        4096
+      ],
+      "N_det": [
+        4,
+        100
+      ],
+      "pixel_nm": [
+        20,
+        100
+      ],
+      "NA": [
+        1.0,
+        1.49
+      ],
+      "pinhole_AU": [
+        0.1,
+        1.0
+      ],
+      "peak_photons": [
+        30,
+        3000
+      ],
+      "detector_registration": [
+        0.0,
+        0.1
+      ],
+      "reassignment_kernel_drift": [
+        0.0,
+        0.2
+      ]
+    },
+    "E": {
+      "forward": "y_i(r) = [PSF_i(r) conv f(r - delta_i)] + n, i = 1..N_det; sum after shift",
+      "operator": "ism_forward_mismatch",
+      "primitive_chain": "K.psf.confocal -> S.scan.raster -> L.pixel_reassign -> int.temporal",
+      "inverse": "solve forward model for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "23.0 + 1.8 * log10(peak_photons / 30) + 1.0 * log2(N_det / 4) - 10.0 * detector_registration"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Airyscan-Pixel-Reassign",
+        "method_sig": "A+O",
+        "expected_psnr": 28.5
+      },
+      {
+        "name": "ISM-Deconv",
+        "method_sig": "L+O",
+        "expected_psnr": 30.2
+      },
+      {
+        "name": "ISM-Net",
+        "method_sig": "L+N",
+        "expected_psnr": 33.0
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 1024,
+        "W": 1024,
+        "N_det": 32,
+        "pixel_nm": 40,
+        "NA": 1.4,
+        "pinhole_AU": 0.2,
+        "peak_photons": 300,
+        "detector_registration": 0.0,
+        "reassignment_kernel_drift": 0.0
+      },
+      "epsilon": 30.0
+    },
+    "tier_bounds": {
+      "H": [
+        256,
+        4096
+      ],
+      "W": [
+        256,
+        4096
+      ],
+      "N_det": [
+        4,
+        100
+      ],
+      "pixel_nm": [
+        20,
+        100
+      ],
+      "NA": [
+        1.0,
+        1.49
+      ],
+      "pinhole_AU": [
+        0.1,
+        1.0
+      ],
+      "peak_photons": [
+        30,
+        3000
+      ],
+      "detector_registration": [
+        0.0,
+        0.1
+      ],
+      "reassignment_kernel_drift": [
+        0.0,
+        0.2
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.45,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

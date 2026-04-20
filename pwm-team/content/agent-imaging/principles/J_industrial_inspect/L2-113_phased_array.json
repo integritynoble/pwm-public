@@ -1,0 +1,152 @@
+{
+  "artifact_id": "L2-113",
+  "layer": "L2",
+  "parent_l1": "L1-113",
+  "title": "Phased-Array Ultrasonic Testing (PAUT) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "N_elements": [
+        16,
+        256
+      ],
+      "N_angles": [
+        11,
+        181
+      ],
+      "f_MHz": [
+        0.5,
+        25
+      ],
+      "range_mm": [
+        5,
+        500
+      ],
+      "SNR_dB": [
+        0.0,
+        30.0
+      ],
+      "wedge_coupling": [
+        0.3,
+        1.0
+      ],
+      "surface_curvature": [
+        0.0,
+        0.5
+      ],
+      "sound_speed_uncertainty": [
+        0.0,
+        0.05
+      ],
+      "grain_noise": [
+        0.0,
+        0.3
+      ]
+    },
+    "E": {
+      "forward": "y(t, theta) = sum_r reflectivity(r,theta) * pulse(t - 2r/c_ref) + grain_speckle + n",
+      "operator": "phased_array_ut_forward_mismatch",
+      "primitive_chain": "L.emit.acoustic_pulse -> S.scan.beam -> L.beamform -> L.time_of_flight -> int.temporal",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "16.0 + 0.3 * SNR_dB + 8.0 * wedge_coupling - 10.0 * surface_curvature - 20.0 * sound_speed_uncertainty"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Delay-Sum",
+        "method_sig": "L+O",
+        "expected_psnr": 22.0
+      },
+      {
+        "name": "TFM",
+        "method_sig": "L+O",
+        "expected_psnr": 25.0
+      },
+      {
+        "name": "PAUT-Net",
+        "method_sig": "L+N",
+        "expected_psnr": 27.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_elements": 64,
+        "N_angles": 41,
+        "f_MHz": 5,
+        "range_mm": 50,
+        "SNR_dB": 20,
+        "wedge_coupling": 1.0,
+        "surface_curvature": 0.0,
+        "sound_speed_uncertainty": 0.0
+      },
+      "epsilon": 24.0
+    },
+    "tier_bounds": {
+      "N_elements": [
+        16,
+        256
+      ],
+      "N_angles": [
+        11,
+        181
+      ],
+      "f_MHz": [
+        0.5,
+        25
+      ],
+      "range_mm": [
+        5,
+        500
+      ],
+      "SNR_dB": [
+        0.0,
+        30.0
+      ],
+      "wedge_coupling": [
+        0.3,
+        1.0
+      ],
+      "surface_curvature": [
+        0.0,
+        0.5
+      ],
+      "sound_speed_uncertainty": [
+        0.0,
+        0.05
+      ],
+      "grain_noise": [
+        0.0,
+        0.3
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.5,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

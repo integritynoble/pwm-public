@@ -1,0 +1,147 @@
+{
+  "artifact_id": "L2-007",
+  "layer": "L2",
+  "parent_l1": "L1-007",
+  "title": "Fluorescence Lifetime Imaging Microscopy (FLIM) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        64,
+        1024
+      ],
+      "W": [
+        64,
+        1024
+      ],
+      "N_t": [
+        64,
+        1024
+      ],
+      "photon_count": [
+        20,
+        10000
+      ],
+      "N_tau": [
+        1,
+        3
+      ],
+      "IRF_shape_drift": [
+        0.0,
+        0.2
+      ],
+      "afterpulsing_rate": [
+        0.0,
+        0.05
+      ],
+      "ambient_fluorescence": [
+        0.0,
+        0.2
+      ]
+    },
+    "E": {
+      "forward": "h_{ij}(t) = IRF(t) conv sum_k a_k exp(-t/tau_k) + n_bg",
+      "operator": "flim_tcspc_forward_mismatch",
+      "primitive_chain": "L.excitation.pulsed -> D.tcspc_histogram -> int.temporal",
+      "inverse": "solve forward model for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "0.05 - 0.02 * log10(photon_count / 20) + 0.15 * IRF_shape_drift + 0.2 * ambient_fluorescence"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "LS-Exp-Fit",
+        "method_sig": "L+O",
+        "expected_psnr": 0.12
+      },
+      {
+        "name": "Phasor",
+        "method_sig": "A+O",
+        "expected_psnr": 0.08
+      },
+      {
+        "name": "FLIMNet",
+        "method_sig": "L+N",
+        "expected_psnr": 0.05
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 256,
+        "W": 256,
+        "N_t": 256,
+        "photon_count": 500,
+        "N_tau": 1,
+        "tau_range_ns": [
+          0.5,
+          8.0
+        ],
+        "IRF_shape_drift": 0.0,
+        "ambient_fluorescence": 0.0
+      },
+      "epsilon": 0.1
+    },
+    "tier_bounds": {
+      "H": [
+        64,
+        1024
+      ],
+      "W": [
+        64,
+        1024
+      ],
+      "N_t": [
+        64,
+        1024
+      ],
+      "photon_count": [
+        20,
+        10000
+      ],
+      "N_tau": [
+        1,
+        3
+      ],
+      "IRF_shape_drift": [
+        0.0,
+        0.2
+      ],
+      "afterpulsing_rate": [
+        0.0,
+        0.05
+      ],
+      "ambient_fluorescence": [
+        0.0,
+        0.2
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.45,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

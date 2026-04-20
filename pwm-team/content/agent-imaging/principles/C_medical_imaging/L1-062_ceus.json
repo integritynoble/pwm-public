@@ -1,0 +1,184 @@
+{
+  "artifact_id": "L1-062",
+  "layer": "L1",
+  "principle_number": "062",
+  "title": "Contrast-Enhanced Ultrasound (CEUS)",
+  "domain": "Medical Imaging",
+  "sub_domain": "Microbubble-contrast harmonic ultrasound",
+  "source_file": "C_medical_imaging/062_ceus.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical medical-imaging literature for this principle.",
+  "E": {
+    "description": "Contrast-Enhanced Ultrasound (CEUS) forward model.",
+    "forward_model": "y(t) = linear_tissue + nonlinear_bubbles(pulse) + tissue_harmonics + n; pulse-inversion separates",
+    "world_state_x": "Patient-side quantity of interest (attenuation / activity / perfusion / stiffness etc.)",
+    "observation_y": "Clinical sensor output at declared resolution + noise",
+    "physical_parameters_theta": [
+      "N_elements",
+      "f_MHz",
+      "MI",
+      "N_frames",
+      "SNR_dB",
+      "bubble_destruction",
+      "nonlinear_tissue_harmonics",
+      "flow_artifacts",
+      "contrast_washout"
+    ]
+  },
+  "G": {
+    "dag": "L.emit.acoustic_pulse -> L.microbubble_oscillate -> L.harmonic_separate -> int.temporal",
+    "vertices": [
+      "L.emit.acoustic_pulse",
+      "L.microbubble_oscillate",
+      "L.harmonic_separate",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.emit.acoustic_pulse -> L.microbubble_oscillate",
+      "L.microbubble_oscillate -> L.harmonic_separate",
+      "L.harmonic_separate -> int.temporal"
+    ],
+    "L_DAG": 3.3,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 220,
+    "condition_number_effective": 11,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Pulse-Inversion, Amplitude-Mod, CEUS-Net",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sensor SNR + mismatch bias + regularisation.",
+    "complexity": "O(H W) to O(H W Z) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "acoustic",
+    "sensing_mechanism": "contrast_enhanced_ultrasound",
+    "integration_axis": "temporal",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "2D_perfusion_map",
+    "primitives": [
+      "L.emit.acoustic_pulse",
+      "L.microbubble_oscillate",
+      "L.harmonic_separate",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "bubble_destruction",
+    "nonlinear_tissue_harmonics",
+    "flow_artifacts",
+    "contrast_washout"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "ceus",
+      "forward_operator": "ceus_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_elements": 128,
+        "f_MHz": 3.5,
+        "MI": 0.1,
+        "N_frames": 200,
+        "SNR_dB": 22,
+        "bubble_destruction": 0.0,
+        "nonlinear_tissue_harmonics": 0.0,
+        "flow_artifacts": 0.0,
+        "contrast_washout": 0.0
+      },
+      "epsilon_fn_center": "22.0"
+    },
+    "allowed_forward_operators": [
+      "ceus_forward"
+    ],
+    "allowed_problem_classes": [
+      "ceus"
+    ],
+    "allowed_omega_dimensions": [
+      "N_elements",
+      "f_MHz",
+      "MI",
+      "N_frames",
+      "SNR_dB",
+      "bubble_destruction",
+      "nonlinear_tissue_harmonics",
+      "flow_artifacts",
+      "contrast_washout",
+      "bubble_destruction",
+      "nonlinear_tissue_harmonics",
+      "flow_artifacts",
+      "contrast_washout"
+    ],
+    "omega_bounds": {
+      "N_elements": [
+        32,
+        256
+      ],
+      "f_MHz": [
+        1,
+        15
+      ],
+      "MI": [
+        0.05,
+        0.5
+      ],
+      "N_frames": [
+        30,
+        1000
+      ],
+      "SNR_dB": [
+        0.0,
+        35.0
+      ],
+      "bubble_destruction": [
+        0.0,
+        0.3
+      ],
+      "nonlinear_tissue_harmonics": [
+        0.0,
+        0.3
+      ],
+      "flow_artifacts": [
+        0.0,
+        0.3
+      ],
+      "contrast_washout": [
+        0.0,
+        0.5
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        5.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

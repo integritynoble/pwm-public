@@ -1,0 +1,181 @@
+{
+  "artifact_id": "L1-104",
+  "layer": "L1",
+  "principle_number": "104",
+  "title": "Ground Penetrating Radar (GPR)",
+  "domain": "Remote Sensing",
+  "sub_domain": "Subsurface EM sounding",
+  "source_file": "I_remote_sensing/104_gpr.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical remote-sensing literature for this principle.",
+  "E": {
+    "description": "Ground Penetrating Radar (GPR) forward model.",
+    "forward_model": "y(t, x) = sum_z reflectivity(x, z) * pulse(t - 2 * traveltime(x,z)) + clutter + n; Kirchhoff or reverse-time migration for recovery",
+    "world_state_x": "Scene-side quantity of interest (reflectance / velocity / phase / concentration)",
+    "observation_y": "Sensor output at declared resolution + noise",
+    "physical_parameters_theta": [
+      "N_samples",
+      "N_traces",
+      "f_MHz",
+      "depth_range_m",
+      "SNR_dB",
+      "soil_permittivity_variation",
+      "clutter",
+      "attenuation_depth"
+    ]
+  },
+  "G": {
+    "dag": "L.emit.em_pulse -> L.subsurface_reflect -> L.migration -> int.temporal",
+    "vertices": [
+      "L.emit.em_pulse",
+      "L.subsurface_reflect",
+      "L.migration",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.emit.em_pulse -> L.subsurface_reflect",
+      "L.subsurface_reflect -> L.migration",
+      "L.migration -> int.temporal"
+    ],
+    "L_DAG": 3.8,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 300,
+    "condition_number_effective": 15,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Kirchhoff-Migration, Reverse-Time-Migration, GPR-Net",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sensor SNR + mismatch-induced bias.",
+    "complexity": "O(H W) to O(H W N_bands) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "radio_wave",
+    "sensing_mechanism": "subsurface_em_radar",
+    "integration_axis": "temporal",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "2D_subsurface_dielectric",
+    "primitives": [
+      "L.emit.em_pulse",
+      "L.subsurface_reflect",
+      "L.migration",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "soil_permittivity_variation",
+    "clutter",
+    "attenuation_depth",
+    "antenna_coupling"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "gpr_radar",
+      "forward_operator": "gpr_radar_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_samples": 512,
+        "N_traces": 256,
+        "f_MHz": 250,
+        "depth_range_m": 10,
+        "SNR_dB": 15.0,
+        "soil_permittivity_variation": 0.05,
+        "clutter": 0.0,
+        "attenuation_depth": 0.5
+      },
+      "epsilon_fn_center": "18.0"
+    },
+    "allowed_forward_operators": [
+      "gpr_radar_forward"
+    ],
+    "allowed_problem_classes": [
+      "gpr_radar"
+    ],
+    "allowed_omega_dimensions": [
+      "N_samples",
+      "N_traces",
+      "f_MHz",
+      "depth_range_m",
+      "SNR_dB",
+      "soil_permittivity_variation",
+      "clutter",
+      "attenuation_depth",
+      "soil_permittivity_variation",
+      "clutter",
+      "attenuation_depth",
+      "antenna_coupling"
+    ],
+    "omega_bounds": {
+      "N_samples": [
+        128,
+        2048
+      ],
+      "N_traces": [
+        64,
+        1024
+      ],
+      "f_MHz": [
+        25,
+        2000
+      ],
+      "depth_range_m": [
+        0.1,
+        100
+      ],
+      "SNR_dB": [
+        0.0,
+        30.0
+      ],
+      "soil_permittivity_variation": [
+        0.0,
+        0.3
+      ],
+      "clutter": [
+        0.0,
+        0.5
+      ],
+      "attenuation_depth": [
+        0.1,
+        2.0
+      ],
+      "antenna_coupling": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        5.0,
+        40.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

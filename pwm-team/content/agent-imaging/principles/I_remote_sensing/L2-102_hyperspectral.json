@@ -1,0 +1,147 @@
+{
+  "artifact_id": "L2-102",
+  "layer": "L2",
+  "parent_l1": "L1-102",
+  "title": "Hyperspectral Imaging (pushbroom / AVIRIS-style) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        128,
+        8192
+      ],
+      "W": [
+        128,
+        8192
+      ],
+      "N_bands": [
+        32,
+        500
+      ],
+      "GSD_m": [
+        1,
+        1000
+      ],
+      "SNR_dB": [
+        10.0,
+        45.0
+      ],
+      "atmospheric_water_vapor": [
+        0.0,
+        0.3
+      ],
+      "smile_distortion": [
+        0.0,
+        0.1
+      ],
+      "spectral_mixing": [
+        0.0,
+        0.3
+      ]
+    },
+    "E": {
+      "forward": "y(x, y, lambda) = R(x,y,lambda) * atm_trans(lambda) * solar_irr(lambda) + path_radiance + n",
+      "operator": "hyperspectral_pushbroom_forward_mismatch",
+      "primitive_chain": "L.spectral_disperse -> S.scan.pushbroom -> int.spatial",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "22.0 + 0.2 * SNR_dB - 10.0 * atmospheric_water_vapor - 15.0 * smile_distortion"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "FLAASH",
+        "method_sig": "L+O",
+        "expected_psnr": 27.5
+      },
+      {
+        "name": "SCAPE-M",
+        "method_sig": "L+O",
+        "expected_psnr": 29.5
+      },
+      {
+        "name": "HSI-CNN",
+        "method_sig": "L+N",
+        "expected_psnr": 32.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 512,
+        "W": 640,
+        "N_bands": 224,
+        "lambda_range_nm": [
+          400,
+          2500
+        ],
+        "GSD_m": 30,
+        "SNR_dB": 35.0,
+        "atmospheric_water_vapor": 0.0,
+        "smile_distortion": 0.0
+      },
+      "epsilon": 30.0
+    },
+    "tier_bounds": {
+      "H": [
+        128,
+        8192
+      ],
+      "W": [
+        128,
+        8192
+      ],
+      "N_bands": [
+        32,
+        500
+      ],
+      "GSD_m": [
+        1,
+        1000
+      ],
+      "SNR_dB": [
+        10.0,
+        45.0
+      ],
+      "atmospheric_water_vapor": [
+        0.0,
+        0.3
+      ],
+      "smile_distortion": [
+        0.0,
+        0.1
+      ],
+      "spectral_mixing": [
+        0.0,
+        0.3
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.5,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

@@ -1,0 +1,177 @@
+{
+  "artifact_id": "L3-085",
+  "layer": "L3",
+  "parent_l2": "L2-085",
+  "parent_l1": "L1-085",
+  "title": "Transmission Electron Microscopy (TEM) \u2014 thin-section contrast imaging Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "canonical EM dataset for this principle (EMPIAR / CEM500K / etc.)",
+    "secondary": "simulated forward model at declared Omega",
+    "construction_method": "parametric forward synthesis + Poisson counting",
+    "num_dev_instances_per_tier": 20
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "H": 4096,
+        "W": 4096,
+        "pixel_A": 1.0,
+        "kV": 300,
+        "Cs_mm": 2.7,
+        "defocus_nm": -2000.0,
+        "peak_electrons": 50,
+        "drift_nm": 0.0,
+        "envelope_coherence": 0.5
+      },
+      "epsilon": 26.0,
+      "d_ibench": 0.14,
+      "baselines": [
+        {
+          "name": "CTF-Correction",
+          "score": 25.0,
+          "Q": 0.88
+        },
+        {
+          "name": "RELION-2D",
+          "score": 27.0,
+          "Q": 0.88
+        },
+        {
+          "name": "TEM-Net",
+          "score": 29.5,
+          "Q": 0.88
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "H": 4096,
+        "W": 4096,
+        "pixel_A": 1.0,
+        "kV": 300,
+        "Cs_mm": 2.7,
+        "defocus_nm": -1200.0,
+        "peak_electrons": 25,
+        "drift_nm": 1.0,
+        "envelope_coherence": 0.6
+      },
+      "epsilon": 20.8,
+      "d_ibench": 0.28,
+      "baselines": [
+        {
+          "name": "CTF-Correction",
+          "score": 22.5,
+          "Q": 0.68
+        },
+        {
+          "name": "RELION-2D",
+          "score": 24.5,
+          "Q": 0.68
+        },
+        {
+          "name": "TEM-Net",
+          "score": 27.0,
+          "Q": 0.68
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "H": 4096,
+        "W": 4096,
+        "pixel_A": 1.0,
+        "kV": 300,
+        "Cs_mm": 2.7,
+        "defocus_nm": 0.0,
+        "peak_electrons": 10,
+        "drift_nm": 2.5,
+        "envelope_coherence": 0.75
+      },
+      "epsilon": 16.9,
+      "d_ibench": 0.48,
+      "baselines": [
+        {
+          "name": "CTF-Correction",
+          "score": 20.0,
+          "Q": 0.48
+        },
+        {
+          "name": "RELION-2D",
+          "score": 22.0,
+          "Q": 0.48
+        },
+        {
+          "name": "TEM-Net",
+          "score": 24.5,
+          "Q": 0.48
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "H": 4096,
+        "W": 4096,
+        "pixel_A": 1.0,
+        "kV": 300,
+        "Cs_mm": 2.7,
+        "defocus_nm": 2000.0,
+        "peak_electrons": 4,
+        "drift_nm": 5.0,
+        "envelope_coherence": 1.0
+      },
+      "epsilon": 13.0,
+      "d_ibench": 0.72,
+      "baselines": [
+        {
+          "name": "CTF-Correction",
+          "score": 17.5,
+          "Q": 0.28
+        },
+        {
+          "name": "RELION-2D",
+          "score": 19.5,
+          "Q": 0.28
+        },
+        {
+          "name": "TEM-Net",
+          "score": 22.0,
+          "Q": 0.28
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "full parametric sweep",
+      "num_dev_instances": 200,
+      "construction_method": "parametric Omega sweep"
+    },
+    "baselines": [
+      {
+        "name": "CTF-Correction",
+        "overall_Q": 0.7
+      },
+      {
+        "name": "RELION-2D",
+        "overall_Q": 0.6
+      },
+      {
+        "name": "TEM-Net",
+        "overall_Q": 0.5
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind strata corner.",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

@@ -1,0 +1,96 @@
+{
+  "artifact_id": "L1-095",
+  "layer": "L1",
+  "principle_number": "095",
+  "title": "Amplitude-Modulated Continuous-Wave Time-of-Flight (AMCW-ToF) Depth",
+  "domain": "Depth Imaging",
+  "sub_domain": "Indirect ToF via phase",
+  "source_file": "H_depth_imaging/095_tof_depth.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical AMCW-ToF literature (Lange 2000; Kinect v2 / PMD / Sony IMX556 sensor theory).",
+
+  "E": {
+    "description": "A NIR source is amplitude-modulated at frequency f_mod (10-100 MHz). Light reflected from the scene picks up a round-trip phase shift phi = 4*pi*f_mod*d/c. Four-bucket demodulation at the pixel extracts in-phase and quadrature components, from which phi and amplitude are computed. Depth d = c * phi / (4*pi*f_mod), with wrap ambiguity c/(2*f_mod). Multi-frequency captures resolve wraps.",
+    "forward_model": "I_k(u,v) = A(u,v) * cos(phi(u,v) - psi_k) + B(u,v) + n_k(u,v),  k = 0..3",
+    "world_state_x": "Depth map d(u,v) in R^{H x W} (and optionally amplitude map A(u,v))",
+    "observation_y": "4 (or 8) demodulation buckets per pixel y(u,v,k) in R^{H x W x K}",
+    "physical_parameters_theta": [
+      "Modulation frequency f_mod (10-100 MHz)",
+      "Demodulation phases psi_k (typ 0, pi/2, pi, 3pi/2)",
+      "Integration time T_int, ambient rejection",
+      "Sensor quantum efficiency, pixel pitch, IR filter",
+      "Multipath interference (MPI) model"
+    ]
+  },
+
+  "G": {
+    "dag": "L.modulate.amcw -> L.reflect_scene -> L.demodulate -> int.temporal",
+    "vertices": ["L.modulate.amcw", "L.reflect_scene", "L.demodulate", "int.temporal"],
+    "arcs": [
+      "L.modulate.amcw -> L.reflect_scene",
+      "L.reflect_scene -> L.demodulate",
+      "L.demodulate -> int.temporal"
+    ],
+    "L_DAG": 3.2,
+    "n_c": 0
+  },
+
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 700,
+    "condition_number_effective": 10,
+    "regime": "Well-posed with multi-frequency unwrap (3 f_mod sufficient for Chinese Remainder Theorem unwrap). Precision sigma_d ~ c / (4*pi*f_mod * sqrt(SNR)). Multipath interference (MPI) at concave corners and translucent surfaces biases depth; motion during 4-bucket integration causes phase artifacts."
+  },
+
+  "C": {
+    "solver_class": "four-bucket quadrature + CRT unwrap, MPI correction (sparse deconvolution, SRA, learned), deep ToF (ToF-DeepNet, ToF-FlowNet)",
+    "convergence_rate_q": 2.0,
+    "error_bound": "sigma_d <= c/(4*pi*f_mod * sqrt(A^2 / (A^2 + 2B))); MPI bias ~ 5-15 cm at typical indoor scenes",
+    "complexity": "O(H * W * K) for bucket demod; O(H * W * N_freq) for multi-freq unwrap"
+  },
+
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "amcw_modulated_illumination",
+    "integration_axis": "temporal",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "shot_poisson",
+    "solution_space": "2D_depth_map",
+    "primitives": ["L.modulate.amcw", "L.reflect_scene", "L.demodulate", "int.temporal"]
+  },
+
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+
+  "mismatch_parameters": ["multipath_interference", "motion_jitter", "ambient_light", "mixed_pixels_at_edges", "temperature_drift"],
+  "error_metric": "depth_RMSE_mm",
+  "error_metric_secondary": "depth_MAE_mm",
+  "error_metric_tertiary": "outlier_fraction_percent",
+
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "amcw_tof_depth",
+      "forward_operator": "four_bucket_tof_forward",
+      "input_format": "K_bucket_frames_plus_modulation_params",
+      "omega": {"H": 424, "W": 512, "f_mod_MHz": 80, "K_buckets": 4, "N_freq": 3, "T_int_ms": 10, "photon_count": 500, "multipath_interference": 0.0, "motion_jitter": 0.0, "ambient_light": 0.0},
+      "epsilon_fn_center": "8.0 mm RMSE"
+    },
+    "allowed_forward_operators": ["four_bucket_tof_forward", "multi_freq_tof", "dual_freq_tof"],
+    "allowed_problem_classes": ["amcw_tof_depth", "tof_mpi_correction", "motion_compensated_tof"],
+    "allowed_omega_dimensions": ["H", "W", "f_mod_MHz", "K_buckets", "N_freq", "T_int_ms", "photon_count", "multipath_interference", "motion_jitter", "ambient_light", "mixed_pixels_at_edges", "temperature_drift"],
+    "omega_bounds": {
+      "H": [240, 1080], "W": [320, 1920],
+      "f_mod_MHz": [10, 200], "K_buckets": [3, 9], "N_freq": [1, 5],
+      "T_int_ms": [1, 100], "photon_count": [20, 5000],
+      "multipath_interference": [0.0, 0.3], "motion_jitter": [0.0, 0.05],
+      "ambient_light": [0.0, 50000], "mixed_pixels_at_edges": [0.0, 0.1],
+      "temperature_drift": [0.0, 0.05]
+    },
+    "epsilon_bounds": {"depth_rmse_mm": [2.0, 100.0]}
+  },
+
+  "p1_p10_tests": ["PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS"],
+  "s1_s4_gates": ["PASS", "PASS", "PASS", "PASS"],
+  "ipfs_cid": null
+}

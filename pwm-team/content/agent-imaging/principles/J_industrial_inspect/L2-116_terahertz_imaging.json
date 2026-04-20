@@ -1,0 +1,147 @@
+{
+  "artifact_id": "L2-116",
+  "layer": "L2",
+  "parent_l1": "L1-116",
+  "title": "Terahertz Imaging (0.1-10 THz time-domain / CW) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        64,
+        1024
+      ],
+      "W": [
+        64,
+        1024
+      ],
+      "N_freq": [
+        64,
+        2048
+      ],
+      "SNR_dB": [
+        5.0,
+        40.0
+      ],
+      "water_absorption": [
+        0.0,
+        0.5
+      ],
+      "scattering_at_defects": [
+        0.0,
+        0.3
+      ],
+      "dispersive_media": [
+        0.0,
+        0.5
+      ],
+      "power_fluctuation": [
+        0.0,
+        0.2
+      ]
+    },
+    "E": {
+      "forward": "E(t, x, y) = source(t) * propagator(epsilon_r(x,y,omega), d) + n; invert for epsilon_r",
+      "operator": "thz_tds_forward_mismatch",
+      "primitive_chain": "L.thz_source -> L.transmit_sample -> D.thz_detector -> int.spectral",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "14.0 + 0.3 * SNR_dB - 10.0 * water_absorption - 8.0 * scattering_at_defects"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Fabry-Perot-Analysis",
+        "method_sig": "L+O",
+        "expected_psnr": 20.0
+      },
+      {
+        "name": "TV-ADMM-THz",
+        "method_sig": "L+O",
+        "expected_psnr": 22.5
+      },
+      {
+        "name": "THz-Net",
+        "method_sig": "L+N",
+        "expected_psnr": 25.0
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 256,
+        "W": 256,
+        "N_freq": 512,
+        "f_THz_range": [
+          0.1,
+          3.0
+        ],
+        "SNR_dB": 25,
+        "water_absorption": 0.0,
+        "scattering_at_defects": 0.0,
+        "dispersive_media": 0.0
+      },
+      "epsilon": 22.0
+    },
+    "tier_bounds": {
+      "H": [
+        64,
+        1024
+      ],
+      "W": [
+        64,
+        1024
+      ],
+      "N_freq": [
+        64,
+        2048
+      ],
+      "SNR_dB": [
+        5.0,
+        40.0
+      ],
+      "water_absorption": [
+        0.0,
+        0.5
+      ],
+      "scattering_at_defects": [
+        0.0,
+        0.3
+      ],
+      "dispersive_media": [
+        0.0,
+        0.5
+      ],
+      "power_fluctuation": [
+        0.0,
+        0.2
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.5,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

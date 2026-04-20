@@ -1,0 +1,135 @@
+{
+  "artifact_id": "L2-002",
+  "layer": "L2",
+  "parent_l1": "L1-002",
+  "title": "Low-Dose Widefield Fluorescence (photon-starved Airy deconvolution) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        128,
+        4096
+      ],
+      "W": [
+        128,
+        4096
+      ],
+      "pixel_nm": [
+        30,
+        200
+      ],
+      "NA": [
+        0.4,
+        1.49
+      ],
+      "peak_photons": [
+        5,
+        200
+      ],
+      "dz_nm": [
+        0.0,
+        1500.0
+      ],
+      "sigma_bg": [
+        0.0,
+        0.1
+      ]
+    },
+    "E": {
+      "forward": "y = [PSF_Airy conv f] + n, n Poisson-dominated at <50 photons/px",
+      "operator": "airy_psf_low_dose_mismatch",
+      "primitive_chain": "K.psf.airy -> int.temporal",
+      "inverse": "solve forward model for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "14.0 + 4.0 * log10(peak_photons / 5) - 5.0 * (sigma_bg / 0.10)"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Anscombe-BM3D",
+        "method_sig": "L+R",
+        "expected_psnr": 22.0
+      },
+      {
+        "name": "CARE-UNet-Poisson",
+        "method_sig": "L+N",
+        "expected_psnr": 26.5
+      },
+      {
+        "name": "Noise2Noise",
+        "method_sig": "L+N",
+        "expected_psnr": 25.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "pixel_nm": 65,
+        "NA": 1.4,
+        "peak_photons": 50,
+        "dz_nm": 0.0,
+        "sigma_bg": 0.0
+      },
+      "epsilon": 24.0
+    },
+    "tier_bounds": {
+      "H": [
+        128,
+        4096
+      ],
+      "W": [
+        128,
+        4096
+      ],
+      "pixel_nm": [
+        30,
+        200
+      ],
+      "NA": [
+        0.4,
+        1.49
+      ],
+      "peak_photons": [
+        5,
+        200
+      ],
+      "dz_nm": [
+        0.0,
+        1500.0
+      ],
+      "sigma_bg": [
+        0.0,
+        0.1
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.45,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

@@ -1,0 +1,179 @@
+{
+  "artifact_id": "L1-021",
+  "layer": "L1",
+  "principle_number": "021",
+  "title": "Second Harmonic Generation (SHG) Microscopy",
+  "domain": "Microscopy",
+  "sub_domain": "Chi-2 non-centrosymmetric NLO imaging",
+  "source_file": "A_microscopy/021_shg.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical domain literature for this specific principle.",
+  "E": {
+    "description": "Second Harmonic Generation (SHG) Microscopy forward model.",
+    "forward_model": "y(r) ~ |chi2(r)|^2 * I_ex^2(r) at lambda_SHG = lambda_ex / 2; polarization-sensitive",
+    "world_state_x": "Scene parameter of interest (density / complex field / lifetime / normals depending on spec).",
+    "observation_y": "Measured intensity or photon counts from the imaging system.",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "pixel_nm",
+      "NA",
+      "lambda_ex_nm",
+      "peak_photons",
+      "pulse_width_fs",
+      "sample_scattering",
+      "quasi_phase_mismatch"
+    ]
+  },
+  "G": {
+    "dag": "L.excitation.nonlinear_chi2 -> S.scan.raster -> int.temporal",
+    "vertices": [
+      "L.excitation.nonlinear_chi2",
+      "S.scan.raster",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.excitation.nonlinear_chi2 -> S.scan.raster",
+      "S.scan.raster -> int.temporal"
+    ],
+    "L_DAG": 3.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 300,
+    "condition_number_effective": 15,
+    "regime": "Conditional stability; principle-specific mismatch dominates at Omega bounds (see `mismatch_parameters`)."
+  },
+  "C": {
+    "solver_class": "Richardson-Lucy-SHG, TV-ADMM-SHG, SHG-Net",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(photon_count) + mismatch-induced bias.",
+    "complexity": "O(H W) to O(H W Z) per iteration depending on dimensionality"
+  },
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "second_harmonic_nlo",
+    "integration_axis": "temporal",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "shot_poisson",
+    "solution_space": "2D_intensity",
+    "primitives": [
+      "L.excitation.nonlinear_chi2",
+      "S.scan.raster",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "pulse_compression_drift",
+    "sample_scattering",
+    "quasi_phase_mismatch"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "shg",
+      "forward_operator": "shg_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 512,
+        "W": 512,
+        "pixel_nm": 500,
+        "NA": 1.0,
+        "lambda_ex_nm": 920,
+        "peak_photons": 100,
+        "pulse_width_fs": 100,
+        "sample_scattering": 0.0,
+        "quasi_phase_mismatch": 0.0
+      },
+      "epsilon_fn_center": "24.0"
+    },
+    "allowed_forward_operators": [
+      "shg_forward"
+    ],
+    "allowed_problem_classes": [
+      "shg"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "pixel_nm",
+      "NA",
+      "lambda_ex_nm",
+      "peak_photons",
+      "pulse_width_fs",
+      "sample_scattering",
+      "quasi_phase_mismatch",
+      "pulse_compression_drift",
+      "sample_scattering",
+      "quasi_phase_mismatch"
+    ],
+    "omega_bounds": {
+      "H": [
+        128,
+        2048
+      ],
+      "W": [
+        128,
+        2048
+      ],
+      "pixel_nm": [
+        200,
+        1000
+      ],
+      "NA": [
+        0.6,
+        1.1
+      ],
+      "lambda_ex_nm": [
+        800,
+        1100
+      ],
+      "peak_photons": [
+        10,
+        2000
+      ],
+      "pulse_width_fs": [
+        50,
+        500
+      ],
+      "sample_scattering": [
+        0.0,
+        0.5
+      ],
+      "quasi_phase_mismatch": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        12.0,
+        42.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

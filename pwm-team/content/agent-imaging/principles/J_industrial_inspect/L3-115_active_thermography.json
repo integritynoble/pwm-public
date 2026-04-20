@@ -1,0 +1,177 @@
+{
+  "artifact_id": "L3-115",
+  "layer": "L3",
+  "parent_l2": "L2-115",
+  "parent_l1": "L1-115",
+  "title": "Active Thermography (pulsed / lock-in IR inspection) Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "canonical NDT / NDE dataset for this principle",
+    "secondary": "simulated forward synthesis at declared Omega",
+    "construction_method": "parametric forward + declared noise",
+    "num_dev_instances_per_tier": 20
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "H": 640,
+        "W": 480,
+        "N_frames": 200,
+        "f_lockin_Hz": 1,
+        "SNR_dB": 25.0,
+        "emissivity_variation": 0.0,
+        "surface_reflections": 0.0,
+        "ambient_thermal_load": 0.0,
+        "convective_losses": 0.0
+      },
+      "epsilon": 23.0,
+      "d_ibench": 0.14,
+      "baselines": [
+        {
+          "name": "Phase-Lockin",
+          "score": 21.0,
+          "Q": 0.88
+        },
+        {
+          "name": "PPT-Thermography",
+          "score": 23.5,
+          "Q": 0.88
+        },
+        {
+          "name": "ThermoNet",
+          "score": 26.0,
+          "Q": 0.88
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "H": 640,
+        "W": 480,
+        "N_frames": 200,
+        "f_lockin_Hz": 1,
+        "SNR_dB": 22.0,
+        "emissivity_variation": 0.06,
+        "surface_reflections": 0.06,
+        "ambient_thermal_load": 0.04000000000000001,
+        "convective_losses": 0.06
+      },
+      "epsilon": 18.86,
+      "d_ibench": 0.28,
+      "baselines": [
+        {
+          "name": "Phase-Lockin",
+          "score": 19.0,
+          "Q": 0.68
+        },
+        {
+          "name": "PPT-Thermography",
+          "score": 21.5,
+          "Q": 0.68
+        },
+        {
+          "name": "ThermoNet",
+          "score": 24.0,
+          "Q": 0.68
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "H": 640,
+        "W": 480,
+        "N_frames": 200,
+        "f_lockin_Hz": 1,
+        "SNR_dB": 13.0,
+        "emissivity_variation": 0.15,
+        "surface_reflections": 0.15,
+        "ambient_thermal_load": 0.1,
+        "convective_losses": 0.15
+      },
+      "epsilon": 14.72,
+      "d_ibench": 0.48,
+      "baselines": [
+        {
+          "name": "Phase-Lockin",
+          "score": 17.0,
+          "Q": 0.48
+        },
+        {
+          "name": "PPT-Thermography",
+          "score": 19.5,
+          "Q": 0.48
+        },
+        {
+          "name": "ThermoNet",
+          "score": 22.0,
+          "Q": 0.48
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "H": 640,
+        "W": 480,
+        "N_frames": 200,
+        "f_lockin_Hz": 1,
+        "SNR_dB": 0.0,
+        "emissivity_variation": 0.3,
+        "surface_reflections": 0.3,
+        "ambient_thermal_load": 0.2,
+        "convective_losses": 0.3
+      },
+      "epsilon": 10.58,
+      "d_ibench": 0.72,
+      "baselines": [
+        {
+          "name": "Phase-Lockin",
+          "score": 15.0,
+          "Q": 0.28
+        },
+        {
+          "name": "PPT-Thermography",
+          "score": 17.5,
+          "Q": 0.28
+        },
+        {
+          "name": "ThermoNet",
+          "score": 20.0,
+          "Q": 0.28
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "full parametric sweep",
+      "num_dev_instances": 200,
+      "construction_method": "parametric Omega sweep"
+    },
+    "baselines": [
+      {
+        "name": "Phase-Lockin",
+        "overall_Q": 0.7
+      },
+      {
+        "name": "PPT-Thermography",
+        "overall_Q": 0.6
+      },
+      {
+        "name": "ThermoNet",
+        "overall_Q": 0.5
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind strata corner.",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

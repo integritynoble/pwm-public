@@ -1,0 +1,173 @@
+{
+  "artifact_id": "L3-087",
+  "layer": "L3",
+  "parent_l2": "L2-087",
+  "parent_l1": "L1-087",
+  "title": "Scanning TEM (STEM) \u2014 HAADF / BF imaging with convergent beam Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "canonical EM dataset for this principle (EMPIAR / CEM500K / etc.)",
+    "secondary": "simulated forward model at declared Omega",
+    "construction_method": "parametric forward synthesis + Poisson counting",
+    "num_dev_instances_per_tier": 20
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "H": 2048,
+        "W": 2048,
+        "pixel_A": 0.5,
+        "kV": 200,
+        "probe_aberration": 0.0,
+        "scan_distortion": 0.0,
+        "peak_electrons": 200,
+        "beam_damage": 0.0
+      },
+      "epsilon": 28.0,
+      "d_ibench": 0.14,
+      "baselines": [
+        {
+          "name": "Wiener-STEM",
+          "score": 26.0,
+          "Q": 0.88
+        },
+        {
+          "name": "BM3D-STEM",
+          "score": 27.5,
+          "Q": 0.88
+        },
+        {
+          "name": "STEM-UNet",
+          "score": 30.5,
+          "Q": 0.88
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "H": 2048,
+        "W": 2048,
+        "pixel_A": 0.5,
+        "kV": 200,
+        "probe_aberration": 0.06,
+        "scan_distortion": 0.010000000000000002,
+        "peak_electrons": 100,
+        "beam_damage": 0.1
+      },
+      "epsilon": 22.4,
+      "d_ibench": 0.28,
+      "baselines": [
+        {
+          "name": "Wiener-STEM",
+          "score": 23.5,
+          "Q": 0.68
+        },
+        {
+          "name": "BM3D-STEM",
+          "score": 25.0,
+          "Q": 0.68
+        },
+        {
+          "name": "STEM-UNet",
+          "score": 28.0,
+          "Q": 0.68
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "H": 2048,
+        "W": 2048,
+        "pixel_A": 0.5,
+        "kV": 200,
+        "probe_aberration": 0.15,
+        "scan_distortion": 0.025,
+        "peak_electrons": 40,
+        "beam_damage": 0.25
+      },
+      "epsilon": 18.2,
+      "d_ibench": 0.48,
+      "baselines": [
+        {
+          "name": "Wiener-STEM",
+          "score": 21.0,
+          "Q": 0.48
+        },
+        {
+          "name": "BM3D-STEM",
+          "score": 22.5,
+          "Q": 0.48
+        },
+        {
+          "name": "STEM-UNet",
+          "score": 25.5,
+          "Q": 0.48
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "H": 2048,
+        "W": 2048,
+        "pixel_A": 0.5,
+        "kV": 200,
+        "probe_aberration": 0.3,
+        "scan_distortion": 0.05,
+        "peak_electrons": 16,
+        "beam_damage": 0.5
+      },
+      "epsilon": 14.0,
+      "d_ibench": 0.72,
+      "baselines": [
+        {
+          "name": "Wiener-STEM",
+          "score": 18.5,
+          "Q": 0.28
+        },
+        {
+          "name": "BM3D-STEM",
+          "score": 20.0,
+          "Q": 0.28
+        },
+        {
+          "name": "STEM-UNet",
+          "score": 23.0,
+          "Q": 0.28
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "full parametric sweep",
+      "num_dev_instances": 200,
+      "construction_method": "parametric Omega sweep"
+    },
+    "baselines": [
+      {
+        "name": "Wiener-STEM",
+        "overall_Q": 0.7
+      },
+      {
+        "name": "BM3D-STEM",
+        "overall_Q": 0.6
+      },
+      {
+        "name": "STEM-UNet",
+        "overall_Q": 0.5
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind strata corner.",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

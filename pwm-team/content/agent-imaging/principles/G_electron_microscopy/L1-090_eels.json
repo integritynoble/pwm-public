@@ -1,0 +1,185 @@
+{
+  "artifact_id": "L1-090",
+  "layer": "L1",
+  "principle_number": "090",
+  "title": "Electron Energy Loss Spectroscopy (EELS)",
+  "domain": "Electron Microscopy",
+  "sub_domain": "Inelastic-electron chemical spectroscopy",
+  "source_file": "G_electron_microscopy/090_eels.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical electron-microscopy literature for this principle.",
+  "E": {
+    "description": "Electron Energy Loss Spectroscopy (EELS) forward model.",
+    "forward_model": "S(E, r) = integral [PSF conv density_of_states(E, r)] + plural_scat + zero_loss + n",
+    "world_state_x": "Scene parameter (density / orientation / spectrum / complex field depending on principle)",
+    "observation_y": "Electron detector output at declared geometry + noise",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "N_E",
+      "E_range_eV",
+      "pixel_nm",
+      "kV",
+      "peak_electrons",
+      "zero_loss_drift",
+      "plural_scattering"
+    ]
+  },
+  "G": {
+    "dag": "L.transmit_sample -> L.energy_dispersion -> D.eels_spectrum -> int.spectral",
+    "vertices": [
+      "L.transmit_sample",
+      "L.energy_dispersion",
+      "D.eels_spectrum",
+      "int.spectral"
+    ],
+    "arcs": [
+      "L.transmit_sample -> L.energy_dispersion",
+      "L.energy_dispersion -> D.eels_spectrum",
+      "D.eels_spectrum -> int.spectral"
+    ],
+    "L_DAG": 3.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 280,
+    "condition_number_effective": 14,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Power-Law-BG, MLLS, EELS-UNet",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(electron_count) + mismatch bias.",
+    "complexity": "O(H W) to O(H W Z) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "electron",
+    "sensing_mechanism": "inelastic_electron_spectrum",
+    "integration_axis": "spectral",
+    "problem_class": "linear_inverse",
+    "noise_model": "shot_poisson",
+    "solution_space": "3D_eels_hyperspectral",
+    "primitives": [
+      "L.transmit_sample",
+      "L.energy_dispersion",
+      "D.eels_spectrum",
+      "int.spectral"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "zero_loss_drift",
+    "plural_scattering",
+    "edge_overlap"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "eels_hyperspectral",
+      "forward_operator": "eels_hyperspectral_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 256,
+        "W": 256,
+        "N_E": 2048,
+        "E_range_eV": [
+          0,
+          2000
+        ],
+        "pixel_nm": 1.0,
+        "kV": 200,
+        "peak_electrons": 500,
+        "zero_loss_drift": 0.0,
+        "plural_scattering": 0.0
+      },
+      "epsilon_fn_center": "22.0"
+    },
+    "allowed_forward_operators": [
+      "eels_hyperspectral_forward"
+    ],
+    "allowed_problem_classes": [
+      "eels_hyperspectral"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "N_E",
+      "E_range_eV",
+      "pixel_nm",
+      "kV",
+      "peak_electrons",
+      "zero_loss_drift",
+      "plural_scattering",
+      "zero_loss_drift",
+      "plural_scattering",
+      "edge_overlap"
+    ],
+    "omega_bounds": {
+      "H": [
+        64,
+        2048
+      ],
+      "W": [
+        64,
+        2048
+      ],
+      "N_E": [
+        256,
+        8192
+      ],
+      "pixel_nm": [
+        0.1,
+        10
+      ],
+      "kV": [
+        80,
+        300
+      ],
+      "peak_electrons": [
+        10,
+        5000
+      ],
+      "zero_loss_drift": [
+        0.0,
+        5.0
+      ],
+      "plural_scattering": [
+        0.0,
+        0.5
+      ],
+      "edge_overlap": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        40.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

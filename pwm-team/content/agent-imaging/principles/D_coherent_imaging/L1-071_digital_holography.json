@@ -1,0 +1,95 @@
+{
+  "artifact_id": "L1-071",
+  "layer": "L1",
+  "principle_number": "071",
+  "title": "Digital Holography (off-axis and in-line intensity holograms)",
+  "domain": "Coherent Imaging",
+  "sub_domain": "Interferometric complex-field recovery",
+  "source_file": "D_coherent_imaging/071_digital_holography.md",
+  "reference_mine_example": "papers/Proof-of-Solution/mine_example/holography.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is extracted from mine_example/holography.md and canonical Goodman / Kreis holography references.",
+
+  "E": {
+    "description": "A coherent reference wave R interferes with the object wave O at the sensor, yielding intensity I = |O|^2 + |R|^2 + O*R + OR*. In off-axis holography a tilted reference shifts the object term to an isolated Fourier quadrant; in in-line holography (phase-shifting or Gabor) a sequence of phase-shifted reference states isolates the complex object term algebraically.",
+    "forward_model": "I(x,y) = |O(x,y) + R(x,y)|^2 + n(x,y)",
+    "world_state_x": "Complex object field O(x,y) in C^{H x W} (amplitude + phase), typically related to a sample by Fresnel propagation U(x,y,z)",
+    "observation_y": "Intensity hologram I(x,y) in R^{H x W} (photon counting; optionally N phase-shifted frames I_1..I_N)",
+    "physical_parameters_theta": [
+      "R(x,y): reference wave (plane wave for off-axis, stepped-phase for in-line)",
+      "tilt angle alpha_ref (off-axis only)",
+      "wavelength lambda, propagation distance z",
+      "pixel size dx, numerical aperture NA",
+      "N_phase_shifts (in-line only): number of phase-shifted frames"
+    ]
+  },
+
+  "G": {
+    "dag": "L.modulation.reference -> L.add_coherent -> L.modulus_squared -> int.spatial",
+    "vertices": ["L.modulation.reference", "L.add_coherent", "L.modulus_squared", "int.spatial"],
+    "arcs": [
+      "L.modulation.reference -> L.add_coherent",
+      "L.add_coherent -> L.modulus_squared",
+      "L.modulus_squared -> int.spatial"
+    ],
+    "L_DAG": 3.3,
+    "n_c": 0
+  },
+
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 1200,
+    "condition_number_effective": 15,
+    "regime": "Off-axis single-shot: ill-posed without spatial bandwidth separation (tilt must exceed twice max object spatial frequency). In-line phase-shifting: well-posed with N >= 3 phase steps; stability dominated by reference-phase calibration error and wavelength drift."
+  },
+
+  "C": {
+    "solver_class": "Fourier demodulation (off-axis), phase-shifting algorithm (in-line), Gerchberg-Saxton, TV-ADMM for joint denoising, deep-hologram (DH-Net)",
+    "convergence_rate_q": 2.0,
+    "error_bound": "|phase_hat - phase|_L2 <= 2*pi*(dphi_ref + delta_z / z_R) + sigma/sqrt(photon_count); Fresnel propagation error scales with (lambda * dz / dx^2)",
+    "complexity": "O(H * W * log(H*W)) per frame (2D FFT)"
+  },
+
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "interferometric",
+    "integration_axis": "spatial",
+    "problem_class": "linear_inverse",
+    "noise_model": "shot_poisson",
+    "solution_space": "complex_2D",
+    "primitives": ["L.modulation.reference", "L.add_coherent", "L.modulus_squared", "int.spatial"]
+  },
+
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+
+  "mismatch_parameters": ["reference_tilt_error", "wavelength_drift", "propagation_distance_error", "phase_shift_error"],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "phase_L2_error",
+
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "complex_field_recovery",
+      "forward_operator": "off_axis_digital_hologram",
+      "input_format": "single_intensity_hologram_plus_reference_params",
+      "omega": {"H": 1024, "W": 1024, "tilt_angle_mrad": 10.0, "wavelength_nm": 632.8, "z_mm": 100.0, "photon_count": 1000, "reference_tilt_error": 0.0, "wavelength_drift": 0.0, "propagation_distance_error": 0.0},
+      "epsilon_fn_center": "32.0 dB PSNR"
+    },
+    "allowed_forward_operators": ["off_axis_digital_hologram", "in_line_phase_shifting", "gabor_inline"],
+    "allowed_problem_classes": ["complex_field_recovery", "phase_imaging"],
+    "allowed_omega_dimensions": ["H", "W", "tilt_angle_mrad", "wavelength_nm", "z_mm", "photon_count", "N_phase_shifts", "reference_tilt_error", "wavelength_drift", "propagation_distance_error", "phase_shift_error"],
+    "omega_bounds": {
+      "H": [256, 4096], "W": [256, 4096], "tilt_angle_mrad": [1.0, 50.0],
+      "wavelength_nm": [400, 1550], "z_mm": [1.0, 500.0], "photon_count": [10, 50000],
+      "N_phase_shifts": [3, 8], "reference_tilt_error": [0.0, 2.0],
+      "wavelength_drift": [0.0, 0.002], "propagation_distance_error": [0.0, 5.0],
+      "phase_shift_error": [0.0, 0.1]
+    },
+    "epsilon_bounds": {"psnr_db": [18.0, 42.0]}
+  },
+
+  "p1_p10_tests": ["PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS"],
+  "s1_s4_gates": ["PASS", "PASS", "PASS", "PASS"],
+  "ipfs_cid": null
+}

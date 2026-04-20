@@ -1,0 +1,177 @@
+{
+  "artifact_id": "L3-091",
+  "layer": "L3",
+  "parent_l2": "L2-091",
+  "parent_l1": "L1-091",
+  "title": "Off-Axis Electron Holography \u2014 nanoscale phase imaging Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "canonical EM dataset for this principle (EMPIAR / CEM500K / etc.)",
+    "secondary": "simulated forward model at declared Omega",
+    "construction_method": "parametric forward synthesis + Poisson counting",
+    "num_dev_instances_per_tier": 20
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "H": 2048,
+        "W": 2048,
+        "pixel_A": 0.5,
+        "fringe_spacing_nm": 2,
+        "kV": 300,
+        "peak_electrons": 100,
+        "biprism_stability": 0.5,
+        "fringe_contrast_loss": 0.0,
+        "reference_drift": 0.0
+      },
+      "epsilon": 25.0,
+      "d_ibench": 0.14,
+      "baselines": [
+        {
+          "name": "Fourier-Sideband",
+          "score": 23.5,
+          "Q": 0.88
+        },
+        {
+          "name": "Iterative-Holo",
+          "score": 25.0,
+          "Q": 0.88
+        },
+        {
+          "name": "EHolo-Net",
+          "score": 27.5,
+          "Q": 0.88
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "H": 2048,
+        "W": 2048,
+        "pixel_A": 0.5,
+        "fringe_spacing_nm": 2,
+        "kV": 300,
+        "peak_electrons": 50,
+        "biprism_stability": 0.6,
+        "fringe_contrast_loss": 0.1,
+        "reference_drift": 0.002
+      },
+      "epsilon": 20.0,
+      "d_ibench": 0.28,
+      "baselines": [
+        {
+          "name": "Fourier-Sideband",
+          "score": 21.0,
+          "Q": 0.68
+        },
+        {
+          "name": "Iterative-Holo",
+          "score": 22.5,
+          "Q": 0.68
+        },
+        {
+          "name": "EHolo-Net",
+          "score": 25.0,
+          "Q": 0.68
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "H": 2048,
+        "W": 2048,
+        "pixel_A": 0.5,
+        "fringe_spacing_nm": 2,
+        "kV": 300,
+        "peak_electrons": 20,
+        "biprism_stability": 0.75,
+        "fringe_contrast_loss": 0.25,
+        "reference_drift": 0.005
+      },
+      "epsilon": 16.25,
+      "d_ibench": 0.48,
+      "baselines": [
+        {
+          "name": "Fourier-Sideband",
+          "score": 18.5,
+          "Q": 0.48
+        },
+        {
+          "name": "Iterative-Holo",
+          "score": 20.0,
+          "Q": 0.48
+        },
+        {
+          "name": "EHolo-Net",
+          "score": 22.5,
+          "Q": 0.48
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "H": 2048,
+        "W": 2048,
+        "pixel_A": 0.5,
+        "fringe_spacing_nm": 2,
+        "kV": 300,
+        "peak_electrons": 8,
+        "biprism_stability": 1.0,
+        "fringe_contrast_loss": 0.5,
+        "reference_drift": 0.01
+      },
+      "epsilon": 12.5,
+      "d_ibench": 0.72,
+      "baselines": [
+        {
+          "name": "Fourier-Sideband",
+          "score": 16.0,
+          "Q": 0.28
+        },
+        {
+          "name": "Iterative-Holo",
+          "score": 17.5,
+          "Q": 0.28
+        },
+        {
+          "name": "EHolo-Net",
+          "score": 20.0,
+          "Q": 0.28
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "full parametric sweep",
+      "num_dev_instances": 200,
+      "construction_method": "parametric Omega sweep"
+    },
+    "baselines": [
+      {
+        "name": "Fourier-Sideband",
+        "overall_Q": 0.7
+      },
+      {
+        "name": "Iterative-Holo",
+        "overall_Q": 0.6
+      },
+      {
+        "name": "EHolo-Net",
+        "overall_Q": 0.5
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind strata corner.",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

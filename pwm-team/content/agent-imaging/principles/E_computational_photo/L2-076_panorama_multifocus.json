@@ -1,0 +1,55 @@
+{
+  "artifact_id": "L2-076",
+  "layer": "L2",
+  "parent_l1": "L1-076",
+  "title": "Multi-Focus Fusion Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+
+  "six_tuple": {
+    "omega": {
+      "H": [256, 8192], "W": [256, 8192], "K_frames": [2, 32],
+      "parallax_px": [0.0, 30.0], "motion_ghosting": [0.0, 0.5],
+      "exposure_variation": [0.0, 2.0], "registration_error": [0.0, 5.0],
+      "chromatic_fringing": [0.0, 2.0]
+    },
+    "E": {
+      "forward": "y_k = W_k{defocus(x, z_k)} + n_k; W_k includes registration_error + parallax",
+      "operator": "multi_focus_stitch_forward_mismatch",
+      "primitive_chain": "S.scan.pose -> K.psf.defocus -> L.warp.affine -> int.spatial",
+      "inverse": "recover all-in-focus X(u,v) from K focus-/pose-varied frames"
+    },
+    "B": {"intensity_bounded": "X in [0, 1]", "smoothness_across_seams": true},
+    "I": {"strategy": "align_to_reference_frame_plus_pyramid_init"},
+    "O": ["PSNR", "SSIM", "VIF", "seam_gradient_score"],
+    "epsilon_fn": "22.0 + 4.0 * log2(K_frames / 2) - 3.0 * registration_error / 5.0 - 5.0 * motion_ghosting"
+  },
+
+  "protocol_fields": {
+    "input_format": {"frames": "float32(K_frames, H, W, 3)", "optional_poses": "float32(K_frames, 3, 3)"},
+    "output_format": {"composite": "float32(H, W, 3)"},
+    "baselines": [
+      {"name": "Laplacian-Pyramid",  "method_sig": "A+O", "expected_psnr": 26.0},
+      {"name": "SML-focus-stack",    "method_sig": "A+O", "expected_psnr": 28.0},
+      {"name": "Graph-Cut-Panorama", "method_sig": "L+O", "expected_psnr": 29.5},
+      {"name": "U2Fusion",           "method_sig": "L+N", "expected_psnr": 33.0}
+    ]
+  },
+
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {"H": 1024, "W": 1024, "K_frames": 5, "parallax_px": 0.0, "motion_ghosting": 0.0, "exposure_variation": 0.0, "registration_error": 0.0, "chromatic_fringing": 0.0},
+      "epsilon": 30.0
+    },
+    "tier_bounds": {
+      "H": [256, 4096], "W": [256, 4096], "K_frames": [2, 16],
+      "parallax_px": [0.0, 30.0], "motion_ghosting": [0.0, 0.5],
+      "registration_error": [0.0, 5.0]
+    },
+    "proximity_threshold": 0.10
+  },
+
+  "d_spec": 0.52,
+  "s1_s4_gates": ["PASS", "PASS", "PASS", "PASS"],
+  "ipfs_cid": null
+}

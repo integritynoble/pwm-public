@@ -1,0 +1,77 @@
+{
+  "artifact_id": "L3-078",
+  "layer": "L3",
+  "parent_l2": "L2-078",
+  "parent_l1": "L1-078",
+  "title": "Event Camera Reconstruction Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+
+  "dataset_registry": {
+    "primary": "IJRR Event Camera Dataset (slider_depth, shapes_6dof, poster_6dof)",
+    "secondary": "ECD MVSEC (multi-vehicle stereo event camera)",
+    "tertiary": "ESIM simulator-generated events on DAVIS-346 resolution",
+    "construction_method": "simulate with ESIM or use real DAVIS ground-truth intensity frames interleaved with events",
+    "num_dev_instances_per_tier": 20
+  },
+
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal", "rho": 1,
+      "omega_tier": {"H": 640, "W": 480, "N_events_per_sec": 1000000, "contrast_threshold_C": 0.20, "reconstruction_rate_Hz": 60, "contrast_threshold_variance": 0.0, "noise_event_rate": 0.0, "hot_pixels": 0},
+      "epsilon": 22.0, "d_ibench": 0.14,
+      "baselines": [
+        {"name": "Poisson-Events", "score": 18.5, "Q": 0.42},
+        {"name": "E2VID",          "score": 24.8, "Q": 0.75},
+        {"name": "SPADE-E2VID",    "score": 26.5, "Q": 0.88}
+      ]
+    },
+    {
+      "tier": "T2_low", "rho": 3,
+      "omega_tier": {"H": 640, "W": 480, "N_events_per_sec": 500000, "contrast_threshold_C": 0.25, "reconstruction_rate_Hz": 60, "contrast_threshold_variance": 0.02, "noise_event_rate": 1000, "hot_pixels": 5},
+      "epsilon": 19.5, "d_ibench": 0.28,
+      "baselines": [
+        {"name": "Poisson-Events", "score": 15.8, "Q": 0.28},
+        {"name": "E2VID",          "score": 21.5, "Q": 0.58},
+        {"name": "SPADE-E2VID",    "score": 23.2, "Q": 0.68}
+      ]
+    },
+    {
+      "tier": "T3_moderate", "rho": 5,
+      "omega_tier": {"H": 1280, "W": 720, "N_events_per_sec": 200000, "contrast_threshold_C": 0.35, "reconstruction_rate_Hz": 30, "contrast_threshold_variance": 0.05, "noise_event_rate": 10000, "hot_pixels": 25},
+      "epsilon": 16.5, "d_ibench": 0.48,
+      "baselines": [
+        {"name": "Poisson-Events", "score": 12.5, "Q": 0.15},
+        {"name": "E2VID",          "score": 18.0, "Q": 0.40},
+        {"name": "SPADE-E2VID",    "score": 19.8, "Q": 0.50}
+      ]
+    },
+    {
+      "tier": "T4_noisy", "rho": 10,
+      "omega_tier": {"H": 1280, "W": 960, "N_events_per_sec": 50000, "contrast_threshold_C": 0.50, "reconstruction_rate_Hz": 15, "contrast_threshold_variance": 0.10, "noise_event_rate": 100000, "hot_pixels": 100},
+      "epsilon": 13.5, "d_ibench": 0.72,
+      "baselines": [
+        {"name": "Poisson-Events", "score": 9.0,  "Q": 0.08},
+        {"name": "E2VID",          "score": 14.0, "Q": 0.22},
+        {"name": "SPADE-E2VID",    "score": 15.5, "Q": 0.32}
+      ]
+    }
+  ],
+
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "IJRR + MVSEC + ESIM-generated union",
+      "num_dev_instances": 200,
+      "construction_method": "parametric (event_rate, noise_event_rate, contrast_threshold_variance) sweep"
+    },
+    "baselines": [
+      {"name": "Poisson-Events", "overall_Q": 0.25},
+      {"name": "E2VID",          "overall_Q": 0.52},
+      {"name": "SPADE-E2VID",    "overall_Q": 0.62}
+    ]
+  },
+
+  "hardness_rule_check": "SATISFIED — all baselines fail at T4_noisy (noise_event_rate=1e5 + C_variance=0.1 + low event rate corner degrades reconstruction below epsilon).",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

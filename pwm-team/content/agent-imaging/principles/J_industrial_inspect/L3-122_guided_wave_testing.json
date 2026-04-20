@@ -1,0 +1,177 @@
+{
+  "artifact_id": "L3-122",
+  "layer": "L3",
+  "parent_l2": "L2-122",
+  "parent_l1": "L1-122",
+  "title": "Guided-Wave Ultrasonic Testing (long-range pipe/rail inspection) Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "canonical NDT / NDE dataset for this principle",
+    "secondary": "simulated forward synthesis at declared Omega",
+    "construction_method": "parametric forward + declared noise",
+    "num_dev_instances_per_tier": 20
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "N_time": 4096,
+        "f_kHz": 40,
+        "range_m": 30,
+        "N_modes": 2,
+        "SNR_dB": 25.0,
+        "mode_mixing": 0.0,
+        "temperature_drift": 0.0,
+        "coating_attenuation": 0.0,
+        "support_reflections": 0.0
+      },
+      "epsilon": 22.0,
+      "d_ibench": 0.14,
+      "baselines": [
+        {
+          "name": "Matched-Filter",
+          "score": 20.0,
+          "Q": 0.88
+        },
+        {
+          "name": "Dispersion-Compensation",
+          "score": 22.5,
+          "Q": 0.88
+        },
+        {
+          "name": "GW-RNN",
+          "score": 25.0,
+          "Q": 0.88
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "N_time": 4096,
+        "f_kHz": 40,
+        "range_m": 30,
+        "N_modes": 2,
+        "SNR_dB": 22.0,
+        "mode_mixing": 0.1,
+        "temperature_drift": 6.0,
+        "coating_attenuation": 0.1,
+        "support_reflections": 0.06
+      },
+      "epsilon": 18.04,
+      "d_ibench": 0.28,
+      "baselines": [
+        {
+          "name": "Matched-Filter",
+          "score": 18.0,
+          "Q": 0.68
+        },
+        {
+          "name": "Dispersion-Compensation",
+          "score": 20.5,
+          "Q": 0.68
+        },
+        {
+          "name": "GW-RNN",
+          "score": 23.0,
+          "Q": 0.68
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "N_time": 4096,
+        "f_kHz": 40,
+        "range_m": 30,
+        "N_modes": 2,
+        "SNR_dB": 13.0,
+        "mode_mixing": 0.25,
+        "temperature_drift": 15.0,
+        "coating_attenuation": 0.25,
+        "support_reflections": 0.15
+      },
+      "epsilon": 14.08,
+      "d_ibench": 0.48,
+      "baselines": [
+        {
+          "name": "Matched-Filter",
+          "score": 16.0,
+          "Q": 0.48
+        },
+        {
+          "name": "Dispersion-Compensation",
+          "score": 18.5,
+          "Q": 0.48
+        },
+        {
+          "name": "GW-RNN",
+          "score": 21.0,
+          "Q": 0.48
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "N_time": 4096,
+        "f_kHz": 40,
+        "range_m": 30,
+        "N_modes": 2,
+        "SNR_dB": 0.0,
+        "mode_mixing": 0.5,
+        "temperature_drift": 30.0,
+        "coating_attenuation": 0.5,
+        "support_reflections": 0.3
+      },
+      "epsilon": 10.12,
+      "d_ibench": 0.72,
+      "baselines": [
+        {
+          "name": "Matched-Filter",
+          "score": 14.0,
+          "Q": 0.28
+        },
+        {
+          "name": "Dispersion-Compensation",
+          "score": 16.5,
+          "Q": 0.28
+        },
+        {
+          "name": "GW-RNN",
+          "score": 19.0,
+          "Q": 0.28
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "full parametric sweep",
+      "num_dev_instances": 200,
+      "construction_method": "parametric Omega sweep"
+    },
+    "baselines": [
+      {
+        "name": "Matched-Filter",
+        "overall_Q": 0.7
+      },
+      {
+        "name": "Dispersion-Compensation",
+        "overall_Q": 0.6
+      },
+      {
+        "name": "GW-RNN",
+        "overall_Q": 0.5
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind strata corner.",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

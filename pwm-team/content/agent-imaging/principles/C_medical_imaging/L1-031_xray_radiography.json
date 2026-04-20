@@ -1,0 +1,175 @@
+{
+  "artifact_id": "L1-031",
+  "layer": "L1",
+  "principle_number": "031",
+  "title": "Planar X-ray Radiography",
+  "domain": "Medical Imaging",
+  "sub_domain": "Projection X-ray diagnostic imaging",
+  "source_file": "C_medical_imaging/031_xray_radiography.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical medical-imaging literature for this principle.",
+  "E": {
+    "description": "Planar X-ray Radiography forward model.",
+    "forward_model": "y(u,v) = I_0 exp(-integral mu ds) + scatter + n",
+    "world_state_x": "Patient-side quantity of interest (attenuation / activity / perfusion / stiffness etc.)",
+    "observation_y": "Clinical sensor output at declared resolution + noise",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "kVp",
+      "mAs",
+      "pixel_um",
+      "scatter",
+      "patient_motion"
+    ]
+  },
+  "G": {
+    "dag": "L.xray_source -> L.beer_lambert -> int.spatial",
+    "vertices": [
+      "L.xray_source",
+      "L.beer_lambert",
+      "int.spatial"
+    ],
+    "arcs": [
+      "L.xray_source -> L.beer_lambert",
+      "L.beer_lambert -> int.spatial"
+    ],
+    "L_DAG": 2.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 160,
+    "condition_number_effective": 8,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "LogTransform, Scatter-Correct, XR-Net",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sensor SNR + mismatch bias + regularisation.",
+    "complexity": "O(H W) to O(H W Z) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "x_ray",
+    "sensing_mechanism": "xray_projection",
+    "integration_axis": "spatial",
+    "problem_class": "linear_inverse",
+    "noise_model": "shot_poisson",
+    "solution_space": "2D_attenuation_projection",
+    "primitives": [
+      "L.xray_source",
+      "L.beer_lambert",
+      "int.spatial"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "scatter",
+    "patient_motion",
+    "anti_scatter_grid",
+    "tube_drift"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "xray_radiography",
+      "forward_operator": "xray_radiography_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 3072,
+        "W": 3072,
+        "kVp": 80,
+        "mAs": 20,
+        "pixel_um": 140,
+        "scatter": 0.0,
+        "patient_motion": 0.0
+      },
+      "epsilon_fn_center": "34.0"
+    },
+    "allowed_forward_operators": [
+      "xray_radiography_forward"
+    ],
+    "allowed_problem_classes": [
+      "xray_radiography"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "kVp",
+      "mAs",
+      "pixel_um",
+      "scatter",
+      "patient_motion",
+      "scatter",
+      "patient_motion",
+      "anti_scatter_grid",
+      "tube_drift"
+    ],
+    "omega_bounds": {
+      "H": [
+        1024,
+        4096
+      ],
+      "W": [
+        1024,
+        4096
+      ],
+      "kVp": [
+        30,
+        150
+      ],
+      "mAs": [
+        0.1,
+        200
+      ],
+      "pixel_um": [
+        50,
+        500
+      ],
+      "scatter": [
+        0.0,
+        0.4
+      ],
+      "patient_motion": [
+        0.0,
+        0.3
+      ],
+      "anti_scatter_grid": [
+        0.0,
+        0.5
+      ],
+      "tube_drift": [
+        0.0,
+        0.1
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        5.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

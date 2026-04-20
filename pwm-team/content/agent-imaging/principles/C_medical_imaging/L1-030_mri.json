@@ -1,0 +1,201 @@
+{
+  "artifact_id": "L1-030",
+  "layer": "L1",
+  "principle_number": "030",
+  "title": "Magnetic Resonance Imaging (MRI) \u2014 proton-density / T1 / T2 contrast",
+  "domain": "Medical Imaging",
+  "sub_domain": "Non-ionizing proton NMR imaging",
+  "source_file": "C_medical_imaging/030_mri.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical medical-imaging literature for this principle.",
+  "E": {
+    "description": "Magnetic Resonance Imaging (MRI) \u2014 proton-density / T1 / T2 contrast forward model.",
+    "forward_model": "s(k) = integral rho(r) * coil(r) exp(-2*pi*i k . r) dr + n; invert k-space + coil combine",
+    "world_state_x": "Patient-side quantity of interest (attenuation / activity / perfusion / stiffness etc.)",
+    "observation_y": "Clinical sensor output at declared resolution + noise",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "Z",
+      "TR_ms",
+      "TE_ms",
+      "acceleration_R",
+      "SNR_dB",
+      "B0_inhomogeneity",
+      "motion",
+      "undersampling"
+    ]
+  },
+  "G": {
+    "dag": "L.rf_excitation -> L.gradient_encoding -> L.fourier_kspace -> int.temporal",
+    "vertices": [
+      "L.rf_excitation",
+      "L.gradient_encoding",
+      "L.fourier_kspace",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.rf_excitation -> L.gradient_encoding",
+      "L.gradient_encoding -> L.fourier_kspace",
+      "L.fourier_kspace -> int.temporal"
+    ],
+    "L_DAG": 3.6,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 300,
+    "condition_number_effective": 15,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "IFFT-SENSE, CS-MRI, GRAPPA, VarNet-MRI",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sensor SNR + mismatch bias + regularisation.",
+    "complexity": "O(H W) to O(H W Z) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "radio_wave",
+    "sensing_mechanism": "mri_fourier_encoding",
+    "integration_axis": "spatial",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "3D_proton_density",
+    "primitives": [
+      "L.rf_excitation",
+      "L.gradient_encoding",
+      "L.fourier_kspace",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "B0_inhomogeneity",
+    "motion",
+    "undersampling",
+    "eddy_currents",
+    "coil_sensitivity_drift"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "mri",
+      "forward_operator": "mri_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 256,
+        "W": 256,
+        "Z": 128,
+        "TR_ms": 800,
+        "TE_ms": 20,
+        "acceleration_R": 1,
+        "SNR_dB": 25,
+        "B0_inhomogeneity": 0.0,
+        "motion": 0.0,
+        "undersampling": 1.0
+      },
+      "epsilon_fn_center": "30.0"
+    },
+    "allowed_forward_operators": [
+      "mri_forward"
+    ],
+    "allowed_problem_classes": [
+      "mri"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "Z",
+      "TR_ms",
+      "TE_ms",
+      "acceleration_R",
+      "SNR_dB",
+      "B0_inhomogeneity",
+      "motion",
+      "undersampling",
+      "B0_inhomogeneity",
+      "motion",
+      "undersampling",
+      "eddy_currents",
+      "coil_sensitivity_drift"
+    ],
+    "omega_bounds": {
+      "H": [
+        64,
+        1024
+      ],
+      "W": [
+        64,
+        1024
+      ],
+      "Z": [
+        16,
+        1024
+      ],
+      "TR_ms": [
+        10,
+        10000
+      ],
+      "TE_ms": [
+        1,
+        500
+      ],
+      "acceleration_R": [
+        1,
+        16
+      ],
+      "SNR_dB": [
+        0.0,
+        40.0
+      ],
+      "B0_inhomogeneity": [
+        0.0,
+        0.3
+      ],
+      "motion": [
+        0.0,
+        0.5
+      ],
+      "undersampling": [
+        0.0625,
+        1.0
+      ],
+      "eddy_currents": [
+        0.0,
+        0.2
+      ],
+      "coil_sensitivity_drift": [
+        0.0,
+        0.2
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        5.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

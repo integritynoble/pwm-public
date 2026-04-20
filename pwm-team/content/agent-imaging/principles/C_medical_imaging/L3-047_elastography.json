@@ -1,0 +1,177 @@
+{
+  "artifact_id": "L3-047",
+  "layer": "L3",
+  "parent_l2": "L2-047",
+  "parent_l1": "L1-047",
+  "title": "Elastography (Shear-Wave / Strain) Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "canonical clinical/public dataset for this modality",
+    "secondary": "simulated forward synthesis at declared Omega",
+    "construction_method": "parametric forward + declared noise",
+    "num_dev_instances_per_tier": 20
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "f_push_Hz": 150,
+        "N_time_samples": 200,
+        "SNR_dB": 22.0,
+        "wave_reflections": 0.0,
+        "tissue_anisotropy": 0.0,
+        "pre_load": 0.0,
+        "boundary_conditions": 0.0
+      },
+      "epsilon": 20.0,
+      "d_ibench": 0.14,
+      "baselines": [
+        {
+          "name": "Helmholtz",
+          "score": 18.0,
+          "Q": 0.88
+        },
+        {
+          "name": "Direct-Inversion",
+          "score": 20.0,
+          "Q": 0.88
+        },
+        {
+          "name": "Elasto-Net",
+          "score": 22.5,
+          "Q": 0.88
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "f_push_Hz": 150,
+        "N_time_samples": 200,
+        "SNR_dB": 19.0,
+        "wave_reflections": 0.1,
+        "tissue_anisotropy": 0.06,
+        "pre_load": 0.06,
+        "boundary_conditions": 0.06
+      },
+      "epsilon": 16.4,
+      "d_ibench": 0.28,
+      "baselines": [
+        {
+          "name": "Helmholtz",
+          "score": 16.0,
+          "Q": 0.68
+        },
+        {
+          "name": "Direct-Inversion",
+          "score": 18.0,
+          "Q": 0.68
+        },
+        {
+          "name": "Elasto-Net",
+          "score": 20.5,
+          "Q": 0.68
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "f_push_Hz": 150,
+        "N_time_samples": 200,
+        "SNR_dB": 10.0,
+        "wave_reflections": 0.25,
+        "tissue_anisotropy": 0.15,
+        "pre_load": 0.15,
+        "boundary_conditions": 0.15
+      },
+      "epsilon": 12.8,
+      "d_ibench": 0.48,
+      "baselines": [
+        {
+          "name": "Helmholtz",
+          "score": 14.0,
+          "Q": 0.48
+        },
+        {
+          "name": "Direct-Inversion",
+          "score": 16.0,
+          "Q": 0.48
+        },
+        {
+          "name": "Elasto-Net",
+          "score": 18.5,
+          "Q": 0.48
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "f_push_Hz": 150,
+        "N_time_samples": 200,
+        "SNR_dB": 0.0,
+        "wave_reflections": 0.5,
+        "tissue_anisotropy": 0.3,
+        "pre_load": 0.3,
+        "boundary_conditions": 0.3
+      },
+      "epsilon": 9.2,
+      "d_ibench": 0.72,
+      "baselines": [
+        {
+          "name": "Helmholtz",
+          "score": 12.0,
+          "Q": 0.28
+        },
+        {
+          "name": "Direct-Inversion",
+          "score": 14.0,
+          "Q": 0.28
+        },
+        {
+          "name": "Elasto-Net",
+          "score": 16.5,
+          "Q": 0.28
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "full parametric sweep",
+      "num_dev_instances": 200,
+      "construction_method": "parametric Omega sweep"
+    },
+    "baselines": [
+      {
+        "name": "Helmholtz",
+        "overall_Q": 0.7
+      },
+      {
+        "name": "Direct-Inversion",
+        "overall_Q": 0.6
+      },
+      {
+        "name": "Elasto-Net",
+        "overall_Q": 0.5
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind strata corner.",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

@@ -1,0 +1,167 @@
+{
+  "artifact_id": "L2-038",
+  "layer": "L2",
+  "parent_l1": "L1-038",
+  "title": "Cone-Beam CT (CBCT) \u2014 dental / interventional Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": 256,
+      "W": 256,
+      "Z": [
+        64,
+        2048
+      ],
+      "N_projections": [
+        100,
+        2000
+      ],
+      "kVp": [
+        60,
+        120
+      ],
+      "mAs": [
+        1,
+        200
+      ],
+      "pixel_mm": [
+        0.1,
+        2.0
+      ],
+      "scatter": [
+        0.0,
+        0.5
+      ],
+      "truncation": [
+        0.0,
+        0.3
+      ],
+      "beam_hardening": [
+        0.0,
+        0.3
+      ],
+      "patient_motion": [
+        0.0,
+        0.3
+      ],
+      "geometric_misalignment": [
+        0.0,
+        2.0
+      ]
+    },
+    "E": {
+      "forward": "y_theta(u,v) = I_0 exp(-integral mu ds) + scatter_cone + n; FDK reconstruct",
+      "operator": "cbct_forward_mismatch",
+      "primitive_chain": "L.xray_source -> L.cone_beam_geometry -> S.scan.angular -> L.FDK_backproject -> int.angular",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "19.0 + 2.0 * log10(mAs / 1) - 10.0 * scatter - 6.0 * truncation - 6.0 * patient_motion"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "FDK",
+        "method_sig": "L+O",
+        "expected_psnr": 24.5
+      },
+      {
+        "name": "Iterative-CBCT",
+        "method_sig": "I+O",
+        "expected_psnr": 27.0
+      },
+      {
+        "name": "CBCT-Net",
+        "method_sig": "L+N",
+        "expected_psnr": 30.0
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "Z": 512,
+        "N_projections": 400,
+        "kVp": 90,
+        "mAs": 20,
+        "pixel_mm": 0.3,
+        "scatter": 0.2,
+        "truncation": 0.0,
+        "patient_motion": 0.0,
+        "geometric_misalignment": 0.0
+      },
+      "epsilon": 27.0
+    },
+    "tier_bounds": {
+      "H": 256,
+      "W": 256,
+      "Z": [
+        64,
+        2048
+      ],
+      "N_projections": [
+        100,
+        2000
+      ],
+      "kVp": [
+        60,
+        120
+      ],
+      "mAs": [
+        1,
+        200
+      ],
+      "pixel_mm": [
+        0.1,
+        2.0
+      ],
+      "scatter": [
+        0.0,
+        0.5
+      ],
+      "truncation": [
+        0.0,
+        0.3
+      ],
+      "beam_hardening": [
+        0.0,
+        0.3
+      ],
+      "patient_motion": [
+        0.0,
+        0.3
+      ],
+      "geometric_misalignment": [
+        0.0,
+        2.0
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.5,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

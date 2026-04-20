@@ -1,0 +1,132 @@
+{
+  "artifact_id": "L2-152",
+  "layer": "L2",
+  "parent_l1": "L1-152",
+  "title": "XFEL Serial Femtosecond Crystallography (SFX) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "N_patterns": [
+        1000,
+        10000000
+      ],
+      "H": 512,
+      "W": 512,
+      "pulse_fs": [
+        1,
+        100
+      ],
+      "hit_rate": [
+        0.001,
+        0.5
+      ],
+      "detector_dynamic_range": [
+        100,
+        100000
+      ],
+      "partial_reflection": [
+        0.0,
+        0.8
+      ],
+      "beam_pointing_jitter": [
+        0.0,
+        0.5
+      ]
+    },
+    "E": {
+      "forward": "I_bragg(h, k, l) = |F(h, k, l)|^2 * partial_factor + n; merge thousands of single-pulse patterns",
+      "operator": "xfel_sfx_forward_mismatch",
+      "primitive_chain": "L.xfel_pulse -> L.microcrystal_diffraction -> L.bragg_indexing -> int.spatial",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "10.0 + 2.0 * log10(N_patterns / 1000) + 4.0 * hit_rate - 8.0 * partial_reflection - 5.0 * beam_pointing_jitter"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "CrystFEL",
+        "method_sig": "L+O",
+        "expected_psnr": 16.0
+      },
+      {
+        "name": "CCTBX-SFX",
+        "method_sig": "L+O",
+        "expected_psnr": 18.5
+      },
+      {
+        "name": "XFEL-Net",
+        "method_sig": "L+N",
+        "expected_psnr": 20.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_patterns": 100000,
+        "H": 2048,
+        "W": 2048,
+        "pulse_fs": 10,
+        "hit_rate": 0.1,
+        "detector_dynamic_range": 1000,
+        "partial_reflection": 0.3,
+        "beam_pointing_jitter": 0.0
+      },
+      "epsilon": 18.0
+    },
+    "tier_bounds": {
+      "N_patterns": [
+        1000,
+        10000000
+      ],
+      "H": 512,
+      "W": 512,
+      "pulse_fs": [
+        1,
+        100
+      ],
+      "hit_rate": [
+        0.001,
+        0.5
+      ],
+      "detector_dynamic_range": [
+        100,
+        100000
+      ],
+      "partial_reflection": [
+        0.0,
+        0.8
+      ],
+      "beam_pointing_jitter": [
+        0.0,
+        0.5
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.55,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

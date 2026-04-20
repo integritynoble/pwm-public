@@ -1,0 +1,179 @@
+{
+  "artifact_id": "L1-091",
+  "layer": "L1",
+  "principle_number": "091",
+  "title": "Off-Axis Electron Holography \u2014 nanoscale phase imaging",
+  "domain": "Electron Microscopy",
+  "sub_domain": "Electron-beam interferometric phase imaging",
+  "source_file": "G_electron_microscopy/091_electron_holo.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical electron-microscopy literature for this principle.",
+  "E": {
+    "description": "Off-Axis Electron Holography \u2014 nanoscale phase imaging forward model.",
+    "forward_model": "I(r) = |psi_obj + psi_ref * exp(i*q_c*r)|^2 + n; Fourier sideband filter recovers phase",
+    "world_state_x": "Scene parameter (density / orientation / spectrum / complex field depending on principle)",
+    "observation_y": "Electron detector output at declared geometry + noise",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "pixel_A",
+      "fringe_spacing_nm",
+      "kV",
+      "peak_electrons",
+      "biprism_stability",
+      "fringe_contrast_loss"
+    ]
+  },
+  "G": {
+    "dag": "L.biprism -> L.add_coherent -> L.modulus_squared -> int.temporal",
+    "vertices": [
+      "L.biprism",
+      "L.add_coherent",
+      "L.modulus_squared",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.biprism -> L.add_coherent",
+      "L.add_coherent -> L.modulus_squared",
+      "L.modulus_squared -> int.temporal"
+    ],
+    "L_DAG": 3.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 240,
+    "condition_number_effective": 12,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Fourier-Sideband, Iterative-Holo, EHolo-Net",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(electron_count) + mismatch bias.",
+    "complexity": "O(H W) to O(H W Z) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "electron",
+    "sensing_mechanism": "electron_interferometry",
+    "integration_axis": "spatial",
+    "problem_class": "linear_inverse",
+    "noise_model": "shot_poisson",
+    "solution_space": "complex_2D",
+    "primitives": [
+      "L.biprism",
+      "L.add_coherent",
+      "L.modulus_squared",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "biprism_stability",
+    "fringe_contrast_loss",
+    "reference_drift"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "electron_holography",
+      "forward_operator": "electron_holography_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 2048,
+        "W": 2048,
+        "pixel_A": 0.5,
+        "fringe_spacing_nm": 2,
+        "kV": 300,
+        "peak_electrons": 100,
+        "biprism_stability": 1.0,
+        "fringe_contrast_loss": 0.0
+      },
+      "epsilon_fn_center": "25.0"
+    },
+    "allowed_forward_operators": [
+      "electron_holography_forward"
+    ],
+    "allowed_problem_classes": [
+      "electron_holography"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "pixel_A",
+      "fringe_spacing_nm",
+      "kV",
+      "peak_electrons",
+      "biprism_stability",
+      "fringe_contrast_loss",
+      "biprism_stability",
+      "fringe_contrast_loss",
+      "reference_drift"
+    ],
+    "omega_bounds": {
+      "H": [
+        512,
+        4096
+      ],
+      "W": [
+        512,
+        4096
+      ],
+      "pixel_A": [
+        0.1,
+        5.0
+      ],
+      "fringe_spacing_nm": [
+        0.5,
+        10
+      ],
+      "kV": [
+        200,
+        300
+      ],
+      "peak_electrons": [
+        10,
+        5000
+      ],
+      "biprism_stability": [
+        0.5,
+        1.0
+      ],
+      "fringe_contrast_loss": [
+        0.0,
+        0.5
+      ],
+      "reference_drift": [
+        0.0,
+        0.01
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        40.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

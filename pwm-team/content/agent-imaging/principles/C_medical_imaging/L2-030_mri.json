@@ -1,0 +1,183 @@
+{
+  "artifact_id": "L2-030",
+  "layer": "L2",
+  "parent_l1": "L1-030",
+  "title": "Magnetic Resonance Imaging (MRI) \u2014 proton-density / T1 / T2 contrast Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        64,
+        1024
+      ],
+      "W": [
+        64,
+        1024
+      ],
+      "Z": [
+        16,
+        1024
+      ],
+      "TR_ms": [
+        10,
+        10000
+      ],
+      "TE_ms": [
+        1,
+        500
+      ],
+      "acceleration_R": [
+        1,
+        16
+      ],
+      "SNR_dB": [
+        0.0,
+        40.0
+      ],
+      "B0_inhomogeneity": [
+        0.0,
+        0.3
+      ],
+      "motion": [
+        0.0,
+        0.5
+      ],
+      "undersampling": [
+        0.0625,
+        1.0
+      ],
+      "eddy_currents": [
+        0.0,
+        0.2
+      ],
+      "coil_sensitivity_drift": [
+        0.0,
+        0.2
+      ]
+    },
+    "E": {
+      "forward": "s(k) = integral rho(r) * coil(r) exp(-2*pi*i k . r) dr + n; invert k-space + coil combine",
+      "operator": "mri_forward_mismatch",
+      "primitive_chain": "L.rf_excitation -> L.gradient_encoding -> L.fourier_kspace -> int.temporal",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "20.0 + 0.3 * SNR_dB - 10.0 * B0_inhomogeneity - 8.0 * motion - 5.0 * log2(acceleration_R)"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "IFFT-SENSE",
+        "method_sig": "L+O",
+        "expected_psnr": 27.0
+      },
+      {
+        "name": "CS-MRI",
+        "method_sig": "L+O",
+        "expected_psnr": 30.0
+      },
+      {
+        "name": "GRAPPA",
+        "method_sig": "L+O",
+        "expected_psnr": 29.0
+      },
+      {
+        "name": "VarNet-MRI",
+        "method_sig": "L+N",
+        "expected_psnr": 33.0
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 256,
+        "W": 256,
+        "Z": 128,
+        "TR_ms": 800,
+        "TE_ms": 20,
+        "acceleration_R": 1,
+        "SNR_dB": 25,
+        "B0_inhomogeneity": 0.0,
+        "motion": 0.0,
+        "undersampling": 1.0
+      },
+      "epsilon": 30.0
+    },
+    "tier_bounds": {
+      "H": [
+        64,
+        1024
+      ],
+      "W": [
+        64,
+        1024
+      ],
+      "Z": [
+        16,
+        1024
+      ],
+      "TR_ms": [
+        10,
+        10000
+      ],
+      "TE_ms": [
+        1,
+        500
+      ],
+      "acceleration_R": [
+        1,
+        16
+      ],
+      "SNR_dB": [
+        0.0,
+        40.0
+      ],
+      "B0_inhomogeneity": [
+        0.0,
+        0.3
+      ],
+      "motion": [
+        0.0,
+        0.5
+      ],
+      "undersampling": [
+        0.0625,
+        1.0
+      ],
+      "eddy_currents": [
+        0.0,
+        0.2
+      ],
+      "coil_sensitivity_drift": [
+        0.0,
+        0.2
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.5,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

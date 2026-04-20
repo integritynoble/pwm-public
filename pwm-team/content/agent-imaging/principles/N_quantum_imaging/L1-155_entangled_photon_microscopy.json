@@ -1,0 +1,171 @@
+{
+  "artifact_id": "L1-155",
+  "layer": "L1",
+  "principle_number": "155",
+  "title": "Entangled-Photon Microscopy (N00N / SPDC imaging)",
+  "domain": "Quantum Imaging",
+  "sub_domain": "Phase sensitivity beyond shot-noise via N-photon entanglement",
+  "source_file": "N_quantum_imaging/155_entangled_photon_microscopy.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
+  "E": {
+    "description": "Entangled-Photon Microscopy (N00N / SPDC imaging) forward model.",
+    "forward_model": "I_N00N(phi) ~ 1 + cos(N * phi); sqrt(N) advantage in phase precision but photon-loss sensitive",
+    "world_state_x": "Principle-specific quantity of interest",
+    "observation_y": "Detector output at declared geometry",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "N_photons",
+      "N_coincidences",
+      "photon_loss",
+      "mode_coupling_efficiency",
+      "detector_dark_counts",
+      "phase_instability"
+    ]
+  },
+  "G": {
+    "dag": "L.spdc_source -> L.n_photon_interference -> D.coincidence_count -> int.angular",
+    "vertices": [
+      "L.spdc_source",
+      "L.n_photon_interference",
+      "D.coincidence_count",
+      "int.angular"
+    ],
+    "arcs": [
+      "L.spdc_source -> L.n_photon_interference",
+      "L.n_photon_interference -> D.coincidence_count",
+      "D.coincidence_count -> int.angular"
+    ],
+    "L_DAG": 4.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 600,
+    "condition_number_effective": 30,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Two-Photon-Interference, HOM-Microscopy, Entangled-Net",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sensor SNR + mismatch bias + regularization.",
+    "complexity": "principle-dependent"
+  },
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "entangled_photon_imaging",
+    "integration_axis": "spatial",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "shot_poisson",
+    "solution_space": "2D_phase",
+    "primitives": [
+      "L.spdc_source",
+      "L.n_photon_interference",
+      "D.coincidence_count",
+      "int.angular"
+    ]
+  },
+  "difficulty_delta": 10,
+  "difficulty_tier": "hard",
+  "mismatch_parameters": [
+    "photon_loss",
+    "mode_coupling_efficiency",
+    "detector_dark_counts",
+    "phase_instability"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "entangled_photon_microscopy",
+      "forward_operator": "entangled_photon_microscopy_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 256,
+        "W": 256,
+        "N_photons": 2,
+        "N_coincidences": 100000,
+        "photon_loss": 0.3,
+        "mode_coupling_efficiency": 0.5,
+        "detector_dark_counts": 0.01,
+        "phase_instability": 0.0
+      },
+      "epsilon_fn_center": "16.0"
+    },
+    "allowed_forward_operators": [
+      "entangled_photon_microscopy_forward"
+    ],
+    "allowed_problem_classes": [
+      "entangled_photon_microscopy"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "N_photons",
+      "N_coincidences",
+      "photon_loss",
+      "mode_coupling_efficiency",
+      "detector_dark_counts",
+      "phase_instability",
+      "photon_loss",
+      "mode_coupling_efficiency",
+      "detector_dark_counts",
+      "phase_instability"
+    ],
+    "omega_bounds": {
+      "H": 64,
+      "W": 64,
+      "N_photons": [
+        2,
+        10
+      ],
+      "N_coincidences": [
+        1000,
+        100000000
+      ],
+      "photon_loss": [
+        0.0,
+        0.9
+      ],
+      "mode_coupling_efficiency": [
+        0.1,
+        1.0
+      ],
+      "detector_dark_counts": [
+        0.0,
+        1.0
+      ],
+      "phase_instability": [
+        0.0,
+        0.5
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        5.0,
+        40.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

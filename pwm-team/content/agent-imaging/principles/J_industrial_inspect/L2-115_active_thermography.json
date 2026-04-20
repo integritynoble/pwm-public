@@ -1,0 +1,152 @@
+{
+  "artifact_id": "L2-115",
+  "layer": "L2",
+  "parent_l1": "L1-115",
+  "title": "Active Thermography (pulsed / lock-in IR inspection) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        128,
+        2048
+      ],
+      "W": [
+        128,
+        2048
+      ],
+      "N_frames": [
+        30,
+        2000
+      ],
+      "f_lockin_Hz": [
+        0.01,
+        100
+      ],
+      "SNR_dB": [
+        0.0,
+        40.0
+      ],
+      "emissivity_variation": [
+        0.0,
+        0.3
+      ],
+      "surface_reflections": [
+        0.0,
+        0.3
+      ],
+      "ambient_thermal_load": [
+        0.0,
+        0.2
+      ],
+      "convective_losses": [
+        0.0,
+        0.3
+      ]
+    },
+    "E": {
+      "forward": "T(x,y,t) = T_bg + solve[heat_eqn with source(x,y,0) and boundary cond]; defect depth via phase contrast",
+      "operator": "active_thermography_forward_mismatch",
+      "primitive_chain": "L.heat_source -> L.thermal_diffusion -> D.ir_camera -> int.temporal",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "15.0 + 0.3 * SNR_dB - 10.0 * emissivity_variation - 5.0 * surface_reflections"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Phase-Lockin",
+        "method_sig": "L+O",
+        "expected_psnr": 21.0
+      },
+      {
+        "name": "PPT-Thermography",
+        "method_sig": "L+O",
+        "expected_psnr": 23.5
+      },
+      {
+        "name": "ThermoNet",
+        "method_sig": "L+N",
+        "expected_psnr": 26.0
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 640,
+        "W": 480,
+        "N_frames": 200,
+        "f_lockin_Hz": 1,
+        "SNR_dB": 25,
+        "emissivity_variation": 0.05,
+        "surface_reflections": 0.0,
+        "ambient_thermal_load": 0.0
+      },
+      "epsilon": 23.0
+    },
+    "tier_bounds": {
+      "H": [
+        128,
+        2048
+      ],
+      "W": [
+        128,
+        2048
+      ],
+      "N_frames": [
+        30,
+        2000
+      ],
+      "f_lockin_Hz": [
+        0.01,
+        100
+      ],
+      "SNR_dB": [
+        0.0,
+        40.0
+      ],
+      "emissivity_variation": [
+        0.0,
+        0.3
+      ],
+      "surface_reflections": [
+        0.0,
+        0.3
+      ],
+      "ambient_thermal_load": [
+        0.0,
+        0.2
+      ],
+      "convective_losses": [
+        0.0,
+        0.3
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.5,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

@@ -1,0 +1,150 @@
+{
+  "artifact_id": "L2-069",
+  "layer": "L2",
+  "parent_l1": "L1-069",
+  "title": "Magnetic Particle Imaging (MPI) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": 32,
+      "W": 32,
+      "Z": [
+        8,
+        256
+      ],
+      "N_harmonics": [
+        5,
+        100
+      ],
+      "f_drive_kHz": [
+        5,
+        50
+      ],
+      "SNR_dB": [
+        0.0,
+        35.0
+      ],
+      "spatial_relaxation": [
+        0.0,
+        0.3
+      ],
+      "tracer_distribution": [
+        0.0,
+        0.3
+      ],
+      "drive_field_harmonics": [
+        0.0,
+        0.3
+      ],
+      "coil_sensitivity_error": [
+        0.0,
+        0.3
+      ]
+    },
+    "E": {
+      "forward": "u(t) = -d/dt integral m(c(r), H(r,t)) dr = system_matrix * c + n; recover tracer c(r)",
+      "operator": "mpi_forward_mismatch",
+      "primitive_chain": "L.drive_field -> L.selection_field_ffp -> D.receive_coil -> int.temporal",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "12.0 + 0.3 * SNR_dB - 8.0 * spatial_relaxation - 6.0 * drive_field_harmonics - 6.0 * coil_sensitivity_error"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Kaczmarz",
+        "method_sig": "I+O",
+        "expected_psnr": 17.5
+      },
+      {
+        "name": "ADMM-MPI",
+        "method_sig": "L+O",
+        "expected_psnr": 20.0
+      },
+      {
+        "name": "MPI-Net",
+        "method_sig": "L+N",
+        "expected_psnr": 22.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 128,
+        "W": 128,
+        "Z": 64,
+        "N_harmonics": 20,
+        "f_drive_kHz": 25,
+        "SNR_dB": 20,
+        "spatial_relaxation": 0.0,
+        "tracer_distribution": 0.0,
+        "drive_field_harmonics": 0.0,
+        "coil_sensitivity_error": 0.0
+      },
+      "epsilon": 20.0
+    },
+    "tier_bounds": {
+      "H": 32,
+      "W": 32,
+      "Z": [
+        8,
+        256
+      ],
+      "N_harmonics": [
+        5,
+        100
+      ],
+      "f_drive_kHz": [
+        5,
+        50
+      ],
+      "SNR_dB": [
+        0.0,
+        35.0
+      ],
+      "spatial_relaxation": [
+        0.0,
+        0.3
+      ],
+      "tracer_distribution": [
+        0.0,
+        0.3
+      ],
+      "drive_field_harmonics": [
+        0.0,
+        0.3
+      ],
+      "coil_sensitivity_error": [
+        0.0,
+        0.3
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.5,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

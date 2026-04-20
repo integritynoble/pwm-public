@@ -1,0 +1,77 @@
+{
+  "artifact_id": "L3-075",
+  "layer": "L3",
+  "parent_l2": "L2-075",
+  "parent_l1": "L1-075",
+  "title": "DiffuserCam Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+
+  "dataset_registry": {
+    "primary": "DiffuserCam lensless natural scenes (Waller lab, UC Berkeley 2018)",
+    "secondary": "MiniCAM flat-camera indoor/outdoor test set",
+    "tertiary": "Synthetic diffuser convolutions of BSD/Flickr images with calibrated caustic PSF",
+    "construction_method": "convolve scene with calibrated PSF, apply sensor crop, Poisson photon counting at declared photon_count",
+    "num_dev_instances_per_tier": 20
+  },
+
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal", "rho": 1,
+      "omega_tier": {"H": 512, "W": 512, "photon_count": 1000, "psf_drift": 0.0, "mask_rotation": 0.0},
+      "epsilon": 26.0, "d_ibench": 0.14,
+      "baselines": [
+        {"name": "FISTA-TV",      "score": 24.8, "Q": 0.58},
+        {"name": "ADMM-Anderson", "score": 26.5, "Q": 0.72},
+        {"name": "Le-ADMM-U",     "score": 30.0, "Q": 0.92}
+      ]
+    },
+    {
+      "tier": "T2_low_light", "rho": 3,
+      "omega_tier": {"H": 512, "W": 512, "photon_count": 200, "psf_drift": 0.02, "mask_rotation": 0.005},
+      "epsilon": 22.5, "d_ibench": 0.28,
+      "baselines": [
+        {"name": "FISTA-TV",      "score": 20.5, "Q": 0.38},
+        {"name": "ADMM-Anderson", "score": 22.8, "Q": 0.54},
+        {"name": "Le-ADMM-U",     "score": 26.0, "Q": 0.74}
+      ]
+    },
+    {
+      "tier": "T3_moderate", "rho": 5,
+      "omega_tier": {"H": 1024, "W": 1024, "photon_count": 100, "psf_drift": 0.05, "mask_rotation": 0.012},
+      "epsilon": 20.0, "d_ibench": 0.48,
+      "baselines": [
+        {"name": "FISTA-TV",      "score": 17.8, "Q": 0.26},
+        {"name": "ADMM-Anderson", "score": 20.2, "Q": 0.44},
+        {"name": "Le-ADMM-U",     "score": 22.8, "Q": 0.58}
+      ]
+    },
+    {
+      "tier": "T4_blind", "rho": 10,
+      "omega_tier": {"H": 2048, "W": 2048, "photon_count": 20, "psf_drift": 0.1, "mask_rotation": 0.02},
+      "epsilon": 17.0, "d_ibench": 0.70,
+      "baselines": [
+        {"name": "FISTA-TV",      "score": 14.5, "Q": 0.15},
+        {"name": "ADMM-Anderson", "score": 16.5, "Q": 0.28},
+        {"name": "Le-ADMM-U",     "score": 18.5, "Q": 0.42}
+      ]
+    }
+  ],
+
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "DiffuserCam Waller + MiniCAM + synthetic BSD union",
+      "num_dev_instances": 200,
+      "construction_method": "parametric (photon_count, psf_drift, H/W) sweep"
+    },
+    "baselines": [
+      {"name": "FISTA-TV",      "overall_Q": 0.40},
+      {"name": "ADMM-Anderson", "overall_Q": 0.55},
+      {"name": "Le-ADMM-U",     "overall_Q": 0.72}
+    ]
+  },
+
+  "hardness_rule_check": "SATISFIED — Le-ADMM-U fails at T4_blind strata (photon <=20 + psf_drift = 0.1 corner).",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

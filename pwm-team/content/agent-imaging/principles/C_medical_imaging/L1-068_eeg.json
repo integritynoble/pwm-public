@@ -1,0 +1,174 @@
+{
+  "artifact_id": "L1-068",
+  "layer": "L1",
+  "principle_number": "068",
+  "title": "Electroencephalography (EEG)",
+  "domain": "Medical Imaging",
+  "sub_domain": "Scalp-electrode electric field brain imaging",
+  "source_file": "C_medical_imaging/068_eeg.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical medical-imaging literature for this principle.",
+  "E": {
+    "description": "Electroencephalography (EEG) forward model.",
+    "forward_model": "V_scalp(t) = LF * j_cortex + muscle + ocular + line_noise + n; inverse source localization",
+    "world_state_x": "Patient-side quantity of interest (attenuation / activity / perfusion / stiffness etc.)",
+    "observation_y": "Clinical sensor output at declared resolution + noise",
+    "physical_parameters_theta": [
+      "N_channels",
+      "N_time",
+      "sampling_Hz",
+      "SNR_dB",
+      "electrode_contact",
+      "muscle_artifact",
+      "volume_conduction",
+      "reference_electrode_bias"
+    ]
+  },
+  "G": {
+    "dag": "D.scalp_electrode_array -> L.inverse_source_localization -> int.temporal",
+    "vertices": [
+      "D.scalp_electrode_array",
+      "L.inverse_source_localization",
+      "int.temporal"
+    ],
+    "arcs": [
+      "D.scalp_electrode_array -> L.inverse_source_localization",
+      "L.inverse_source_localization -> int.temporal"
+    ],
+    "L_DAG": 4.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 500,
+    "condition_number_effective": 25,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "LORETA, eLORETA, EEG-Net",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sensor SNR + mismatch bias + regularisation.",
+    "complexity": "O(H W) to O(H W Z) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "radio_wave",
+    "sensing_mechanism": "eeg_scalp_array",
+    "integration_axis": "temporal",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "4D_cortical_current",
+    "primitives": [
+      "D.scalp_electrode_array",
+      "L.inverse_source_localization",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "electrode_contact",
+    "muscle_artifact",
+    "volume_conduction",
+    "reference_electrode_bias"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "eeg",
+      "forward_operator": "eeg_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_channels": 64,
+        "N_time": 10000,
+        "sampling_Hz": 1000,
+        "SNR_dB": 15,
+        "electrode_contact": 1.0,
+        "muscle_artifact": 0.0,
+        "volume_conduction": 0.3,
+        "reference_electrode_bias": 0.0
+      },
+      "epsilon_fn_center": "13.0"
+    },
+    "allowed_forward_operators": [
+      "eeg_forward"
+    ],
+    "allowed_problem_classes": [
+      "eeg"
+    ],
+    "allowed_omega_dimensions": [
+      "N_channels",
+      "N_time",
+      "sampling_Hz",
+      "SNR_dB",
+      "electrode_contact",
+      "muscle_artifact",
+      "volume_conduction",
+      "reference_electrode_bias",
+      "electrode_contact",
+      "muscle_artifact",
+      "volume_conduction",
+      "reference_electrode_bias"
+    ],
+    "omega_bounds": {
+      "N_channels": [
+        8,
+        256
+      ],
+      "N_time": [
+        1000,
+        1000000
+      ],
+      "sampling_Hz": [
+        100,
+        10000
+      ],
+      "SNR_dB": [
+        0.0,
+        30.0
+      ],
+      "electrode_contact": [
+        0.3,
+        1.0
+      ],
+      "muscle_artifact": [
+        0.0,
+        0.5
+      ],
+      "volume_conduction": [
+        0.1,
+        0.5
+      ],
+      "reference_electrode_bias": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        5.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

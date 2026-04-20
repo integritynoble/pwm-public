@@ -1,0 +1,185 @@
+{
+  "artifact_id": "L1-165",
+  "layer": "L1",
+  "principle_number": "165",
+  "title": "Magnetic Force Microscopy (MFM)",
+  "domain": "Scanning Probe",
+  "sub_domain": "Magnetic cantilever probe for domain imaging",
+  "source_file": "P_scanning_probe/165_mfm.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
+  "E": {
+    "description": "Magnetic Force Microscopy (MFM) forward model.",
+    "forward_model": "delta_f(x,y) ~ -d^2 F_mag / dz^2 ~ gradient of H_sample * m_tip; lift-height mode",
+    "world_state_x": "Principle-specific quantity of interest",
+    "observation_y": "Detector output at declared geometry",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "pixel_nm",
+      "lift_height_nm",
+      "tip_radius_nm",
+      "SNR_dB",
+      "crosstalk_topography",
+      "stray_field",
+      "tip_magnetization_drift",
+      "vibration"
+    ]
+  },
+  "G": {
+    "dag": "L.magnetic_cantilever -> S.scan.raster -> D.frequency_shift -> int.spatial",
+    "vertices": [
+      "L.magnetic_cantilever",
+      "S.scan.raster",
+      "D.frequency_shift",
+      "int.spatial"
+    ],
+    "arcs": [
+      "L.magnetic_cantilever -> S.scan.raster",
+      "S.scan.raster -> D.frequency_shift",
+      "D.frequency_shift -> int.spatial"
+    ],
+    "L_DAG": 3.3,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 260,
+    "condition_number_effective": 13,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Phase-MFM, Deconv-MFM, MFM-Net",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sensor SNR + mismatch bias + regularization.",
+    "complexity": "principle-dependent"
+  },
+  "physics_fingerprint": {
+    "carrier": "radio_wave",
+    "sensing_mechanism": "magnetic_force_microscopy",
+    "integration_axis": "spatial",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "2D_magnetization_map",
+    "primitives": [
+      "L.magnetic_cantilever",
+      "S.scan.raster",
+      "D.frequency_shift",
+      "int.spatial"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "crosstalk_topography",
+    "stray_field",
+    "tip_magnetization_drift",
+    "vibration"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "mfm",
+      "forward_operator": "mfm_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 512,
+        "W": 512,
+        "pixel_nm": 20,
+        "lift_height_nm": 50,
+        "tip_radius_nm": 30,
+        "SNR_dB": 25,
+        "crosstalk_topography": 0.0,
+        "stray_field": 0.0,
+        "tip_magnetization_drift": 0.0,
+        "vibration": 0.0
+      },
+      "epsilon_fn_center": "24.0"
+    },
+    "allowed_forward_operators": [
+      "mfm_forward"
+    ],
+    "allowed_problem_classes": [
+      "mfm"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "pixel_nm",
+      "lift_height_nm",
+      "tip_radius_nm",
+      "SNR_dB",
+      "crosstalk_topography",
+      "stray_field",
+      "tip_magnetization_drift",
+      "vibration",
+      "crosstalk_topography",
+      "stray_field",
+      "tip_magnetization_drift",
+      "vibration"
+    ],
+    "omega_bounds": {
+      "H": 64,
+      "W": 64,
+      "pixel_nm": [
+        2,
+        500
+      ],
+      "lift_height_nm": [
+        10,
+        500
+      ],
+      "tip_radius_nm": [
+        5,
+        200
+      ],
+      "SNR_dB": [
+        0.0,
+        40.0
+      ],
+      "crosstalk_topography": [
+        0.0,
+        0.5
+      ],
+      "stray_field": [
+        0.0,
+        0.3
+      ],
+      "tip_magnetization_drift": [
+        0.0,
+        0.3
+      ],
+      "vibration": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        5.0,
+        40.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

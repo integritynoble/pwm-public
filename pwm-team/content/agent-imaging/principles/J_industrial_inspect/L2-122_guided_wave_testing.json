@@ -1,0 +1,152 @@
+{
+  "artifact_id": "L2-122",
+  "layer": "L2",
+  "parent_l1": "L1-122",
+  "title": "Guided-Wave Ultrasonic Testing (long-range pipe/rail inspection) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "N_time": [
+        512,
+        16384
+      ],
+      "f_kHz": [
+        10,
+        500
+      ],
+      "range_m": [
+        1,
+        200
+      ],
+      "N_modes": [
+        1,
+        5
+      ],
+      "SNR_dB": [
+        0.0,
+        35.0
+      ],
+      "mode_mixing": [
+        0.0,
+        0.5
+      ],
+      "temperature_drift": [
+        0.0,
+        30.0
+      ],
+      "coating_attenuation": [
+        0.0,
+        0.5
+      ],
+      "support_reflections": [
+        0.0,
+        0.3
+      ]
+    },
+    "E": {
+      "forward": "y(t) = sum_r reflectivity(r) * dispersive_pulse(t - 2r/c_g(f)) + mode_mix + n; dispersive over frequency-thickness",
+      "operator": "guided_wave_forward_mismatch",
+      "primitive_chain": "L.emit.guided_wave -> L.dispersive_propagation -> D.reflection_transmission -> int.temporal",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "14.0 + 0.3 * SNR_dB - 10.0 * mode_mixing - 0.1 * temperature_drift - 6.0 * coating_attenuation"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Matched-Filter",
+        "method_sig": "L+O",
+        "expected_psnr": 20.0
+      },
+      {
+        "name": "Dispersion-Compensation",
+        "method_sig": "L+O",
+        "expected_psnr": 22.5
+      },
+      {
+        "name": "GW-RNN",
+        "method_sig": "L+N",
+        "expected_psnr": 25.0
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_time": 4096,
+        "f_kHz": 40,
+        "range_m": 30,
+        "N_modes": 2,
+        "SNR_dB": 25,
+        "mode_mixing": 0.0,
+        "temperature_drift": 0.0,
+        "coating_attenuation": 0.0
+      },
+      "epsilon": 22.0
+    },
+    "tier_bounds": {
+      "N_time": [
+        512,
+        16384
+      ],
+      "f_kHz": [
+        10,
+        500
+      ],
+      "range_m": [
+        1,
+        200
+      ],
+      "N_modes": [
+        1,
+        5
+      ],
+      "SNR_dB": [
+        0.0,
+        35.0
+      ],
+      "mode_mixing": [
+        0.0,
+        0.5
+      ],
+      "temperature_drift": [
+        0.0,
+        30.0
+      ],
+      "coating_attenuation": [
+        0.0,
+        0.5
+      ],
+      "support_reflections": [
+        0.0,
+        0.3
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.5,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

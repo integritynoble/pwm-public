@@ -1,0 +1,190 @@
+{
+  "artifact_id": "L1-159",
+  "layer": "L1",
+  "principle_number": "159",
+  "title": "US-MRI Fusion (biopsy guidance / cardiac)",
+  "domain": "Multimodal Fusion",
+  "sub_domain": "Real-time US co-registered to pre-acquired MRI volume",
+  "source_file": "O_multimodal_fusion/159_us_mri_fusion.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
+  "E": {
+    "description": "US-MRI Fusion (biopsy guidance / cardiac) forward model.",
+    "forward_model": "F(r, t) = US(r, t) overlayed on warp(MRI, T(t)); deformable registration per frame",
+    "world_state_x": "Principle-specific quantity of interest",
+    "observation_y": "Detector output at declared geometry",
+    "physical_parameters_theta": [
+      "H_us",
+      "W_us",
+      "H_mri",
+      "W_mri",
+      "Z_mri",
+      "fps",
+      "real_time_registration_error",
+      "non_rigid_tissue",
+      "patient_motion",
+      "acoustic_shadowing",
+      "SNR_dB"
+    ]
+  },
+  "G": {
+    "dag": "L.mri_volume -> L.live_ultrasound -> L.real_time_registration -> int.temporal",
+    "vertices": [
+      "L.mri_volume",
+      "L.live_ultrasound",
+      "L.real_time_registration",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.mri_volume -> L.live_ultrasound",
+      "L.live_ultrasound -> L.real_time_registration",
+      "L.real_time_registration -> int.temporal"
+    ],
+    "L_DAG": 4.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 360,
+    "condition_number_effective": 18,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Mutual-Info-Reg, Deformable-Reg, USMRI-Net",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sensor SNR + mismatch bias + regularization.",
+    "complexity": "principle-dependent"
+  },
+  "physics_fingerprint": {
+    "carrier": "acoustic",
+    "sensing_mechanism": "us_mri_fusion",
+    "integration_axis": "temporal",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "2D_plus_3D_fused_real_time",
+    "primitives": [
+      "L.mri_volume",
+      "L.live_ultrasound",
+      "L.real_time_registration",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "real_time_registration_error",
+    "non_rigid_tissue",
+    "patient_motion",
+    "acoustic_shadowing"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "us_mri_fusion",
+      "forward_operator": "us_mri_fusion_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H_us": 512,
+        "W_us": 512,
+        "H_mri": 256,
+        "W_mri": 256,
+        "Z_mri": 128,
+        "fps": 10,
+        "real_time_registration_error": 0.0,
+        "non_rigid_tissue": 0.0,
+        "patient_motion": 0.0,
+        "acoustic_shadowing": 0.0,
+        "SNR_dB": 22
+      },
+      "epsilon_fn_center": "20.0"
+    },
+    "allowed_forward_operators": [
+      "us_mri_fusion_forward"
+    ],
+    "allowed_problem_classes": [
+      "us_mri_fusion"
+    ],
+    "allowed_omega_dimensions": [
+      "H_us",
+      "W_us",
+      "H_mri",
+      "W_mri",
+      "Z_mri",
+      "fps",
+      "real_time_registration_error",
+      "non_rigid_tissue",
+      "patient_motion",
+      "acoustic_shadowing",
+      "SNR_dB",
+      "real_time_registration_error",
+      "non_rigid_tissue",
+      "patient_motion",
+      "acoustic_shadowing"
+    ],
+    "omega_bounds": {
+      "H_us": [
+        128,
+        2048
+      ],
+      "W_us": [
+        128,
+        2048
+      ],
+      "Z_mri": [
+        32,
+        512
+      ],
+      "fps": [
+        1,
+        60
+      ],
+      "real_time_registration_error": [
+        0.0,
+        5.0
+      ],
+      "non_rigid_tissue": [
+        0.0,
+        0.5
+      ],
+      "patient_motion": [
+        0.0,
+        0.5
+      ],
+      "acoustic_shadowing": [
+        0.0,
+        0.5
+      ],
+      "SNR_dB": [
+        0.0,
+        35.0
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        5.0,
+        40.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

@@ -1,0 +1,56 @@
+{
+  "artifact_id": "L2-027",
+  "layer": "L2",
+  "parent_l1": "L1-027",
+  "canonical_reference": "pwm_product/genesis/l2/L2-004.json",
+  "title": "CACTI Mismatch-Only Spec (SCI video benchmark family)",
+  "spec_type": "mismatch_only",
+
+  "six_tuple": {
+    "omega": {
+      "H": [32, 1024], "W": [32, 1024], "B": [4, 32], "noise_level": [0.001, 0.1],
+      "dx": [0.0, 1.0], "dy": [0.0, 1.0], "theta": [0.0, 0.15], "dt": [0.0, 0.1],
+      "eta": [0.90, 1.0], "gamma": [0.95, 1.05], "offset": [0.0, 0.01], "sigma_n": [0.5, 2.0]
+    },
+    "E": {
+      "forward": "y(i,j) = sum_b C_b(i,j) * x(i,j,b) + n(i,j)",
+      "operator": "cacti_forward_mismatch",
+      "primitive_chain": "S.temporal.coded -> int.temporal",
+      "inverse": "recover x in R^{H x W x B} from a single 2D snapshot y"
+    },
+    "B": {"nonnegativity": true, "temporal_continuity": true, "mask_binary": "C_b in {0,1}"},
+    "I": {"strategy": "zero_init"},
+    "O": ["per_frame_PSNR", "SSIM", "temporal_consistency", "residual_norm"],
+    "epsilon_fn": "26.0 + 1.5 * log2(B / 8) + 1.0 * log10(photon_count / 100)"
+  },
+
+  "protocol_fields": {
+    "input_format": {"measurement": "float32(H, W)", "mask": "bool(H, W, B)"},
+    "output_format": {"video_cube": "float32(H, W, B)"},
+    "baselines": [
+      {"name": "GAP-TV",       "method_sig": "L+O", "expected_psnr": 26.5},
+      {"name": "DeSCI",        "method_sig": "L+O", "expected_psnr": 28.3},
+      {"name": "PnP-FFDNet",   "method_sig": "L+N", "expected_psnr": 30.1},
+      {"name": "EfficientSCI", "method_sig": "T+N", "expected_psnr": 34.2},
+      {"name": "BIRNAT",       "method_sig": "R+N", "expected_psnr": 33.0}
+    ]
+  },
+
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {"H": 256, "W": 256, "B": 8, "noise_level": 0.01, "dx": 0.0, "dy": 0.0, "theta": 0.0, "dt": 0.0, "eta": 1.0, "gamma": 1.0, "offset": 0.0, "sigma_n": 1.0},
+      "epsilon": 26.0
+    },
+    "tier_bounds": {
+      "H": [32, 512], "W": [32, 512], "B": [4, 32], "noise_level": [0.005, 0.1],
+      "dx": [0.0, 1.0], "dy": [0.0, 1.0], "theta": [0.0, 0.15], "dt": [0.0, 0.1],
+      "eta": [0.90, 1.0], "gamma": [0.95, 1.05], "offset": [0.0, 0.01], "sigma_n": [0.5, 2.0]
+    },
+    "proximity_threshold": 0.10
+  },
+
+  "d_spec": 0.45,
+  "s1_s4_gates": ["PASS", "PASS", "PASS", "PASS"],
+  "ipfs_cid": null
+}

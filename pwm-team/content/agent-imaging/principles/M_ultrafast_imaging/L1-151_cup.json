@@ -1,0 +1,174 @@
+{
+  "artifact_id": "L1-151",
+  "layer": "L1",
+  "principle_number": "151",
+  "title": "Compressed Ultrafast Photography (CUP) \u2014 trillion fps imaging",
+  "domain": "Ultrafast Imaging",
+  "sub_domain": "Coded-aperture + streak camera 1 Tfps imaging",
+  "source_file": "M_ultrafast_imaging/151_cup.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
+  "E": {
+    "description": "Compressed Ultrafast Photography (CUP) \u2014 trillion fps imaging forward model.",
+    "forward_model": "y(x, y') = sum_t C(x, y - shear*t) * f(x, y, t) + n; recover 3D (x, y, t) from 2D streak image",
+    "world_state_x": "Principle-specific quantity of interest",
+    "observation_y": "Detector output at declared geometry",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "N_frames",
+      "photon_count",
+      "dmd_mask_drift",
+      "streak_nonlinearity",
+      "cross_talk",
+      "low_photon_regime"
+    ]
+  },
+  "G": {
+    "dag": "L.diag.binary -> S.temporal.coded -> L.streak_sweep -> L.modulus_squared -> int.temporal",
+    "vertices": [
+      "L.diag.binary",
+      "S.temporal.coded",
+      "L.streak_sweep",
+      "L.modulus_squared",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.diag.binary -> S.temporal.coded",
+      "S.temporal.coded -> L.streak_sweep",
+      "L.streak_sweep -> L.modulus_squared",
+      "L.modulus_squared -> int.temporal"
+    ],
+    "L_DAG": 4.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 560,
+    "condition_number_effective": 28,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "GAP-TV-CUP, ADMM-CUP, PnP-CUP",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sensor SNR + mismatch bias + regularization.",
+    "complexity": "principle-dependent"
+  },
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "compressed_ultrafast",
+    "integration_axis": "temporal",
+    "problem_class": "linear_inverse",
+    "noise_model": "shot_poisson",
+    "solution_space": "3D_xyt_video",
+    "primitives": [
+      "L.diag.binary",
+      "S.temporal.coded",
+      "L.streak_sweep",
+      "L.modulus_squared",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 10,
+  "difficulty_tier": "hard",
+  "mismatch_parameters": [
+    "dmd_mask_drift",
+    "streak_nonlinearity",
+    "cross_talk",
+    "low_photon_regime"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "cup",
+      "forward_operator": "cup_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 128,
+        "W": 128,
+        "N_frames": 100,
+        "photon_count": 200,
+        "dmd_mask_drift": 0.0,
+        "streak_nonlinearity": 0.0,
+        "cross_talk": 0.0,
+        "low_photon_regime": 0.0
+      },
+      "epsilon_fn_center": "22.0"
+    },
+    "allowed_forward_operators": [
+      "cup_forward"
+    ],
+    "allowed_problem_classes": [
+      "cup"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "N_frames",
+      "photon_count",
+      "dmd_mask_drift",
+      "streak_nonlinearity",
+      "cross_talk",
+      "low_photon_regime",
+      "dmd_mask_drift",
+      "streak_nonlinearity",
+      "cross_talk",
+      "low_photon_regime"
+    ],
+    "omega_bounds": {
+      "H": 64,
+      "W": 64,
+      "N_frames": [
+        20,
+        500
+      ],
+      "photon_count": [
+        10,
+        5000
+      ],
+      "dmd_mask_drift": [
+        0.0,
+        0.3
+      ],
+      "streak_nonlinearity": [
+        0.0,
+        0.3
+      ],
+      "cross_talk": [
+        0.0,
+        0.3
+      ],
+      "low_photon_regime": [
+        0.0,
+        1.0
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        5.0,
+        40.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

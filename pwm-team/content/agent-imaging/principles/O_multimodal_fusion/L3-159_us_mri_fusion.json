@@ -1,0 +1,185 @@
+{
+  "artifact_id": "L3-159",
+  "layer": "L3",
+  "parent_l2": "L2-159",
+  "parent_l1": "L1-159",
+  "title": "US-MRI Fusion (biopsy guidance / cardiac) Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "canonical dataset for this principle",
+    "secondary": "simulated forward synthesis at declared Omega",
+    "construction_method": "parametric forward + declared noise",
+    "num_dev_instances_per_tier": 20
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "H_us": 512,
+        "W_us": 512,
+        "H_mri": 256,
+        "W_mri": 256,
+        "Z_mri": 128,
+        "fps": 10,
+        "real_time_registration_error": 0.0,
+        "non_rigid_tissue": 0.0,
+        "patient_motion": 0.0,
+        "acoustic_shadowing": 0.0,
+        "SNR_dB": 22.0
+      },
+      "epsilon": 20.0,
+      "d_ibench": 0.14,
+      "baselines": [
+        {
+          "name": "Mutual-Info-Reg",
+          "score": 17.5,
+          "Q": 0.88
+        },
+        {
+          "name": "Deformable-Reg",
+          "score": 20.0,
+          "Q": 0.88
+        },
+        {
+          "name": "USMRI-Net",
+          "score": 22.5,
+          "Q": 0.88
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "H_us": 512,
+        "W_us": 512,
+        "H_mri": 256,
+        "W_mri": 256,
+        "Z_mri": 128,
+        "fps": 10,
+        "real_time_registration_error": 1.0,
+        "non_rigid_tissue": 0.1,
+        "patient_motion": 0.1,
+        "acoustic_shadowing": 0.1,
+        "SNR_dB": 19.0
+      },
+      "epsilon": 16.4,
+      "d_ibench": 0.28,
+      "baselines": [
+        {
+          "name": "Mutual-Info-Reg",
+          "score": 15.5,
+          "Q": 0.68
+        },
+        {
+          "name": "Deformable-Reg",
+          "score": 18.0,
+          "Q": 0.68
+        },
+        {
+          "name": "USMRI-Net",
+          "score": 20.5,
+          "Q": 0.68
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "H_us": 512,
+        "W_us": 512,
+        "H_mri": 256,
+        "W_mri": 256,
+        "Z_mri": 128,
+        "fps": 10,
+        "real_time_registration_error": 2.5,
+        "non_rigid_tissue": 0.25,
+        "patient_motion": 0.25,
+        "acoustic_shadowing": 0.25,
+        "SNR_dB": 10.0
+      },
+      "epsilon": 12.8,
+      "d_ibench": 0.48,
+      "baselines": [
+        {
+          "name": "Mutual-Info-Reg",
+          "score": 13.5,
+          "Q": 0.48
+        },
+        {
+          "name": "Deformable-Reg",
+          "score": 16.0,
+          "Q": 0.48
+        },
+        {
+          "name": "USMRI-Net",
+          "score": 18.5,
+          "Q": 0.48
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "H_us": 512,
+        "W_us": 512,
+        "H_mri": 256,
+        "W_mri": 256,
+        "Z_mri": 128,
+        "fps": 10,
+        "real_time_registration_error": 5.0,
+        "non_rigid_tissue": 0.5,
+        "patient_motion": 0.5,
+        "acoustic_shadowing": 0.5,
+        "SNR_dB": 0.0
+      },
+      "epsilon": 9.2,
+      "d_ibench": 0.72,
+      "baselines": [
+        {
+          "name": "Mutual-Info-Reg",
+          "score": 11.5,
+          "Q": 0.28
+        },
+        {
+          "name": "Deformable-Reg",
+          "score": 14.0,
+          "Q": 0.28
+        },
+        {
+          "name": "USMRI-Net",
+          "score": 16.5,
+          "Q": 0.28
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "full parametric sweep",
+      "num_dev_instances": 200,
+      "construction_method": "parametric Omega sweep"
+    },
+    "baselines": [
+      {
+        "name": "Mutual-Info-Reg",
+        "overall_Q": 0.7
+      },
+      {
+        "name": "Deformable-Reg",
+        "overall_Q": 0.6
+      },
+      {
+        "name": "USMRI-Net",
+        "overall_Q": 0.5
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind strata corner.",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

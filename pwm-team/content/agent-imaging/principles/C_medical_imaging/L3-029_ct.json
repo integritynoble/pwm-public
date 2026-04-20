@@ -1,0 +1,213 @@
+{
+  "artifact_id": "L3-029",
+  "layer": "L3",
+  "parent_l2": "L2-029",
+  "parent_l1": "L1-029",
+  "title": "Computed Tomography (CT) \u2014 fan/cone-beam X-ray reconstruction Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "canonical clinical/public dataset for this modality",
+    "secondary": "simulated forward synthesis at declared Omega",
+    "construction_method": "parametric forward + declared noise",
+    "num_dev_instances_per_tier": 20
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "Z": 256,
+        "N_projections": 720,
+        "kVp": 120,
+        "mAs": 200,
+        "pixel_mm": 0.5,
+        "beam_hardening": 0.0,
+        "scatter": 0.0,
+        "patient_motion": 0.0,
+        "truncation": 0.0,
+        "metal_artifact": 0.0
+      },
+      "epsilon": 32.0,
+      "d_ibench": 0.14,
+      "baselines": [
+        {
+          "name": "FBP",
+          "score": 28.0,
+          "Q": 0.88
+        },
+        {
+          "name": "SART",
+          "score": 30.0,
+          "Q": 0.88
+        },
+        {
+          "name": "MBIR",
+          "score": 32.5,
+          "Q": 0.88
+        },
+        {
+          "name": "CT-DeepRecon",
+          "score": 35.0,
+          "Q": 0.88
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "Z": 256,
+        "N_projections": 720,
+        "kVp": 120,
+        "mAs": 100,
+        "pixel_mm": 0.5,
+        "beam_hardening": 0.06,
+        "scatter": 0.06,
+        "patient_motion": 0.06,
+        "truncation": 0.04000000000000001,
+        "metal_artifact": 0.1
+      },
+      "epsilon": 26.24,
+      "d_ibench": 0.28,
+      "baselines": [
+        {
+          "name": "FBP",
+          "score": 26.0,
+          "Q": 0.68
+        },
+        {
+          "name": "SART",
+          "score": 28.0,
+          "Q": 0.68
+        },
+        {
+          "name": "MBIR",
+          "score": 30.5,
+          "Q": 0.68
+        },
+        {
+          "name": "CT-DeepRecon",
+          "score": 33.0,
+          "Q": 0.68
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "Z": 256,
+        "N_projections": 720,
+        "kVp": 120,
+        "mAs": 40,
+        "pixel_mm": 0.5,
+        "beam_hardening": 0.15,
+        "scatter": 0.15,
+        "patient_motion": 0.15,
+        "truncation": 0.1,
+        "metal_artifact": 0.25
+      },
+      "epsilon": 20.48,
+      "d_ibench": 0.48,
+      "baselines": [
+        {
+          "name": "FBP",
+          "score": 24.0,
+          "Q": 0.48
+        },
+        {
+          "name": "SART",
+          "score": 26.0,
+          "Q": 0.48
+        },
+        {
+          "name": "MBIR",
+          "score": 28.5,
+          "Q": 0.48
+        },
+        {
+          "name": "CT-DeepRecon",
+          "score": 31.0,
+          "Q": 0.48
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "Z": 256,
+        "N_projections": 720,
+        "kVp": 120,
+        "mAs": 20,
+        "pixel_mm": 0.5,
+        "beam_hardening": 0.3,
+        "scatter": 0.3,
+        "patient_motion": 0.3,
+        "truncation": 0.2,
+        "metal_artifact": 0.5
+      },
+      "epsilon": 14.72,
+      "d_ibench": 0.72,
+      "baselines": [
+        {
+          "name": "FBP",
+          "score": 22.0,
+          "Q": 0.28
+        },
+        {
+          "name": "SART",
+          "score": 24.0,
+          "Q": 0.28
+        },
+        {
+          "name": "MBIR",
+          "score": 26.5,
+          "Q": 0.28
+        },
+        {
+          "name": "CT-DeepRecon",
+          "score": 29.0,
+          "Q": 0.28
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "full parametric sweep",
+      "num_dev_instances": 200,
+      "construction_method": "parametric Omega sweep"
+    },
+    "baselines": [
+      {
+        "name": "FBP",
+        "overall_Q": 0.7
+      },
+      {
+        "name": "SART",
+        "overall_Q": 0.6
+      },
+      {
+        "name": "MBIR",
+        "overall_Q": 0.5
+      },
+      {
+        "name": "CT-DeepRecon",
+        "overall_Q": 0.4
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind strata corner.",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

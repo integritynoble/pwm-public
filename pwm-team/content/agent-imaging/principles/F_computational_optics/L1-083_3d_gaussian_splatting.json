@@ -1,0 +1,95 @@
+{
+  "artifact_id": "L1-083",
+  "layer": "L1",
+  "principle_number": "083",
+  "title": "3D Gaussian Splatting (3DGS) — explicit real-time rendering",
+  "domain": "Computational Optics",
+  "sub_domain": "Explicit primitive-based 3D reconstruction",
+  "source_file": "F_computational_optics/083_3d_gaussian_splatting.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in Kerbl et al. 2023 3DGS and follow-up work (Mip-Splatting, 2DGS, SuGaR).",
+
+  "E": {
+    "description": "3DGS represents a scene as a set of N anisotropic 3D Gaussians parameterised by center mu_i, covariance Sigma_i, RGB color c_i (or spherical-harmonic coefficients), and opacity alpha_i. Rendering projects each Gaussian onto the image plane as a 2D Gaussian, sorts by depth, and alpha-composites per pixel. The explicit primitive set supports real-time rasterization and direct differentiation.",
+    "forward_model": "C(r) = sum_{i=1}^{N_visible} T_i * alpha_i_2d * c_i,  T_i = prod_{j<i} (1 - alpha_j_2d),  alpha_i_2d = alpha_i * exp(-0.5 (r - mu_proj_i)^T Sigma_proj_i^{-1} (r - mu_proj_i))",
+    "world_state_x": "Set of N 3D Gaussians: (mu_i in R^3, Sigma_i in PSD^{3x3}, c_i in R^{3 * L_SH}, alpha_i in [0, 1]) for i = 1..N",
+    "observation_y": "K posed reference images {I_k, T_k}_{k=1..K}",
+    "physical_parameters_theta": [
+      "Number of Gaussians N (typically 100k-5M)",
+      "Spherical-harmonic degree L_SH for view-dependent color",
+      "Densification and pruning hyperparameters",
+      "Per-frame camera pose and intrinsics",
+      "Background model (color / envmap)"
+    ]
+  },
+
+  "G": {
+    "dag": "S.scan.view -> L.project.gaussian -> L.alpha_composite -> int.depth",
+    "vertices": ["S.scan.view", "L.project.gaussian", "L.alpha_composite", "int.depth"],
+    "arcs": [
+      "S.scan.view -> L.project.gaussian",
+      "L.project.gaussian -> L.alpha_composite",
+      "L.alpha_composite -> int.depth"
+    ],
+    "L_DAG": 3.5,
+    "n_c": 0
+  },
+
+  "W": {
+    "existence": true,
+    "uniqueness": false,
+    "stability": "conditional",
+    "condition_number_kappa": 4000,
+    "condition_number_effective": 45,
+    "regime": "Non-convex parameter fitting. Unique 3D Gaussian cloud only up to primitive-reparameterization (splitting one Gaussian into two overlapping ones yields identical rendering). Stability risks: pose error introduces baked-in floaters; aggressive densification produces over-opaque pancake Gaussians (mitigated by Mip-Splatting / 2DGS)."
+  },
+
+  "C": {
+    "solver_class": "Adam on Gaussian parameters with custom CUDA rasterizer; gradient-driven densify + prune; follow-ups: Mip-Splatting (anti-aliased), 2DGS (surface-aligned disks), SuGaR (mesh extraction)",
+    "convergence_rate_q": 1.8,
+    "error_bound": "|C_hat - C|_L2 <= C1 * sigma_pixel + C2 * pose_error + C3 * densification_under_budget + C4 * view_dependent_residual",
+    "complexity": "O(N_projected * N_rays) per training iteration, ~100-1000x faster rendering than NeRF"
+  },
+
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "multi_view_photogrammetry",
+    "integration_axis": "angular",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "3D_explicit_primitives",
+    "primitives": ["S.scan.view", "L.project.gaussian", "L.alpha_composite", "int.depth"]
+  },
+
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+
+  "mismatch_parameters": ["pose_error_rad", "per_frame_exposure_variation", "non_lambertian", "N_budget_too_small", "motion_blur_per_frame"],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "error_metric_tertiary": "LPIPS",
+
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "gaussian_splatting_novel_view",
+      "forward_operator": "gaussian_splat_rasterize",
+      "input_format": "K_posed_images_plus_sfm_init",
+      "omega": {"H": 1080, "W": 1920, "K_views": 200, "N_gaussians": 1000000, "L_SH": 3, "photon_count": 2000, "pose_error_rad": 0.0, "per_frame_exposure_variation": 0.0, "non_lambertian": 0.0},
+      "epsilon_fn_center": "31.0 dB PSNR"
+    },
+    "allowed_forward_operators": ["gaussian_splat_rasterize", "mip_splat", "2dgs_disk", "dynamic_gs"],
+    "allowed_problem_classes": ["gaussian_splatting_novel_view", "dynamic_gs", "gs_relighting"],
+    "allowed_omega_dimensions": ["H", "W", "K_views", "N_gaussians", "L_SH", "photon_count", "pose_error_rad", "per_frame_exposure_variation", "non_lambertian", "N_budget_too_small", "motion_blur_per_frame"],
+    "omega_bounds": {
+      "H": [400, 4000], "W": [400, 4000], "K_views": [10, 1000],
+      "N_gaussians": [100000, 10000000], "L_SH": [0, 4],
+      "photon_count": [100, 10000], "pose_error_rad": [0.0, 0.1],
+      "per_frame_exposure_variation": [0.0, 0.5], "non_lambertian": [0.0, 0.5],
+      "N_budget_too_small": [0.0, 0.8], "motion_blur_per_frame": [0.0, 0.1]
+    },
+    "epsilon_bounds": {"psnr_db": [18.0, 42.0]}
+  },
+
+  "p1_p10_tests": ["PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS"],
+  "s1_s4_gates": ["PASS", "PASS", "PASS", "PASS"],
+  "ipfs_cid": null
+}

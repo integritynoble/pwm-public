@@ -1,0 +1,168 @@
+{
+  "artifact_id": "L2-063",
+  "layer": "L2",
+  "parent_l1": "L1-063",
+  "title": "Digital Breast Tomosynthesis (DBT) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": 1664,
+      "W": 1280,
+      "Z": [
+        16,
+        200
+      ],
+      "N_projections": [
+        9,
+        25
+      ],
+      "tilt_range_deg": [
+        7.5,
+        30
+      ],
+      "kVp": [
+        22,
+        34
+      ],
+      "mAs": [
+        10,
+        400
+      ],
+      "pixel_um": [
+        50,
+        200
+      ],
+      "limited_angle_artifacts": [
+        0.1,
+        0.7
+      ],
+      "scatter": [
+        0.0,
+        0.3
+      ],
+      "compression_variation": [
+        0.0,
+        0.2
+      ],
+      "patient_motion": [
+        0.0,
+        0.3
+      ]
+    },
+    "E": {
+      "forward": "y_theta(u,v) = I_0 exp(-integral mu ds) + scatter + n; theta ranges +/-15 to +/-30 deg",
+      "operator": "dbt_forward_mismatch",
+      "primitive_chain": "L.xray_source -> S.scan.limited_angle -> L.sart_reconstruct -> int.angular",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "19.0 + 2.0 * log10(mAs / 10) + 1.0 * log2(tilt_range_deg / 7.5) - 10.0 * limited_angle_artifacts - 8.0 * scatter"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "FBP-DBT",
+        "method_sig": "L+O",
+        "expected_psnr": 24.0
+      },
+      {
+        "name": "SART-DBT",
+        "method_sig": "I+O",
+        "expected_psnr": 27.0
+      },
+      {
+        "name": "DBT-Net",
+        "method_sig": "L+N",
+        "expected_psnr": 29.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 3328,
+        "W": 2560,
+        "Z": 60,
+        "N_projections": 15,
+        "tilt_range_deg": 15,
+        "kVp": 28,
+        "mAs": 60,
+        "pixel_um": 85,
+        "limited_angle_artifacts": 0.3,
+        "scatter": 0.15,
+        "compression_variation": 0.0,
+        "patient_motion": 0.0
+      },
+      "epsilon": 27.0
+    },
+    "tier_bounds": {
+      "H": 1664,
+      "W": 1280,
+      "Z": [
+        16,
+        200
+      ],
+      "N_projections": [
+        9,
+        25
+      ],
+      "tilt_range_deg": [
+        7.5,
+        30
+      ],
+      "kVp": [
+        22,
+        34
+      ],
+      "mAs": [
+        10,
+        400
+      ],
+      "pixel_um": [
+        50,
+        200
+      ],
+      "limited_angle_artifacts": [
+        0.1,
+        0.7
+      ],
+      "scatter": [
+        0.0,
+        0.3
+      ],
+      "compression_variation": [
+        0.0,
+        0.2
+      ],
+      "patient_motion": [
+        0.0,
+        0.3
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.5,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

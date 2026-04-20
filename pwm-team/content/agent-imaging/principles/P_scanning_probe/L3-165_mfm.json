@@ -1,0 +1,181 @@
+{
+  "artifact_id": "L3-165",
+  "layer": "L3",
+  "parent_l2": "L2-165",
+  "parent_l1": "L1-165",
+  "title": "Magnetic Force Microscopy (MFM) Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "canonical dataset for this principle",
+    "secondary": "simulated forward synthesis at declared Omega",
+    "construction_method": "parametric forward + declared noise",
+    "num_dev_instances_per_tier": 20
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "pixel_nm": 20,
+        "lift_height_nm": 50,
+        "tip_radius_nm": 30,
+        "SNR_dB": 25.0,
+        "crosstalk_topography": 0.0,
+        "stray_field": 0.0,
+        "tip_magnetization_drift": 0.0,
+        "vibration": 0.0
+      },
+      "epsilon": 24.0,
+      "d_ibench": 0.14,
+      "baselines": [
+        {
+          "name": "Phase-MFM",
+          "score": 21.5,
+          "Q": 0.88
+        },
+        {
+          "name": "Deconv-MFM",
+          "score": 24.0,
+          "Q": 0.88
+        },
+        {
+          "name": "MFM-Net",
+          "score": 26.5,
+          "Q": 0.88
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "pixel_nm": 20,
+        "lift_height_nm": 50,
+        "tip_radius_nm": 30,
+        "SNR_dB": 22.0,
+        "crosstalk_topography": 0.1,
+        "stray_field": 0.06,
+        "tip_magnetization_drift": 0.06,
+        "vibration": 0.06
+      },
+      "epsilon": 19.68,
+      "d_ibench": 0.28,
+      "baselines": [
+        {
+          "name": "Phase-MFM",
+          "score": 19.5,
+          "Q": 0.68
+        },
+        {
+          "name": "Deconv-MFM",
+          "score": 22.0,
+          "Q": 0.68
+        },
+        {
+          "name": "MFM-Net",
+          "score": 24.5,
+          "Q": 0.68
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "pixel_nm": 20,
+        "lift_height_nm": 50,
+        "tip_radius_nm": 30,
+        "SNR_dB": 13.0,
+        "crosstalk_topography": 0.25,
+        "stray_field": 0.15,
+        "tip_magnetization_drift": 0.15,
+        "vibration": 0.15
+      },
+      "epsilon": 15.36,
+      "d_ibench": 0.48,
+      "baselines": [
+        {
+          "name": "Phase-MFM",
+          "score": 17.5,
+          "Q": 0.48
+        },
+        {
+          "name": "Deconv-MFM",
+          "score": 20.0,
+          "Q": 0.48
+        },
+        {
+          "name": "MFM-Net",
+          "score": 22.5,
+          "Q": 0.48
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "pixel_nm": 20,
+        "lift_height_nm": 50,
+        "tip_radius_nm": 30,
+        "SNR_dB": 0.0,
+        "crosstalk_topography": 0.5,
+        "stray_field": 0.3,
+        "tip_magnetization_drift": 0.3,
+        "vibration": 0.3
+      },
+      "epsilon": 11.04,
+      "d_ibench": 0.72,
+      "baselines": [
+        {
+          "name": "Phase-MFM",
+          "score": 15.5,
+          "Q": 0.28
+        },
+        {
+          "name": "Deconv-MFM",
+          "score": 18.0,
+          "Q": 0.28
+        },
+        {
+          "name": "MFM-Net",
+          "score": 20.5,
+          "Q": 0.28
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "full parametric sweep",
+      "num_dev_instances": 200,
+      "construction_method": "parametric Omega sweep"
+    },
+    "baselines": [
+      {
+        "name": "Phase-MFM",
+        "overall_Q": 0.7
+      },
+      {
+        "name": "Deconv-MFM",
+        "overall_Q": 0.6
+      },
+      {
+        "name": "MFM-Net",
+        "overall_Q": 0.5
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind strata corner.",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

@@ -1,0 +1,150 @@
+{
+  "artifact_id": "L2-034",
+  "layer": "L2",
+  "parent_l1": "L1-034",
+  "title": "Single-Photon Emission Computed Tomography (SPECT) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": 64,
+      "W": 64,
+      "Z": [
+        16,
+        512
+      ],
+      "N_angles": [
+        8,
+        256
+      ],
+      "counts_per_pixel": [
+        1,
+        10000
+      ],
+      "SNR_dB": [
+        0.0,
+        35.0
+      ],
+      "collimator_blur": [
+        0.0,
+        0.3
+      ],
+      "attenuation_correction_error": [
+        0.0,
+        0.3
+      ],
+      "scatter": [
+        0.0,
+        0.5
+      ],
+      "patient_motion": [
+        0.0,
+        0.3
+      ]
+    },
+    "E": {
+      "forward": "y_theta(u,v) = integral A(r) * attenuation(r) * collimator_PSF + scatter + n",
+      "operator": "spect_forward_mismatch",
+      "primitive_chain": "L.gamma_emission -> L.collimator -> S.scan.angular -> L.backproject -> int.angular",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "14.0 + 2.0 * log10(counts_per_pixel / 1) - 8.0 * collimator_blur - 6.0 * scatter"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "FBP-SPECT",
+        "method_sig": "L+O",
+        "expected_psnr": 19.5
+      },
+      {
+        "name": "MLEM",
+        "method_sig": "I+O",
+        "expected_psnr": 22.0
+      },
+      {
+        "name": "SPECT-Net",
+        "method_sig": "L+N",
+        "expected_psnr": 24.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 128,
+        "W": 128,
+        "Z": 64,
+        "N_angles": 64,
+        "counts_per_pixel": 100,
+        "SNR_dB": 18,
+        "collimator_blur": 0.0,
+        "attenuation_correction_error": 0.0,
+        "scatter": 0.2,
+        "patient_motion": 0.0
+      },
+      "epsilon": 22.0
+    },
+    "tier_bounds": {
+      "H": 64,
+      "W": 64,
+      "Z": [
+        16,
+        512
+      ],
+      "N_angles": [
+        8,
+        256
+      ],
+      "counts_per_pixel": [
+        1,
+        10000
+      ],
+      "SNR_dB": [
+        0.0,
+        35.0
+      ],
+      "collimator_blur": [
+        0.0,
+        0.3
+      ],
+      "attenuation_correction_error": [
+        0.0,
+        0.3
+      ],
+      "scatter": [
+        0.0,
+        0.5
+      ],
+      "patient_motion": [
+        0.0,
+        0.3
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.5,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

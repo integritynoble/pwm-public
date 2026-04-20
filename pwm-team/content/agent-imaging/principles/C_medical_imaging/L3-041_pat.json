@@ -1,0 +1,181 @@
+{
+  "artifact_id": "L3-041",
+  "layer": "L3",
+  "parent_l2": "L2-041",
+  "parent_l1": "L1-041",
+  "title": "Photoacoustic Tomography (PAT) Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "canonical clinical/public dataset for this modality",
+    "secondary": "simulated forward synthesis at declared Omega",
+    "construction_method": "parametric forward + declared noise",
+    "num_dev_instances_per_tier": 20
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "N_transducers": 256,
+        "H": 256,
+        "W": 256,
+        "Z": 128,
+        "lambda_nm": 800,
+        "SNR_dB": 22.0,
+        "sound_speed_heterogeneity": 0.0,
+        "limited_view_geometry": 0.0,
+        "laser_fluence_variation": 0.0,
+        "coupling_medium": 0.0
+      },
+      "epsilon": 23.0,
+      "d_ibench": 0.14,
+      "baselines": [
+        {
+          "name": "UBP",
+          "score": 20.5,
+          "Q": 0.88
+        },
+        {
+          "name": "Model-Based-PA",
+          "score": 23.0,
+          "Q": 0.88
+        },
+        {
+          "name": "PA-Net",
+          "score": 25.5,
+          "Q": 0.88
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "N_transducers": 256,
+        "H": 256,
+        "W": 256,
+        "Z": 128,
+        "lambda_nm": 800,
+        "SNR_dB": 19.0,
+        "sound_speed_heterogeneity": 0.010000000000000002,
+        "limited_view_geometry": 0.12,
+        "laser_fluence_variation": 0.06,
+        "coupling_medium": 0.06
+      },
+      "epsilon": 18.86,
+      "d_ibench": 0.28,
+      "baselines": [
+        {
+          "name": "UBP",
+          "score": 18.5,
+          "Q": 0.68
+        },
+        {
+          "name": "Model-Based-PA",
+          "score": 21.0,
+          "Q": 0.68
+        },
+        {
+          "name": "PA-Net",
+          "score": 23.5,
+          "Q": 0.68
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "N_transducers": 256,
+        "H": 256,
+        "W": 256,
+        "Z": 128,
+        "lambda_nm": 800,
+        "SNR_dB": 10.0,
+        "sound_speed_heterogeneity": 0.025,
+        "limited_view_geometry": 0.3,
+        "laser_fluence_variation": 0.15,
+        "coupling_medium": 0.15
+      },
+      "epsilon": 14.72,
+      "d_ibench": 0.48,
+      "baselines": [
+        {
+          "name": "UBP",
+          "score": 16.5,
+          "Q": 0.48
+        },
+        {
+          "name": "Model-Based-PA",
+          "score": 19.0,
+          "Q": 0.48
+        },
+        {
+          "name": "PA-Net",
+          "score": 21.5,
+          "Q": 0.48
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "N_transducers": 256,
+        "H": 256,
+        "W": 256,
+        "Z": 128,
+        "lambda_nm": 800,
+        "SNR_dB": 0.0,
+        "sound_speed_heterogeneity": 0.05,
+        "limited_view_geometry": 0.6,
+        "laser_fluence_variation": 0.3,
+        "coupling_medium": 0.3
+      },
+      "epsilon": 10.58,
+      "d_ibench": 0.72,
+      "baselines": [
+        {
+          "name": "UBP",
+          "score": 14.5,
+          "Q": 0.28
+        },
+        {
+          "name": "Model-Based-PA",
+          "score": 17.0,
+          "Q": 0.28
+        },
+        {
+          "name": "PA-Net",
+          "score": 19.5,
+          "Q": 0.28
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "full parametric sweep",
+      "num_dev_instances": 200,
+      "construction_method": "parametric Omega sweep"
+    },
+    "baselines": [
+      {
+        "name": "UBP",
+        "overall_Q": 0.7
+      },
+      {
+        "name": "Model-Based-PA",
+        "overall_Q": 0.6
+      },
+      {
+        "name": "PA-Net",
+        "overall_Q": 0.5
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind strata corner.",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

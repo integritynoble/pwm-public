@@ -1,0 +1,181 @@
+{
+  "artifact_id": "L3-105",
+  "layer": "L3",
+  "parent_l2": "L2-105",
+  "parent_l1": "L1-105",
+  "title": "Doppler Weather Radar Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "canonical remote-sensing dataset for this principle",
+    "secondary": "simulated forward synthesis at declared Omega",
+    "construction_method": "parametric forward + declared noise model",
+    "num_dev_instances_per_tier": 20
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "N_range": 500,
+        "N_az": 720,
+        "N_el": 12,
+        "lambda_cm": 10,
+        "PRF_Hz": 1000,
+        "SNR_dB": 25.0,
+        "beam_blockage": 0.0,
+        "AP_propagation": 0.0,
+        "aliasing": 0.0,
+        "clutter": 0.0
+      },
+      "epsilon": 26.0,
+      "d_ibench": 0.14,
+      "baselines": [
+        {
+          "name": "Polar-to-Cartesian",
+          "score": 24.0,
+          "Q": 0.88
+        },
+        {
+          "name": "Dual-PRF-Unfold",
+          "score": 26.0,
+          "Q": 0.88
+        },
+        {
+          "name": "Weather-Net",
+          "score": 28.5,
+          "Q": 0.88
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "N_range": 500,
+        "N_az": 720,
+        "N_el": 12,
+        "lambda_cm": 10,
+        "PRF_Hz": 1000,
+        "SNR_dB": 22.0,
+        "beam_blockage": 0.06,
+        "AP_propagation": 0.06,
+        "aliasing": 0.1,
+        "clutter": 0.1
+      },
+      "epsilon": 21.32,
+      "d_ibench": 0.28,
+      "baselines": [
+        {
+          "name": "Polar-to-Cartesian",
+          "score": 22.0,
+          "Q": 0.68
+        },
+        {
+          "name": "Dual-PRF-Unfold",
+          "score": 24.0,
+          "Q": 0.68
+        },
+        {
+          "name": "Weather-Net",
+          "score": 26.5,
+          "Q": 0.68
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "N_range": 500,
+        "N_az": 720,
+        "N_el": 12,
+        "lambda_cm": 10,
+        "PRF_Hz": 1000,
+        "SNR_dB": 13.0,
+        "beam_blockage": 0.15,
+        "AP_propagation": 0.15,
+        "aliasing": 0.25,
+        "clutter": 0.25
+      },
+      "epsilon": 16.64,
+      "d_ibench": 0.48,
+      "baselines": [
+        {
+          "name": "Polar-to-Cartesian",
+          "score": 20.0,
+          "Q": 0.48
+        },
+        {
+          "name": "Dual-PRF-Unfold",
+          "score": 22.0,
+          "Q": 0.48
+        },
+        {
+          "name": "Weather-Net",
+          "score": 24.5,
+          "Q": 0.48
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "N_range": 500,
+        "N_az": 720,
+        "N_el": 12,
+        "lambda_cm": 10,
+        "PRF_Hz": 1000,
+        "SNR_dB": 5.0,
+        "beam_blockage": 0.3,
+        "AP_propagation": 0.3,
+        "aliasing": 0.5,
+        "clutter": 0.5
+      },
+      "epsilon": 11.96,
+      "d_ibench": 0.72,
+      "baselines": [
+        {
+          "name": "Polar-to-Cartesian",
+          "score": 18.0,
+          "Q": 0.28
+        },
+        {
+          "name": "Dual-PRF-Unfold",
+          "score": 20.0,
+          "Q": 0.28
+        },
+        {
+          "name": "Weather-Net",
+          "score": 22.5,
+          "Q": 0.28
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "full parametric sweep",
+      "num_dev_instances": 200,
+      "construction_method": "parametric Omega sweep"
+    },
+    "baselines": [
+      {
+        "name": "Polar-to-Cartesian",
+        "overall_Q": 0.7
+      },
+      {
+        "name": "Dual-PRF-Unfold",
+        "overall_Q": 0.6
+      },
+      {
+        "name": "Weather-Net",
+        "overall_Q": 0.5
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind strata corner.",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

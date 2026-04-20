@@ -1,0 +1,148 @@
+{
+  "artifact_id": "L2-065",
+  "layer": "L2",
+  "parent_l1": "L1-065",
+  "title": "Functional Near-Infrared Spectroscopy (fNIRS) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "N_sources": [
+        4,
+        128
+      ],
+      "N_detectors": [
+        4,
+        128
+      ],
+      "sampling_Hz": [
+        1,
+        100
+      ],
+      "SNR_dB": [
+        0.0,
+        35.0
+      ],
+      "scalp_blood_flow_contamination": [
+        0.0,
+        0.5
+      ],
+      "motion": [
+        0.0,
+        0.5
+      ],
+      "optode_coupling": [
+        0.3,
+        1.0
+      ],
+      "ambient_light": [
+        0.0,
+        0.3
+      ]
+    },
+    "E": {
+      "forward": "Delta_OD(lambda, t) = epsilon_HbO * Delta_HbO + epsilon_HbR * Delta_HbR + scalp + motion + n",
+      "operator": "fnirs_forward_mismatch",
+      "primitive_chain": "L.nir_source -> L.diffusion_propagation -> D.nir_detector -> int.temporal",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "10.0 + 0.3 * SNR_dB + 6.0 * optode_coupling - 10.0 * scalp_blood_flow_contamination - 8.0 * motion"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Beer-Lambert",
+        "method_sig": "L+O",
+        "expected_psnr": 15.5
+      },
+      {
+        "name": "GLM-fNIRS",
+        "method_sig": "L+O",
+        "expected_psnr": 17.5
+      },
+      {
+        "name": "fNIRS-Net",
+        "method_sig": "L+N",
+        "expected_psnr": 20.0
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_sources": 16,
+        "N_detectors": 16,
+        "lambda_nm": [
+          760,
+          850
+        ],
+        "sampling_Hz": 10,
+        "SNR_dB": 20,
+        "scalp_blood_flow_contamination": 0.0,
+        "motion": 0.0,
+        "optode_coupling": 1.0,
+        "ambient_light": 0.0
+      },
+      "epsilon": 18.0
+    },
+    "tier_bounds": {
+      "N_sources": [
+        4,
+        128
+      ],
+      "N_detectors": [
+        4,
+        128
+      ],
+      "sampling_Hz": [
+        1,
+        100
+      ],
+      "SNR_dB": [
+        0.0,
+        35.0
+      ],
+      "scalp_blood_flow_contamination": [
+        0.0,
+        0.5
+      ],
+      "motion": [
+        0.0,
+        0.5
+      ],
+      "optode_coupling": [
+        0.3,
+        1.0
+      ],
+      "ambient_light": [
+        0.0,
+        0.3
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.5,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

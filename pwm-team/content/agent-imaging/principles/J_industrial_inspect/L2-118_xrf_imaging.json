@@ -1,0 +1,161 @@
+{
+  "artifact_id": "L2-118",
+  "layer": "L2",
+  "parent_l1": "L1-118",
+  "title": "X-Ray Fluorescence (XRF) Mapping Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        64,
+        4096
+      ],
+      "W": [
+        64,
+        4096
+      ],
+      "N_elements": [
+        2,
+        30
+      ],
+      "kV": [
+        10,
+        50
+      ],
+      "dwell_ms": [
+        1,
+        10000
+      ],
+      "peak_counts": [
+        20,
+        100000
+      ],
+      "matrix_effect": [
+        0.0,
+        0.3
+      ],
+      "detector_dead_time": [
+        0.0,
+        0.5
+      ],
+      "peak_overlap": [
+        0.0,
+        0.5
+      ],
+      "self_absorption": [
+        0.0,
+        0.5
+      ]
+    },
+    "E": {
+      "forward": "I_K(x,y) = c_el(x,y) * fundamental_parameters(K, matrix) + bremsstrahlung + n; unmix per element",
+      "operator": "xrf_mapping_forward_mismatch",
+      "primitive_chain": "L.xray_excitation -> L.fluorescence_emission -> D.energy_dispersive -> int.spectral",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "18.0 + 2.5 * log10(peak_counts / 20) - 8.0 * matrix_effect - 5.0 * detector_dead_time"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Fundamental-Parameters",
+        "method_sig": "L+O",
+        "expected_psnr": 23.5
+      },
+      {
+        "name": "NMF-XRF",
+        "method_sig": "L+O",
+        "expected_psnr": 25.5
+      },
+      {
+        "name": "XRF-Net",
+        "method_sig": "L+N",
+        "expected_psnr": 28.0
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "N_elements": 10,
+        "kV": 30,
+        "dwell_ms": 100,
+        "peak_counts": 1000,
+        "matrix_effect": 0.0,
+        "detector_dead_time": 0.05,
+        "peak_overlap": 0.0
+      },
+      "epsilon": 26.0
+    },
+    "tier_bounds": {
+      "H": [
+        64,
+        4096
+      ],
+      "W": [
+        64,
+        4096
+      ],
+      "N_elements": [
+        2,
+        30
+      ],
+      "kV": [
+        10,
+        50
+      ],
+      "dwell_ms": [
+        1,
+        10000
+      ],
+      "peak_counts": [
+        20,
+        100000
+      ],
+      "matrix_effect": [
+        0.0,
+        0.3
+      ],
+      "detector_dead_time": [
+        0.0,
+        0.5
+      ],
+      "peak_overlap": [
+        0.0,
+        0.5
+      ],
+      "self_absorption": [
+        0.0,
+        0.5
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.5,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

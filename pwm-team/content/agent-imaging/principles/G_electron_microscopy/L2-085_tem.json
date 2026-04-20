@@ -1,0 +1,153 @@
+{
+  "artifact_id": "L2-085",
+  "layer": "L2",
+  "parent_l1": "L1-085",
+  "title": "Transmission Electron Microscopy (TEM) \u2014 thin-section contrast imaging Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        1024,
+        8192
+      ],
+      "W": [
+        1024,
+        8192
+      ],
+      "pixel_A": [
+        0.3,
+        5.0
+      ],
+      "kV": [
+        80,
+        300
+      ],
+      "Cs_mm": [
+        0.01,
+        5.0
+      ],
+      "defocus_nm": [
+        -2000,
+        2000
+      ],
+      "peak_electrons": [
+        1,
+        1000
+      ],
+      "drift_nm": [
+        0.0,
+        5.0
+      ],
+      "envelope_coherence": [
+        0.5,
+        1.0
+      ]
+    },
+    "E": {
+      "forward": "y(r) = |exp(i*psi_obj(r)) conv CTF(r; Cs, defocus)|^2 + n, CTF = sin(chi(k))",
+      "operator": "tem_ctf_forward_mismatch",
+      "primitive_chain": "L.illumination.coherent_beam -> L.transmit_sample -> L.lens_aberration -> int.temporal",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "18.0 + 2.0 * log10(peak_electrons / 1) - 0.5 * drift_nm + 8.0 * envelope_coherence"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "CTF-Correction",
+        "method_sig": "L+O",
+        "expected_psnr": 25.0
+      },
+      {
+        "name": "RELION-2D",
+        "method_sig": "L+O",
+        "expected_psnr": 27.0
+      },
+      {
+        "name": "TEM-Net",
+        "method_sig": "L+N",
+        "expected_psnr": 29.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 4096,
+        "W": 4096,
+        "pixel_A": 1.0,
+        "kV": 300,
+        "Cs_mm": 2.7,
+        "defocus_nm": -80,
+        "peak_electrons": 50,
+        "drift_nm": 0.0,
+        "envelope_coherence": 1.0
+      },
+      "epsilon": 26.0
+    },
+    "tier_bounds": {
+      "H": [
+        1024,
+        8192
+      ],
+      "W": [
+        1024,
+        8192
+      ],
+      "pixel_A": [
+        0.3,
+        5.0
+      ],
+      "kV": [
+        80,
+        300
+      ],
+      "Cs_mm": [
+        0.01,
+        5.0
+      ],
+      "defocus_nm": [
+        -2000,
+        2000
+      ],
+      "peak_electrons": [
+        1,
+        1000
+      ],
+      "drift_nm": [
+        0.0,
+        5.0
+      ],
+      "envelope_coherence": [
+        0.5,
+        1.0
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.48,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}
