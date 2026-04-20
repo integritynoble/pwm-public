@@ -128,6 +128,85 @@ describe("Integration — full L4 lifecycle", function () {
     expect(await reward.poolOf(bHash)).to.equal(l3PoolBefore + ethers.parseEther("0.5"));
   });
 
+  it("Zeno: mintFor fires inside finalize; remaining decays; pool drawn against A_{k,j,b}", async () => {
+    const [gov, sp, cp, l1c, l2c, l3c, funder] = await ethers.getSigners();
+
+    const Registry = await ethers.getContractFactory("PWMRegistry");
+    const Treasury = await ethers.getContractFactory("PWMTreasury");
+    const Reward   = await ethers.getContractFactory("PWMReward");
+    const Certificate = await ethers.getContractFactory("PWMCertificate");
+    const Staking  = await ethers.getContractFactory("PWMStaking");
+    const Minting  = await ethers.getContractFactory("PWMMinting");
+
+    const registry = await Registry.deploy();
+    const treasury = await Treasury.deploy(gov.address);
+    const reward = await Reward.deploy(gov.address);
+    const certificate = await Certificate.deploy(gov.address);
+    const staking = await Staking.deploy(gov.address);
+    const minting = await Minting.deploy(gov.address);
+    await Promise.all([registry.waitForDeployment(), treasury.waitForDeployment(),
+      reward.waitForDeployment(), certificate.waitForDeployment(),
+      staking.waitForDeployment(), minting.waitForDeployment()]);
+
+    await reward.connect(gov).setCertificate(await certificate.getAddress());
+    await reward.connect(gov).setStaking(await staking.getAddress());
+    await reward.connect(gov).setMinting(await minting.getAddress());
+    await reward.connect(gov).setTreasury(await treasury.getAddress());
+    await treasury.connect(gov).setReward(await reward.getAddress());
+    await certificate.connect(gov).setRegistry(await registry.getAddress());
+    await certificate.connect(gov).setReward(await reward.getAddress());
+    await certificate.connect(gov).setMinting(await minting.getAddress());
+    await minting.connect(gov).setCertificate(await certificate.getAddress());
+    await minting.connect(gov).setReward(await reward.getAddress());
+
+    const p = H("p-zeno"), s = H("s-zeno"), b = H("b-zeno");
+    await registry.register(p, ZERO, 1, l1c.address);
+    await registry.register(s, p,    2, l2c.address);
+    await registry.register(b, s,    3, l3c.address);
+
+    // Single principle, single benchmark, δ=1, ρ=1 → w_k=1, Σw=1, A_k=remaining, A_{k,j,b}=remaining.
+    const principleId = 7;
+    await minting.connect(gov).setDelta(principleId, 1);
+    await minting.connect(gov).registerBenchmark(principleId, b, 1);
+    await minting.connect(gov).setPromotion(principleId, true);
+
+    // Fund Minting with the full M_POOL so first event drains it all in one shot.
+    const M_POOL = await minting.M_POOL();
+    await funder.sendTransaction({ to: await minting.getAddress(), value: M_POOL });
+
+    // Baseline pool is zero, no prior bounty.
+    expect(await reward.poolOf(b)).to.equal(0n);
+
+    // Submit + finalize one cert.
+    await certificate.connect(sp).submit({
+      certHash: H("cert-zeno"),
+      benchmarkHash: b,
+      principleId,
+      l1Creator: l1c.address,
+      l2Creator: l2c.address,
+      l3Creator: l3c.address,
+      acWallet:  sp.address,
+      cpWallet:  cp.address,
+      shareRatioP: 5000,
+      Q_int: 80,
+      delta: 0,
+      rank:  1,
+    });
+    await time.increase(7 * DAY + 1);
+    await certificate.finalize(H("cert-zeno"));
+
+    // mintFor injected A_{k,j,b} = M_POOL into the pool just before distribute.
+    // distribute drew rank 1 = 40% of M_POOL; remainder stays in pool.
+    const drawn = (M_POOL * 4000n) / 10000n;
+    expect(await reward.poolOf(b)).to.equal(M_POOL - drawn);
+    expect(await minting.M_emitted()).to.equal(M_POOL);
+    expect(await minting.remaining()).to.equal(0n);
+
+    // Activity recorded.
+    expect((await minting.principleOf(principleId)).activity).to.equal(1n);
+    expect((await minting.benchmarkOf(principleId, b)).activity).to.equal(1n);
+  });
+
   it("rollover: two successive certs at rank 2 then rank 3", async () => {
     const [gov, sp, cp, l1c, l2c, l3c, funder] = await ethers.getSigners();
 

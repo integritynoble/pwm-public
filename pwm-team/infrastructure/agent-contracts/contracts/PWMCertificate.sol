@@ -21,6 +21,10 @@ interface IPWMReward {
     function distribute(bytes32 certHash, Draw calldata d) external;
 }
 
+interface IPWMMinting {
+    function mintFor(uint256 principleId, bytes32 benchmarkHash) external returns (uint256);
+}
+
 /// @title PWMCertificate
 /// @notice L4 certificate submission + challenge window + ranked-draw settlement.
 ///         Submission freezes payout wiring (AC/CP wallets, p); finalize() after the
@@ -34,6 +38,7 @@ contract PWMCertificate {
     address public governance;
     IPWMRegistry public registry;
     IPWMReward   public reward;
+    IPWMMinting  public minting;    // optional: if unset, finalize skips mintFor
 
     enum Status { None, Pending, Challenged, Finalized, Rejected }
 
@@ -68,6 +73,7 @@ contract PWMCertificate {
     event GovernanceUpdated(address indexed newGovernance);
     event RegistryUpdated(address indexed newRegistry);
     event RewardUpdated(address indexed newReward);
+    event MintingUpdated(address indexed newMinting);
 
     modifier onlyGovernance() { require(msg.sender == governance, "PWMCertificate: not governance"); _; }
 
@@ -92,6 +98,11 @@ contract PWMCertificate {
         require(x != address(0), "PWMCertificate: zero reward");
         reward = IPWMReward(x);
         emit RewardUpdated(x);
+    }
+    function setMinting(address x) external onlyGovernance {
+        require(x != address(0), "PWMCertificate: zero minting");
+        minting = IPWMMinting(x);
+        emit MintingUpdated(x);
     }
 
     // ---------- submission ----------
@@ -178,6 +189,13 @@ contract PWMCertificate {
         require(address(reward) != address(0), "PWMCertificate: reward unset");
 
         c.status = Status.Finalized;
+
+        // Inject this event's share of protocol minting (Zeno A_{k,j,b}) into
+        // the benchmark pool before the rank draw runs. Skipped if minting is
+        // unset (test harness / pre-promotion) so the reward still distributes.
+        if (address(minting) != address(0)) {
+            minting.mintFor(c.principleId, c.benchmarkHash);
+        }
 
         IPWMReward.Draw memory d = IPWMReward.Draw({
             benchmarkHash: c.benchmarkHash,
