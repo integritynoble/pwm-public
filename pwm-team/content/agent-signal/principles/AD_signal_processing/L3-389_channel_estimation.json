@@ -1,0 +1,70 @@
+{
+  "artifact_id": "L3-389",
+  "layer": "L3",
+  "parent_l2": "L2-389",
+  "parent_l1": "L1-389",
+  "title": "Channel Estimation Benchmark Suite (5G NR + mmWave + COST-2100)",
+  "benchmark_type": "combined_P_and_I",
+
+  "dataset_registry": {
+    "primary": "3GPP TDL-A/B/C SISO/MIMO channel models at 28/60 GHz",
+    "secondary": "DeepMIMO ray-traced dataset; COST-2100 multipath model",
+    "tertiary": "Measured MIMO channel sounder traces (Linkoping, NYUSIM)",
+    "construction_method": "Generate pilot-aided OFDM received symbols; inject CFO, phase noise, Doppler; scale to SNR",
+    "num_dev_instances_per_tier": 20, "holdout_instances_per_tier": 10
+  },
+
+  "ibenchmarks": [
+    {
+      "tier": "T1_static_los", "rho": 1,
+      "omega_tier": {"Nt": 1, "Nr": 1, "L_ch": 16, "k": 4, "alpha_p": 0.1, "SNR_dB": 15, "f_d_Hz": 0, "cfo_hz": 0},
+      "epsilon": 5e-3, "d_ibench": 0.14,
+      "baselines": [
+        {"name": "LS",         "nmse": 1e-2, "Q": 0.70},
+        {"name": "MMSE",       "nmse": 3e-3, "Q": 0.90},
+        {"name": "ChannelNet", "nmse": 2e-3, "Q": 0.94}
+      ]
+    },
+    {
+      "tier": "T2_mobile", "rho": 3,
+      "omega_tier": {"Nt": 2, "Nr": 2, "L_ch": 32, "k": 8, "alpha_p": 0.1, "SNR_dB": 10, "f_d_Hz": 100, "cfo_hz": 50},
+      "epsilon": 2e-2, "d_ibench": 0.28,
+      "baselines": [
+        {"name": "MMSE",       "nmse": 2e-2, "Q": 0.62},
+        {"name": "ChannelNet", "nmse": 1.2e-2,"Q": 0.78}
+      ]
+    },
+    {
+      "tier": "T3_mmwave", "rho": 5,
+      "omega_tier": {"Nt": 16, "Nr": 32, "L_ch": 128, "k": 6, "alpha_p": 0.05, "SNR_dB": 5, "f_d_Hz": 300},
+      "epsilon": 5e-2, "d_ibench": 0.50,
+      "baselines": [
+        {"name": "OMP-sparse", "nmse": 3e-2, "Q": 0.58},
+        {"name": "ChannelNet", "nmse": 2.5e-2,"Q": 0.64}
+      ]
+    },
+    {
+      "tier": "T4_highmobility", "rho": 10,
+      "omega_tier": {"Nt": 64, "Nr": 128, "L_ch": 256, "k": 64, "alpha_p": 0.02, "SNR_dB": -5, "f_d_Hz": 1000, "cfo_hz": 500, "phase_noise_rms": 0.1},
+      "epsilon": 2e-1, "d_ibench": 0.74,
+      "baselines": [
+        {"name": "OMP-sparse", "nmse": 2e-1, "Q": 0.30},
+        {"name": "ChannelNet", "nmse": 1.5e-1,"Q": 0.42}
+      ]
+    }
+  ],
+
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {"name": "3GPP-TDL + DeepMIMO + COST-2100 + NYUSIM union", "num_dev_instances": 300, "num_holdout_instances": 100},
+    "baselines": [
+      {"name": "LS",          "overall_Q": 0.48},
+      {"name": "MMSE",        "overall_Q": 0.62},
+      {"name": "OMP-sparse",  "overall_Q": 0.66},
+      {"name": "ChannelNet",  "overall_Q": 0.72}
+    ]
+  },
+
+  "hardness_rule_check": "SATISFIED — ChannelNet fails at T4_highmobility (f_d=1000, CFO=500, phase_noise=0.1): NMSE 0.15 > epsilon_fn ~ 0.10.",
+  "ipfs_cid": null, "ground_truth_cid": null
+}

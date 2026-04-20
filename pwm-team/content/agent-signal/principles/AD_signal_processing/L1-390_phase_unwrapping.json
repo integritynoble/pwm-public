@@ -1,0 +1,91 @@
+{
+  "artifact_id": "L1-390",
+  "layer": "L1",
+  "principle_number": "390",
+  "title": "Phase Unwrapping (2D modulo-2pi inversion)",
+  "domain": "Signal Processing",
+  "sub_domain": "Wrapped-to-absolute phase reconstruction",
+  "source_file": "AD_signal_processing/390_phase_unwrapping.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence boilerplate. Physics grounded in Ghiglia-Romero 1996 least-squares phase unwrap; Goldstein 1988 branch-cut; Pritt-Shipman 1994; Bioucas-Dias 2007 PUMA graph-cut; SnapHu (Chen-Zebker) InSAR; Spoorthi-Gorthi-Gorthi 2019 PhaseNet.",
+
+  "E": {
+    "description": "A true phase field phi(r) in R is wrapped into [-pi, pi] by modulo-2pi projection at acquisition (e.g., InSAR, MRI phase, holography). The task is to recover phi (2-pi ambiguity per pixel) from psi = wrap(phi) under noise and phase-discontinuity ambiguity.",
+    "forward_model": "psi(r) = wrap(phi(r) + n(r)) = phi(r) + 2*pi*k(r);  k(r) in Z",
+    "world_state_x": "Absolute phase phi in R^{H x W}, piecewise-continuous (up to true fringe jumps)",
+    "observation_y": "Wrapped phase psi in [-pi, pi]^{H x W}",
+    "physical_parameters_theta": [
+      "Phase noise sigma_phi (fringe quality, rad)",
+      "Fringe density (local gradient steepness)",
+      "Discontinuity fraction (true jumps > pi per pixel)",
+      "Coherence map gamma(r) (InSAR)",
+      "Sampling/undersampling below Nyquist of local fringe"
+    ]
+  },
+
+  "G": {
+    "dag": "L.modulo.2pi -> int.spatial",
+    "vertices": ["L.modulo.2pi", "int.spatial"],
+    "arcs": ["L.modulo.2pi -> int.spatial"],
+    "L_DAG": 2.0,
+    "n_c": 0
+  },
+
+  "W": {
+    "existence": true,
+    "uniqueness": "modulo constant 2pi; unique under Itoh's condition |grad phi| < pi per pixel",
+    "stability": "conditional",
+    "condition_number_kappa": 1000,
+    "condition_number_effective": 30,
+    "condition_number_mismatched": 500,
+    "regime": "Well-posed when Itoh condition holds everywhere; ill-posed around phase residues (where gradient circulation is non-zero). LS unwrap smooths but biases; branch-cut correct when cuts routed through low-coherence regions."
+  },
+
+  "C": {
+    "solver_class": "LS (direct cosine transform), branch-cut (Goldstein), min-cost-flow (PUMA), quality-guided (Itoh path), deep (PhaseNet, DeepLab-unwrap)",
+    "convergence_rate_q": 2.0,
+    "error_bound": "LS RMS error ~ sigma_phi / sqrt(coherence); branch-cut: exact when cut routing correct, else 2-pi discontinuities",
+    "complexity": "LS: O(H*W*log(H*W)) via DCT; MCF: O((H*W)^{3/2}); deep: O(H*W*C*F) single forward"
+  },
+
+  "physics_fingerprint": {
+    "carrier": "electromagnetic",
+    "sensing_mechanism": "phase_wrapping",
+    "integration_axis": "spatial",
+    "problem_class": "integer_ambiguity_inverse",
+    "noise_model": "wrapped_gaussian",
+    "solution_space": "2D_scalar_phase",
+    "primitives": ["L.modulo.2pi", "int.spatial"]
+  },
+
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+
+  "mismatch_parameters": ["phase_noise_sigma", "discontinuity_fraction", "local_fringe_gradient", "coherence_floor", "undersampling_ratio"],
+  "error_metric": "RMSE_rad",
+  "error_metric_secondary": "cycle_slip_count",
+  "error_metric_tertiary": "abs_error_percentile_95",
+
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "2d_phase_unwrap",
+      "forward_operator": "modulo_2pi",
+      "input_format": "wrapped_only",
+      "omega": {"H": 512, "W": 512, "sigma_phi": 0.3, "discontinuity_fraction": 0.0, "coherence_floor": 0.8, "undersampling_ratio": 1.0},
+      "epsilon_fn_center": "0.1 rad RMSE"
+    },
+    "allowed_forward_operators": ["modulo_2pi", "modulo_2pi_with_coherence"],
+    "allowed_problem_classes": ["2d_phase_unwrap", "3d_phase_unwrap", "temporal_unwrap_insar"],
+    "allowed_omega_dimensions": ["H", "W", "sigma_phi", "discontinuity_fraction", "coherence_floor", "local_fringe_gradient", "undersampling_ratio"],
+    "omega_bounds": {
+      "H": [128, 4096], "W": [128, 4096],
+      "sigma_phi": [0.05, 2.0], "discontinuity_fraction": [0.0, 0.3],
+      "coherence_floor": [0.1, 1.0], "local_fringe_gradient": [0.1, 3.0],
+      "undersampling_ratio": [0.5, 1.0]
+    },
+    "epsilon_bounds": {"rmse_rad": [0.01, 2.0]}
+  },
+
+  "p1_p10_tests": ["PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS"],
+  "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
+  "ipfs_cid": null
+}

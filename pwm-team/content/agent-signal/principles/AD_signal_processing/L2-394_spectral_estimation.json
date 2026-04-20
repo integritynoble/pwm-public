@@ -1,0 +1,140 @@
+{
+  "artifact_id": "L2-394",
+  "layer": "L2",
+  "parent_l1": "L1-394",
+  "principle_ref": "sha256:<L1-394_principle_hash>",
+  "title": "Spectral Estimation Uniform-Sampling Spec (subspace methods)",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "N": [
+        32,
+        16384
+      ],
+      "K": [
+        1,
+        64
+      ],
+      "SNR_dB": [
+        -10,
+        40
+      ],
+      "delta_omega": [
+        0.001,
+        0.5
+      ],
+      "windowing_error": [
+        0.0,
+        0.5
+      ],
+      "K_overestimation": [
+        0,
+        30
+      ],
+      "sampling_irregularity": [
+        0.0,
+        0.5
+      ]
+    },
+    "E": {
+      "forward": "y[n] = sum_k c_k*exp(j*omega_k*n + j*phi_k) + w[n]",
+      "operator": "uniform_sampling_complex_exp",
+      "primitive_chain": "L.synthesis.harmonic -> int.temporal",
+      "inverse": "estimate (omega_k, c_k, phi_k) for k=1..K from y in C^N"
+    },
+    "B": {
+      "bounded_amplitudes": "|c_k| <= 1",
+      "frequency_range": "omega_k in [-pi, pi]"
+    },
+    "I": {
+      "strategy": "fft_peak_init"
+    },
+    "O": [
+      "frequency_RMSE_cyc",
+      "amplitude_RMSE",
+      "resolution_at_2sigma",
+      "spurious_detections"
+    ],
+    "epsilon_fn": "5e-4 + 1.0 / (N * 10**(SNR_dB/20)) + 0.02 * max(0, 4*3.14159/N - delta_omega)"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "samples": "complex64(N)"
+    },
+    "output_format": {
+      "freqs": "float32(K_est)",
+      "amps": "complex64(K_est)"
+    },
+    "baselines": [
+      {
+        "name": "Periodogram",
+        "method_sig": "L+O",
+        "expected_rmse": 0.004
+      },
+      {
+        "name": "MUSIC",
+        "method_sig": "L+O",
+        "expected_rmse": 0.0008
+      },
+      {
+        "name": "ESPRIT",
+        "method_sig": "L+O",
+        "expected_rmse": 0.0007
+      },
+      {
+        "name": "Atomic-Norm",
+        "method_sig": "L+O",
+        "expected_rmse": 0.0005
+      },
+      {
+        "name": "Prony",
+        "method_sig": "L+O",
+        "expected_rmse": 0.001
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N": 256,
+        "K": 3,
+        "SNR_dB": 20,
+        "delta_omega": 0.05,
+        "K_overestimation": 0,
+        "windowing_error": 0.0
+      },
+      "epsilon": 0.001
+    },
+    "tier_bounds": {
+      "N": [
+        64,
+        4096
+      ],
+      "K": [
+        1,
+        16
+      ],
+      "SNR_dB": [
+        0,
+        35
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.3,
+  "d_spec_notes": "Distance from 387 DoA ~= 0.40 (Related \u2014 both parametric spectral estimation, different carrier). Distance from AR/MA ARMA spec ~= 0.25 (Similar).",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Complex-exp basis dim = N samples; signal space <= K dimensional.",
+    "S2": "Under Rayleigh separation (delta_omega > 4pi/N) parameters are uniquely identifiable.",
+    "S3": "ESPRIT closed-form; MUSIC zero-finding on null-space polynomial; atomic-norm SDP convex.",
+    "S4": "epsilon_fn defined; MUSIC fails at delta_omega < 2pi/N (sub-Rayleigh)."
+  },
+  "ipfs_cid": null
+}

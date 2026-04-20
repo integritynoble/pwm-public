@@ -1,0 +1,63 @@
+{
+  "artifact_id": "L2-134",
+  "layer": "L2",
+  "parent_l1": "L1-134",
+  "principle_ref": "sha256:<L1-134_principle_hash>",
+  "title": "XRF Tomography Spec",
+  "spec_type": "mismatch_only",
+
+  "six_tuple": {
+    "omega": {
+      "H": [64, 2048], "W": [64, 2048], "N_view": [10, 1000],
+      "pixel_um": [0.1, 100], "E_exc_keV": [5, 50],
+      "K": [1, 30],
+      "self_absorption": [0.0, 0.8], "scatter_background": [0.0, 0.3],
+      "pileup_correction": [0.0, 0.2], "beam_position_jitter": [0.0, 2],
+      "detector_live_time": [0.1, 1.0]
+    },
+    "E": {
+      "forward": "I_fluor = c_k * exp(-self_abs) * I_exc + scatter + n_Poisson",
+      "operator": "xrf_ct_forward",
+      "primitive_chain": "L.absorb.innerShell -> S.emit.fluor -> L.project.pencilbeam -> int.spatial",
+      "inverse": "reconstruct c_k(r) in 3D via iterative SART with self-absorption correction"
+    },
+    "B": {"nonnegativity_c": true, "bounded_support": true},
+    "I": {"strategy": "fbp_init"},
+    "O": ["concentration_NMSE", "spatial_resolution_um", "trace_element_LOD_ppm", "residual_norm"],
+    "epsilon_fn": "1e-2 + 0.05 * self_absorption + 0.05 * scatter_background + 0.05 * pileup_correction + 0.01 * beam_position_jitter"
+  },
+
+  "protocol_fields": {
+    "input_format": {"sinogram": "float32(N_view, H, K)"},
+    "output_format": {"c_3d": "float32(H, W, Z, K)"},
+    "baselines": [
+      {"name": "FBP",      "method_sig": "L+O", "expected_nmse": 0.04},
+      {"name": "SART-SAC", "method_sig": "L+O", "expected_nmse": 0.02},
+      {"name": "ML-EM",    "method_sig": "L+O", "expected_nmse": 0.018},
+      {"name": "XRF-Net",  "method_sig": "L+N", "expected_nmse": 0.012}
+    ]
+  },
+
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {"H": 500, "W": 500, "N_view": 360, "pixel_um": 1, "E_exc_keV": 20, "K": 10, "self_absorption": 0.1},
+      "epsilon": 0.02
+    },
+    "tier_bounds": {"N_view": [60, 720], "K": [1, 20]},
+    "proximity_threshold": 0.10
+  },
+
+  "d_spec": 0.35,
+  "d_spec_notes": "Distance from 147 XAS ~= 0.40 (Related — both inner-shell, different observable). Distance from 130 neutron CT ~= 0.40.",
+
+  "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
+  "s1_s4_justifications": {
+    "S1": "Projection and reconstruction dims consistent.",
+    "S2": "Forward linear at low self-abs; iterative solves self-abs loop.",
+    "S3": "SART converges empirically; ML-EM monotone likelihood.",
+    "S4": "epsilon_fn defined; XRF-Net fails at self_absorption=0.8 + pileup=0.2 (hardness)."
+  },
+
+  "ipfs_cid": null
+}

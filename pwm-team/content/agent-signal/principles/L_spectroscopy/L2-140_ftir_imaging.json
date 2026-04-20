@@ -1,0 +1,62 @@
+{
+  "artifact_id": "L2-140",
+  "layer": "L2",
+  "parent_l1": "L1-140",
+  "principle_ref": "sha256:<L1-140_principle_hash>",
+  "title": "FTIR Imaging Scatter-Corrected Spec",
+  "spec_type": "mismatch_only",
+
+  "six_tuple": {
+    "omega": {
+      "H": [32, 1024], "W": [32, 1024], "N_nu": [128, 4096],
+      "delta_nu_cm1": [2, 32], "K": [1, 20],
+      "mie_scattering": [0.0, 0.5], "baseline_drift": [0.0, 0.3],
+      "water_vapor_spikes": [0.0, 0.2], "pure_component_uncertainty": [0.0, 0.3]
+    },
+    "E": {
+      "forward": "A(r, nu) = E * c(r) + scatter(r, nu) + baseline + n",
+      "operator": "beerlambert_spectrum",
+      "primitive_chain": "L.modulate.interferometer -> L.absorb.beerlambert -> int.spectral",
+      "inverse": "recover c(r) and optional scatter model from absorbance cube"
+    },
+    "B": {"nonnegativity_c": true, "beerlambert_linearity": "c*l << 1"},
+    "I": {"strategy": "cls_init"},
+    "O": ["concentration_NMSE", "classification_accuracy", "SNR_dB", "baseline_residual"],
+    "epsilon_fn": "3e-3 + 0.05 * mie_scattering + 0.02 * baseline_drift + 0.05 * water_vapor_spikes + 0.1 * pure_component_uncertainty"
+  },
+
+  "protocol_fields": {
+    "input_format": {"cube": "float32(H, W, N_nu)", "library": "float32(K, N_nu)"},
+    "output_format": {"concentrations": "float32(H, W, K)"},
+    "baselines": [
+      {"name": "CLS",       "method_sig": "L+O", "expected_nmse": 5e-3},
+      {"name": "ME-EMSC",   "method_sig": "L+O", "expected_nmse": 2e-3},
+      {"name": "RMieS",     "method_sig": "L+O", "expected_nmse": 1.5e-3},
+      {"name": "MCR-ALS",   "method_sig": "L+O", "expected_nmse": 2e-3},
+      {"name": "IR-UNet",   "method_sig": "L+N", "expected_nmse": 1e-3}
+    ]
+  },
+
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {"H": 128, "W": 128, "N_nu": 1000, "K": 5, "mie_scattering": 0.0, "baseline_drift": 0.05},
+      "epsilon": 5e-3
+    },
+    "tier_bounds": {"H": [32, 512], "N_nu": [256, 2048], "K": [1, 10]},
+    "proximity_threshold": 0.10
+  },
+
+  "d_spec": 0.40,
+  "d_spec_notes": "Distance from 137 Raman ~= 0.35 (Related — vibrational spectroscopy, different mechanism). Distance from 145 UV-Vis ~= 0.30 (Related — electronic absorption).",
+
+  "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
+  "s1_s4_justifications": {
+    "S1": "Library E in R^{N_nu x K}, concentration in R^{HxWxK}, cube dims consistent.",
+    "S2": "Beer-Lambert linear; unique CLS when library full-column-rank.",
+    "S3": "CLS closed-form; MCR-ALS descent; RMieS Newton.",
+    "S4": "epsilon_fn defined; IR-UNet fails at mie=0.5 + pure_unc=0.3 (hardness)."
+  },
+
+  "ipfs_cid": null
+}

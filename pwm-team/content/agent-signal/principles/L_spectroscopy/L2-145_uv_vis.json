@@ -1,0 +1,62 @@
+{
+  "artifact_id": "L2-145",
+  "layer": "L2",
+  "parent_l1": "L1-145",
+  "principle_ref": "sha256:<L1-145_principle_hash>",
+  "title": "UV-Vis Concentration Spec",
+  "spec_type": "mismatch_only",
+
+  "six_tuple": {
+    "omega": {
+      "N_lambda": [50, 5000], "K": [1, 20],
+      "path_length_cm": [0.01, 10], "stray_light": [0.0, 0.01],
+      "scatter_turbidity": [0.0, 1.0],
+      "pure_component_uncertainty": [0.0, 0.2], "baseline_drift": [0.0, 0.1]
+    },
+    "E": {
+      "forward": "A(lambda) = E * c * l + scatter + baseline + n",
+      "operator": "beerlambert_uvvis",
+      "primitive_chain": "L.absorb.beerlambert -> int.spectral",
+      "inverse": "recover c in R^K from A(lambda)"
+    },
+    "B": {"nonnegativity_c": true, "linearity_at_low_A": "A <= 2 AU"},
+    "I": {"strategy": "cls_init"},
+    "O": ["concentration_NMSE", "classification_accuracy", "SNR_dB", "residual_norm"],
+    "epsilon_fn": "5e-5 + 0.01 * stray_light / 1e-3 + 1e-3 * scatter_turbidity + 5e-4 * pure_component_uncertainty"
+  },
+
+  "protocol_fields": {
+    "input_format": {"spectrum": "float32(N_lambda)"},
+    "output_format": {"concentrations": "float32(K)"},
+    "baselines": [
+      {"name": "CLS",     "method_sig": "L+O", "expected_nmse": 1e-4},
+      {"name": "NNLS",    "method_sig": "L+O", "expected_nmse": 8e-5},
+      {"name": "PLS",     "method_sig": "L+O", "expected_nmse": 5e-5},
+      {"name": "MCR-ALS", "method_sig": "L+O", "expected_nmse": 5e-5},
+      {"name": "UV-Net",  "method_sig": "L+N", "expected_nmse": 3e-5}
+    ]
+  },
+
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {"N_lambda": 500, "K": 3, "path_length_cm": 1.0, "stray_light": 1e-4, "scatter_turbidity": 0.0},
+      "epsilon": 1e-4
+    },
+    "tier_bounds": {"N_lambda": [100, 2000], "K": [1, 10]},
+    "proximity_threshold": 0.10
+  },
+
+  "d_spec": 0.35,
+  "d_spec_notes": "Distance from 140 FTIR ~= 0.30 (Related — different spectral range, same Beer-Lambert model). Distance from Raman ~= 0.50.",
+
+  "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
+  "s1_s4_justifications": {
+    "S1": "epsilon library N_lambda x K, spectrum N_lambda, concentration K — consistent.",
+    "S2": "Beer-Lambert linear; CLS unique with full-column-rank epsilon.",
+    "S3": "CLS closed-form; PLS/MCR-ALS descent.",
+    "S4": "epsilon_fn defined; UV-Net fails at stray_light=0.01 + scatter=1 (hardness)."
+  },
+
+  "ipfs_cid": null
+}

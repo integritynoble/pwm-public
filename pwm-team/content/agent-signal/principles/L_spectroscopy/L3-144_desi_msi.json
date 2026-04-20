@@ -1,0 +1,158 @@
+{
+  "artifact_id": "L3-144",
+  "layer": "L3",
+  "parent_l2": "L2-144",
+  "parent_l1": "L1-144",
+  "title": "DESI-MSI Benchmark Suite (tissue + pharma + plant)",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "Cooks tissue DESI-MSI dataset (cancer/healthy)",
+    "secondary": "Bruker/Waters DESI pharma metabolite imaging",
+    "tertiary": "Plant metabolomics DESI datasets (roots, leaves)",
+    "construction_method": "Raster DESI across sample at varied pixel sizes; inject suppression and spray drift",
+    "num_dev_instances_per_tier": 20,
+    "holdout_instances_per_tier": 10
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_std",
+      "rho": 1,
+      "omega_tier": {
+        "H": 200,
+        "W": 200,
+        "N_mz": 20000,
+        "pixel_um": 100,
+        "R_mass": 30000,
+        "K": 10,
+        "ion_suppression": 0.0
+      },
+      "epsilon": 0.02,
+      "d_ibench": 0.14,
+      "baselines": [
+        {
+          "name": "NMF",
+          "nmse": 0.03,
+          "Q": 0.75
+        },
+        {
+          "name": "MCR-ALS",
+          "nmse": 0.022,
+          "Q": 0.85
+        },
+        {
+          "name": "CNN-MSI",
+          "nmse": 0.015,
+          "Q": 0.94
+        }
+      ]
+    },
+    {
+      "tier": "T2_mild_suppress",
+      "rho": 3,
+      "omega_tier": {
+        "H": 200,
+        "W": 200,
+        "N_mz": 20000,
+        "pixel_um": 100,
+        "K": 15,
+        "ion_suppression": 0.2,
+        "spray_drift": 0.05
+      },
+      "epsilon": 0.05,
+      "d_ibench": 0.28,
+      "baselines": [
+        {
+          "name": "MCR-ALS",
+          "nmse": 0.07,
+          "Q": 0.48
+        },
+        {
+          "name": "CNN-MSI",
+          "nmse": 0.04,
+          "Q": 0.78
+        }
+      ]
+    },
+    {
+      "tier": "T3_tissue_high_res",
+      "rho": 5,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "N_mz": 50000,
+        "pixel_um": 50,
+        "K": 30,
+        "ion_suppression": 0.4,
+        "spray_drift": 0.15
+      },
+      "epsilon": 0.12,
+      "d_ibench": 0.52,
+      "baselines": [
+        {
+          "name": "MCR-ALS",
+          "nmse": 0.18,
+          "Q": 0.3
+        },
+        {
+          "name": "CNN-MSI",
+          "nmse": 0.15,
+          "Q": 0.45
+        }
+      ]
+    },
+    {
+      "tier": "T4_severe",
+      "rho": 10,
+      "omega_tier": {
+        "H": 1024,
+        "W": 1024,
+        "N_mz": 100000,
+        "pixel_um": 20,
+        "K": 50,
+        "ion_suppression": 0.8,
+        "spray_drift": 0.3,
+        "scan_speed_variability": 0.2,
+        "mass_calibration_error": 50
+      },
+      "epsilon": 0.3,
+      "d_ibench": 0.75,
+      "baselines": [
+        {
+          "name": "MCR-ALS",
+          "nmse": 0.4,
+          "Q": 0.13
+        },
+        {
+          "name": "CNN-MSI",
+          "nmse": 0.35,
+          "Q": 0.28
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "Cooks-tissue + Waters-pharma + plant-metab union",
+      "num_dev_instances": 200,
+      "num_holdout_instances": 100
+    },
+    "baselines": [
+      {
+        "name": "NMF",
+        "overall_Q": 0.54
+      },
+      {
+        "name": "MCR-ALS",
+        "overall_Q": 0.62
+      },
+      {
+        "name": "CNN-MSI",
+        "overall_Q": 0.72
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 CNN-MSI fails at T4_severe (ion_suppression=0.8): 0.35 > epsilon_fn ~ 0.25.",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

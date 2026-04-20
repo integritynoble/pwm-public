@@ -1,0 +1,60 @@
+{
+  "artifact_id": "L2-385",
+  "layer": "L2",
+  "parent_l1": "L1-385",
+  "principle_ref": "sha256:<L1-385_principle_hash>",
+  "title": "Image Denoising Blind-Noise Spec (SIDD / DND benchmark family)",
+  "spec_type": "mismatch_only",
+
+  "six_tuple": {
+    "omega": {
+      "H": [64, 2048], "W": [64, 2048], "sigma_n": [1, 75],
+      "gain_uncertainty": [0.0, 0.3], "spatial_correlation": [0.0, 0.5]
+    },
+    "E": {
+      "forward": "y = x + n where n ~ N(0, sigma_n^2) OR Poisson(x) scaled to uint8",
+      "operator": "blind_noise",
+      "primitive_chain": "int.spatial",
+      "inverse": "recover x in R^{H x W x 3} under unknown noise parameters"
+    },
+    "B": {"nonnegativity": true, "intensity_range_[0,1]": true, "bounded_gradient": true},
+    "I": {"strategy": "identity_init"},
+    "O": ["PSNR_dB", "SSIM", "LPIPS", "residual_histogram"],
+    "epsilon_fn": "38.0 - 0.2 * sigma_n - 5.0 * gain_uncertainty - 3.0 * spatial_correlation"
+  },
+
+  "protocol_fields": {
+    "input_format": {"noisy": "float32(H, W, 3)"},
+    "output_format": {"clean": "float32(H, W, 3)"},
+    "baselines": [
+      {"name": "BM3D",      "method_sig": "L+O", "expected_psnr": 30.5},
+      {"name": "NLM",       "method_sig": "L+O", "expected_psnr": 29.0},
+      {"name": "DnCNN",     "method_sig": "L+N", "expected_psnr": 32.8},
+      {"name": "Restormer", "method_sig": "L+N", "expected_psnr": 34.5},
+      {"name": "Noise2Void","method_sig": "L+N", "expected_psnr": 31.0}
+    ]
+  },
+
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {"H": 256, "W": 256, "sigma_n": 25, "gain_uncertainty": 0.0, "spatial_correlation": 0.0},
+      "epsilon": 30.0
+    },
+    "tier_bounds": {"H": [64, 1024], "sigma_n": [5, 75], "spatial_correlation": [0.0, 0.5]},
+    "proximity_threshold": 0.10
+  },
+
+  "d_spec": 0.48,
+  "d_spec_notes": "Distance from 382 deblurring ~= 0.30 (Similar — shared 2D_image solution space). Oracle-noise spec would be d_spec ~= 0.18 from this blind spec.",
+
+  "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
+  "s1_s4_justifications": {
+    "S1": "Identity operator, pixel-aligned.",
+    "S2": "Trivially well-posed forward; MAP under Gaussian or Poisson likelihood with prior is unique.",
+    "S3": "BM3D ergodic PSNR peak after 2 passes; DnCNN/Restormer feed-forward.",
+    "S4": "epsilon_fn evaluates over 10 samples; Restormer fails at T4 sigma_n=75 + spatial_correlation=0.5 (hardness holds)."
+  },
+
+  "ipfs_cid": null
+}

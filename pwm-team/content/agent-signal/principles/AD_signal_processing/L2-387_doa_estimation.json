@@ -1,0 +1,151 @@
+{
+  "artifact_id": "L2-387",
+  "layer": "L2",
+  "parent_l1": "L1-387",
+  "principle_ref": "sha256:<L1-387_principle_hash>",
+  "title": "DoA Estimation Calibration-Mismatch Spec (ULA family)",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "L": [
+        4,
+        128
+      ],
+      "K": [
+        1,
+        32
+      ],
+      "T": [
+        1,
+        10000
+      ],
+      "SNR_dB": [
+        -10,
+        40
+      ],
+      "d_over_lambda": [
+        0.25,
+        2.0
+      ],
+      "calib_gain_err": [
+        0.0,
+        0.2
+      ],
+      "calib_phase_err_deg": [
+        0.0,
+        15
+      ],
+      "position_err_lambda": [
+        0.0,
+        0.05
+      ],
+      "correlation": [
+        0.0,
+        1.0
+      ]
+    },
+    "E": {
+      "forward": "y[t] = A_miscal(theta) * s[t] + n[t]; A_miscal = (I + G_err) .* A_true .* exp(j*phase_err)",
+      "operator": "ula_narrowband_miscal",
+      "primitive_chain": "L.project.arraymanifold -> int.temporal",
+      "inverse": "estimate {theta_1,...,theta_K} from Y in C^{L x T}"
+    },
+    "B": {
+      "angle_range": "theta in (-pi/2, pi/2)",
+      "identifiability": "K <= L - 1"
+    },
+    "I": {
+      "strategy": "subspace_decomposition"
+    },
+    "O": [
+      "RMSE_deg",
+      "detection_probability",
+      "resolution_at_2sigma",
+      "signal_subspace_angle"
+    ],
+    "epsilon_fn": "0.1 + 0.5 / sqrt(T * 10**(SNR_dB/10) * L) + 5.0 * calib_phase_err_deg / 15"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "snapshots": "complex64(L, T)"
+    },
+    "output_format": {
+      "angles_deg": "float32(K_est)"
+    },
+    "baselines": [
+      {
+        "name": "Conventional-BF",
+        "method_sig": "L+O",
+        "expected_rmse": 2.0
+      },
+      {
+        "name": "MVDR",
+        "method_sig": "L+O",
+        "expected_rmse": 1.0
+      },
+      {
+        "name": "MUSIC",
+        "method_sig": "L+O",
+        "expected_rmse": 0.3
+      },
+      {
+        "name": "ESPRIT",
+        "method_sig": "L+O",
+        "expected_rmse": 0.25
+      },
+      {
+        "name": "L1-SVD",
+        "method_sig": "L+R",
+        "expected_rmse": 0.4
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "L": 8,
+        "K": 2,
+        "T": 100,
+        "SNR_dB": 10,
+        "d_over_lambda": 0.5,
+        "calib_phase_err_deg": 0.0
+      },
+      "epsilon": 0.5
+    },
+    "tier_bounds": {
+      "L": [
+        4,
+        64
+      ],
+      "K": [
+        1,
+        16
+      ],
+      "T": [
+        10,
+        1000
+      ],
+      "SNR_dB": [
+        -10,
+        30
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.55,
+  "d_spec_notes": "Distance from wideband DoA spec ~= 0.30 (Related, adds frequency index). Distance from 394 spectral estimation ~= 0.40 (Related \u2014 both are parametric spectral estimation, different physical carriers).",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Array manifold dimension: L elements x K sources consistent; steering-vector phase factors dimensionally correct (radians).",
+    "S2": "Covariance matrix Ryy = A*Rss*A^H + sigma^2*I has clear signal/noise subspace split for K<L; MUSIC null-spectrum identifiable.",
+    "S3": "Root-MUSIC closed-form; ESPRIT closed-form via TLS; sparse methods FISTA O(1/k^2).",
+    "S4": "epsilon_fn defined everywhere; MUSIC fails at T=1 or correlation=1 corners (hardness holds)."
+  },
+  "ipfs_cid": null
+}

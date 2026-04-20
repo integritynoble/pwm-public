@@ -1,0 +1,62 @@
+{
+  "artifact_id": "L2-131",
+  "layer": "L2",
+  "parent_l1": "L1-131",
+  "principle_ref": "sha256:<L1-131_principle_hash>",
+  "title": "pCT Reconstruction Spec",
+  "spec_type": "mismatch_only",
+
+  "six_tuple": {
+    "omega": {
+      "E_beam_MeV": [70, 330], "N_proton_per_view": [1e5, 1e10],
+      "N_view": [10, 720], "pixel_mm": [0.2, 5],
+      "mls_path_model_error": [0.0, 0.3], "nuclear_interaction_fraction": [0.0, 0.2],
+      "calorimeter_calibration": [0.0, 0.05], "dose_limited_snr": [0.5, 100],
+      "motion_blur": [0.0, 5]
+    },
+    "E": {
+      "forward": "E_out = E_in - integral_MLP(dE/dx * RSP) dl + MCS_displacement",
+      "operator": "pct_forward",
+      "primitive_chain": "L.scatter.MCS -> L.eloss.BetheBloch -> L.project.MLP -> int.spatial",
+      "inverse": "recover RSP map via MLP-aware FBP or iterative"
+    },
+    "B": {"RSP_physical_range": "[0.1, 2.5]", "nonnegativity": true},
+    "I": {"strategy": "fbp_mlp_init"},
+    "O": ["RSP_NMSE", "spatial_resolution_mm", "dose_per_scan_mSv", "residual_norm"],
+    "epsilon_fn": "5e-4 + 0.005 * mls_path_model_error + 0.01 * nuclear_interaction_fraction + 0.01 * calorimeter_calibration + 0.02 / dose_limited_snr"
+  },
+
+  "protocol_fields": {
+    "input_format": {"events": "float32(N_proton, 7)"},
+    "output_format": {"rsp_volume": "float32(H, W, Z)"},
+    "baselines": [
+      {"name": "FBP-MLP",   "method_sig": "L+O", "expected_nmse": 2e-3},
+      {"name": "SART-TV",   "method_sig": "L+O", "expected_nmse": 1.5e-3},
+      {"name": "pCT-ADMM",  "method_sig": "L+O", "expected_nmse": 1.2e-3},
+      {"name": "pCT-Net",   "method_sig": "L+N", "expected_nmse": 1e-3}
+    ]
+  },
+
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {"E_beam_MeV": 200, "N_proton_per_view": 1e8, "N_view": 360, "pixel_mm": 1.0, "mls_path_model_error": 0.0},
+      "epsilon": 1e-3
+    },
+    "tier_bounds": {"N_view": [60, 720], "E_beam_MeV": [100, 300]},
+    "proximity_threshold": 0.10
+  },
+
+  "d_spec": 0.55,
+  "d_spec_notes": "Distance from 130 neutron radiography ~= 0.35 (Related — different carrier, similar geometry). Distance from 132 muon tomo ~= 0.35.",
+
+  "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
+  "s1_s4_justifications": {
+    "S1": "Event 7D; 3D voxel reconstruction consistent.",
+    "S2": "Full-angle MLP-weighted reconstruction unique in RSP.",
+    "S3": "FBP-MLP closed-form; SART monotone descent.",
+    "S4": "epsilon_fn defined; pCT-Net fails at SNR=0.5 + nuclear_frac=0.2 (hardness)."
+  },
+
+  "ipfs_cid": null
+}

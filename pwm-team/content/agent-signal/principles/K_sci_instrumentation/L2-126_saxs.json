@@ -1,0 +1,63 @@
+{
+  "artifact_id": "L2-126",
+  "layer": "L2",
+  "parent_l1": "L1-126",
+  "principle_ref": "sha256:<L1-126_principle_hash>",
+  "title": "SAXS BioSAXS Indirect-FT Spec",
+  "spec_type": "mismatch_only",
+
+  "six_tuple": {
+    "omega": {
+      "N_q": [50, 2000], "q_min": [0.001, 0.1], "q_max": [0.1, 1.0],
+      "Rg_nm": [0.5, 50], "concentration_mg_ml": [0.1, 20],
+      "aggregation_fraction": [0.0, 0.5], "polydispersity": [0.0, 0.5],
+      "buffer_mismatch": [0.0, 0.3], "beam_damage": [0.0, 0.5],
+      "q_range_truncation": [0.0, 0.5]
+    },
+    "E": {
+      "forward": "I(q) = FT[P(r)*r] + background + aggregation + n",
+      "operator": "saxs_iq_forward",
+      "primitive_chain": "L.scatter.elastic -> L.project.q -> int.angular",
+      "inverse": "recover P(r), Rg, Dmax via Guinier + indirect FT + ab-initio shape"
+    },
+    "B": {"nonnegativity_P_r": true, "finite_support_Dmax": true},
+    "I": {"strategy": "guinier_init"},
+    "O": ["Rg_RMSE_nm", "chi2_reduced", "Dmax_error_nm", "volume_error"],
+    "epsilon_fn": "0.02 + 0.3 * aggregation_fraction + 0.2 * polydispersity + 0.1 * buffer_mismatch + 0.1 * beam_damage"
+  },
+
+  "protocol_fields": {
+    "input_format": {"q": "float32(N_q)", "I": "float32(N_q)", "sigma_I": "float32(N_q)"},
+    "output_format": {"Rg_nm": "float32", "Dmax_nm": "float32", "P_r": "float32(N_r)"},
+    "baselines": [
+      {"name": "Guinier",    "method_sig": "L+O", "expected_rmse_nm": 0.1},
+      {"name": "GNOM",       "method_sig": "L+O", "expected_rmse_nm": 0.05},
+      {"name": "BIFT",       "method_sig": "L+O", "expected_rmse_nm": 0.04},
+      {"name": "DAMMIF",     "method_sig": "L+O", "expected_rmse_nm": 0.06},
+      {"name": "SAX-ML",     "method_sig": "L+N", "expected_rmse_nm": 0.03}
+    ]
+  },
+
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {"N_q": 400, "Rg_nm": 2.0, "aggregation_fraction": 0.0, "polydispersity": 0.05},
+      "epsilon": 0.05
+    },
+    "tier_bounds": {"Rg_nm": [1, 10], "N_q": [100, 1000]},
+    "proximity_threshold": 0.10
+  },
+
+  "d_spec": 0.50,
+  "d_spec_notes": "Distance from 133 WAXS ~= 0.30 (Related — same scattering, larger q). Distance from 125 XRD ~= 0.45 (Related — both elastic X-ray, different length scale).",
+
+  "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
+  "s1_s4_justifications": {
+    "S1": "q-vector 1D, intensity 1D; P(r) 1D radial.",
+    "S2": "Guinier unique at low q; GNOM regularized for P(r); DAMMIF stochastic bead models.",
+    "S3": "GNOM LS + Tikhonov; DAMMIF simulated annealing (empirical convergence).",
+    "S4": "epsilon_fn defined; SAX-ML fails at aggregation=0.5 + buffer_mismatch=0.3 (hardness)."
+  },
+
+  "ipfs_cid": null
+}

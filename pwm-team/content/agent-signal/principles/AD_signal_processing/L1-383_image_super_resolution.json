@@ -1,0 +1,90 @@
+{
+  "artifact_id": "L1-383",
+  "layer": "L1",
+  "principle_number": "383",
+  "title": "Image Super-Resolution (single-image)",
+  "domain": "Signal Processing",
+  "sub_domain": "Spatial upsampling inverse problem",
+  "source_file": "AD_signal_processing/383_image_super_resolution.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence boilerplate. Physics below is grounded in SR literature (Park et al. 2003 IEEE review; Dong et al. 2014 SRCNN; Ledig et al. 2017 SRGAN; Wang et al. 2018 ESRGAN; Zhang et al. 2018 RCAN).",
+
+  "E": {
+    "description": "A high-resolution (HR) image x is anti-alias filtered, downsampled by an integer factor s, and corrupted by noise and (optionally) compression artifacts. Recovery is the inverse of this non-invertible degradation.",
+    "forward_model": "y = D_s * (k_aa * x) + n;   D_s = s-fold spatial decimation, k_aa = anti-alias low-pass kernel",
+    "world_state_x": "HR image x in R^{sH x sW x C}",
+    "observation_y": "LR image y in R^{H x W x C}",
+    "physical_parameters_theta": [
+      "Scale factor s (x2, x3, x4, x8)",
+      "Anti-alias kernel k_aa (bicubic, Gaussian, unknown)",
+      "Sensor noise sigma_n",
+      "Optional JPEG quality Q",
+      "Pixel-grid offset (dx, dy) for sub-pixel shift"
+    ]
+  },
+
+  "G": {
+    "dag": "K.blur.shiftinvariant -> D.decimate.spatial -> int.spatial",
+    "vertices": ["K.blur.shiftinvariant", "D.decimate.spatial", "int.spatial"],
+    "arcs": ["K.blur.shiftinvariant -> D.decimate.spatial", "D.decimate.spatial -> int.spatial"],
+    "L_DAG": 2.7,
+    "n_c": 0
+  },
+
+  "W": {
+    "existence": true,
+    "uniqueness": false,
+    "stability": "conditional",
+    "condition_number_kappa": 5000,
+    "condition_number_effective": 60,
+    "condition_number_mismatched": 500,
+    "regime": "Inherently underdetermined (s^2:1 information loss); uniqueness restored only under image prior (sparse/natural-image manifold). Stability controlled by anti-alias kernel accuracy and noise level."
+  },
+
+  "C": {
+    "solver_class": "bicubic upsample (L+O), sparse-coding (Yang ScSR, L+O), learned (SRCNN, EDSR, RCAN, SwinIR, Real-ESRGAN)",
+    "convergence_rate_q": 2.0,
+    "error_bound": "||x_hat - x||_2 bounded by prior bias + C * sigma_n; PSNR gain saturates at ~ 33 dB for x4 natural images",
+    "complexity": "O(sH * sW * C * log) for FFT-based reconstruction; learned single forward pass O(sH * sW * C * F) with F filters"
+  },
+
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "decimated_imaging",
+    "integration_axis": "spatial",
+    "problem_class": "linear_inverse_upsampling",
+    "noise_model": "gaussian",
+    "solution_space": "2D_image",
+    "primitives": ["K.blur.shiftinvariant", "D.decimate.spatial", "int.spatial"]
+  },
+
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+
+  "mismatch_parameters": ["kernel_type_error", "noise_level", "jpeg_q", "sub_pixel_shift", "scale_factor_unknown"],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "error_metric_tertiary": "LPIPS",
+
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "bicubic_sr",
+      "forward_operator": "bicubic_decimate",
+      "input_format": "measurement_only",
+      "omega": {"H": 256, "W": 256, "s": 4, "noise_level": 0.0, "kernel_type": "bicubic", "jpeg_q": 100, "sub_pixel_shift": 0.0},
+      "epsilon_fn_center": "28.0 dB PSNR"
+    },
+    "allowed_forward_operators": ["bicubic_decimate", "gaussian_decimate", "blind_decimate"],
+    "allowed_problem_classes": ["bicubic_sr", "blind_sr", "real_world_sr"],
+    "allowed_omega_dimensions": ["H", "W", "s", "noise_level", "kernel_type", "jpeg_q", "sub_pixel_shift", "kernel_type_error"],
+    "omega_bounds": {
+      "H": [64, 1024], "W": [64, 1024], "s": [2, 8],
+      "noise_level": [0.0, 0.08], "jpeg_q": [20, 100],
+      "sub_pixel_shift": [0.0, 1.0], "kernel_type_error": [0.0, 0.5]
+    },
+    "epsilon_bounds": {"psnr_db": [18.0, 40.0]}
+  },
+
+  "p1_p10_tests": ["PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS"],
+  "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
+  "ipfs_cid": null
+}

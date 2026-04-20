@@ -1,0 +1,151 @@
+{
+  "artifact_id": "L3-125",
+  "layer": "L3",
+  "parent_l2": "L2-125",
+  "parent_l1": "L1-125",
+  "title": "X-ray Crystallography Benchmark Suite (PDB + synchrotron + XFEL)",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "Protein Data Bank (PDB) >200k structures with deposited intensities",
+    "secondary": "JCSG-test + Disulfide-SAD phasing benchmark set",
+    "tertiary": "SFX/XFEL still-shot datasets (LCLS, SACLA) + small-molecule twinning",
+    "construction_method": "Use deposited hkl; inject radiation-damage corruption and twinning",
+    "num_dev_instances_per_tier": 20,
+    "holdout_instances_per_tier": 10
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_high_res",
+      "rho": 1,
+      "omega_tier": {
+        "resolution_A": 1.5,
+        "N_refl": 80000,
+        "N_atoms": 1000,
+        "mosaicity_deg": 0.2,
+        "radiation_damage": 0.0
+      },
+      "epsilon": 0.2,
+      "d_ibench": 0.14,
+      "baselines": [
+        {
+          "name": "Phaser-MR",
+          "r_free": 0.2,
+          "Q": 0.82
+        },
+        {
+          "name": "Phenix-refine",
+          "r_free": 0.18,
+          "Q": 0.92
+        },
+        {
+          "name": "AlphaFoldMR",
+          "r_free": 0.17,
+          "Q": 0.95
+        }
+      ]
+    },
+    {
+      "tier": "T2_medium_res",
+      "rho": 3,
+      "omega_tier": {
+        "resolution_A": 2.0,
+        "N_refl": 50000,
+        "N_atoms": 3000,
+        "mosaicity_deg": 0.3,
+        "radiation_damage": 0.2
+      },
+      "epsilon": 0.24,
+      "d_ibench": 0.28,
+      "baselines": [
+        {
+          "name": "Phenix-refine",
+          "r_free": 0.24,
+          "Q": 0.62
+        },
+        {
+          "name": "AlphaFoldMR",
+          "r_free": 0.22,
+          "Q": 0.74
+        }
+      ]
+    },
+    {
+      "tier": "T3_low_res",
+      "rho": 5,
+      "omega_tier": {
+        "resolution_A": 3.0,
+        "N_refl": 15000,
+        "N_atoms": 10000,
+        "mosaicity_deg": 0.5,
+        "radiation_damage": 0.5,
+        "twinning_fraction": 0.2
+      },
+      "epsilon": 0.3,
+      "d_ibench": 0.5,
+      "baselines": [
+        {
+          "name": "Phaser-MR",
+          "r_free": 0.35,
+          "Q": 0.3
+        },
+        {
+          "name": "AlphaFoldMR",
+          "r_free": 0.32,
+          "Q": 0.45
+        }
+      ]
+    },
+    {
+      "tier": "T4_extreme",
+      "rho": 10,
+      "omega_tier": {
+        "resolution_A": 4.0,
+        "N_refl": 100,
+        "N_atoms": 100000,
+        "mosaicity_deg": 2.0,
+        "radiation_damage": 1.0,
+        "twinning_fraction": 0.5,
+        "absorption_anisotropy": 0.3
+      },
+      "epsilon": 0.42,
+      "d_ibench": 0.75,
+      "baselines": [
+        {
+          "name": "Phaser-MR",
+          "r_free": 0.52,
+          "Q": 0.1
+        },
+        {
+          "name": "AlphaFoldMR",
+          "r_free": 0.48,
+          "Q": 0.25
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "PDB sample + JCSG + XFEL union",
+      "num_dev_instances": 200,
+      "num_holdout_instances": 100
+    },
+    "baselines": [
+      {
+        "name": "Phaser-MR",
+        "overall_Q": 0.6
+      },
+      {
+        "name": "Phenix-refine",
+        "overall_Q": 0.7
+      },
+      {
+        "name": "AlphaFoldMR",
+        "overall_Q": 0.75
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 AlphaFoldMR fails at T4_extreme (4 \u00c5, twinning=0.5): R_free 0.48 > epsilon_fn ~ 0.42.",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

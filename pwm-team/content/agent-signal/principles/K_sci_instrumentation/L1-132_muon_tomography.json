@@ -1,0 +1,92 @@
+{
+  "artifact_id": "L1-132",
+  "layer": "L1",
+  "principle_number": "132",
+  "title": "Muon Tomography (cosmic-ray scattering imaging)",
+  "domain": "Scientific Instrumentation",
+  "sub_domain": "High-Z imaging via cosmic-ray muon MCS",
+  "source_file": "K_scientific_instrumentation/132_muon_tomography.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence boilerplate. Physics grounded in Borozdin et al. 2003 Nature demo; Morris et al. 2008 tomographic imaging of waste casks; Fujii et al. 2020 Fukushima reactor imaging; Tanaka 2022 review.",
+
+  "E": {
+    "description": "Atmospheric cosmic-ray muons (GeV energies, flux ~1/cm^2/min at sea level) traverse samples; multiple-Coulomb-scattering angle sigma_theta = (13.6/p) * sqrt(L/X_0) encodes radiation length X_0, which varies as ~1/Z^2. Tracker detectors above/below the sample record incoming/outgoing trajectories; voxelized reconstruction of X_0 via PoCA or EM.",
+    "forward_model": "theta_scatter = GuidedMuonScatter(Z_eff(r), L_path);  sigma_theta^2 = (13.6/p)^2 * L/X_0",
+    "world_state_x": "3D radiation-length map X_0(r) (or equivalent Z-effective map)",
+    "observation_y": "Tracker hits, scattering angles, path lengths per muon event",
+    "physical_parameters_theta": [
+      "Cosmic-ray flux density and energy spectrum",
+      "Tracker resolution (mm scale)",
+      "Number of muons acquired (10^5-10^8)",
+      "Detector area and gap spacing",
+      "Muon-momentum estimator (if any)",
+      "Background noise (lab muons, EM showers)"
+    ]
+  },
+
+  "G": {
+    "dag": "L.scatter.MCS -> L.project.pathlength -> int.spatial",
+    "vertices": ["L.scatter.MCS", "L.project.pathlength", "int.spatial"],
+    "arcs": ["L.scatter.MCS -> L.project.pathlength", "L.project.pathlength -> int.spatial"],
+    "L_DAG": 2.7,
+    "n_c": 0
+  },
+
+  "W": {
+    "existence": true,
+    "uniqueness": "Z_eff map approx unique given uniform cosmic-ray angular distribution",
+    "stability": "conditional",
+    "condition_number_kappa": 500,
+    "condition_number_effective": 40,
+    "condition_number_mismatched": 1500,
+    "regime": "Reconstruction is Poisson-limited at low flux; angular resolution O(10 mrad) at GeV. Hybrid stopping-power techniques (muon decay counting) add info."
+  },
+
+  "C": {
+    "solver_class": "PoCA (Point of Closest Approach), EM / MLEM over voxels, MART, learned (muon-CNN)",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Z_eff uncertainty ~ 1/sqrt(N_muon * voxel_solid_angle); resolution ~ detector_res + MCS_spread",
+    "complexity": "PoCA O(N_muon); MLEM O(iter * N_muon * N_voxel)"
+  },
+
+  "physics_fingerprint": {
+    "carrier": "muon",
+    "sensing_mechanism": "multiple_coulomb_scatter",
+    "integration_axis": "angular",
+    "problem_class": "statistical_scattering_inverse",
+    "noise_model": "shot_poisson",
+    "solution_space": "z_eff_map",
+    "primitives": ["L.scatter.MCS", "L.project.pathlength", "int.spatial"]
+  },
+
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+
+  "mismatch_parameters": ["momentum_unknown", "flux_inhomogeneity", "acquisition_time_limit", "angular_resolution", "background_contamination"],
+  "error_metric": "Z_eff_NMSE",
+  "error_metric_secondary": "spatial_resolution_mm",
+  "error_metric_tertiary": "detection_probability",
+
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "muon_tomography",
+      "forward_operator": "muon_tomo_forward",
+      "input_format": "tracker_event_list",
+      "omega": {"N_muon": 1e7, "tracker_res_mm": 1.0, "acq_time_hours": 24, "momentum_unknown": 1, "flux_inhomogeneity": 0.1},
+      "epsilon_fn_center": "Z_eff NMSE 0.05"
+    },
+    "allowed_forward_operators": ["muon_tomo_forward", "muon_radiography_forward"],
+    "allowed_problem_classes": ["muon_tomography", "muon_radiography_gross", "cosmic_nuclear_safeguards"],
+    "allowed_omega_dimensions": ["N_muon", "tracker_res_mm", "acq_time_hours", "momentum_unknown", "flux_inhomogeneity", "angular_resolution", "background_contamination"],
+    "omega_bounds": {
+      "N_muon": [1e4, 1e9], "tracker_res_mm": [0.1, 10],
+      "acq_time_hours": [1, 720],
+      "momentum_unknown": [0, 1], "flux_inhomogeneity": [0.0, 0.3],
+      "angular_resolution": [1, 50], "background_contamination": [0.0, 0.2]
+    },
+    "epsilon_bounds": {"z_eff_nmse": [1e-3, 0.5]}
+  },
+
+  "p1_p10_tests": ["PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS"],
+  "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
+  "ipfs_cid": null
+}

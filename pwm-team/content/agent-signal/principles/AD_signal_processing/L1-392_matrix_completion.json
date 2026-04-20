@@ -1,0 +1,91 @@
+{
+  "artifact_id": "L1-392",
+  "layer": "L1",
+  "principle_number": "392",
+  "title": "Matrix Completion (low-rank recovery from partial entries)",
+  "domain": "Signal Processing",
+  "sub_domain": "Low-rank matrix recovery via nuclear-norm minimization",
+  "source_file": "AD_signal_processing/392_matrix_completion.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence boilerplate. Physics grounded in Candes-Recht 2009 exact MC; Recht-Fazel-Parrilo 2010 guaranteed min-rank via nuclear norm; Cai-Candes-Shen 2010 SVT; Keshavan-Montanari-Oh 2010 OptSpace; Jain-Netrapalli-Sanghavi 2013 alt-min.",
+
+  "E": {
+    "description": "A low-rank matrix M* in R^{m x n} of rank r << min(m,n) has only a subset P_Omega(M*) of entries observed. Recover M* from observed entries under low-rank assumption.",
+    "forward_model": "Y = P_Omega(M*) + noise;  P_Omega projects onto observed index set Omega",
+    "world_state_x": "Low-rank matrix M* in R^{m x n}, rank(M*) = r",
+    "observation_y": "Observed entries Y_{ij} for (i,j) in Omega, |Omega| = m_obs",
+    "physical_parameters_theta": [
+      "Dimensions m, n",
+      "Rank r",
+      "Observation ratio p = |Omega| / (m*n)",
+      "Coherence mu_0 (concentration of left/right singular vectors)",
+      "Noise std sigma_n"
+    ]
+  },
+
+  "G": {
+    "dag": "D.mask.entry -> int.spatial",
+    "vertices": ["D.mask.entry", "int.spatial"],
+    "arcs": ["D.mask.entry -> int.spatial"],
+    "L_DAG": 2.0,
+    "n_c": 0
+  },
+
+  "W": {
+    "existence": true,
+    "uniqueness": "when p >= C * mu_0^2 * r * (m+n) * log^2(m+n) / (m*n) (Candes-Tao 2010)",
+    "stability": "conditional",
+    "condition_number_kappa": 500,
+    "condition_number_effective": 15,
+    "condition_number_mismatched": 300,
+    "regime": "Unique recovery via nuclear-norm minimization under incoherence assumption. Fails when coherence is high (spiky matrices) or observation ratio is below sample-complexity threshold."
+  },
+
+  "C": {
+    "solver_class": "SVT (singular value thresholding), nuclear-norm SDP, alt-min (PowerFactorization), OptSpace, learned (Neural CF, Matrix-Factorization NN)",
+    "convergence_rate_q": 1.5,
+    "error_bound": "||M_hat - M*||_F <= C * sqrt(m*n/|Omega|) * (sigma * sqrt(m) + sqrt(mr(m+n)log(m+n))/sqrt(|Omega|))",
+    "complexity": "SVT: O(m*n*r) per iteration; alt-min: O(|Omega| * r) per iteration; SDP: O(m^6) (not scalable)"
+  },
+
+  "physics_fingerprint": {
+    "carrier": "abstract",
+    "sensing_mechanism": "entry_masking",
+    "integration_axis": "none",
+    "problem_class": "low_rank_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "low_rank_matrix",
+    "primitives": ["D.mask.entry", "int.spatial"]
+  },
+
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+
+  "mismatch_parameters": ["observation_ratio", "coherence", "rank_overestimation", "non_uniform_sampling", "noise_level"],
+  "error_metric": "relative_frobenius_error",
+  "error_metric_secondary": "rank_recovery_accuracy",
+  "error_metric_tertiary": "test_RMSE",
+
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "low_rank_MC",
+      "forward_operator": "uniform_random_sampling",
+      "input_format": "partial_observations",
+      "omega": {"m": 500, "n": 500, "r": 10, "p": 0.3, "mu_0": 1.0, "sigma_n": 0.001},
+      "epsilon_fn_center": "rel-Frob 1e-3"
+    },
+    "allowed_forward_operators": ["uniform_random_sampling", "power_law_sampling", "block_sampling"],
+    "allowed_problem_classes": ["low_rank_MC", "robust_MC", "tensor_completion"],
+    "allowed_omega_dimensions": ["m", "n", "r", "p", "mu_0", "sigma_n", "sampling_bias"],
+    "omega_bounds": {
+      "m": [50, 10000], "n": [50, 10000],
+      "r": [1, 500], "p": [0.05, 0.9],
+      "mu_0": [1.0, 10.0], "sigma_n": [0.0, 0.1],
+      "sampling_bias": [0.0, 1.0]
+    },
+    "epsilon_bounds": {"rel_frob": [1e-5, 1.0]}
+  },
+
+  "p1_p10_tests": ["PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS"],
+  "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
+  "ipfs_cid": null
+}

@@ -1,0 +1,93 @@
+{
+  "artifact_id": "L1-135",
+  "layer": "L1",
+  "principle_number": "135",
+  "title": "Neutron Diffraction (powder / single crystal)",
+  "domain": "Scientific Instrumentation",
+  "sub_domain": "Neutron elastic diffraction for magnetic + H-site structures",
+  "source_file": "K_scientific_instrumentation/135_neutron_diffraction.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence boilerplate. Physics grounded in Willis-Carlile 2013 Experimental Neutron Scattering; Bacon 1975 Neutron Diffraction; Rietveld 1969 method; Windsor 1981 Pulsed Neutron Scattering.",
+
+  "E": {
+    "description": "Neutrons scatter elastically from nuclear and magnetic moments; Bragg condition d = n*lambda/(2*sin(theta)) same as X-ray. Complementary to X-ray: sensitive to light elements, isotope-specific, and magnetic scattering. Time-of-flight (TOF) at spallation sources uses polychromatic beams.",
+    "forward_model": "I(hkl) = |F_N(hkl)|^2 + |F_M(hkl)|^2 * sin^2(alpha_M);  F = Fourier of b_j delta(r-r_j)",
+    "world_state_x": "Atomic positions r_j, scattering lengths b_j, magnetic moments mu_j",
+    "observation_y": "Diffracted intensity I vs. TOF (spallation) or angle (reactor)",
+    "physical_parameters_theta": [
+      "Source type (reactor continuous or spallation TOF)",
+      "Wavelength range (0.5-6 Å)",
+      "Angular / TOF resolution",
+      "Background (furnace, cryostat)",
+      "Sample absorption (Cd, B, Gd especially)",
+      "Texture / preferred orientation"
+    ]
+  },
+
+  "G": {
+    "dag": "L.diffract.bragg -> L.project.rescipocal -> int.angular",
+    "vertices": ["L.diffract.bragg", "L.project.rescipocal", "int.angular"],
+    "arcs": ["L.diffract.bragg -> L.project.rescipocal", "L.project.rescipocal -> int.angular"],
+    "L_DAG": 2.7,
+    "n_c": 0
+  },
+
+  "W": {
+    "existence": true,
+    "uniqueness": "Rietveld LS unique with adequate data / symmetry constraints",
+    "stability": "conditional",
+    "condition_number_kappa": 300,
+    "condition_number_effective": 20,
+    "condition_number_mismatched": 500,
+    "regime": "Crystalline-structure refinement linear in peak intensities; limited-resolution phase problem resolved by known symmetry."
+  },
+
+  "C": {
+    "solver_class": "Le Bail profile, Rietveld refinement (GSAS-II, Fullprof, Jana), Le Bail + ab initio structure solution, symmetry-mode analysis, learned (neutron-Net)",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Rwp < 0.05 goal; atomic-position precision ~ 0.01 Å at high-res",
+    "complexity": "Rietveld O(iter * N_refl * N_param)"
+  },
+
+  "physics_fingerprint": {
+    "carrier": "neutron",
+    "sensing_mechanism": "nuclear_magnetic_diffraction",
+    "integration_axis": "angular",
+    "problem_class": "parametric_structure_refinement",
+    "noise_model": "shot_poisson",
+    "solution_space": "atomic_magnetic_structure",
+    "primitives": ["L.diffract.bragg", "L.project.rescipocal", "int.angular"]
+  },
+
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+
+  "mismatch_parameters": ["preferred_orientation", "absorption_correction", "background_model_error", "thermal_diffuse_scatter", "magnetic_interference"],
+  "error_metric": "Rwp",
+  "error_metric_secondary": "atomic_position_RMSE_angstrom",
+  "error_metric_tertiary": "magnetic_moment_RMSE_muB",
+
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "powder_rietveld",
+      "forward_operator": "neutron_powder_forward",
+      "input_format": "diffraction_pattern",
+      "omega": {"N_points": 10000, "lambda_A": 1.5, "N_atoms": 20, "preferred_orientation": 0.0, "absorption_correction": 0.0},
+      "epsilon_fn_center": "Rwp 0.05"
+    },
+    "allowed_forward_operators": ["neutron_powder_forward", "neutron_single_crystal_forward", "tof_powder_forward"],
+    "allowed_problem_classes": ["powder_rietveld", "single_crystal_refine", "magnetic_structure_determination"],
+    "allowed_omega_dimensions": ["N_points", "lambda_A", "N_atoms", "preferred_orientation", "absorption_correction", "background_model_error", "thermal_diffuse_scatter", "magnetic_interference"],
+    "omega_bounds": {
+      "N_points": [1000, 100000], "lambda_A": [0.5, 6.0],
+      "N_atoms": [1, 1000],
+      "preferred_orientation": [0.0, 0.5], "absorption_correction": [0.0, 0.3],
+      "background_model_error": [0.0, 0.2], "thermal_diffuse_scatter": [0.0, 0.2],
+      "magnetic_interference": [0.0, 0.5]
+    },
+    "epsilon_bounds": {"rwp": [0.01, 0.30]}
+  },
+
+  "p1_p10_tests": ["PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS"],
+  "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
+  "ipfs_cid": null
+}
