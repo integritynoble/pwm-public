@@ -183,6 +183,49 @@ def test_handlers_cover_minting_events():
     assert expected <= actual
 
 
+def test_staking_full_lifecycle(conn):
+    artifact = b"\xdd" * 32
+    handlers.handle_staked(
+        conn,
+        {"artifactHash": artifact, "layer": 3, "staker": "0x" + "11" * 20, "amount": 10**17},
+        _ctx(block=100, ts=1700),
+    )
+    handlers.handle_graduated(
+        conn,
+        {"artifactHash": artifact, "staker": "0x" + "11" * 20,
+         "returned": 7 * 10**16, "seeded": 3 * 10**16},
+        _ctx(block=200),
+    )
+    handlers.handle_challenge_upheld(
+        conn,
+        {"artifactHash": b"\xee" * 32, "challenger": "0x" + "22" * 20,
+         "burned": 10**16, "toChallenger": 10**16},
+        _ctx(block=300),
+    )
+    handlers.handle_fraud_slashed(
+        conn,
+        {"artifactHash": b"\xff" * 32, "burned": 5 * 10**16},
+        _ctx(block=400),
+    )
+
+    rows = conn.execute(
+        "SELECT event_kind, amount, seeded, to_challenger, burned FROM stakes "
+        "ORDER BY block_number"
+    ).fetchall()
+    assert [r["event_kind"] for r in rows] == [
+        "staked", "graduated", "challenge_upheld", "fraud_slashed"
+    ]
+    assert rows[1]["seeded"] == str(3 * 10**16)
+    assert rows[2]["to_challenger"] == str(10**16)
+    assert rows[3]["burned"] == str(5 * 10**16)
+
+
+def test_handlers_cover_staking_events():
+    expected = {"Staked", "Graduated", "ChallengeUpheld", "FraudSlashed"}
+    actual = {event for (contract, event) in handlers.HANDLERS if contract == "PWMStaking"}
+    assert expected <= actual
+
+
 def test_schema_is_idempotent(tmp_path):
     c = db.connect(tmp_path / "x.db")
     db.init_db(c)

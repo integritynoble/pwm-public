@@ -125,3 +125,22 @@ CREATE TABLE IF NOT EXISTS mints (
 );
 CREATE INDEX IF NOT EXISTS idx_mints_principle ON mints(principle_id);
 CREATE INDEX IF NOT EXISTS idx_mints_benchmark ON mints(benchmark_hash);
+
+-- PWMStaking: bonds posted to register an artifact, graduations that return
+-- the stake (or seed it to a pool), slashings, challenge-bond disposal.
+CREATE TABLE IF NOT EXISTS stakes (
+    id INTEGER PRIMARY KEY AUTOINCREMENT,
+    artifact_hash TEXT NOT NULL,
+    layer INTEGER,
+    staker TEXT NOT NULL,
+    amount TEXT NOT NULL,
+    event_kind TEXT NOT NULL,    -- 'staked' | 'graduated' | 'challenge_upheld' | 'fraud_slashed'
+    seeded TEXT,                  -- graduation: amount seeded to pool
+    to_challenger TEXT,           -- challenge_upheld: amount paid to challenger
+    burned TEXT,                  -- challenge_upheld / fraud_slashed: amount burned
+    block_number INTEGER NOT NULL,
+    timestamp INTEGER NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_stakes_artifact ON stakes(artifact_hash);
+CREATE INDEX IF NOT EXISTS idx_stakes_staker ON stakes(staker);
+CREATE INDEX IF NOT EXISTS idx_stakes_kind ON stakes(event_kind);

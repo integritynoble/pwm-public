@@ -129,6 +129,7 @@ def counts(conn: sqlite3.Connection) -> dict:
             "SELECT COUNT(*) FROM benchmark_meta WHERE removed_at IS NULL"
         ),
         "mints": c("SELECT COUNT(*) FROM mints"),
+        "stakes": c("SELECT COUNT(*) FROM stakes"),
     }
 
 
@@ -165,3 +166,57 @@ def total_minted_for_principle(conn: sqlite3.Connection, principle_id: str) -> s
         (principle_id,),
     ).fetchone()
     return str(int(r[0])) if r else "0"
+
+
+def counts_include_stakes(conn: sqlite3.Connection) -> int:
+    r = conn.execute("SELECT COUNT(*) FROM stakes").fetchone()
+    return int(r[0]) if r else 0
+
+
+def recent_activity(conn: sqlite3.Connection, limit: int = 30) -> list[dict]:
+    """Unified chronological feed across artifact / cert / draw / pool / stake tables.
+
+    Each row returns a normalised shape:
+        {kind, timestamp, block_number, ...event-specific fields}
+    UNION ALL is deliberate — we want every event once; DISTINCT isn't needed.
+    """
+    rows = conn.execute(
+        """
+        SELECT * FROM (
+          SELECT 'artifact_registered' AS kind, timestamp, block_number,
+                 hash AS primary_hash, creator AS actor, layer, NULL AS amount,
+                 NULL AS secondary_hash, NULL AS extra
+            FROM artifacts
+          UNION ALL
+          SELECT 'benchmark_registered', registered_at, 0,
+                 benchmark_hash, NULL, 3, rho, NULL, principle_id
+            FROM benchmark_meta
+          UNION ALL
+          SELECT 'certificate_submitted', submitted_at, block_number,
+                 cert_hash, submitter, NULL, q_int, benchmark_hash, status
+            FROM certificates
+          UNION ALL
+          SELECT 'draw_settled', settled_at, block_number,
+                 cert_hash, NULL, rank, draw_amount, benchmark_hash, NULL
+            FROM draws
+          UNION ALL
+          SELECT 'pool_seeded', timestamp, block_number,
+                 benchmark_hash, from_addr, NULL, amount, NULL, kind
+            FROM pool_events
+          UNION ALL
+          SELECT 'treasury_' || event_kind, timestamp, block_number,
+                 principle_id, winner, NULL, amount, NULL, new_balance
+            FROM treasury_events
+          UNION ALL
+          SELECT 'stake_' || event_kind, timestamp, block_number,
+                 artifact_hash, staker, layer, amount, NULL, burned
+            FROM stakes
+          UNION ALL
+          SELECT 'minted', timestamp, block_number,
+                 benchmark_hash, NULL, NULL, a_k, NULL, principle_id
+            FROM mints
+        ) ORDER BY timestamp DESC, block_number DESC LIMIT ?
+        """,
+        (limit,),
+    ).fetchall()
+    return [dict(r) for r in rows]

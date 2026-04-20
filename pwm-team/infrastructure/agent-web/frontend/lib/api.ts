@@ -19,8 +19,29 @@ async function get<T>(path: string): Promise<T | null> {
   }
 }
 
+export type ActivityEntry = {
+  kind: string;
+  timestamp: number;
+  block_number: number;
+  primary_hash: string | null;
+  actor: string | null;
+  layer: number | null;
+  amount: string | null;
+  secondary_hash: string | null;
+  extra: string | null;
+};
+
 export type Overview = {
-  counts: { principles: number; specs: number; benchmarks: number; certificates: number; draws: number };
+  counts: {
+    principles: number;
+    specs: number;
+    benchmarks: number;
+    certificates: number;
+    draws: number;
+    registered_benchmarks?: number;
+    mints?: number;
+    stakes?: number;
+  };
   active_principles: number;
   total_pool_wei: string;
   recent_draws: Array<{
@@ -30,6 +51,7 @@ export type Overview = {
     draw_amount: string;
     settled_at: number;
   }>;
+  recent_activity: ActivityEntry[];
 };
 
 export type PrincipleSummary = {
@@ -134,4 +156,5 @@ export const api = {
   leaderboard: (hash: string) => get<{ benchmark_hash: string; entries: any[] }>(`/api/leaderboard/${encodeURIComponent(hash)}`),
   bounties: () => get<{ bounties: Bounty[] }>('/api/bounties'),
   network: () => get<{ network: string; addresses: Record<string, string> }>('/api/network'),
+  activity: (limit = 50) => get<{ activity: ActivityEntry[] }>(`/api/activity?limit=${limit}`),
 };

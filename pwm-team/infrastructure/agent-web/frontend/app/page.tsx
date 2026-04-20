@@ -1,6 +1,7 @@
 import Link from 'next/link';
 import { api } from '@/lib/api';
 import { shortAddr, timeAgo, weiToPwm } from '@/lib/format';
+import { ActivityFeed } from '@/components/ActivityFeed';
 import { ApiDown } from '@/components/Empty';
 
 export default async function HomePage() {
@@ -34,16 +35,12 @@ export default async function HomePage() {
         ))}
       </section>
 
-      <section>
-        <div className="flex items-baseline justify-between mb-3">
-          <h2 className="text-xl font-semibold">Recent draws</h2>
-          <Link href="/benchmarks" className="pwm-link text-sm">Browse benchmarks →</Link>
-        </div>
-        {overview.recent_draws.length === 0 ? (
-          <div className="pwm-card text-pwm-muted italic">
-            No draws yet. The indexer will populate this as benchmarks are solved.
+      {overview.recent_draws.length > 0 && (
+        <section>
+          <div className="flex items-baseline justify-between mb-3">
+            <h2 className="text-xl font-semibold">Recent draws</h2>
+            <Link href="/benchmarks" className="pwm-link text-sm">Browse benchmarks →</Link>
           </div>
-        ) : (
           <div className="pwm-card overflow-x-auto">
             <table className="pwm-table">
               <thead>
@@ -72,7 +69,15 @@ export default async function HomePage() {
               </tbody>
             </table>
           </div>
-        )}
+        </section>
+      )}
+
+      <section>
+        <div className="flex items-baseline justify-between mb-3">
+          <h2 className="text-xl font-semibold">Activity feed</h2>
+          <Link href="/benchmarks" className="pwm-link text-sm">Browse benchmarks →</Link>
+        </div>
+        <ActivityFeed entries={overview.recent_activity ?? []} />
       </section>
 
       <section className="grid md:grid-cols-2 gap-4">

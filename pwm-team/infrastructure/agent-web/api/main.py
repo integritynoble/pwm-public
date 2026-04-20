@@ -101,12 +101,25 @@ def overview():
                 total_pool += int(r["balance"] or 0)
             except (TypeError, ValueError):
                 pass
+        activity = store.recent_activity(conn, limit=20)
         return _cached({
             "counts": c,
             "active_principles": len(genesis.principles()),
             "total_pool_wei": str(total_pool),
             "recent_draws": draws,
+            "recent_activity": activity,
         })
+    finally:
+        conn.close()
+
+
+@app.get("/api/activity")
+def activity_feed(limit: int = 50):
+    """Chronological feed of every indexed event across contracts."""
+    limit = max(1, min(200, int(limit)))
+    conn = store.get_conn()
+    try:
+        return _cached({"activity": store.recent_activity(conn, limit=limit)})
     finally:
         conn.close()
 

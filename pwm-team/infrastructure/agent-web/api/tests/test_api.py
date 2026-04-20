@@ -198,6 +198,31 @@ def test_health_counts_include_minting(seeded_env):
     assert body["counts"]["mints"] == 1
 
 
+def test_activity_feed_merges_event_kinds(seeded_env):
+    client, _ = seeded_env
+    body = client.get("/api/activity?limit=50").json()
+    kinds = {a["kind"] for a in body["activity"]}
+    # Fixture emits events from six different tables — verify a spread.
+    for required in (
+        "artifact_registered",
+        "certificate_submitted",
+        "draw_settled",
+        "pool_seeded",
+        "benchmark_registered",
+        "minted",
+    ):
+        assert required in kinds
+
+
+def test_activity_feed_is_ordered_and_limited(seeded_env):
+    client, _ = seeded_env
+    body = client.get("/api/activity?limit=2").json()
+    rows = body["activity"]
+    assert len(rows) <= 2
+    ts = [a["timestamp"] for a in rows]
+    assert ts == sorted(ts, reverse=True)
+
+
 def test_pools(seeded_env):
     client, _ = seeded_env
     r = client.get("/api/pools")

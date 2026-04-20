@@ -254,6 +254,73 @@ def handle_minted(
     )
 
 
+# ---- PWMStaking: registration bonds, graduations, slashings ----
+
+def handle_staked(
+    conn: sqlite3.Connection, args: dict[str, Any], ctx: EventContext
+) -> None:
+    """PWMStaking.Staked(artifactHash, layer, staker, amount)."""
+    db.insert_stake(
+        conn,
+        artifact_hash=to_hex(args["artifactHash"]),
+        layer=int(args["layer"]),
+        staker=to_addr(args["staker"]),
+        amount=str(int(args["amount"])),
+        event_kind="staked",
+        block_number=ctx.block_number,
+        timestamp=ctx.timestamp,
+    )
+
+
+def handle_graduated(
+    conn: sqlite3.Connection, args: dict[str, Any], ctx: EventContext
+) -> None:
+    """PWMStaking.Graduated(artifactHash, staker, returned, seeded)."""
+    db.insert_stake(
+        conn,
+        artifact_hash=to_hex(args["artifactHash"]),
+        staker=to_addr(args["staker"]),
+        amount=str(int(args["returned"])),
+        event_kind="graduated",
+        seeded=str(int(args["seeded"])),
+        block_number=ctx.block_number,
+        timestamp=ctx.timestamp,
+    )
+
+
+def handle_challenge_upheld(
+    conn: sqlite3.Connection, args: dict[str, Any], ctx: EventContext
+) -> None:
+    """PWMStaking.ChallengeUpheld(artifactHash, challenger, burned, toChallenger)."""
+    db.insert_stake(
+        conn,
+        artifact_hash=to_hex(args["artifactHash"]),
+        staker=to_addr(args["challenger"]),
+        amount=str(int(args["burned"]) + int(args["toChallenger"])),
+        event_kind="challenge_upheld",
+        to_challenger=str(int(args["toChallenger"])),
+        burned=str(int(args["burned"])),
+        block_number=ctx.block_number,
+        timestamp=ctx.timestamp,
+    )
+
+
+def handle_fraud_slashed(
+    conn: sqlite3.Connection, args: dict[str, Any], ctx: EventContext
+) -> None:
+    """PWMStaking.FraudSlashed(artifactHash, burned)."""
+    db.insert_stake(
+        conn,
+        artifact_hash=to_hex(args["artifactHash"]),
+        staker="0x0000000000000000000000000000000000000000",
+        amount=str(int(args["burned"])),
+        event_kind="fraud_slashed",
+        burned=str(int(args["burned"])),
+        block_number=ctx.block_number,
+        timestamp=ctx.timestamp,
+    )
+
+
 # Lookup by (contract_name, event_name) — used by main.py.
 HANDLERS = {
     ("PWMRegistry", "ArtifactRegistered"): handle_artifact_registered,
@@ -272,4 +339,8 @@ HANDLERS = {
     ("PWMMinting", "DeltaSet"): handle_delta_set,
     ("PWMMinting", "PromotionSet"): handle_promotion_set,
     ("PWMMinting", "Minted"): handle_minted,
+    ("PWMStaking", "Staked"): handle_staked,
+    ("PWMStaking", "Graduated"): handle_graduated,
+    ("PWMStaking", "ChallengeUpheld"): handle_challenge_upheld,
+    ("PWMStaking", "FraudSlashed"): handle_fraud_slashed,
 }

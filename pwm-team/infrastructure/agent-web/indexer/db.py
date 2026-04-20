@@ -224,3 +224,19 @@ def insert_mint(conn: sqlite3.Connection, **row) -> None:
         """,
         row,
     )
+
+
+def insert_stake(conn: sqlite3.Connection, **row) -> None:
+    row.setdefault("layer", None)
+    row.setdefault("seeded", None)
+    row.setdefault("to_challenger", None)
+    row.setdefault("burned", None)
+    conn.execute(
+        """
+        INSERT INTO stakes(artifact_hash, layer, staker, amount, event_kind,
+                            seeded, to_challenger, burned, block_number, timestamp)
+        VALUES(:artifact_hash, :layer, :staker, :amount, :event_kind,
+               :seeded, :to_challenger, :burned, :block_number, :timestamp)
+        """,
+        row,
+    )
