@@ -1,0 +1,153 @@
+{
+  "artifact_id": "L1-478",
+  "layer": "L1",
+  "principle_number": "478",
+  "title": "DLVO Colloidal Force Theory",
+  "domain": "Polymer Physics",
+  "sub_domain": "Colloidal stability",
+  "source_file": "AL_polymer_physics/478_colloidal_dlvo.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
+  "E": {
+    "description": "Derjaguin-Landau-Verwey-Overbeek: total colloidal interaction energy = van der Waals attraction + electrostatic double-layer repulsion, with optional short-range Born repulsion.",
+    "forward_model": "V_DLVO(h) = V_vdW(h) + V_EDL(h); V_vdW = -A_Hamaker/(12*pi*h^2); V_EDL = 64*pi*eps_r*eps_0*R*kappa^{-1}*tanh^2(z*e*psi_0/(4*k_B*T))*exp(-kappa*h)",
+    "world_state_x": "Pair interaction potential V(h) as function of separation h between colloidal particles",
+    "observation_y": "Colloidal-probe AFM force-distance curves F(h); sedimentation/aggregation kinetics; TIRM single-particle distribution; static light scattering structure factor S(q)",
+    "physical_parameters_theta": [
+      "A_Hamaker (van der Waals constant)",
+      "psi_0 (surface potential mV)",
+      "I (ionic strength)",
+      "R (particle radius)",
+      "T (temperature)",
+      "eps_r (dielectric)"
+    ]
+  },
+  "G": {
+    "dag": "E.vdW -> E.double_layer -> M.superpose -> O.force_distance",
+    "vertices": [
+      "E.vdW",
+      "E.double_layer",
+      "M.superpose",
+      "O.force_distance"
+    ],
+    "arcs": [
+      "E.vdW -> M.superpose",
+      "E.double_layer -> M.superpose",
+      "M.superpose -> O.force_distance"
+    ],
+    "L_DAG": 3.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 80,
+    "condition_number_effective": 15,
+    "regime": "Well-posed when both V_vdW and V_EDL contribute; ill-conditioned when one dominates (high ionic strength \u2192 secondary minimum masking)."
+  },
+  "C": {
+    "solver_class": "Nonlinear least squares (Levenberg-Marquardt); Bayesian MCMC for joint (A, psi, I) inversion",
+    "convergence_rate_q": 2.0,
+    "error_bound": "|V_hat - V|_{L2}/|V| <= condition_number * (noise/signal)",
+    "complexity": "O(N_points) per evaluation; O(N_iter * N_points) for fit"
+  },
+  "physics_fingerprint": {
+    "carrier": "ion",
+    "sensing_mechanism": "colloidal_probe_AFM",
+    "integration_axis": "separation",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "pair_potential_V_of_h",
+    "primitives": [
+      "E.vdW",
+      "E.double_layer",
+      "M.superpose",
+      "O.force_distance"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "A_Hamaker_error",
+    "psi_drift",
+    "ionic_strength_error",
+    "surface_roughness"
+  ],
+  "error_metric": "V_of_h_RMSE_kT",
+  "error_metric_secondary": "aggregation_rate_error",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "dlvo_parameter_inversion",
+      "forward_operator": "dlvo_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "A_Hamaker_zJ": 5.0,
+        "psi_0_mV": -40,
+        "I_mM": 10,
+        "R_nm": 100,
+        "T_K": 298
+      },
+      "epsilon_fn_center": "V(h) RMSE <= 0.3 k_B T"
+    },
+    "allowed_forward_operators": [
+      "dlvo_forward"
+    ],
+    "allowed_problem_classes": [
+      "dlvo_parameter_inversion"
+    ],
+    "allowed_omega_dimensions": [
+      "A_Hamaker_zJ",
+      "psi_0_mV",
+      "I_mM",
+      "R_nm",
+      "T_K"
+    ],
+    "omega_bounds": {
+      "A_Hamaker_zJ": [
+        0.5,
+        20.0
+      ],
+      "psi_0_mV": [
+        -120,
+        120
+      ],
+      "I_mM": [
+        0.1,
+        1000
+      ],
+      "R_nm": [
+        10,
+        5000
+      ],
+      "T_K": [
+        273,
+        373
+      ]
+    },
+    "epsilon_bounds": {
+      "V_of_h_RMSE_kT": [
+        0.1,
+        5.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

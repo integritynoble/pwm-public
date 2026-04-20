@@ -1,0 +1,126 @@
+{
+  "artifact_id": "L2-333",
+  "layer": "L2",
+  "parent_l1": "L1-333",
+  "title": "Solid-State Diffusion (Fick + Onsager) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "grid_N": [
+        64,
+        2048
+      ],
+      "dx_um": [
+        0.01,
+        100
+      ],
+      "t_s": [
+        1,
+        10000000.0
+      ],
+      "T_K": [
+        300,
+        2500
+      ],
+      "N_species": [
+        2,
+        10
+      ]
+    },
+    "E": {
+      "forward": "dc_i/dt = div(D_ij * grad(c_j) + D_thermo * grad(T)); tracer diffusivity D*_i from Nernst-Einstein",
+      "operator": "diffusion_forward_mismatch",
+      "primitive_chain": "E.onsager_flux -> M.integrate -> O.concentration_profile",
+      "inverse": "recover constitutive parameters for Solid-State Diffusion (Fick + Onsager)"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "concentration_profile_L2_error",
+      "D_ij_relative_error",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.02 * (1 + 0.1 * mismatch_severity)"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "DICTRA",
+        "method_sig": "T+O",
+        "expected_err": 0.035
+      },
+      {
+        "name": "FEniCS-Diff",
+        "method_sig": "T+O",
+        "expected_err": 0.04
+      },
+      {
+        "name": "Diff-Inv-Net",
+        "method_sig": "T+N",
+        "expected_err": 0.022
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "grid_N": 256,
+        "dx_um": 1,
+        "t_s": 3600,
+        "T_K": 1000,
+        "N_species": 3
+      },
+      "epsilon": 0.02
+    },
+    "tier_bounds": {
+      "grid_N": [
+        64,
+        2048
+      ],
+      "dx_um": [
+        0.01,
+        100
+      ],
+      "t_s": [
+        1,
+        10000000.0
+      ],
+      "T_K": [
+        300,
+        2500
+      ],
+      "N_species": [
+        2,
+        10
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.45,
+  "d_spec_notes": "Canonical mismatch-only baseline for this principle; sits at the centroid of its spec family.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions match across all DAG nodes; operator dimensions consistent.",
+    "S2": "Operator condition number controlled (kappa_eff=15) under declared Omega with regularization.",
+    "S3": "Solver class Crank-Nicolson FD; FEM for complex geometries; Bayesian inversion for D_ij provably converges at rate q=2.0; monotone residual decrease.",
+    "S4": "epsilon_fn evaluates cleanly across 50 random Omega samples; hardness rule satisfied (top baseline fails at Omega corner)."
+  },
+  "ipfs_cid": null
+}

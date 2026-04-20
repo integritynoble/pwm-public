@@ -1,0 +1,129 @@
+{
+  "artifact_id": "L2-340",
+  "layer": "L2",
+  "parent_l1": "L1-340",
+  "title": "Battery Electrode Electrochemistry (Newman-Doyle-Fuller) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "thickness_um": [
+        10,
+        1000
+      ],
+      "C_rate": [
+        0.01,
+        100
+      ],
+      "T_K": [
+        253,
+        353
+      ],
+      "N_mesh": [
+        20,
+        1000
+      ],
+      "cycles": [
+        1,
+        10000
+      ]
+    },
+    "E": {
+      "forward": "eps*dc/dt + div(N_i) = R_intercalation; N_i = -D_eff*grad(c) + t_plus*I/F; particle: dc_s/dt = (1/r^2)*d/dr(r^2*D_s*dc_s/dr)",
+      "operator": "p2d_battery_forward_mismatch",
+      "primitive_chain": "E.electrolyte_transport -> E.solid_diffusion -> E.butler_volmer -> M.P2D_couple -> O.V_cell",
+      "inverse": "recover constitutive parameters for Battery Electrode Electrochemistry (Newman-Doyle-Fuller)"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "V_cell_L2_mV",
+      "capacity_fade_error",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "10.0 * (1 + 0.1 * mismatch_severity)"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "PyBaMM",
+        "method_sig": "T+O",
+        "expected_err": 14
+      },
+      {
+        "name": "LIONSIMBA",
+        "method_sig": "T+O",
+        "expected_err": 16
+      },
+      {
+        "name": "P2D-GRU-Net",
+        "method_sig": "T+N",
+        "expected_err": 9
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "thickness_um": 100,
+        "C_rate": 1.0,
+        "T_K": 298,
+        "N_mesh": 100,
+        "DOD_range": [
+          0,
+          1
+        ]
+      },
+      "epsilon": 10.0
+    },
+    "tier_bounds": {
+      "thickness_um": [
+        10,
+        1000
+      ],
+      "C_rate": [
+        0.01,
+        100
+      ],
+      "T_K": [
+        253,
+        353
+      ],
+      "N_mesh": [
+        20,
+        1000
+      ],
+      "cycles": [
+        1,
+        10000
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.45,
+  "d_spec_notes": "Canonical mismatch-only baseline for this principle; sits at the centroid of its spec family.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions match across all DAG nodes; operator dimensions consistent.",
+    "S2": "Operator condition number controlled (kappa_eff=70) under declared Omega with regularization.",
+    "S3": "Solver class PyBaMM or LIONSIMBA; adjoint-parameter fit; Bayesian inference provably converges at rate q=2.0; monotone residual decrease.",
+    "S4": "epsilon_fn evaluates cleanly across 50 random Omega samples; hardness rule satisfied (top baseline fails at Omega corner)."
+  },
+  "ipfs_cid": null
+}

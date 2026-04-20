@@ -1,0 +1,118 @@
+{
+  "artifact_id": "L2-490",
+  "layer": "L2",
+  "parent_l1": "L1-490",
+  "title": "Carrier Boltzmann Transport Equation Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "E_field_V_cm": [
+        10,
+        1000000.0
+      ],
+      "T_K": [
+        77,
+        500
+      ],
+      "N_D_cm3": [
+        100000000000000.0,
+        1e+20
+      ],
+      "N_particles": [
+        10000,
+        10000000
+      ]
+    },
+    "E": {
+      "forward": "df/dt + v(k).grad_r(f) + (F/hbar).grad_k(f) = Integral [S(k',k)*f(k') - S(k,k')*f(k)] dk'",
+      "operator": "boltzmann_mc_forward_mismatch",
+      "primitive_chain": "E.band_structure -> E.scattering_rates -> M.MC_transport -> O.moments",
+      "inverse": "recover deformation potentials & scattering rates from mobility(E) and noise spectra"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "mobility_rel_err",
+      "velocity_overshoot_err",
+      "noise_S_I_log_err",
+      "MC_convergence_r_hat"
+    ],
+    "epsilon_fn": "0.04 + 0.008*log10(E_field_V_cm/1e4) + 0.002*abs(T_K-300)/10"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "MOCASIM (EMC)",
+        "method_sig": "T+O",
+        "expected_err": 0.08
+      },
+      {
+        "name": "Archimedes-BTE",
+        "method_sig": "T+O",
+        "expected_err": 0.1
+      },
+      {
+        "name": "BTE-Net",
+        "method_sig": "T+N",
+        "expected_err": 0.06
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "E_field_V_cm": 10000.0,
+        "T_K": 300,
+        "N_D_cm3": 1e+17,
+        "material": "Si",
+        "N_particles": 100000
+      },
+      "epsilon": 0.05
+    },
+    "tier_bounds": {
+      "E_field_V_cm": [
+        10,
+        1000000.0
+      ],
+      "T_K": [
+        77,
+        500
+      ],
+      "N_D_cm3": [
+        100000000000000.0,
+        1e+20
+      ],
+      "N_particles": [
+        10000,
+        10000000
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.45,
+  "d_spec_notes": "Canonical mismatch-only baseline for this principle; sits at the centroid of its spec family.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions match across all DAG nodes; operator dimensions consistent.",
+    "S2": "Operator condition number controlled (kappa_eff=50) under declared Omega with regularization.",
+    "S3": "Solver class Ensemble Monte Carlo (EMC); iterative Legendre-expansion (LEGSEM); adjoint-MC for inversion provably converges at rate q=2.0; monotone residual decrease.",
+    "S4": "epsilon_fn evaluates cleanly across 50 random Omega samples; hardness rule satisfied (top baseline fails at Omega corner)."
+  },
+  "ipfs_cid": null
+}

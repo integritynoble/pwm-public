@@ -1,0 +1,149 @@
+{
+  "artifact_id": "L1-298",
+  "layer": "L1",
+  "principle_number": "298",
+  "title": "Ab Initio Molecular Dynamics (Car-Parrinello / BOMD)",
+  "domain": "Computational Chemistry",
+  "sub_domain": "On-the-fly DFT forces in MD",
+  "source_file": "X_computational_chemistry/298_ab_initio_md.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
+  "E": {
+    "description": "AIMD: forces from DFT at each step; Car-Parrinello integrates electronic DOFs as fictitious dynamics; Born-Oppenheimer MD solves SCF each step.",
+    "forward_model": "m_I * d^2R_I/dt^2 = -grad_I E_DFT[R];  Car-Parrinello: mu*d^2 phi_i/dt^2 = -dE/dphi_i* + constraints",
+    "world_state_x": "Trajectory {R_I(t), v_I(t)} with on-the-fly DFT force field",
+    "observation_y": "Radial distribution g(r), diffusion coefficients, vibrational density of states, free energies",
+    "physical_parameters_theta": [
+      "xc functional",
+      "basis set",
+      "timestep",
+      "thermostat T, barostat P",
+      "CP fictitious mass mu"
+    ]
+  },
+  "G": {
+    "dag": "E.dft_forces -> M.verlet_integrate -> O.trajectory",
+    "vertices": [
+      "E.dft_forces",
+      "M.verlet_integrate",
+      "O.trajectory"
+    ],
+    "arcs": [
+      "E.dft_forces -> M.verlet_integrate",
+      "M.verlet_integrate -> O.trajectory"
+    ],
+    "L_DAG": 3.7,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 1500,
+    "condition_number_effective": 130,
+    "regime": "Well-posed locally; ergodic sampling requires long trajectories; DFT error propagates."
+  },
+  "C": {
+    "solver_class": "CPMD, CP2K, VASP-MD; Nose-Hoover / Parrinello-Rahman",
+    "convergence_rate_q": 2.0,
+    "error_bound": "bounded by discretization + mismatch bias + noise floor",
+    "complexity": "principle-dependent"
+  },
+  "physics_fingerprint": {
+    "carrier": "electron",
+    "sensing_mechanism": "trajectory_observable",
+    "integration_axis": "time",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "thermal_langevin",
+    "solution_space": "atomic_trajectory_plus_orbitals",
+    "primitives": [
+      "E.dft_forces",
+      "M.verlet_integrate",
+      "O.trajectory"
+    ]
+  },
+  "difficulty_delta": 10,
+  "difficulty_tier": "hard",
+  "mismatch_parameters": [
+    "xc_error",
+    "pseudopotential",
+    "timestep_integration"
+  ],
+  "error_metric": "diffusion_coeff_relative_error",
+  "error_metric_secondary": "rdf_L2",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "ab_initio_md",
+      "forward_operator": "aimd_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_atoms": 64,
+        "T_K": 300,
+        "N_steps": 10000,
+        "dt_fs": 0.5,
+        "xc": "PBE"
+      },
+      "epsilon_fn_center": "D rel error <= 0.05"
+    },
+    "allowed_forward_operators": [
+      "aimd_forward"
+    ],
+    "allowed_problem_classes": [
+      "ab_initio_md"
+    ],
+    "allowed_omega_dimensions": [
+      "N_atoms",
+      "T_K",
+      "N_steps",
+      "dt_fs",
+      "xc"
+    ],
+    "omega_bounds": {
+      "N_atoms": [
+        8,
+        10000
+      ],
+      "T_K": [
+        4,
+        5000
+      ],
+      "N_steps": [
+        1000,
+        10000000.0
+      ],
+      "dt_fs": [
+        0.01,
+        5
+      ],
+      "xc": [
+        "LDA",
+        "PBE",
+        "B3LYP"
+      ]
+    },
+    "epsilon_bounds": {
+      "diffusion_coeff_relative_error": [
+        0.02,
+        0.5
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

@@ -1,0 +1,241 @@
+{
+  "artifact_id": "L3-475",
+  "layer": "L3",
+  "parent_l2": "L2-475",
+  "parent_l1": "L1-475",
+  "title": "Self-Consistent Field Theory (SCFT) Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "Bates-Fredrickson SAXS library (block copolymer phase diagram, 1996)",
+    "secondary": "DFT-informed SCFT reference phases (Matsen 2012 compendium)",
+    "construction_method": "forward SCFT at declared Omega + declared noise on S(q); morphology labels curated from experimental literature",
+    "num_dev_instances_per_tier": 20,
+    "holdout_instances_per_tier": 10
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "chi_N": 15,
+        "f": 0.5,
+        "L_box_R_g": 4.0,
+        "grid_N": 64,
+        "N_ds": 100
+      },
+      "dataset_description": "Self-Consistent Field Theory (SCFT) at rho=1.",
+      "epsilon": 0.025,
+      "d_ibench": 0.15,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        },
+        {
+          "Q": 0.9,
+          "tier": "Excellent"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "PSCF",
+          "score": 0.028,
+          "Q": 0.8
+        },
+        {
+          "name": "FieldFM",
+          "score": 0.026,
+          "Q": 0.85
+        },
+        {
+          "name": "Deep-SCFT-Net",
+          "score": 0.02,
+          "Q": 0.92
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "chi_N": 20,
+        "f": 0.45,
+        "L_box_R_g": 5.0,
+        "grid_N": 80,
+        "N_ds": 150
+      },
+      "dataset_description": "Self-Consistent Field Theory (SCFT) at rho=3.",
+      "epsilon": 0.029,
+      "d_ibench": 0.32,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        },
+        {
+          "Q": 0.9,
+          "tier": "Excellent"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "PSCF",
+          "score": 0.036,
+          "Q": 0.64
+        },
+        {
+          "name": "FieldFM",
+          "score": 0.032,
+          "Q": 0.7
+        },
+        {
+          "name": "Deep-SCFT-Net",
+          "score": 0.026,
+          "Q": 0.82
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "chi_N": 30,
+        "f": 0.35,
+        "L_box_R_g": 7.0,
+        "grid_N": 96,
+        "N_ds": 200
+      },
+      "dataset_description": "Self-Consistent Field Theory (SCFT) at rho=5.",
+      "epsilon": 0.035,
+      "d_ibench": 0.51,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "PSCF",
+          "score": 0.05,
+          "Q": 0.45
+        },
+        {
+          "name": "FieldFM",
+          "score": 0.044,
+          "Q": 0.53
+        },
+        {
+          "name": "Deep-SCFT-Net",
+          "score": 0.035,
+          "Q": 0.68
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "chi_N": 40,
+        "f": 0.25,
+        "L_box_R_g": 10.0,
+        "grid_N": 128,
+        "N_ds": 400
+      },
+      "dataset_description": "Self-Consistent Field Theory (SCFT) at rho=10.",
+      "epsilon": 0.046,
+      "d_ibench": 0.72,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "PSCF",
+          "score": 0.08,
+          "Q": 0.26
+        },
+        {
+          "name": "FieldFM",
+          "score": 0.07,
+          "Q": 0.34
+        },
+        {
+          "name": "Deep-SCFT-Net",
+          "score": 0.055,
+          "Q": 0.48
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "Bates-Fredrickson + Matsen parametric phase diagram union",
+      "construction_method": "parametric Omega sampling over declared bounds; stratified by rho.",
+      "num_dev_instances": 200,
+      "num_holdout_instances": 100
+    },
+    "tracks": {
+      "track_A_stratified_worst_case": {
+        "pass_condition": "min score meets epsilon_fn over all strata"
+      },
+      "track_B_uniform_median": {
+        "num_samples": 50,
+        "pass_condition": "median score meets epsilon_fn at Omega_median"
+      },
+      "track_C_mismatch_degradation": {
+        "sweep_points": 5,
+        "pass_condition": "monotone degradation with mismatch"
+      }
+    },
+    "baselines": [
+      {
+        "name": "PSCF",
+        "track_A_Q": 0.46,
+        "track_B_Q": 0.58,
+        "track_C_Q": 0.5,
+        "overall_Q": 0.51
+      },
+      {
+        "name": "FieldFM",
+        "track_A_Q": 0.5,
+        "track_B_Q": 0.62,
+        "track_C_Q": 0.56,
+        "overall_Q": 0.56
+      },
+      {
+        "name": "Deep-SCFT-Net",
+        "track_A_Q": 0.6,
+        "track_B_Q": 0.74,
+        "track_C_Q": 0.68,
+        "overall_Q": 0.67
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails epsilon_fn at T4_blind Omega corner.",
+  "anti_overfitting_mechanisms": {
+    "M1_random_instantiation": "seeded by benchmark hash; non-repeatable holdout",
+    "M2_convergence_scoring": "verifies declared convergence rate across Omega",
+    "M3_worst_case_eval": "min-score over fixed dev instances per tier",
+    "M4_community_adversarial": "adversarial submissions eligible for T_k",
+    "M5_method_sig_diversity": "baselines span multiple method_sig families",
+    "M6_gate_checks": "S1-S4 gate checks enforced with thresholds.yaml"
+  },
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

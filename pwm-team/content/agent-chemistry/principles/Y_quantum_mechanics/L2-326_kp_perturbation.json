@@ -1,0 +1,109 @@
+{
+  "artifact_id": "L2-326",
+  "layer": "L2",
+  "parent_l1": "L1-326",
+  "title": "k.p Perturbation Theory Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "N_bands_kp": [
+        4,
+        30
+      ],
+      "k_range_A_inv": [
+        0.01,
+        1.0
+      ],
+      "include_SOC": [
+        true,
+        false
+      ]
+    },
+    "E": {
+      "forward": "E_n(k) = E_n(k_0) + hbar^2 k^2/(2m_e) + sum_{m != n} |<u_n|p|u_m>|^2 * (hbar*k)^2 / (m_e^2 * (E_n - E_m))",
+      "operator": "kp_forward_mismatch",
+      "primitive_chain": "E.momentum_matrix -> E.perturbative_expansion -> O.effective_mass",
+      "inverse": "recover constitutive parameters for k.p Perturbation Theory"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "effective_mass_relative_error",
+      "g_factor_error",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.03 * (1 + 0.1 * mismatch_severity)"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "k.p-Kane8",
+        "method_sig": "L+O",
+        "expected_err": 0.05
+      },
+      {
+        "name": "nextnano-kp",
+        "method_sig": "T+O",
+        "expected_err": 0.045
+      },
+      {
+        "name": "kp-NeuralFit",
+        "method_sig": "L+N",
+        "expected_err": 0.035
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_bands_kp": 8,
+        "k_range_A_inv": 0.1,
+        "species": "GaAs",
+        "include_SOC": true
+      },
+      "epsilon": 0.03
+    },
+    "tier_bounds": {
+      "N_bands_kp": [
+        4,
+        30
+      ],
+      "k_range_A_inv": [
+        0.01,
+        1.0
+      ],
+      "include_SOC": [
+        true,
+        false
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.45,
+  "d_spec_notes": "Canonical mismatch-only baseline for this principle; sits at the centroid of its spec family.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions match across all DAG nodes; operator dimensions consistent.",
+    "S2": "Operator condition number controlled (kappa_eff=20) under declared Omega with regularization.",
+    "S3": "Solver class Kane 8-band, Luttinger 6-band models; fits Luttinger gamma from cyclotron provably converges at rate q=2.0; monotone residual decrease.",
+    "S4": "epsilon_fn evaluates cleanly across 50 random Omega samples; hardness rule satisfied (top baseline fails at Omega corner)."
+  },
+  "ipfs_cid": null
+}

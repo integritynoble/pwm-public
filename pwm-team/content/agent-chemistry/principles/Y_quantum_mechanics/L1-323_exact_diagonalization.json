@@ -1,0 +1,137 @@
+{
+  "artifact_id": "L1-323",
+  "layer": "L1",
+  "principle_number": "323",
+  "title": "Exact Diagonalization of Many-Body Hamiltonians",
+  "domain": "Quantum Mechanics",
+  "sub_domain": "Full Hilbert space spectra",
+  "source_file": "Y_quantum_mechanics/323_exact_diagonalization.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
+  "E": {
+    "description": "Build H in Fock basis; Lanczos/Arnoldi for lowest eigenstates; exact for small systems (up to ~30 sites/qubits).",
+    "forward_model": "H |Psi> = E |Psi> solved exactly in the given Hilbert space",
+    "world_state_x": "Eigenstates and spectra of the many-body Hamiltonian",
+    "observation_y": "Spectra, dynamical correlations, entanglement scaling",
+    "physical_parameters_theta": [
+      "H matrix structure",
+      "symmetry sectors",
+      "basis size"
+    ]
+  },
+  "G": {
+    "dag": "E.Fock_basis -> M.Lanczos -> O.eigensystem",
+    "vertices": [
+      "E.Fock_basis",
+      "M.Lanczos",
+      "O.eigensystem"
+    ],
+    "arcs": [
+      "E.Fock_basis -> M.Lanczos",
+      "M.Lanczos -> O.eigensystem"
+    ],
+    "L_DAG": 3.2,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 800,
+    "condition_number_effective": 100,
+    "regime": "Exact to numerical precision; limited by exponential Hilbert space scaling."
+  },
+  "C": {
+    "solver_class": "ARPACK, SLEPc, QuSpin; sparse storage with symmetries",
+    "convergence_rate_q": 2.0,
+    "error_bound": "bounded by discretization + mismatch bias + noise floor",
+    "complexity": "principle-dependent"
+  },
+  "physics_fingerprint": {
+    "carrier": "electron",
+    "sensing_mechanism": "energy_spectrum_benchmark",
+    "integration_axis": "energy",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "many_body_eigenstates",
+    "primitives": [
+      "E.Fock_basis",
+      "M.Lanczos",
+      "O.eigensystem"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "Hilbert_space_truncation",
+    "symmetry_sector_selection",
+    "floating_point_precision"
+  ],
+  "error_metric": "ground_state_E_error_mHa",
+  "error_metric_secondary": "first_excited_error",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "exact_diagonalization",
+      "forward_operator": "exact_diagonalization_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "L_sites": 16,
+        "N_states": 10,
+        "symmetry": "U1",
+        "method": "Lanczos"
+      },
+      "epsilon_fn_center": "E error <= 0.01 mHa"
+    },
+    "allowed_forward_operators": [
+      "exact_diagonalization_forward"
+    ],
+    "allowed_problem_classes": [
+      "exact_diagonalization"
+    ],
+    "allowed_omega_dimensions": [
+      "L_sites",
+      "N_states",
+      "symmetry",
+      "method"
+    ],
+    "omega_bounds": {
+      "L_sites": [
+        4,
+        30
+      ],
+      "N_states": [
+        1,
+        100
+      ],
+      "symmetry": [
+        "none",
+        "U1",
+        "SU2"
+      ]
+    },
+    "epsilon_bounds": {
+      "ground_state_E_error_mHa": [
+        0.001,
+        10
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

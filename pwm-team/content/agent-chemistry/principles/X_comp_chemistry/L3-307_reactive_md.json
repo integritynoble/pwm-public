@@ -1,0 +1,237 @@
+{
+  "artifact_id": "L3-307",
+  "layer": "L3",
+  "parent_l2": "L2-307",
+  "parent_l1": "L1-307",
+  "title": "Reactive Molecular Dynamics (ReaxFF + Bond Order) Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "van Duin ReaxFF reaction benchmark set",
+    "secondary": "Combustion/decomposition experimental rate library",
+    "construction_method": "canonical ground truth + declared noise at tier Omega for Reactive Molecular Dynamics (ReaxFF + Bond Order)",
+    "num_dev_instances_per_tier": 20,
+    "holdout_instances_per_tier": 10
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "N_atoms": 1000,
+        "T_K": 2000,
+        "N_steps": 1000000.0,
+        "dt_fs": 0.1
+      },
+      "dataset_description": "Reactive Molecular Dynamics (ReaxFF + Bond Order) at rho=1.",
+      "epsilon": 0.1,
+      "d_ibench": 0.15,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        },
+        {
+          "Q": 0.9,
+          "tier": "Excellent"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "LAMMPS-ReaxFF",
+          "score": 0.18,
+          "Q": 0.82
+        },
+        {
+          "name": "ADF-ReaxFF",
+          "score": 0.2,
+          "Q": 0.78
+        },
+        {
+          "name": "ReactiveNet",
+          "score": 0.12,
+          "Q": 0.92
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "N_atoms": 10000,
+        "T_K": 3000,
+        "N_steps": 10000000.0,
+        "dt_fs": 0.1
+      },
+      "dataset_description": "Reactive Molecular Dynamics (ReaxFF + Bond Order) at rho=3.",
+      "epsilon": 0.115,
+      "d_ibench": 0.32,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        },
+        {
+          "Q": 0.9,
+          "tier": "Excellent"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "LAMMPS-ReaxFF",
+          "score": 0.207,
+          "Q": 0.66
+        },
+        {
+          "name": "ADF-ReaxFF",
+          "score": 0.23,
+          "Q": 0.6
+        },
+        {
+          "name": "ReactiveNet",
+          "score": 0.138,
+          "Q": 0.82
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "N_atoms": 100000.0,
+        "T_K": 4000,
+        "N_steps": 100000000.0,
+        "dt_fs": 0.05
+      },
+      "dataset_description": "Reactive Molecular Dynamics (ReaxFF + Bond Order) at rho=5.",
+      "epsilon": 0.14,
+      "d_ibench": 0.51,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "LAMMPS-ReaxFF",
+          "score": 0.252,
+          "Q": 0.44
+        },
+        {
+          "name": "ADF-ReaxFF",
+          "score": 0.28,
+          "Q": 0.38
+        },
+        {
+          "name": "ReactiveNet",
+          "score": 0.168,
+          "Q": 0.64
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "N_atoms": 1000000.0,
+        "T_K": 5000,
+        "N_steps": 1000000000.0,
+        "dt_fs": 0.05
+      },
+      "dataset_description": "Reactive Molecular Dynamics (ReaxFF + Bond Order) at rho=10.",
+      "epsilon": 0.185,
+      "d_ibench": 0.72,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "LAMMPS-ReaxFF",
+          "score": 0.333,
+          "Q": 0.24
+        },
+        {
+          "name": "ADF-ReaxFF",
+          "score": 0.37,
+          "Q": 0.2
+        },
+        {
+          "name": "ReactiveNet",
+          "score": 0.222,
+          "Q": 0.46
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "van Duin + combustion reactive library",
+      "construction_method": "parametric Omega sampling over declared bounds; stratified by rho.",
+      "num_dev_instances": 200,
+      "num_holdout_instances": 100
+    },
+    "tracks": {
+      "track_A_stratified_worst_case": {
+        "pass_condition": "min score meets epsilon_fn over all strata"
+      },
+      "track_B_uniform_median": {
+        "num_samples": 50,
+        "pass_condition": "median score meets epsilon_fn at Omega_median"
+      },
+      "track_C_mismatch_degradation": {
+        "sweep_points": 5,
+        "pass_condition": "monotone degradation with mismatch"
+      }
+    },
+    "baselines": [
+      {
+        "name": "LAMMPS-ReaxFF",
+        "track_A_Q": 0.52,
+        "track_B_Q": 0.64,
+        "track_C_Q": 0.56,
+        "overall_Q": 0.57
+      },
+      {
+        "name": "ADF-ReaxFF",
+        "track_A_Q": 0.5,
+        "track_B_Q": 0.62,
+        "track_C_Q": 0.54,
+        "overall_Q": 0.55
+      },
+      {
+        "name": "ReactiveNet",
+        "track_A_Q": 0.62,
+        "track_B_Q": 0.72,
+        "track_C_Q": 0.64,
+        "overall_Q": 0.66
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails epsilon_fn at T4_blind Omega corner.",
+  "anti_overfitting_mechanisms": {
+    "M1_random_instantiation": "seeded by benchmark hash; non-repeatable holdout",
+    "M2_convergence_scoring": "verifies declared convergence rate across Omega",
+    "M3_worst_case_eval": "min-score over fixed dev instances per tier",
+    "M4_community_adversarial": "adversarial submissions eligible for T_k",
+    "M5_method_sig_diversity": "baselines span multiple method_sig families",
+    "M6_gate_checks": "S1-S4 gate checks enforced with thresholds.yaml"
+  },
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

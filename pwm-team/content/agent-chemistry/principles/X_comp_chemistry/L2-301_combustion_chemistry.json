@@ -1,0 +1,126 @@
+{
+  "artifact_id": "L2-301",
+  "layer": "L2",
+  "parent_l1": "L1-301",
+  "title": "Combustion Chemistry and Ignition Kinetics Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "N_species": [
+        10,
+        3000
+      ],
+      "N_reactions": [
+        30,
+        30000
+      ],
+      "T_K": [
+        500,
+        3000
+      ],
+      "P_atm": [
+        0.1,
+        100
+      ],
+      "phi_equiv": [
+        0.3,
+        3.0
+      ]
+    },
+    "E": {
+      "forward": "dc_i/dt = sum_r ..., dT/dt = -(1/(rho*cp)) * sum_r delta_H_r * omega_r; ignition at thermal runaway",
+      "operator": "combustion_mech_forward_mismatch",
+      "primitive_chain": "E.detailed_mechanism -> E.energy_balance -> M.stiff_ODE -> O.ignition_delay",
+      "inverse": "recover constitutive parameters for Combustion Chemistry and Ignition Kinetics"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "ignition_delay_log_error",
+      "flame_speed_cm_s_error",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.1 * (1 + 0.1 * mismatch_severity)"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Cantera",
+        "method_sig": "T+O",
+        "expected_err": 0.18
+      },
+      {
+        "name": "CHEMKIN",
+        "method_sig": "T+O",
+        "expected_err": 0.15
+      },
+      {
+        "name": "Combust-NeuralODE",
+        "method_sig": "T+N",
+        "expected_err": 0.11
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_species": 50,
+        "N_reactions": 300,
+        "T_K": 1200,
+        "P_atm": 1,
+        "phi_equiv": 1.0
+      },
+      "epsilon": 0.1
+    },
+    "tier_bounds": {
+      "N_species": [
+        10,
+        3000
+      ],
+      "N_reactions": [
+        30,
+        30000
+      ],
+      "T_K": [
+        500,
+        3000
+      ],
+      "P_atm": [
+        0.1,
+        100
+      ],
+      "phi_equiv": [
+        0.3,
+        3.0
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.45,
+  "d_spec_notes": "Canonical mismatch-only baseline for this principle; sits at the centroid of its spec family.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions match across all DAG nodes; operator dimensions consistent.",
+    "S2": "Operator condition number controlled (kappa_eff=40) under declared Omega with regularization.",
+    "S3": "Solver class Cantera, CHEMKIN; sensitivity-analysis uncertainty-quantified optimization provably converges at rate q=2.0; monotone residual decrease.",
+    "S4": "epsilon_fn evaluates cleanly across 50 random Omega samples; hardness rule satisfied (top baseline fails at Omega corner)."
+  },
+  "ipfs_cid": null
+}

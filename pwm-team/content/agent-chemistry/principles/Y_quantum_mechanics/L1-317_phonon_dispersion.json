@@ -1,0 +1,140 @@
+{
+  "artifact_id": "L1-317",
+  "layer": "L1",
+  "principle_number": "317",
+  "title": "Phonon Dispersion Relations",
+  "domain": "Quantum Mechanics",
+  "sub_domain": "Lattice dynamics",
+  "source_file": "Y_quantum_mechanics/317_phonon_dispersion.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
+  "E": {
+    "description": "Harmonic phonon dispersion: dynamical matrix D_{ij}(q) from force constants Phi_{ij}; eigenvalues omega^2(q,s); thermal properties from sum over modes.",
+    "forward_model": "D_{ij,ab}(q) = sum_n Phi_{ij,ab}(R_n) exp(-iq.R_n); det|D - omega^2*I| = 0",
+    "world_state_x": "Phonon dispersion omega_s(q) and eigenvectors",
+    "observation_y": "Inelastic neutron scattering; Raman/IR spectra; specific heat C_v(T); thermal conductivity",
+    "physical_parameters_theta": [
+      "force constants Phi_ij",
+      "atomic masses",
+      "lattice structure",
+      "Born charges (polar)"
+    ]
+  },
+  "G": {
+    "dag": "E.force_constants -> E.dynamical_matrix -> M.eigensolve -> O.phonon_dispersion",
+    "vertices": [
+      "E.force_constants",
+      "E.dynamical_matrix",
+      "M.eigensolve",
+      "O.phonon_dispersion"
+    ],
+    "arcs": [
+      "E.force_constants -> E.dynamical_matrix",
+      "E.dynamical_matrix -> M.eigensolve",
+      "M.eigensolve -> O.phonon_dispersion"
+    ],
+    "L_DAG": 3.3,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 200,
+    "condition_number_effective": 20,
+    "regime": "Well-posed linear eigenproblem; inversion from INS is well-posed under symmetry constraints."
+  },
+  "C": {
+    "solver_class": "Quasi-harmonic approximation; frozen-phonon; DFPT (density functional perturbation)",
+    "convergence_rate_q": 2.0,
+    "error_bound": "bounded by discretization + mismatch bias + noise floor",
+    "complexity": "principle-dependent"
+  },
+  "physics_fingerprint": {
+    "carrier": "phonon",
+    "sensing_mechanism": "inelastic_neutron_scattering",
+    "integration_axis": "q_space",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "phonon_dispersion_omega_q",
+    "primitives": [
+      "E.force_constants",
+      "E.dynamical_matrix",
+      "M.eigensolve",
+      "O.phonon_dispersion"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "force_constant_drift",
+    "anharmonicity",
+    "isotope_distribution"
+  ],
+  "error_metric": "dispersion_L2_error_meV",
+  "error_metric_secondary": "gamma_mode_frequency_error",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "phonon_dispersion",
+      "forward_operator": "phonon_dispersion_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_atoms": 2,
+        "q_grid": 32,
+        "N_neighbor_shells": 5,
+        "species": "Si"
+      },
+      "epsilon_fn_center": "dispersion L2 <= 1.5 meV"
+    },
+    "allowed_forward_operators": [
+      "phonon_dispersion_forward"
+    ],
+    "allowed_problem_classes": [
+      "phonon_dispersion"
+    ],
+    "allowed_omega_dimensions": [
+      "N_atoms",
+      "q_grid",
+      "N_neighbor_shells",
+      "species"
+    ],
+    "omega_bounds": {
+      "N_atoms": [
+        1,
+        100
+      ],
+      "q_grid": [
+        8,
+        256
+      ],
+      "N_neighbor_shells": [
+        1,
+        20
+      ]
+    },
+    "epsilon_bounds": {
+      "dispersion_L2_error_meV": [
+        0.5,
+        30
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

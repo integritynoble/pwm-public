@@ -1,0 +1,111 @@
+{
+  "artifact_id": "L2-323",
+  "layer": "L2",
+  "parent_l1": "L1-323",
+  "title": "Exact Diagonalization of Many-Body Hamiltonians Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "L_sites": [
+        4,
+        30
+      ],
+      "N_states": [
+        1,
+        100
+      ],
+      "symmetry": [
+        "none",
+        "U1",
+        "SU2"
+      ]
+    },
+    "E": {
+      "forward": "H |Psi> = E |Psi> solved exactly in the given Hilbert space",
+      "operator": "exact_diagonalization_forward_mismatch",
+      "primitive_chain": "E.Fock_basis -> M.Lanczos -> O.eigensystem",
+      "inverse": "recover constitutive parameters for Exact Diagonalization of Many-Body Hamiltonians"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "ground_state_E_error_mHa",
+      "first_excited_error",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.01 * (1 + 0.1 * mismatch_severity)"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "QuSpin",
+        "method_sig": "T+O",
+        "expected_err": 0.02
+      },
+      {
+        "name": "ARPACK-ED",
+        "method_sig": "L+O",
+        "expected_err": 0.025
+      },
+      {
+        "name": "ED-GPU-Lanczos",
+        "method_sig": "T+N",
+        "expected_err": 0.015
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "L_sites": 16,
+        "N_states": 10,
+        "symmetry": "U1",
+        "method": "Lanczos"
+      },
+      "epsilon": 0.01
+    },
+    "tier_bounds": {
+      "L_sites": [
+        4,
+        30
+      ],
+      "N_states": [
+        1,
+        100
+      ],
+      "symmetry": [
+        "none",
+        "U1",
+        "SU2"
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.45,
+  "d_spec_notes": "Canonical mismatch-only baseline for this principle; sits at the centroid of its spec family.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions match across all DAG nodes; operator dimensions consistent.",
+    "S2": "Operator condition number controlled (kappa_eff=100) under declared Omega with regularization.",
+    "S3": "Solver class ARPACK, SLEPc, QuSpin; sparse storage with symmetries provably converges at rate q=2.0; monotone residual decrease.",
+    "S4": "epsilon_fn evaluates cleanly across 50 random Omega samples; hardness rule satisfied (top baseline fails at Omega corner)."
+  },
+  "ipfs_cid": null
+}

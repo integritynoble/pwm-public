@@ -1,0 +1,233 @@
+{
+  "artifact_id": "L3-323",
+  "layer": "L3",
+  "parent_l2": "L2-323",
+  "parent_l1": "L1-323",
+  "title": "Exact Diagonalization of Many-Body Hamiltonians Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "Heisenberg/Hubbard exact-diagonalization reference",
+    "secondary": "ITP-Lausanne small-cluster benchmarks",
+    "construction_method": "canonical ground truth + declared noise at tier Omega for Exact Diagonalization of Many-Body Hamiltonians",
+    "num_dev_instances_per_tier": 20,
+    "holdout_instances_per_tier": 10
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "L_sites": 16,
+        "N_states": 10,
+        "symmetry": "U1"
+      },
+      "dataset_description": "Exact Diagonalization of Many-Body Hamiltonians at rho=1.",
+      "epsilon": 0.01,
+      "d_ibench": 0.15,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        },
+        {
+          "Q": 0.9,
+          "tier": "Excellent"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "QuSpin",
+          "score": 0.02,
+          "Q": 0.82
+        },
+        {
+          "name": "ARPACK-ED",
+          "score": 0.025,
+          "Q": 0.78
+        },
+        {
+          "name": "ED-GPU-Lanczos",
+          "score": 0.015,
+          "Q": 0.92
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "L_sites": 20,
+        "N_states": 20,
+        "symmetry": "U1"
+      },
+      "dataset_description": "Exact Diagonalization of Many-Body Hamiltonians at rho=3.",
+      "epsilon": 0.0115,
+      "d_ibench": 0.32,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        },
+        {
+          "Q": 0.9,
+          "tier": "Excellent"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "QuSpin",
+          "score": 0.023,
+          "Q": 0.66
+        },
+        {
+          "name": "ARPACK-ED",
+          "score": 0.0287,
+          "Q": 0.6
+        },
+        {
+          "name": "ED-GPU-Lanczos",
+          "score": 0.0172,
+          "Q": 0.82
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "L_sites": 26,
+        "N_states": 50,
+        "symmetry": "SU2"
+      },
+      "dataset_description": "Exact Diagonalization of Many-Body Hamiltonians at rho=5.",
+      "epsilon": 0.014,
+      "d_ibench": 0.51,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "QuSpin",
+          "score": 0.028,
+          "Q": 0.44
+        },
+        {
+          "name": "ARPACK-ED",
+          "score": 0.035,
+          "Q": 0.38
+        },
+        {
+          "name": "ED-GPU-Lanczos",
+          "score": 0.021,
+          "Q": 0.64
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "L_sites": 30,
+        "N_states": 100,
+        "symmetry": "SU2"
+      },
+      "dataset_description": "Exact Diagonalization of Many-Body Hamiltonians at rho=10.",
+      "epsilon": 0.0185,
+      "d_ibench": 0.72,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "QuSpin",
+          "score": 0.037,
+          "Q": 0.24
+        },
+        {
+          "name": "ARPACK-ED",
+          "score": 0.0463,
+          "Q": 0.2
+        },
+        {
+          "name": "ED-GPU-Lanczos",
+          "score": 0.0278,
+          "Q": 0.46
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "Heisenberg/Hubbard ED reference library",
+      "construction_method": "parametric Omega sampling over declared bounds; stratified by rho.",
+      "num_dev_instances": 200,
+      "num_holdout_instances": 100
+    },
+    "tracks": {
+      "track_A_stratified_worst_case": {
+        "pass_condition": "min score meets epsilon_fn over all strata"
+      },
+      "track_B_uniform_median": {
+        "num_samples": 50,
+        "pass_condition": "median score meets epsilon_fn at Omega_median"
+      },
+      "track_C_mismatch_degradation": {
+        "sweep_points": 5,
+        "pass_condition": "monotone degradation with mismatch"
+      }
+    },
+    "baselines": [
+      {
+        "name": "QuSpin",
+        "track_A_Q": 0.64,
+        "track_B_Q": 0.74,
+        "track_C_Q": 0.66,
+        "overall_Q": 0.68
+      },
+      {
+        "name": "ARPACK-ED",
+        "track_A_Q": 0.6,
+        "track_B_Q": 0.72,
+        "track_C_Q": 0.62,
+        "overall_Q": 0.64
+      },
+      {
+        "name": "ED-GPU-Lanczos",
+        "track_A_Q": 0.68,
+        "track_B_Q": 0.78,
+        "track_C_Q": 0.7,
+        "overall_Q": 0.72
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails epsilon_fn at T4_blind Omega corner.",
+  "anti_overfitting_mechanisms": {
+    "M1_random_instantiation": "seeded by benchmark hash; non-repeatable holdout",
+    "M2_convergence_scoring": "verifies declared convergence rate across Omega",
+    "M3_worst_case_eval": "min-score over fixed dev instances per tier",
+    "M4_community_adversarial": "adversarial submissions eligible for T_k",
+    "M5_method_sig_diversity": "baselines span multiple method_sig families",
+    "M6_gate_checks": "S1-S4 gate checks enforced with thresholds.yaml"
+  },
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

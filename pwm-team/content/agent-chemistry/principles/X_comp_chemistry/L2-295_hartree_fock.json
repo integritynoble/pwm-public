@@ -1,0 +1,113 @@
+{
+  "artifact_id": "L2-295",
+  "layer": "L2",
+  "parent_l1": "L1-295",
+  "title": "Hartree-Fock Self-Consistent Field Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "N_electrons": [
+        2,
+        1000
+      ],
+      "N_basis": [
+        20,
+        10000
+      ],
+      "basis": [
+        "STO-3G",
+        "cc-pVDZ",
+        "cc-pVTZ",
+        "aug-cc-pVQZ"
+      ]
+    },
+    "E": {
+      "forward": "F * phi_i = E_i * phi_i where F = h + J - K; rho = 2*sum_i |phi_i|^2 (RHF)",
+      "operator": "hf_forward_mismatch",
+      "primitive_chain": "E.fock_operator -> M.scf_iterate -> O.hf_wavefunction",
+      "inverse": "recover constitutive parameters for Hartree-Fock Self-Consistent Field"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "HF_energy_error_mHa",
+      "orbital_energy_error_eV",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.3 * (1 + 0.1 * mismatch_severity)"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Gaussian09-HF",
+        "method_sig": "T+O",
+        "expected_err": 0.5
+      },
+      {
+        "name": "Psi4-SCF",
+        "method_sig": "T+O",
+        "expected_err": 0.6
+      },
+      {
+        "name": "NWChem-HF",
+        "method_sig": "T+O",
+        "expected_err": 0.55
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_electrons": 10,
+        "N_basis": 100,
+        "basis": "cc-pVDZ",
+        "symmetry": "C1"
+      },
+      "epsilon": 0.3
+    },
+    "tier_bounds": {
+      "N_electrons": [
+        2,
+        1000
+      ],
+      "N_basis": [
+        20,
+        10000
+      ],
+      "basis": [
+        "STO-3G",
+        "cc-pVDZ",
+        "cc-pVTZ",
+        "aug-cc-pVQZ"
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.45,
+  "d_spec_notes": "Canonical mismatch-only baseline for this principle; sits at the centroid of its spec family.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions match across all DAG nodes; operator dimensions consistent.",
+    "S2": "Operator condition number controlled (kappa_eff=35) under declared Omega with regularization.",
+    "S3": "Solver class Gaussian/ORCA/Psi4; DIIS convergence; symmetry-adapted orbitals provably converges at rate q=2.0; monotone residual decrease.",
+    "S4": "epsilon_fn evaluates cleanly across 50 random Omega samples; hardness rule satisfied (top baseline fails at Omega corner)."
+  },
+  "ipfs_cid": null
+}

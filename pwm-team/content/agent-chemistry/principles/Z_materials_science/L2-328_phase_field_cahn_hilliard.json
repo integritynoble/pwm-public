@@ -1,0 +1,135 @@
+{
+  "artifact_id": "L2-328",
+  "layer": "L2",
+  "parent_l1": "L1-328",
+  "title": "Cahn-Hilliard Phase Separation Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "grid_N": [
+        64,
+        2048
+      ],
+      "dx_nm": [
+        0.5,
+        100
+      ],
+      "chi_AB": [
+        1.5,
+        20
+      ],
+      "phi_0": [
+        0.1,
+        0.9
+      ],
+      "M": [
+        0.01,
+        100
+      ],
+      "T_K": [
+        77,
+        1500
+      ]
+    },
+    "E": {
+      "forward": "dphi/dt = Laplacian(M * (df/dphi - kappa * Laplacian(phi)))",
+      "operator": "cahn_hilliard_forward_mismatch",
+      "primitive_chain": "E.chemical_potential -> E.conservative_flux -> M.time_integrate -> O.morphology",
+      "inverse": "recover constitutive parameters for Cahn-Hilliard Phase Separation"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "S_q_time_L2_error",
+      "domain_size_error_nm",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.04 * (1 + 0.1 * mismatch_severity)"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "FFT-CH",
+        "method_sig": "T+O",
+        "expected_err": 0.06
+      },
+      {
+        "name": "MOOSE-CH",
+        "method_sig": "T+O",
+        "expected_err": 0.07
+      },
+      {
+        "name": "CH-DeepOp",
+        "method_sig": "T+N",
+        "expected_err": 0.04
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "grid_N": 256,
+        "dx_nm": 5,
+        "chi_AB": 3.0,
+        "phi_0": 0.5,
+        "M": 1.0,
+        "T_K": 300
+      },
+      "epsilon": 0.04
+    },
+    "tier_bounds": {
+      "grid_N": [
+        64,
+        2048
+      ],
+      "dx_nm": [
+        0.5,
+        100
+      ],
+      "chi_AB": [
+        1.5,
+        20
+      ],
+      "phi_0": [
+        0.1,
+        0.9
+      ],
+      "M": [
+        0.01,
+        100
+      ],
+      "T_K": [
+        77,
+        1500
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.45,
+  "d_spec_notes": "Canonical mismatch-only baseline for this principle; sits at the centroid of its spec family.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions match across all DAG nodes; operator dimensions consistent.",
+    "S2": "Operator condition number controlled (kappa_eff=35) under declared Omega with regularization.",
+    "S3": "Solver class Semi-implicit spectral (IMEX); SPH for free-surface; adjoint inversion provably converges at rate q=2.0; monotone residual decrease.",
+    "S4": "epsilon_fn evaluates cleanly across 50 random Omega samples; hardness rule satisfied (top baseline fails at Omega corner)."
+  },
+  "ipfs_cid": null
+}

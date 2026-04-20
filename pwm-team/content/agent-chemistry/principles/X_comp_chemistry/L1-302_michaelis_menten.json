@@ -1,0 +1,147 @@
+{
+  "artifact_id": "L1-302",
+  "layer": "L1",
+  "principle_number": "302",
+  "title": "Michaelis-Menten Enzyme Kinetics",
+  "domain": "Computational Chemistry",
+  "sub_domain": "Enzymatic rate laws",
+  "source_file": "X_computational_chemistry/302_michaelis_menten.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
+  "E": {
+    "description": "Michaelis-Menten: v = V_max * [S] / (K_M + [S]); substrate-enzyme complex in steady state.",
+    "forward_model": "v = V_max * S / (K_M + S); Lineweaver-Burk linearizes for fitting",
+    "world_state_x": "Reaction rate v as function of substrate concentration",
+    "observation_y": "Initial-rate kinetics, progress curves, inhibitor effects",
+    "physical_parameters_theta": [
+      "K_M (Michaelis constant)",
+      "V_max",
+      "inhibitor constants K_i"
+    ]
+  },
+  "G": {
+    "dag": "E.enzyme_substrate -> M.steady_state -> O.rate_v",
+    "vertices": [
+      "E.enzyme_substrate",
+      "M.steady_state",
+      "O.rate_v"
+    ],
+    "arcs": [
+      "E.enzyme_substrate -> M.steady_state",
+      "M.steady_state -> O.rate_v"
+    ],
+    "L_DAG": 2.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 30,
+    "condition_number_effective": 8,
+    "regime": "Well-posed; linear in Lineweaver-Burk; Bayesian MCMC for Bayesian parameter estimation."
+  },
+  "C": {
+    "solver_class": "Nonlinear least squares; Bayesian enzyme kinetics",
+    "convergence_rate_q": 2.0,
+    "error_bound": "bounded by discretization + mismatch bias + noise floor",
+    "complexity": "principle-dependent"
+  },
+  "physics_fingerprint": {
+    "carrier": "none",
+    "sensing_mechanism": "initial_rate_assay",
+    "integration_axis": "substrate_concentration",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "V_KM_parameter_pair",
+    "primitives": [
+      "E.enzyme_substrate",
+      "M.steady_state",
+      "O.rate_v"
+    ]
+  },
+  "difficulty_delta": 1,
+  "difficulty_tier": "trivial",
+  "mismatch_parameters": [
+    "substrate_inhibition",
+    "product_feedback",
+    "temperature_drift"
+  ],
+  "error_metric": "Km_relative_error",
+  "error_metric_secondary": "Vmax_relative_error",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "michaelis_menten",
+      "forward_operator": "michaelis_menten_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "S_range_mM": [
+          0.01,
+          100
+        ],
+        "N_data_points": 20,
+        "T_K": 298,
+        "pH": 7.4
+      },
+      "epsilon_fn_center": "K_M rel error <= 0.05"
+    },
+    "allowed_forward_operators": [
+      "michaelis_menten_forward"
+    ],
+    "allowed_problem_classes": [
+      "michaelis_menten"
+    ],
+    "allowed_omega_dimensions": [
+      "S_range_mM",
+      "N_data_points",
+      "T_K",
+      "pH"
+    ],
+    "omega_bounds": {
+      "S_range_mM_min": [
+        0.001,
+        1
+      ],
+      "S_range_mM_max": [
+        1,
+        10000
+      ],
+      "N_data_points": [
+        5,
+        10000
+      ],
+      "T_K": [
+        273,
+        373
+      ],
+      "pH": [
+        1,
+        14
+      ]
+    },
+    "epsilon_bounds": {
+      "Km_relative_error": [
+        0.01,
+        0.5
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

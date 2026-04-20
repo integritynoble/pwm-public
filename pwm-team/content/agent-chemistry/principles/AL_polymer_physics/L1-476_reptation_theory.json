@@ -1,0 +1,159 @@
+{
+  "artifact_id": "L1-476",
+  "layer": "L1",
+  "principle_number": "476",
+  "title": "de Gennes-Doi-Edwards Reptation Theory",
+  "domain": "Polymer Physics",
+  "sub_domain": "Entangled melt dynamics",
+  "source_file": "AL_polymer_physics/476_reptation_theory.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
+  "E": {
+    "description": "Doi-Edwards tube model: each chain reptates through a tube of entanglements with disengagement time tau_d ~ N^3.4; linear viscoelastic response G(t), G'(omega), G''(omega) follows double-reptation with contour-length fluctuations (CLF) and constraint release (CR).",
+    "forward_model": "G(t) = G_N^0 * sum_p psi_p(t) * exp(-p^2 t / tau_d) + G_Rouse(t);  eta_0 = integral_0^inf G(t) dt",
+    "world_state_x": "Chain molecular weight distribution, entanglement density n_e, tube parameters (a, tau_e); linear relaxation modulus G(t)",
+    "observation_y": "Linear viscoelastic spectrum G'(omega), G''(omega); zero-shear viscosity eta_0; terminal relaxation time tau_d; small-amplitude oscillatory shear (SAOS)",
+    "physical_parameters_theta": [
+      "M_e (entanglement molecular weight)",
+      "tau_e (Rouse time per entanglement)",
+      "N (chain length in units of N_e)",
+      "alpha_CR (constraint release)",
+      "beta_CLF (contour length fluctuation)",
+      "polydispersity_PDI"
+    ]
+  },
+  "G": {
+    "dag": "E.doi_edwards_tube -> M.relaxation_modes -> int.rheology -> O.viscoelastic_spectrum",
+    "vertices": [
+      "E.doi_edwards_tube",
+      "M.relaxation_modes",
+      "int.rheology",
+      "O.viscoelastic_spectrum"
+    ],
+    "arcs": [
+      "E.doi_edwards_tube -> M.relaxation_modes",
+      "M.relaxation_modes -> int.rheology",
+      "int.rheology -> O.viscoelastic_spectrum"
+    ],
+    "L_DAG": 3.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 300,
+    "condition_number_effective": 25,
+    "regime": "Well-posed for monodisperse melts; polydisperse inversion is ill-conditioned in the transition zone between Rouse and terminal regimes."
+  },
+  "C": {
+    "solver_class": "Tikhonov-regularized Laplace inversion (CONTIN, GEX); tube model fits via Marquardt-Levenberg",
+    "convergence_rate_q": 2.0,
+    "error_bound": "relative log-log error in G(omega) bounded by O(h) discretization of relaxation spectrum + noise floor",
+    "complexity": "O(N_modes * N_freq)"
+  },
+  "physics_fingerprint": {
+    "carrier": "none",
+    "sensing_mechanism": "oscillatory_rheometry",
+    "integration_axis": "time",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "relaxation_spectrum_H_tau",
+    "primitives": [
+      "E.doi_edwards_tube",
+      "M.relaxation_modes",
+      "int.rheology",
+      "O.viscoelastic_spectrum"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "M_e_error",
+    "PDI_drift",
+    "temperature_shift_factor",
+    "WLF_parameters"
+  ],
+  "error_metric": "log_G_prime_RMSE",
+  "error_metric_secondary": "eta_0_relative_error",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "rheological_spectrum_inversion",
+      "forward_operator": "reptation_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_over_Ne": 20,
+        "M_e_kDa": 5.0,
+        "PDI": 1.05,
+        "omega_range_decades": 7,
+        "T_C": 25,
+        "strain_pct": 1.0
+      },
+      "epsilon_fn_center": "log10 G'(omega) RMSE <= 0.05"
+    },
+    "allowed_forward_operators": [
+      "reptation_forward"
+    ],
+    "allowed_problem_classes": [
+      "rheological_spectrum_inversion"
+    ],
+    "allowed_omega_dimensions": [
+      "N_over_Ne",
+      "M_e_kDa",
+      "PDI",
+      "omega_range_decades",
+      "T_C",
+      "strain_pct"
+    ],
+    "omega_bounds": {
+      "N_over_Ne": [
+        5,
+        200
+      ],
+      "M_e_kDa": [
+        0.5,
+        50.0
+      ],
+      "PDI": [
+        1.01,
+        3.0
+      ],
+      "omega_range_decades": [
+        3,
+        10
+      ],
+      "T_C": [
+        -50,
+        200
+      ],
+      "strain_pct": [
+        0.1,
+        10.0
+      ]
+    },
+    "epsilon_bounds": {
+      "log_G_prime_RMSE": [
+        0.03,
+        0.3
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

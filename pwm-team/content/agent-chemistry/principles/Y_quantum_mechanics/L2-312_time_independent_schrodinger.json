@@ -1,0 +1,121 @@
+{
+  "artifact_id": "L2-312",
+  "layer": "L2",
+  "parent_l1": "L1-312",
+  "title": "Time-Independent Schr\u00f6dinger Equation Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "N_basis": [
+        100,
+        100000
+      ],
+      "N_eigen": [
+        1,
+        1000
+      ],
+      "box_size_A": [
+        1,
+        1000
+      ],
+      "potential_type": [
+        "harmonic",
+        "coulomb",
+        "square_well",
+        "double_well"
+      ]
+    },
+    "E": {
+      "forward": "(-hbar^2/2m * Laplacian + V(r)) psi_n(r) = E_n psi_n(r)",
+      "operator": "schrodinger_stationary_forward_mismatch",
+      "primitive_chain": "E.hamiltonian -> M.eigensolve -> O.spectra_wavefunctions",
+      "inverse": "recover constitutive parameters for Time-Independent Schr\u00f6dinger Equation"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "energy_error_eV",
+      "wavefunction_L2_error",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.01 * (1 + 0.1 * mismatch_severity)"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "ARPACK-Lanczos",
+        "method_sig": "L+O",
+        "expected_err": 0.015
+      },
+      {
+        "name": "FEAST",
+        "method_sig": "L+O",
+        "expected_err": 0.018
+      },
+      {
+        "name": "SchroNet",
+        "method_sig": "L+N",
+        "expected_err": 0.009
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_basis": 1000,
+        "N_eigen": 20,
+        "box_size_A": 10,
+        "potential_type": "harmonic"
+      },
+      "epsilon": 0.01
+    },
+    "tier_bounds": {
+      "N_basis": [
+        100,
+        100000
+      ],
+      "N_eigen": [
+        1,
+        1000
+      ],
+      "box_size_A": [
+        1,
+        1000
+      ],
+      "potential_type": [
+        "harmonic",
+        "coulomb",
+        "square_well",
+        "double_well"
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.45,
+  "d_spec_notes": "Canonical mismatch-only baseline for this principle; sits at the centroid of its spec family.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions match across all DAG nodes; operator dimensions consistent.",
+    "S2": "Operator condition number controlled (kappa_eff=50) under declared Omega with regularization.",
+    "S3": "Solver class Iterative Lanczos / Davidson; finite-element basis; adjoint-eigenvalue for inversion provably converges at rate q=2.0; monotone residual decrease.",
+    "S4": "epsilon_fn evaluates cleanly across 50 random Omega samples; hardness rule satisfied (top baseline fails at Omega corner)."
+  },
+  "ipfs_cid": null
+}

@@ -1,0 +1,119 @@
+{
+  "artifact_id": "L2-297",
+  "layer": "L2",
+  "parent_l1": "L1-297",
+  "title": "Time-Dependent Density Functional Theory (TDDFT) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "N_atoms": [
+        2,
+        500
+      ],
+      "N_basis": [
+        50,
+        10000
+      ],
+      "N_states": [
+        5,
+        500
+      ],
+      "xc": [
+        "B3LYP",
+        "CAM-B3LYP",
+        "wB97X-D"
+      ]
+    },
+    "E": {
+      "forward": "i*d phi_i/dt = H_KS(t) phi_i; Casida: (A B; -B* -A*)*(X; Y) = omega*(X; Y)",
+      "operator": "tddft_forward_mismatch",
+      "primitive_chain": "E.tddft_kernel -> M.casida_eigensolve -> O.excitations",
+      "inverse": "recover constitutive parameters for Time-Dependent Density Functional Theory (TDDFT)"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "excitation_energy_error_eV",
+      "oscillator_strength_error",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.15 * (1 + 0.1 * mismatch_severity)"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Gaussian-TDDFT",
+        "method_sig": "T+O",
+        "expected_err": 0.25
+      },
+      {
+        "name": "Turbomole-TDDFT",
+        "method_sig": "T+O",
+        "expected_err": 0.22
+      },
+      {
+        "name": "DeepTDDFT",
+        "method_sig": "T+N",
+        "expected_err": 0.16
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_atoms": 20,
+        "N_basis": 500,
+        "N_states": 20,
+        "xc": "B3LYP"
+      },
+      "epsilon": 0.15
+    },
+    "tier_bounds": {
+      "N_atoms": [
+        2,
+        500
+      ],
+      "N_basis": [
+        50,
+        10000
+      ],
+      "N_states": [
+        5,
+        500
+      ],
+      "xc": [
+        "B3LYP",
+        "CAM-B3LYP",
+        "wB97X-D"
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.45,
+  "d_spec_notes": "Canonical mismatch-only baseline for this principle; sits at the centroid of its spec family.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions match across all DAG nodes; operator dimensions consistent.",
+    "S2": "Operator condition number controlled (kappa_eff=60) under declared Omega with regularization.",
+    "S3": "Solver class NWChem-TDDFT, Turbomole-TDDFT, Q-Chem; Davidson eigensolver provably converges at rate q=2.0; monotone residual decrease.",
+    "S4": "epsilon_fn evaluates cleanly across 50 random Omega samples; hardness rule satisfied (top baseline fails at Omega corner)."
+  },
+  "ipfs_cid": null
+}

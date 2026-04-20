@@ -1,0 +1,135 @@
+{
+  "artifact_id": "L2-488",
+  "layer": "L2",
+  "parent_l1": "L1-488",
+  "title": "Drift-Diffusion Semiconductor Transport (TCAD) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "L_channel_nm": [
+        5,
+        1000
+      ],
+      "T_ox_nm": [
+        0.5,
+        20
+      ],
+      "N_D_cm3": [
+        1000000000000000.0,
+        1e+20
+      ],
+      "N_A_cm3": [
+        1000000000000000.0,
+        1e+20
+      ],
+      "T_K": [
+        200,
+        500
+      ],
+      "mesh_N": [
+        32,
+        512
+      ]
+    },
+    "E": {
+      "forward": "grad.(eps*grad(phi)) = -q*(p - n + N_D - N_A);  J_n = q*mu_n*n*E + q*D_n*grad(n);  dn/dt = (1/q)*div(J_n) - R(n,p);  analogous for holes",
+      "operator": "drift_diffusion_forward_mismatch",
+      "primitive_chain": "E.poisson -> E.continuity_n -> E.continuity_p -> M.gummel_coupled -> O.terminal_IV",
+      "inverse": "recover (mu_n, tau_SRH, doping) from measured I-V, C-V"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "IV_log_rel_err",
+      "Vth_mV_err",
+      "SS_mV_per_decade_err",
+      "gummel_iters"
+    ],
+    "epsilon_fn": "0.025 + 0.005*abs(log10(N_D_cm3/1e18)) + 0.002*abs(T_K-300)/10"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Sentaurus-TCAD",
+        "method_sig": "T+O",
+        "expected_err": 0.05
+      },
+      {
+        "name": "COMSOL-SD",
+        "method_sig": "T+O",
+        "expected_err": 0.06
+      },
+      {
+        "name": "DD-PINN",
+        "method_sig": "T+N",
+        "expected_err": 0.035
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "L_channel_nm": 50,
+        "T_ox_nm": 2.0,
+        "N_D_cm3": 1e+18,
+        "N_A_cm3": 1e+17,
+        "T_K": 300,
+        "mesh_N": 64
+      },
+      "epsilon": 0.03
+    },
+    "tier_bounds": {
+      "L_channel_nm": [
+        5,
+        1000
+      ],
+      "T_ox_nm": [
+        0.5,
+        20
+      ],
+      "N_D_cm3": [
+        1000000000000000.0,
+        1e+20
+      ],
+      "N_A_cm3": [
+        1000000000000000.0,
+        1e+20
+      ],
+      "T_K": [
+        200,
+        500
+      ],
+      "mesh_N": [
+        32,
+        512
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.45,
+  "d_spec_notes": "Canonical mismatch-only baseline for this principle; sits at the centroid of its spec family.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions match across all DAG nodes; operator dimensions consistent.",
+    "S2": "Operator condition number controlled (kappa_eff=50) under declared Omega with regularization.",
+    "S3": "Solver class Scharfetter-Gummel FV + Gummel or full Newton; inversion via BFGS/adjoint-TCAD provably converges at rate q=2.0; monotone residual decrease.",
+    "S4": "epsilon_fn evaluates cleanly across 50 random Omega samples; hardness rule satisfied (top baseline fails at Omega corner)."
+  },
+  "ipfs_cid": null
+}

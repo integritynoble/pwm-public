@@ -1,0 +1,136 @@
+{
+  "artifact_id": "L1-326",
+  "layer": "L1",
+  "principle_number": "326",
+  "title": "k.p Perturbation Theory",
+  "domain": "Quantum Mechanics",
+  "sub_domain": "Near-gap band structure expansion",
+  "source_file": "Y_quantum_mechanics/326_kp_perturbation.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
+  "E": {
+    "description": "k.p: expand H(k) around high-symmetry point k_0 using momentum matrix elements p_{nm}; effective mass and g-factor from band curvature.",
+    "forward_model": "E_n(k) = E_n(k_0) + hbar^2 k^2/(2m_e) + sum_{m != n} |<u_n|p|u_m>|^2 * (hbar*k)^2 / (m_e^2 * (E_n - E_m))",
+    "world_state_x": "Effective-mass tensor, g-factor, near-band-edge dispersion",
+    "observation_y": "Cyclotron resonance, Landau levels, exciton binding, magnetic susceptibility",
+    "physical_parameters_theta": [
+      "momentum matrix elements p_{nm}",
+      "band energies at k_0",
+      "Luttinger parameters"
+    ]
+  },
+  "G": {
+    "dag": "E.momentum_matrix -> E.perturbative_expansion -> O.effective_mass",
+    "vertices": [
+      "E.momentum_matrix",
+      "E.perturbative_expansion",
+      "O.effective_mass"
+    ],
+    "arcs": [
+      "E.momentum_matrix -> E.perturbative_expansion",
+      "E.perturbative_expansion -> O.effective_mass"
+    ],
+    "L_DAG": 3.1,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 200,
+    "condition_number_effective": 20,
+    "regime": "Well-posed near k_0; fails far from band edge."
+  },
+  "C": {
+    "solver_class": "Kane 8-band, Luttinger 6-band models; fits Luttinger gamma from cyclotron",
+    "convergence_rate_q": 2.0,
+    "error_bound": "bounded by discretization + mismatch bias + noise floor",
+    "complexity": "principle-dependent"
+  },
+  "physics_fingerprint": {
+    "carrier": "electron",
+    "sensing_mechanism": "cyclotron_resonance",
+    "integration_axis": "k_space",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "effective_mass_tensor",
+    "primitives": [
+      "E.momentum_matrix",
+      "E.perturbative_expansion",
+      "O.effective_mass"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "band_truncation_error",
+    "SOC_corrections",
+    "strain_correction"
+  ],
+  "error_metric": "effective_mass_relative_error",
+  "error_metric_secondary": "g_factor_error",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "kp_perturbation",
+      "forward_operator": "kp_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_bands_kp": 8,
+        "k_range_A_inv": 0.1,
+        "species": "GaAs",
+        "include_SOC": true
+      },
+      "epsilon_fn_center": "m* rel error <= 0.03"
+    },
+    "allowed_forward_operators": [
+      "kp_forward"
+    ],
+    "allowed_problem_classes": [
+      "kp_perturbation"
+    ],
+    "allowed_omega_dimensions": [
+      "N_bands_kp",
+      "k_range_A_inv",
+      "species",
+      "include_SOC"
+    ],
+    "omega_bounds": {
+      "N_bands_kp": [
+        4,
+        30
+      ],
+      "k_range_A_inv": [
+        0.01,
+        1.0
+      ],
+      "include_SOC": [
+        true,
+        false
+      ]
+    },
+    "epsilon_bounds": {
+      "effective_mass_relative_error": [
+        0.01,
+        0.3
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

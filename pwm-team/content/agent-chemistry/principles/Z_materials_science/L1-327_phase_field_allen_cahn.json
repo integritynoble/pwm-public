@@ -1,0 +1,152 @@
+{
+  "artifact_id": "L1-327",
+  "layer": "L1",
+  "principle_number": "327",
+  "title": "Phase-Field Allen-Cahn Dynamics",
+  "domain": "Materials Science",
+  "sub_domain": "Non-conserved order parameter dynamics",
+  "source_file": "Z_materials_science/327_phase_field_allen_cahn.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
+  "E": {
+    "description": "Allen-Cahn evolution for non-conserved order parameter phi; gradient flow of Landau free energy F = integral [W*f(phi) + (kappa/2)*|grad phi|^2] dV.",
+    "forward_model": "dphi/dt = -M_phi * (dF/dphi) = M_phi * (kappa * Laplacian(phi) - W * f'(phi))",
+    "world_state_x": "Order parameter field phi(r,t) (e.g., grain orientation, anti-phase domain)",
+    "observation_y": "Domain micrographs (EBSD, TEM dark-field); domain wall velocity; interface curvature",
+    "physical_parameters_theta": [
+      "kappa (gradient energy)",
+      "M_phi (mobility)",
+      "W (barrier height)",
+      "f(phi) (bulk functional)"
+    ]
+  },
+  "G": {
+    "dag": "E.free_energy -> E.gradient_flow -> M.time_integrate -> O.domain_map",
+    "vertices": [
+      "E.free_energy",
+      "E.gradient_flow",
+      "M.time_integrate",
+      "O.domain_map"
+    ],
+    "arcs": [
+      "E.free_energy -> E.gradient_flow",
+      "E.gradient_flow -> M.time_integrate",
+      "M.time_integrate -> O.domain_map"
+    ],
+    "L_DAG": 3.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 300,
+    "condition_number_effective": 30,
+    "regime": "Well-posed parabolic PDE; inversion for (kappa, M, W) is ill-conditioned due to kinematic degeneracy between mobility and barrier."
+  },
+  "C": {
+    "solver_class": "Semi-implicit Fourier spectral; Adam/adjoint parameter inversion",
+    "convergence_rate_q": 2.0,
+    "error_bound": "bounded by discretization + mismatch bias + noise floor",
+    "complexity": "principle-dependent"
+  },
+  "physics_fingerprint": {
+    "carrier": "none",
+    "sensing_mechanism": "electron_or_optical_micrograph",
+    "integration_axis": "time",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "order_parameter_field_phi",
+    "primitives": [
+      "E.free_energy",
+      "E.gradient_flow",
+      "M.time_integrate",
+      "O.domain_map"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "kappa_error",
+    "mobility_anisotropy",
+    "noise_temperature"
+  ],
+  "error_metric": "domain_velocity_relative_error",
+  "error_metric_secondary": "interface_width_error_nm",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "phase_field_allen_cahn",
+      "forward_operator": "allen_cahn_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "grid_N": 256,
+        "dx_nm": 10,
+        "dt_s": 0.001,
+        "M_phi": 1.0,
+        "kappa": 1.0,
+        "T_K": 300
+      },
+      "epsilon_fn_center": "velocity rel error <= 0.04"
+    },
+    "allowed_forward_operators": [
+      "allen_cahn_forward"
+    ],
+    "allowed_problem_classes": [
+      "phase_field_allen_cahn"
+    ],
+    "allowed_omega_dimensions": [
+      "grid_N",
+      "dx_nm",
+      "dt_s",
+      "M_phi",
+      "kappa",
+      "T_K"
+    ],
+    "omega_bounds": {
+      "grid_N": [
+        64,
+        1024
+      ],
+      "dx_nm": [
+        0.5,
+        100
+      ],
+      "M_phi": [
+        0.1,
+        100
+      ],
+      "kappa": [
+        0.1,
+        10
+      ],
+      "T_K": [
+        77,
+        1500
+      ]
+    },
+    "epsilon_bounds": {
+      "domain_velocity_relative_error": [
+        0.01,
+        0.4
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

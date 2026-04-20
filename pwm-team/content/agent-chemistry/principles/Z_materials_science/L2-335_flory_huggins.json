@@ -1,0 +1,126 @@
+{
+  "artifact_id": "L2-335",
+  "layer": "L2",
+  "parent_l1": "L1-335",
+  "title": "Flory-Huggins Polymer Solution Theory Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "N_A": [
+        10,
+        10000
+      ],
+      "N_B": [
+        10,
+        10000
+      ],
+      "T_K_range": [
+        200,
+        500
+      ],
+      "chi_0": [
+        0.1,
+        2.0
+      ],
+      "chi_slope": [
+        0,
+        0.01
+      ]
+    },
+    "E": {
+      "forward": "DG_mix = RT * (phi_A/N_A * ln(phi_A) + phi_B/N_B * ln(phi_B) + chi * phi_A * phi_B)",
+      "operator": "flory_huggins_forward_mismatch",
+      "primitive_chain": "E.mixing_entropy -> E.interaction_chi -> M.binodal_compute -> O.phase_diagram",
+      "inverse": "recover constitutive parameters for Flory-Huggins Polymer Solution Theory"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "phase_boundary_K_error",
+      "chi_AB_relative_error",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "2.0 * (1 + 0.1 * mismatch_severity)"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "FH-analytic",
+        "method_sig": "L+O",
+        "expected_err": 3.0
+      },
+      {
+        "name": "SAFT-VR",
+        "method_sig": "T+O",
+        "expected_err": 3.5
+      },
+      {
+        "name": "FH-BayesNet",
+        "method_sig": "L+N",
+        "expected_err": 2.2
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_A": 100,
+        "N_B": 100,
+        "T_K": 300,
+        "chi_0": 0.6,
+        "chi_slope": 0.001
+      },
+      "epsilon": 2.0
+    },
+    "tier_bounds": {
+      "N_A": [
+        10,
+        10000
+      ],
+      "N_B": [
+        10,
+        10000
+      ],
+      "T_K_range": [
+        200,
+        500
+      ],
+      "chi_0": [
+        0.1,
+        2.0
+      ],
+      "chi_slope": [
+        0,
+        0.01
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.45,
+  "d_spec_notes": "Canonical mismatch-only baseline for this principle; sits at the centroid of its spec family.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions match across all DAG nodes; operator dimensions consistent.",
+    "S2": "Operator condition number controlled (kappa_eff=12) under declared Omega with regularization.",
+    "S3": "Solver class Common-tangent construction for binodal; nonlinear fit for chi(T) provably converges at rate q=2.0; monotone residual decrease.",
+    "S4": "epsilon_fn evaluates cleanly across 50 random Omega samples; hardness rule satisfied (top baseline fails at Omega corner)."
+  },
+  "ipfs_cid": null
+}

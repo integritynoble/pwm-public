@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-324",
+  "layer": "L2",
+  "parent_l1": "L1-324",
+  "title": "Lindblad Master Equation (Open Quantum Systems) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "N_dim": [
+        2,
+        1000
+      ],
+      "T_end_ns": [
+        0.1,
+        1000000.0
+      ],
+      "gamma_MHz": [
+        0.0001,
+        10000.0
+      ],
+      "N_dissipators": [
+        1,
+        50
+      ]
+    },
+    "E": {
+      "forward": "drho/dt = -i/hbar*[H, rho] + sum_k L_k rho L_k^dag - (1/2){L_k^dag L_k, rho}",
+      "operator": "lindblad_forward_mismatch",
+      "primitive_chain": "E.hamiltonian -> E.dissipators -> M.time_evolve -> O.observables",
+      "inverse": "recover constitutive parameters for Lindblad Master Equation (Open Quantum Systems)"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "T2_relative_error",
+      "fidelity_error",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.03 * (1 + 0.1 * mismatch_severity)"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "QuTiP mesolve",
+        "method_sig": "T+O",
+        "expected_err": 0.05
+      },
+      {
+        "name": "Qiskit-Dynamics",
+        "method_sig": "T+O",
+        "expected_err": 0.06
+      },
+      {
+        "name": "Lindblad-NeuralOp",
+        "method_sig": "T+N",
+        "expected_err": 0.035
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_dim": 8,
+        "T_end_ns": 100,
+        "gamma_MHz": 1.0,
+        "N_dissipators": 2
+      },
+      "epsilon": 0.03
+    },
+    "tier_bounds": {
+      "N_dim": [
+        2,
+        1000
+      ],
+      "T_end_ns": [
+        0.1,
+        1000000.0
+      ],
+      "gamma_MHz": [
+        0.0001,
+        10000.0
+      ],
+      "N_dissipators": [
+        1,
+        50
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.45,
+  "d_spec_notes": "Canonical mismatch-only baseline for this principle; sits at the centroid of its spec family.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions match across all DAG nodes; operator dimensions consistent.",
+    "S2": "Operator condition number controlled (kappa_eff=40) under declared Omega with regularization.",
+    "S3": "Solver class QuTiP mesolve; Runge-Kutta; super-operator Liouvillian diagonalization provably converges at rate q=2.0; monotone residual decrease.",
+    "S4": "epsilon_fn evaluates cleanly across 50 random Omega samples; hardness rule satisfied (top baseline fails at Omega corner)."
+  },
+  "ipfs_cid": null
+}

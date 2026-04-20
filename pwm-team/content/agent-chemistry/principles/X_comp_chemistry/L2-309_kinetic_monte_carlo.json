@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-309",
+  "layer": "L2",
+  "parent_l1": "L1-309",
+  "title": "Kinetic Monte Carlo (KMC) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "N_states": [
+        10,
+        1000000000.0
+      ],
+      "N_events": [
+        1000,
+        1000000000000.0
+      ],
+      "T_K": [
+        100,
+        3000
+      ],
+      "N_rates_per_state": [
+        2,
+        1000
+      ]
+    },
+    "E": {
+      "forward": "P(i -> j | stay in i) = k_ij / sum_k k_ik; dt = -ln(u) / sum_k k_ik",
+      "operator": "kmc_forward_mismatch",
+      "primitive_chain": "E.rate_catalog -> M.gillespie_sample -> O.trajectory_distribution",
+      "inverse": "recover constitutive parameters for Kinetic Monte Carlo (KMC)"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "rate_distribution_KL",
+      "first_passage_time_error",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.03 * (1 + 0.1 * mismatch_severity)"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "KMCLib",
+        "method_sig": "T+O",
+        "expected_err": 0.05
+      },
+      {
+        "name": "SPPARKS",
+        "method_sig": "T+O",
+        "expected_err": 0.06
+      },
+      {
+        "name": "Neural-KMC",
+        "method_sig": "T+N",
+        "expected_err": 0.035
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_states": 1000,
+        "N_events": 1000000.0,
+        "T_K": 600,
+        "N_rates_per_state": 10
+      },
+      "epsilon": 0.03
+    },
+    "tier_bounds": {
+      "N_states": [
+        10,
+        1000000000.0
+      ],
+      "N_events": [
+        1000,
+        1000000000000.0
+      ],
+      "T_K": [
+        100,
+        3000
+      ],
+      "N_rates_per_state": [
+        2,
+        1000
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.45,
+  "d_spec_notes": "Canonical mismatch-only baseline for this principle; sits at the centroid of its spec family.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions match across all DAG nodes; operator dimensions consistent.",
+    "S2": "Operator condition number controlled (kappa_eff=20) under declared Omega with regularization.",
+    "S3": "Solver class KMCLib, SPPARKS; adaptive KMC with Bell saddle-search provably converges at rate q=2.0; monotone residual decrease.",
+    "S4": "epsilon_fn evaluates cleanly across 50 random Omega samples; hardness rule satisfied (top baseline fails at Omega corner)."
+  },
+  "ipfs_cid": null
+}

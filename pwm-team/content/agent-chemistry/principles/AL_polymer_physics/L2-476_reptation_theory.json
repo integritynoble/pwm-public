@@ -1,0 +1,135 @@
+{
+  "artifact_id": "L2-476",
+  "layer": "L2",
+  "parent_l1": "L1-476",
+  "title": "de Gennes-Doi-Edwards Reptation Theory Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "N_over_Ne": [
+        5,
+        200
+      ],
+      "M_e_kDa": [
+        0.5,
+        50.0
+      ],
+      "PDI": [
+        1.01,
+        3.0
+      ],
+      "omega_range_decades": [
+        3,
+        10
+      ],
+      "T_C": [
+        -50,
+        200
+      ],
+      "strain_pct": [
+        0.1,
+        10.0
+      ]
+    },
+    "E": {
+      "forward": "G(t) = G_N^0 * sum_p psi_p(t) * exp(-p^2 t / tau_d) + G_Rouse(t);  eta_0 = integral_0^inf G(t) dt",
+      "operator": "reptation_forward_mismatch",
+      "primitive_chain": "E.doi_edwards_tube -> M.relaxation_modes -> int.rheology -> O.viscoelastic_spectrum",
+      "inverse": "recover molecular weight distribution and entanglement parameters from G'(omega), G''(omega)"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "log_G_prime_RMSE",
+      "eta_0_rel_error",
+      "tau_d_fit_error",
+      "MW_distribution_KLdiv"
+    ],
+    "epsilon_fn": "0.04 + 0.01*(PDI-1.0) + 0.002*abs(T_C-25) + 0.01*noise_frac"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "IRIS (Tikhonov)",
+        "method_sig": "L+O",
+        "expected_rmse": 0.08
+      },
+      {
+        "name": "Ianniruberto-Marrucci tube-fit",
+        "method_sig": "T+O",
+        "expected_rmse": 0.06
+      },
+      {
+        "name": "Reptate-ML (learned tube)",
+        "method_sig": "T+N",
+        "expected_rmse": 0.04
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_over_Ne": 20,
+        "M_e_kDa": 5.0,
+        "PDI": 1.05,
+        "omega_range_decades": 7,
+        "T_C": 25,
+        "strain_pct": 1.0
+      },
+      "epsilon": 0.05
+    },
+    "tier_bounds": {
+      "N_over_Ne": [
+        5,
+        200
+      ],
+      "M_e_kDa": [
+        0.5,
+        50.0
+      ],
+      "PDI": [
+        1.01,
+        3.0
+      ],
+      "omega_range_decades": [
+        3,
+        10
+      ],
+      "T_C": [
+        -50,
+        200
+      ],
+      "strain_pct": [
+        0.1,
+        10.0
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.45,
+  "d_spec_notes": "Canonical mismatch-only baseline for this principle; sits at the centroid of its spec family.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions match across all DAG nodes; operator dimensions consistent.",
+    "S2": "Operator condition number controlled (kappa_eff=25) under declared Omega with regularization.",
+    "S3": "Solver class Tikhonov-regularized Laplace inversion (CONTIN, GEX); tube model fits via Marquardt-Levenberg provably converges at rate q=2.0; monotone residual decrease.",
+    "S4": "epsilon_fn evaluates cleanly across 50 random Omega samples; hardness rule satisfied (top baseline fails at Omega corner)."
+  },
+  "ipfs_cid": null
+}

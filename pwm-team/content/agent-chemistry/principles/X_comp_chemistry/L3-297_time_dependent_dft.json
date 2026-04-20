@@ -1,0 +1,237 @@
+{
+  "artifact_id": "L3-297",
+  "layer": "L3",
+  "parent_l2": "L2-297",
+  "parent_l1": "L1-297",
+  "title": "Time-Dependent Density Functional Theory (TDDFT) Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "Thiel-Schreiber excitation benchmark",
+    "secondary": "QUEST-3 vertical excitation database (Jacquemin)",
+    "construction_method": "canonical ground truth + declared noise at tier Omega for Time-Dependent Density Functional Theory (TDDFT)",
+    "num_dev_instances_per_tier": 20,
+    "holdout_instances_per_tier": 10
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "N_atoms": 20,
+        "N_basis": 500,
+        "N_states": 20,
+        "xc": "B3LYP"
+      },
+      "dataset_description": "Time-Dependent Density Functional Theory (TDDFT) at rho=1.",
+      "epsilon": 0.15,
+      "d_ibench": 0.15,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        },
+        {
+          "Q": 0.9,
+          "tier": "Excellent"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "Gaussian-TDDFT",
+          "score": 0.25,
+          "Q": 0.82
+        },
+        {
+          "name": "Turbomole-TDDFT",
+          "score": 0.22,
+          "Q": 0.78
+        },
+        {
+          "name": "DeepTDDFT",
+          "score": 0.16,
+          "Q": 0.92
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "N_atoms": 50,
+        "N_basis": 1500,
+        "N_states": 50,
+        "xc": "CAM-B3LYP"
+      },
+      "dataset_description": "Time-Dependent Density Functional Theory (TDDFT) at rho=3.",
+      "epsilon": 0.1725,
+      "d_ibench": 0.32,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        },
+        {
+          "Q": 0.9,
+          "tier": "Excellent"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "Gaussian-TDDFT",
+          "score": 0.2875,
+          "Q": 0.66
+        },
+        {
+          "name": "Turbomole-TDDFT",
+          "score": 0.253,
+          "Q": 0.6
+        },
+        {
+          "name": "DeepTDDFT",
+          "score": 0.184,
+          "Q": 0.82
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "N_atoms": 200,
+        "N_basis": 5000,
+        "N_states": 200,
+        "xc": "wB97X-D"
+      },
+      "dataset_description": "Time-Dependent Density Functional Theory (TDDFT) at rho=5.",
+      "epsilon": 0.21,
+      "d_ibench": 0.51,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "Gaussian-TDDFT",
+          "score": 0.35,
+          "Q": 0.44
+        },
+        {
+          "name": "Turbomole-TDDFT",
+          "score": 0.308,
+          "Q": 0.38
+        },
+        {
+          "name": "DeepTDDFT",
+          "score": 0.224,
+          "Q": 0.64
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "N_atoms": 500,
+        "N_basis": 10000,
+        "N_states": 500,
+        "xc": "wB97X-D"
+      },
+      "dataset_description": "Time-Dependent Density Functional Theory (TDDFT) at rho=10.",
+      "epsilon": 0.2775,
+      "d_ibench": 0.72,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "Gaussian-TDDFT",
+          "score": 0.4625,
+          "Q": 0.24
+        },
+        {
+          "name": "Turbomole-TDDFT",
+          "score": 0.407,
+          "Q": 0.2
+        },
+        {
+          "name": "DeepTDDFT",
+          "score": 0.296,
+          "Q": 0.46
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "Thiel + QUEST excitation benchmark",
+      "construction_method": "parametric Omega sampling over declared bounds; stratified by rho.",
+      "num_dev_instances": 200,
+      "num_holdout_instances": 100
+    },
+    "tracks": {
+      "track_A_stratified_worst_case": {
+        "pass_condition": "min score meets epsilon_fn over all strata"
+      },
+      "track_B_uniform_median": {
+        "num_samples": 50,
+        "pass_condition": "median score meets epsilon_fn at Omega_median"
+      },
+      "track_C_mismatch_degradation": {
+        "sweep_points": 5,
+        "pass_condition": "monotone degradation with mismatch"
+      }
+    },
+    "baselines": [
+      {
+        "name": "Gaussian-TDDFT",
+        "track_A_Q": 0.56,
+        "track_B_Q": 0.68,
+        "track_C_Q": 0.6,
+        "overall_Q": 0.61
+      },
+      {
+        "name": "Turbomole-TDDFT",
+        "track_A_Q": 0.58,
+        "track_B_Q": 0.7,
+        "track_C_Q": 0.62,
+        "overall_Q": 0.63
+      },
+      {
+        "name": "DeepTDDFT",
+        "track_A_Q": 0.66,
+        "track_B_Q": 0.76,
+        "track_C_Q": 0.68,
+        "overall_Q": 0.7
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails epsilon_fn at T4_blind Omega corner.",
+  "anti_overfitting_mechanisms": {
+    "M1_random_instantiation": "seeded by benchmark hash; non-repeatable holdout",
+    "M2_convergence_scoring": "verifies declared convergence rate across Omega",
+    "M3_worst_case_eval": "min-score over fixed dev instances per tier",
+    "M4_community_adversarial": "adversarial submissions eligible for T_k",
+    "M5_method_sig_diversity": "baselines span multiple method_sig families",
+    "M6_gate_checks": "S1-S4 gate checks enforced with thresholds.yaml"
+  },
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

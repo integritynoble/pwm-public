@@ -1,0 +1,237 @@
+{
+  "artifact_id": "L3-306",
+  "layer": "L3",
+  "parent_l2": "L2-306",
+  "parent_l1": "L1-306",
+  "title": "Coarse-Grained Molecular Dynamics (MARTINI, Dry-MARTINI) Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "MARTINI benchmark dataset (Marrink lab)",
+    "secondary": "Lipid bilayer CHARMM-GUI benchmark",
+    "construction_method": "canonical ground truth + declared noise at tier Omega for Coarse-Grained Molecular Dynamics (MARTINI, Dry-MARTINI)",
+    "num_dev_instances_per_tier": 20,
+    "holdout_instances_per_tier": 10
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "N_beads": 10000,
+        "T_K": 310,
+        "N_steps": 10000000.0,
+        "dt_fs": 20
+      },
+      "dataset_description": "Coarse-Grained Molecular Dynamics (MARTINI, Dry-MARTINI) at rho=1.",
+      "epsilon": 0.03,
+      "d_ibench": 0.15,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        },
+        {
+          "Q": 0.9,
+          "tier": "Excellent"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "GROMACS-MARTINI",
+          "score": 0.05,
+          "Q": 0.82
+        },
+        {
+          "name": "LAMMPS-MSCG",
+          "score": 0.055,
+          "Q": 0.78
+        },
+        {
+          "name": "CGNet",
+          "score": 0.035,
+          "Q": 0.92
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "N_beads": 100000.0,
+        "T_K": 340,
+        "N_steps": 100000000.0,
+        "dt_fs": 25
+      },
+      "dataset_description": "Coarse-Grained Molecular Dynamics (MARTINI, Dry-MARTINI) at rho=3.",
+      "epsilon": 0.0345,
+      "d_ibench": 0.32,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        },
+        {
+          "Q": 0.9,
+          "tier": "Excellent"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "GROMACS-MARTINI",
+          "score": 0.0575,
+          "Q": 0.66
+        },
+        {
+          "name": "LAMMPS-MSCG",
+          "score": 0.0633,
+          "Q": 0.6
+        },
+        {
+          "name": "CGNet",
+          "score": 0.0403,
+          "Q": 0.82
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "N_beads": 10000000.0,
+        "T_K": 200,
+        "N_steps": 1000000000.0,
+        "dt_fs": 40
+      },
+      "dataset_description": "Coarse-Grained Molecular Dynamics (MARTINI, Dry-MARTINI) at rho=5.",
+      "epsilon": 0.042,
+      "d_ibench": 0.51,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "GROMACS-MARTINI",
+          "score": 0.07,
+          "Q": 0.44
+        },
+        {
+          "name": "LAMMPS-MSCG",
+          "score": 0.077,
+          "Q": 0.38
+        },
+        {
+          "name": "CGNet",
+          "score": 0.049,
+          "Q": 0.64
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "N_beads": 100000000.0,
+        "T_K": 400,
+        "N_steps": 10000000000.0,
+        "dt_fs": 50
+      },
+      "dataset_description": "Coarse-Grained Molecular Dynamics (MARTINI, Dry-MARTINI) at rho=10.",
+      "epsilon": 0.0555,
+      "d_ibench": 0.72,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "GROMACS-MARTINI",
+          "score": 0.0925,
+          "Q": 0.24
+        },
+        {
+          "name": "LAMMPS-MSCG",
+          "score": 0.1018,
+          "Q": 0.2
+        },
+        {
+          "name": "CGNet",
+          "score": 0.0648,
+          "Q": 0.46
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "MARTINI + CHARMM-GUI bilayer library",
+      "construction_method": "parametric Omega sampling over declared bounds; stratified by rho.",
+      "num_dev_instances": 200,
+      "num_holdout_instances": 100
+    },
+    "tracks": {
+      "track_A_stratified_worst_case": {
+        "pass_condition": "min score meets epsilon_fn over all strata"
+      },
+      "track_B_uniform_median": {
+        "num_samples": 50,
+        "pass_condition": "median score meets epsilon_fn at Omega_median"
+      },
+      "track_C_mismatch_degradation": {
+        "sweep_points": 5,
+        "pass_condition": "monotone degradation with mismatch"
+      }
+    },
+    "baselines": [
+      {
+        "name": "GROMACS-MARTINI",
+        "track_A_Q": 0.58,
+        "track_B_Q": 0.7,
+        "track_C_Q": 0.62,
+        "overall_Q": 0.63
+      },
+      {
+        "name": "LAMMPS-MSCG",
+        "track_A_Q": 0.56,
+        "track_B_Q": 0.68,
+        "track_C_Q": 0.6,
+        "overall_Q": 0.61
+      },
+      {
+        "name": "CGNet",
+        "track_A_Q": 0.66,
+        "track_B_Q": 0.76,
+        "track_C_Q": 0.68,
+        "overall_Q": 0.7
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails epsilon_fn at T4_blind Omega corner.",
+  "anti_overfitting_mechanisms": {
+    "M1_random_instantiation": "seeded by benchmark hash; non-repeatable holdout",
+    "M2_convergence_scoring": "verifies declared convergence rate across Omega",
+    "M3_worst_case_eval": "min-score over fixed dev instances per tier",
+    "M4_community_adversarial": "adversarial submissions eligible for T_k",
+    "M5_method_sig_diversity": "baselines span multiple method_sig families",
+    "M6_gate_checks": "S1-S4 gate checks enforced with thresholds.yaml"
+  },
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

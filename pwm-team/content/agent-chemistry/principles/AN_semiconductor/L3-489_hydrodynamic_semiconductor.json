@@ -1,0 +1,241 @@
+{
+  "artifact_id": "L3-489",
+  "layer": "L3",
+  "parent_l2": "L2-489",
+  "parent_l1": "L1-489",
+  "title": "Hydrodynamic Semiconductor Transport Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "Sentaurus validation suite (90nm/45nm NMOS, IEEE-EDS)",
+    "secondary": "Monte Carlo-verified reference benchmarks (MOCASIM)",
+    "construction_method": "MOSFET sweeps across Vds, Vgs with documented velocity-overshoot conditions",
+    "num_dev_instances_per_tier": 20,
+    "holdout_instances_per_tier": 10
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "L_channel_nm": 50,
+        "Vds": 1.0,
+        "N_D_cm3": 1e+18,
+        "T_K": 300,
+        "mesh_N": 128
+      },
+      "dataset_description": "Hydrodynamic Semiconductor Transport at rho=1.",
+      "epsilon": 0.04,
+      "d_ibench": 0.15,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        },
+        {
+          "Q": 0.9,
+          "tier": "Excellent"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "Sentaurus-HD",
+          "score": 0.055,
+          "Q": 0.8
+        },
+        {
+          "name": "Silvaco-HD",
+          "score": 0.062,
+          "Q": 0.78
+        },
+        {
+          "name": "HD-NeuralClosure",
+          "score": 0.042,
+          "Q": 0.92
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "L_channel_nm": 25,
+        "Vds": 1.8,
+        "N_D_cm3": 3e+18,
+        "T_K": 350,
+        "mesh_N": 256
+      },
+      "dataset_description": "Hydrodynamic Semiconductor Transport at rho=3.",
+      "epsilon": 0.046,
+      "d_ibench": 0.32,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        },
+        {
+          "Q": 0.9,
+          "tier": "Excellent"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "Sentaurus-HD",
+          "score": 0.075,
+          "Q": 0.64
+        },
+        {
+          "name": "Silvaco-HD",
+          "score": 0.085,
+          "Q": 0.6
+        },
+        {
+          "name": "HD-NeuralClosure",
+          "score": 0.055,
+          "Q": 0.82
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "L_channel_nm": 12,
+        "Vds": 3.0,
+        "N_D_cm3": 1e+19,
+        "T_K": 400,
+        "mesh_N": 512
+      },
+      "dataset_description": "Hydrodynamic Semiconductor Transport at rho=5.",
+      "epsilon": 0.056,
+      "d_ibench": 0.51,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "Sentaurus-HD",
+          "score": 0.12,
+          "Q": 0.42
+        },
+        {
+          "name": "Silvaco-HD",
+          "score": 0.14,
+          "Q": 0.38
+        },
+        {
+          "name": "HD-NeuralClosure",
+          "score": 0.08,
+          "Q": 0.64
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "L_channel_nm": 5,
+        "Vds": 5.0,
+        "N_D_cm3": 1e+20,
+        "T_K": 500,
+        "mesh_N": 1024
+      },
+      "dataset_description": "Hydrodynamic Semiconductor Transport at rho=10.",
+      "epsilon": 0.074,
+      "d_ibench": 0.72,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "Sentaurus-HD",
+          "score": 0.22,
+          "Q": 0.22
+        },
+        {
+          "name": "Silvaco-HD",
+          "score": 0.25,
+          "Q": 0.18
+        },
+        {
+          "name": "HD-NeuralClosure",
+          "score": 0.14,
+          "Q": 0.44
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "Sentaurus + MOCASIM hydrodynamic transport library",
+      "construction_method": "parametric Omega sampling over declared bounds; stratified by rho.",
+      "num_dev_instances": 200,
+      "num_holdout_instances": 100
+    },
+    "tracks": {
+      "track_A_stratified_worst_case": {
+        "pass_condition": "min score meets epsilon_fn over all strata"
+      },
+      "track_B_uniform_median": {
+        "num_samples": 50,
+        "pass_condition": "median score meets epsilon_fn at Omega_median"
+      },
+      "track_C_mismatch_degradation": {
+        "sweep_points": 5,
+        "pass_condition": "monotone degradation with mismatch"
+      }
+    },
+    "baselines": [
+      {
+        "name": "Sentaurus-HD",
+        "track_A_Q": 0.48,
+        "track_B_Q": 0.6,
+        "track_C_Q": 0.52,
+        "overall_Q": 0.54
+      },
+      {
+        "name": "Silvaco-HD",
+        "track_A_Q": 0.46,
+        "track_B_Q": 0.58,
+        "track_C_Q": 0.5,
+        "overall_Q": 0.52
+      },
+      {
+        "name": "HD-NeuralClosure",
+        "track_A_Q": 0.6,
+        "track_B_Q": 0.72,
+        "track_C_Q": 0.64,
+        "overall_Q": 0.66
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails epsilon_fn at T4_blind Omega corner.",
+  "anti_overfitting_mechanisms": {
+    "M1_random_instantiation": "seeded by benchmark hash; non-repeatable holdout",
+    "M2_convergence_scoring": "verifies declared convergence rate across Omega",
+    "M3_worst_case_eval": "min-score over fixed dev instances per tier",
+    "M4_community_adversarial": "adversarial submissions eligible for T_k",
+    "M5_method_sig_diversity": "baselines span multiple method_sig families",
+    "M6_gate_checks": "S1-S4 gate checks enforced with thresholds.yaml"
+  },
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

@@ -1,0 +1,241 @@
+{
+  "artifact_id": "L3-302",
+  "layer": "L3",
+  "parent_l2": "L2-302",
+  "parent_l1": "L1-302",
+  "title": "Michaelis-Menten Enzyme Kinetics Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "BRENDA enzyme database (TU Braunschweig)",
+    "secondary": "EnzML IUBMB canonical kinetics dataset",
+    "construction_method": "canonical ground truth + declared noise at tier Omega for Michaelis-Menten Enzyme Kinetics",
+    "num_dev_instances_per_tier": 20,
+    "holdout_instances_per_tier": 10
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "S_range_mM_min": 0.01,
+        "S_range_mM_max": 100,
+        "N_data_points": 20,
+        "T_K": 298,
+        "pH": 7.4
+      },
+      "dataset_description": "Michaelis-Menten Enzyme Kinetics at rho=1.",
+      "epsilon": 0.05,
+      "d_ibench": 0.15,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        },
+        {
+          "Q": 0.9,
+          "tier": "Excellent"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "MM-LM-fit",
+          "score": 0.08,
+          "Q": 0.82
+        },
+        {
+          "name": "GraphPad-Prism",
+          "score": 0.07,
+          "Q": 0.78
+        },
+        {
+          "name": "Enz-Bayes",
+          "score": 0.055,
+          "Q": 0.92
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "S_range_mM_min": 0.001,
+        "S_range_mM_max": 500,
+        "N_data_points": 50,
+        "T_K": 310,
+        "pH": 7.0
+      },
+      "dataset_description": "Michaelis-Menten Enzyme Kinetics at rho=3.",
+      "epsilon": 0.0575,
+      "d_ibench": 0.32,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        },
+        {
+          "Q": 0.9,
+          "tier": "Excellent"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "MM-LM-fit",
+          "score": 0.092,
+          "Q": 0.66
+        },
+        {
+          "name": "GraphPad-Prism",
+          "score": 0.0805,
+          "Q": 0.6
+        },
+        {
+          "name": "Enz-Bayes",
+          "score": 0.0633,
+          "Q": 0.82
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "S_range_mM_min": 0.001,
+        "S_range_mM_max": 5000,
+        "N_data_points": 500,
+        "T_K": 350,
+        "pH": 5.0
+      },
+      "dataset_description": "Michaelis-Menten Enzyme Kinetics at rho=5.",
+      "epsilon": 0.07,
+      "d_ibench": 0.51,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "MM-LM-fit",
+          "score": 0.112,
+          "Q": 0.44
+        },
+        {
+          "name": "GraphPad-Prism",
+          "score": 0.098,
+          "Q": 0.38
+        },
+        {
+          "name": "Enz-Bayes",
+          "score": 0.077,
+          "Q": 0.64
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "S_range_mM_min": 0.001,
+        "S_range_mM_max": 10000,
+        "N_data_points": 10000,
+        "T_K": 373,
+        "pH": 1.0
+      },
+      "dataset_description": "Michaelis-Menten Enzyme Kinetics at rho=10.",
+      "epsilon": 0.0925,
+      "d_ibench": 0.72,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "MM-LM-fit",
+          "score": 0.148,
+          "Q": 0.24
+        },
+        {
+          "name": "GraphPad-Prism",
+          "score": 0.1295,
+          "Q": 0.2
+        },
+        {
+          "name": "Enz-Bayes",
+          "score": 0.1018,
+          "Q": 0.46
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "BRENDA + EnzML kinetics library",
+      "construction_method": "parametric Omega sampling over declared bounds; stratified by rho.",
+      "num_dev_instances": 200,
+      "num_holdout_instances": 100
+    },
+    "tracks": {
+      "track_A_stratified_worst_case": {
+        "pass_condition": "min score meets epsilon_fn over all strata"
+      },
+      "track_B_uniform_median": {
+        "num_samples": 50,
+        "pass_condition": "median score meets epsilon_fn at Omega_median"
+      },
+      "track_C_mismatch_degradation": {
+        "sweep_points": 5,
+        "pass_condition": "monotone degradation with mismatch"
+      }
+    },
+    "baselines": [
+      {
+        "name": "MM-LM-fit",
+        "track_A_Q": 0.66,
+        "track_B_Q": 0.76,
+        "track_C_Q": 0.68,
+        "overall_Q": 0.7
+      },
+      {
+        "name": "GraphPad-Prism",
+        "track_A_Q": 0.68,
+        "track_B_Q": 0.78,
+        "track_C_Q": 0.7,
+        "overall_Q": 0.72
+      },
+      {
+        "name": "Enz-Bayes",
+        "track_A_Q": 0.7,
+        "track_B_Q": 0.8,
+        "track_C_Q": 0.72,
+        "overall_Q": 0.74
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails epsilon_fn at T4_blind Omega corner.",
+  "anti_overfitting_mechanisms": {
+    "M1_random_instantiation": "seeded by benchmark hash; non-repeatable holdout",
+    "M2_convergence_scoring": "verifies declared convergence rate across Omega",
+    "M3_worst_case_eval": "min-score over fixed dev instances per tier",
+    "M4_community_adversarial": "adversarial submissions eligible for T_k",
+    "M5_method_sig_diversity": "baselines span multiple method_sig families",
+    "M6_gate_checks": "S1-S4 gate checks enforced with thresholds.yaml"
+  },
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

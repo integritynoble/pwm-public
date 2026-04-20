@@ -1,0 +1,125 @@
+{
+  "artifact_id": "L2-296",
+  "layer": "L2",
+  "parent_l1": "L1-296",
+  "title": "Post-Hartree-Fock Correlated Methods (MP2, CCSD, CI) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "N_electrons": [
+        2,
+        300
+      ],
+      "N_basis": [
+        20,
+        5000
+      ],
+      "method": [
+        "MP2",
+        "CCSD",
+        "CCSD(T)",
+        "CCSDT"
+      ],
+      "basis": [
+        "cc-pVDZ",
+        "cc-pVTZ",
+        "cc-pVQZ",
+        "aug-cc-pV5Z"
+      ]
+    },
+    "E": {
+      "forward": "E_corr_MP2 = sum_{ijab} |<ij||ab>|^2 / (E_i + E_j - E_a - E_b);  E_CCSD via CC amplitudes T1, T2",
+      "operator": "ccsd_forward_mismatch",
+      "primitive_chain": "E.hf_reference -> E.correlation_expand -> M.amplitude_solve -> O.correlated_energy",
+      "inverse": "recover constitutive parameters for Post-Hartree-Fock Correlated Methods (MP2, CCSD, CI)"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "reaction_energy_error_kcal_mol",
+      "barrier_height_error_kcal_mol",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "1.0 * (1 + 0.1 * mismatch_severity)"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "CCSD(T)/cc-pVTZ",
+        "method_sig": "T+O",
+        "expected_err": 1.5
+      },
+      {
+        "name": "DLPNO-CCSD(T)",
+        "method_sig": "T+O",
+        "expected_err": 1.8
+      },
+      {
+        "name": "DeepCCSD",
+        "method_sig": "T+N",
+        "expected_err": 1.1
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_electrons": 10,
+        "N_basis": 200,
+        "method": "CCSD(T)",
+        "basis": "cc-pVTZ"
+      },
+      "epsilon": 1.0
+    },
+    "tier_bounds": {
+      "N_electrons": [
+        2,
+        300
+      ],
+      "N_basis": [
+        20,
+        5000
+      ],
+      "method": [
+        "MP2",
+        "CCSD",
+        "CCSD(T)",
+        "CCSDT"
+      ],
+      "basis": [
+        "cc-pVDZ",
+        "cc-pVTZ",
+        "cc-pVQZ",
+        "aug-cc-pV5Z"
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.45,
+  "d_spec_notes": "Canonical mismatch-only baseline for this principle; sits at the centroid of its spec family.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions match across all DAG nodes; operator dimensions consistent.",
+    "S2": "Operator condition number controlled (kappa_eff=200) under declared Omega with regularization.",
+    "S3": "Solver class Psi4, CFOUR, Molpro, ORCA; DF-MP2 / DLPNO-CCSD(T) for scaling reduction provably converges at rate q=2.0; monotone residual decrease.",
+    "S4": "epsilon_fn evaluates cleanly across 50 random Omega samples; hardness rule satisfied (top baseline fails at Omega corner)."
+  },
+  "ipfs_cid": null
+}

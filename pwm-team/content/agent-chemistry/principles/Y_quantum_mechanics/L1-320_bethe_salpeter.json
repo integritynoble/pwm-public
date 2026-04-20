@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-320",
+  "layer": "L1",
+  "principle_number": "320",
+  "title": "Bethe-Salpeter Equation for Excitons",
+  "domain": "Quantum Mechanics",
+  "sub_domain": "Optical excitations from GW+BSE",
+  "source_file": "Y_quantum_mechanics/320_bethe_salpeter.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
+  "E": {
+    "description": "BSE on GW quasiparticles: 2-particle propagator for electron-hole pairs; captures excitons, charge-transfer states.",
+    "forward_model": "(E_c - E_v - Omega) A_cv + sum_c'v' <cv|K_eh|c'v'> A_c'v' = 0",
+    "world_state_x": "Exciton wavefunctions and energies Omega_S",
+    "observation_y": "Optical absorption spectra epsilon_2(omega), photoluminescence, binding energies",
+    "physical_parameters_theta": [
+      "GW quasiparticle energies",
+      "screened W (for K_eh)",
+      "exchange kernel"
+    ]
+  },
+  "G": {
+    "dag": "E.GW_bands -> E.kernel_K_eh -> M.BSE_eigensolve -> O.absorption",
+    "vertices": [
+      "E.GW_bands",
+      "E.kernel_K_eh",
+      "M.BSE_eigensolve",
+      "O.absorption"
+    ],
+    "arcs": [
+      "E.GW_bands -> E.kernel_K_eh",
+      "E.kernel_K_eh -> M.BSE_eigensolve",
+      "M.BSE_eigensolve -> O.absorption"
+    ],
+    "L_DAG": 4.2,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 3000,
+    "condition_number_effective": 250,
+    "regime": "Tamm-Dancoff approximation often used; scaling as N^4 limits size."
+  },
+  "C": {
+    "solver_class": "BerkeleyGW BSE; ExcitonSolver; Haydock iterative Lanczos",
+    "convergence_rate_q": 2.0,
+    "error_bound": "bounded by discretization + mismatch bias + noise floor",
+    "complexity": "principle-dependent"
+  },
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "optical_absorption",
+    "integration_axis": "energy",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "exciton_spectrum",
+    "primitives": [
+      "E.GW_bands",
+      "E.kernel_K_eh",
+      "M.BSE_eigensolve",
+      "O.absorption"
+    ]
+  },
+  "difficulty_delta": 10,
+  "difficulty_tier": "hard",
+  "mismatch_parameters": [
+    "TDA_approximation",
+    "kernel_truncation",
+    "GW_starting_point"
+  ],
+  "error_metric": "exciton_binding_error_eV",
+  "error_metric_secondary": "optical_spectrum_L2",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "bethe_salpeter",
+      "forward_operator": "BSE_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_cv_pairs": 500,
+        "N_kpoints": 64,
+        "dielectric_screening": "static",
+        "Omega_range_eV": [
+          0,
+          10
+        ]
+      },
+      "epsilon_fn_center": "binding error <= 0.05 eV"
+    },
+    "allowed_forward_operators": [
+      "BSE_forward"
+    ],
+    "allowed_problem_classes": [
+      "bethe_salpeter"
+    ],
+    "allowed_omega_dimensions": [
+      "N_cv_pairs",
+      "N_kpoints",
+      "dielectric_screening",
+      "Omega_range_eV"
+    ],
+    "omega_bounds": {
+      "N_cv_pairs": [
+        50,
+        50000
+      ],
+      "N_kpoints": [
+        8,
+        10000
+      ],
+      "dielectric_screening": [
+        "static",
+        "dynamic"
+      ]
+    },
+    "epsilon_bounds": {
+      "exciton_binding_error_eV": [
+        0.01,
+        1.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

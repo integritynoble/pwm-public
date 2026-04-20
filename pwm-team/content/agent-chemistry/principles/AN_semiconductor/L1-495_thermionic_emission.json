@@ -1,0 +1,154 @@
+{
+  "artifact_id": "L1-495",
+  "layer": "L1",
+  "principle_number": "495",
+  "title": "Thermionic Emission at Metal-Semiconductor Interfaces",
+  "domain": "Semiconductor Physics",
+  "sub_domain": "Schottky barrier transport",
+  "source_file": "AN_semiconductor/495_thermionic_emission.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
+  "E": {
+    "description": "Richardson-Dushman thermionic current: J_s = A* T^2 exp(-q*phi_B/k_B*T); combined with tunneling (field-enhanced) for modern Schottky contacts.",
+    "forward_model": "J = A* * T^2 * exp(-q*phi_B_eff/(k_B*T)) * (exp(q*V/(n*k_B*T)) - 1);  phi_B_eff = phi_B0 - Delta_phi(E_surface)",
+    "world_state_x": "I-V curve of Schottky diode; barrier height and ideality across temperature",
+    "observation_y": "I-V over T, C-V for barrier height extraction; photoemission spectroscopy for direct phi_B",
+    "physical_parameters_theta": [
+      "A* (Richardson constant, material-specific)",
+      "phi_B0 (zero-bias barrier)",
+      "n (ideality)",
+      "R_s (series resistance)",
+      "E_g (bandgap)"
+    ]
+  },
+  "G": {
+    "dag": "E.richardson_emission -> E.barrier_lowering -> M.IV_integrate -> O.IV_vs_T",
+    "vertices": [
+      "E.richardson_emission",
+      "E.barrier_lowering",
+      "M.IV_integrate",
+      "O.IV_vs_T"
+    ],
+    "arcs": [
+      "E.richardson_emission -> M.IV_integrate",
+      "E.barrier_lowering -> M.IV_integrate",
+      "M.IV_integrate -> O.IV_vs_T"
+    ],
+    "L_DAG": 3.1,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 80,
+    "condition_number_effective": 12,
+    "regime": "Well-posed away from breakdown; inversion of (phi_B, A*) ambiguous at single T \u2014 requires T-series."
+  },
+  "C": {
+    "solver_class": "Richardson plot (log(J_s/T^2) vs 1/T); Bayesian joint fit across T",
+    "convergence_rate_q": 2.0,
+    "error_bound": "|phi_B_hat - phi_B| <= k_B*T*sigma_ln_Js",
+    "complexity": "O(N_bias * N_T)"
+  },
+  "physics_fingerprint": {
+    "carrier": "electron",
+    "sensing_mechanism": "schottky_IV_vs_T",
+    "integration_axis": "bias_and_temperature",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "phi_B_A_star_R_s_vector",
+    "primitives": [
+      "E.richardson_emission",
+      "E.barrier_lowering",
+      "M.IV_integrate",
+      "O.IV_vs_T"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "image_force_lowering",
+    "inhomogeneous_barrier",
+    "tunneling_contribution"
+  ],
+  "error_metric": "phi_B_error_meV",
+  "error_metric_secondary": "IV_log_relative_error",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "schottky_barrier_fit",
+      "forward_operator": "thermionic_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "T_K_range": [
+          200,
+          400
+        ],
+        "V_max_V": 0.5,
+        "A_cm2": 0.0001,
+        "material": "Au_on_Si",
+        "N_points": 100
+      },
+      "epsilon_fn_center": "phi_B error <= 10 meV"
+    },
+    "allowed_forward_operators": [
+      "thermionic_forward"
+    ],
+    "allowed_problem_classes": [
+      "schottky_barrier_fit"
+    ],
+    "allowed_omega_dimensions": [
+      "T_K_range",
+      "V_max_V",
+      "A_cm2",
+      "material",
+      "N_points"
+    ],
+    "omega_bounds": {
+      "T_K_min": [
+        77,
+        300
+      ],
+      "T_K_max": [
+        300,
+        600
+      ],
+      "V_max_V": [
+        0.1,
+        5.0
+      ],
+      "A_cm2": [
+        1e-08,
+        1
+      ],
+      "N_points": [
+        20,
+        5000
+      ]
+    },
+    "epsilon_bounds": {
+      "phi_B_error_meV": [
+        5.0,
+        200.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

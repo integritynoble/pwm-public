@@ -1,0 +1,241 @@
+{
+  "artifact_id": "L3-337",
+  "layer": "L3",
+  "parent_l2": "L2-337",
+  "parent_l1": "L1-337",
+  "title": "Thin Film Growth Kinetics Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "Bales thin-film growth ensemble",
+    "secondary": "PaleXGID synchrotron in-situ dataset (ESRF)",
+    "construction_method": "canonical ground truth + declared noise at tier Omega for Thin Film Growth Kinetics",
+    "num_dev_instances_per_tier": 20,
+    "holdout_instances_per_tier": 10
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "F_ML_s": 0.1,
+        "T_K": 500,
+        "t_s": 10,
+        "lattice_L": 1024,
+        "E_mig_eV": 0.8
+      },
+      "dataset_description": "Thin Film Growth Kinetics at rho=1.",
+      "epsilon": 0.05,
+      "d_ibench": 0.15,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        },
+        {
+          "Q": 0.9,
+          "tier": "Excellent"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "KMC-thinfilm",
+          "score": 0.08,
+          "Q": 0.82
+        },
+        {
+          "name": "Rate-Eq-3",
+          "score": 0.1,
+          "Q": 0.78
+        },
+        {
+          "name": "ThinFilm-GNN",
+          "score": 0.055,
+          "Q": 0.92
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "F_ML_s": 1,
+        "T_K": 800,
+        "t_s": 100,
+        "lattice_L": 2048,
+        "E_mig_eV": 1.2
+      },
+      "dataset_description": "Thin Film Growth Kinetics at rho=3.",
+      "epsilon": 0.0575,
+      "d_ibench": 0.32,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        },
+        {
+          "Q": 0.9,
+          "tier": "Excellent"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "KMC-thinfilm",
+          "score": 0.092,
+          "Q": 0.66
+        },
+        {
+          "name": "Rate-Eq-3",
+          "score": 0.115,
+          "Q": 0.6
+        },
+        {
+          "name": "ThinFilm-GNN",
+          "score": 0.0633,
+          "Q": 0.82
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "F_ML_s": 5,
+        "T_K": 1200,
+        "t_s": 1000,
+        "lattice_L": 4096,
+        "E_mig_eV": 2.0
+      },
+      "dataset_description": "Thin Film Growth Kinetics at rho=5.",
+      "epsilon": 0.07,
+      "d_ibench": 0.51,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "KMC-thinfilm",
+          "score": 0.112,
+          "Q": 0.44
+        },
+        {
+          "name": "Rate-Eq-3",
+          "score": 0.14,
+          "Q": 0.38
+        },
+        {
+          "name": "ThinFilm-GNN",
+          "score": 0.077,
+          "Q": 0.64
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "F_ML_s": 10,
+        "T_K": 1500,
+        "t_s": 3600,
+        "lattice_L": 8192,
+        "E_mig_eV": 2.5
+      },
+      "dataset_description": "Thin Film Growth Kinetics at rho=10.",
+      "epsilon": 0.0925,
+      "d_ibench": 0.72,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "KMC-thinfilm",
+          "score": 0.148,
+          "Q": 0.24
+        },
+        {
+          "name": "Rate-Eq-3",
+          "score": 0.185,
+          "Q": 0.2
+        },
+        {
+          "name": "ThinFilm-GNN",
+          "score": 0.1018,
+          "Q": 0.46
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "Bales + ESRF in-situ thin-film library",
+      "construction_method": "parametric Omega sampling over declared bounds; stratified by rho.",
+      "num_dev_instances": 200,
+      "num_holdout_instances": 100
+    },
+    "tracks": {
+      "track_A_stratified_worst_case": {
+        "pass_condition": "min score meets epsilon_fn over all strata"
+      },
+      "track_B_uniform_median": {
+        "num_samples": 50,
+        "pass_condition": "median score meets epsilon_fn at Omega_median"
+      },
+      "track_C_mismatch_degradation": {
+        "sweep_points": 5,
+        "pass_condition": "monotone degradation with mismatch"
+      }
+    },
+    "baselines": [
+      {
+        "name": "KMC-thinfilm",
+        "track_A_Q": 0.5,
+        "track_B_Q": 0.62,
+        "track_C_Q": 0.54,
+        "overall_Q": 0.55
+      },
+      {
+        "name": "Rate-Eq-3",
+        "track_A_Q": 0.44,
+        "track_B_Q": 0.56,
+        "track_C_Q": 0.48,
+        "overall_Q": 0.49
+      },
+      {
+        "name": "ThinFilm-GNN",
+        "track_A_Q": 0.62,
+        "track_B_Q": 0.72,
+        "track_C_Q": 0.64,
+        "overall_Q": 0.66
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails epsilon_fn at T4_blind Omega corner.",
+  "anti_overfitting_mechanisms": {
+    "M1_random_instantiation": "seeded by benchmark hash; non-repeatable holdout",
+    "M2_convergence_scoring": "verifies declared convergence rate across Omega",
+    "M3_worst_case_eval": "min-score over fixed dev instances per tier",
+    "M4_community_adversarial": "adversarial submissions eligible for T_k",
+    "M5_method_sig_diversity": "baselines span multiple method_sig families",
+    "M6_gate_checks": "S1-S4 gate checks enforced with thresholds.yaml"
+  },
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

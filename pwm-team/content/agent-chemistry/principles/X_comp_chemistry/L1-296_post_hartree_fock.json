@@ -1,0 +1,148 @@
+{
+  "artifact_id": "L1-296",
+  "layer": "L1",
+  "principle_number": "296",
+  "title": "Post-Hartree-Fock Correlated Methods (MP2, CCSD, CI)",
+  "domain": "Computational Chemistry",
+  "sub_domain": "Electron correlation beyond mean-field",
+  "source_file": "X_computational_chemistry/296_post_hartree_fock.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
+  "E": {
+    "description": "Post-HF: recover correlation energy via MP2 (Moller-Plesset 2nd order), CCSD (coupled-cluster singles+doubles), CCSD(T), CI (configuration interaction), FCI.",
+    "forward_model": "E_corr_MP2 = sum_{ijab} |<ij||ab>|^2 / (E_i + E_j - E_a - E_b);  E_CCSD via CC amplitudes T1, T2",
+    "world_state_x": "Correlated wavefunction (CC amplitudes, CI coefficients)",
+    "observation_y": "Correlation energy, bond dissociation energies, reaction energies to chemical accuracy (<1 kcal/mol)",
+    "physical_parameters_theta": [
+      "basis set",
+      "frozen-core approximation",
+      "triples correction",
+      "virtual space truncation"
+    ]
+  },
+  "G": {
+    "dag": "E.hf_reference -> E.correlation_expand -> M.amplitude_solve -> O.correlated_energy",
+    "vertices": [
+      "E.hf_reference",
+      "E.correlation_expand",
+      "M.amplitude_solve",
+      "O.correlated_energy"
+    ],
+    "arcs": [
+      "E.hf_reference -> E.correlation_expand",
+      "E.correlation_expand -> M.amplitude_solve",
+      "M.amplitude_solve -> O.correlated_energy"
+    ],
+    "L_DAG": 4.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 2000,
+    "condition_number_effective": 200,
+    "regime": "Formally well-defined; convergence with basis slow (1/N^3 for CCSD); scaling N^6-N^7 limits size."
+  },
+  "C": {
+    "solver_class": "Psi4, CFOUR, Molpro, ORCA; DF-MP2 / DLPNO-CCSD(T) for scaling reduction",
+    "convergence_rate_q": 2.0,
+    "error_bound": "bounded by discretization + mismatch bias + noise floor",
+    "complexity": "principle-dependent"
+  },
+  "physics_fingerprint": {
+    "carrier": "electron",
+    "sensing_mechanism": "high_accuracy_quantum_chem",
+    "integration_axis": "spatial",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "correlated_wavefunction",
+    "primitives": [
+      "E.hf_reference",
+      "E.correlation_expand",
+      "M.amplitude_solve",
+      "O.correlated_energy"
+    ]
+  },
+  "difficulty_delta": 10,
+  "difficulty_tier": "hard",
+  "mismatch_parameters": [
+    "basis_set_incompleteness",
+    "triples_truncation",
+    "active_space_choice"
+  ],
+  "error_metric": "reaction_energy_error_kcal_mol",
+  "error_metric_secondary": "barrier_height_error_kcal_mol",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "post_hartree_fock",
+      "forward_operator": "ccsd_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_electrons": 10,
+        "N_basis": 200,
+        "method": "CCSD(T)",
+        "basis": "cc-pVTZ"
+      },
+      "epsilon_fn_center": "reaction E <= 1 kcal/mol"
+    },
+    "allowed_forward_operators": [
+      "ccsd_forward"
+    ],
+    "allowed_problem_classes": [
+      "post_hartree_fock"
+    ],
+    "allowed_omega_dimensions": [
+      "N_electrons",
+      "N_basis",
+      "method",
+      "basis"
+    ],
+    "omega_bounds": {
+      "N_electrons": [
+        2,
+        300
+      ],
+      "N_basis": [
+        20,
+        5000
+      ],
+      "method": [
+        "MP2",
+        "CCSD",
+        "CCSD(T)",
+        "CCSDT"
+      ],
+      "basis": [
+        "cc-pVDZ",
+        "cc-pVTZ",
+        "cc-pVQZ",
+        "aug-cc-pV5Z"
+      ]
+    },
+    "epsilon_bounds": {
+      "reaction_energy_error_kcal_mol": [
+        0.1,
+        10
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

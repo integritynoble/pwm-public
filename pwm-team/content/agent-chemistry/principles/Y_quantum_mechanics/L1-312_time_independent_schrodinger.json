@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-312",
+  "layer": "L1",
+  "principle_number": "312",
+  "title": "Time-Independent Schr\u00f6dinger Equation",
+  "domain": "Quantum Mechanics",
+  "sub_domain": "Stationary quantum eigenproblem",
+  "source_file": "Y_quantum_mechanics/312_time_independent_schrodinger.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
+  "E": {
+    "description": "H*psi_n = E_n*psi_n with H = -(hbar^2/2m)*Laplacian + V(r); eigenstates form orthonormal basis; physical observables reduce to expectation values.",
+    "forward_model": "(-hbar^2/2m * Laplacian + V(r)) psi_n(r) = E_n psi_n(r)",
+    "world_state_x": "Eigenfunctions psi_n(r) and eigenvalues E_n",
+    "observation_y": "Spectroscopic transition energies, wavefunction probability density from electron scattering",
+    "physical_parameters_theta": [
+      "V(r) (potential)",
+      "m (effective mass)",
+      "boundary conditions"
+    ]
+  },
+  "G": {
+    "dag": "E.hamiltonian -> M.eigensolve -> O.spectra_wavefunctions",
+    "vertices": [
+      "E.hamiltonian",
+      "M.eigensolve",
+      "O.spectra_wavefunctions"
+    ],
+    "arcs": [
+      "E.hamiltonian -> M.eigensolve",
+      "M.eigensolve -> O.spectra_wavefunctions"
+    ],
+    "L_DAG": 3.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 500,
+    "condition_number_effective": 50,
+    "regime": "Eigenvalues real under self-adjointness; inversion of V(r) from spectrum is the inverse Sturm-Liouville problem (ill-posed for incomplete data)."
+  },
+  "C": {
+    "solver_class": "Iterative Lanczos / Davidson; finite-element basis; adjoint-eigenvalue for inversion",
+    "convergence_rate_q": 2.0,
+    "error_bound": "bounded by discretization + mismatch bias + noise floor",
+    "complexity": "principle-dependent"
+  },
+  "physics_fingerprint": {
+    "carrier": "electron",
+    "sensing_mechanism": "spectroscopic_transition",
+    "integration_axis": "energy",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "wavefunctions_and_eigenvalues",
+    "primitives": [
+      "E.hamiltonian",
+      "M.eigensolve",
+      "O.spectra_wavefunctions"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "V_drift",
+    "basis_truncation",
+    "boundary_uncertainty"
+  ],
+  "error_metric": "energy_error_eV",
+  "error_metric_secondary": "wavefunction_L2_error",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "time_independent_schrodinger",
+      "forward_operator": "schrodinger_stationary_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_basis": 1000,
+        "N_eigen": 20,
+        "box_size_A": 10,
+        "potential_type": "harmonic"
+      },
+      "epsilon_fn_center": "E_n error <= 0.01 eV"
+    },
+    "allowed_forward_operators": [
+      "schrodinger_stationary_forward"
+    ],
+    "allowed_problem_classes": [
+      "time_independent_schrodinger"
+    ],
+    "allowed_omega_dimensions": [
+      "N_basis",
+      "N_eigen",
+      "box_size_A",
+      "potential_type"
+    ],
+    "omega_bounds": {
+      "N_basis": [
+        100,
+        100000
+      ],
+      "N_eigen": [
+        1,
+        1000
+      ],
+      "box_size_A": [
+        1,
+        1000
+      ],
+      "potential_type": [
+        "harmonic",
+        "coulomb",
+        "square_well",
+        "double_well"
+      ]
+    },
+    "epsilon_bounds": {
+      "energy_error_eV": [
+        0.001,
+        1.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

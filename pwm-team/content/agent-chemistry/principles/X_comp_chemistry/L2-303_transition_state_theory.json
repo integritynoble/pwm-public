@@ -1,0 +1,124 @@
+{
+  "artifact_id": "L2-303",
+  "layer": "L2",
+  "parent_l1": "L1-303",
+  "title": "Eyring Transition State Theory Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "N_atoms": [
+        3,
+        1000
+      ],
+      "N_temperatures": [
+        3,
+        200
+      ],
+      "T_K_range_max": [
+        500,
+        3000
+      ],
+      "tunneling": [
+        "none",
+        "Wigner",
+        "Eckart",
+        "SCT"
+      ]
+    },
+    "E": {
+      "forward": "k(T) = (k_B*T/h) * (Q_TS/Q_R) * exp(-DG*/RT) * kappa_tunnel",
+      "operator": "tst_forward_mismatch",
+      "primitive_chain": "E.quantum_chemistry -> E.TS_structure -> M.partition_functions -> O.rate_k_T",
+      "inverse": "recover constitutive parameters for Eyring Transition State Theory"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "log_k_error",
+      "Ea_error_kcal_mol",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.1 * (1 + 0.1 * mismatch_severity)"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Polyrate-SCT",
+        "method_sig": "T+O",
+        "expected_err": 0.18
+      },
+      {
+        "name": "Gaussian-TST",
+        "method_sig": "T+O",
+        "expected_err": 0.22
+      },
+      {
+        "name": "TST-DeepFit",
+        "method_sig": "T+N",
+        "expected_err": 0.11
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_atoms": 10,
+        "N_temperatures": 15,
+        "T_K_range": [
+          200,
+          500
+        ],
+        "tunneling": "SCT"
+      },
+      "epsilon": 0.1
+    },
+    "tier_bounds": {
+      "N_atoms": [
+        3,
+        1000
+      ],
+      "N_temperatures": [
+        3,
+        200
+      ],
+      "T_K_range_max": [
+        500,
+        3000
+      ],
+      "tunneling": [
+        "none",
+        "Wigner",
+        "Eckart",
+        "SCT"
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.45,
+  "d_spec_notes": "Canonical mismatch-only baseline for this principle; sits at the centroid of its spec family.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions match across all DAG nodes; operator dimensions consistent.",
+    "S2": "Operator condition number controlled (kappa_eff=40) under declared Omega with regularization.",
+    "S3": "Solver class Gaussian IRC / NEB; Polyrate for canonical variational TST + tunneling (Wigner, Eckart, SCT) provably converges at rate q=2.0; monotone residual decrease.",
+    "S4": "epsilon_fn evaluates cleanly across 50 random Omega samples; hardness rule satisfied (top baseline fails at Omega corner)."
+  },
+  "ipfs_cid": null
+}

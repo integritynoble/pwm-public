@@ -1,0 +1,237 @@
+{
+  "artifact_id": "L3-332",
+  "layer": "L3",
+  "parent_l2": "L2-332",
+  "parent_l1": "L1-332",
+  "title": "Classical Nucleation Theory Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "Ice nucleation induction time dataset (Murray-Knopf)",
+    "secondary": "Polymer crystallization DSC onset library",
+    "construction_method": "canonical ground truth + declared noise at tier Omega for Classical Nucleation Theory",
+    "num_dev_instances_per_tier": 20,
+    "holdout_instances_per_tier": 10
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "T_under_K": 10,
+        "Dmu_kJmol": 2.0,
+        "N_sites": 1e+21,
+        "interface_sigma_mJm2": 100
+      },
+      "dataset_description": "Classical Nucleation Theory at rho=1.",
+      "epsilon": 0.3,
+      "d_ibench": 0.15,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        },
+        {
+          "Q": 0.9,
+          "tier": "Excellent"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "CNT-fit",
+          "score": 0.5,
+          "Q": 0.82
+        },
+        {
+          "name": "MD-seed nucleation",
+          "score": 0.6,
+          "Q": 0.78
+        },
+        {
+          "name": "CNT-BayesNet",
+          "score": 0.35,
+          "Q": 0.92
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "T_under_K": 50,
+        "Dmu_kJmol": 6.0,
+        "N_sites": 1e+22,
+        "interface_sigma_mJm2": 300
+      },
+      "dataset_description": "Classical Nucleation Theory at rho=3.",
+      "epsilon": 0.345,
+      "d_ibench": 0.32,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        },
+        {
+          "Q": 0.9,
+          "tier": "Excellent"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "CNT-fit",
+          "score": 0.575,
+          "Q": 0.66
+        },
+        {
+          "name": "MD-seed nucleation",
+          "score": 0.69,
+          "Q": 0.6
+        },
+        {
+          "name": "CNT-BayesNet",
+          "score": 0.4025,
+          "Q": 0.82
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "T_under_K": 100,
+        "Dmu_kJmol": 12,
+        "N_sites": 1e+24,
+        "interface_sigma_mJm2": 600
+      },
+      "dataset_description": "Classical Nucleation Theory at rho=5.",
+      "epsilon": 0.42,
+      "d_ibench": 0.51,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "CNT-fit",
+          "score": 0.7,
+          "Q": 0.44
+        },
+        {
+          "name": "MD-seed nucleation",
+          "score": 0.84,
+          "Q": 0.38
+        },
+        {
+          "name": "CNT-BayesNet",
+          "score": 0.49,
+          "Q": 0.64
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "T_under_K": 200,
+        "Dmu_kJmol": 20,
+        "N_sites": 1e+25,
+        "interface_sigma_mJm2": 1000
+      },
+      "dataset_description": "Classical Nucleation Theory at rho=10.",
+      "epsilon": 0.555,
+      "d_ibench": 0.72,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "CNT-fit",
+          "score": 0.925,
+          "Q": 0.24
+        },
+        {
+          "name": "MD-seed nucleation",
+          "score": 1.11,
+          "Q": 0.2
+        },
+        {
+          "name": "CNT-BayesNet",
+          "score": 0.6475,
+          "Q": 0.46
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "Murray-Knopf + DSC crystallization union",
+      "construction_method": "parametric Omega sampling over declared bounds; stratified by rho.",
+      "num_dev_instances": 200,
+      "num_holdout_instances": 100
+    },
+    "tracks": {
+      "track_A_stratified_worst_case": {
+        "pass_condition": "min score meets epsilon_fn over all strata"
+      },
+      "track_B_uniform_median": {
+        "num_samples": 50,
+        "pass_condition": "median score meets epsilon_fn at Omega_median"
+      },
+      "track_C_mismatch_degradation": {
+        "sweep_points": 5,
+        "pass_condition": "monotone degradation with mismatch"
+      }
+    },
+    "baselines": [
+      {
+        "name": "CNT-fit",
+        "track_A_Q": 0.54,
+        "track_B_Q": 0.66,
+        "track_C_Q": 0.58,
+        "overall_Q": 0.59
+      },
+      {
+        "name": "MD-seed",
+        "track_A_Q": 0.5,
+        "track_B_Q": 0.62,
+        "track_C_Q": 0.54,
+        "overall_Q": 0.55
+      },
+      {
+        "name": "CNT-BayesNet",
+        "track_A_Q": 0.62,
+        "track_B_Q": 0.72,
+        "track_C_Q": 0.64,
+        "overall_Q": 0.66
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails epsilon_fn at T4_blind Omega corner.",
+  "anti_overfitting_mechanisms": {
+    "M1_random_instantiation": "seeded by benchmark hash; non-repeatable holdout",
+    "M2_convergence_scoring": "verifies declared convergence rate across Omega",
+    "M3_worst_case_eval": "min-score over fixed dev instances per tier",
+    "M4_community_adversarial": "adversarial submissions eligible for T_k",
+    "M5_method_sig_diversity": "baselines span multiple method_sig families",
+    "M6_gate_checks": "S1-S4 gate checks enforced with thresholds.yaml"
+  },
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

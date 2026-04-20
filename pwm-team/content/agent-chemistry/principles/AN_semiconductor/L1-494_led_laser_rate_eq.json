@@ -1,0 +1,153 @@
+{
+  "artifact_id": "L1-494",
+  "layer": "L1",
+  "principle_number": "494",
+  "title": "LED and Laser Rate Equations",
+  "domain": "Semiconductor Physics",
+  "sub_domain": "Optoelectronic devices",
+  "source_file": "AN_semiconductor/494_led_laser_rate_eq.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
+  "E": {
+    "description": "Coupled rate equations for carrier density N and photon density S: injection, spontaneous & stimulated recombination, photon generation and cavity loss; stimulated emission above threshold.",
+    "forward_model": "dN/dt = I/(qV) - (A*N + B*N^2 + C*N^3) - v_g*g(N)*S;  dS/dt = Gamma*v_g*g(N)*S + Gamma*beta*B*N^2 - S/tau_p",
+    "world_state_x": "Time-dependent carrier and photon densities N(t), S(t); optionally spectral output P(lambda, t)",
+    "observation_y": "L-I curve (light vs current); modulation response |H(f)|^2; spectrum (EL/PL); turn-on delay",
+    "physical_parameters_theta": [
+      "A (SRH)",
+      "B (radiative)",
+      "C (Auger)",
+      "Gamma (confinement)",
+      "g_0, N_tr (gain)",
+      "tau_p (cavity)",
+      "beta (spontaneous coupling)"
+    ]
+  },
+  "G": {
+    "dag": "E.carrier_rate -> E.photon_rate -> M.coupled_ODE -> O.LI_modulation",
+    "vertices": [
+      "E.carrier_rate",
+      "E.photon_rate",
+      "M.coupled_ODE",
+      "O.LI_modulation"
+    ],
+    "arcs": [
+      "E.carrier_rate -> M.coupled_ODE",
+      "E.photon_rate -> M.coupled_ODE",
+      "M.coupled_ODE -> O.LI_modulation"
+    ],
+    "L_DAG": 3.3,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 100,
+    "condition_number_effective": 15,
+    "regime": "Well-posed for typical semiconductor lasers; threshold bifurcation well-resolved; multi-mode regimes need spatial extension."
+  },
+  "C": {
+    "solver_class": "Stiff ODE (BDF); inversion by LM fit or Bayesian MCMC",
+    "convergence_rate_q": 2.0,
+    "error_bound": "bounded by ODE tolerance + fit quality",
+    "complexity": "O(N_time)"
+  },
+  "physics_fingerprint": {
+    "carrier": "electron",
+    "sensing_mechanism": "electroluminescence_modulation",
+    "integration_axis": "time",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "N_S_time_trajectories",
+    "primitives": [
+      "E.carrier_rate",
+      "E.photon_rate",
+      "M.coupled_ODE",
+      "O.LI_modulation"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "B_radiative_drift",
+    "Auger_coeff_C_error",
+    "thermal_coupling"
+  ],
+  "error_metric": "LI_relative_error",
+  "error_metric_secondary": "modulation_bandwidth_error",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "laser_rate_parameter_inversion",
+      "forward_operator": "rate_eq_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "I_mA": 20,
+        "T_K": 298,
+        "V_um3": 100,
+        "lambda_nm": 850,
+        "N_tr_cm3": 1e+18
+      },
+      "epsilon_fn_center": "L-I relative error <= 0.03"
+    },
+    "allowed_forward_operators": [
+      "rate_eq_forward"
+    ],
+    "allowed_problem_classes": [
+      "laser_rate_parameter_inversion"
+    ],
+    "allowed_omega_dimensions": [
+      "I_mA",
+      "T_K",
+      "V_um3",
+      "lambda_nm",
+      "N_tr_cm3"
+    ],
+    "omega_bounds": {
+      "I_mA": [
+        0.1,
+        1000
+      ],
+      "T_K": [
+        200,
+        400
+      ],
+      "V_um3": [
+        1,
+        10000
+      ],
+      "lambda_nm": [
+        400,
+        1550
+      ],
+      "N_tr_cm3": [
+        1e+17,
+        1e+19
+      ]
+    },
+    "epsilon_bounds": {
+      "LI_relative_error": [
+        0.01,
+        0.4
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

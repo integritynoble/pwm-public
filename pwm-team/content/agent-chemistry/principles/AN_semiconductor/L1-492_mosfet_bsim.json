@@ -1,0 +1,156 @@
+{
+  "artifact_id": "L1-492",
+  "layer": "L1",
+  "principle_number": "492",
+  "title": "BSIM Compact MOSFET Model",
+  "domain": "Semiconductor Physics",
+  "sub_domain": "Compact device modeling",
+  "source_file": "AN_semiconductor/492_mosfet_bsim.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
+  "E": {
+    "description": "Berkeley Short-channel IGFET Model (BSIM 6/BSIM-CMG): closed-form I-V, C-V, and noise for planar and FinFET devices; smooth interpolation across subthreshold, triode, saturation.",
+    "forward_model": "I_ds = (W/L)*mu_eff*C_ox*V_eff*(V_gs-V_th-V_eff/2)*(1+lambda*V_ds)*... with 200+ physical parameters",
+    "world_state_x": "Compact-model I-V, C-V, and noise across (V_gs, V_ds, T, Vbs) space",
+    "observation_y": "Measured I-V, C-V, 1/f noise, NBTI/HCI degradation curves",
+    "physical_parameters_theta": [
+      "V_th0, gamma, mu_eff_0",
+      "lambda, theta_SCE, theta_DIBL",
+      "C_ox, C_jbs, C_jbd",
+      "K1, K2 body-bias"
+    ]
+  },
+  "G": {
+    "dag": "E.threshold_model -> E.mobility_model -> M.smooth_interp -> O.IV",
+    "vertices": [
+      "E.threshold_model",
+      "E.mobility_model",
+      "M.smooth_interp",
+      "O.IV"
+    ],
+    "arcs": [
+      "E.threshold_model -> M.smooth_interp",
+      "E.mobility_model -> M.smooth_interp",
+      "M.smooth_interp -> O.IV"
+    ],
+    "L_DAG": 3.2,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 100,
+    "condition_number_effective": 15,
+    "regime": "Parameter-rich (>100 fitting knobs); non-unique locally; regularized fits required."
+  },
+  "C": {
+    "solver_class": "Levenberg-Marquardt with multi-sweep cost; global-local hybrid with physics-aware priors",
+    "convergence_rate_q": 2.0,
+    "error_bound": "|I_hat - I_meas|/|I_meas| bounded by fit quality and over-parameterization",
+    "complexity": "O(N_measurements * N_params)"
+  },
+  "physics_fingerprint": {
+    "carrier": "electron",
+    "sensing_mechanism": "compact_IV_CV_fit",
+    "integration_axis": "bias_sweep",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "bsim_parameter_vector",
+    "primitives": [
+      "E.threshold_model",
+      "E.mobility_model",
+      "M.smooth_interp",
+      "O.IV"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "process_variation",
+    "temperature_model_error",
+    "aging_drift"
+  ],
+  "error_metric": "IV_log_relative_error",
+  "error_metric_secondary": "Vth_distribution_error",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "compact_model_fit",
+      "forward_operator": "bsim_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "Vgs_range_V": 1.2,
+        "Vds_range_V": 1.2,
+        "T_K": 300,
+        "L_nm": 20,
+        "W_nm": 100,
+        "N_bias_points": 400
+      },
+      "epsilon_fn_center": "log10(Ids) error <= 0.02"
+    },
+    "allowed_forward_operators": [
+      "bsim_forward"
+    ],
+    "allowed_problem_classes": [
+      "compact_model_fit"
+    ],
+    "allowed_omega_dimensions": [
+      "Vgs_range_V",
+      "Vds_range_V",
+      "T_K",
+      "L_nm",
+      "W_nm",
+      "N_bias_points"
+    ],
+    "omega_bounds": {
+      "Vgs_range_V": [
+        0.5,
+        3.3
+      ],
+      "Vds_range_V": [
+        0.5,
+        3.3
+      ],
+      "T_K": [
+        200,
+        400
+      ],
+      "L_nm": [
+        5,
+        1000
+      ],
+      "W_nm": [
+        20,
+        10000
+      ],
+      "N_bias_points": [
+        50,
+        10000
+      ]
+    },
+    "epsilon_bounds": {
+      "IV_log_relative_error": [
+        0.005,
+        0.3
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

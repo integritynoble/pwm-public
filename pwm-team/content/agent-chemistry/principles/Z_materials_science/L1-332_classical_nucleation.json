@@ -1,0 +1,144 @@
+{
+  "artifact_id": "L1-332",
+  "layer": "L1",
+  "principle_number": "332",
+  "title": "Classical Nucleation Theory",
+  "domain": "Materials Science",
+  "sub_domain": "Nucleation kinetics",
+  "source_file": "Z_materials_science/332_classical_nucleation.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
+  "E": {
+    "description": "Classical Nucleation Theory: free energy barrier DG* = (16*pi/3)*sigma^3 / Delta_g^2; nucleation rate J = A*exp(-DG*/k_B*T); critical radius r* = 2*sigma/Delta_g.",
+    "forward_model": "J(T, Dmu) = Z * rho_0 * f_attach * exp(-DG*(T, Dmu)/(k_B*T))",
+    "world_state_x": "Nucleation rate J(T, Dmu) and critical nucleus properties",
+    "observation_y": "Nucleation rate from induction time measurements; TEM/XRD in-situ crystallization kinetics; DSC onset temperatures",
+    "physical_parameters_theta": [
+      "sigma (interfacial energy)",
+      "Delta_g (driving force)",
+      "f_attach (attachment frequency)",
+      "Z (Zeldovich)"
+    ]
+  },
+  "G": {
+    "dag": "E.cluster_thermodynamics -> E.nucleation_barrier -> M.kinetic_factor -> O.J_rate",
+    "vertices": [
+      "E.cluster_thermodynamics",
+      "E.nucleation_barrier",
+      "M.kinetic_factor",
+      "O.J_rate"
+    ],
+    "arcs": [
+      "E.cluster_thermodynamics -> E.nucleation_barrier",
+      "E.nucleation_barrier -> M.kinetic_factor",
+      "M.kinetic_factor -> O.J_rate"
+    ],
+    "L_DAG": 3.1,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 120,
+    "condition_number_effective": 15,
+    "regime": "Well-posed forward; J is exponentially sensitive to sigma, making inversion challenging."
+  },
+  "C": {
+    "solver_class": "KMC seeded nucleation; CNT fit via log-linear regression",
+    "convergence_rate_q": 2.0,
+    "error_bound": "bounded by discretization + mismatch bias + noise floor",
+    "complexity": "principle-dependent"
+  },
+  "physics_fingerprint": {
+    "carrier": "none",
+    "sensing_mechanism": "induction_time_measurement",
+    "integration_axis": "temperature",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "poisson",
+    "solution_space": "J_T_Dmu_surface",
+    "primitives": [
+      "E.cluster_thermodynamics",
+      "E.nucleation_barrier",
+      "M.kinetic_factor",
+      "O.J_rate"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "sigma_error",
+    "f_attach_drift",
+    "heterogeneous_sites"
+  ],
+  "error_metric": "log_J_relative_error",
+  "error_metric_secondary": "tau_induction_error",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "classical_nucleation",
+      "forward_operator": "cnt_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "T_under_K": 10,
+        "Dmu_kJmol": 2.0,
+        "N_sites": 1e+21,
+        "interface_sigma_mJm2": 100
+      },
+      "epsilon_fn_center": "log10(J) error <= 0.3"
+    },
+    "allowed_forward_operators": [
+      "cnt_forward"
+    ],
+    "allowed_problem_classes": [
+      "classical_nucleation"
+    ],
+    "allowed_omega_dimensions": [
+      "T_under_K",
+      "Dmu_kJmol",
+      "N_sites",
+      "interface_sigma_mJm2"
+    ],
+    "omega_bounds": {
+      "T_under_K": [
+        0.1,
+        200
+      ],
+      "Dmu_kJmol": [
+        0.1,
+        20
+      ],
+      "N_sites": [
+        1000000000000000.0,
+        1e+25
+      ],
+      "interface_sigma_mJm2": [
+        10,
+        1000
+      ]
+    },
+    "epsilon_bounds": {
+      "log_J_relative_error": [
+        0.1,
+        3.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

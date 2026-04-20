@@ -1,0 +1,150 @@
+{
+  "artifact_id": "L1-335",
+  "layer": "L1",
+  "principle_number": "335",
+  "title": "Flory-Huggins Polymer Solution Theory",
+  "domain": "Materials Science",
+  "sub_domain": "Polymer solution thermodynamics",
+  "source_file": "Z_materials_science/335_flory_huggins.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
+  "E": {
+    "description": "Flory-Huggins free energy of mixing: DG_mix/RT = phi_A/N_A * ln(phi_A) + phi_B/N_B * ln(phi_B) + chi_AB * phi_A * phi_B; predicts miscibility gap.",
+    "forward_model": "DG_mix = RT * (phi_A/N_A * ln(phi_A) + phi_B/N_B * ln(phi_B) + chi * phi_A * phi_B)",
+    "world_state_x": "Free energy DG(phi, T) and binodal/spinodal curves",
+    "observation_y": "Cloud-point curves (turbidimetry); osmotic pressure; phase-separation temperatures",
+    "physical_parameters_theta": [
+      "chi_AB(T)",
+      "N_A, N_B (degrees of polymerization)",
+      "chi_H (enthalpic)",
+      "chi_S (entropic)"
+    ]
+  },
+  "G": {
+    "dag": "E.mixing_entropy -> E.interaction_chi -> M.binodal_compute -> O.phase_diagram",
+    "vertices": [
+      "E.mixing_entropy",
+      "E.interaction_chi",
+      "M.binodal_compute",
+      "O.phase_diagram"
+    ],
+    "arcs": [
+      "E.mixing_entropy -> E.interaction_chi",
+      "E.interaction_chi -> M.binodal_compute",
+      "M.binodal_compute -> O.phase_diagram"
+    ],
+    "L_DAG": 3.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 80,
+    "condition_number_effective": 12,
+    "regime": "Well-posed; chi(T) inversion from cloud-point curves is mildly ill-conditioned (entropy/enthalpy trade-off)."
+  },
+  "C": {
+    "solver_class": "Common-tangent construction for binodal; nonlinear fit for chi(T)",
+    "convergence_rate_q": 2.0,
+    "error_bound": "bounded by discretization + mismatch bias + noise floor",
+    "complexity": "principle-dependent"
+  },
+  "physics_fingerprint": {
+    "carrier": "none",
+    "sensing_mechanism": "cloud_point_turbidimetry",
+    "integration_axis": "composition",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "phi_T_phase_boundary",
+    "primitives": [
+      "E.mixing_entropy",
+      "E.interaction_chi",
+      "M.binodal_compute",
+      "O.phase_diagram"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "chi_temperature_slope",
+    "polydispersity_effect",
+    "enthalpic_nonrandom_mixing"
+  ],
+  "error_metric": "phase_boundary_K_error",
+  "error_metric_secondary": "chi_AB_relative_error",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "flory_huggins",
+      "forward_operator": "flory_huggins_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_A": 100,
+        "N_B": 100,
+        "T_K": 300,
+        "chi_0": 0.6,
+        "chi_slope": 0.001
+      },
+      "epsilon_fn_center": "phase boundary error <= 2 K"
+    },
+    "allowed_forward_operators": [
+      "flory_huggins_forward"
+    ],
+    "allowed_problem_classes": [
+      "flory_huggins"
+    ],
+    "allowed_omega_dimensions": [
+      "N_A",
+      "N_B",
+      "T_K",
+      "chi_0",
+      "chi_slope"
+    ],
+    "omega_bounds": {
+      "N_A": [
+        10,
+        10000
+      ],
+      "N_B": [
+        10,
+        10000
+      ],
+      "T_K_range": [
+        200,
+        500
+      ],
+      "chi_0": [
+        0.1,
+        2.0
+      ],
+      "chi_slope": [
+        0,
+        0.01
+      ]
+    },
+    "epsilon_bounds": {
+      "phase_boundary_K_error": [
+        0.5,
+        30.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

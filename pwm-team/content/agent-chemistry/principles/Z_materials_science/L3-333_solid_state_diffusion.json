@@ -1,0 +1,241 @@
+{
+  "artifact_id": "L3-333",
+  "layer": "L3",
+  "parent_l2": "L2-333",
+  "parent_l1": "L1-333",
+  "title": "Solid-State Diffusion (Fick + Onsager) Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "NIST diffusion data library (Mehrer handbook)",
+    "secondary": "SIMS depth profile dataset (ORNL)",
+    "construction_method": "canonical ground truth + declared noise at tier Omega for Solid-State Diffusion (Fick + Onsager)",
+    "num_dev_instances_per_tier": 20,
+    "holdout_instances_per_tier": 10
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "grid_N": 256,
+        "dx_um": 1,
+        "t_s": 3600,
+        "T_K": 1000,
+        "N_species": 3
+      },
+      "dataset_description": "Solid-State Diffusion (Fick + Onsager) at rho=1.",
+      "epsilon": 0.02,
+      "d_ibench": 0.15,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        },
+        {
+          "Q": 0.9,
+          "tier": "Excellent"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "DICTRA",
+          "score": 0.035,
+          "Q": 0.82
+        },
+        {
+          "name": "FEniCS-Diff",
+          "score": 0.04,
+          "Q": 0.78
+        },
+        {
+          "name": "Diff-Inv-Net",
+          "score": 0.022,
+          "Q": 0.92
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "grid_N": 512,
+        "dx_um": 0.1,
+        "t_s": 36000,
+        "T_K": 1500,
+        "N_species": 5
+      },
+      "dataset_description": "Solid-State Diffusion (Fick + Onsager) at rho=3.",
+      "epsilon": 0.023,
+      "d_ibench": 0.32,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        },
+        {
+          "Q": 0.9,
+          "tier": "Excellent"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "DICTRA",
+          "score": 0.0403,
+          "Q": 0.66
+        },
+        {
+          "name": "FEniCS-Diff",
+          "score": 0.046,
+          "Q": 0.6
+        },
+        {
+          "name": "Diff-Inv-Net",
+          "score": 0.0253,
+          "Q": 0.82
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "grid_N": 1024,
+        "dx_um": 0.01,
+        "t_s": 1000000.0,
+        "T_K": 2000,
+        "N_species": 7
+      },
+      "dataset_description": "Solid-State Diffusion (Fick + Onsager) at rho=5.",
+      "epsilon": 0.028,
+      "d_ibench": 0.51,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "DICTRA",
+          "score": 0.049,
+          "Q": 0.44
+        },
+        {
+          "name": "FEniCS-Diff",
+          "score": 0.056,
+          "Q": 0.38
+        },
+        {
+          "name": "Diff-Inv-Net",
+          "score": 0.0308,
+          "Q": 0.64
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "grid_N": 2048,
+        "dx_um": 0.01,
+        "t_s": 10000000.0,
+        "T_K": 2500,
+        "N_species": 10
+      },
+      "dataset_description": "Solid-State Diffusion (Fick + Onsager) at rho=10.",
+      "epsilon": 0.037,
+      "d_ibench": 0.72,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "DICTRA",
+          "score": 0.0648,
+          "Q": 0.24
+        },
+        {
+          "name": "FEniCS-Diff",
+          "score": 0.074,
+          "Q": 0.2
+        },
+        {
+          "name": "Diff-Inv-Net",
+          "score": 0.0407,
+          "Q": 0.46
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "NIST-Mehrer + SIMS library",
+      "construction_method": "parametric Omega sampling over declared bounds; stratified by rho.",
+      "num_dev_instances": 200,
+      "num_holdout_instances": 100
+    },
+    "tracks": {
+      "track_A_stratified_worst_case": {
+        "pass_condition": "min score meets epsilon_fn over all strata"
+      },
+      "track_B_uniform_median": {
+        "num_samples": 50,
+        "pass_condition": "median score meets epsilon_fn at Omega_median"
+      },
+      "track_C_mismatch_degradation": {
+        "sweep_points": 5,
+        "pass_condition": "monotone degradation with mismatch"
+      }
+    },
+    "baselines": [
+      {
+        "name": "DICTRA",
+        "track_A_Q": 0.58,
+        "track_B_Q": 0.7,
+        "track_C_Q": 0.62,
+        "overall_Q": 0.63
+      },
+      {
+        "name": "FEniCS-Diff",
+        "track_A_Q": 0.54,
+        "track_B_Q": 0.66,
+        "track_C_Q": 0.58,
+        "overall_Q": 0.59
+      },
+      {
+        "name": "Diff-Inv-Net",
+        "track_A_Q": 0.66,
+        "track_B_Q": 0.76,
+        "track_C_Q": 0.68,
+        "overall_Q": 0.7
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails epsilon_fn at T4_blind Omega corner.",
+  "anti_overfitting_mechanisms": {
+    "M1_random_instantiation": "seeded by benchmark hash; non-repeatable holdout",
+    "M2_convergence_scoring": "verifies declared convergence rate across Omega",
+    "M3_worst_case_eval": "min-score over fixed dev instances per tier",
+    "M4_community_adversarial": "adversarial submissions eligible for T_k",
+    "M5_method_sig_diversity": "baselines span multiple method_sig families",
+    "M6_gate_checks": "S1-S4 gate checks enforced with thresholds.yaml"
+  },
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

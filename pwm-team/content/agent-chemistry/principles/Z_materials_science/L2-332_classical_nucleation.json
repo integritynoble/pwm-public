@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-332",
+  "layer": "L2",
+  "parent_l1": "L1-332",
+  "title": "Classical Nucleation Theory Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "T_under_K": [
+        0.1,
+        200
+      ],
+      "Dmu_kJmol": [
+        0.1,
+        20
+      ],
+      "N_sites": [
+        1000000000000000.0,
+        1e+25
+      ],
+      "interface_sigma_mJm2": [
+        10,
+        1000
+      ]
+    },
+    "E": {
+      "forward": "J(T, Dmu) = Z * rho_0 * f_attach * exp(-DG*(T, Dmu)/(k_B*T))",
+      "operator": "cnt_forward_mismatch",
+      "primitive_chain": "E.cluster_thermodynamics -> E.nucleation_barrier -> M.kinetic_factor -> O.J_rate",
+      "inverse": "recover constitutive parameters for Classical Nucleation Theory"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "log_J_relative_error",
+      "tau_induction_error",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.3 * (1 + 0.1 * mismatch_severity)"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "CNT-fit",
+        "method_sig": "L+O",
+        "expected_err": 0.5
+      },
+      {
+        "name": "MD-seed nucleation",
+        "method_sig": "T+O",
+        "expected_err": 0.6
+      },
+      {
+        "name": "CNT-BayesNet",
+        "method_sig": "L+N",
+        "expected_err": 0.35
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "T_under_K": 10,
+        "Dmu_kJmol": 2.0,
+        "N_sites": 1e+21,
+        "interface_sigma_mJm2": 100
+      },
+      "epsilon": 0.3
+    },
+    "tier_bounds": {
+      "T_under_K": [
+        0.1,
+        200
+      ],
+      "Dmu_kJmol": [
+        0.1,
+        20
+      ],
+      "N_sites": [
+        1000000000000000.0,
+        1e+25
+      ],
+      "interface_sigma_mJm2": [
+        10,
+        1000
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.45,
+  "d_spec_notes": "Canonical mismatch-only baseline for this principle; sits at the centroid of its spec family.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions match across all DAG nodes; operator dimensions consistent.",
+    "S2": "Operator condition number controlled (kappa_eff=15) under declared Omega with regularization.",
+    "S3": "Solver class KMC seeded nucleation; CNT fit via log-linear regression provably converges at rate q=2.0; monotone residual decrease.",
+    "S4": "epsilon_fn evaluates cleanly across 50 random Omega samples; hardness rule satisfied (top baseline fails at Omega corner)."
+  },
+  "ipfs_cid": null
+}

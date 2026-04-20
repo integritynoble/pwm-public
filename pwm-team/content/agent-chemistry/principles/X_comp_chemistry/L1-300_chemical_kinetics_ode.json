@@ -1,0 +1,145 @@
+{
+  "artifact_id": "L1-300",
+  "layer": "L1",
+  "principle_number": "300",
+  "title": "Chemical Kinetics via Stiff ODEs",
+  "domain": "Computational Chemistry",
+  "sub_domain": "Reaction network dynamics",
+  "source_file": "X_computational_chemistry/300_chemical_kinetics_ode.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
+  "E": {
+    "description": "Mass-action kinetics: dc_i/dt = sum_r nu_ir * k_r * product(c_j^{n_jr}); forms stiff ODE system with widely-separated rate constants.",
+    "forward_model": "dc_i/dt = sum_r nu_{ir} * k_r * prod_j c_j^{n_jr}",
+    "world_state_x": "Time-dependent concentrations {c_i(t)} of all species",
+    "observation_y": "Concentration profiles from HPLC, GC-MS; IR / UV-vis spectra",
+    "physical_parameters_theta": [
+      "rate constants k_r(T) (Arrhenius)",
+      "stoichiometric matrix nu_{ir}",
+      "reaction orders"
+    ]
+  },
+  "G": {
+    "dag": "E.mass_action -> M.stiff_ODE -> O.concentration_profile",
+    "vertices": [
+      "E.mass_action",
+      "M.stiff_ODE",
+      "O.concentration_profile"
+    ],
+    "arcs": [
+      "E.mass_action -> M.stiff_ODE",
+      "M.stiff_ODE -> O.concentration_profile"
+    ],
+    "L_DAG": 3.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 150,
+    "condition_number_effective": 20,
+    "regime": "Well-posed; inverse (rate constant fit) requires data across T for identifiability."
+  },
+  "C": {
+    "solver_class": "LSODA, SUNDIALS CVODE; MCMC for rate constants",
+    "convergence_rate_q": 2.0,
+    "error_bound": "bounded by discretization + mismatch bias + noise floor",
+    "complexity": "principle-dependent"
+  },
+  "physics_fingerprint": {
+    "carrier": "none",
+    "sensing_mechanism": "species_concentration",
+    "integration_axis": "time",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "concentration_time_series",
+    "primitives": [
+      "E.mass_action",
+      "M.stiff_ODE",
+      "O.concentration_profile"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "k_r_drift",
+    "side_reactions_missing",
+    "temperature_bias"
+  ],
+  "error_metric": "concentration_L2_error",
+  "error_metric_secondary": "rate_constant_relative_error",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "chemical_kinetics_ode",
+      "forward_operator": "kinetics_ode_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_species": 10,
+        "N_reactions": 20,
+        "T_K": 298,
+        "t_end_s": 100,
+        "log_k_range": [
+          -4,
+          4
+        ]
+      },
+      "epsilon_fn_center": "c L2 <= 0.01 M"
+    },
+    "allowed_forward_operators": [
+      "kinetics_ode_forward"
+    ],
+    "allowed_problem_classes": [
+      "chemical_kinetics_ode"
+    ],
+    "allowed_omega_dimensions": [
+      "N_species",
+      "N_reactions",
+      "T_K",
+      "t_end_s",
+      "log_k_range"
+    ],
+    "omega_bounds": {
+      "N_species": [
+        2,
+        1000
+      ],
+      "N_reactions": [
+        1,
+        10000
+      ],
+      "T_K": [
+        273,
+        2000
+      ],
+      "t_end_s": [
+        0.001,
+        1000000.0
+      ]
+    },
+    "epsilon_bounds": {
+      "concentration_L2_error": [
+        0.005,
+        0.3
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

@@ -1,0 +1,146 @@
+{
+  "artifact_id": "L1-333",
+  "layer": "L1",
+  "principle_number": "333",
+  "title": "Solid-State Diffusion (Fick + Onsager)",
+  "domain": "Materials Science",
+  "sub_domain": "Multi-component diffusion",
+  "source_file": "Z_materials_science/333_solid_state_diffusion.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
+  "E": {
+    "description": "Fick's second law in multicomponent form: dc_i/dt = div(sum_j D_ij grad(c_j)); D_ij from Onsager coefficients and Darken activity corrections.",
+    "forward_model": "dc_i/dt = div(D_ij * grad(c_j) + D_thermo * grad(T)); tracer diffusivity D*_i from Nernst-Einstein",
+    "world_state_x": "Concentration fields c_i(r,t) and diffusion flux",
+    "observation_y": "Diffusion profiles (SIMS, APT); tracer-diffusion experiments; temperature-dependent diffusivities",
+    "physical_parameters_theta": [
+      "D_ij matrix",
+      "Activation energy Q_ij",
+      "pre-exponential D_0"
+    ]
+  },
+  "G": {
+    "dag": "E.onsager_flux -> M.integrate -> O.concentration_profile",
+    "vertices": [
+      "E.onsager_flux",
+      "M.integrate",
+      "O.concentration_profile"
+    ],
+    "arcs": [
+      "E.onsager_flux -> M.integrate",
+      "M.integrate -> O.concentration_profile"
+    ],
+    "L_DAG": 3.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 100,
+    "condition_number_effective": 15,
+    "regime": "Parabolic; well-posed; inversion of off-diagonal D_ij ill-conditioned for small gradients."
+  },
+  "C": {
+    "solver_class": "Crank-Nicolson FD; FEM for complex geometries; Bayesian inversion for D_ij",
+    "convergence_rate_q": 2.0,
+    "error_bound": "bounded by discretization + mismatch bias + noise floor",
+    "complexity": "principle-dependent"
+  },
+  "physics_fingerprint": {
+    "carrier": "none",
+    "sensing_mechanism": "concentration_profile_measurement",
+    "integration_axis": "spatial",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "concentration_field_c_i",
+    "primitives": [
+      "E.onsager_flux",
+      "M.integrate",
+      "O.concentration_profile"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "D_ij_error",
+    "grain_boundary_diffusion",
+    "segregation_effect"
+  ],
+  "error_metric": "concentration_profile_L2_error",
+  "error_metric_secondary": "D_ij_relative_error",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "solid_state_diffusion",
+      "forward_operator": "diffusion_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "grid_N": 256,
+        "dx_um": 1,
+        "t_s": 3600,
+        "T_K": 1000,
+        "N_species": 3
+      },
+      "epsilon_fn_center": "profile L2 <= 0.02"
+    },
+    "allowed_forward_operators": [
+      "diffusion_forward"
+    ],
+    "allowed_problem_classes": [
+      "solid_state_diffusion"
+    ],
+    "allowed_omega_dimensions": [
+      "grid_N",
+      "dx_um",
+      "t_s",
+      "T_K",
+      "N_species"
+    ],
+    "omega_bounds": {
+      "grid_N": [
+        64,
+        2048
+      ],
+      "dx_um": [
+        0.01,
+        100
+      ],
+      "t_s": [
+        1,
+        10000000.0
+      ],
+      "T_K": [
+        300,
+        2500
+      ],
+      "N_species": [
+        2,
+        10
+      ]
+    },
+    "epsilon_bounds": {
+      "concentration_profile_L2_error": [
+        0.005,
+        0.2
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

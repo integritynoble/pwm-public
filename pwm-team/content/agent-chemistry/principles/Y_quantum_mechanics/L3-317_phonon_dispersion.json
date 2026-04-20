@@ -1,0 +1,233 @@
+{
+  "artifact_id": "L3-317",
+  "layer": "L3",
+  "parent_l2": "L2-317",
+  "parent_l1": "L1-317",
+  "title": "Phonon Dispersion Relations Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "Phonon database of Materials Project",
+    "secondary": "Kresse DFPT benchmark set",
+    "construction_method": "canonical ground truth + declared noise at tier Omega for Phonon Dispersion Relations",
+    "num_dev_instances_per_tier": 20,
+    "holdout_instances_per_tier": 10
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "N_atoms": 2,
+        "q_grid": 32,
+        "N_neighbor_shells": 5
+      },
+      "dataset_description": "Phonon Dispersion Relations at rho=1.",
+      "epsilon": 1.5,
+      "d_ibench": 0.15,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        },
+        {
+          "Q": 0.9,
+          "tier": "Excellent"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "Phonopy",
+          "score": 2.5,
+          "Q": 0.82
+        },
+        {
+          "name": "DFPT-QE",
+          "score": 2.2,
+          "Q": 0.78
+        },
+        {
+          "name": "PhononGNN",
+          "score": 1.6,
+          "Q": 0.92
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "N_atoms": 10,
+        "q_grid": 64,
+        "N_neighbor_shells": 10
+      },
+      "dataset_description": "Phonon Dispersion Relations at rho=3.",
+      "epsilon": 1.725,
+      "d_ibench": 0.32,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        },
+        {
+          "Q": 0.9,
+          "tier": "Excellent"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "Phonopy",
+          "score": 2.875,
+          "Q": 0.66
+        },
+        {
+          "name": "DFPT-QE",
+          "score": 2.53,
+          "Q": 0.6
+        },
+        {
+          "name": "PhononGNN",
+          "score": 1.84,
+          "Q": 0.82
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "N_atoms": 50,
+        "q_grid": 128,
+        "N_neighbor_shells": 15
+      },
+      "dataset_description": "Phonon Dispersion Relations at rho=5.",
+      "epsilon": 2.1,
+      "d_ibench": 0.51,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "Phonopy",
+          "score": 3.5,
+          "Q": 0.44
+        },
+        {
+          "name": "DFPT-QE",
+          "score": 3.08,
+          "Q": 0.38
+        },
+        {
+          "name": "PhononGNN",
+          "score": 2.24,
+          "Q": 0.64
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "N_atoms": 100,
+        "q_grid": 256,
+        "N_neighbor_shells": 20
+      },
+      "dataset_description": "Phonon Dispersion Relations at rho=10.",
+      "epsilon": 2.775,
+      "d_ibench": 0.72,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "Phonopy",
+          "score": 4.625,
+          "Q": 0.24
+        },
+        {
+          "name": "DFPT-QE",
+          "score": 4.07,
+          "Q": 0.2
+        },
+        {
+          "name": "PhononGNN",
+          "score": 2.96,
+          "Q": 0.46
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "MP phonon + DFPT benchmark union",
+      "construction_method": "parametric Omega sampling over declared bounds; stratified by rho.",
+      "num_dev_instances": 200,
+      "num_holdout_instances": 100
+    },
+    "tracks": {
+      "track_A_stratified_worst_case": {
+        "pass_condition": "min score meets epsilon_fn over all strata"
+      },
+      "track_B_uniform_median": {
+        "num_samples": 50,
+        "pass_condition": "median score meets epsilon_fn at Omega_median"
+      },
+      "track_C_mismatch_degradation": {
+        "sweep_points": 5,
+        "pass_condition": "monotone degradation with mismatch"
+      }
+    },
+    "baselines": [
+      {
+        "name": "Phonopy",
+        "track_A_Q": 0.58,
+        "track_B_Q": 0.7,
+        "track_C_Q": 0.62,
+        "overall_Q": 0.63
+      },
+      {
+        "name": "DFPT-QE",
+        "track_A_Q": 0.6,
+        "track_B_Q": 0.72,
+        "track_C_Q": 0.64,
+        "overall_Q": 0.65
+      },
+      {
+        "name": "PhononGNN",
+        "track_A_Q": 0.68,
+        "track_B_Q": 0.78,
+        "track_C_Q": 0.7,
+        "overall_Q": 0.72
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails epsilon_fn at T4_blind Omega corner.",
+  "anti_overfitting_mechanisms": {
+    "M1_random_instantiation": "seeded by benchmark hash; non-repeatable holdout",
+    "M2_convergence_scoring": "verifies declared convergence rate across Omega",
+    "M3_worst_case_eval": "min-score over fixed dev instances per tier",
+    "M4_community_adversarial": "adversarial submissions eligible for T_k",
+    "M5_method_sig_diversity": "baselines span multiple method_sig families",
+    "M6_gate_checks": "S1-S4 gate checks enforced with thresholds.yaml"
+  },
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

@@ -1,0 +1,237 @@
+{
+  "artifact_id": "L3-310",
+  "layer": "L3",
+  "parent_l2": "L2-310",
+  "parent_l1": "L1-310",
+  "title": "Metropolis Monte Carlo Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "Panagiotopoulos VLE Gibbs-ensemble dataset",
+    "secondary": "Ising model canonical MC benchmark",
+    "construction_method": "canonical ground truth + declared noise at tier Omega for Metropolis Monte Carlo",
+    "num_dev_instances_per_tier": 20,
+    "holdout_instances_per_tier": 10
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "N_particles": 1000,
+        "N_sweeps": 1000000.0,
+        "T_K": 300,
+        "ensemble": "NVT"
+      },
+      "dataset_description": "Metropolis Monte Carlo at rho=1.",
+      "epsilon": 0.02,
+      "d_ibench": 0.15,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        },
+        {
+          "Q": 0.9,
+          "tier": "Excellent"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "LAMMPS-MC",
+          "score": 0.03,
+          "Q": 0.82
+        },
+        {
+          "name": "Cassandra",
+          "score": 0.035,
+          "Q": 0.78
+        },
+        {
+          "name": "MC-FlowMatching",
+          "score": 0.022,
+          "Q": 0.92
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "N_particles": 10000.0,
+        "N_sweeps": 10000000.0,
+        "T_K": 500,
+        "ensemble": "NPT"
+      },
+      "dataset_description": "Metropolis Monte Carlo at rho=3.",
+      "epsilon": 0.023,
+      "d_ibench": 0.32,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        },
+        {
+          "Q": 0.9,
+          "tier": "Excellent"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "LAMMPS-MC",
+          "score": 0.0345,
+          "Q": 0.66
+        },
+        {
+          "name": "Cassandra",
+          "score": 0.0403,
+          "Q": 0.6
+        },
+        {
+          "name": "MC-FlowMatching",
+          "score": 0.0253,
+          "Q": 0.82
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "N_particles": 1000000.0,
+        "N_sweeps": 1000000000.0,
+        "T_K": 2000,
+        "ensemble": "GCMC"
+      },
+      "dataset_description": "Metropolis Monte Carlo at rho=5.",
+      "epsilon": 0.028,
+      "d_ibench": 0.51,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "LAMMPS-MC",
+          "score": 0.042,
+          "Q": 0.44
+        },
+        {
+          "name": "Cassandra",
+          "score": 0.049,
+          "Q": 0.38
+        },
+        {
+          "name": "MC-FlowMatching",
+          "score": 0.0308,
+          "Q": 0.64
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "N_particles": 10000000.0,
+        "N_sweeps": 10000000000.0,
+        "T_K": 10000,
+        "ensemble": "Gibbs"
+      },
+      "dataset_description": "Metropolis Monte Carlo at rho=10.",
+      "epsilon": 0.037,
+      "d_ibench": 0.72,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "LAMMPS-MC",
+          "score": 0.0555,
+          "Q": 0.24
+        },
+        {
+          "name": "Cassandra",
+          "score": 0.0648,
+          "Q": 0.2
+        },
+        {
+          "name": "MC-FlowMatching",
+          "score": 0.0407,
+          "Q": 0.46
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "Panagiotopoulos + Ising MC library",
+      "construction_method": "parametric Omega sampling over declared bounds; stratified by rho.",
+      "num_dev_instances": 200,
+      "num_holdout_instances": 100
+    },
+    "tracks": {
+      "track_A_stratified_worst_case": {
+        "pass_condition": "min score meets epsilon_fn over all strata"
+      },
+      "track_B_uniform_median": {
+        "num_samples": 50,
+        "pass_condition": "median score meets epsilon_fn at Omega_median"
+      },
+      "track_C_mismatch_degradation": {
+        "sweep_points": 5,
+        "pass_condition": "monotone degradation with mismatch"
+      }
+    },
+    "baselines": [
+      {
+        "name": "LAMMPS-MC",
+        "track_A_Q": 0.62,
+        "track_B_Q": 0.72,
+        "track_C_Q": 0.64,
+        "overall_Q": 0.66
+      },
+      {
+        "name": "Cassandra",
+        "track_A_Q": 0.58,
+        "track_B_Q": 0.7,
+        "track_C_Q": 0.62,
+        "overall_Q": 0.63
+      },
+      {
+        "name": "MC-FlowMatching",
+        "track_A_Q": 0.66,
+        "track_B_Q": 0.76,
+        "track_C_Q": 0.68,
+        "overall_Q": 0.7
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails epsilon_fn at T4_blind Omega corner.",
+  "anti_overfitting_mechanisms": {
+    "M1_random_instantiation": "seeded by benchmark hash; non-repeatable holdout",
+    "M2_convergence_scoring": "verifies declared convergence rate across Omega",
+    "M3_worst_case_eval": "min-score over fixed dev instances per tier",
+    "M4_community_adversarial": "adversarial submissions eligible for T_k",
+    "M5_method_sig_diversity": "baselines span multiple method_sig families",
+    "M6_gate_checks": "S1-S4 gate checks enforced with thresholds.yaml"
+  },
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

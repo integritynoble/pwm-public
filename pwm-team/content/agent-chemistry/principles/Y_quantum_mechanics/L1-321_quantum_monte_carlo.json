@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-321",
+  "layer": "L1",
+  "principle_number": "321",
+  "title": "Quantum Monte Carlo (VMC + DMC)",
+  "domain": "Quantum Mechanics",
+  "sub_domain": "Stochastic many-body electron structure",
+  "source_file": "Y_quantum_mechanics/321_quantum_monte_carlo.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
+  "E": {
+    "description": "VMC: energy expectation of trial wavefunction via Metropolis sampling; DMC: imaginary-time evolution of fermion nodes (fixed-node approx).",
+    "forward_model": "E_VMC = <Psi_T|H|Psi_T>/<Psi_T|Psi_T>; DMC: dPhi/dtau = -(H - E_T) Phi with fixed-node",
+    "world_state_x": "Ground-state energy and wavefunction (represented by walker ensemble)",
+    "observation_y": "Binding energies, equation of state, electron densities from back-flow",
+    "physical_parameters_theta": [
+      "Jastrow parameters",
+      "orbital basis",
+      "Slater determinant coefficients",
+      "fixed-node surface"
+    ]
+  },
+  "G": {
+    "dag": "E.trial_wavefunction -> M.metropolis_stoch -> O.energies",
+    "vertices": [
+      "E.trial_wavefunction",
+      "M.metropolis_stoch",
+      "O.energies"
+    ],
+    "arcs": [
+      "E.trial_wavefunction -> M.metropolis_stoch",
+      "M.metropolis_stoch -> O.energies"
+    ],
+    "L_DAG": 3.8,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 1500,
+    "condition_number_effective": 200,
+    "regime": "Stochastic error ~ 1/sqrt(N_walkers * N_steps); fixed-node systematic error."
+  },
+  "C": {
+    "solver_class": "QMCPack, CASINO, TurboRVB; DMC with twist-averaging",
+    "convergence_rate_q": 2.0,
+    "error_bound": "bounded by discretization + mismatch bias + noise floor",
+    "complexity": "principle-dependent"
+  },
+  "physics_fingerprint": {
+    "carrier": "electron",
+    "sensing_mechanism": "energy_benchmark",
+    "integration_axis": "imaginary_time",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "poisson",
+    "solution_space": "many_body_wavefunction",
+    "primitives": [
+      "E.trial_wavefunction",
+      "M.metropolis_stoch",
+      "O.energies"
+    ]
+  },
+  "difficulty_delta": 10,
+  "difficulty_tier": "hard",
+  "mismatch_parameters": [
+    "fixed_node_error",
+    "pseudopotential_locality",
+    "trial_wf_quality"
+  ],
+  "error_metric": "energy_error_mHa",
+  "error_metric_secondary": "density_L2_error",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "quantum_monte_carlo",
+      "forward_operator": "qmc_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_walkers": 1000,
+        "N_steps": 100000,
+        "N_electrons": 20,
+        "method": "DMC"
+      },
+      "epsilon_fn_center": "E error <= 0.5 mHa"
+    },
+    "allowed_forward_operators": [
+      "qmc_forward"
+    ],
+    "allowed_problem_classes": [
+      "quantum_monte_carlo"
+    ],
+    "allowed_omega_dimensions": [
+      "N_walkers",
+      "N_steps",
+      "N_electrons",
+      "method"
+    ],
+    "omega_bounds": {
+      "N_walkers": [
+        100,
+        1000000
+      ],
+      "N_steps": [
+        1000,
+        100000000.0
+      ],
+      "N_electrons": [
+        2,
+        1000
+      ],
+      "method": [
+        "VMC",
+        "DMC",
+        "AFQMC"
+      ]
+    },
+    "epsilon_bounds": {
+      "energy_error_mHa": [
+        0.1,
+        50
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

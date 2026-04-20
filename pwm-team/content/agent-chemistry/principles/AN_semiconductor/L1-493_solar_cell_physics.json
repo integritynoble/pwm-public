@@ -1,0 +1,148 @@
+{
+  "artifact_id": "L1-493",
+  "layer": "L1",
+  "principle_number": "493",
+  "title": "Solar Cell Device Physics (Shockley-Queisser + drift-diffusion)",
+  "domain": "Semiconductor Physics",
+  "sub_domain": "Photovoltaic devices",
+  "source_file": "AN_semiconductor/493_solar_cell_physics.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
+  "E": {
+    "description": "Photovoltaic cell as drift-diffusion device with photogeneration G(x,lambda); one-diode or two-diode compact model with parasitic R_s, R_sh; efficiency bounded by Shockley-Queisser.",
+    "forward_model": "J(V) = J_ph - J_0*(exp((V+J*R_s)/(n*V_T)) - 1) - (V+J*R_s)/R_sh;  J_ph = q*integral alpha(lambda)*Phi(lambda) d lambda",
+    "world_state_x": "J-V curve and spectral response EQE(lambda); carrier densities in absorber",
+    "observation_y": "Measured J-V, EQE, suns-Voc; impedance spectroscopy; degradation traces",
+    "physical_parameters_theta": [
+      "J_0 (saturation)",
+      "n (ideality)",
+      "R_s, R_sh (parasitics)",
+      "E_g (bandgap)",
+      "alpha(lambda) (absorption)",
+      "tau_SRH"
+    ]
+  },
+  "G": {
+    "dag": "E.photogeneration -> E.drift_diffusion -> E.diode_model -> O.JV",
+    "vertices": [
+      "E.photogeneration",
+      "E.drift_diffusion",
+      "E.diode_model",
+      "O.JV"
+    ],
+    "arcs": [
+      "E.photogeneration -> E.diode_model",
+      "E.drift_diffusion -> E.diode_model",
+      "E.diode_model -> O.JV"
+    ],
+    "L_DAG": 3.4,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 150,
+    "condition_number_effective": 20,
+    "regime": "Well-posed for typical parameter ranges; ideality/shunt trade-off creates mild non-uniqueness at low bias."
+  },
+  "C": {
+    "solver_class": "One-diode LM fit; full-physics TCAD for absorbed layer analysis",
+    "convergence_rate_q": 2.0,
+    "error_bound": "eta_rel_err <= (V_OC + J_SC + FF) propagated error",
+    "complexity": "O(N_bias)"
+  },
+  "physics_fingerprint": {
+    "carrier": "electron",
+    "sensing_mechanism": "photovoltaic_JV_EQE",
+    "integration_axis": "bias_and_wavelength",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "JV_curve_plus_EQE",
+    "primitives": [
+      "E.photogeneration",
+      "E.drift_diffusion",
+      "E.diode_model",
+      "O.JV"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "spectrum_drift_AM1_5",
+    "temperature_coefficient",
+    "series_resistance_drift"
+  ],
+  "error_metric": "eta_relative_error",
+  "error_metric_secondary": "EQE_L2_error",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "photovoltaic_model_fit",
+      "forward_operator": "solar_cell_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "spectrum": "AM1.5G",
+        "T_K": 298,
+        "area_cm2": 1.0,
+        "cell_type": "Si",
+        "illumination_suns": 1.0
+      },
+      "epsilon_fn_center": "eta relative error <= 0.02"
+    },
+    "allowed_forward_operators": [
+      "solar_cell_forward"
+    ],
+    "allowed_problem_classes": [
+      "photovoltaic_model_fit"
+    ],
+    "allowed_omega_dimensions": [
+      "spectrum",
+      "T_K",
+      "area_cm2",
+      "cell_type",
+      "illumination_suns"
+    ],
+    "omega_bounds": {
+      "T_K": [
+        253,
+        353
+      ],
+      "area_cm2": [
+        0.01,
+        10000
+      ],
+      "illumination_suns": [
+        0.01,
+        100
+      ],
+      "N_bias_points": [
+        50,
+        1000
+      ]
+    },
+    "epsilon_bounds": {
+      "eta_relative_error": [
+        0.005,
+        0.3
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

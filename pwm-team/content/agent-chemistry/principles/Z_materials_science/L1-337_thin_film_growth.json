@@ -1,0 +1,150 @@
+{
+  "artifact_id": "L1-337",
+  "layer": "L1",
+  "principle_number": "337",
+  "title": "Thin Film Growth Kinetics",
+  "domain": "Materials Science",
+  "sub_domain": "Nucleation-growth-coalescence",
+  "source_file": "Z_materials_science/337_thin_film_growth.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
+  "E": {
+    "description": "Stochastic thin-film growth: adatom deposition -> surface diffusion -> nucleation of islands -> coalescence -> thin film; captured by kinetic Monte Carlo or rate equations.",
+    "forward_model": "dn_s/dt = F - K*n_s*n_0 - Knc*n_s^2; island density scales as n_isl ~ (D/F)^(-chi_nuc)",
+    "world_state_x": "Surface coverage map theta(r,t); island size distribution N(s,t)",
+    "observation_y": "RHEED oscillations; AFM morphology; grazing-incidence X-ray during deposition",
+    "physical_parameters_theta": [
+      "F (flux)",
+      "D_surface",
+      "E_bind, E_mig (binding, migration)",
+      "cluster stability i*"
+    ]
+  },
+  "G": {
+    "dag": "E.deposition_flux -> E.surface_diffusion -> M.nucleation_coalescence -> O.film_morphology",
+    "vertices": [
+      "E.deposition_flux",
+      "E.surface_diffusion",
+      "M.nucleation_coalescence",
+      "O.film_morphology"
+    ],
+    "arcs": [
+      "E.deposition_flux -> E.surface_diffusion",
+      "E.surface_diffusion -> M.nucleation_coalescence",
+      "M.nucleation_coalescence -> O.film_morphology"
+    ],
+    "L_DAG": 3.7,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 400,
+    "condition_number_effective": 35,
+    "regime": "Well-posed forward; inversion of (D, E_mig) from N(s,t) moderately ill-conditioned (Arrhenius vs pre-factor)."
+  },
+  "C": {
+    "solver_class": "Event-driven KMC; phase-field-crystal; adjoint-KMC",
+    "convergence_rate_q": 2.0,
+    "error_bound": "bounded by discretization + mismatch bias + noise floor",
+    "complexity": "principle-dependent"
+  },
+  "physics_fingerprint": {
+    "carrier": "none",
+    "sensing_mechanism": "rheed_afm_insitu",
+    "integration_axis": "time",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "poisson",
+    "solution_space": "film_morphology_island_distribution",
+    "primitives": [
+      "E.deposition_flux",
+      "E.surface_diffusion",
+      "M.nucleation_coalescence",
+      "O.film_morphology"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "flux_drift",
+    "temperature_drift",
+    "step_edge_Ehrlich_Schwoebel"
+  ],
+  "error_metric": "island_density_relative_error",
+  "error_metric_secondary": "roughness_rms_error_nm",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "thin_film_growth",
+      "forward_operator": "thinfilm_kmc_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "F_ML_s": 0.1,
+        "T_K": 500,
+        "t_s": 10,
+        "lattice_L": 1024,
+        "E_mig_eV": 0.8
+      },
+      "epsilon_fn_center": "island density rel error <= 0.05"
+    },
+    "allowed_forward_operators": [
+      "thinfilm_kmc_forward"
+    ],
+    "allowed_problem_classes": [
+      "thin_film_growth"
+    ],
+    "allowed_omega_dimensions": [
+      "F_ML_s",
+      "T_K",
+      "t_s",
+      "lattice_L",
+      "E_mig_eV"
+    ],
+    "omega_bounds": {
+      "F_ML_s": [
+        0.0001,
+        10
+      ],
+      "T_K": [
+        200,
+        1500
+      ],
+      "t_s": [
+        0.1,
+        3600
+      ],
+      "lattice_L": [
+        128,
+        8192
+      ],
+      "E_mig_eV": [
+        0.1,
+        2.5
+      ]
+    },
+    "epsilon_bounds": {
+      "island_density_relative_error": [
+        0.01,
+        0.5
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

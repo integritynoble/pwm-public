@@ -1,0 +1,146 @@
+{
+  "artifact_id": "L1-490",
+  "layer": "L1",
+  "principle_number": "490",
+  "title": "Carrier Boltzmann Transport Equation",
+  "domain": "Semiconductor Physics",
+  "sub_domain": "Kinetic carrier transport",
+  "source_file": "AN_semiconductor/490_boltzmann_carrier_bte.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
+  "E": {
+    "description": "Boltzmann equation for carrier distribution f(r,k,t): semiclassical drift in (r,k) + scattering integral (phonon, ionized-impurity, surface); solved by Monte Carlo or iterative deterministic methods.",
+    "forward_model": "df/dt + v(k).grad_r(f) + (F/hbar).grad_k(f) = Integral [S(k',k)*f(k') - S(k,k')*f(k)] dk'",
+    "world_state_x": "Distribution function f(r,k,t) in 6D+1 phase space; or moments (n, J, T_e)",
+    "observation_y": "Device I-V; mobility vs E-field; noise spectrum S_I(omega); hot-carrier distribution tails",
+    "physical_parameters_theta": [
+      "m*(k) (band structure)",
+      "deformation potentials D_ac, D_op",
+      "impurity density & screening",
+      "surface-roughness spectrum"
+    ]
+  },
+  "G": {
+    "dag": "E.band_structure -> E.scattering_rates -> M.MC_transport -> O.moments",
+    "vertices": [
+      "E.band_structure",
+      "E.scattering_rates",
+      "M.MC_transport",
+      "O.moments"
+    ],
+    "arcs": [
+      "E.band_structure -> E.scattering_rates",
+      "E.scattering_rates -> M.MC_transport",
+      "M.MC_transport -> O.moments"
+    ],
+    "L_DAG": 3.7,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 600,
+    "condition_number_effective": 50,
+    "regime": "Well-posed for given scattering rates; inversion for deformation potentials is ill-conditioned (multiple rates couple to same mobility)."
+  },
+  "C": {
+    "solver_class": "Ensemble Monte Carlo (EMC); iterative Legendre-expansion (LEGSEM); adjoint-MC for inversion",
+    "convergence_rate_q": 2.0,
+    "error_bound": "statistical error ~1/sqrt(N_particles); bias from band-model truncation",
+    "complexity": "O(N_particles * N_steps)"
+  },
+  "physics_fingerprint": {
+    "carrier": "electron",
+    "sensing_mechanism": "mobility_noise_measurement",
+    "integration_axis": "time",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "poisson",
+    "solution_space": "distribution_f_k_of_r",
+    "primitives": [
+      "E.band_structure",
+      "E.scattering_rates",
+      "M.MC_transport",
+      "O.moments"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "D_ac_error",
+    "impurity_screening_model",
+    "intervalley_coupling"
+  ],
+  "error_metric": "mobility_relative_error",
+  "error_metric_secondary": "noise_S_I_log_error",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "kinetic_transport_inversion",
+      "forward_operator": "boltzmann_mc_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "E_field_V_cm": 10000.0,
+        "T_K": 300,
+        "N_D_cm3": 1e+17,
+        "material": "Si",
+        "N_particles": 100000
+      },
+      "epsilon_fn_center": "mobility relative error <= 0.05"
+    },
+    "allowed_forward_operators": [
+      "boltzmann_mc_forward"
+    ],
+    "allowed_problem_classes": [
+      "kinetic_transport_inversion"
+    ],
+    "allowed_omega_dimensions": [
+      "E_field_V_cm",
+      "T_K",
+      "N_D_cm3",
+      "material",
+      "N_particles"
+    ],
+    "omega_bounds": {
+      "E_field_V_cm": [
+        10,
+        1000000.0
+      ],
+      "T_K": [
+        77,
+        500
+      ],
+      "N_D_cm3": [
+        100000000000000.0,
+        1e+20
+      ],
+      "N_particles": [
+        10000,
+        10000000
+      ]
+    },
+    "epsilon_bounds": {
+      "mobility_relative_error": [
+        0.01,
+        0.5
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

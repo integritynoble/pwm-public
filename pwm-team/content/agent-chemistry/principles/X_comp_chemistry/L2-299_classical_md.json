@@ -1,0 +1,132 @@
+{
+  "artifact_id": "L2-299",
+  "layer": "L2",
+  "parent_l1": "L1-299",
+  "title": "Classical Molecular Dynamics Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "N_atoms": [
+        100,
+        10000000.0
+      ],
+      "T_K": [
+        4,
+        5000
+      ],
+      "N_steps": [
+        1000,
+        10000000000.0
+      ],
+      "dt_fs": [
+        0.1,
+        10
+      ],
+      "ff": [
+        "AMBER",
+        "CHARMM",
+        "OPLS",
+        "GROMOS",
+        "ReaxFF"
+      ]
+    },
+    "E": {
+      "forward": "m_i * d^2 r_i / dt^2 = -grad_i U(r); integrate with velocity-Verlet",
+      "operator": "classical_md_forward_mismatch",
+      "primitive_chain": "E.force_field -> M.verlet_integrate -> O.trajectory",
+      "inverse": "recover constitutive parameters for Classical Molecular Dynamics"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "diffusion_coeff_relative_error",
+      "rdf_L2",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.04 * (1 + 0.1 * mismatch_severity)"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "GROMACS-AMBER",
+        "method_sig": "T+O",
+        "expected_err": 0.06
+      },
+      {
+        "name": "LAMMPS-OPLS",
+        "method_sig": "T+O",
+        "expected_err": 0.07
+      },
+      {
+        "name": "DeePMD",
+        "method_sig": "T+N",
+        "expected_err": 0.045
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_atoms": 1000,
+        "T_K": 300,
+        "N_steps": 1000000.0,
+        "dt_fs": 2,
+        "ff": "AMBER"
+      },
+      "epsilon": 0.04
+    },
+    "tier_bounds": {
+      "N_atoms": [
+        100,
+        10000000.0
+      ],
+      "T_K": [
+        4,
+        5000
+      ],
+      "N_steps": [
+        1000,
+        10000000000.0
+      ],
+      "dt_fs": [
+        0.1,
+        10
+      ],
+      "ff": [
+        "AMBER",
+        "CHARMM",
+        "OPLS",
+        "GROMOS",
+        "ReaxFF"
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.45,
+  "d_spec_notes": "Canonical mismatch-only baseline for this principle; sits at the centroid of its spec family.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions match across all DAG nodes; operator dimensions consistent.",
+    "S2": "Operator condition number controlled (kappa_eff=30) under declared Omega with regularization.",
+    "S3": "Solver class LAMMPS, GROMACS, AMBER, NAMD; OpenMM provably converges at rate q=2.0; monotone residual decrease.",
+    "S4": "epsilon_fn evaluates cleanly across 50 random Omega samples; hardness rule satisfied (top baseline fails at Omega corner)."
+  },
+  "ipfs_cid": null
+}

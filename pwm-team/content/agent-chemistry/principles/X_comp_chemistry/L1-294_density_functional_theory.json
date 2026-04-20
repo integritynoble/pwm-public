@@ -1,0 +1,151 @@
+{
+  "artifact_id": "L1-294",
+  "layer": "L1",
+  "principle_number": "294",
+  "title": "Kohn-Sham Density Functional Theory",
+  "domain": "Computational Chemistry",
+  "sub_domain": "Ground-state electronic structure",
+  "source_file": "X_computational_chemistry/294_density_functional_theory.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
+  "E": {
+    "description": "Kohn-Sham DFT: map N-electron interacting problem to non-interacting auxiliary system with same density; self-consistent via V_Hartree + V_xc[rho].",
+    "forward_model": "(-(hbar^2/2m)*Laplacian + V_ext(r) + V_Hartree(r) + V_xc(r)) phi_i(r) = E_i phi_i(r);  rho(r) = sum_i|phi_i|^2",
+    "world_state_x": "Ground-state electron density rho(r) and Kohn-Sham orbitals phi_i(r)",
+    "observation_y": "Total energy, forces, dipole, polarizability, NMR shielding, vibrational frequencies",
+    "physical_parameters_theta": [
+      "exchange-correlation functional (LDA/GGA/hybrid)",
+      "basis set / pseudopotential",
+      "nuclear geometry"
+    ]
+  },
+  "G": {
+    "dag": "E.potential_ext -> E.hartree_xc -> M.scf_eigensolve -> O.density_energy",
+    "vertices": [
+      "E.potential_ext",
+      "E.hartree_xc",
+      "M.scf_eigensolve",
+      "O.density_energy"
+    ],
+    "arcs": [
+      "E.potential_ext -> E.hartree_xc",
+      "E.hartree_xc -> M.scf_eigensolve",
+      "M.scf_eigensolve -> O.density_energy"
+    ],
+    "L_DAG": 3.3,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 600,
+    "condition_number_effective": 50,
+    "regime": "Well-posed (Hohenberg-Kohn theorem); XC functional approximation is dominant error source."
+  },
+  "C": {
+    "solver_class": "VASP, Quantum ESPRESSO, Gaussian, ORCA, NWChem; Pulay DIIS / Broyden mixing",
+    "convergence_rate_q": 2.0,
+    "error_bound": "bounded by discretization + mismatch bias + noise floor",
+    "complexity": "principle-dependent"
+  },
+  "physics_fingerprint": {
+    "carrier": "electron",
+    "sensing_mechanism": "quantum_chemistry_benchmark",
+    "integration_axis": "spatial",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "kohn_sham_orbitals",
+    "primitives": [
+      "E.potential_ext",
+      "E.hartree_xc",
+      "M.scf_eigensolve",
+      "O.density_energy"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "xc_functional_bias",
+    "basis_incompleteness",
+    "pseudopotential_error"
+  ],
+  "error_metric": "total_energy_error_mHa",
+  "error_metric_secondary": "force_L2_error_eV_per_A",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "density_functional_theory",
+      "forward_operator": "dft_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_electrons": 20,
+        "N_basis": 1000,
+        "Ecut_eV": 400,
+        "xc": "PBE",
+        "N_kpoints": 100
+      },
+      "epsilon_fn_center": "E error <= 1.5 mHa (~kJ/mol)"
+    },
+    "allowed_forward_operators": [
+      "dft_forward"
+    ],
+    "allowed_problem_classes": [
+      "density_functional_theory"
+    ],
+    "allowed_omega_dimensions": [
+      "N_electrons",
+      "N_basis",
+      "Ecut_eV",
+      "xc",
+      "N_kpoints"
+    ],
+    "omega_bounds": {
+      "N_electrons": [
+        2,
+        10000
+      ],
+      "N_basis": [
+        100,
+        1000000
+      ],
+      "Ecut_eV": [
+        100,
+        2000
+      ],
+      "xc": [
+        "LDA",
+        "PBE",
+        "B3LYP",
+        "HSE06"
+      ],
+      "N_kpoints": [
+        1,
+        100000
+      ]
+    },
+    "epsilon_bounds": {
+      "total_energy_error_mHa": [
+        0.5,
+        50
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

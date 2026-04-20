@@ -1,0 +1,147 @@
+{
+  "artifact_id": "L1-329",
+  "layer": "L1",
+  "principle_number": "329",
+  "title": "CALPHAD Thermodynamic Modeling",
+  "domain": "Materials Science",
+  "sub_domain": "Multi-component phase equilibria",
+  "source_file": "Z_materials_science/329_calphad.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
+  "E": {
+    "description": "CALPHAD (CALculation of PHAse Diagrams): parameterize Gibbs energy G_phase(T, x) for each phase; minimize total G subject to mass-balance to obtain equilibrium phase fractions and compositions.",
+    "forward_model": "G_sys = sum_alpha n_alpha * G_alpha(T, x_alpha);  min G subject to sum n = N_total, sum n_alpha x_alpha = X_total",
+    "world_state_x": "Gibbs free energy surfaces G_phase(T, x) parameterized by Redlich-Kister expansions",
+    "observation_y": "Phase diagrams; measured phase fractions from XRD quantitative phase analysis; DTA transition points",
+    "physical_parameters_theta": [
+      "L_k^phi (Redlich-Kister)",
+      "a_i, b_i (T-dependence)",
+      "end-member Gibbs energies"
+    ]
+  },
+  "G": {
+    "dag": "E.gibbs_surface -> M.free_energy_minimize -> O.phase_equilibrium",
+    "vertices": [
+      "E.gibbs_surface",
+      "M.free_energy_minimize",
+      "O.phase_equilibrium"
+    ],
+    "arcs": [
+      "E.gibbs_surface -> M.free_energy_minimize",
+      "M.free_energy_minimize -> O.phase_equilibrium"
+    ],
+    "L_DAG": 3.3,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 200,
+    "condition_number_effective": 25,
+    "regime": "Convex per phase but multi-phase minimization is non-convex; consistent globally with Gibbs phase rule."
+  },
+  "C": {
+    "solver_class": "Thermo-Calc / OpenCalphad Gibbs energy minimizer; parameter fit with CALTPP",
+    "convergence_rate_q": 2.0,
+    "error_bound": "bounded by discretization + mismatch bias + noise floor",
+    "complexity": "principle-dependent"
+  },
+  "physics_fingerprint": {
+    "carrier": "none",
+    "sensing_mechanism": "phase_diagram_measurement",
+    "integration_axis": "composition_temperature",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "gibbs_energy_surfaces",
+    "primitives": [
+      "E.gibbs_surface",
+      "M.free_energy_minimize",
+      "O.phase_equilibrium"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "RK_parameter_drift",
+    "temperature_coefficient_error",
+    "miscibility_gap_bias"
+  ],
+  "error_metric": "phase_fraction_L1_error",
+  "error_metric_secondary": "solvus_temperature_error_K",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "calphad",
+      "forward_operator": "calphad_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_components": 3,
+        "N_phases": 5,
+        "T_K_range": [
+          300,
+          1500
+        ],
+        "composition_grid_N": 50
+      },
+      "epsilon_fn_center": "phase fraction L1 <= 0.03"
+    },
+    "allowed_forward_operators": [
+      "calphad_forward"
+    ],
+    "allowed_problem_classes": [
+      "calphad"
+    ],
+    "allowed_omega_dimensions": [
+      "N_components",
+      "N_phases",
+      "T_K_range",
+      "composition_grid_N"
+    ],
+    "omega_bounds": {
+      "N_components": [
+        2,
+        10
+      ],
+      "N_phases": [
+        2,
+        20
+      ],
+      "T_K_range_min": [
+        77,
+        500
+      ],
+      "T_K_range_max": [
+        1000,
+        3000
+      ],
+      "composition_grid_N": [
+        20,
+        500
+      ]
+    },
+    "epsilon_bounds": {
+      "phase_fraction_L1_error": [
+        0.005,
+        0.25
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

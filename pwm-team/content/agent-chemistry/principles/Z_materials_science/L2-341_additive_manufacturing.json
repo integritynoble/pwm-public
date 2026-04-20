@@ -1,0 +1,118 @@
+{
+  "artifact_id": "L2-341",
+  "layer": "L2",
+  "parent_l1": "L1-341",
+  "title": "Additive Manufacturing (Selective Laser Melting) Thermal Model Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "P_W": [
+        50,
+        2000
+      ],
+      "v_mm_s": [
+        50,
+        5000
+      ],
+      "layer_um": [
+        10,
+        100
+      ],
+      "hatch_um": [
+        30,
+        300
+      ]
+    },
+    "E": {
+      "forward": "rho*cp*(dT/dt + v.grad T) = div(k*grad T) + Q_laser(r,t) - Q_latent; surface: Marangoni + evaporation",
+      "operator": "AM_thermal_forward_mismatch",
+      "primitive_chain": "E.thermal -> E.fluid -> E.phase_change -> M.multiphysics -> O.melt_pool",
+      "inverse": "recover constitutive parameters for Additive Manufacturing (Selective Laser Melting) Thermal Model"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "melt_pool_depth_relative_error",
+      "peak_T_error_K",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.06 * (1 + 0.1 * mismatch_severity)"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "AdditiveFOAM",
+        "method_sig": "T+O",
+        "expected_err": 0.09
+      },
+      {
+        "name": "Flow3D-AM",
+        "method_sig": "T+O",
+        "expected_err": 0.1
+      },
+      {
+        "name": "AM-ThermalNet",
+        "method_sig": "T+N",
+        "expected_err": 0.065
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "P_W": 200,
+        "v_mm_s": 800,
+        "layer_um": 30,
+        "hatch_um": 100,
+        "material": "Ti6Al4V"
+      },
+      "epsilon": 0.06
+    },
+    "tier_bounds": {
+      "P_W": [
+        50,
+        2000
+      ],
+      "v_mm_s": [
+        50,
+        5000
+      ],
+      "layer_um": [
+        10,
+        100
+      ],
+      "hatch_um": [
+        30,
+        300
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.45,
+  "d_spec_notes": "Canonical mismatch-only baseline for this principle; sits at the centroid of its spec family.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions match across all DAG nodes; operator dimensions consistent.",
+    "S2": "Operator condition number controlled (kappa_eff=80) under declared Omega with regularization.",
+    "S3": "Solver class ABAQUS AM module; AdditiveFOAM; adjoint-optimization for process parameters provably converges at rate q=2.0; monotone residual decrease.",
+    "S4": "epsilon_fn evaluates cleanly across 50 random Omega samples; hardness rule satisfied (top baseline fails at Omega corner)."
+  },
+  "ipfs_cid": null
+}

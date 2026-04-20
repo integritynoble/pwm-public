@@ -1,0 +1,149 @@
+{
+  "artifact_id": "L1-341",
+  "layer": "L1",
+  "principle_number": "341",
+  "title": "Additive Manufacturing (Selective Laser Melting) Thermal Model",
+  "domain": "Materials Science",
+  "sub_domain": "Laser-powder-bed melt pool thermodynamics",
+  "source_file": "Z_materials_science/341_additive_manufacturing.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
+  "E": {
+    "description": "Coupled thermal + fluid + solidification model of laser-powder interaction: moving Gaussian heat source + Marangoni flow + phase change; predicts melt-pool geometry and solidification structure.",
+    "forward_model": "rho*cp*(dT/dt + v.grad T) = div(k*grad T) + Q_laser(r,t) - Q_latent; surface: Marangoni + evaporation",
+    "world_state_x": "Temperature field T(r,t), melt-pool depth d_pool, velocity field in liquid pool",
+    "observation_y": "Melt-pool geometry (high-speed camera), thermal history (pyrometry), grain size/texture (post-mortem)",
+    "physical_parameters_theta": [
+      "laser power P, scan speed v, absorptivity alpha",
+      "thermal conductivity k(T)",
+      "Marangoni coefficient",
+      "powder packing"
+    ]
+  },
+  "G": {
+    "dag": "E.thermal -> E.fluid -> E.phase_change -> M.multiphysics -> O.melt_pool",
+    "vertices": [
+      "E.thermal",
+      "E.fluid",
+      "E.phase_change",
+      "M.multiphysics",
+      "O.melt_pool"
+    ],
+    "arcs": [
+      "E.thermal -> E.fluid",
+      "E.fluid -> E.phase_change",
+      "E.phase_change -> M.multiphysics",
+      "M.multiphysics -> O.melt_pool"
+    ],
+    "L_DAG": 3.9,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 900,
+    "condition_number_effective": 80,
+    "regime": "Highly non-linear multiphysics; well-posed locally; inversion of (alpha, k_T) from thermal video is moderately ill-conditioned."
+  },
+  "C": {
+    "solver_class": "ABAQUS AM module; AdditiveFOAM; adjoint-optimization for process parameters",
+    "convergence_rate_q": 2.0,
+    "error_bound": "bounded by discretization + mismatch bias + noise floor",
+    "complexity": "principle-dependent"
+  },
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "laser_powder_bed_thermal",
+    "integration_axis": "time_space",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "melt_pool_thermal_velocity",
+    "primitives": [
+      "E.thermal",
+      "E.fluid",
+      "E.phase_change",
+      "M.multiphysics",
+      "O.melt_pool"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "absorptivity_drift",
+    "powder_packing_variance",
+    "vapor_depression_effect"
+  ],
+  "error_metric": "melt_pool_depth_relative_error",
+  "error_metric_secondary": "peak_T_error_K",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "additive_manufacturing",
+      "forward_operator": "AM_thermal_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "P_W": 200,
+        "v_mm_s": 800,
+        "layer_um": 30,
+        "hatch_um": 100,
+        "material": "Ti6Al4V"
+      },
+      "epsilon_fn_center": "melt-pool depth rel error <= 0.06"
+    },
+    "allowed_forward_operators": [
+      "AM_thermal_forward"
+    ],
+    "allowed_problem_classes": [
+      "additive_manufacturing"
+    ],
+    "allowed_omega_dimensions": [
+      "P_W",
+      "v_mm_s",
+      "layer_um",
+      "hatch_um",
+      "material"
+    ],
+    "omega_bounds": {
+      "P_W": [
+        50,
+        2000
+      ],
+      "v_mm_s": [
+        50,
+        5000
+      ],
+      "layer_um": [
+        10,
+        100
+      ],
+      "hatch_um": [
+        30,
+        300
+      ]
+    },
+    "epsilon_bounds": {
+      "melt_pool_depth_relative_error": [
+        0.02,
+        0.5
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

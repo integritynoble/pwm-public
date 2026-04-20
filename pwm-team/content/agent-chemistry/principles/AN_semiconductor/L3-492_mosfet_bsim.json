@@ -1,0 +1,245 @@
+{
+  "artifact_id": "L3-492",
+  "layer": "L3",
+  "parent_l2": "L2-492",
+  "parent_l1": "L1-492",
+  "title": "BSIM Compact MOSFET Model Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "PTM (Predictive Technology Model) 7nm/10nm/16nm reference I-V curves",
+    "secondary": "IC-CAP BSIM extraction datasets (TSMC academic-release)",
+    "construction_method": "measured or PTM-simulated device characterization across PVT",
+    "num_dev_instances_per_tier": 20,
+    "holdout_instances_per_tier": 10
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "Vgs_range_V": 1.2,
+        "Vds_range_V": 1.2,
+        "T_K": 300,
+        "L_nm": 20,
+        "W_nm": 100,
+        "N_bias_points": 400
+      },
+      "dataset_description": "BSIM Compact MOSFET Model at rho=1.",
+      "epsilon": 0.02,
+      "d_ibench": 0.15,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        },
+        {
+          "Q": 0.9,
+          "tier": "Excellent"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "BSIM6-LM",
+          "score": 0.024,
+          "Q": 0.84
+        },
+        {
+          "name": "HSPICE-Opt",
+          "score": 0.028,
+          "Q": 0.8
+        },
+        {
+          "name": "ML-BSIM-Fit",
+          "score": 0.018,
+          "Q": 0.92
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "Vgs_range_V": 1.8,
+        "Vds_range_V": 1.8,
+        "T_K": 350,
+        "L_nm": 10,
+        "W_nm": 100,
+        "N_bias_points": 1000
+      },
+      "dataset_description": "BSIM Compact MOSFET Model at rho=3.",
+      "epsilon": 0.023,
+      "d_ibench": 0.32,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        },
+        {
+          "Q": 0.9,
+          "tier": "Excellent"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "BSIM6-LM",
+          "score": 0.035,
+          "Q": 0.68
+        },
+        {
+          "name": "HSPICE-Opt",
+          "score": 0.04,
+          "Q": 0.62
+        },
+        {
+          "name": "ML-BSIM-Fit",
+          "score": 0.025,
+          "Q": 0.82
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "Vgs_range_V": 2.5,
+        "Vds_range_V": 2.5,
+        "T_K": 400,
+        "L_nm": 7,
+        "W_nm": 50,
+        "N_bias_points": 3000
+      },
+      "dataset_description": "BSIM Compact MOSFET Model at rho=5.",
+      "epsilon": 0.028,
+      "d_ibench": 0.51,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "BSIM6-LM",
+          "score": 0.055,
+          "Q": 0.46
+        },
+        {
+          "name": "HSPICE-Opt",
+          "score": 0.064,
+          "Q": 0.4
+        },
+        {
+          "name": "ML-BSIM-Fit",
+          "score": 0.038,
+          "Q": 0.66
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "Vgs_range_V": 3.3,
+        "Vds_range_V": 3.3,
+        "T_K": 400,
+        "L_nm": 5,
+        "W_nm": 30,
+        "N_bias_points": 10000
+      },
+      "dataset_description": "BSIM Compact MOSFET Model at rho=10.",
+      "epsilon": 0.037,
+      "d_ibench": 0.72,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "BSIM6-LM",
+          "score": 0.1,
+          "Q": 0.26
+        },
+        {
+          "name": "HSPICE-Opt",
+          "score": 0.12,
+          "Q": 0.22
+        },
+        {
+          "name": "ML-BSIM-Fit",
+          "score": 0.065,
+          "Q": 0.48
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "PTM + IC-CAP BSIM extraction library",
+      "construction_method": "parametric Omega sampling over declared bounds; stratified by rho.",
+      "num_dev_instances": 200,
+      "num_holdout_instances": 100
+    },
+    "tracks": {
+      "track_A_stratified_worst_case": {
+        "pass_condition": "min score meets epsilon_fn over all strata"
+      },
+      "track_B_uniform_median": {
+        "num_samples": 50,
+        "pass_condition": "median score meets epsilon_fn at Omega_median"
+      },
+      "track_C_mismatch_degradation": {
+        "sweep_points": 5,
+        "pass_condition": "monotone degradation with mismatch"
+      }
+    },
+    "baselines": [
+      {
+        "name": "BSIM6-LM",
+        "track_A_Q": 0.6,
+        "track_B_Q": 0.72,
+        "track_C_Q": 0.64,
+        "overall_Q": 0.65
+      },
+      {
+        "name": "HSPICE-Opt",
+        "track_A_Q": 0.56,
+        "track_B_Q": 0.68,
+        "track_C_Q": 0.6,
+        "overall_Q": 0.61
+      },
+      {
+        "name": "ML-BSIM-Fit",
+        "track_A_Q": 0.7,
+        "track_B_Q": 0.8,
+        "track_C_Q": 0.72,
+        "overall_Q": 0.74
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails epsilon_fn at T4_blind Omega corner.",
+  "anti_overfitting_mechanisms": {
+    "M1_random_instantiation": "seeded by benchmark hash; non-repeatable holdout",
+    "M2_convergence_scoring": "verifies declared convergence rate across Omega",
+    "M3_worst_case_eval": "min-score over fixed dev instances per tier",
+    "M4_community_adversarial": "adversarial submissions eligible for T_k",
+    "M5_method_sig_diversity": "baselines span multiple method_sig families",
+    "M6_gate_checks": "S1-S4 gate checks enforced with thresholds.yaml"
+  },
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

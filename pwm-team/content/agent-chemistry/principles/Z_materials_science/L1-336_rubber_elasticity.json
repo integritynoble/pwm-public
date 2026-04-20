@@ -1,0 +1,141 @@
+{
+  "artifact_id": "L1-336",
+  "layer": "L1",
+  "principle_number": "336",
+  "title": "Rubber Elasticity Theory",
+  "domain": "Materials Science",
+  "sub_domain": "Entropic elasticity of networks",
+  "source_file": "Z_materials_science/336_rubber_elasticity.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
+  "E": {
+    "description": "Affine network rubber elasticity: free energy F = (n_c*k_B*T/2)*(lambda_1^2 + lambda_2^2 + lambda_3^2 - 3); Mooney-Rivlin and Ogden extensions for finite extensibility.",
+    "forward_model": "sigma_i = (n_c*k_B*T)*(lambda_i^2 - 1/(lambda_1*lambda_2*lambda_3)) + C_2*correction",
+    "world_state_x": "Stress-strain response sigma(lambda) under uniaxial, biaxial, and shear deformations",
+    "observation_y": "Uniaxial tension curves; simple shear; biaxial extension",
+    "physical_parameters_theta": [
+      "n_c (cross-link density)",
+      "C_1, C_2 (Mooney-Rivlin)",
+      "N_max (finite extensibility)",
+      "swelling ratio"
+    ]
+  },
+  "G": {
+    "dag": "E.network_entropy -> E.affine_deformation -> O.stress_strain",
+    "vertices": [
+      "E.network_entropy",
+      "E.affine_deformation",
+      "O.stress_strain"
+    ],
+    "arcs": [
+      "E.network_entropy -> E.affine_deformation",
+      "E.affine_deformation -> O.stress_strain"
+    ],
+    "L_DAG": 2.8,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 60,
+    "condition_number_effective": 10,
+    "regime": "Well-posed; inversion of (n_c, C_2) from uniaxial alone is ill-conditioned \u2014 requires biaxial."
+  },
+  "C": {
+    "solver_class": "Nonlinear least squares LM; Bayesian hyperelastic fit",
+    "convergence_rate_q": 2.0,
+    "error_bound": "bounded by discretization + mismatch bias + noise floor",
+    "complexity": "principle-dependent"
+  },
+  "physics_fingerprint": {
+    "carrier": "none",
+    "sensing_mechanism": "mechanical_test",
+    "integration_axis": "strain",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "stress_strain_curve",
+    "primitives": [
+      "E.network_entropy",
+      "E.affine_deformation",
+      "O.stress_strain"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "n_c_drift",
+    "Mullins_softening",
+    "fillers_interaction"
+  ],
+  "error_metric": "stress_strain_L2_error_MPa",
+  "error_metric_secondary": "n_c_relative_error",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "rubber_elasticity",
+      "forward_operator": "rubber_elasticity_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "lambda_max": 4,
+        "n_c_mol_m3": 100,
+        "T_K": 298,
+        "N_data_points": 100
+      },
+      "epsilon_fn_center": "stress-strain L2 <= 0.08 MPa"
+    },
+    "allowed_forward_operators": [
+      "rubber_elasticity_forward"
+    ],
+    "allowed_problem_classes": [
+      "rubber_elasticity"
+    ],
+    "allowed_omega_dimensions": [
+      "lambda_max",
+      "n_c_mol_m3",
+      "T_K",
+      "N_data_points"
+    ],
+    "omega_bounds": {
+      "lambda_max": [
+        1.1,
+        10
+      ],
+      "n_c_mol_m3": [
+        10,
+        10000
+      ],
+      "T_K": [
+        200,
+        400
+      ],
+      "N_data_points": [
+        20,
+        5000
+      ]
+    },
+    "epsilon_bounds": {
+      "stress_strain_L2_error_MPa": [
+        0.01,
+        1.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}
