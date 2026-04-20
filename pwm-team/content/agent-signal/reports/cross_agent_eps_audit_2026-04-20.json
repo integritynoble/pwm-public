@@ -1,0 +1,1158 @@
+{
+  "generated_by": "agent-signal cross-agent epsilon_fn audit",
+  "date": "2026-04-20",
+  "evaluator": "infrastructure/agent-scoring/pwm_scoring/epsilon.py (AST-sandboxed)",
+  "method": "5 random samples per spec drawn uniformly from declared omega bounds",
+  "findings": {
+    "applied": {
+      "total_l2": 111,
+      "passed": 18,
+      "issues": [
+        {
+          "file": "content/agent-applied/principles/AC_astrophysics/L2-364.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "1e-5 * (dt_yr / 0.01)^2",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AC_astrophysics/L2-365.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "1.0 + 0.05 * (sigma_8 - 0.8)^2 / 0.04",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AC_astrophysics/L2-366.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "0.005 + 0.005 * (noise_uK_arcmin / 10.0)^0.5",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AC_astrophysics/L2-367.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "1.0 + 0.05 * (noise_uK_arcmin / 5.0)^0.5",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AC_astrophysics/L2-368.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "1.0 + 0.1 * (e_ellipticity / 0.5)^2",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AC_astrophysics/L2-370.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "1.0 + 0.2 * (noise_sigma_microHz / 0.1)^0.5",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AC_astrophysics/L2-371.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "1.0 + 0.15 * (100 / SNR)^0.5",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AC_astrophysics/L2-372.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "0.10 + 0.02 * (photometric_noise_mmag / 5.0)^0.5",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AC_astrophysics/L2-373.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "2.0 + 1.0 * (N_psr / 25)^0.5",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AC_astrophysics/L2-374.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "0.30 + 0.20 * (15.0 / SNR_network)^2",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AC_astrophysics/L2-376.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "1.0 + 0.3 * (solar_phi_GV - 0.5)^2",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AC_astrophysics/L2-377.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "0.15 + 0.10 * (10 / SNR_per_band)^0.5",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AC_astrophysics/L2-379.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "0.5 + 0.5 * (1.0 / N_gal_million)^0.5",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AC_astrophysics/L2-380.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "30 + 20 * (100 / SNR_per_point_ppm)^0.5",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AC_astrophysics/L2-381.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "0.5 + 0.3 * (200 / N_SN_hubble_flow)^0.5",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AE_computational_bio/L2-396.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "1.0 + 1.0 * (10 / N_voltage_samples * 1000)^0.3",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AE_computational_bio/L2-397.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "0.02 + 0.03 * (noise_sigma / 0.1 + 1)^0.5",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AE_computational_bio/L2-398.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "0.10 + 0.05 * (3 / N_recording_sites)^0.5",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AE_computational_bio/L2-399.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "3 + 2 * (30 / noise_SNR_dB)^0.5",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AE_computational_bio/L2-400.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "0.3 + 0.2 * (MRI_voxel_mm / 2.0)^0.5",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AE_computational_bio/L2-401.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "1.0 + 1.0 * (systolic_pressure_mmHg / 120)^0.3",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AE_computational_bio/L2-402.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "10 + 5 * (20 / N_subjects)^0.5",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AE_computational_bio/L2-403.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "1.5 + 0.5 * (0.1 / fu_fraction_unbound)^0.2",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AE_computational_bio/L2-404.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "1.2 + 0.3 * (20 / noise_CV_percent)^(-0.5)",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AE_computational_bio/L2-405.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "0.1 + 0.1 * (0.5 / detection_rate)^0.5",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AE_computational_bio/L2-406.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "10 + 10 * (0.5 / detection_rate)^0.5",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AE_computational_bio/L2-407.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "0.05 + 0.05 * (observation_noise_log_sigma / 0.1)^0.5",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AE_computational_bio/L2-408.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "0.2 + 0.1 * (20 / N_generations)^0.5",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AE_computational_bio/L2-409.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "3 + 2 * (50 / N_taxa)^0.3",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AE_computational_bio/L2-410.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "10 + 5 * (imaging_noise_percent / 10)^0.5",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AE_computational_bio/L2-411.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "3 + 2 * (Q_max_mlO2_ml_s / 0.0005)^0.3",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AE_computational_bio/L2-412.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "0.50 + 0.20 * (3.0 / resolution_Angstrom)^0.5",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AE_computational_bio/L2-413.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "70 + 10 * (sequence_identity_percent / 40)^0.5",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AF_environmental_sci/L2-414.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "15 + 10 * (6 / N_sensors)^0.5",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AF_environmental_sci/L2-415.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "5 + 5 * (5 / N_monitoring_wells)^0.5",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AF_environmental_sci/L2-416.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "0.5 + 0.5 * (noise_NEdT_K / 0.1)^0.5",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AF_environmental_sci/L2-417.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "0.05 + 0.05 * (aerosol_forcing_Wm2 / -1.0)^2",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AF_environmental_sci/L2-418.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "0.3 + 0.2 * (model_resolution_km / 10)^0.2",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AF_environmental_sci/L2-419.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "0.2 + 0.1 * (1.0 / N_Argo_profiles * 3000)^0.3",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AF_environmental_sci/L2-420.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "3 + 2 * (melt_pond_fraction / 0.1 + 1)^0.5",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AF_environmental_sci/L2-421.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "0.05 + 0.05 * (discharge_peak_m3_s / 1000)^0.2",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AF_environmental_sci/L2-423.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "50 + 50 * (20 / N_sensors)^0.5",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AF_environmental_sci/L2-424.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "0.3 + 0.2 * (1.0 / prior_uncertainty_GtC_yr)^0.2",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AF_environmental_sci/L2-425.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "0.05 + 0.05 * (log_K_variance / 2.0)^0.5",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AG_control_theory/L2-426.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "0.02 + 0.03 * (100 / condition_number_kappa)^0.3",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AG_control_theory/L2-427.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "1.0 + 0.05 * (Q_R_ratio / 1.0)^0.1",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AG_control_theory/L2-428.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "0.04 + 0.04 * (nonlinearity_degree / 0.5)^0.5",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AG_control_theory/L2-430.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "0.10 + 0.05 * (1000 / N_particles)^0.5",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AG_control_theory/L2-431.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "70 + 15 * (N_data_points / 1000)^0.2",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AG_control_theory/L2-433.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "0.03 + 0.02 * (20 / prediction_horizon_N)^0.3",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AG_control_theory/L2-435.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "0.3 + 0.2 * (6 / window_hours)^0.2",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AG_control_theory/L2-436.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "0.03 + 0.02 * (50 / N_e_ensemble)^0.5",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AG_control_theory/L2-437.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "0.05 + 0.05 * (Lipschitz_constant_gamma / 1.0)^0.5",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AH_comp_finance/L2-438.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "30 + 20 * (bid_ask_spread_bp / 50)^0.5",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AH_comp_finance/L2-439.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "40 + 20 * (data_noise_bp / 30)^0.5",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AH_comp_finance/L2-440.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "5 + 3 * (vol_noise_bp / 5)^0.5",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AH_comp_finance/L2-442.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "10 + 10 * (data_noise_bp / 20)^0.5",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AH_comp_finance/L2-443.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "30 + 20 * (leverage_ratio_D_V / 0.5)^2",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AH_comp_finance/L2-445.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "0.05 + 0.03 * (structural_break_prob / 0.1 + 1)^0.5",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AI_robotics/L2-447.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "0.5 + 0.5 * (10 / singularity_distance_cm)^0.5",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AI_robotics/L2-449.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "1.0 + 1.0 * (2.0 / excitation_bandwidth_Hz)^0.3",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AI_robotics/L2-451.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "0.01 + 0.04 * (integration_dt_ms / 1.0)^2",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AI_robotics/L2-452.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "1e-5 * (Baumgarte_alpha / 20)^(-0.5)",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AI_robotics/L2-453.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "0.5 + 0.5 * (lateral_acceleration_m_s2 / 3.0)^0.5",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AI_robotics/L2-454.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "1.0 + 2.0 * (star_tracker_noise_arcsec / 2.0)^0.5",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AI_robotics/L2-455.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "0.5 + 0.5 * (transfer_angle_deg / 90)^0.2",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AI_robotics/L2-456.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "3 + 2 * (advance_ratio_mu / 0.1 + 1)^0.3",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AI_robotics/L2-457.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "0.3 + 0.2 * (eccentricity_ratio_e / 0.5)^0.5",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AJ_petroleum/L2-458.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "0.08 + 0.02 * (permeability_K_mD / 100)^(-0.2)",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AJ_petroleum/L2-459.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "7 + 3 * (N_components / 6)^0.3",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AJ_petroleum/L2-460.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "0.08 + 0.02 * (50000 / N_cells)^0.2",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AJ_petroleum/L2-461.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "20 + 10 * (fluid_viscosity_cP / 50)^0.3",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AJ_petroleum/L2-462.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "2 + 1 * (mobility_ratio_M / 1.5)^0.3",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AJ_petroleum/L2-463.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "30 + 20 * (clay_content_Vcl / 0.1)^0.3",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AJ_petroleum/L2-464.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "10 + 5 * (24 / N_months_history)^0.5",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AJ_petroleum/L2-465.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "10 + 5 * (wellbore_storage_C_bbl_psi / 0.01)^0.2",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AK_geodesy/L2-466.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "0.5 + 1.0 * (ionospheric_TECU / 5.0)^0.3",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AK_geodesy/L2-467.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "0.05 + 0.05 * (drag_Cd_uncertainty / 0.1)^0.5",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AK_geodesy/L2-468.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "2.0 + 1.0 * (SWH_m / 2.0)^0.3",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AK_geodesy/L2-469.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "3.0 + 2.0 * (flight_altitude_m / 1000)^0.5",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AK_geodesy/L2-470.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "2.0 + 1.0 * (flight_altitude_m / 120)^0.5",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AK_geodesy/L2-471.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "0.5 + 0.5 * (noise_E_sqrt_Hz / 5.0)^0.5",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AK_geodesy/L2-472.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "0.03 + 0.02 * (30 / SNR_dB)^0.5",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AK_geodesy/L2-473.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "1.5 + 0.5 * (degradation_percent_yr / 0.5)^0.3",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AM_particle_physics/L2-480.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "2 + 3 * (N_L_spatial / 32)^(-1)",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AM_particle_physics/L2-481.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "1.0 + 0.05 * (3000 / N_data_points)^0.3",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AM_particle_physics/L2-482.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "1.0 + 0.1 * (91.2 / energy_GeV)^0.1",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AM_particle_physics/L2-484.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "0.0005 + 0.0005 * (pileup_mu / 50)^0.3",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AM_particle_physics/L2-485.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "10 + 10 * (5.0 / POT_1e21)^0.5",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AM_particle_physics/L2-487.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "0.03 + 0.02 * (pileup_mu / 50)^0.3",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/AO_optimization/L2-500.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "0.70 + 0.10 * (N_experiments / 20)^0.3",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/Q_astronomy/L2-167.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "0.25 + 0.05 * (seeing_r0_cm / 15.0)^0.5",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        },
+        {
+          "file": "content/agent-applied/principles/Q_astronomy/L2-168.json",
+          "issue_type": "caret_exponent",
+          "epsilon_fn": "1.0 + 0.2 * (N_baselines / 15)^(-0.5)",
+          "error": "Disallowed AST node BitXor in epsilon_fn",
+          "fix": "replace '^' with '**' inside six_tuple.epsilon_fn"
+        }
+      ]
+    },
+    "chemistry": {
+      "total_l2": 64,
+      "passed": 10,
+      "issues": [
+        {
+          "file": "content/agent-chemistry/principles/AL_polymer_physics/L2-474_dissipative_particle_dynamics.json",
+          "issue_type": "undeclared_variable",
+          "epsilon_fn": "0.010 + 0.02*(rho_bead-3.0) + 0.005*abs(a_ij_AB-25.0) + 0.03*r_c_error",
+          "error": "Unknown variable 'r_c_error' in epsilon_fn",
+          "undeclared_var": "r_c_error",
+          "fix": "either declare 'r_c_error' in six_tuple.omega bounds, or rewrite epsilon_fn to use a declared variable"
+        },
+        {
+          "file": "content/agent-chemistry/principles/AL_polymer_physics/L2-475_scft.json",
+          "issue_type": "undeclared_variable",
+          "epsilon_fn": "0.02 + 0.005*max(0, chi_N-20) + 0.01*abs(f-0.5) + 0.002*polydispersity_error",
+          "error": "Unknown variable 'polydispersity_error' in epsilon_fn",
+          "undeclared_var": "polydispersity_error",
+          "fix": "either declare 'polydispersity_error' in six_tuple.omega bounds, or rewrite epsilon_fn to use a declared variable"
+        },
+        {
+          "file": "content/agent-chemistry/principles/AL_polymer_physics/L2-476_reptation_theory.json",
+          "issue_type": "undeclared_variable",
+          "epsilon_fn": "0.04 + 0.01*(PDI-1.0) + 0.002*abs(T_C-25) + 0.01*noise_frac",
+          "error": "Unknown variable 'noise_frac' in epsilon_fn",
+          "undeclared_var": "noise_frac",
+          "fix": "either declare 'noise_frac' in six_tuple.omega bounds, or rewrite epsilon_fn to use a declared variable"
+        },
+        {
+          "file": "content/agent-chemistry/principles/AL_polymer_physics/L2-477_viscoelastic_oldroyd_b.json",
+          "issue_type": "undeclared_variable",
+          "epsilon_fn": "0.04 + 0.01*Wi + 0.005*mesh_error",
+          "error": "Unknown variable 'mesh_error' in epsilon_fn",
+          "undeclared_var": "mesh_error",
+          "fix": "either declare 'mesh_error' in six_tuple.omega bounds, or rewrite epsilon_fn to use a declared variable"
+        },
+        {
+          "file": "content/agent-chemistry/principles/AL_polymer_physics/L2-478_colloidal_dlvo.json",
+          "issue_type": "undeclared_variable",
+          "epsilon_fn": "0.25 + 0.02*log10(I_mM/10) + 0.01*roughness_nm",
+          "error": "Unknown variable 'roughness_nm' in epsilon_fn",
+          "undeclared_var": "roughness_nm",
+          "fix": "either declare 'roughness_nm' in six_tuple.omega bounds, or rewrite epsilon_fn to use a declared variable"
+        },
+        {
+          "file": "content/agent-chemistry/principles/AL_polymer_physics/L2-479_liquid_crystal_ldg.json",
+          "issue_type": "undeclared_variable",
+          "epsilon_fn": "0.012 + 0.01*abs(T_over_Tc - 0.98) + 0.005*log10(anchoring_W_error)",
+          "error": "Unknown variable 'anchoring_W_error' in epsilon_fn",
+          "undeclared_var": "anchoring_W_error",
+          "fix": "either declare 'anchoring_W_error' in six_tuple.omega bounds, or rewrite epsilon_fn to use a declared variable"
+        },
+        {
+          "file": "content/agent-chemistry/principles/X_comp_chemistry/L2-294_density_functional_theory.json",
+          "issue_type": "undeclared_variable",
+          "epsilon_fn": "1.5 * (1 + 0.1 * mismatch_severity)",
+          "error": "Unknown variable 'mismatch_severity' in epsilon_fn",
+          "undeclared_var": "mismatch_severity",
+          "fix": "either declare 'mismatch_severity' in six_tuple.omega bounds, or rewrite epsilon_fn to use a declared variable"
+        },
+        {
+          "file": "content/agent-chemistry/principles/X_comp_chemistry/L2-295_hartree_fock.json",
+          "issue_type": "undeclared_variable",
+          "epsilon_fn": "0.3 * (1 + 0.1 * mismatch_severity)",
+          "error": "Unknown variable 'mismatch_severity' in epsilon_fn",
+          "undeclared_var": "mismatch_severity",
+          "fix": "either declare 'mismatch_severity' in six_tuple.omega bounds, or rewrite epsilon_fn to use a declared variable"
+        },
+        {
+          "file": "content/agent-chemistry/principles/X_comp_chemistry/L2-296_post_hartree_fock.json",
+          "issue_type": "undeclared_variable",
+          "epsilon_fn": "1.0 * (1 + 0.1 * mismatch_severity)",
+          "error": "Unknown variable 'mismatch_severity' in epsilon_fn",
+          "undeclared_var": "mismatch_severity",
+          "fix": "either declare 'mismatch_severity' in six_tuple.omega bounds, or rewrite epsilon_fn to use a declared variable"
+        },
+        {
+          "file": "content/agent-chemistry/principles/X_comp_chemistry/L2-297_time_dependent_dft.json",
+          "issue_type": "undeclared_variable",
+          "epsilon_fn": "0.15 * (1 + 0.1 * mismatch_severity)",
+          "error": "Unknown variable 'mismatch_severity' in epsilon_fn",
+          "undeclared_var": "mismatch_severity",
+          "fix": "either declare 'mismatch_severity' in six_tuple.omega bounds, or rewrite epsilon_fn to use a declared variable"
+        },
+        {
+          "file": "content/agent-chemistry/principles/X_comp_chemistry/L2-298_ab_initio_md.json",
+          "issue_type": "undeclared_variable",
+          "epsilon_fn": "0.05 * (1 + 0.1 * mismatch_severity)",
+          "error": "Unknown variable 'mismatch_severity' in epsilon_fn",
+          "undeclared_var": "mismatch_severity",
+          "fix": "either declare 'mismatch_severity' in six_tuple.omega bounds, or rewrite epsilon_fn to use a declared variable"
+        },
+        {
+          "file": "content/agent-chemistry/principles/X_comp_chemistry/L2-299_classical_md.json",
+          "issue_type": "undeclared_variable",
+          "epsilon_fn": "0.04 * (1 + 0.1 * mismatch_severity)",
+          "error": "Unknown variable 'mismatch_severity' in epsilon_fn",
+          "undeclared_var": "mismatch_severity",
+          "fix": "either declare 'mismatch_severity' in six_tuple.omega bounds, or rewrite epsilon_fn to use a declared variable"
+        },
+        {
+          "file": "content/agent-chemistry/principles/X_comp_chemistry/L2-300_chemical_kinetics_ode.json",
+          "issue_type": "undeclared_variable",
+          "epsilon_fn": "0.01 * (1 + 0.1 * mismatch_severity)",
+          "error": "Unknown variable 'mismatch_severity' in epsilon_fn",
+          "undeclared_var": "mismatch_severity",
+          "fix": "either declare 'mismatch_severity' in six_tuple.omega bounds, or rewrite epsilon_fn to use a declared variable"
+        },
+        {
+          "file": "content/agent-chemistry/principles/X_comp_chemistry/L2-301_combustion_chemistry.json",
+          "issue_type": "undeclared_variable",
+          "epsilon_fn": "0.1 * (1 + 0.1 * mismatch_severity)",
+          "error": "Unknown variable 'mismatch_severity' in epsilon_fn",
+          "undeclared_var": "mismatch_severity",
+          "fix": "either declare 'mismatch_severity' in six_tuple.omega bounds, or rewrite epsilon_fn to use a declared variable"
+        },
+        {
+          "file": "content/agent-chemistry/principles/X_comp_chemistry/L2-302_michaelis_menten.json",
+          "issue_type": "undeclared_variable",
+          "epsilon_fn": "0.05 * (1 + 0.1 * mismatch_severity)",
+          "error": "Unknown variable 'mismatch_severity' in epsilon_fn",
+          "undeclared_var": "mismatch_severity",
+          "fix": "either declare 'mismatch_severity' in six_tuple.omega bounds, or rewrite epsilon_fn to use a declared variable"
+        },
+        {
+          "file": "content/agent-chemistry/principles/X_comp_chemistry/L2-303_transition_state_theory.json",
+          "issue_type": "undeclared_variable",
+          "epsilon_fn": "0.1 * (1 + 0.1 * mismatch_severity)",
+          "error": "Unknown variable 'mismatch_severity' in epsilon_fn",
+          "undeclared_var": "mismatch_severity",
+          "fix": "either declare 'mismatch_severity' in six_tuple.omega bounds, or rewrite epsilon_fn to use a declared variable"
+        },
+        {
+          "file": "content/agent-chemistry/principles/X_comp_chemistry/L2-304_semiempirical_qc.json",
+          "issue_type": "undeclared_variable",
+          "epsilon_fn": "3.0 * (1 + 0.1 * mismatch_severity)",
+          "error": "Unknown variable 'mismatch_severity' in epsilon_fn",
+          "undeclared_var": "mismatch_severity",
+          "fix": "either declare 'mismatch_severity' in six_tuple.omega bounds, or rewrite epsilon_fn to use a declared variable"
+        },
+        {
+          "file": "content/agent-chemistry/principles/X_comp_chemistry/L2-305_implicit_solvation.json",
+          "issue_type": "undeclared_variable",
+          "epsilon_fn": "0.5 * (1 + 0.1 * mismatch_severity)",
+          "error": "Unknown variable 'mismatch_severity' in epsilon_fn",
+          "undeclared_var": "mismatch_severity",
+          "fix": "either declare 'mismatch_severity' in six_tuple.omega bounds, or rewrite epsilon_fn to use a declared variable"
+        },
+        {
+          "file": "content/agent-chemistry/principles/X_comp_chemistry/L2-306_coarse_grained_md.json",
+          "issue_type": "undeclared_variable",
+          "epsilon_fn": "0.03 * (1 + 0.1 * mismatch_severity)",
+          "error": "Unknown variable 'mismatch_severity' in epsilon_fn",
+          "undeclared_var": "mismatch_severity",
+          "fix": "either declare 'mismatch_severity' in six_tuple.omega bounds, or rewrite epsilon_fn to use a declared variable"
+        },
+        {
+          "file": "content/agent-chemistry/principles/X_comp_chemistry/L2-307_reactive_md.json",
+          "issue_type": "undeclared_variable",
+          "epsilon_fn": "0.1 * (1 + 0.1 * mismatch_severity)",
+          "error": "Unknown variable 'mismatch_severity' in epsilon_fn",
+          "undeclared_var": "mismatch_severity",
+          "fix": "either declare 'mismatch_severity' in six_tuple.omega bounds, or rewrite epsilon_fn to use a declared variable"
+        },
+        {
+          "file": "content/agent-chemistry/principles/X_comp_chemistry/L2-308_free_energy_perturbation.json",
+          "issue_type": "undeclared_variable",
+          "epsilon_fn": "0.5 * (1 + 0.1 * mismatch_severity)",
+          "error": "Unknown variable 'mismatch_severity' in epsilon_fn",
+          "undeclared_var": "mismatch_severity",
+          "fix": "either declare 'mismatch_severity' in six_tuple.omega bounds, or rewrite epsilon_fn to use a declared variable"
+        },
+        {
+          "file": "content/agent-chemistry/principles/X_comp_chemistry/L2-309_kinetic_monte_carlo.json",
+          "issue_type": "undeclared_variable",
+          "epsilon_fn": "0.03 * (1 + 0.1 * mismatch_severity)",
+          "error": "Unknown variable 'mismatch_severity' in epsilon_fn",
+          "undeclared_var": "mismatch_severity",
+          "fix": "either declare 'mismatch_severity' in six_tuple.omega bounds, or rewrite epsilon_fn to use a declared variable"
+        },
+        {
+          "file": "content/agent-chemistry/principles/X_comp_chemistry/L2-310_monte_carlo_metropolis.json",
+          "issue_type": "undeclared_variable",
+          "epsilon_fn": "0.02 * (1 + 0.1 * mismatch_severity)",
+          "error": "Unknown variable 'mismatch_severity' in epsilon_fn",
+          "undeclared_var": "mismatch_severity",
+          "fix": "either declare 'mismatch_severity' in six_tuple.omega bounds, or rewrite epsilon_fn to use a declared variable"
+        },
+        {
+          "file": "content/agent-chemistry/principles/X_comp_chemistry/L2-311_butler_volmer.json",
+          "issue_type": "undeclared_variable",
+          "epsilon_fn": "0.05 * (1 + 0.1 * mismatch_severity)",
+          "error": "Unknown variable 'mismatch_severity' in epsilon_fn",
+          "undeclared_var": "mismatch_severity",
+          "fix": "either declare 'mismatch_severity' in six_tuple.omega bounds, or rewrite epsilon_fn to use a declared variable"
+        },
+        {
+          "file": "content/agent-chemistry/principles/Y_quantum_mechanics/L2-312_time_independent_schrodinger.json",
+          "issue_type": "undeclared_variable",
+          "epsilon_fn": "0.01 * (1 + 0.1 * mismatch_severity)",
+          "error": "Unknown variable 'mismatch_severity' in epsilon_fn",
+          "undeclared_var": "mismatch_severity",
+          "fix": "either declare 'mismatch_severity' in six_tuple.omega bounds, or rewrite epsilon_fn to use a declared variable"
+        },
+        {
+          "file": "content/agent-chemistry/principles/Y_quantum_mechanics/L2-313_time_dependent_schrodinger.json",
+          "issue_type": "undeclared_variable",
+          "epsilon_fn": "0.015 * (1 + 0.1 * mismatch_severity)",
+          "error": "Unknown variable 'mismatch_severity' in epsilon_fn",
+          "undeclared_var": "mismatch_severity",
+          "fix": "either declare 'mismatch_severity' in six_tuple.omega bounds, or rewrite epsilon_fn to use a declared variable"
+        },
+        {
+          "file": "content/agent-chemistry/principles/Y_quantum_mechanics/L2-314_quantum_scattering.json",
+          "issue_type": "undeclared_variable",
+          "epsilon_fn": "0.03 * (1 + 0.1 * mismatch_severity)",
+          "error": "Unknown variable 'mismatch_severity' in epsilon_fn",
+          "undeclared_var": "mismatch_severity",
+          "fix": "either declare 'mismatch_severity' in six_tuple.omega bounds, or rewrite epsilon_fn to use a declared variable"
+        },
+        {
+          "file": "content/agent-chemistry/principles/Y_quantum_mechanics/L2-315_quantum_tunneling.json",
+          "issue_type": "undeclared_variable",
+          "epsilon_fn": "0.05 * (1 + 0.1 * mismatch_severity)",
+          "error": "Unknown variable 'mismatch_severity' in epsilon_fn",
+          "undeclared_var": "mismatch_severity",
+          "fix": "either declare 'mismatch_severity' in six_tuple.omega bounds, or rewrite epsilon_fn to use a declared variable"
+        },
+        {
+          "file": "content/agent-chemistry/principles/Y_quantum_mechanics/L2-316_band_structure.json",
+          "issue_type": "undeclared_variable",
+          "epsilon_fn": "0.1 * (1 + 0.1 * mismatch_severity)",
+          "error": "Unknown variable 'mismatch_severity' in epsilon_fn",
+          "undeclared_var": "mismatch_severity",
+          "fix": "either declare 'mismatch_severity' in six_tuple.omega bounds, or rewrite epsilon_fn to use a declared variable"
+        },
+        {
+          "file": "content/agent-chemistry/principles/Y_quantum_mechanics/L2-317_phonon_dispersion.json",
+          "issue_type": "undeclared_variable",
+          "epsilon_fn": "1.5 * (1 + 0.1 * mismatch_severity)",
+          "error": "Unknown variable 'mismatch_severity' in epsilon_fn",
+          "undeclared_var": "mismatch_severity",
+          "fix": "either declare 'mismatch_severity' in six_tuple.omega bounds, or rewrite epsilon_fn to use a declared variable"
+        },
+        {
+          "file": "content/agent-chemistry/principles/Y_quantum_mechanics/L2-318_tight_binding.json",
+          "issue_type": "undeclared_variable",
+          "epsilon_fn": "0.05 * (1 + 0.1 * mismatch_severity)",
+          "error": "Unknown variable 'mismatch_severity' in epsilon_fn",
+          "undeclared_var": "mismatch_severity",
+          "fix": "either declare 'mismatch_severity' in six_tuple.omega bounds, or rewrite epsilon_fn to use a declared variable"
+        },
+        {
+          "file": "content/agent-chemistry/principles/Y_quantum_mechanics/L2-319_gw_approximation.json",
+          "issue_type": "undeclared_variable",
+          "epsilon_fn": "0.07 * (1 + 0.1 * mismatch_severity)",
+          "error": "Unknown variable 'mismatch_severity' in epsilon_fn",
+          "undeclared_var": "mismatch_severity",
+          "fix": "either declare 'mismatch_severity' in six_tuple.omega bounds, or rewrite epsilon_fn to use a declared variable"
+        },
+        {
+          "file": "content/agent-chemistry/principles/Y_quantum_mechanics/L2-320_bethe_salpeter.json",
+          "issue_type": "undeclared_variable",
+          "epsilon_fn": "0.05 * (1 + 0.1 * mismatch_severity)",
+          "error": "Unknown variable 'mismatch_severity' in epsilon_fn",
+          "undeclared_var": "mismatch_severity",
+          "fix": "either declare 'mismatch_severity' in six_tuple.omega bounds, or rewrite epsilon_fn to use a declared variable"
+        },
+        {
+          "file": "content/agent-chemistry/principles/Y_quantum_mechanics/L2-321_quantum_monte_carlo.json",
+          "issue_type": "undeclared_variable",
+          "epsilon_fn": "0.5 * (1 + 0.1 * mismatch_severity)",
+          "error": "Unknown variable 'mismatch_severity' in epsilon_fn",
+          "undeclared_var": "mismatch_severity",
+          "fix": "either declare 'mismatch_severity' in six_tuple.omega bounds, or rewrite epsilon_fn to use a declared variable"
+        },
+        {
+          "file": "content/agent-chemistry/principles/Y_quantum_mechanics/L2-322_dmrg.json",
+          "issue_type": "undeclared_variable",
+          "epsilon_fn": "0.1 * (1 + 0.1 * mismatch_severity)",
+          "error": "Unknown variable 'mismatch_severity' in epsilon_fn",
+          "undeclared_var": "mismatch_severity",
+          "fix": "either declare 'mismatch_severity' in six_tuple.omega bounds, or rewrite epsilon_fn to use a declared variable"
+        },
+        {
+          "file": "content/agent-chemistry/principles/Y_quantum_mechanics/L2-323_exact_diagonalization.json",
+          "issue_type": "undeclared_variable",
+          "epsilon_fn": "0.01 * (1 + 0.1 * mismatch_severity)",
+          "error": "Unknown variable 'mismatch_severity' in epsilon_fn",
+          "undeclared_var": "mismatch_severity",
+          "fix": "either declare 'mismatch_severity' in six_tuple.omega bounds, or rewrite epsilon_fn to use a declared variable"
+        },
+        {
+          "file": "content/agent-chemistry/principles/Y_quantum_mechanics/L2-324_lindblad.json",
+          "issue_type": "undeclared_variable",
+          "epsilon_fn": "0.03 * (1 + 0.1 * mismatch_severity)",
+          "error": "Unknown variable 'mismatch_severity' in epsilon_fn",
+          "undeclared_var": "mismatch_severity",
+          "fix": "either declare 'mismatch_severity' in six_tuple.omega bounds, or rewrite epsilon_fn to use a declared variable"
+        },
+        {
+          "file": "content/agent-chemistry/principles/Y_quantum_mechanics/L2-325_electron_phonon_coupling.json",
+          "issue_type": "undeclared_variable",
+          "epsilon_fn": "0.05 * (1 + 0.1 * mismatch_severity)",
+          "error": "Unknown variable 'mismatch_severity' in epsilon_fn",
+          "undeclared_var": "mismatch_severity",
+          "fix": "either declare 'mismatch_severity' in six_tuple.omega bounds, or rewrite epsilon_fn to use a declared variable"
+        },
+        {
+          "file": "content/agent-chemistry/principles/Y_quantum_mechanics/L2-326_kp_perturbation.json",
+          "issue_type": "undeclared_variable",
+          "epsilon_fn": "0.03 * (1 + 0.1 * mismatch_severity)",
+          "error": "Unknown variable 'mismatch_severity' in epsilon_fn",
+          "undeclared_var": "mismatch_severity",
+          "fix": "either declare 'mismatch_severity' in six_tuple.omega bounds, or rewrite epsilon_fn to use a declared variable"
+        },
+        {
+          "file": "content/agent-chemistry/principles/Z_materials_science/L2-327_phase_field_allen_cahn.json",
+          "issue_type": "undeclared_variable",
+          "epsilon_fn": "0.04 * (1 + 0.1 * mismatch_severity)",
+          "error": "Unknown variable 'mismatch_severity' in epsilon_fn",
+          "undeclared_var": "mismatch_severity",
+          "fix": "either declare 'mismatch_severity' in six_tuple.omega bounds, or rewrite epsilon_fn to use a declared variable"
+        },
+        {
+          "file": "content/agent-chemistry/principles/Z_materials_science/L2-328_phase_field_cahn_hilliard.json",
+          "issue_type": "undeclared_variable",
+          "epsilon_fn": "0.04 * (1 + 0.1 * mismatch_severity)",
+          "error": "Unknown variable 'mismatch_severity' in epsilon_fn",
+          "undeclared_var": "mismatch_severity",
+          "fix": "either declare 'mismatch_severity' in six_tuple.omega bounds, or rewrite epsilon_fn to use a declared variable"
+        },
+        {
+          "file": "content/agent-chemistry/principles/Z_materials_science/L2-329_calphad.json",
+          "issue_type": "undeclared_variable",
+          "epsilon_fn": "0.03 * (1 + 0.1 * mismatch_severity)",
+          "error": "Unknown variable 'mismatch_severity' in epsilon_fn",
+          "undeclared_var": "mismatch_severity",
+          "fix": "either declare 'mismatch_severity' in six_tuple.omega bounds, or rewrite epsilon_fn to use a declared variable"
+        },
+        {
+          "file": "content/agent-chemistry/principles/Z_materials_science/L2-330_dislocation_dynamics.json",
+          "issue_type": "undeclared_variable",
+          "epsilon_fn": "5.0 * (1 + 0.1 * mismatch_severity)",
+          "error": "Unknown variable 'mismatch_severity' in epsilon_fn",
+          "undeclared_var": "mismatch_severity",
+          "fix": "either declare 'mismatch_severity' in six_tuple.omega bounds, or rewrite epsilon_fn to use a declared variable"
+        },
+        {
+          "file": "content/agent-chemistry/principles/Z_materials_science/L2-331_grain_growth.json",
+          "issue_type": "undeclared_variable",
+          "epsilon_fn": "0.04 * (1 + 0.1 * mismatch_severity)",
+          "error": "Unknown variable 'mismatch_severity' in epsilon_fn",
+          "undeclared_var": "mismatch_severity",
+          "fix": "either declare 'mismatch_severity' in six_tuple.omega bounds, or rewrite epsilon_fn to use a declared variable"
+        },
+        {
+          "file": "content/agent-chemistry/principles/Z_materials_science/L2-332_classical_nucleation.json",
+          "issue_type": "undeclared_variable",
+          "epsilon_fn": "0.3 * (1 + 0.1 * mismatch_severity)",
+          "error": "Unknown variable 'mismatch_severity' in epsilon_fn",
+          "undeclared_var": "mismatch_severity",
+          "fix": "either declare 'mismatch_severity' in six_tuple.omega bounds, or rewrite epsilon_fn to use a declared variable"
+        },
+        {
+          "file": "content/agent-chemistry/principles/Z_materials_science/L2-333_solid_state_diffusion.json",
+          "issue_type": "undeclared_variable",
+          "epsilon_fn": "0.02 * (1 + 0.1 * mismatch_severity)",
+          "error": "Unknown variable 'mismatch_severity' in epsilon_fn",
+          "undeclared_var": "mismatch_severity",
+          "fix": "either declare 'mismatch_severity' in six_tuple.omega bounds, or rewrite epsilon_fn to use a declared variable"
+        },
+        {
+          "file": "content/agent-chemistry/principles/Z_materials_science/L2-334_solidification.json",
+          "issue_type": "undeclared_variable",
+          "epsilon_fn": "0.05 * (1 + 0.1 * mismatch_severity)",
+          "error": "Unknown variable 'mismatch_severity' in epsilon_fn",
+          "undeclared_var": "mismatch_severity",
+          "fix": "either declare 'mismatch_severity' in six_tuple.omega bounds, or rewrite epsilon_fn to use a declared variable"
+        },
+        {
+          "file": "content/agent-chemistry/principles/Z_materials_science/L2-335_flory_huggins.json",
+          "issue_type": "undeclared_variable",
+          "epsilon_fn": "2.0 * (1 + 0.1 * mismatch_severity)",
+          "error": "Unknown variable 'mismatch_severity' in epsilon_fn",
+          "undeclared_var": "mismatch_severity",
+          "fix": "either declare 'mismatch_severity' in six_tuple.omega bounds, or rewrite epsilon_fn to use a declared variable"
+        },
+        {
+          "file": "content/agent-chemistry/principles/Z_materials_science/L2-336_rubber_elasticity.json",
+          "issue_type": "undeclared_variable",
+          "epsilon_fn": "0.08 * (1 + 0.1 * mismatch_severity)",
+          "error": "Unknown variable 'mismatch_severity' in epsilon_fn",
+          "undeclared_var": "mismatch_severity",
+          "fix": "either declare 'mismatch_severity' in six_tuple.omega bounds, or rewrite epsilon_fn to use a declared variable"
+        },
+        {
+          "file": "content/agent-chemistry/principles/Z_materials_science/L2-337_thin_film_growth.json",
+          "issue_type": "undeclared_variable",
+          "epsilon_fn": "0.05 * (1 + 0.1 * mismatch_severity)",
+          "error": "Unknown variable 'mismatch_severity' in epsilon_fn",
+          "undeclared_var": "mismatch_severity",
+          "fix": "either declare 'mismatch_severity' in six_tuple.omega bounds, or rewrite epsilon_fn to use a declared variable"
+        },
+        {
+          "file": "content/agent-chemistry/principles/Z_materials_science/L2-338_radiation_damage.json",
+          "issue_type": "undeclared_variable",
+          "epsilon_fn": "0.06 * (1 + 0.1 * mismatch_severity)",
+          "error": "Unknown variable 'mismatch_severity' in epsilon_fn",
+          "undeclared_var": "mismatch_severity",
+          "fix": "either declare 'mismatch_severity' in six_tuple.omega bounds, or rewrite epsilon_fn to use a declared variable"
+        },
+        {
+          "file": "content/agent-chemistry/principles/Z_materials_science/L2-339_corrosion.json",
+          "issue_type": "undeclared_variable",
+          "epsilon_fn": "0.1 * (1 + 0.1 * mismatch_severity)",
+          "error": "Unknown variable 'mismatch_severity' in epsilon_fn",
+          "undeclared_var": "mismatch_severity",
+          "fix": "either declare 'mismatch_severity' in six_tuple.omega bounds, or rewrite epsilon_fn to use a declared variable"
+        },
+        {
+          "file": "content/agent-chemistry/principles/Z_materials_science/L2-340_battery_electrode.json",
+          "issue_type": "undeclared_variable",
+          "epsilon_fn": "10.0 * (1 + 0.1 * mismatch_severity)",
+          "error": "Unknown variable 'mismatch_severity' in epsilon_fn",
+          "undeclared_var": "mismatch_severity",
+          "fix": "either declare 'mismatch_severity' in six_tuple.omega bounds, or rewrite epsilon_fn to use a declared variable"
+        },
+        {
+          "file": "content/agent-chemistry/principles/Z_materials_science/L2-341_additive_manufacturing.json",
+          "issue_type": "undeclared_variable",
+          "epsilon_fn": "0.06 * (1 + 0.1 * mismatch_severity)",
+          "error": "Unknown variable 'mismatch_severity' in epsilon_fn",
+          "undeclared_var": "mismatch_severity",
+          "fix": "either declare 'mismatch_severity' in six_tuple.omega bounds, or rewrite epsilon_fn to use a declared variable"
+        }
+      ]
+    },
+    "imaging": {
+      "total_l2": 142,
+      "passed": 138,
+      "issues": [
+        {
+          "file": "content/agent-imaging/principles/B_compressive_imaging/L2-025_cassi.json",
+          "issue_type": "undeclared_variable",
+          "epsilon_fn": "25.0 + 2.0 * log2(H / 64) + 1.5 * log10(photon_count / 50)",
+          "error": "Unknown variable 'photon_count' in epsilon_fn",
+          "undeclared_var": "photon_count",
+          "fix": "either declare 'photon_count' in six_tuple.omega bounds, or rewrite epsilon_fn to use a declared variable"
+        },
+        {
+          "file": "content/agent-imaging/principles/B_compressive_imaging/L2-026_single_pixel.json",
+          "issue_type": "undeclared_variable",
+          "epsilon_fn": "22.0 + 6.0 * log2(sampling_ratio / 0.05) + 1.5 * log10(photon_count / 100)",
+          "error": "Unknown variable 'photon_count' in epsilon_fn",
+          "undeclared_var": "photon_count",
+          "fix": "either declare 'photon_count' in six_tuple.omega bounds, or rewrite epsilon_fn to use a declared variable"
+        },
+        {
+          "file": "content/agent-imaging/principles/B_compressive_imaging/L2-026b_spc.json",
+          "issue_type": "undeclared_variable",
+          "epsilon_fn": "22.0 + 6.0 * log2(sampling_ratio / 0.05) + 1.5 * log10(photon_count / 100)",
+          "error": "Unknown variable 'photon_count' in epsilon_fn",
+          "undeclared_var": "photon_count",
+          "fix": "either declare 'photon_count' in six_tuple.omega bounds, or rewrite epsilon_fn to use a declared variable"
+        },
+        {
+          "file": "content/agent-imaging/principles/B_compressive_imaging/L2-027_cacti.json",
+          "issue_type": "undeclared_variable",
+          "epsilon_fn": "26.0 + 1.5 * log2(B / 8) + 1.0 * log10(photon_count / 100)",
+          "error": "Unknown variable 'photon_count' in epsilon_fn",
+          "undeclared_var": "photon_count",
+          "fix": "either declare 'photon_count' in six_tuple.omega bounds, or rewrite epsilon_fn to use a declared variable"
+        }
+      ]
+    },
+    "physics": {
+      "total_l2": 147,
+      "passed": 147,
+      "issues": []
+    },
+    "signal": {
+      "total_l2": 38,
+      "passed": 38,
+      "issues": []
+    }
+  },
+  "summary": {
+    "applied": "18/111 pass (93 real issues)",
+    "chemistry": "10/64 pass (54 real issues)",
+    "imaging": "138/142 pass (4 real issues)",
+    "physics": "147/147 pass (0 real issues)",
+    "signal": "38/38 pass (0 real issues)"
+  }
+}
