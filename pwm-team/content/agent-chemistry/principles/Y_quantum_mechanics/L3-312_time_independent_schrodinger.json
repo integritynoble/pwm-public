@@ -162,18 +162,18 @@
       "baselines": [
         {
           "name": "ARPACK-Lanczos",
-          "score": 0.0278,
-          "Q": 0.24
+          "score": 0.0368,
+          "Q": 0.204
         },
         {
           "name": "FEAST",
-          "score": 0.0333,
-          "Q": 0.2
+          "score": 0.0441,
+          "Q": 0.17
         },
         {
           "name": "SchroNet",
-          "score": 0.0166,
-          "Q": 0.46
+          "score": 0.022,
+          "Q": 0.391
         }
       ]
     }

@@ -166,18 +166,18 @@
       "baselines": [
         {
           "name": "PyBaMM",
-          "score": 25.9,
-          "Q": 0.24
+          "score": 34.2222,
+          "Q": 0.204
         },
         {
           "name": "LIONSIMBA",
-          "score": 29.6,
-          "Q": 0.2
+          "score": 39.1111,
+          "Q": 0.17
         },
         {
           "name": "P2D-GRU-Net",
-          "score": 16.65,
-          "Q": 0.46
+          "score": 22.0,
+          "Q": 0.391
         }
       ]
     }

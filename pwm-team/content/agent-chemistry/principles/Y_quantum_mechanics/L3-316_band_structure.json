@@ -162,18 +162,18 @@
       "baselines": [
         {
           "name": "VASP-PBE",
-          "score": 0.555,
-          "Q": 0.24
+          "score": 0.7667,
+          "Q": 0.204
         },
         {
           "name": "QuantumESPRESSO",
-          "score": 0.518,
-          "Q": 0.2
+          "score": 0.7156,
+          "Q": 0.17
         },
         {
           "name": "SchNet-Bands",
-          "score": 0.1665,
-          "Q": 0.46
+          "score": 0.23,
+          "Q": 0.391
         }
       ]
     }
