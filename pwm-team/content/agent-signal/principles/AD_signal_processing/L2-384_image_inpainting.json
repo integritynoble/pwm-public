@@ -1,0 +1,61 @@
+{
+  "artifact_id": "L2-384",
+  "layer": "L2",
+  "parent_l1": "L1-384",
+  "principle_ref": "sha256:<L1-384_principle_hash>",
+  "title": "Image Inpainting Freeform-Mask Spec (Places2 / CelebA-HQ family)",
+  "spec_type": "mismatch_only",
+
+  "six_tuple": {
+    "omega": {
+      "H": [128, 2048], "W": [128, 2048],
+      "mask_ratio": [0.05, 0.75], "hole_diameter_max": [8, 512],
+      "boundary_dilation": [0, 8], "noise_level": [0.0, 0.05]
+    },
+    "E": {
+      "forward": "y = M .* x + (1-M) .* 0 + n",
+      "operator": "binary_mask",
+      "primitive_chain": "D.mask.spatial -> int.spatial",
+      "inverse": "recover x in the masked region using surrounding context + natural-image prior"
+    },
+    "B": {"nonnegativity": true, "intensity_range_[0,1]": true},
+    "I": {"strategy": "mean_or_diffusion_init"},
+    "O": ["PSNR_dB", "SSIM", "LPIPS", "FID", "residual_norm"],
+    "epsilon_fn": "30.0 - 10.0 * mask_ratio - 0.01 * hole_diameter_max + 2.0 * log2(H / 128)"
+  },
+
+  "protocol_fields": {
+    "input_format": {"masked": "float32(H, W, 3)", "mask": "uint8(H, W)"},
+    "output_format": {"complete": "float32(H, W, 3)"},
+    "baselines": [
+      {"name": "TV-ADMM",     "method_sig": "L+O", "expected_psnr": 23.0},
+      {"name": "PatchMatch",  "method_sig": "A+O", "expected_psnr": 25.0},
+      {"name": "DeepFillV2",  "method_sig": "L+N", "expected_psnr": 27.5},
+      {"name": "LaMa",        "method_sig": "L+N", "expected_psnr": 29.8},
+      {"name": "MAT",         "method_sig": "T+N", "expected_psnr": 30.5}
+    ]
+  },
+
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {"H": 512, "W": 512, "mask_ratio": 0.25, "hole_diameter_max": 64, "boundary_dilation": 0, "noise_level": 0.0},
+      "epsilon": 27.0
+    },
+    "tier_bounds": {"H": [128, 1024], "mask_ratio": [0.05, 0.75], "hole_diameter_max": [8, 512]},
+    "proximity_threshold": 0.10
+  },
+
+  "d_spec": 0.50,
+  "d_spec_notes": "Distance from 385 denoising ~= 0.45 (Related — both are spatial restoration, different primitives). Distance from 391 sparse recovery ~= 0.55 (different solution space, shared mask primitive).",
+
+  "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
+  "s1_s4_justifications": {
+    "S1": "Mask M binary, shape matches x; consistent pixel grid.",
+    "S2": "Underdetermined inside mask; regularized by prior; PDE diffusion is provably well-posed.",
+    "S3": "TV-ADMM converges O(1/k); PatchMatch converges empirically; learned methods are feed-forward.",
+    "S4": "epsilon_fn evaluates for 10 samples; LaMa fails at T4 mask_ratio=0.75 hole_diameter=512 (hardness satisfied)."
+  },
+
+  "ipfs_cid": null
+}

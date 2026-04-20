@@ -1,0 +1,67 @@
+{
+  "artifact_id": "L3-132",
+  "layer": "L3",
+  "parent_l2": "L2-132",
+  "parent_l1": "L1-132",
+  "title": "Muon Tomography Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+
+  "dataset_registry": {
+    "primary": "LANL MMPDS muon-scattering dataset (waste drums)",
+    "secondary": "Fukushima reactor muon-radiography dataset (KEK)",
+    "tertiary": "Synthetic GEANT4 simulations of heavy-Z phantoms (U, W)",
+    "construction_method": "Simulate cosmic-ray muons via GEANT4 or use lab-measured tracker data; inject momentum ambiguity and flux inhomogeneity",
+    "num_dev_instances_per_tier": 15, "holdout_instances_per_tier": 10
+  },
+
+  "ibenchmarks": [
+    {
+      "tier": "T1_Z_contrast", "rho": 1,
+      "omega_tier": {"N_muon": 1e7, "tracker_res_mm": 1.0, "acq_time_hours": 24, "flux_inhomogeneity": 0.0},
+      "epsilon": 0.03, "d_ibench": 0.14,
+      "baselines": [
+        {"name": "PoCA",     "nmse": 0.06, "Q": 0.55},
+        {"name": "MLEM",     "nmse": 0.03, "Q": 0.82},
+        {"name": "muon-CNN", "nmse": 0.025,"Q": 0.90}
+      ]
+    },
+    {
+      "tier": "T2_cargo", "rho": 3,
+      "omega_tier": {"N_muon": 1e6, "tracker_res_mm": 2.0, "acq_time_hours": 12, "flux_inhomogeneity": 0.1},
+      "epsilon": 0.07, "d_ibench": 0.28,
+      "baselines": [
+        {"name": "MLEM",     "nmse": 0.09, "Q": 0.50},
+        {"name": "muon-CNN", "nmse": 0.06, "Q": 0.74}
+      ]
+    },
+    {
+      "tier": "T3_reactor_dense", "rho": 5,
+      "omega_tier": {"N_muon": 5e7, "tracker_res_mm": 3.0, "acq_time_hours": 168, "flux_inhomogeneity": 0.2, "angular_resolution": 20},
+      "epsilon": 0.15, "d_ibench": 0.50,
+      "baselines": [
+        {"name": "muon-CNN", "nmse": 0.2, "Q": 0.42}
+      ]
+    },
+    {
+      "tier": "T4_short_time", "rho": 10,
+      "omega_tier": {"N_muon": 1e4, "tracker_res_mm": 10, "acq_time_hours": 1, "flux_inhomogeneity": 0.3, "angular_resolution": 50, "background_contamination": 0.2},
+      "epsilon": 0.4, "d_ibench": 0.74,
+      "baselines": [
+        {"name": "muon-CNN", "nmse": 0.55, "Q": 0.25}
+      ]
+    }
+  ],
+
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {"name": "LANL-MMPDS + Fukushima + GEANT4 union", "num_dev_instances": 100, "num_holdout_instances": 50},
+    "baselines": [
+      {"name": "PoCA",     "overall_Q": 0.42},
+      {"name": "MLEM",     "overall_Q": 0.60},
+      {"name": "muon-CNN", "overall_Q": 0.68}
+    ]
+  },
+
+  "hardness_rule_check": "SATISFIED — muon-CNN fails at T4_short_time (N_muon=1e4, 1 hr): 0.55 > epsilon_fn ~ 0.4.",
+  "ipfs_cid": null, "ground_truth_cid": null
+}

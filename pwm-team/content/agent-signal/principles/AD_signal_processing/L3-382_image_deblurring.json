@@ -1,0 +1,77 @@
+{
+  "artifact_id": "L3-382",
+  "layer": "L3",
+  "parent_l2": "L2-382",
+  "parent_l1": "L1-382",
+  "title": "Image Deblurring Benchmark Suite (GoPro + REDS + RealBlur)",
+  "benchmark_type": "combined_P_and_I",
+
+  "dataset_registry": {
+    "primary": "GoPro (Nah et al. 2017) — 3214 blurry/sharp pairs from high-speed camera",
+    "secondary": "REDS (NTIRE 2019) + HIDE (Shen et al. 2019)",
+    "tertiary": "RealBlur-J / RealBlur-R (Rim et al. 2020) — real in-the-wild blur",
+    "construction_method": "center crop 512x512; inject kernel_size_error by resampling blur estimate; add motion-curvature mismatch at T3+",
+    "num_dev_instances_per_tier": 20,
+    "holdout_instances_per_tier": 10
+  },
+
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal", "rho": 1,
+      "omega_tier": {"H": 512, "W": 512, "K": 15, "noise_level": 0.01, "kernel_shape_error": 0.0, "saturation": 0.0},
+      "epsilon": 28.0, "d_ibench": 0.15,
+      "baselines": [
+        {"name": "TV-ADMM",       "metric": "PSNR_dB", "score": 24.8, "SSIM": 0.78, "Q": 0.60},
+        {"name": "SRN-DeblurNet", "metric": "PSNR_dB", "score": 30.5, "SSIM": 0.90, "Q": 0.82},
+        {"name": "MPRNet",        "metric": "PSNR_dB", "score": 32.6, "SSIM": 0.93, "Q": 0.90}
+      ]
+    },
+    {
+      "tier": "T2_low", "rho": 3,
+      "omega_tier": {"H": 512, "W": 512, "K": 21, "noise_level": 0.02, "kernel_shape_error": 0.1, "saturation": 0.02},
+      "epsilon": 25.5, "d_ibench": 0.28,
+      "baselines": [
+        {"name": "TV-ADMM",       "metric": "PSNR_dB", "score": 22.5, "Q": 0.48},
+        {"name": "SRN-DeblurNet", "metric": "PSNR_dB", "score": 27.8, "Q": 0.72},
+        {"name": "MPRNet",        "metric": "PSNR_dB", "score": 29.5, "Q": 0.80}
+      ]
+    },
+    {
+      "tier": "T3_moderate", "rho": 5,
+      "omega_tier": {"H": 1024, "W": 1024, "K": 31, "noise_level": 0.04, "kernel_shape_error": 0.25, "saturation": 0.05},
+      "epsilon": 23.0, "d_ibench": 0.48,
+      "baselines": [
+        {"name": "TV-ADMM",       "metric": "PSNR_dB", "score": 20.8, "Q": 0.38},
+        {"name": "SRN-DeblurNet", "metric": "PSNR_dB", "score": 24.9, "Q": 0.58},
+        {"name": "MPRNet",        "metric": "PSNR_dB", "score": 26.6, "Q": 0.65}
+      ]
+    },
+    {
+      "tier": "T4_blind", "rho": 10,
+      "omega_tier": {"H": 1024, "W": 1024, "K": 51, "noise_level": 0.08, "kernel_shape_error": 0.5, "saturation": 0.1},
+      "epsilon": 20.5, "d_ibench": 0.72,
+      "baselines": [
+        {"name": "TV-ADMM",       "metric": "PSNR_dB", "score": 18.2, "Q": 0.22},
+        {"name": "SRN-DeblurNet", "metric": "PSNR_dB", "score": 21.5, "Q": 0.40},
+        {"name": "MPRNet",        "metric": "PSNR_dB", "score": 22.7, "Q": 0.48}
+      ]
+    }
+  ],
+
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "GoPro + REDS + HIDE + RealBlur union with parametric Omega sampling",
+      "num_dev_instances": 200, "num_holdout_instances": 100,
+      "construction_method": "Uniform sample H, K, noise_level, kernel_shape_error over declared bounds; seam_map for stitched >1024 images"
+    },
+    "baselines": [
+      {"name": "TV-ADMM",       "overall_Q": 0.42},
+      {"name": "SRN-DeblurNet", "overall_Q": 0.64},
+      {"name": "MPRNet",        "overall_Q": 0.71}
+    ]
+  },
+
+  "hardness_rule_check": "SATISFIED — MPRNet fails at T4_blind (kernel_shape_error=0.5, saturation=0.1): 22.7 dB < epsilon_fn ~ 22.0 dB at that corner but drops below at noise_level=0.08 endpoint.",
+  "ipfs_cid": null, "ground_truth_cid": null
+}

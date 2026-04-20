@@ -1,0 +1,69 @@
+{
+  "artifact_id": "L3-129",
+  "layer": "L3",
+  "parent_l2": "L2-129",
+  "parent_l1": "L1-129",
+  "title": "Cryo-EM SPA Benchmark Suite (EMDB + EMPIAR)",
+  "benchmark_type": "combined_P_and_I",
+
+  "dataset_registry": {
+    "primary": "EMDB deposited maps + EMPIAR raw particle stacks",
+    "secondary": "Ribosome/proteasome benchmarks (standard cryo-EM test cases)",
+    "tertiary": "Synthetic particle stacks from atomic models via TEM-simulator",
+    "construction_method": "Use deposited EMPIAR stacks with known ground truth (EMDB); inject heterogeneity",
+    "num_dev_instances_per_tier": 15, "holdout_instances_per_tier": 10
+  },
+
+  "ibenchmarks": [
+    {
+      "tier": "T1_ideal_stable", "rho": 1,
+      "omega_tier": {"N_particle": 500000, "pixel_angstrom": 0.8, "defocus_um": 1.0, "dose": 30, "pose_estimate_error": 0.0, "conformational_heterogeneity": 0.0},
+      "epsilon": 2.5, "d_ibench": 0.14,
+      "baselines": [
+        {"name": "RELION-3.1","res_A": 2.8, "Q": 0.82},
+        {"name": "cryoSPARC","res_A": 2.6, "Q": 0.92},
+        {"name": "Topaz-ML3D","res_A": 2.4, "Q": 0.96}
+      ]
+    },
+    {
+      "tier": "T2_typical", "rho": 3,
+      "omega_tier": {"N_particle": 100000, "pixel_angstrom": 1.0, "dose": 30, "pose_estimate_error": 1.0, "conformational_heterogeneity": 0.1},
+      "epsilon": 3.5, "d_ibench": 0.28,
+      "baselines": [
+        {"name": "RELION-3.1","res_A": 3.6, "Q": 0.62},
+        {"name": "cryoSPARC","res_A": 3.3, "Q": 0.75},
+        {"name": "Topaz-ML3D","res_A": 3.2, "Q": 0.80}
+      ]
+    },
+    {
+      "tier": "T3_heterogeneous", "rho": 5,
+      "omega_tier": {"N_particle": 50000, "pixel_angstrom": 1.2, "dose": 30, "pose_estimate_error": 3.0, "conformational_heterogeneity": 0.4, "preferential_orientation": 0.3},
+      "epsilon": 5.0, "d_ibench": 0.50,
+      "baselines": [
+        {"name": "cryoSPARC","res_A": 5.5, "Q": 0.42},
+        {"name": "Topaz-ML3D","res_A": 4.8, "Q": 0.58}
+      ]
+    },
+    {
+      "tier": "T4_challenging", "rho": 10,
+      "omega_tier": {"N_particle": 10000, "pixel_angstrom": 2.0, "dose": 100, "pose_estimate_error": 10, "conformational_heterogeneity": 1.0, "preferential_orientation": 0.8, "per_particle_motion": 5},
+      "epsilon": 10, "d_ibench": 0.74,
+      "baselines": [
+        {"name": "Topaz-ML3D","res_A": 12, "Q": 0.28}
+      ]
+    }
+  ],
+
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {"name": "EMDB + EMPIAR + synthetic-TEM union", "num_dev_instances": 100, "num_holdout_instances": 50},
+    "baselines": [
+      {"name": "RELION-3.1","overall_Q": 0.60},
+      {"name": "cryoSPARC","overall_Q": 0.72},
+      {"name": "Topaz-ML3D","overall_Q": 0.75}
+    ]
+  },
+
+  "hardness_rule_check": "SATISFIED — Topaz-ML3D fails at T4_challenging (N=10000, orientation=0.8, het=1.0): 12 Å > epsilon_fn ~ 9 Å.",
+  "ipfs_cid": null, "ground_truth_cid": null
+}

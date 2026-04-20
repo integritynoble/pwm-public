@@ -1,0 +1,63 @@
+{
+  "artifact_id": "L2-143",
+  "layer": "L2",
+  "parent_l1": "L1-143",
+  "principle_ref": "sha256:<L1-143_principle_hash>",
+  "title": "SIMS Imaging Surface-Mapping Spec",
+  "spec_type": "mismatch_only",
+
+  "six_tuple": {
+    "omega": {
+      "H": [32, 2048], "W": [32, 2048], "N_mz": [1000, 100000],
+      "I_primary_nA": [0.001, 10], "R_mass": [1000, 100000],
+      "K": [1, 30],
+      "matrix_ionization_yield": [0.0, 2.0], "beam_drift": [0.0, 0.1],
+      "dead_time_saturation": [0.0, 0.3], "mass_calibration_error": [0.0, 100]
+    },
+    "E": {
+      "forward": "y(r, m/z) = Y_eff * c(r, m/z) * I * t + n_Poisson",
+      "operator": "sims_forward",
+      "primitive_chain": "S.sputter.ion -> L.disperse.mass -> int.temporal",
+      "inverse": "recover concentration maps c(r) for K species from ion cube"
+    },
+    "B": {"nonnegativity_c": true, "Poisson_counts": true},
+    "I": {"strategy": "peak_integration_init"},
+    "O": ["concentration_NMSE", "spatial_resolution_nm", "mass_accuracy_ppm", "residual_norm"],
+    "epsilon_fn": "0.02 + 0.05 * matrix_ionization_yield + 0.1 * beam_drift + 0.1 * dead_time_saturation + 1e-4 * mass_calibration_error"
+  },
+
+  "protocol_fields": {
+    "input_format": {"cube": "uint16(H, W, N_mz)"},
+    "output_format": {"concentrations": "float32(H, W, K)", "peak_positions": "float32(K)"},
+    "baselines": [
+      {"name": "PeakIntegral","method_sig": "L+O", "expected_nmse": 0.08},
+      {"name": "NMF",         "method_sig": "L+O", "expected_nmse": 0.05},
+      {"name": "MCR-ALS",     "method_sig": "L+O", "expected_nmse": 0.04},
+      {"name": "YieldCorrect","method_sig": "L+O", "expected_nmse": 0.035},
+      {"name": "CNN-SIMS",    "method_sig": "L+N", "expected_nmse": 0.02}
+    ]
+  },
+
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {"H": 256, "W": 256, "N_mz": 10000, "I_primary_nA": 0.1, "R_mass": 10000, "K": 10, "matrix_ionization_yield": 0.0},
+      "epsilon": 0.05
+    },
+    "tier_bounds": {"H": [64, 1024], "K": [1, 20]},
+    "proximity_threshold": 0.10
+  },
+
+  "d_spec": 0.55,
+  "d_spec_notes": "Distance from 127 MALDI-MSI (K-domain) ~= 0.35 (Related — both MSI but different ionization). Distance from 144 DESI ~= 0.40 (Related — ambient MSI).",
+
+  "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
+  "s1_s4_justifications": {
+    "S1": "Ion cube y in N^{HxWxN_mz} and library K chemicals dimensionally consistent.",
+    "S2": "Peak fitting unique at R>5000 for well-separated m/z; matrix-effect breaks linearity at T4.",
+    "S3": "NMF/MCR-ALS descent; yield-correction iterative on ion-implant standards.",
+    "S4": "epsilon_fn defined; CNN-SIMS fails at matrix_yield=2.0 + saturation=0.3 (hardness)."
+  },
+
+  "ipfs_cid": null
+}

@@ -1,0 +1,93 @@
+{
+  "artifact_id": "L1-130",
+  "layer": "L1",
+  "principle_number": "130",
+  "title": "Neutron Radiography and Tomography",
+  "domain": "Scientific Instrumentation",
+  "sub_domain": "Neutron transmission imaging complementary to X-ray",
+  "source_file": "K_scientific_instrumentation/130_neutron_radiography.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence boilerplate. Physics grounded in Domanus 1992 Practical Neutron Radiography; Strobl et al. 2009 review; Lehmann et al. 2015 modern neutron imaging; ASTM E545 neutron-radiography standards.",
+
+  "E": {
+    "description": "A collimated thermal (2.5 meV) or cold (1 meV) neutron beam traverses the sample; attenuation is governed by mu_n(r, lambda) = Sigma_tot = n * sigma_tot (Sigma ~ 1/E for thermal). Neutrons excel at light elements (H, Li, B, Cd) hidden behind heavy metals (Pb, W) where X-rays fail. Scintillator (LiF/ZnS:Ag) + CCD or MCP+Timepix records transmitted beam.",
+    "forward_model": "I_trans(r) = I_0(r) * exp(-integral_L sigma_n(r', lambda) * n(r') dl') + scatter(r) + n_shot",
+    "world_state_x": "Neutron-attenuation map mu_n(r)",
+    "observation_y": "Transmission image I_trans / I_0",
+    "physical_parameters_theta": [
+      "Neutron source type (reactor HFR, spallation ISIS/SNS)",
+      "Wavelength spectrum (thermal, cold, epithermal)",
+      "Collimation ratio L/D (100-1000)",
+      "Pixel size and scintillator resolution (10-100 um)",
+      "Beam flux (10^6-10^8 n/cm^2/s)",
+      "Scatter correction, gamma contamination"
+    ]
+  },
+
+  "G": {
+    "dag": "L.absorb.lambert -> L.project.ray -> int.spatial",
+    "vertices": ["L.absorb.lambert", "L.project.ray", "int.spatial"],
+    "arcs": ["L.absorb.lambert -> L.project.ray", "L.project.ray -> int.spatial"],
+    "L_DAG": 2.7,
+    "n_c": 0
+  },
+
+  "W": {
+    "existence": true,
+    "uniqueness": "Radon inversion unique with full-angle coverage; limited angle ill-posed",
+    "stability": "conditional",
+    "condition_number_kappa": 200,
+    "condition_number_effective": 20,
+    "condition_number_mismatched": 500,
+    "regime": "Beer-Lambert linear; CT reconstruction via FBP/ASTRA. Mismatch: beam hardening (lambda-dependent), scatter, flux inhomogeneity, motion."
+  },
+
+  "C": {
+    "solver_class": "FBP, iterative SART, TV-regularized ASTRA, learned (DnCNN denoise, FBP-ConvNet)",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Attenuation error ~ sigma / sqrt(N_ray * SNR); resolution limited by L/D + scintillator",
+    "complexity": "FBP O(N^2 * log N); SART O(N_iter * N_ray * N_voxel)"
+  },
+
+  "physics_fingerprint": {
+    "carrier": "neutron",
+    "sensing_mechanism": "transmission_attenuation",
+    "integration_axis": "projection",
+    "problem_class": "linear_tomographic_inverse",
+    "noise_model": "shot_poisson",
+    "solution_space": "attenuation_map",
+    "primitives": ["L.absorb.lambert", "L.project.ray", "int.spatial"]
+  },
+
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+
+  "mismatch_parameters": ["beam_hardening", "scatter_fraction", "limited_angles", "motion_blur", "flux_inhomogeneity"],
+  "error_metric": "attenuation_NMSE",
+  "error_metric_secondary": "spatial_resolution_um",
+  "error_metric_tertiary": "material_classification_accuracy",
+
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "neutron_tomography",
+      "forward_operator": "neutron_radiographic_forward",
+      "input_format": "projection_stack",
+      "omega": {"N_proj": 360, "H": 1024, "W": 1024, "pixel_um": 50, "L_over_D": 500, "beam_hardening": 0.0},
+      "epsilon_fn_center": "NMSE 5e-3"
+    },
+    "allowed_forward_operators": ["neutron_radiographic_forward", "neutron_bragg_edge_imaging"],
+    "allowed_problem_classes": ["neutron_tomography", "neutron_2d_radiography", "dynamic_neutron_imaging"],
+    "allowed_omega_dimensions": ["N_proj", "H", "W", "pixel_um", "L_over_D", "beam_hardening", "scatter_fraction", "limited_angles", "motion_blur", "flux_inhomogeneity"],
+    "omega_bounds": {
+      "N_proj": [10, 2000], "H": [128, 4096], "W": [128, 4096],
+      "pixel_um": [5, 500], "L_over_D": [50, 2000],
+      "beam_hardening": [0.0, 0.3], "scatter_fraction": [0.0, 0.3],
+      "limited_angles": [0, 120], "motion_blur": [0.0, 5.0],
+      "flux_inhomogeneity": [0.0, 0.2]
+    },
+    "epsilon_bounds": {"nmse": [1e-4, 1e-1]}
+  },
+
+  "p1_p10_tests": ["PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS"],
+  "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
+  "ipfs_cid": null
+}

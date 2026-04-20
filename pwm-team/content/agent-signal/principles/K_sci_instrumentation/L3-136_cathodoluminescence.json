@@ -1,0 +1,67 @@
+{
+  "artifact_id": "L3-136",
+  "layer": "L3",
+  "parent_l2": "L2-136",
+  "parent_l1": "L1-136",
+  "title": "Cathodoluminescence Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+
+  "dataset_registry": {
+    "primary": "Attolight Allalin / Gatan MonoCL datasets (semiconductor, GaAs/GaN)",
+    "secondary": "Nanoscale plasmonic CL from Polman lab (STEM-CL)",
+    "tertiary": "Synthetic CL cubes with known Q(r) and emission spectra",
+    "construction_method": "Acquire/simulate hyperspectral CL; inject beam drift and damage",
+    "num_dev_instances_per_tier": 15, "holdout_instances_per_tier": 10
+  },
+
+  "ibenchmarks": [
+    {
+      "tier": "T1_std", "rho": 1,
+      "omega_tier": {"H": 256, "W": 256, "N_lambda": 500, "beam_energy_keV": 10, "pixel_nm": 10, "K": 5, "carrier_diffusion_length": 50},
+      "epsilon": 3e-3, "d_ibench": 0.14,
+      "baselines": [
+        {"name": "CLS",    "nmse": 5e-3, "Q": 0.72},
+        {"name": "MCR-ALS","nmse": 3e-3, "Q": 0.88},
+        {"name": "CL-Net", "nmse": 2.5e-3,"Q": 0.94}
+      ]
+    },
+    {
+      "tier": "T2_damage_onset", "rho": 3,
+      "omega_tier": {"H": 256, "W": 256, "N_lambda": 500, "beam_energy_keV": 20, "pixel_nm": 5, "K": 10, "carrier_diffusion_length": 100, "beam_drift": 0.02, "electron_beam_damage": 0.1},
+      "epsilon": 8e-3, "d_ibench": 0.28,
+      "baselines": [
+        {"name": "MCR-ALS","nmse": 1e-2,  "Q": 0.55},
+        {"name": "CL-Net", "nmse": 7e-3,  "Q": 0.75}
+      ]
+    },
+    {
+      "tier": "T3_high_damage", "rho": 5,
+      "omega_tier": {"H": 512, "W": 512, "N_lambda": 1000, "beam_energy_keV": 30, "pixel_nm": 2, "K": 15, "electron_beam_damage": 0.3, "carrier_diffusion_length": 300, "self_absorption": 0.15},
+      "epsilon": 3e-2, "d_ibench": 0.50,
+      "baselines": [
+        {"name": "CL-Net", "nmse": 4e-2, "Q": 0.45}
+      ]
+    },
+    {
+      "tier": "T4_extreme", "rho": 10,
+      "omega_tier": {"H": 2048, "W": 2048, "N_lambda": 2048, "beam_energy_keV": 30, "pixel_nm": 1, "K": 20, "electron_beam_damage": 0.5, "carrier_diffusion_length": 500, "self_absorption": 0.3, "pure_component_uncertainty": 0.3, "beam_drift": 0.2},
+      "epsilon": 8e-2, "d_ibench": 0.74,
+      "baselines": [
+        {"name": "CL-Net", "nmse": 1.2e-1, "Q": 0.28}
+      ]
+    }
+  ],
+
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {"name": "Attolight + Polman-plasmonic + synthetic union", "num_dev_instances": 100, "num_holdout_instances": 50},
+    "baselines": [
+      {"name": "CLS",    "overall_Q": 0.50},
+      {"name": "MCR-ALS","overall_Q": 0.62},
+      {"name": "CL-Net", "overall_Q": 0.70}
+    ]
+  },
+
+  "hardness_rule_check": "SATISFIED — CL-Net fails at T4_extreme (damage=0.5, carrier_diff=500 nm): 0.12 > epsilon_fn ~ 0.07.",
+  "ipfs_cid": null, "ground_truth_cid": null
+}

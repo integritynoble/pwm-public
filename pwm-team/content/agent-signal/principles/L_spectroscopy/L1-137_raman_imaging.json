@@ -1,0 +1,93 @@
+{
+  "artifact_id": "L1-137",
+  "layer": "L1",
+  "principle_number": "137",
+  "title": "Raman Imaging (spontaneous inelastic photon scattering)",
+  "domain": "Spectroscopy",
+  "sub_domain": "Vibrational hyperspectral microscopy",
+  "source_file": "L_spectroscopy/137_raman_imaging.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence boilerplate. Physics grounded in Long 2002 Raman Effect textbook; Stewart-Priore-Myrick 2012 Raman imaging review; Cheng-Xie 2015 coherent Raman comparison; Butler-Ashton 2016 Nat. Protoc. biological Raman.",
+
+  "E": {
+    "description": "A narrowband laser at omega_L excites a sample; vibrational modes at frequencies omega_v cause inelastic scattering at omega_L +/- omega_v (Stokes/anti-Stokes). The cross-section is ~10^-30 cm^2/molecule/steradian (1e7 weaker than fluorescence). A spectrograph disperses scattered light onto a 2D detector, measured per spatial position via raster scan or line-focus.",
+    "forward_model": "y(r, omega) = integral_t [sigma_R(r, omega_L - omega) * I_L(r, t)] dt * eta_coll * QE(omega) + n(r, omega)",
+    "world_state_x": "Concentration maps c_k(r) for K chemical species with known Raman cross-sections sigma_k(omega)",
+    "observation_y": "Hyperspectral cube y in R^{H x W x N_lambda} (photon counts per pixel per spectral bin)",
+    "physical_parameters_theta": [
+      "Laser wavelength lambda_L (typically 532, 633, 785, 1064 nm)",
+      "Integration time tau per pixel",
+      "Spectral resolution delta_omega (cm^-1) and range",
+      "Fluorescence background B(r, omega)",
+      "Pixel size delta_r, NA, collection efficiency eta",
+      "Cosmic ray spike density"
+    ]
+  },
+
+  "G": {
+    "dag": "S.scatter.inelastic -> L.disperse.spectral -> int.temporal",
+    "vertices": ["S.scatter.inelastic", "L.disperse.spectral", "int.temporal"],
+    "arcs": ["S.scatter.inelastic -> L.disperse.spectral", "L.disperse.spectral -> int.temporal"],
+    "L_DAG": 2.7,
+    "n_c": 0
+  },
+
+  "W": {
+    "existence": true,
+    "uniqueness": "identifiable under linear-mixing with known sigma_k",
+    "stability": "conditional",
+    "condition_number_kappa": 200,
+    "condition_number_effective": 20,
+    "condition_number_mismatched": 500,
+    "regime": "Linear inverse problem mapping concentration to spectral signal; conditioning governed by spectral overlap (correlation of pure-component spectra). Mismatch: fluorescence background, wavenumber drift, laser-power fluctuation."
+  },
+
+  "C": {
+    "solver_class": "Classical-least-squares (CLS), NNMF, MCR-ALS, VCA, SVM classification, U-Net / spectral-transformer learned unmixing",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Concentration error ~ sigma_noise / sqrt(tau * I_L * sigma_R); Rayleigh SNR bound",
+    "complexity": "CLS: O(H*W*K*N_lambda); MCR-ALS: O(iter * H*W*K*N_lambda); learned single forward"
+  },
+
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "inelastic_scattering",
+    "integration_axis": "spectral_and_spatial",
+    "problem_class": "linear_inverse_spectral_unmix",
+    "noise_model": "shot_poisson",
+    "solution_space": "concentration_map_hyperspectral",
+    "primitives": ["S.scatter.inelastic", "L.disperse.spectral", "int.temporal"]
+  },
+
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+
+  "mismatch_parameters": ["fluorescence_background", "wavenumber_drift", "laser_power_fluct", "pure_component_uncertainty", "cosmic_spikes"],
+  "error_metric": "concentration_NMSE",
+  "error_metric_secondary": "SNR_dB",
+  "error_metric_tertiary": "chemical_classification_accuracy",
+
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "raman_hyperspectral_unmix",
+      "forward_operator": "raman_disperse_forward",
+      "input_format": "hyperspectral_cube_plus_library",
+      "omega": {"H": 256, "W": 256, "N_lambda": 512, "tau_ms": 100, "lambda_L_nm": 785, "K": 5, "fluorescence_background": 0.1, "wavenumber_drift_cm1": 0.0, "laser_power_fluct": 0.0},
+      "epsilon_fn_center": "concentration NMSE 5e-3"
+    },
+    "allowed_forward_operators": ["raman_disperse_forward", "raman_mosaic_scan", "hyperspectral_line_scan"],
+    "allowed_problem_classes": ["raman_hyperspectral_unmix", "raman_classification", "blind_raman_demixing"],
+    "allowed_omega_dimensions": ["H", "W", "N_lambda", "tau_ms", "lambda_L_nm", "K", "fluorescence_background", "wavenumber_drift_cm1", "laser_power_fluct", "pure_component_uncertainty"],
+    "omega_bounds": {
+      "H": [64, 2048], "W": [64, 2048], "N_lambda": [128, 2048],
+      "tau_ms": [10, 10000], "lambda_L_nm": [488, 1064],
+      "K": [1, 20], "fluorescence_background": [0.0, 10.0],
+      "wavenumber_drift_cm1": [0.0, 10.0], "laser_power_fluct": [0.0, 0.3],
+      "pure_component_uncertainty": [0.0, 0.3]
+    },
+    "epsilon_bounds": {"nmse": [1e-4, 1e-1]}
+  },
+
+  "p1_p10_tests": ["PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS"],
+  "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
+  "ipfs_cid": null
+}

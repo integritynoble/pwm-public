@@ -1,0 +1,62 @@
+{
+  "artifact_id": "L2-391",
+  "layer": "L2",
+  "parent_l1": "L1-391",
+  "principle_ref": "sha256:<L1-391_principle_hash>",
+  "title": "Sparse Signal Recovery Synthesis-Model Spec (overcomplete dictionary)",
+  "spec_type": "mismatch_only",
+
+  "six_tuple": {
+    "omega": {
+      "N": [128, 16384], "M": [32, 16384],
+      "k": [1, 2000], "mu": [0.01, 0.8],
+      "sigma_n": [0.0, 0.1], "basis_mismatch": [0.0, 0.5],
+      "off_grid": [0.0, 1.0]
+    },
+    "E": {
+      "forward": "y = A * D * alpha + n; ||alpha||_0 = k; D overcomplete",
+      "operator": "dictionary_sparse_forward",
+      "primitive_chain": "L.project.generic -> L.synthesis.dictionary -> int.spatial",
+      "inverse": "recover alpha (and thus x = D*alpha) from y"
+    },
+    "B": {"sparsity": "||alpha||_0 <= k", "bounded_amplitude": "||x||_inf <= 1"},
+    "I": {"strategy": "zero_init"},
+    "O": ["NMSE", "support_recovery_rate", "atom_selection_precision", "residual_norm"],
+    "epsilon_fn": "2e-3 * max(1, k*mu/sqrt(M)) * (1 + 5*basis_mismatch) + 10*sigma_n^2"
+  },
+
+  "protocol_fields": {
+    "input_format": {"measurements": "float32(M)", "dictionary": "float32(N, K)", "sensing": "float32(M, N)"},
+    "output_format": {"coefficients": "float32(K)", "signal": "float32(N)"},
+    "baselines": [
+      {"name": "OMP",       "method_sig": "L+O", "expected_nmse": 3e-3},
+      {"name": "MP",        "method_sig": "L+O", "expected_nmse": 1e-2},
+      {"name": "CoSaMP",    "method_sig": "L+O", "expected_nmse": 2e-3},
+      {"name": "BPDN/LASSO","method_sig": "L+O", "expected_nmse": 2.5e-3},
+      {"name": "LISTA",     "method_sig": "L+N", "expected_nmse": 1e-3}
+    ]
+  },
+
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {"N": 1024, "M": 512, "k": 50, "mu": 0.1, "sigma_n": 0.01, "basis_mismatch": 0.0},
+      "epsilon": 1e-3
+    },
+    "tier_bounds": {"N": [256, 4096], "M": [64, 2048], "k": [1, 500]},
+    "proximity_threshold": 0.10
+  },
+
+  "d_spec": 0.22,
+  "d_spec_notes": "Close to 386 CS (d~0.20 Similar) — shared sparsity prior, different projection type. Analysis-sparse spec would differ by d~0.28.",
+
+  "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
+  "s1_s4_justifications": {
+    "S1": "Dictionary D in R^{N x K}, alpha in R^K, D*alpha in R^N, consistent dims.",
+    "S2": "Mutual-coherence bound Donoho-Elad guarantees unique k-sparse alpha when k < 0.5*(1+1/mu).",
+    "S3": "OMP terminates in k steps; BPDN solved by FISTA O(1/k^2); LISTA feed-forward.",
+    "S4": "epsilon_fn evaluates; CoSaMP fails at basis_mismatch=0.5 (hardness)."
+  },
+
+  "ipfs_cid": null
+}

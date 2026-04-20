@@ -1,0 +1,61 @@
+{
+  "artifact_id": "L2-132",
+  "layer": "L2",
+  "parent_l1": "L1-132",
+  "principle_ref": "sha256:<L1-132_principle_hash>",
+  "title": "Muon Tomography Spec (nuclear safeguards family)",
+  "spec_type": "mismatch_only",
+
+  "six_tuple": {
+    "omega": {
+      "N_muon": [1e4, 1e9], "tracker_res_mm": [0.1, 10],
+      "acq_time_hours": [1, 720],
+      "momentum_unknown": [0, 1], "flux_inhomogeneity": [0.0, 0.3],
+      "angular_resolution": [1, 50], "background_contamination": [0.0, 0.2]
+    },
+    "E": {
+      "forward": "theta_scatter ~ Normal(0, (13.6/p)^2 * L/X_0); voxel X_0(r) recovery",
+      "operator": "muon_tomo_forward",
+      "primitive_chain": "L.scatter.MCS -> L.project.pathlength -> int.spatial",
+      "inverse": "reconstruct Z_eff(r) / X_0(r) map"
+    },
+    "B": {"bounded_X_0": "[0.1, 50 g/cm^2]", "nonnegativity": true},
+    "I": {"strategy": "poca_init"},
+    "O": ["Z_eff_NMSE", "spatial_resolution_mm", "detection_probability", "residual_norm"],
+    "epsilon_fn": "0.02 + 1e5/N_muon + 0.1 * momentum_unknown + 0.1 * flux_inhomogeneity + 0.001 * angular_resolution"
+  },
+
+  "protocol_fields": {
+    "input_format": {"tracker_events": "float32(N_muon, 8)"},
+    "output_format": {"z_eff": "float32(H, W, Z)"},
+    "baselines": [
+      {"name": "PoCA",      "method_sig": "L+O", "expected_nmse": 0.08},
+      {"name": "MLEM",      "method_sig": "L+O", "expected_nmse": 0.04},
+      {"name": "MART",      "method_sig": "L+O", "expected_nmse": 0.05},
+      {"name": "muon-CNN",  "method_sig": "L+N", "expected_nmse": 0.03}
+    ]
+  },
+
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {"N_muon": 1e7, "tracker_res_mm": 1.0, "acq_time_hours": 24, "momentum_unknown": 1, "flux_inhomogeneity": 0.1},
+      "epsilon": 0.05
+    },
+    "tier_bounds": {"N_muon": [1e5, 1e8], "acq_time_hours": [6, 168]},
+    "proximity_threshold": 0.10
+  },
+
+  "d_spec": 0.60,
+  "d_spec_notes": "Unique — cosmic-ray-driven carrier. Distance from 131 proton rad ~= 0.35. Distance from 130 neutron rad ~= 0.40.",
+
+  "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
+  "s1_s4_justifications": {
+    "S1": "Tracker events 8D (pos, dir in/out); voxel 3D.",
+    "S2": "Large N_muon uniform angular flux gives unique Z_eff map.",
+    "S3": "PoCA closed-form; MLEM monotone likelihood.",
+    "S4": "epsilon_fn defined; muon-CNN fails at N_muon=1e4 + angular_res=50 mrad (hardness)."
+  },
+
+  "ipfs_cid": null
+}

@@ -1,0 +1,63 @@
+{
+  "artifact_id": "L2-146",
+  "layer": "L2",
+  "parent_l1": "L1-146",
+  "principle_ref": "sha256:<L1-146_principle_hash>",
+  "title": "NMR 1D Peak-Picking Spec",
+  "spec_type": "mismatch_only",
+
+  "six_tuple": {
+    "omega": {
+      "N": [1024, 262144], "SNR_dB": [-5, 50],
+      "B0_MHz": [60, 1200], "K": [1, 200],
+      "b0_inhomogeneity_hz": [0.0, 20], "b1_miscalibration": [0.0, 0.3],
+      "phase_distortion": [0.0, 0.5], "baseline_roll": [0.0, 0.2],
+      "solvent_suppression_residual": [0.0, 0.1]
+    },
+    "E": {
+      "forward": "y(t) = sum_k A_k*exp(-t/T2_k + j*omega_k*t + j*phi) * exp(-t*b0_inhomog/2pi) + n",
+      "operator": "nmr_fid_forward",
+      "primitive_chain": "L.precess.zeeman -> L.synthesis.harmonic -> int.temporal",
+      "inverse": "FFT + peak pick + fit Voigt lines; integral = sum A_k"
+    },
+    "B": {"lorentzian_Voigt_shape": true, "bounded_T2": "T2 in [1 ms, 10 s]"},
+    "I": {"strategy": "fft_peak_init"},
+    "O": ["chemical_shift_RMSE_ppm", "integral_NMSE", "lineshape_fit_R2", "structure_accuracy"],
+    "epsilon_fn": "0.001 + 0.01 * b0_inhomogeneity_hz / 10 + 0.02 * phase_distortion + 0.01 * solvent_suppression_residual + 0.01 * baseline_roll"
+  },
+
+  "protocol_fields": {
+    "input_format": {"fid": "complex64(N)", "sw_ppm": "float32", "acq_params": "dict"},
+    "output_format": {"peaks": "float32(K_est, 4)"},
+    "baselines": [
+      {"name": "FFT+PeakPick","method_sig": "L+O", "expected_rmse": 0.003},
+      {"name": "Voigt-LS",    "method_sig": "L+O", "expected_rmse": 0.002},
+      {"name": "BRAIN-NMR",   "method_sig": "L+O", "expected_rmse": 0.0015},
+      {"name": "CS-NMR",      "method_sig": "L+O", "expected_rmse": 0.002},
+      {"name": "DeepNMR",     "method_sig": "L+N", "expected_rmse": 0.001}
+    ]
+  },
+
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {"N": 32768, "SNR_dB": 30, "B0_MHz": 500, "K": 10, "b0_inhomogeneity_hz": 1.0, "phase_distortion": 0.0},
+      "epsilon": 0.002
+    },
+    "tier_bounds": {"N": [4096, 131072], "SNR_dB": [5, 40], "K": [1, 50]},
+    "proximity_threshold": 0.10
+  },
+
+  "d_spec": 0.45,
+  "d_spec_notes": "Distance from 2D NMR spec ~= 0.25 (Similar, different dim). Distance from 394 spectral estimation ~= 0.40 (Related — both harmonic).",
+
+  "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
+  "s1_s4_justifications": {
+    "S1": "FID N samples, spectrum K peaks consistent dims.",
+    "S2": "FFT unique up to aliasing; peak fitting LS unique with adequate SNR.",
+    "S3": "FFT closed-form; BRAIN-NMR Bayesian MCMC; DeepNMR feed-forward.",
+    "S4": "epsilon_fn defined; DeepNMR fails at SNR=-5 + b0_inhomog=20 Hz (hardness)."
+  },
+
+  "ipfs_cid": null
+}

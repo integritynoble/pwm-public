@@ -1,0 +1,94 @@
+{
+  "artifact_id": "L1-127",
+  "layer": "L1",
+  "principle_number": "127",
+  "title": "MALDI-MSI — Matrix-Assisted Laser Desorption/Ionization Mass-Spec Imaging",
+  "domain": "Scientific Instrumentation",
+  "sub_domain": "Laser-desorption mass-spec imaging of tissue",
+  "source_file": "K_scientific_instrumentation/127_maldi_msi.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence boilerplate. Physics grounded in Stoeckli et al. 2001 MALDI-MSI biology; Caprioli-Farmer-Gile 1997 original MALDI-IMS paper; Spengler 2002 high-res MALDI; Rompp-Spengler 2013 current MS imaging review.",
+
+  "E": {
+    "description": "A matrix compound (CHCA, DHB, SA) is co-crystallized with analyte; a pulsed UV or IR laser (N2 337 nm, Nd:YAG 355 nm) ionizes matrix-analyte clusters; positive or negative ions fly into a time-of-flight analyzer yielding m/z-resolved spectra per pixel. Ablation craters rastered to 5-50 um resolution.",
+    "forward_model": "y(r, m/z) = laser_ionize(c(r, m/z), matrix) * eta_MALDI + n_Poisson",
+    "world_state_x": "Molecular concentration maps c(r, m/z) for K analytes",
+    "observation_y": "MSI cube y in N^{H x W x N_mz}",
+    "physical_parameters_theta": [
+      "Laser wavelength, pulse energy, repetition rate",
+      "Spot size (5-100 um)",
+      "Matrix type and coating method (sublimation, spray)",
+      "Mass resolution (Orbitrap vs. TOF)",
+      "Laser-energy stability",
+      "Hot-spot variability (matrix inhomogeneity)"
+    ]
+  },
+
+  "G": {
+    "dag": "S.desorb.laserMATRIX -> L.disperse.mass -> int.temporal",
+    "vertices": ["S.desorb.laserMATRIX", "L.disperse.mass", "int.temporal"],
+    "arcs": ["S.desorb.laserMATRIX -> L.disperse.mass", "L.disperse.mass -> int.temporal"],
+    "L_DAG": 3.0,
+    "n_c": 0
+  },
+
+  "W": {
+    "existence": true,
+    "uniqueness": "peak ID unique; semi-quantitative (matrix-effects dominant)",
+    "stability": "conditional",
+    "condition_number_kappa": 800,
+    "condition_number_effective": 40,
+    "condition_number_mismatched": 2000,
+    "regime": "Counts-based Poisson noise; hot-spot variability and ion-suppression cause major between-pixel variance. Relative quantitation ok; absolute requires internal standards."
+  },
+
+  "C": {
+    "solver_class": "Peak integration, PCA/NMF, MCR-ALS, mass-recalibration, hot-spot correction, learned (CNN-MSI)",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Concentration RSE ~ sqrt(N) + matrix-effect variance; 10-30% CV typical without internal standard",
+    "complexity": "PeakInt O(H*W*N_mz); CNN-MSI feed-forward"
+  },
+
+  "physics_fingerprint": {
+    "carrier": "ion",
+    "sensing_mechanism": "matrix_laser_desorption",
+    "integration_axis": "mass_and_spatial",
+    "problem_class": "linear_inverse_count",
+    "noise_model": "shot_poisson",
+    "solution_space": "molecular_surface_map",
+    "primitives": ["S.desorb.laserMATRIX", "L.disperse.mass", "int.temporal"]
+  },
+
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+
+  "mismatch_parameters": ["matrix_hot_spot_variability", "laser_energy_drift", "mass_calibration_error", "ion_suppression", "tissue_heterogeneity"],
+  "error_metric": "concentration_NMSE",
+  "error_metric_secondary": "spatial_resolution_um",
+  "error_metric_tertiary": "mass_accuracy_ppm",
+
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "maldi_msi_mapping",
+      "forward_operator": "maldi_msi_forward",
+      "input_format": "ion_count_cube",
+      "omega": {"H": 300, "W": 300, "N_mz": 30000, "pixel_um": 50, "R_mass": 20000, "K": 10, "matrix_hot_spot_variability": 0.1, "laser_energy_drift": 0.05},
+      "epsilon_fn_center": "NMSE 0.05"
+    },
+    "allowed_forward_operators": ["maldi_msi_forward", "desorption_electrospray_forward"],
+    "allowed_problem_classes": ["maldi_msi_mapping", "maldi_classification", "maldi_lipid_identification"],
+    "allowed_omega_dimensions": ["H", "W", "N_mz", "pixel_um", "R_mass", "K", "matrix_hot_spot_variability", "laser_energy_drift", "mass_calibration_error", "ion_suppression", "tissue_heterogeneity"],
+    "omega_bounds": {
+      "H": [32, 2048], "W": [32, 2048], "N_mz": [1000, 200000],
+      "pixel_um": [5, 200], "R_mass": [2000, 500000],
+      "K": [1, 50],
+      "matrix_hot_spot_variability": [0.0, 0.5], "laser_energy_drift": [0.0, 0.2],
+      "mass_calibration_error": [0.0, 50], "ion_suppression": [0.0, 0.5],
+      "tissue_heterogeneity": [0.0, 0.3]
+    },
+    "epsilon_bounds": {"nmse": [1e-3, 0.5]}
+  },
+
+  "p1_p10_tests": ["PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS"],
+  "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
+  "ipfs_cid": null
+}

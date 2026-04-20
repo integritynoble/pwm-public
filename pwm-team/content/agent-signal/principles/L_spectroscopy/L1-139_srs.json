@@ -1,0 +1,92 @@
+{
+  "artifact_id": "L1-139",
+  "layer": "L1",
+  "principle_number": "139",
+  "title": "SRS — Stimulated Raman Scattering microscopy",
+  "domain": "Spectroscopy",
+  "sub_domain": "Background-free coherent vibrational microscopy",
+  "source_file": "L_spectroscopy/139_srs.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence boilerplate. Physics grounded in Freudiger et al. 2008 Science SRS imaging; Saar et al. 2010 video-rate SRS; Cheng-Xie 2015 comparison; Ji et al. 2013 SRS brain.",
+
+  "E": {
+    "description": "Stimulated Raman scattering uses two synchronized pulses (pump at omega_p, Stokes at omega_s) with Omega = omega_p - omega_s matching a vibrational mode; the pump experiences stimulated loss (SRL) while Stokes gains (SRG), both proportional to Im[chi^(3)]. Detection via high-frequency lock-in amplification (>1 MHz) of modulated Stokes/pump gives SNR bounded by laser shot noise only (no non-resonant background).",
+    "forward_model": "Delta_I_p / I_p = -sigma_SRS(Omega) * N(r) * I_s * L_z",
+    "world_state_x": "Concentration map N(r) (moieties/volume) and vibrational cross-section sigma_SRS(Omega)",
+    "observation_y": "Lock-in demodulated pump-loss signal y(r, Omega)",
+    "physical_parameters_theta": [
+      "Pump/Stokes wavelengths (lambda_p ~ 800 nm, lambda_s ~ 1040 nm typical)",
+      "Modulation frequency (0.5-20 MHz)",
+      "Pulse duration (ps for narrow-band, fs for spectral-focusing)",
+      "Integration time tau per pixel",
+      "NA of objective, focal volume",
+      "Thermal lensing and cross-phase modulation artifacts"
+    ]
+  },
+
+  "G": {
+    "dag": "L.beat.twocolor -> S.nonlinear.chi3 -> L.modulate.highfreq -> int.temporal",
+    "vertices": ["L.beat.twocolor", "S.nonlinear.chi3", "L.modulate.highfreq", "int.temporal"],
+    "arcs": ["L.beat.twocolor -> S.nonlinear.chi3", "S.nonlinear.chi3 -> L.modulate.highfreq", "L.modulate.highfreq -> int.temporal"],
+    "L_DAG": 3.0,
+    "n_c": 0
+  },
+
+  "W": {
+    "existence": true,
+    "uniqueness": "linear in N(r) — direct unmixing",
+    "stability": "stable",
+    "condition_number_kappa": 50,
+    "condition_number_effective": 10,
+    "condition_number_mismatched": 100,
+    "regime": "SRS is linear in concentration, unlike CARS (|chi|^2). No non-resonant background. Signal is shot-noise limited; SNR scales as sqrt(I_p * I_s * tau)."
+  },
+
+  "C": {
+    "solver_class": "Linear regression (CLS), hyperspectral deconvolution, spectral-focusing chirp decoding, learned denoisers",
+    "convergence_rate_q": 2.0,
+    "error_bound": "N_hat uncertainty ~ sigma_shot / sqrt(tau * I_p * I_s * sigma_SRS^2)",
+    "complexity": "CLS O(H*W*K*N_omega); spectral-focusing deconvolution O(H*W*N_omega*log)"
+  },
+
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "stimulated_raman",
+    "integration_axis": "spectral_and_temporal",
+    "problem_class": "linear_inverse_coherent",
+    "noise_model": "shot_poisson",
+    "solution_space": "concentration_map",
+    "primitives": ["L.beat.twocolor", "S.nonlinear.chi3", "L.modulate.highfreq", "int.temporal"]
+  },
+
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+
+  "mismatch_parameters": ["thermal_lensing", "xpm_artifact", "spectral_chirp_mismatch", "rin_laser_noise", "focal_volume_error"],
+  "error_metric": "concentration_NMSE",
+  "error_metric_secondary": "SNR_dB",
+  "error_metric_tertiary": "imaging_speed_fps",
+
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "hyperspectral_srs",
+      "forward_operator": "srs_linear_forward",
+      "input_format": "srs_cube_plus_library",
+      "omega": {"H": 256, "W": 256, "N_omega": 200, "lambda_p_nm": 800, "lambda_s_nm": 1040, "tau_us": 10, "K": 4},
+      "epsilon_fn_center": "NMSE 1e-3"
+    },
+    "allowed_forward_operators": ["srs_linear_forward", "spectral_focusing_srs", "multiplex_srs"],
+    "allowed_problem_classes": ["hyperspectral_srs", "single_frequency_srs", "blind_srs_unmixing"],
+    "allowed_omega_dimensions": ["H", "W", "N_omega", "lambda_p_nm", "lambda_s_nm", "tau_us", "K", "thermal_lensing", "xpm_artifact", "rin_laser_noise"],
+    "omega_bounds": {
+      "H": [64, 2048], "W": [64, 2048], "N_omega": [1, 500],
+      "tau_us": [1, 1000], "K": [1, 10],
+      "thermal_lensing": [0.0, 0.2], "xpm_artifact": [0.0, 0.2],
+      "rin_laser_noise": [1e-8, 1e-5], "focal_volume_error": [0.0, 0.2]
+    },
+    "epsilon_bounds": {"nmse": [1e-5, 1e-1]}
+  },
+
+  "p1_p10_tests": ["PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS"],
+  "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
+  "ipfs_cid": null
+}

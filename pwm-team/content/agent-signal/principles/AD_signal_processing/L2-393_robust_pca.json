@@ -1,0 +1,62 @@
+{
+  "artifact_id": "L2-393",
+  "layer": "L2",
+  "parent_l1": "L1-393",
+  "principle_ref": "sha256:<L1-393_principle_hash>",
+  "title": "Robust PCA Entry-Corruption Spec (video background subtraction family)",
+  "spec_type": "mismatch_only",
+
+  "six_tuple": {
+    "omega": {
+      "m": [50, 10000], "n": [50, 10000],
+      "r": [1, 500], "s_fraction": [0.0, 0.5],
+      "mu_0": [1.0, 10.0], "sigma_n": [0.0, 0.1],
+      "lambda": [0.1, 10], "column_corruption": [0.0, 0.3]
+    },
+    "E": {
+      "forward": "M = L + S + n; rank(L) = r; ||S||_0 = s_fraction * m*n",
+      "operator": "additive_L_plus_S",
+      "primitive_chain": "L.synthesis.lowrank + L.synthesis.sparse -> int.spatial",
+      "inverse": "jointly recover L and S from M under L1 + nuclear-norm prior"
+    },
+    "B": {"low_rank_L": "rank(L) <= r", "sparse_S": "||S||_0 <= s", "incoherence": "mu(U)<=mu_0"},
+    "I": {"strategy": "SVD_init_plus_sign_threshold"},
+    "O": ["relative_frobenius_error_L", "precision_recall_S", "rank_recovery", "residual_norm"],
+    "epsilon_fn": "1e-4 * max(1, r * mu_0 / min(m,n)) * (1 + 10 * s_fraction) + 5 * sigma_n^2"
+  },
+
+  "protocol_fields": {
+    "input_format": {"matrix": "float32(m, n)"},
+    "output_format": {"L_lowrank": "float32(m, n)", "S_sparse": "float32(m, n)"},
+    "baselines": [
+      {"name": "IALM-PCP",    "method_sig": "L+O", "expected_rel_frob": 1e-4},
+      {"name": "AltProj",     "method_sig": "L+O", "expected_rel_frob": 8e-5},
+      {"name": "GoDec",       "method_sig": "L+O", "expected_rel_frob": 3e-4},
+      {"name": "OnlineRPCA",  "method_sig": "L+O", "expected_rel_frob": 5e-4},
+      {"name": "DeepRPCA",    "method_sig": "L+N", "expected_rel_frob": 1e-4}
+    ]
+  },
+
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {"m": 500, "n": 500, "r": 10, "s_fraction": 0.1, "mu_0": 1.0, "sigma_n": 0.001, "lambda": 1.0},
+      "epsilon": 1e-4
+    },
+    "tier_bounds": {"m": [100, 5000], "r": [1, 100], "s_fraction": [0.01, 0.4]},
+    "proximity_threshold": 0.10
+  },
+
+  "d_spec": 0.35,
+  "d_spec_notes": "Distance from 392 matrix completion ~= 0.30 (Related — both low-rank model). Distance from tensor-RPCA spec ~= 0.25 (Similar extension).",
+
+  "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
+  "s1_s4_justifications": {
+    "S1": "M, L, S share R^{m x n}; additive decomposition dimensionally consistent.",
+    "S2": "Candes-Li-Ma-Wright theorem: exact recovery under incoherence and s < C*m*n constraint.",
+    "S3": "IALM converges with rate O(1/k); AltProj linear convergence near ground truth; DeepRPCA feed-forward.",
+    "S4": "epsilon_fn defined; GoDec fails at s_fraction=0.5 (hardness)."
+  },
+
+  "ipfs_cid": null
+}

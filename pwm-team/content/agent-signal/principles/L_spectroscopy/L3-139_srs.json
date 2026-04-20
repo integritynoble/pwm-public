@@ -1,0 +1,69 @@
+{
+  "artifact_id": "L3-139",
+  "layer": "L3",
+  "parent_l2": "L2-139",
+  "parent_l1": "L1-139",
+  "title": "SRS Benchmark Suite (brain + lipids + synthetic)",
+  "benchmark_type": "combined_P_and_I",
+
+  "dataset_registry": {
+    "primary": "Freudiger-Xie cell SRS + Ji et al. SRH brain tumor SRS",
+    "secondary": "Min group lipid SRS images at 2845 cm^-1 (CH2)",
+    "tertiary": "Synthetic SRS cubes with controlled K lipid/protein/water spectra",
+    "construction_method": "Acquire/simulate multiplex SRS; add thermal lensing + XPM artifacts",
+    "num_dev_instances_per_tier": 20, "holdout_instances_per_tier": 10
+  },
+
+  "ibenchmarks": [
+    {
+      "tier": "T1_clean", "rho": 1,
+      "omega_tier": {"H": 256, "W": 256, "N_omega": 200, "tau_us": 100, "K": 4},
+      "epsilon": 5e-4, "d_ibench": 0.14,
+      "baselines": [
+        {"name": "CLS",      "nmse": 5e-4, "Q": 0.88},
+        {"name": "MCR-ALS",  "nmse": 3e-4, "Q": 0.94},
+        {"name": "SRS-UNet", "nmse": 2e-4, "Q": 0.96}
+      ]
+    },
+    {
+      "tier": "T2_moderate", "rho": 3,
+      "omega_tier": {"H": 256, "W": 256, "N_omega": 200, "tau_us": 10, "K": 4, "thermal_lensing": 0.05, "xpm_artifact": 0.05},
+      "epsilon": 2e-3, "d_ibench": 0.28,
+      "baselines": [
+        {"name": "CLS",      "nmse": 2.5e-3, "Q": 0.58},
+        {"name": "MCR-ALS",  "nmse": 1.5e-3, "Q": 0.76},
+        {"name": "SRS-UNet", "nmse": 1e-3,   "Q": 0.84}
+      ]
+    },
+    {
+      "tier": "T3_fast", "rho": 5,
+      "omega_tier": {"H": 512, "W": 512, "N_omega": 200, "tau_us": 2, "K": 6, "thermal_lensing": 0.1, "xpm_artifact": 0.1},
+      "epsilon": 1e-2, "d_ibench": 0.50,
+      "baselines": [
+        {"name": "MCR-ALS",  "nmse": 1.5e-2, "Q": 0.45},
+        {"name": "SRS-UNet", "nmse": 8e-3,   "Q": 0.62}
+      ]
+    },
+    {
+      "tier": "T4_video_rate", "rho": 10,
+      "omega_tier": {"H": 1024, "W": 1024, "N_omega": 1, "tau_us": 1, "K": 10, "thermal_lensing": 0.2, "xpm_artifact": 0.2, "rin_laser_noise": 1e-5},
+      "epsilon": 5e-2, "d_ibench": 0.74,
+      "baselines": [
+        {"name": "SRS-UNet", "nmse": 6e-2, "Q": 0.35}
+      ]
+    }
+  ],
+
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {"name": "Freudiger-cell + Ji-SRH-brain + Min-lipid union", "num_dev_instances": 200, "num_holdout_instances": 100},
+    "baselines": [
+      {"name": "CLS",      "overall_Q": 0.55},
+      {"name": "MCR-ALS",  "overall_Q": 0.68},
+      {"name": "SRS-UNet", "overall_Q": 0.74}
+    ]
+  },
+
+  "hardness_rule_check": "SATISFIED — SRS-UNet fails at T4_video_rate (N_omega=1, tau=1us, RIN=1e-5): 0.06 > epsilon_fn ~ 0.04.",
+  "ipfs_cid": null, "ground_truth_cid": null
+}

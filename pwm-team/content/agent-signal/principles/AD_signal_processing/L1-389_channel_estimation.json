@@ -1,0 +1,92 @@
+{
+  "artifact_id": "L1-389",
+  "layer": "L1",
+  "principle_number": "389",
+  "title": "Channel Estimation (pilot-aided wireless channel identification)",
+  "domain": "Signal Processing",
+  "sub_domain": "MIMO/OFDM channel impulse response estimation",
+  "source_file": "AD_signal_processing/389_channel_estimation.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence boilerplate. Physics grounded in Tong-Perreau 1998 blind channel ID; Liu-Giannakis-Liu 2001 survey; Bajwa et al. 2010 CS channel est; Alkhateeb et al. 2014 mmWave; 3GPP TS 38.211 5G NR pilot structure.",
+
+  "E": {
+    "description": "A transmitted OFDM/MIMO waveform passes through a multipath fading channel with impulse response h[tau, nu] in delay-Doppler space; the receiver collects y_k = sum_l h_l * x_{k-l} + n_k and uses known pilot symbols to estimate h.",
+    "forward_model": "y = H(theta) * x + n;  H is Toeplitz (SISO) or block-Toeplitz (MIMO-OFDM)",
+    "world_state_x": "Channel impulse response h in C^{L_ch} (or tensor in C^{Nt x Nr x L_ch}) with L_ch sparse taps",
+    "observation_y": "Received pilot samples y in C^{N_pilot}",
+    "physical_parameters_theta": [
+      "Number of transmit/receive antennas Nt, Nr",
+      "Channel length L_ch and number of significant taps k",
+      "Pilot density alpha_p = N_pilot / N_total",
+      "Doppler spread f_d*T, delay spread tau_rms",
+      "SNR, carrier frequency offset (CFO), sampling clock offset"
+    ]
+  },
+
+  "G": {
+    "dag": "L.project.pilot -> int.temporal",
+    "vertices": ["L.project.pilot", "int.temporal"],
+    "arcs": ["L.project.pilot -> int.temporal"],
+    "L_DAG": 2.3,
+    "n_c": 0
+  },
+
+  "W": {
+    "existence": true,
+    "uniqueness": "when pilot spacing satisfies Nyquist (delta_f <= 1/tau_max, delta_t <= 1/(2 f_d))",
+    "stability": "conditional",
+    "condition_number_kappa": 500,
+    "condition_number_effective": 20,
+    "condition_number_mismatched": 400,
+    "regime": "Well-posed under Nyquist pilot spacing; sub-Nyquist recoverable via sparse CS when channel is sparse in delay-Doppler. Mismatch: CFO, phase noise, non-ideal pilot power allocation."
+  },
+
+  "C": {
+    "solver_class": "LS, MMSE, DFT-based, LMMSE-interpolation, sparse (OMP, LASSO), Bayesian (message-passing), deep (ChannelNet, DeepRx)",
+    "convergence_rate_q": 2.0,
+    "error_bound": "NMSE = ||h_hat - h||^2 / ||h||^2 ~ sigma^2 / (alpha_p * SNR * L_ch); CS recovery ~ k*log(L_ch)/N_pilot",
+    "complexity": "LS: O(N_pilot^3) or FFT O(N*log(N)); MMSE: O(N_pilot^3); OMP: O(k*N_pilot*L_ch)"
+  },
+
+  "physics_fingerprint": {
+    "carrier": "RF",
+    "sensing_mechanism": "pilot_probing",
+    "integration_axis": "temporal",
+    "problem_class": "linear_inverse",
+    "noise_model": "complex_gaussian",
+    "solution_space": "channel_impulse_response",
+    "primitives": ["L.project.pilot", "int.temporal"]
+  },
+
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+
+  "mismatch_parameters": ["cfo_hz", "phase_noise_rms", "pilot_distortion", "doppler_error", "delay_spread_error"],
+  "error_metric": "NMSE",
+  "error_metric_secondary": "BER_postequalization",
+  "error_metric_tertiary": "throughput_bps",
+
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "pilot_aided_ofdm",
+      "forward_operator": "ofdm_pilot_channel",
+      "input_format": "received_symbols_plus_pilot_pattern",
+      "omega": {"Nt": 1, "Nr": 1, "L_ch": 16, "k": 4, "alpha_p": 0.1, "SNR_dB": 10, "f_d_Hz": 0, "cfo_hz": 0, "phase_noise_rms": 0.0},
+      "epsilon_fn_center": "NMSE 1e-2"
+    },
+    "allowed_forward_operators": ["ofdm_pilot_channel", "mimo_pilot_channel", "mmwave_beam_channel"],
+    "allowed_problem_classes": ["pilot_aided_ofdm", "blind_channel_id", "semi_blind", "sparse_mmwave"],
+    "allowed_omega_dimensions": ["Nt", "Nr", "L_ch", "k", "alpha_p", "SNR_dB", "f_d_Hz", "cfo_hz", "phase_noise_rms", "doppler_error"],
+    "omega_bounds": {
+      "Nt": [1, 64], "Nr": [1, 128], "L_ch": [2, 256],
+      "k": [1, 64], "alpha_p": [0.02, 0.5],
+      "SNR_dB": [-5, 30], "f_d_Hz": [0, 1000],
+      "cfo_hz": [0, 500], "phase_noise_rms": [0.0, 0.1],
+      "doppler_error": [0.0, 100]
+    },
+    "epsilon_bounds": {"nmse": [1e-4, 1e-1]}
+  },
+
+  "p1_p10_tests": ["PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS"],
+  "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
+  "ipfs_cid": null
+}

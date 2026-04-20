@@ -1,0 +1,93 @@
+{
+  "artifact_id": "L1-129",
+  "layer": "L1",
+  "principle_number": "129",
+  "title": "Cryo-EM Single-Particle Analysis (SPA)",
+  "domain": "Scientific Instrumentation",
+  "sub_domain": "Near-atomic 3D reconstruction of frozen-hydrated biomolecules",
+  "source_file": "K_scientific_instrumentation/129_cryoem_spa.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence boilerplate. Physics grounded in Frank 2006 Three-Dimensional EM textbook; Scheres 2012 RELION; Punjani et al. 2017 cryoSPARC; Zivanov et al. 2020 RELION-3.1; Bepler-Noble 2020 Topaz picking.",
+
+  "E": {
+    "description": "Purified biomolecules (protein complexes) are vitrified in amorphous ice; a 200-300 keV electron beam through a direct-electron detector records weak-phase projection images of random-orientation particles; alignment + class-averaging + 3D reconstruction via inverse Radon (Fourier-slice theorem) yields a near-atomic density map.",
+    "forward_model": "y_i(x,y) = CTF_i(k; defocus_i, A_i) * P_{Euler_i}[V(x,y,z)] + shot_noise",
+    "world_state_x": "3D Coulomb potential V(x,y,z) of the molecule",
+    "observation_y": "Set of N_particle 2D projection images {y_i} with unknown poses",
+    "physical_parameters_theta": [
+      "Electron dose (10-50 e^-/Å^2 total)",
+      "Defocus range (0.5-3 um)",
+      "Particle count N_particle (10^4 - 10^6)",
+      "Pixel size (0.8-1.5 Å)",
+      "Conformational heterogeneity",
+      "Per-particle motion during exposure"
+    ]
+  },
+
+  "G": {
+    "dag": "L.project.euler -> L.modulate.ctf -> int.spatial",
+    "vertices": ["L.project.euler", "L.modulate.ctf", "int.spatial"],
+    "arcs": ["L.project.euler -> L.modulate.ctf", "L.modulate.ctf -> int.spatial"],
+    "L_DAG": 3.0,
+    "n_c": 1
+  },
+
+  "W": {
+    "existence": true,
+    "uniqueness": "unique 3D reconstruction when orientations cover SO(3) uniformly and N_particle large",
+    "stability": "conditional",
+    "condition_number_kappa": 1000,
+    "condition_number_effective": 40,
+    "condition_number_mismatched": 2000,
+    "regime": "Signal-to-noise per image ~0.01-0.1; collective averaging boosts SNR as sqrt(N). Mismatch: pose-estimation error, CTF miscalibration, conformational heterogeneity (multi-class), preferential orientation."
+  },
+
+  "C": {
+    "solver_class": "RELION / cryoSPARC / cisTEM iterative expectation-maximization for pose + reconstruction; learned (Topaz particle pick, ML3D heterogeneity)",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Resolution ~ 1 / (1/d_target + sqrt(1/N_particle) * CTF_penalty); FSC 0.143 gold standard",
+    "complexity": "EM iteration O(N_particle * image_size * N_orient * N_class * iter); learned pickers O(N_particle * CNN_forward)"
+  },
+
+  "physics_fingerprint": {
+    "carrier": "electron",
+    "sensing_mechanism": "weak_phase_transmission",
+    "integration_axis": "projection",
+    "problem_class": "tomographic_inverse_with_pose",
+    "noise_model": "shot_poisson",
+    "solution_space": "3d_coulomb_potential",
+    "primitives": ["L.project.euler", "L.modulate.ctf", "int.spatial"]
+  },
+
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+
+  "mismatch_parameters": ["pose_estimate_error", "ctf_miscalibration", "conformational_heterogeneity", "preferential_orientation", "per_particle_motion"],
+  "error_metric": "resolution_angstrom",
+  "error_metric_secondary": "FSC_0.143",
+  "error_metric_tertiary": "map_CCmask",
+
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "spa_homogeneous",
+      "forward_operator": "spa_forward",
+      "input_format": "particle_stack",
+      "omega": {"N_particle": 100000, "pixel_angstrom": 1.0, "defocus_um": 1.5, "dose": 30, "pose_estimate_error": 0.0, "conformational_heterogeneity": 0.0},
+      "epsilon_fn_center": "3.5 Å resolution"
+    },
+    "allowed_forward_operators": ["spa_forward", "heterogeneity_aware_forward"],
+    "allowed_problem_classes": ["spa_homogeneous", "spa_heterogeneous", "ab_initio_model"],
+    "allowed_omega_dimensions": ["N_particle", "pixel_angstrom", "defocus_um", "dose", "pose_estimate_error", "ctf_miscalibration", "conformational_heterogeneity", "preferential_orientation", "per_particle_motion"],
+    "omega_bounds": {
+      "N_particle": [1000, 10000000], "pixel_angstrom": [0.5, 3.0],
+      "defocus_um": [0.3, 5.0], "dose": [10, 100],
+      "pose_estimate_error": [0.0, 10], "ctf_miscalibration": [0.0, 500],
+      "conformational_heterogeneity": [0.0, 1.0],
+      "preferential_orientation": [0.0, 0.8], "per_particle_motion": [0.0, 5]
+    },
+    "epsilon_bounds": {"resolution_angstrom": [1.5, 15]}
+  },
+
+  "p1_p10_tests": ["PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS"],
+  "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
+  "ipfs_cid": null
+}

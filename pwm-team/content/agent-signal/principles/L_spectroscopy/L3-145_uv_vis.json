@@ -1,0 +1,69 @@
+{
+  "artifact_id": "L3-145",
+  "layer": "L3",
+  "parent_l2": "L2-145",
+  "parent_l1": "L1-145",
+  "title": "UV-Vis Concentration Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+
+  "dataset_registry": {
+    "primary": "NIST standard reference UV-Vis spectra (K2Cr2O7, holmium oxide)",
+    "secondary": "Peroxide calibration series, food-color mixtures",
+    "tertiary": "Environmental water samples with chromophore mixtures",
+    "construction_method": "Synthetic mixtures at known concentrations; inject scattering and stray-light",
+    "num_dev_instances_per_tier": 50, "holdout_instances_per_tier": 20
+  },
+
+  "ibenchmarks": [
+    {
+      "tier": "T1_clean", "rho": 1,
+      "omega_tier": {"N_lambda": 500, "K": 3, "path_length_cm": 1.0, "stray_light": 1e-4, "scatter_turbidity": 0.0},
+      "epsilon": 5e-5, "d_ibench": 0.13,
+      "baselines": [
+        {"name": "CLS",    "nmse": 8e-5, "Q": 0.78},
+        {"name": "PLS",    "nmse": 4e-5, "Q": 0.94},
+        {"name": "UV-Net", "nmse": 3e-5, "Q": 0.96}
+      ]
+    },
+    {
+      "tier": "T2_turbid", "rho": 3,
+      "omega_tier": {"N_lambda": 500, "K": 5, "path_length_cm": 1.0, "stray_light": 1e-3, "scatter_turbidity": 0.3},
+      "epsilon": 5e-4, "d_ibench": 0.27,
+      "baselines": [
+        {"name": "PLS",     "nmse": 8e-4, "Q": 0.50},
+        {"name": "MCR-ALS", "nmse": 5e-4, "Q": 0.68},
+        {"name": "UV-Net",  "nmse": 3e-4, "Q": 0.78}
+      ]
+    },
+    {
+      "tier": "T3_overlapping", "rho": 5,
+      "omega_tier": {"N_lambda": 500, "K": 10, "path_length_cm": 0.1, "stray_light": 5e-3, "scatter_turbidity": 0.7, "pure_component_uncertainty": 0.1},
+      "epsilon": 5e-3, "d_ibench": 0.48,
+      "baselines": [
+        {"name": "MCR-ALS", "nmse": 8e-3, "Q": 0.40},
+        {"name": "UV-Net",  "nmse": 4e-3, "Q": 0.60}
+      ]
+    },
+    {
+      "tier": "T4_complex_water", "rho": 10,
+      "omega_tier": {"N_lambda": 2000, "K": 20, "path_length_cm": 0.01, "stray_light": 0.01, "scatter_turbidity": 1.0, "pure_component_uncertainty": 0.2, "baseline_drift": 0.1},
+      "epsilon": 5e-2, "d_ibench": 0.72,
+      "baselines": [
+        {"name": "UV-Net",  "nmse": 8e-2, "Q": 0.28}
+      ]
+    }
+  ],
+
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {"name": "NIST + peroxide + environmental water union", "num_dev_instances": 500, "num_holdout_instances": 200},
+    "baselines": [
+      {"name": "CLS",    "overall_Q": 0.56},
+      {"name": "PLS",    "overall_Q": 0.68},
+      {"name": "UV-Net", "overall_Q": 0.72}
+    ]
+  },
+
+  "hardness_rule_check": "SATISFIED — UV-Net fails at T4_complex_water corner: 0.08 > epsilon_fn ~ 0.055.",
+  "ipfs_cid": null, "ground_truth_cid": null
+}

@@ -1,0 +1,69 @@
+{
+  "artifact_id": "L3-128",
+  "layer": "L3",
+  "parent_l2": "L2-128",
+  "parent_l1": "L1-128",
+  "title": "APT Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+
+  "dataset_registry": {
+    "primary": "LEAP 5000 XS standard APT datasets (Fe-Cr, Al-Cu, Ni-based alloys)",
+    "secondary": "APT community benchmark datasets (Oak Ridge, MPIE-Dusseldorf)",
+    "tertiary": "Synthetic simulated APT event lists with known ground-truth atom positions",
+    "construction_method": "Use measured LEAP event lists with ground-truth comparison; inject local_mag_err",
+    "num_dev_instances_per_tier": 15, "holdout_instances_per_tier": 10
+  },
+
+  "ibenchmarks": [
+    {
+      "tier": "T1_simple_metal", "rho": 1,
+      "omega_tier": {"N_events": 1e7, "R_t_nm": 50, "T_K": 50, "eta": 0.5, "K_species": 2, "local_magnification_error": 0.0},
+      "epsilon": 0.2, "d_ibench": 0.14,
+      "baselines": [
+        {"name": "IVAS",    "rmse_nm": 0.3, "Q": 0.70},
+        {"name": "APT-Net", "rmse_nm": 0.22,"Q": 0.88}
+      ]
+    },
+    {
+      "tier": "T2_precipitate", "rho": 3,
+      "omega_tier": {"N_events": 5e7, "R_t_nm": 50, "K_species": 5, "local_magnification_error": 0.1, "pile_up_correction": 0.05},
+      "epsilon": 0.35, "d_ibench": 0.28,
+      "baselines": [
+        {"name": "APSuite",  "rmse_nm": 0.42, "Q": 0.55},
+        {"name": "FIM-prior","rmse_nm": 0.35, "Q": 0.72},
+        {"name": "APT-Net", "rmse_nm": 0.30, "Q": 0.80}
+      ]
+    },
+    {
+      "tier": "T3_interface", "rho": 5,
+      "omega_tier": {"N_events": 1e8, "R_t_nm": 100, "K_species": 10, "local_magnification_error": 0.2, "multi_phase_evaporation": 0.15, "ranging_ambiguity": 0.1},
+      "epsilon": 0.6, "d_ibench": 0.52,
+      "baselines": [
+        {"name": "FIM-prior","rmse_nm": 0.7, "Q": 0.42},
+        {"name": "APT-Net", "rmse_nm": 0.55,"Q": 0.58}
+      ]
+    },
+    {
+      "tier": "T4_severe", "rho": 10,
+      "omega_tier": {"N_events": 1e10, "R_t_nm": 200, "K_species": 20, "local_magnification_error": 0.5, "multi_phase_evaporation": 0.3, "ranging_ambiguity": 0.3, "pile_up_correction": 0.2},
+      "epsilon": 1.5, "d_ibench": 0.74,
+      "baselines": [
+        {"name": "APT-Net", "rmse_nm": 1.8, "Q": 0.28}
+      ]
+    }
+  ],
+
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {"name": "LEAP-metals + MPIE-Dusseldorf + synthetic union", "num_dev_instances": 100, "num_holdout_instances": 50},
+    "baselines": [
+      {"name": "IVAS",    "overall_Q": 0.50},
+      {"name": "APSuite", "overall_Q": 0.55},
+      {"name": "FIM-prior","overall_Q": 0.62},
+      {"name": "APT-Net", "overall_Q": 0.68}
+    ]
+  },
+
+  "hardness_rule_check": "SATISFIED — APT-Net fails at T4_severe (mag_err=0.5, multi_phase=0.3): 1.8 > epsilon_fn ~ 1.3.",
+  "ipfs_cid": null, "ground_truth_cid": null
+}

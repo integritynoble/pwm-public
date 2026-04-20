@@ -1,0 +1,93 @@
+{
+  "artifact_id": "L1-128",
+  "layer": "L1",
+  "principle_number": "128",
+  "title": "Atom Probe Tomography (APT)",
+  "domain": "Scientific Instrumentation",
+  "sub_domain": "Single-atom 3D chemical reconstruction via field-evaporation MS",
+  "source_file": "K_scientific_instrumentation/128_atom_probe_tomography.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence boilerplate. Physics grounded in Miller 2000 APT textbook; Kelly-Larson 2012 APT review; Gault et al. 2012 Atom Probe Microscopy book; Larson-Kelly 2019 recent review.",
+
+  "E": {
+    "description": "A needle-shaped sample (apex radius 30-100 nm) is cooled (30-80 K) and biased to high voltage; a laser or voltage pulse triggers field-evaporation of surface ions one at a time. A position-sensitive time-of-flight detector records (x,y,t); x,y maps to 3D atom position, t to m/z. Reconstruction yields atom-by-atom chemical composition with ~0.2 nm spatial resolution.",
+    "forward_model": "y(x,y,t) = single_ion_event(x_3D, m/z);  reconstruction x_3D = projection(x, y) via hemispherical assumption",
+    "world_state_x": "3D atom-by-atom composition c(x,y,z, element)",
+    "observation_y": "Ion-event list [(x_i, y_i, t_i)] for 10^6 - 10^9 events",
+    "physical_parameters_theta": [
+      "Tip apex radius R_t and shank angle alpha",
+      "Laser pulse energy (for laser-pulsed APT) or voltage pulse",
+      "Base temperature T (20-80 K)",
+      "Detection efficiency eta (0.3-0.8)",
+      "Mass resolution M/dM (500-1000)",
+      "Multiple-event correlation (pile-up)"
+    ]
+  },
+
+  "G": {
+    "dag": "L.field.evaporate -> L.disperse.tof -> D.timestamp -> int.spatial",
+    "vertices": ["L.field.evaporate", "L.disperse.tof", "D.timestamp", "int.spatial"],
+    "arcs": ["L.field.evaporate -> L.disperse.tof", "L.disperse.tof -> D.timestamp", "D.timestamp -> int.spatial"],
+    "L_DAG": 3.5,
+    "n_c": 1
+  },
+
+  "W": {
+    "existence": true,
+    "uniqueness": "element ID unique from m/z; spatial position subject to trajectory-model assumptions",
+    "stability": "conditional",
+    "condition_number_kappa": 1000,
+    "condition_number_effective": 50,
+    "condition_number_mismatched": 3000,
+    "regime": "Reconstruction is ill-posed due to hemispherical projection approximation — fails at multi-phase tips (different evaporation fields per phase). Field-ion trajectories assumed ideal; local magnification errors of 10-30% at interfaces."
+  },
+
+  "C": {
+    "solver_class": "IVAS/APSuite point-projection reconstruction, direct field-density, posterior-sampling (Wei et al.), learned (APT-Net), FIM-assisted priors",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Spatial RMSE ~ 0.2-0.5 nm depending on tip geometry; composition accuracy ~ 0.1 at.% for major, 10 at% for trace",
+    "complexity": "IVAS O(N_events * log); ML priors iterative"
+  },
+
+  "physics_fingerprint": {
+    "carrier": "ion",
+    "sensing_mechanism": "field_evaporation_tof",
+    "integration_axis": "spatial_and_temporal",
+    "problem_class": "3d_projection_inverse",
+    "noise_model": "poisson_plus_trajectory_error",
+    "solution_space": "3d_atomic_composition",
+    "primitives": ["L.field.evaporate", "L.disperse.tof", "D.timestamp", "int.spatial"]
+  },
+
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+
+  "mismatch_parameters": ["local_magnification_error", "detection_efficiency", "pile_up_correction", "ranging_ambiguity", "multi_phase_evaporation"],
+  "error_metric": "spatial_RMSE_nm",
+  "error_metric_secondary": "composition_accuracy_percent",
+  "error_metric_tertiary": "precipitate_detection_recall",
+
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "apt_reconstruction",
+      "forward_operator": "apt_forward",
+      "input_format": "event_list",
+      "omega": {"N_events": 1e7, "R_t_nm": 50, "T_K": 50, "eta": 0.5, "K_species": 3, "local_magnification_error": 0.1},
+      "epsilon_fn_center": "0.3 nm spatial RMSE"
+    },
+    "allowed_forward_operators": ["apt_forward", "laser_apt_forward", "voltage_apt_forward"],
+    "allowed_problem_classes": ["apt_reconstruction", "apt_cluster_detection", "apt_interface_chemistry"],
+    "allowed_omega_dimensions": ["N_events", "R_t_nm", "T_K", "eta", "K_species", "local_magnification_error", "detection_efficiency", "pile_up_correction", "ranging_ambiguity", "multi_phase_evaporation"],
+    "omega_bounds": {
+      "N_events": [1e4, 1e10], "R_t_nm": [20, 200],
+      "T_K": [20, 100], "eta": [0.2, 0.9], "K_species": [1, 20],
+      "local_magnification_error": [0.0, 0.5], "detection_efficiency": [0.2, 0.9],
+      "pile_up_correction": [0.0, 0.2], "ranging_ambiguity": [0.0, 0.3],
+      "multi_phase_evaporation": [0.0, 0.3]
+    },
+    "epsilon_bounds": {"rmse_nm": [0.05, 5.0]}
+  },
+
+  "p1_p10_tests": ["PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS"],
+  "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
+  "ipfs_cid": null
+}

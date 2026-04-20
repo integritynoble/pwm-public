@@ -1,0 +1,63 @@
+{
+  "artifact_id": "L2-389",
+  "layer": "L2",
+  "parent_l1": "L1-389",
+  "principle_ref": "sha256:<L1-389_principle_hash>",
+  "title": "Channel Estimation OFDM/MIMO Spec (5G NR pilot family)",
+  "spec_type": "mismatch_only",
+
+  "six_tuple": {
+    "omega": {
+      "Nt": [1, 64], "Nr": [1, 128], "L_ch": [2, 256],
+      "k": [1, 64], "alpha_p": [0.02, 0.5],
+      "SNR_dB": [-5, 30], "f_d_Hz": [0, 1000],
+      "cfo_hz": [0, 500], "phase_noise_rms": [0.0, 0.1],
+      "doppler_error": [0.0, 100]
+    },
+    "E": {
+      "forward": "y = H * x_pilot + n; H parameterized by h in C^{L_ch}",
+      "operator": "ofdm_pilot_channel",
+      "primitive_chain": "L.project.pilot -> int.temporal",
+      "inverse": "estimate h from y and known pilot pattern"
+    },
+    "B": {"bounded_power": "||h||^2 <= 1", "causality": "h[l] = 0 for l < 0 or l >= L_ch"},
+    "I": {"strategy": "LS_initialize"},
+    "O": ["NMSE", "BER_postequalization", "throughput_bps", "residual_norm"],
+    "epsilon_fn": "1e-2 * max(1, k / (alpha_p * L_ch)) * 10^(-SNR_dB/10) + 0.5 * (f_d_Hz/1000) + 0.2 * phase_noise_rms"
+  },
+
+  "protocol_fields": {
+    "input_format": {"rx_symbols": "complex64(Nr, N_symbol)", "pilot_pattern": "uint8(Nt, N_symbol)"},
+    "output_format": {"h_estimate": "complex64(Nt, Nr, L_ch)"},
+    "baselines": [
+      {"name": "LS",          "method_sig": "L+O", "expected_nmse": 5e-2},
+      {"name": "MMSE",        "method_sig": "L+O", "expected_nmse": 2e-2},
+      {"name": "LMMSE-interp","method_sig": "L+O", "expected_nmse": 1.5e-2},
+      {"name": "OMP-sparse",  "method_sig": "L+O", "expected_nmse": 8e-3},
+      {"name": "ChannelNet",  "method_sig": "L+N", "expected_nmse": 6e-3}
+    ]
+  },
+
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {"Nt": 1, "Nr": 1, "L_ch": 16, "k": 4, "alpha_p": 0.1, "SNR_dB": 10, "f_d_Hz": 0, "cfo_hz": 0, "phase_noise_rms": 0.0},
+      "epsilon": 1e-2
+    },
+    "tier_bounds": {"Nt": [1, 16], "Nr": [1, 32], "L_ch": [8, 128], "k": [2, 32], "SNR_dB": [-5, 25]},
+    "proximity_threshold": 0.10
+  },
+
+  "d_spec": 0.50,
+  "d_spec_notes": "Distance from mmWave beam-domain channel spec ~= 0.30 (Similar, different beam dim). Distance from 386 CS ~= 0.40 (Related, both rely on sparsity in specific basis).",
+
+  "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
+  "s1_s4_justifications": {
+    "S1": "H in C^{Nr x Nt x L_ch}, pilot-matrix dimensions consistent under 5G NR spec.",
+    "S2": "LS unique when N_pilot >= L_ch and kappa(X_pilot^H X_pilot) finite; sparse recovery under RIP for mmWave.",
+    "S3": "LS closed-form; MMSE closed-form given Rhh; OMP terminates in k; deep learned methods feed-forward.",
+    "S4": "epsilon_fn evaluates; LS fails at alpha_p<<k/L_ch (hardness)."
+  },
+
+  "ipfs_cid": null
+}

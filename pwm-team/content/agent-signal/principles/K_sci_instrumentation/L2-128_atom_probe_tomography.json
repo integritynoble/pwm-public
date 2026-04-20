@@ -1,0 +1,63 @@
+{
+  "artifact_id": "L2-128",
+  "layer": "L2",
+  "parent_l1": "L1-128",
+  "principle_ref": "sha256:<L1-128_principle_hash>",
+  "title": "APT Reconstruction Spec (hemispherical projection family)",
+  "spec_type": "mismatch_only",
+
+  "six_tuple": {
+    "omega": {
+      "N_events": [1e4, 1e10], "R_t_nm": [20, 200],
+      "T_K": [20, 100], "eta": [0.2, 0.9], "K_species": [1, 20],
+      "local_magnification_error": [0.0, 0.5], "detection_efficiency": [0.2, 0.9],
+      "pile_up_correction": [0.0, 0.2], "ranging_ambiguity": [0.0, 0.3],
+      "multi_phase_evaporation": [0.0, 0.3]
+    },
+    "E": {
+      "forward": "(x_det, y_det, t) = hemisphere_project(x_3D) + local_mag_err + n_Poisson",
+      "operator": "apt_forward",
+      "primitive_chain": "L.field.evaporate -> L.disperse.tof -> D.timestamp -> int.spatial",
+      "inverse": "recover 3D atomic composition c(x,y,z, element) from event list"
+    },
+    "B": {"atomic_density_reasonable": "rho_atoms ~ 60 atoms/nm^3", "Poisson_counts": true},
+    "I": {"strategy": "ivas_init"},
+    "O": ["spatial_RMSE_nm", "composition_accuracy_percent", "precipitate_detection_recall", "interface_sharpness"],
+    "epsilon_fn": "0.2 + 1.0 * local_magnification_error + 0.5 * multi_phase_evaporation + 0.3 * ranging_ambiguity + 0.5 * pile_up_correction"
+  },
+
+  "protocol_fields": {
+    "input_format": {"events": "float32(N_events, 4)"},
+    "output_format": {"atoms_3d": "float32(N_atoms, 4)"},
+    "baselines": [
+      {"name": "IVAS",      "method_sig": "L+O", "expected_rmse_nm": 0.5},
+      {"name": "APSuite",   "method_sig": "L+O", "expected_rmse_nm": 0.4},
+      {"name": "PosteriorMC","method_sig": "L+O", "expected_rmse_nm": 0.35},
+      {"name": "FIM-prior",  "method_sig": "L+O", "expected_rmse_nm": 0.3},
+      {"name": "APT-Net",    "method_sig": "L+N", "expected_rmse_nm": 0.25}
+    ]
+  },
+
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {"N_events": 1e7, "R_t_nm": 50, "T_K": 50, "eta": 0.5, "K_species": 3, "local_magnification_error": 0.1},
+      "epsilon": 0.3
+    },
+    "tier_bounds": {"N_events": [1e5, 1e9], "K_species": [1, 10]},
+    "proximity_threshold": 0.10
+  },
+
+  "d_spec": 0.65,
+  "d_spec_notes": "Unique — no other principle uses field-evaporation + TOF in 3D voxelization. Distance to SIMS ~= 0.55 (Related, different projection and ionization mechanisms).",
+
+  "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
+  "s1_s4_justifications": {
+    "S1": "Event list 4D (x, y, t, M); 3D reconstruction R^{HxWxD}.",
+    "S2": "Hemispherical projection unique when tip ideal; breaks at multi-phase interfaces.",
+    "S3": "IVAS iterative density; ML priors SGD convergence.",
+    "S4": "epsilon_fn defined; APT-Net fails at multi_phase=0.3 + mag_err=0.5 (hardness)."
+  },
+
+  "ipfs_cid": null
+}

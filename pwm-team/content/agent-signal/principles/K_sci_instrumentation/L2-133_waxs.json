@@ -1,0 +1,62 @@
+{
+  "artifact_id": "L2-133",
+  "layer": "L2",
+  "parent_l1": "L1-133",
+  "principle_ref": "sha256:<L1-133_principle_hash>",
+  "title": "WAXS Polymer/Structure Spec",
+  "spec_type": "mismatch_only",
+
+  "six_tuple": {
+    "omega": {
+      "N_q": [100, 5000], "q_min": [1, 10], "q_max": [15, 50],
+      "sample_thickness_um": [1, 1000],
+      "background_subtraction": [0.0, 0.3], "q_truncation": [0.0, 0.5],
+      "termination_ripples": [0.0, 0.3], "beam_profile_mismatch": [0.0, 0.2],
+      "preferred_orientation": [0.0, 0.5]
+    },
+    "E": {
+      "forward": "I(q) = |F|^2 * N + solvent_bg + n",
+      "operator": "waxs_iq_forward",
+      "primitive_chain": "L.scatter.elastic -> L.project.q -> int.angular",
+      "inverse": "recover g(r) or crystalline fraction via FT or Rietveld"
+    },
+    "B": {"g_r_non_negative_at_large_r": true, "finite_support": true},
+    "I": {"strategy": "fft_init"},
+    "O": ["g_r_NMSE", "Rwp_rietveld", "crystallinity_RMSE", "residual_norm"],
+    "epsilon_fn": "2e-3 + 0.05 * q_truncation + 0.03 * termination_ripples + 0.02 * background_subtraction + 0.02 * preferred_orientation"
+  },
+
+  "protocol_fields": {
+    "input_format": {"q": "float32(N_q)", "I": "float32(N_q)"},
+    "output_format": {"g_r": "float32(N_r)", "crystallinity": "float32"},
+    "baselines": [
+      {"name": "FT-inversion","method_sig": "L+O", "expected_nmse": 1e-2},
+      {"name": "MaxEnt-g(r)", "method_sig": "L+O", "expected_nmse": 5e-3},
+      {"name": "Rietveld",    "method_sig": "L+O", "expected_rwp": 0.08},
+      {"name": "WAXS-Net",    "method_sig": "L+N", "expected_nmse": 3e-3}
+    ]
+  },
+
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {"N_q": 800, "q_min": 5, "q_max": 30, "sample_thickness_um": 100, "background_subtraction": 0.05},
+      "epsilon": 5e-3
+    },
+    "tier_bounds": {"N_q": [200, 2000], "q_max": [20, 40]},
+    "proximity_threshold": 0.10
+  },
+
+  "d_spec": 0.30,
+  "d_spec_notes": "Distance from 126 SAXS ~= 0.30 (Related — same scattering mechanism, different q-range). Distance from 125 XRD ~= 0.35.",
+
+  "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
+  "s1_s4_justifications": {
+    "S1": "q axis N_q; g(r) N_r via FT. Consistent.",
+    "S2": "Fourier-inversion unique under Nyquist sampling in q.",
+    "S3": "FFT closed-form; Rietveld LS with analytical gradient.",
+    "S4": "epsilon_fn defined; WAXS-Net fails at q_truncation=0.5 + termination=0.3 (hardness)."
+  },
+
+  "ipfs_cid": null
+}

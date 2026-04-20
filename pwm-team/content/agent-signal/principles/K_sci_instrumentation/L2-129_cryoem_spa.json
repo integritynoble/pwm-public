@@ -1,0 +1,62 @@
+{
+  "artifact_id": "L2-129",
+  "layer": "L2",
+  "parent_l1": "L1-129",
+  "principle_ref": "sha256:<L1-129_principle_hash>",
+  "title": "Cryo-EM SPA Homogeneous Spec",
+  "spec_type": "mismatch_only",
+
+  "six_tuple": {
+    "omega": {
+      "N_particle": [1000, 10000000], "pixel_angstrom": [0.5, 3.0],
+      "defocus_um": [0.3, 5.0], "dose": [10, 100],
+      "pose_estimate_error": [0.0, 10], "ctf_miscalibration": [0.0, 500],
+      "conformational_heterogeneity": [0.0, 1.0],
+      "preferential_orientation": [0.0, 0.8], "per_particle_motion": [0.0, 5]
+    },
+    "E": {
+      "forward": "y_i = CTF_i * P_{Euler}[V] + n_shot",
+      "operator": "spa_forward",
+      "primitive_chain": "L.project.euler -> L.modulate.ctf -> int.spatial",
+      "inverse": "recover V(x,y,z) via iterative EM of pose + reconstruction"
+    },
+    "B": {"nonnegativity_V": true, "bounded_support": true, "C1_symmetry_default": true},
+    "I": {"strategy": "ab_initio_stochastic_gd"},
+    "O": ["resolution_angstrom", "FSC_0.143", "map_CCmask", "n_iter_converge"],
+    "epsilon_fn": "2.5 + 1.0 * log10(100000/N_particle) + 0.2 * pose_estimate_error + 5.0 * conformational_heterogeneity + 2.0 * preferential_orientation"
+  },
+
+  "protocol_fields": {
+    "input_format": {"particles": "float32(N_particle, box, box)", "ctf_params": "float32(N_particle, 4)"},
+    "output_format": {"volume_mrc": "float32(box_vol, box_vol, box_vol)"},
+    "baselines": [
+      {"name": "RELION-3.1","method_sig": "L+O", "expected_res_A": 3.5},
+      {"name": "cryoSPARC","method_sig": "L+O", "expected_res_A": 3.3},
+      {"name": "cisTEM",   "method_sig": "L+O", "expected_res_A": 3.5},
+      {"name": "Topaz-ML3D","method_sig": "L+N", "expected_res_A": 3.2}
+    ]
+  },
+
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {"N_particle": 100000, "pixel_angstrom": 1.0, "defocus_um": 1.5, "dose": 30, "pose_estimate_error": 0.0, "conformational_heterogeneity": 0.0},
+      "epsilon": 3.5
+    },
+    "tier_bounds": {"N_particle": [10000, 1000000], "pixel_angstrom": [0.8, 2.0]},
+    "proximity_threshold": 0.10
+  },
+
+  "d_spec": 0.58,
+  "d_spec_notes": "Distance from cryo-ET tomography ~= 0.30 (Similar, 3D + tilt series). Distance from 125 XRD ~= 0.50 (different carrier).",
+
+  "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
+  "s1_s4_justifications": {
+    "S1": "Particle images NxWxH, 3D volume LxLxL dimensionally consistent via Fourier-slice.",
+    "S2": "SO(3) coverage + large N gives unique reconstruction by Fourier-slice theorem.",
+    "S3": "EM iterations monotonic in likelihood; RELION/cryoSPARC converge empirically.",
+    "S4": "epsilon_fn defined; Topaz fails at preferential_orientation=0.8 + heterogeneity=1 (hardness)."
+  },
+
+  "ipfs_cid": null
+}

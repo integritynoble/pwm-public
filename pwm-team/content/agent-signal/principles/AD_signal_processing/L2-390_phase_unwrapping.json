@@ -1,0 +1,62 @@
+{
+  "artifact_id": "L2-390",
+  "layer": "L2",
+  "parent_l1": "L1-390",
+  "principle_ref": "sha256:<L1-390_principle_hash>",
+  "title": "Phase Unwrapping Noisy-Coherence Spec (InSAR family)",
+  "spec_type": "mismatch_only",
+
+  "six_tuple": {
+    "omega": {
+      "H": [128, 4096], "W": [128, 4096],
+      "sigma_phi": [0.05, 2.0], "discontinuity_fraction": [0.0, 0.3],
+      "coherence_floor": [0.1, 1.0], "local_fringe_gradient": [0.1, 3.0],
+      "undersampling_ratio": [0.5, 1.0]
+    },
+    "E": {
+      "forward": "psi = wrap(phi + n); coherence map gamma(r) provided",
+      "operator": "modulo_2pi_with_coherence",
+      "primitive_chain": "L.modulo.2pi -> int.spatial",
+      "inverse": "recover phi in R^{HxW} from wrapped phase and coherence"
+    },
+    "B": {"local_smoothness": true, "phase_continuous_where_gamma_high": true},
+    "I": {"strategy": "itoh_path_init"},
+    "O": ["RMSE_rad", "cycle_slip_count", "abs_error_percentile_95", "edge_mismatch"],
+    "epsilon_fn": "0.05 + sigma_phi / sqrt(coherence_floor) + 2.0 * discontinuity_fraction"
+  },
+
+  "protocol_fields": {
+    "input_format": {"wrapped": "float32(H, W)", "coherence": "float32(H, W)"},
+    "output_format": {"absolute_phase": "float32(H, W)"},
+    "baselines": [
+      {"name": "Itoh",          "method_sig": "L+O", "expected_rmse": 0.3},
+      {"name": "LS-DCT",        "method_sig": "L+O", "expected_rmse": 0.2},
+      {"name": "Goldstein",     "method_sig": "A+O", "expected_rmse": 0.15},
+      {"name": "SnapHu (MCF)",  "method_sig": "A+O", "expected_rmse": 0.12},
+      {"name": "PhaseNet",      "method_sig": "L+N", "expected_rmse": 0.10}
+    ]
+  },
+
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {"H": 512, "W": 512, "sigma_phi": 0.3, "discontinuity_fraction": 0.0, "coherence_floor": 0.8},
+      "epsilon": 0.1
+    },
+    "tier_bounds": {"H": [128, 2048], "sigma_phi": [0.05, 2.0], "discontinuity_fraction": [0.0, 0.3]},
+    "proximity_threshold": 0.10
+  },
+
+  "d_spec": 0.55,
+  "d_spec_notes": "Distance from 3D/temporal phase unwrap spec ~= 0.30 (Similar — different integration axis). Phase unwrapping is topologically different from other inverse problems (integer ambiguity).",
+
+  "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
+  "s1_s4_justifications": {
+    "S1": "Dimensions: psi and phi share HxW grid; coherence in [0,1].",
+    "S2": "Unique up to constant under Itoh condition; MCF/branch-cut guarantee discrete integer k(r).",
+    "S3": "LS-DCT closed-form O(HW log); MCF polynomial-time (Goldberg-Tarjan); deep methods feed-forward.",
+    "S4": "epsilon_fn defined; PhaseNet fails at T4 (discontinuity_fraction=0.3 + coherence=0.1)."
+  },
+
+  "ipfs_cid": null
+}

@@ -1,0 +1,90 @@
+{
+  "artifact_id": "L1-382",
+  "layer": "L1",
+  "principle_number": "382",
+  "title": "Image Deblurring (non-blind and blind deconvolution)",
+  "domain": "Signal Processing",
+  "sub_domain": "2D convolutional deblurring",
+  "source_file": "AD_signal_processing/382_image_deblurring.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in classical deconvolution literature (Richardson 1972; Lucy 1974; Krishnan-Fergus 2009 blind deconvolution; Pan et al. 2016 dark-channel deblurring).",
+
+  "E": {
+    "description": "A latent sharp image x is degraded by a shift-invariant 2D convolution kernel k (motion blur, out-of-focus blur, atmospheric turbulence) and additive sensor noise. Recovery is either non-blind (kernel known) or blind (kernel jointly estimated with image).",
+    "forward_model": "y(r) = (k * x)(r) + n(r)",
+    "world_state_x": "Sharp image x in R^{H x W} (grayscale) or R^{H x W x 3} (color), piecewise-smooth with sparse gradients",
+    "observation_y": "Blurred noisy image y in R^{H x W x C}, same spatial grid as x",
+    "physical_parameters_theta": [
+      "Blur kernel k of support K x K (K in [5, 51])",
+      "Blur type: motion (linear or curved), defocus (disk), Gaussian, atmospheric (Kolmogorov r0)",
+      "Sensor read noise sigma_n and gain",
+      "Sub-pixel shift (dx, dy) and rotation theta of kernel"
+    ]
+  },
+
+  "G": {
+    "dag": "K.blur.shiftinvariant -> int.spatial",
+    "vertices": ["K.blur.shiftinvariant", "int.spatial"],
+    "arcs": ["K.blur.shiftinvariant -> int.spatial"],
+    "L_DAG": 2.0,
+    "n_c": 0
+  },
+
+  "W": {
+    "existence": true,
+    "uniqueness": "within OTF support",
+    "stability": "conditional",
+    "condition_number_kappa": 1000,
+    "condition_number_effective": 25,
+    "condition_number_mismatched": 400,
+    "regime": "Non-blind: deconvolution is ill-conditioned with kappa proportional to |OTF|^-1 at high frequencies; Tikhonov regularization bounds kappa_eff. Blind: bilinear in (k, x) and non-convex; only locally well-posed under sparse-gradient prior."
+  },
+
+  "C": {
+    "solver_class": "Wiener filter, Richardson-Lucy, TV-ADMM, plug-and-play (PnP-BM3D), learned (SRN-DeblurNet, MPRNet, NAFNet)",
+    "convergence_rate_q": 2.0,
+    "error_bound": "||x_hat - x||_2 <= C1 * sigma_n * sqrt(sum |1/OTF_k|^2) + C2 * bias(prior); blind case requires coarse-to-fine + heavy-tail prior to avoid delta-solution trap",
+    "complexity": "O(H*W*log(H*W)) per FFT iteration; blind MAP typically 10-100 iterations; learned methods single forward pass O(H*W*C)"
+  },
+
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "shift_invariant_blur",
+    "integration_axis": "spatial",
+    "problem_class": "linear_inverse_deconvolution",
+    "noise_model": "gaussian",
+    "solution_space": "2D_image",
+    "primitives": ["K.blur.shiftinvariant", "int.spatial"]
+  },
+
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+
+  "mismatch_parameters": ["kernel_size_error", "kernel_shape_error", "sub_pixel_shift", "noise_level", "saturation"],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "error_metric_tertiary": "LPIPS",
+
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "non_blind_deblurring",
+      "forward_operator": "shift_invariant_conv",
+      "input_format": "measurement_plus_kernel_oracle",
+      "omega": {"H": 512, "W": 512, "K": 15, "noise_level": 0.01, "kernel_type": "motion", "kernel_size_error": 0.0, "sub_pixel_shift": 0.0, "saturation": 0.0},
+      "epsilon_fn_center": "28.0 dB PSNR"
+    },
+    "allowed_forward_operators": ["shift_invariant_conv", "blind_conv", "spatially_varying_conv"],
+    "allowed_problem_classes": ["non_blind_deblurring", "blind_deblurring", "joint_deblur_denoise"],
+    "allowed_omega_dimensions": ["H", "W", "K", "noise_level", "kernel_type", "kernel_size_error", "kernel_shape_error", "sub_pixel_shift", "saturation"],
+    "omega_bounds": {
+      "H": [128, 2048], "W": [128, 2048], "K": [5, 51],
+      "noise_level": [0.001, 0.1], "kernel_size_error": [0.0, 0.3],
+      "kernel_shape_error": [0.0, 0.5], "sub_pixel_shift": [0.0, 2.0],
+      "saturation": [0.0, 0.1]
+    },
+    "epsilon_bounds": {"psnr_db": [18.0, 42.0]}
+  },
+
+  "p1_p10_tests": ["PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS"],
+  "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
+  "ipfs_cid": null
+}
