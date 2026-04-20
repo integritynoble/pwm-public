@@ -1,0 +1,149 @@
+{
+  "artifact_id": "L2-039",
+  "layer": "L2",
+  "parent_l1": "L1-039",
+  "title": "X-ray Angiography (DSA) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": 512,
+      "W": 512,
+      "fps": [
+        1,
+        60
+      ],
+      "kVp": [
+        60,
+        120
+      ],
+      "dose_per_frame_uGy": [
+        0.5,
+        50
+      ],
+      "pixel_um": [
+        50,
+        300
+      ],
+      "contrast_timing": [
+        0.0,
+        0.5
+      ],
+      "patient_motion": [
+        0.0,
+        0.3
+      ],
+      "misregistration": [
+        0.0,
+        5.0
+      ],
+      "scatter": [
+        0.0,
+        0.3
+      ]
+    },
+    "E": {
+      "forward": "y_t(u,v) = I_0 exp(-integral (mu + mu_contrast(t))) + scatter; DSA = -log(y_live / y_mask)",
+      "operator": "xray_angio_forward_mismatch",
+      "primitive_chain": "L.xray_source -> L.contrast_bolus -> L.digital_subtraction -> int.temporal",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "20.0 + 2.0 * log10(dose_per_frame_uGy / 0.5) - 6.0 * contrast_timing - 8.0 * misregistration / 5.0"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Simple-DSA",
+        "method_sig": "A+O",
+        "expected_psnr": 25.0
+      },
+      {
+        "name": "Reg-DSA",
+        "method_sig": "L+O",
+        "expected_psnr": 27.5
+      },
+      {
+        "name": "Vessel-Net",
+        "method_sig": "L+N",
+        "expected_psnr": 30.0
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 1024,
+        "W": 1024,
+        "fps": 15,
+        "kVp": 80,
+        "dose_per_frame_uGy": 5,
+        "pixel_um": 150,
+        "contrast_timing": 0.0,
+        "patient_motion": 0.0,
+        "misregistration": 0.0
+      },
+      "epsilon": 28.0
+    },
+    "tier_bounds": {
+      "H": 512,
+      "W": 512,
+      "fps": [
+        1,
+        60
+      ],
+      "kVp": [
+        60,
+        120
+      ],
+      "dose_per_frame_uGy": [
+        0.5,
+        50
+      ],
+      "pixel_um": [
+        50,
+        300
+      ],
+      "contrast_timing": [
+        0.0,
+        0.5
+      ],
+      "patient_motion": [
+        0.0,
+        0.3
+      ],
+      "misregistration": [
+        0.0,
+        5.0
+      ],
+      "scatter": [
+        0.0,
+        0.3
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.5,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

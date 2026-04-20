@@ -1,0 +1,177 @@
+{
+  "artifact_id": "L3-049",
+  "layer": "L3",
+  "parent_l2": "L2-049",
+  "parent_l1": "L1-049",
+  "title": "Fundus Imaging (retinal photography) Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "canonical clinical/public dataset for this modality",
+    "secondary": "simulated forward synthesis at declared Omega",
+    "construction_method": "parametric forward + declared noise",
+    "num_dev_instances_per_tier": 20
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "H": 3000,
+        "W": 3000,
+        "fov_deg": 45,
+        "pupil_mm": 4.0,
+        "SNR_dB": 35.0,
+        "cataract_opacity": 0.0,
+        "reflex_artifact": 0.0,
+        "misalignment": 0.0,
+        "pupil_size_variation": 0.0
+      },
+      "epsilon": 33.0,
+      "d_ibench": 0.14,
+      "baselines": [
+        {
+          "name": "Vignette-Correct",
+          "score": 30.0,
+          "Q": 0.88
+        },
+        {
+          "name": "CLAHE-Fundus",
+          "score": 32.0,
+          "Q": 0.88
+        },
+        {
+          "name": "Fundus-Net",
+          "score": 34.5,
+          "Q": 0.88
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "H": 3000,
+        "W": 3000,
+        "fov_deg": 45,
+        "pupil_mm": 4.0,
+        "SNR_dB": 32.0,
+        "cataract_opacity": 0.1,
+        "reflex_artifact": 0.06,
+        "misalignment": 0.1,
+        "pupil_size_variation": 0.06
+      },
+      "epsilon": 27.06,
+      "d_ibench": 0.28,
+      "baselines": [
+        {
+          "name": "Vignette-Correct",
+          "score": 28.0,
+          "Q": 0.68
+        },
+        {
+          "name": "CLAHE-Fundus",
+          "score": 30.0,
+          "Q": 0.68
+        },
+        {
+          "name": "Fundus-Net",
+          "score": 32.5,
+          "Q": 0.68
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "H": 3000,
+        "W": 3000,
+        "fov_deg": 45,
+        "pupil_mm": 4.0,
+        "SNR_dB": 23.0,
+        "cataract_opacity": 0.25,
+        "reflex_artifact": 0.15,
+        "misalignment": 0.25,
+        "pupil_size_variation": 0.15
+      },
+      "epsilon": 21.12,
+      "d_ibench": 0.48,
+      "baselines": [
+        {
+          "name": "Vignette-Correct",
+          "score": 26.0,
+          "Q": 0.48
+        },
+        {
+          "name": "CLAHE-Fundus",
+          "score": 28.0,
+          "Q": 0.48
+        },
+        {
+          "name": "Fundus-Net",
+          "score": 30.5,
+          "Q": 0.48
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "H": 3000,
+        "W": 3000,
+        "fov_deg": 45,
+        "pupil_mm": 4.0,
+        "SNR_dB": 15.0,
+        "cataract_opacity": 0.5,
+        "reflex_artifact": 0.3,
+        "misalignment": 0.5,
+        "pupil_size_variation": 0.3
+      },
+      "epsilon": 15.18,
+      "d_ibench": 0.72,
+      "baselines": [
+        {
+          "name": "Vignette-Correct",
+          "score": 24.0,
+          "Q": 0.28
+        },
+        {
+          "name": "CLAHE-Fundus",
+          "score": 26.0,
+          "Q": 0.28
+        },
+        {
+          "name": "Fundus-Net",
+          "score": 28.5,
+          "Q": 0.28
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "full parametric sweep",
+      "num_dev_instances": 200,
+      "construction_method": "parametric Omega sweep"
+    },
+    "baselines": [
+      {
+        "name": "Vignette-Correct",
+        "overall_Q": 0.7
+      },
+      {
+        "name": "CLAHE-Fundus",
+        "overall_Q": 0.6
+      },
+      {
+        "name": "Fundus-Net",
+        "overall_Q": 0.5
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind strata corner.",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

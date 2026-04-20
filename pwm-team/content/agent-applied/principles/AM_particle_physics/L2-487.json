@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-487",
+  "layer": "L2",
+  "parent_l1": "L1-487",
+  "principle_ref": "sha256:<L1-487_principle_hash>",
+  "title": "Jet Reconstruction (Anti-kT) \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "N_particles_per_event": [
+        100,
+        10000
+      ],
+      "pileup_mu": [
+        0,
+        200
+      ],
+      "jet_pt_GeV": [
+        30,
+        5000
+      ],
+      "jet_radius_R": [
+        0.2,
+        1.0
+      ]
+    },
+    "E": {
+      "forward": "d_ij = min(k_{Ti}^{-2}, k_{Tj}^{-2}) * Delta_ij ** 2 / R ** 2; jet E corrected by JES(eta, pt, mu)",
+      "operator": "sequential_jet_clustering",
+      "primitive_chain": "S.antikt.sequential_clustering -> M.pileup.area_subtraction -> O.jet.energy_scale_correction",
+      "inverse": "recover jet 4-vectors {E from calorimeter clusters + track momenta for N_particles per event"
+    },
+    "B": {
+      "pt_threshold": "jet pt > threshold",
+      "rapidity": "|eta| < eta_max"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "jet_energy_resolution_sigma_E_over_E",
+      "jet_mass_RMSE_GeV",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.03 + 0.02 * (pileup_mu / 50) ** 0.3"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 jet_4vector_list"
+    },
+    "baselines": [
+      {
+        "name": "antikT_R04_ATLAS",
+        "method_sig": "L+O",
+        "expected_score": 0.06
+      },
+      {
+        "name": "antikT_R04_CMS",
+        "method_sig": "L+O",
+        "expected_score": 0.05
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_particles_per_event": 2000,
+        "pileup_mu": 50,
+        "jet_pt_GeV": 200,
+        "jet_radius_R": 0.4,
+        "pileup_contamination_residual": 0.0,
+        "underlying_event_modeling": 0.0,
+        "hadronization_correction": 0.0
+      },
+      "epsilon": 0.05
+    },
+    "tier_bounds": {
+      "N_particles_per_event": [
+        100,
+        10000
+      ],
+      "pileup_mu": [
+        0,
+        200
+      ],
+      "jet_pt_GeV": [
+        30,
+        5000
+      ],
+      "jet_radius_R": [
+        0.2,
+        1.0
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.4,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.4 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

@@ -1,0 +1,61 @@
+{
+  "artifact_id": "L2-099",
+  "layer": "L2",
+  "parent_l1": "L1-099",
+  "title": "Flash-LiDAR SPAD-Array Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+
+  "six_tuple": {
+    "omega": {
+      "H": [128, 1280], "W": [128, 1280],
+      "N_t": [128, 4096], "tau_tdc_ps": [20, 500],
+      "photon_count_per_pixel": [1, 1000],
+      "ambient_photon_rate": [0.0, 1000000],
+      "dark_count_rate": [10, 10000],
+      "crosstalk_neighbour_pixels": [0.0, 0.05],
+      "walk_error": [0.0, 0.2],
+      "pile_up_saturation": [0.0, 0.5]
+    },
+    "E": {
+      "forward": "h(t) = pulse(t - 2d/c) + r_bg + DCR + n_poisson; pile-up saturation modifies histogram shape",
+      "operator": "flash_lidar_forward_mismatch",
+      "primitive_chain": "L.emit.flash -> L.reflect_scene -> D.spad_histogram -> int.temporal",
+      "inverse": "recover depth d(u,v) from per-pixel photon histograms"
+    },
+    "B": {"positive_depth": true, "bounded_bin_index": "argmax in [0, N_t)"},
+    "I": {"strategy": "argmax_plus_constant_fraction_sub_bin"},
+    "O": ["depth_RMSE_mm", "outlier_fraction", "recovered_pixel_fraction"],
+    "epsilon_fn": "5.0 + 0.01 * tau_tdc_ps - 1.5 * log10(photon_count_per_pixel + 1) + 0.04 * log10(ambient_photon_rate + 1) * log10(ambient_photon_rate + 1) + 20.0 * pile_up_saturation"
+  },
+
+  "protocol_fields": {
+    "input_format": {"histograms": "uint16(H, W, N_t)", "calibration": "dict"},
+    "output_format": {"depth_map": "float32(H, W)", "confidence_map": "float32(H, W)"},
+    "baselines": [
+      {"name": "Argmax-CFD",        "method_sig": "A+O", "expected_rmse_mm": 22.0},
+      {"name": "Matched-Filter",    "method_sig": "L+O", "expected_rmse_mm": 17.0},
+      {"name": "PhotonEfficientNet","method_sig": "L+N", "expected_rmse_mm": 12.0},
+      {"name": "DeepFlashLidar",    "method_sig": "L+N", "expected_rmse_mm": 10.0}
+    ]
+  },
+
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {"H": 640, "W": 480, "N_t": 1024, "tau_tdc_ps": 100, "photon_count_per_pixel": 20, "ambient_photon_rate": 0.0, "dark_count_rate": 100, "crosstalk_neighbour_pixels": 0.0, "walk_error": 0.0, "pile_up_saturation": 0.0},
+      "epsilon": 15.0
+    },
+    "tier_bounds": {
+      "H": [240, 1280], "W": [240, 1280],
+      "N_t": [256, 2048], "photon_count_per_pixel": [2, 500],
+      "ambient_photon_rate": [0.0, 1000000]
+    },
+    "proximity_threshold": 0.10
+  },
+
+  "d_spec": 0.55,
+  "d_spec_notes": "Flash LiDAR shares 'photon, shot_poisson, temporal, linear_inverse, 2D_depth_map' fingerprint with AMCW-ToF (L2-095) and scanning LiDAR (L2-096), but distinct by sensing_mechanism=flash_pulse_spad_array. d_spec ~ 0.55 (Related to both).",
+
+  "s1_s4_gates": ["PASS", "PASS", "PASS", "PASS"],
+  "ipfs_cid": null
+}

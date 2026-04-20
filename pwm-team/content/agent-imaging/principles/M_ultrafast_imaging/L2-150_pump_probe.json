@@ -1,0 +1,144 @@
+{
+  "artifact_id": "L2-150",
+  "layer": "L2",
+  "parent_l1": "L1-150",
+  "title": "Pump-Probe Spectroscopy / Imaging Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "N_delays": [
+        32,
+        2048
+      ],
+      "N_wavelengths": [
+        64,
+        4096
+      ],
+      "pulse_fs": [
+        10,
+        500
+      ],
+      "photon_count": [
+        50,
+        10000
+      ],
+      "pulse_jitter": [
+        0.0,
+        50.0
+      ],
+      "delay_stage_drift": [
+        0.0,
+        5.0
+      ],
+      "two_color_overlap": [
+        0.3,
+        1.0
+      ],
+      "thermal_drift": [
+        0.0,
+        0.3
+      ]
+    },
+    "E": {
+      "forward": "Delta_A(t, lambda) = -log(T_excited(t, lambda) / T_ground(lambda)) + n; scan pump-probe delay t",
+      "operator": "pump_probe_forward_mismatch",
+      "primitive_chain": "L.pump_pulse -> L.probe_pulse -> L.delay_stage -> int.temporal",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "16.0 + 2.0 * log10(photon_count / 50) + 6.0 * two_color_overlap - 0.1 * pulse_jitter - 0.5 * delay_stage_drift"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Global-Analysis",
+        "method_sig": "L+O",
+        "expected_psnr": 22.0
+      },
+      {
+        "name": "Lifetime-PCA",
+        "method_sig": "L+O",
+        "expected_psnr": 24.0
+      },
+      {
+        "name": "PumpProbe-Net",
+        "method_sig": "L+N",
+        "expected_psnr": 26.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_delays": 256,
+        "N_wavelengths": 512,
+        "pulse_fs": 50,
+        "photon_count": 1000,
+        "pulse_jitter": 0.0,
+        "delay_stage_drift": 0.0,
+        "two_color_overlap": 1.0,
+        "thermal_drift": 0.0
+      },
+      "epsilon": 24.0
+    },
+    "tier_bounds": {
+      "N_delays": [
+        32,
+        2048
+      ],
+      "N_wavelengths": [
+        64,
+        4096
+      ],
+      "pulse_fs": [
+        10,
+        500
+      ],
+      "photon_count": [
+        50,
+        10000
+      ],
+      "pulse_jitter": [
+        0.0,
+        50.0
+      ],
+      "delay_stage_drift": [
+        0.0,
+        5.0
+      ],
+      "two_color_overlap": [
+        0.3,
+        1.0
+      ],
+      "thermal_drift": [
+        0.0,
+        0.3
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.55,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

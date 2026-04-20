@@ -1,0 +1,177 @@
+{
+  "artifact_id": "L3-109",
+  "layer": "L3",
+  "parent_l2": "L2-109",
+  "parent_l1": "L1-109",
+  "title": "Polarimetric SAR (PolSAR) \u2014 full-polarimetric decomposition Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "canonical remote-sensing dataset for this principle",
+    "secondary": "simulated forward synthesis at declared Omega",
+    "construction_method": "parametric forward + declared noise model",
+    "num_dev_instances_per_tier": 20
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "H": 4096,
+        "W": 4096,
+        "pixel_m": 5,
+        "lambda_cm": 5.6,
+        "polarization_crosstalk": -40.0,
+        "calibration_drift": 0.0,
+        "speckle_coherence_loss": 0.0,
+        "faraday_rotation": 0.0,
+        "SNR_dB": 18.0
+      },
+      "epsilon": 22.0,
+      "d_ibench": 0.14,
+      "baselines": [
+        {
+          "name": "Pauli-Decomp",
+          "score": 20.0,
+          "Q": 0.88
+        },
+        {
+          "name": "Freeman-Durden",
+          "score": 22.5,
+          "Q": 0.88
+        },
+        {
+          "name": "PolSAR-Net",
+          "score": 25.0,
+          "Q": 0.88
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "H": 4096,
+        "W": 4096,
+        "pixel_m": 5,
+        "lambda_cm": 5.6,
+        "polarization_crosstalk": -35.0,
+        "calibration_drift": 0.4,
+        "speckle_coherence_loss": 0.1,
+        "faraday_rotation": 6.0,
+        "SNR_dB": 15.0
+      },
+      "epsilon": 18.04,
+      "d_ibench": 0.28,
+      "baselines": [
+        {
+          "name": "Pauli-Decomp",
+          "score": 18.0,
+          "Q": 0.68
+        },
+        {
+          "name": "Freeman-Durden",
+          "score": 20.5,
+          "Q": 0.68
+        },
+        {
+          "name": "PolSAR-Net",
+          "score": 23.0,
+          "Q": 0.68
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "H": 4096,
+        "W": 4096,
+        "pixel_m": 5,
+        "lambda_cm": 5.6,
+        "polarization_crosstalk": -27.5,
+        "calibration_drift": 1.0,
+        "speckle_coherence_loss": 0.25,
+        "faraday_rotation": 15.0,
+        "SNR_dB": 6.0
+      },
+      "epsilon": 14.08,
+      "d_ibench": 0.48,
+      "baselines": [
+        {
+          "name": "Pauli-Decomp",
+          "score": 16.0,
+          "Q": 0.48
+        },
+        {
+          "name": "Freeman-Durden",
+          "score": 18.5,
+          "Q": 0.48
+        },
+        {
+          "name": "PolSAR-Net",
+          "score": 21.0,
+          "Q": 0.48
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "H": 4096,
+        "W": 4096,
+        "pixel_m": 5,
+        "lambda_cm": 5.6,
+        "polarization_crosstalk": -15.0,
+        "calibration_drift": 2.0,
+        "speckle_coherence_loss": 0.5,
+        "faraday_rotation": 30.0,
+        "SNR_dB": 0.0
+      },
+      "epsilon": 10.12,
+      "d_ibench": 0.72,
+      "baselines": [
+        {
+          "name": "Pauli-Decomp",
+          "score": 14.0,
+          "Q": 0.28
+        },
+        {
+          "name": "Freeman-Durden",
+          "score": 16.5,
+          "Q": 0.28
+        },
+        {
+          "name": "PolSAR-Net",
+          "score": 19.0,
+          "Q": 0.28
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "full parametric sweep",
+      "num_dev_instances": 200,
+      "construction_method": "parametric Omega sweep"
+    },
+    "baselines": [
+      {
+        "name": "Pauli-Decomp",
+        "overall_Q": 0.7
+      },
+      {
+        "name": "Freeman-Durden",
+        "overall_Q": 0.6
+      },
+      {
+        "name": "PolSAR-Net",
+        "overall_Q": 0.5
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind strata corner.",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

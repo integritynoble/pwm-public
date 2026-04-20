@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-464",
+  "layer": "L1",
+  "principle_number": "464",
+  "title": "Arps Decline Curve Analysis",
+  "domain": "Petroleum Engineering",
+  "sub_domain": "Production forecasting",
+  "source_file": "AJ_petroleum/464_decline_curve_arps.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "Arps decline curve analysis: fit exponential/hyperbolic/harmonic decline to production history to forecast EUR.",
+    "forward_model": "q(t) = q_i / (1 + b*D_i*t)^{1/b} (hyperbolic); b=0 exponential, b=1 harmonic",
+    "world_state_x": "decline parameters (q_i, D_i, b) and EUR (estimated ultimate recovery)",
+    "observation_y": "monthly production rate time series {q(t_k)} for k=1..N_months",
+    "physical_parameters_theta": [
+      "initial_rate_q_i_bopd",
+      "initial_decline_rate_D_i_per_month",
+      "b_exponent",
+      "terminal_rate_q_t"
+    ]
+  },
+  "G": {
+    "dag": "M.arps.hyperbolic_decline -> O.least_squares.nls -> S.bootstrapping.uncertainty",
+    "vertices": [
+      "M.arps.hyperbolic_decline",
+      "O.least_squares.nls",
+      "S.bootstrapping.uncertainty"
+    ],
+    "arcs": [
+      "M.arps.hyperbolic_decline -> O.least_squares.nls",
+      "O.least_squares.nls -> S.bootstrapping.uncertainty"
+    ],
+    "L_DAG": 2.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 200,
+    "condition_number_effective": 10,
+    "condition_number_mismatched": 50,
+    "regime": "Empirical model; well-suited for boundary-dominated flow; transient flow requires Duong model; unconventional wells have b>1."
+  },
+  "C": {
+    "solver_class": "Levenberg_Marquardt_NLS or Bayesian_decline_curve",
+    "convergence_rate_q": 2.0,
+    "error_bound": "EUR uncertainty \u00b120% for conventional wells with 2+ years history",
+    "complexity": "O(N_months * N_params) for nonlinear regression"
+  },
+  "physics_fingerprint": {
+    "carrier": "N/A",
+    "sensing_mechanism": "production_decline_fitting",
+    "integration_axis": "temporal_production",
+    "problem_class": "parameter_estimation",
+    "noise_model": "lognormal",
+    "solution_space": "decline_parameter_vector",
+    "primitives": [
+      "M.arps.hyperbolic_decline",
+      "O.least_squares.nls",
+      "S.bootstrapping.uncertainty"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "rate_interference_from_offset_wells",
+    "compression_uplift_events",
+    "workovers_and_recompletions"
+  ],
+  "error_metric": "EUR_prediction_RMSE_percent",
+  "error_metric_secondary": "rate_match_RMSE_percent",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "parameter_estimation",
+      "forward_operator": "production_decline_fitting",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_months_history": 24,
+        "q_i_bopd": 500,
+        "D_i_per_month": 0.05,
+        "b_exponent": 1.5
+      },
+      "epsilon_fn_center": "15 EUR_prediction_RMSE_percent"
+    },
+    "allowed_forward_operators": [
+      "production_decline_fitting"
+    ],
+    "allowed_problem_classes": [
+      "parameter_estimation"
+    ],
+    "allowed_omega_dimensions": [
+      "N_months_history",
+      "q_i_bopd",
+      "D_i_per_month",
+      "b_exponent"
+    ],
+    "omega_bounds": {
+      "N_months_history": [
+        6,
+        120
+      ],
+      "q_i_bopd": [
+        10,
+        100000
+      ],
+      "D_i_per_month": [
+        0.01,
+        0.5
+      ],
+      "b_exponent": [
+        0.0,
+        2.0
+      ]
+    },
+    "epsilon_bounds": {
+      "EUR_prediction_RMSE_percent": [
+        3,
+        50
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

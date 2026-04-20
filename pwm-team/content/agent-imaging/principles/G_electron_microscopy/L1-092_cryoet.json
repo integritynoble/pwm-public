@@ -1,0 +1,200 @@
+{
+  "artifact_id": "L1-092",
+  "layer": "L1",
+  "principle_number": "092",
+  "title": "Cryo-Electron Tomography (cryoET) \u2014 in-situ 3D biology at nm scale",
+  "domain": "Electron Microscopy",
+  "sub_domain": "In-situ structural biology via cryo tilt-series",
+  "source_file": "G_electron_microscopy/092_cryoet.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical electron-microscopy literature for this principle.",
+  "E": {
+    "description": "Cryo-Electron Tomography (cryoET) \u2014 in-situ 3D biology at nm scale forward model.",
+    "forward_model": "y_theta(r) = integral [rho(r) * CTF_theta(r)] * dose_weight(theta) + n; reconstruct 3D density",
+    "world_state_x": "Scene parameter (density / orientation / spectrum / complex field depending on principle)",
+    "observation_y": "Electron detector output at declared geometry + noise",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "Z",
+      "N_tilts",
+      "tilt_range_deg",
+      "kV",
+      "total_dose_e",
+      "tilt_angle_error",
+      "missing_wedge",
+      "beam_damage"
+    ]
+  },
+  "G": {
+    "dag": "L.transmit_sample -> S.scan.angular -> L.backproject -> L.subtomogram_average -> int.angular",
+    "vertices": [
+      "L.transmit_sample",
+      "S.scan.angular",
+      "L.backproject",
+      "L.subtomogram_average",
+      "int.angular"
+    ],
+    "arcs": [
+      "L.transmit_sample -> S.scan.angular",
+      "S.scan.angular -> L.backproject",
+      "L.backproject -> L.subtomogram_average",
+      "L.subtomogram_average -> int.angular"
+    ],
+    "L_DAG": 4.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 700,
+    "condition_number_effective": 35,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "WBP, SIRT, IsoNet-cryoET, CryoCARE",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(electron_count) + mismatch bias.",
+    "complexity": "O(H W) to O(H W Z) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "electron",
+    "sensing_mechanism": "cryo_electron_transmission",
+    "integration_axis": "angular",
+    "problem_class": "linear_inverse",
+    "noise_model": "shot_poisson",
+    "solution_space": "3D_density",
+    "primitives": [
+      "L.transmit_sample",
+      "S.scan.angular",
+      "L.backproject",
+      "L.subtomogram_average",
+      "int.angular"
+    ]
+  },
+  "difficulty_delta": 10,
+  "difficulty_tier": "hard",
+  "mismatch_parameters": [
+    "tilt_angle_error",
+    "CTF_per_tilt",
+    "beam_damage",
+    "missing_wedge",
+    "dose_weighting"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "cryoet_tilt_series",
+      "forward_operator": "cryoet_tilt_series_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 4096,
+        "W": 4096,
+        "Z": 256,
+        "N_tilts": 61,
+        "tilt_range_deg": 60,
+        "kV": 300,
+        "total_dose_e": 60,
+        "tilt_angle_error": 0.0,
+        "missing_wedge": 0.33,
+        "beam_damage": 0.2
+      },
+      "epsilon_fn_center": "22.0"
+    },
+    "allowed_forward_operators": [
+      "cryoet_tilt_series_forward"
+    ],
+    "allowed_problem_classes": [
+      "cryoet_tilt_series"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "Z",
+      "N_tilts",
+      "tilt_range_deg",
+      "kV",
+      "total_dose_e",
+      "tilt_angle_error",
+      "missing_wedge",
+      "beam_damage",
+      "tilt_angle_error",
+      "CTF_per_tilt",
+      "beam_damage",
+      "missing_wedge",
+      "dose_weighting"
+    ],
+    "omega_bounds": {
+      "H": [
+        1024,
+        8192
+      ],
+      "W": [
+        1024,
+        8192
+      ],
+      "Z": [
+        64,
+        1024
+      ],
+      "N_tilts": [
+        20,
+        200
+      ],
+      "tilt_range_deg": [
+        40,
+        80
+      ],
+      "kV": [
+        300,
+        300
+      ],
+      "total_dose_e": [
+        20,
+        200
+      ],
+      "tilt_angle_error": [
+        0.0,
+        0.3
+      ],
+      "missing_wedge": [
+        0.1,
+        0.5
+      ],
+      "beam_damage": [
+        0.0,
+        0.8
+      ],
+      "dose_weighting": [
+        0.0,
+        1.0
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        40.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

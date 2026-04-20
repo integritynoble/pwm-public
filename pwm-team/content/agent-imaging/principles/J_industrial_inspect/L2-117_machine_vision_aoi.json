@@ -1,0 +1,152 @@
+{
+  "artifact_id": "L2-117",
+  "layer": "L2",
+  "parent_l1": "L1-117",
+  "title": "Automated Optical Inspection (AOI) for PCB / manufacturing defects Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        512,
+        8192
+      ],
+      "W": [
+        512,
+        8192
+      ],
+      "N_lights": [
+        1,
+        16
+      ],
+      "pixel_um": [
+        1,
+        50
+      ],
+      "SNR_dB": [
+        10.0,
+        45.0
+      ],
+      "illumination_variation": [
+        0.0,
+        0.3
+      ],
+      "color_shift": [
+        0.0,
+        0.2
+      ],
+      "part_misalignment": [
+        0.0,
+        5.0
+      ],
+      "occlusion": [
+        0.0,
+        0.2
+      ]
+    },
+    "E": {
+      "forward": "y_k(r) = lighting_k * reflectance(r) * shading(r, pose) + n; detect defects via template matching or DL",
+      "operator": "aoi_vision_forward_mismatch",
+      "primitive_chain": "L.illuminate_multi_angle -> K.psf.airy -> D.image_sensor -> int.spatial",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "25.0 + 0.3 * SNR_dB - 8.0 * illumination_variation - 5.0 * color_shift - 2.0 * part_misalignment"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Template-Match",
+        "method_sig": "A+O",
+        "expected_psnr": 30.0
+      },
+      {
+        "name": "Classic-CV",
+        "method_sig": "L+O",
+        "expected_psnr": 33.0
+      },
+      {
+        "name": "AOI-UNet",
+        "method_sig": "L+N",
+        "expected_psnr": 37.0
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 2448,
+        "W": 2048,
+        "N_lights": 4,
+        "pixel_um": 5,
+        "SNR_dB": 35.0,
+        "illumination_variation": 0.0,
+        "color_shift": 0.0,
+        "part_misalignment": 0.0
+      },
+      "epsilon": 35.0
+    },
+    "tier_bounds": {
+      "H": [
+        512,
+        8192
+      ],
+      "W": [
+        512,
+        8192
+      ],
+      "N_lights": [
+        1,
+        16
+      ],
+      "pixel_um": [
+        1,
+        50
+      ],
+      "SNR_dB": [
+        10.0,
+        45.0
+      ],
+      "illumination_variation": [
+        0.0,
+        0.3
+      ],
+      "color_shift": [
+        0.0,
+        0.2
+      ],
+      "part_misalignment": [
+        0.0,
+        5.0
+      ],
+      "occlusion": [
+        0.0,
+        0.2
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.5,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-397",
+  "layer": "L1",
+  "principle_number": "397",
+  "title": "FitzHugh-Nagumo Excitability Model",
+  "domain": "Computational Biology",
+  "sub_domain": "Neural excitability",
+  "source_file": "AE_computational_bio/397_fitzhugh_nagumo.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "FitzHugh-Nagumo model: 2D reduction of HH capturing excitability and bifurcation structure.",
+    "forward_model": "dv/dt = v - v ** 3/3 - w + I; dw/dt = epsilon*(v + a - b*w)",
+    "world_state_x": "FHN parameters {a, b, epsilon, I_bias} controlling excitability and oscillation",
+    "observation_y": "voltage-like variable v(t) and recovery variable w(t)",
+    "physical_parameters_theta": [
+      "a_threshold",
+      "b_recovery",
+      "epsilon_timescale",
+      "I_external"
+    ]
+  },
+  "G": {
+    "dag": "M.ode.fitzhugh_nagumo -> O.chi2.phase_portrait -> S.continuation.bifurcation",
+    "vertices": [
+      "M.ode.fitzhugh_nagumo",
+      "O.chi2.phase_portrait",
+      "S.continuation.bifurcation"
+    ],
+    "arcs": [
+      "M.ode.fitzhugh_nagumo -> O.chi2.phase_portrait",
+      "O.chi2.phase_portrait -> S.continuation.bifurcation"
+    ],
+    "L_DAG": 2.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 1000,
+    "condition_number_effective": 50,
+    "condition_number_mismatched": 200,
+    "regime": "Limit cycle via Hopf bifurcation; excitable vs. oscillatory regimes; reduced dimensionality enables bifurcation analysis."
+  },
+  "C": {
+    "solver_class": "nonlinear_least_squares or MCMC",
+    "convergence_rate_q": 2.0,
+    "error_bound": "phase portrait RMSE < 5% of attractor size",
+    "complexity": "O(N_timesteps) per ODE integration"
+  },
+  "physics_fingerprint": {
+    "carrier": "N/A",
+    "sensing_mechanism": "action_potential_recording",
+    "integration_axis": "time",
+    "problem_class": "parameter_estimation",
+    "noise_model": "gaussian",
+    "solution_space": "FHN_parameter_vector",
+    "primitives": [
+      "M.ode.fitzhugh_nagumo",
+      "O.chi2.phase_portrait",
+      "S.continuation.bifurcation"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "noise_amplitude",
+    "heterogeneity_in_network",
+    "parameter_drift"
+  ],
+  "error_metric": "phase_portrait_RMSE",
+  "error_metric_secondary": "bifurcation_point_error",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "parameter_estimation",
+      "forward_operator": "action_potential_recording",
+      "input_format": "measurement_only",
+      "omega": {
+        "a_threshold": 0.7,
+        "b_recovery": 0.8,
+        "epsilon_timescale": 0.08,
+        "noise_sigma": 0.0
+      },
+      "epsilon_fn_center": "0.05 phase_portrait_RMSE"
+    },
+    "allowed_forward_operators": [
+      "action_potential_recording"
+    ],
+    "allowed_problem_classes": [
+      "parameter_estimation"
+    ],
+    "allowed_omega_dimensions": [
+      "a_threshold",
+      "b_recovery",
+      "epsilon_timescale",
+      "noise_sigma"
+    ],
+    "omega_bounds": {
+      "a_threshold": [
+        0.5,
+        1.5
+      ],
+      "b_recovery": [
+        0.5,
+        1.5
+      ],
+      "epsilon_timescale": [
+        0.01,
+        0.5
+      ],
+      "noise_sigma": [
+        0.0,
+        0.5
+      ]
+    },
+    "epsilon_bounds": {
+      "phase_portrait_RMSE": [
+        0.005,
+        0.3
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

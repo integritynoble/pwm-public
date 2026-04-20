@@ -1,0 +1,95 @@
+{
+  "artifact_id": "L1-079",
+  "layer": "L1",
+  "principle_number": "079",
+  "title": "High Dynamic Range (HDR) Imaging via Multi-Exposure Fusion",
+  "domain": "Computational Photography",
+  "sub_domain": "Dynamic-range extension",
+  "source_file": "E_computational_photo/079_hdr_imaging.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in Debevec-Malik 1997 CRF recovery and Kalantari-Ramamoorthi 2017 learned HDR.",
+
+  "E": {
+    "description": "A camera captures K images at distinct exposures t_k of a high-dynamic-range scene with irradiance E(u,v). Each frame y_k passes through the camera response function g (typically non-linear, per-channel) and saturates at the ADC limit. HDR reconstruction recovers E and (optionally) inverts g.",
+    "forward_model": "y_k(u,v) = clip(g(t_k * E(u,v)) + n_k(u,v), 0, 2^B - 1), k = 1..K exposures",
+    "world_state_x": "HDR irradiance map E(u,v) in R^{H x W} spanning 10^4 - 10^6 dynamic range",
+    "observation_y": "K LDR frames y_k in R^{H x W x 3}, typically 8-bit or 10-bit",
+    "physical_parameters_theta": [
+      "Exposure times {t_k}, k = 1..K (typically spaced by 2 stops each)",
+      "Camera response function g(.) per color channel",
+      "Sensor bit depth B (8 / 10 / 12 / 14)",
+      "Read noise + shot noise model, gain, vignetting",
+      "Inter-frame motion / scene motion (ghosting source)"
+    ]
+  },
+
+  "G": {
+    "dag": "S.scan.exposure -> L.apply.crf -> D.saturate -> int.temporal",
+    "vertices": ["S.scan.exposure", "L.apply.crf", "D.saturate", "int.temporal"],
+    "arcs": [
+      "S.scan.exposure -> L.apply.crf",
+      "L.apply.crf -> D.saturate",
+      "D.saturate -> int.temporal"
+    ],
+    "L_DAG": 3.1,
+    "n_c": 0
+  },
+
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 600,
+    "condition_number_effective": 10,
+    "regime": "Well-conditioned when saturation is avoided at some exposure for every pixel (dynamic-range cover). Degrades when (a) motion causes ghosting, (b) all exposures saturate in hotspots, (c) CRF calibration drifts. Under-covered bins (no exposure contains them unsaturated) are unrecoverable."
+  },
+
+  "C": {
+    "solver_class": "Debevec-Malik weighted fusion + inverse CRF, Mertens exposure fusion, HDR-CNN / Kalantari-Ramamoorthi deep HDR, HDR-GAN",
+    "convergence_rate_q": 2.0,
+    "error_bound": "|E_hat - E|_L2 <= C1 * sigma_read + C2 * crf_error + C3 * ghosting_ratio; under-covered-bin error scales with max |log(E/(2^B - 1))|",
+    "complexity": "O(K * H * W) for weighted fusion; O(K * H * W * log) for Mertens pyramid"
+  },
+
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "multi_exposure",
+    "integration_axis": "temporal",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "poisson_gaussian",
+    "solution_space": "2D_hdr_irradiance",
+    "primitives": ["S.scan.exposure", "L.apply.crf", "D.saturate", "int.temporal"]
+  },
+
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+
+  "mismatch_parameters": ["crf_calibration_error", "motion_ghosting", "under_coverage", "vignetting_residual", "white_balance_drift"],
+  "error_metric": "HDR_PSNR_mu_dB",
+  "error_metric_secondary": "HDR_VDP_2",
+  "error_metric_tertiary": "PU_encoded_SSIM",
+
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "hdr_multi_exposure_fusion",
+      "forward_operator": "multi_exposure_crf",
+      "input_format": "K_ldr_frames_plus_exposure_times",
+      "omega": {"H": 1080, "W": 1920, "K_exposures": 3, "exposure_stops": 2.0, "bit_depth": 12, "crf_calibration_error": 0.0, "motion_ghosting": 0.0, "under_coverage": 0.0},
+      "epsilon_fn_center": "42.0 dB HDR-PSNR-mu"
+    },
+    "allowed_forward_operators": ["multi_exposure_crf", "single_shot_bracket", "dual_iso"],
+    "allowed_problem_classes": ["hdr_multi_exposure_fusion", "single_image_hdr", "hdr_video"],
+    "allowed_omega_dimensions": ["H", "W", "K_exposures", "exposure_stops", "bit_depth", "crf_calibration_error", "motion_ghosting", "under_coverage", "vignetting_residual", "white_balance_drift"],
+    "omega_bounds": {
+      "H": [256, 4096], "W": [256, 4096], "K_exposures": [2, 9],
+      "exposure_stops": [1.0, 4.0], "bit_depth": [8, 14],
+      "crf_calibration_error": [0.0, 0.05], "motion_ghosting": [0.0, 0.5],
+      "under_coverage": [0.0, 0.30], "vignetting_residual": [0.0, 0.10],
+      "white_balance_drift": [0.0, 0.10]
+    },
+    "epsilon_bounds": {"hdr_psnr_mu_db": [25.0, 55.0]}
+  },
+
+  "p1_p10_tests": ["PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS"],
+  "s1_s4_gates": ["PASS", "PASS", "PASS", "PASS"],
+  "ipfs_cid": null
+}

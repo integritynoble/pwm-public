@@ -1,0 +1,161 @@
+{
+  "artifact_id": "L2-018",
+  "layer": "L2",
+  "parent_l1": "L1-018",
+  "title": "Differential Interference Contrast (DIC / Nomarski) Microscopy Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        256,
+        4096
+      ],
+      "W": [
+        256,
+        4096
+      ],
+      "shear_nm": [
+        50,
+        500
+      ],
+      "theta_bias_deg": [
+        30,
+        150
+      ],
+      "pixel_nm": [
+        50,
+        300
+      ],
+      "NA": [
+        0.3,
+        1.49
+      ],
+      "photon_count": [
+        100,
+        20000
+      ],
+      "shear_drift": [
+        0.0,
+        10.0
+      ],
+      "bias_retardation_error": [
+        0.0,
+        0.15
+      ],
+      "condenser_misalignment": [
+        0.0,
+        0.05
+      ]
+    },
+    "E": {
+      "forward": "I(r) = I_0 * |cos((phi(r + s) - phi(r - s))/2 + theta_bias)|^2",
+      "operator": "dic_nomarski_forward_mismatch",
+      "primitive_chain": "L.wollaston_shear -> L.add_coherent -> L.modulus_squared -> int.temporal",
+      "inverse": "solve forward model for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "21.0 + 1.5 * log10(photon_count / 100) - 0.5 * shear_drift - 6.0 * bias_retardation_error"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Inverse-DIC",
+        "method_sig": "L+O",
+        "expected_psnr": 24.5
+      },
+      {
+        "name": "DIC-TV-ADMM",
+        "method_sig": "L+O",
+        "expected_psnr": 25.8
+      },
+      {
+        "name": "DICNet",
+        "method_sig": "L+N",
+        "expected_psnr": 28.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 1024,
+        "W": 1024,
+        "shear_nm": 200,
+        "theta_bias_deg": 90,
+        "pixel_nm": 100,
+        "NA": 1.4,
+        "photon_count": 1000,
+        "shear_drift": 0.0,
+        "bias_retardation_error": 0.0
+      },
+      "epsilon": 26.0
+    },
+    "tier_bounds": {
+      "H": [
+        256,
+        4096
+      ],
+      "W": [
+        256,
+        4096
+      ],
+      "shear_nm": [
+        50,
+        500
+      ],
+      "theta_bias_deg": [
+        30,
+        150
+      ],
+      "pixel_nm": [
+        50,
+        300
+      ],
+      "NA": [
+        0.3,
+        1.49
+      ],
+      "photon_count": [
+        100,
+        20000
+      ],
+      "shear_drift": [
+        0.0,
+        10.0
+      ],
+      "bias_retardation_error": [
+        0.0,
+        0.15
+      ],
+      "condenser_misalignment": [
+        0.0,
+        0.05
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.45,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

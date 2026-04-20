@@ -1,0 +1,150 @@
+{
+  "artifact_id": "L2-164",
+  "layer": "L2",
+  "parent_l1": "L1-164",
+  "title": "Near-Field Scanning Optical Microscopy (NSOM/SNOM) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": 64,
+      "W": 64,
+      "aperture_nm": [
+        10,
+        500
+      ],
+      "pixel_nm": [
+        1,
+        100
+      ],
+      "peak_photons": [
+        10,
+        10000
+      ],
+      "tip_sample_distance": [
+        1,
+        50
+      ],
+      "aperture_contamination": [
+        0.0,
+        0.5
+      ],
+      "vibrational_noise": [
+        0.0,
+        0.3
+      ],
+      "optical_coupling": [
+        0.3,
+        1.0
+      ],
+      "SNR_dB": [
+        0.0,
+        40.0
+      ]
+    },
+    "E": {
+      "forward": "y(r) = integral E_near(r - r', aperture) * chi(r') dr' + n; sub-lambda resolution ~lambda/20",
+      "operator": "nsom_forward_mismatch",
+      "primitive_chain": "L.aperture_near_field -> L.evanescent_coupling -> S.scan.raster -> int.spatial",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "14.0 + 2.0 * log10(peak_photons / 10) + 5.0 * optical_coupling - 8.0 * aperture_contamination - 0.1 * tip_sample_distance"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Deconv-NSOM",
+        "method_sig": "L+O",
+        "expected_psnr": 19.5
+      },
+      {
+        "name": "TV-ADMM-NSOM",
+        "method_sig": "L+O",
+        "expected_psnr": 22.0
+      },
+      {
+        "name": "NSOM-Net",
+        "method_sig": "L+N",
+        "expected_psnr": 24.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 256,
+        "W": 256,
+        "aperture_nm": 50,
+        "pixel_nm": 10,
+        "peak_photons": 500,
+        "tip_sample_distance": 5,
+        "aperture_contamination": 0.0,
+        "vibrational_noise": 0.0,
+        "optical_coupling": 1.0,
+        "SNR_dB": 25
+      },
+      "epsilon": 22.0
+    },
+    "tier_bounds": {
+      "H": 64,
+      "W": 64,
+      "aperture_nm": [
+        10,
+        500
+      ],
+      "pixel_nm": [
+        1,
+        100
+      ],
+      "peak_photons": [
+        10,
+        10000
+      ],
+      "tip_sample_distance": [
+        1,
+        50
+      ],
+      "aperture_contamination": [
+        0.0,
+        0.5
+      ],
+      "vibrational_noise": [
+        0.0,
+        0.3
+      ],
+      "optical_coupling": [
+        0.3,
+        1.0
+      ],
+      "SNR_dB": [
+        0.0,
+        40.0
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.55,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

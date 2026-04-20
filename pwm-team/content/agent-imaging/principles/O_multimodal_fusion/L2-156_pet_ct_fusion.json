@@ -1,0 +1,132 @@
+{
+  "artifact_id": "L2-156",
+  "layer": "L2",
+  "parent_l1": "L1-156",
+  "title": "PET-CT Fusion (metabolism + anatomy) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": 128,
+      "W": 128,
+      "Z": [
+        32,
+        512
+      ],
+      "registration_error": [
+        0.0,
+        5.0
+      ],
+      "breathing_motion": [
+        0.0,
+        10.0
+      ],
+      "attenuation_correction_bias": [
+        0.0,
+        0.2
+      ],
+      "temporal_mismatch": [
+        0.0,
+        3600
+      ],
+      "SNR_dB": [
+        0.0,
+        35.0
+      ]
+    },
+    "E": {
+      "forward": "F(r) = alpha * PET(r) * attenuation_CT(r) + (1-alpha) * CT(r); register via rigid/deformable",
+      "operator": "pet_ct_fusion_forward_mismatch",
+      "primitive_chain": "L.ct_attenuation_map -> L.pet_activity_map -> L.registration -> int.spatial",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "18.0 + 0.3 * SNR_dB - 1.5 * registration_error - 0.5 * breathing_motion - 10.0 * attenuation_correction_bias"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Rigid-Reg-Overlay",
+        "method_sig": "L+O",
+        "expected_psnr": 23.5
+      },
+      {
+        "name": "Deformable-Reg",
+        "method_sig": "L+O",
+        "expected_psnr": 26.0
+      },
+      {
+        "name": "Fusion-Net",
+        "method_sig": "L+N",
+        "expected_psnr": 28.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 256,
+        "W": 256,
+        "Z": 200,
+        "registration_error": 0.0,
+        "breathing_motion": 0.0,
+        "attenuation_correction_bias": 0.0,
+        "temporal_mismatch": 0.0,
+        "SNR_dB": 25
+      },
+      "epsilon": 26.0
+    },
+    "tier_bounds": {
+      "H": 128,
+      "W": 128,
+      "Z": [
+        32,
+        512
+      ],
+      "registration_error": [
+        0.0,
+        5.0
+      ],
+      "breathing_motion": [
+        0.0,
+        10.0
+      ],
+      "attenuation_correction_bias": [
+        0.0,
+        0.2
+      ],
+      "temporal_mismatch": [
+        0.0,
+        3600
+      ],
+      "SNR_dB": [
+        0.0,
+        35.0
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.55,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

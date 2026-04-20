@@ -1,0 +1,141 @@
+{
+  "artifact_id": "L2-052",
+  "layer": "L2",
+  "parent_l1": "L1-052",
+  "title": "Brachytherapy Dose Imaging Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": 128,
+      "W": 128,
+      "Z": [
+        32,
+        512
+      ],
+      "N_sources": [
+        1,
+        100
+      ],
+      "SNR_dB": [
+        15.0,
+        40.0
+      ],
+      "source_position_error": [
+        0.0,
+        3.0
+      ],
+      "tissue_heterogeneity": [
+        0.0,
+        0.3
+      ],
+      "inter_source_shielding": [
+        0.0,
+        0.3
+      ],
+      "applicator_motion": [
+        0.0,
+        3.0
+      ]
+    },
+    "E": {
+      "forward": "D(r) = sum_i A_i / |r - r_i|^2 * tissue_correction + n; TG-43 formalism",
+      "operator": "brachytherapy_forward_mismatch",
+      "primitive_chain": "L.sealed_gamma_source -> L.inverse_square_decay -> int.spatial",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "18.0 + 0.3 * SNR_dB - 3.0 * source_position_error - 10.0 * tissue_heterogeneity - 3.0 * applicator_motion"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "TG-43",
+        "method_sig": "A+O",
+        "expected_psnr": 23.5
+      },
+      {
+        "name": "Model-Based",
+        "method_sig": "L+O",
+        "expected_psnr": 26.0
+      },
+      {
+        "name": "Brachy-Net",
+        "method_sig": "L+N",
+        "expected_psnr": 28.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 256,
+        "W": 256,
+        "Z": 128,
+        "N_sources": 20,
+        "SNR_dB": 30,
+        "source_position_error": 0.0,
+        "tissue_heterogeneity": 0.05,
+        "inter_source_shielding": 0.0,
+        "applicator_motion": 0.0
+      },
+      "epsilon": 26.0
+    },
+    "tier_bounds": {
+      "H": 128,
+      "W": 128,
+      "Z": [
+        32,
+        512
+      ],
+      "N_sources": [
+        1,
+        100
+      ],
+      "SNR_dB": [
+        15.0,
+        40.0
+      ],
+      "source_position_error": [
+        0.0,
+        3.0
+      ],
+      "tissue_heterogeneity": [
+        0.0,
+        0.3
+      ],
+      "inter_source_shielding": [
+        0.0,
+        0.3
+      ],
+      "applicator_motion": [
+        0.0,
+        3.0
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.5,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

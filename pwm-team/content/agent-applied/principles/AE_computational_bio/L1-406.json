@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-406",
+  "layer": "L1",
+  "principle_number": "406",
+  "title": "SEIR Epidemic with Exposed Compartment",
+  "domain": "Computational Biology",
+  "sub_domain": "Epidemiology",
+  "source_file": "AE_computational_bio/406_seir_epidemic.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "SEIR model: adds exposed/latent compartment E accounting for incubation period before infectiousness.",
+    "forward_model": "dS/dt = -beta*S*I/N; dE/dt = beta*S*I/N - sigma*E; dI/dt = sigma*E - gamma*I; dR/dt = gamma*I",
+    "world_state_x": "SEIR parameters (beta, sigma, gamma, R0) and incubation period 1/sigma",
+    "observation_y": "daily incidence I_new(t) and possibly hospitalization or death counts",
+    "physical_parameters_theta": [
+      "beta_transmission",
+      "sigma_exposure_rate",
+      "gamma_recovery_rate",
+      "E0_initial_exposed"
+    ]
+  },
+  "G": {
+    "dag": "M.ode.seir_model -> O.likelihood.seir_incidence -> S.mcmc.seir_posterior",
+    "vertices": [
+      "M.ode.seir_model",
+      "O.likelihood.seir_incidence",
+      "S.mcmc.seir_posterior"
+    ],
+    "arcs": [
+      "M.ode.seir_model -> O.likelihood.seir_incidence",
+      "O.likelihood.seir_incidence -> S.mcmc.seir_posterior"
+    ],
+    "L_DAG": 2.8,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 2000,
+    "condition_number_effective": 80,
+    "condition_number_mismatched": 400,
+    "regime": "SEIR identifiability weaker than SIR; sigma and gamma partially confounded early; serial interval constrains sigma+gamma."
+  },
+  "C": {
+    "solver_class": "MCMC_SEIR or particle_filter_sequential",
+    "convergence_rate_q": 2.0,
+    "error_bound": "peak timing error < 2 weeks for well-characterized epidemic",
+    "complexity": "O(N_days * N_MCMC) per fit"
+  },
+  "physics_fingerprint": {
+    "carrier": "N/A",
+    "sensing_mechanism": "seir_incubation_tracking",
+    "integration_axis": "time",
+    "problem_class": "parameter_estimation",
+    "noise_model": "negative_binomial",
+    "solution_space": "SEIR_parameter_vector",
+    "primitives": [
+      "M.ode.seir_model",
+      "O.likelihood.seir_incidence",
+      "S.mcmc.seir_posterior"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "age_structure_neglect",
+    "spatial_heterogeneity",
+    "variant_emergence"
+  ],
+  "error_metric": "peak_incidence_RMSE_percent",
+  "error_metric_secondary": "timing_error_days",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "parameter_estimation",
+      "forward_operator": "seir_incubation_tracking",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_days": 150,
+        "R0_true": 2.5,
+        "incubation_period_days": 5,
+        "detection_rate": 0.5
+      },
+      "epsilon_fn_center": "20 peak_incidence_RMSE_percent"
+    },
+    "allowed_forward_operators": [
+      "seir_incubation_tracking"
+    ],
+    "allowed_problem_classes": [
+      "parameter_estimation"
+    ],
+    "allowed_omega_dimensions": [
+      "N_days",
+      "R0_true",
+      "incubation_period_days",
+      "detection_rate"
+    ],
+    "omega_bounds": {
+      "N_days": [
+        20,
+        730
+      ],
+      "R0_true": [
+        1.0,
+        10.0
+      ],
+      "incubation_period_days": [
+        1,
+        20
+      ],
+      "detection_rate": [
+        0.05,
+        1.0
+      ]
+    },
+    "epsilon_bounds": {
+      "peak_incidence_RMSE_percent": [
+        3,
+        100
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

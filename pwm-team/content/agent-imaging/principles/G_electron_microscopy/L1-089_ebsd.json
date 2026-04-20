@@ -1,0 +1,172 @@
+{
+  "artifact_id": "L1-089",
+  "layer": "L1",
+  "principle_number": "089",
+  "title": "Electron Backscatter Diffraction (EBSD) \u2014 crystallographic orientation mapping",
+  "domain": "Electron Microscopy",
+  "sub_domain": "Kikuchi-pattern crystal orientation",
+  "source_file": "G_electron_microscopy/089_ebsd.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical electron-microscopy literature for this principle.",
+  "E": {
+    "description": "Electron Backscatter Diffraction (EBSD) \u2014 crystallographic orientation mapping forward model.",
+    "forward_model": "I_kikuchi(theta, phi; orientation) = pattern_library(orientation); match per pixel to assign Euler angles",
+    "world_state_x": "Scene parameter (density / orientation / spectrum / complex field depending on principle)",
+    "observation_y": "Electron detector output at declared geometry + noise",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "kV",
+      "step_nm",
+      "peak_electrons",
+      "pattern_center_drift",
+      "band_contrast_degradation"
+    ]
+  },
+  "G": {
+    "dag": "L.excitation.electron_beam -> L.diffraction_kikuchi -> L.pattern_match -> int.angular",
+    "vertices": [
+      "L.excitation.electron_beam",
+      "L.diffraction_kikuchi",
+      "L.pattern_match",
+      "int.angular"
+    ],
+    "arcs": [
+      "L.excitation.electron_beam -> L.diffraction_kikuchi",
+      "L.diffraction_kikuchi -> L.pattern_match",
+      "L.pattern_match -> int.angular"
+    ],
+    "L_DAG": 4.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 500,
+    "condition_number_effective": 25,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Hough-EBSD, Dictionary-Match, EBSD-Net",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(electron_count) + mismatch bias.",
+    "complexity": "O(H W) to O(H W Z) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "electron",
+    "sensing_mechanism": "kikuchi_diffraction_pattern",
+    "integration_axis": "angular",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "shot_poisson",
+    "solution_space": "euler_angle_field",
+    "primitives": [
+      "L.excitation.electron_beam",
+      "L.diffraction_kikuchi",
+      "L.pattern_match",
+      "int.angular"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "pattern_center_drift",
+    "band_contrast_degradation",
+    "grain_boundary_ambiguity"
+  ],
+  "error_metric": "orientation_MAE_deg",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "ebsd_kikuchi",
+      "forward_operator": "ebsd_kikuchi_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 1024,
+        "W": 1024,
+        "kV": 20,
+        "step_nm": 100,
+        "peak_electrons": 200,
+        "pattern_center_drift": 0.0,
+        "band_contrast_degradation": 0.0
+      },
+      "epsilon_fn_center": "0.5"
+    },
+    "allowed_forward_operators": [
+      "ebsd_kikuchi_forward"
+    ],
+    "allowed_problem_classes": [
+      "ebsd_kikuchi"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "kV",
+      "step_nm",
+      "peak_electrons",
+      "pattern_center_drift",
+      "band_contrast_degradation",
+      "pattern_center_drift",
+      "band_contrast_degradation",
+      "grain_boundary_ambiguity"
+    ],
+    "omega_bounds": {
+      "H": [
+        256,
+        4096
+      ],
+      "W": [
+        256,
+        4096
+      ],
+      "kV": [
+        10,
+        30
+      ],
+      "step_nm": [
+        10,
+        1000
+      ],
+      "peak_electrons": [
+        20,
+        2000
+      ],
+      "pattern_center_drift": [
+        0.0,
+        0.1
+      ],
+      "band_contrast_degradation": [
+        0.0,
+        0.5
+      ],
+      "grain_boundary_ambiguity": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        40.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

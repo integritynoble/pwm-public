@@ -1,0 +1,141 @@
+{
+  "artifact_id": "L2-050",
+  "layer": "L2",
+  "parent_l1": "L1-050",
+  "title": "OCT Angiography (OCTA) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": 128,
+      "W": 128,
+      "Z": [
+        256,
+        2048
+      ],
+      "N_repeat": [
+        2,
+        16
+      ],
+      "SNR_dB": [
+        10.0,
+        40.0
+      ],
+      "eye_motion": [
+        0.0,
+        0.5
+      ],
+      "signal_strength_variation": [
+        0.0,
+        0.3
+      ],
+      "projection_artifact": [
+        0.0,
+        0.3
+      ],
+      "decorrelation_tail": [
+        0.0,
+        0.3
+      ]
+    },
+    "E": {
+      "forward": "A(r) = decorrelation(OCT_t(r), OCT_{t+dt}(r)); recover vessel mask",
+      "operator": "octa_forward_mismatch",
+      "primitive_chain": "L.sd_oct_spectral -> L.decorrelation -> S.scan.repeated -> int.temporal",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "17.0 + 0.3 * SNR_dB + 2.0 * log2(N_repeat / 2) - 10.0 * eye_motion - 6.0 * projection_artifact"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Amplitude-Decorr",
+        "method_sig": "L+O",
+        "expected_psnr": 22.5
+      },
+      {
+        "name": "SSADA",
+        "method_sig": "L+O",
+        "expected_psnr": 25.0
+      },
+      {
+        "name": "OCTA-Net",
+        "method_sig": "L+N",
+        "expected_psnr": 27.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "Z": 1024,
+        "N_repeat": 4,
+        "scan_pattern": "raster",
+        "SNR_dB": 25,
+        "eye_motion": 0.0,
+        "signal_strength_variation": 0.0,
+        "projection_artifact": 0.0
+      },
+      "epsilon": 25.0
+    },
+    "tier_bounds": {
+      "H": 128,
+      "W": 128,
+      "Z": [
+        256,
+        2048
+      ],
+      "N_repeat": [
+        2,
+        16
+      ],
+      "SNR_dB": [
+        10.0,
+        40.0
+      ],
+      "eye_motion": [
+        0.0,
+        0.5
+      ],
+      "signal_strength_variation": [
+        0.0,
+        0.3
+      ],
+      "projection_artifact": [
+        0.0,
+        0.3
+      ],
+      "decorrelation_tail": [
+        0.0,
+        0.3
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.5,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

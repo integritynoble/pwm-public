@@ -1,0 +1,152 @@
+{
+  "artifact_id": "L2-014",
+  "layer": "L2",
+  "parent_l1": "L1-014",
+  "title": "Expansion Microscopy (ExM) \u2014 physical hydrogel expansion Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        256,
+        4096
+      ],
+      "W": [
+        256,
+        4096
+      ],
+      "pixel_nm": [
+        30,
+        200
+      ],
+      "NA": [
+        1.0,
+        1.49
+      ],
+      "F_expand": [
+        2.0,
+        20.0
+      ],
+      "peak_photons": [
+        50,
+        5000
+      ],
+      "expansion_anisotropy": [
+        0.0,
+        0.1
+      ],
+      "expansion_factor_drift": [
+        0.0,
+        0.1
+      ],
+      "labeling_loss": [
+        0.0,
+        0.3
+      ]
+    },
+    "E": {
+      "forward": "y(r) = [PSF conv f(r / F_expand)] + n; effective resolution = lambda / (2 NA F_expand)",
+      "operator": "exm_forward_mismatch",
+      "primitive_chain": "L.sample_expansion -> K.psf.airy -> int.temporal",
+      "inverse": "solve forward model for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "22.0 + 2.0 * log10(peak_photons / 50) + 0.5 * log2(F_expand / 2) - 20.0 * expansion_anisotropy"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Richardson-Lucy",
+        "method_sig": "I+M",
+        "expected_psnr": 26.5
+      },
+      {
+        "name": "SRRF-ExM",
+        "method_sig": "L+O",
+        "expected_psnr": 28.0
+      },
+      {
+        "name": "CARE-ExM",
+        "method_sig": "L+N",
+        "expected_psnr": 31.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 1024,
+        "W": 1024,
+        "pixel_nm": 65,
+        "NA": 1.4,
+        "F_expand": 4.0,
+        "peak_photons": 500,
+        "expansion_anisotropy": 0.01,
+        "expansion_factor_drift": 0.01
+      },
+      "epsilon": 29.0
+    },
+    "tier_bounds": {
+      "H": [
+        256,
+        4096
+      ],
+      "W": [
+        256,
+        4096
+      ],
+      "pixel_nm": [
+        30,
+        200
+      ],
+      "NA": [
+        1.0,
+        1.49
+      ],
+      "F_expand": [
+        2.0,
+        20.0
+      ],
+      "peak_photons": [
+        50,
+        5000
+      ],
+      "expansion_anisotropy": [
+        0.0,
+        0.1
+      ],
+      "expansion_factor_drift": [
+        0.0,
+        0.1
+      ],
+      "labeling_loss": [
+        0.0,
+        0.3
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.45,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

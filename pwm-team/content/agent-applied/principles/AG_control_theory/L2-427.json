@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-427",
+  "layer": "L2",
+  "parent_l1": "L1-427",
+  "principle_ref": "sha256:<L1-427_principle_hash>",
+  "title": "Kalman Filter State Estimation \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "n_state_dim": [
+        1,
+        20
+      ],
+      "p_obs_dim": [
+        1,
+        10
+      ],
+      "Q_R_ratio": [
+        0.01,
+        100
+      ],
+      "N_time_steps": [
+        10,
+        10000
+      ]
+    },
+    "E": {
+      "forward": "x_{k+1} = A*x_k + B*u_k + w_k, w~N(0,Q); y_k = C*x_k + v_k, v~N(0,R)",
+      "operator": "linear_optimal_state_estimation",
+      "primitive_chain": "S.kalman.predict_update -> M.riccati.steady_state -> O.innov.sequence_whiteness",
+      "inverse": "recover posterior state estimate x_hat_k|k and covariance P_k|k from measurement sequence {y_k} for k=1..N"
+    },
+    "B": {
+      "observability": "pair (A,C) observable",
+      "Q_R_PD": "Q >= 0, R > 0"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "NEES_normalized_estimation_error_squared",
+      "NIS_normalized_innovation_squared",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "1.0 + 0.05 * (Q_R_ratio / 1.0) ** 0.1"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 state_estimate_covariance"
+    },
+    "baselines": [
+      {
+        "name": "Kalman_filter_standard",
+        "method_sig": "L+O",
+        "expected_score": 1.05
+      },
+      {
+        "name": "Kalman_steady_state_DARE",
+        "method_sig": "L+O",
+        "expected_score": 1.03
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "n_state_dim": 4,
+        "p_obs_dim": 2,
+        "Q_R_ratio": 1.0,
+        "N_time_steps": 100,
+        "Q_R_mismatch": 0.0,
+        "model_uncertainty": 0.0,
+        "non_stationarity": 0.0
+      },
+      "epsilon": 1.05
+    },
+    "tier_bounds": {
+      "n_state_dim": [
+        1,
+        20
+      ],
+      "p_obs_dim": [
+        1,
+        10
+      ],
+      "Q_R_ratio": [
+        0.01,
+        100
+      ],
+      "N_time_steps": [
+        10,
+        10000
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.28,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.28 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

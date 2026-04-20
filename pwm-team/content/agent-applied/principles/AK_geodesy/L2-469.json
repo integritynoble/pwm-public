@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-469",
+  "layer": "L2",
+  "parent_l1": "L1-469",
+  "principle_ref": "sha256:<L1-469_principle_hash>",
+  "title": "LiDAR Point Cloud 3D Mapping \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "N_points_million": [
+        0.1,
+        1000
+      ],
+      "flight_altitude_m": [
+        100,
+        5000
+      ],
+      "point_density_m2": [
+        1,
+        100
+      ],
+      "IMU_drift_deg_hr": [
+        0.001,
+        0.1
+      ]
+    },
+    "E": {
+      "forward": "X_obj = R_IMU * R_boresight * (R_scan * r_vec + t_scan) + X_IMU",
+      "operator": "time_of_flight_lidar",
+      "primitive_chain": "M.tof.range_equation -> S.boresight.calibration -> O.icp.registration",
+      "inverse": "recover 3D surface elevation model DEM(x from point cloud (X"
+    },
+    "B": {
+      "boresight_plausibility": "angles within \u00b15 deg",
+      "lever_arm": "within \u00b110 cm"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "vertical_accuracy_RMSE_cm",
+      "horizontal_accuracy_RMSE_cm",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "3.0 + 2.0 * (flight_altitude_m / 1000) ** 0.5"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 3D_point_cloud"
+    },
+    "baselines": [
+      {
+        "name": "boresight_calibration",
+        "method_sig": "L+O",
+        "expected_score": 6.0
+      },
+      {
+        "name": "strip_adjustment",
+        "method_sig": "L+O",
+        "expected_score": 4.0
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_points_million": 10,
+        "flight_altitude_m": 1000,
+        "point_density_m2": 10,
+        "IMU_drift_deg_hr": 0.01,
+        "IMU_drift_deg": 0.0,
+        "GPS_accuracy_cm": 0.0,
+        "scanning_angle_encoder_error": 0.0
+      },
+      "epsilon": 5.0
+    },
+    "tier_bounds": {
+      "N_points_million": [
+        0.1,
+        1000
+      ],
+      "flight_altitude_m": [
+        100,
+        5000
+      ],
+      "point_density_m2": [
+        1,
+        100
+      ],
+      "IMU_drift_deg_hr": [
+        0.001,
+        0.1
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.28,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.28 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

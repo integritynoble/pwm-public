@@ -1,0 +1,152 @@
+{
+  "artifact_id": "L2-019",
+  "layer": "L2",
+  "parent_l1": "L1-019",
+  "title": "Darkfield Microscopy (oblique-illumination scattering imaging) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        256,
+        4096
+      ],
+      "W": [
+        256,
+        4096
+      ],
+      "pixel_nm": [
+        100,
+        500
+      ],
+      "NA_cond": [
+        0.6,
+        1.4
+      ],
+      "NA_obj": [
+        0.3,
+        1.3
+      ],
+      "photon_count": [
+        50,
+        10000
+      ],
+      "condenser_angle_error": [
+        0.0,
+        0.05
+      ],
+      "stray_light": [
+        0.0,
+        0.2
+      ],
+      "specimen_absorption": [
+        0.0,
+        0.5
+      ]
+    },
+    "E": {
+      "forward": "y(r) ~ |scatter_amplitude(r)|^2 + stray + n; scatter cross-section scales as a^6 (Rayleigh)",
+      "operator": "darkfield_forward_mismatch",
+      "primitive_chain": "L.oblique_illumination -> L.scatter -> int.temporal",
+      "inverse": "solve forward model for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "21.0 + 1.5 * log10(photon_count / 50) - 8.0 * stray_light - 2.0 * specimen_absorption"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Background-Subtract",
+        "method_sig": "A+O",
+        "expected_psnr": 24.5
+      },
+      {
+        "name": "BM3D-Darkfield",
+        "method_sig": "L+R",
+        "expected_psnr": 26.5
+      },
+      {
+        "name": "DarkNet",
+        "method_sig": "L+N",
+        "expected_psnr": 29.0
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 1024,
+        "W": 1024,
+        "pixel_nm": 200,
+        "NA_cond": 0.95,
+        "NA_obj": 0.75,
+        "photon_count": 500,
+        "condenser_angle_error": 0.0,
+        "stray_light": 0.0
+      },
+      "epsilon": 26.0
+    },
+    "tier_bounds": {
+      "H": [
+        256,
+        4096
+      ],
+      "W": [
+        256,
+        4096
+      ],
+      "pixel_nm": [
+        100,
+        500
+      ],
+      "NA_cond": [
+        0.6,
+        1.4
+      ],
+      "NA_obj": [
+        0.3,
+        1.3
+      ],
+      "photon_count": [
+        50,
+        10000
+      ],
+      "condenser_angle_error": [
+        0.0,
+        0.05
+      ],
+      "stray_light": [
+        0.0,
+        0.2
+      ],
+      "specimen_absorption": [
+        0.0,
+        0.5
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.45,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

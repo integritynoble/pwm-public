@@ -1,0 +1,97 @@
+{
+  "artifact_id": "L1-099",
+  "layer": "L1",
+  "principle_number": "099",
+  "title": "Flash LiDAR (single-shot 2D SPAD-array direct ToF)",
+  "domain": "Depth Imaging",
+  "sub_domain": "Flash-illumination focal-plane-array dToF",
+  "source_file": "H_depth_imaging/099_flash_lidar.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical flash-LiDAR literature (McManamon; Sony IMX459 / Kinect Azure / ST-VL53 SPAD arrays).",
+
+  "E": {
+    "description": "A single high-energy laser pulse illuminates the full scene; a 2D focal-plane array of SPADs (single-photon avalanche diodes) timestamps per-pixel photon arrivals. The per-pixel histogram h_{ij}(t) peaks at the round-trip time; depth d_{ij} = c * argmax_t h_{ij}(t) / 2. Single-shot capture avoids scanning artifacts but requires large illumination energy and ambient-rejection.",
+    "forward_model": "h_{ij}(t) = H_pulse(t - 2 * d_{ij} / c) * eta(u_ij, v_ij) + r_bg * T_bin + n_poisson(h)",
+    "world_state_x": "Depth map d(u,v) in R^{H x W} at the SPAD-array resolution",
+    "observation_y": "Per-pixel photon histograms y(u, v, t) in R^{H x W x N_t}",
+    "physical_parameters_theta": [
+      "Pulse energy E_p and pulse duration tau_p",
+      "SPAD PDP (photon detection probability), dark count rate DCR",
+      "TDC resolution tau_tdc (ps), N_t histogram bins",
+      "Ambient background rate r_bg (photons/pixel/sec)",
+      "Focal-plane-array resolution H x W, lens f-number"
+    ]
+  },
+
+  "G": {
+    "dag": "L.emit.flash -> L.reflect_scene -> D.spad_histogram -> int.temporal",
+    "vertices": ["L.emit.flash", "L.reflect_scene", "D.spad_histogram", "int.temporal"],
+    "arcs": [
+      "L.emit.flash -> L.reflect_scene",
+      "L.reflect_scene -> D.spad_histogram",
+      "D.spad_histogram -> int.temporal"
+    ],
+    "L_DAG": 3.0,
+    "n_c": 0
+  },
+
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 800,
+    "condition_number_effective": 14,
+    "regime": "Well-posed in high-SNR regime (photon_count_per_pixel >= 5). Under high ambient (sun-lit daytime), photon-efficient reconstruction (Kirmani, Shin) is required. Walk error (signal-ambient interference) shifts bin peaks; crosstalk between neighbouring SPAD pixels reduces effective resolution."
+  },
+
+  "C": {
+    "solver_class": "argmax bin detection, matched-filter + constant-fraction, Bayesian photon-efficient (Shin-Kirmani), deep (DeepFlashLidar, Photon-efficient-net)",
+    "convergence_rate_q": 2.0,
+    "error_bound": "sigma_d = c * tau_tdc / (2 * sqrt(12 * N_signal / (N_signal + 2 * N_bg))); ambient-limited regime requires N_signal / N_bg >= 0.3",
+    "complexity": "O(H * W * N_t) for histogram argmax; O(H * W * N_iter) for photon-efficient Bayesian"
+  },
+
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "flash_pulse_spad_array",
+    "integration_axis": "temporal",
+    "problem_class": "linear_inverse",
+    "noise_model": "shot_poisson",
+    "solution_space": "2D_depth_map",
+    "primitives": ["L.emit.flash", "L.reflect_scene", "D.spad_histogram", "int.temporal"]
+  },
+
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+
+  "mismatch_parameters": ["ambient_photon_rate", "dark_count_rate", "crosstalk_neighbour_pixels", "walk_error", "pile_up_saturation"],
+  "error_metric": "depth_RMSE_mm",
+  "error_metric_secondary": "outlier_fraction",
+
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "flash_spad_dtof",
+      "forward_operator": "flash_pulse_spad_histogram",
+      "input_format": "per_pixel_histograms_plus_calibration",
+      "omega": {"H": 640, "W": 480, "N_t": 1024, "tau_tdc_ps": 100, "photon_count_per_pixel": 20, "ambient_photon_rate": 0.0, "dark_count_rate": 100, "crosstalk_neighbour_pixels": 0.0, "walk_error": 0.0},
+      "epsilon_fn_center": "15.0 mm depth RMSE at 10 m"
+    },
+    "allowed_forward_operators": ["flash_pulse_spad_histogram", "gated_iccd", "sipm_array_tof"],
+    "allowed_problem_classes": ["flash_spad_dtof", "photon_efficient_lidar", "nlos_flash"],
+    "allowed_omega_dimensions": ["H", "W", "N_t", "tau_tdc_ps", "photon_count_per_pixel", "ambient_photon_rate", "dark_count_rate", "crosstalk_neighbour_pixels", "walk_error", "pile_up_saturation"],
+    "omega_bounds": {
+      "H": [128, 1280], "W": [128, 1280],
+      "N_t": [128, 4096], "tau_tdc_ps": [20, 500],
+      "photon_count_per_pixel": [1, 1000],
+      "ambient_photon_rate": [0.0, 1000000],
+      "dark_count_rate": [10, 10000],
+      "crosstalk_neighbour_pixels": [0.0, 0.05],
+      "walk_error": [0.0, 0.2],
+      "pile_up_saturation": [0.0, 0.5]
+    },
+    "epsilon_bounds": {"rmse_mm": [2.0, 200.0]}
+  },
+
+  "p1_p10_tests": ["PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS"],
+  "s1_s4_gates": ["PASS", "PASS", "PASS", "PASS"],
+  "ipfs_cid": null
+}

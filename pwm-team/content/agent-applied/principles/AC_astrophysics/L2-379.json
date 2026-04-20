@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-379",
+  "layer": "L2",
+  "parent_l1": "L1-379",
+  "principle_ref": "sha256:<L1-379_principle_hash>",
+  "title": "Baryon Acoustic Oscillation (BAO) Fitting \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "N_gal_million": [
+        0.1,
+        50.0
+      ],
+      "survey_volume_Gpc3_h": [
+        0.5,
+        50.0
+      ],
+      "z_eff": [
+        0.1,
+        2.0
+      ],
+      "sigma_v_FoG_kms": [
+        100,
+        1000
+      ]
+    },
+    "E": {
+      "forward": "xi(s) = integral P(k) * sinc(k*s) k ** 2 dk / (2*pi ** 2); BAO peak at s ~ 150 Mpc/h",
+      "operator": "two_point_correlation_function",
+      "primitive_chain": "F.fourier.power_spectrum -> S.bao.peak_fitting -> O.chi2.dv_rd",
+      "inverse": "recover distance ratios D_V/r_d and D_H/r_d at survey redshift z_eff from galaxy 2-point correlation function xi(s) or power spectrum P(k) from spectroscopic survey"
+    },
+    "B": {
+      "bias_positivity": "b > 0",
+      "sigma_v_positivity": "sigma_v > 0"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "D_V_rd_sigma_percent",
+      "chi2_reduced_BAO",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.5 + 0.5 * (1.0 / N_gal_million) ** 0.5"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 cosmological_distance_ratios"
+    },
+    "baselines": [
+      {
+        "name": "BOSS_standard_analysis",
+        "method_sig": "L+O",
+        "expected_score": 1.1
+      },
+      {
+        "name": "EFTofLSS_perturbation",
+        "method_sig": "L+O",
+        "expected_score": 0.85
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_gal_million": 1.0,
+        "survey_volume_Gpc3_h": 5.0,
+        "z_eff": 0.5,
+        "sigma_v_FoG_kms": 400,
+        "galaxy_bias_nonlinearity": 0.0,
+        "RSD_model_error": 0.0,
+        "reconstruction_incompleteness": 0.0
+      },
+      "epsilon": 1.0
+    },
+    "tier_bounds": {
+      "N_gal_million": [
+        0.1,
+        50.0
+      ],
+      "survey_volume_Gpc3_h": [
+        0.5,
+        50.0
+      ],
+      "z_eff": [
+        0.1,
+        2.0
+      ],
+      "sigma_v_FoG_kms": [
+        100,
+        1000
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.35,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.35 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

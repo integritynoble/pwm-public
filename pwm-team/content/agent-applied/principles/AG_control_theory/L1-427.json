@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-427",
+  "layer": "L1",
+  "principle_number": "427",
+  "title": "Kalman Filter State Estimation",
+  "domain": "Control Theory",
+  "sub_domain": "Optimal estimation",
+  "source_file": "AG_control_theory/427_kalman_filter.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "Kalman filter: optimal linear estimator for Gaussian linear dynamics; minimizes mean squared error of state estimate.",
+    "forward_model": "x_{k+1} = A*x_k + B*u_k + w_k, w~N(0,Q); y_k = C*x_k + v_k, v~N(0,R)",
+    "world_state_x": "posterior state estimate x_hat_k|k and covariance P_k|k",
+    "observation_y": "measurement sequence {y_k} for k=1..N",
+    "physical_parameters_theta": [
+      "Q_process_noise_cov",
+      "R_measurement_noise_cov",
+      "P0_initial_covariance",
+      "A_B_C_matrices"
+    ]
+  },
+  "G": {
+    "dag": "S.kalman.predict_update -> M.riccati.steady_state -> O.innov.sequence_whiteness",
+    "vertices": [
+      "S.kalman.predict_update",
+      "M.riccati.steady_state",
+      "O.innov.sequence_whiteness"
+    ],
+    "arcs": [
+      "S.kalman.predict_update -> M.riccati.steady_state",
+      "M.riccati.steady_state -> O.innov.sequence_whiteness"
+    ],
+    "L_DAG": 2.8,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 500,
+    "condition_number_effective": 20,
+    "condition_number_mismatched": 100,
+    "regime": "Optimal for linear Gaussian; exact for Q, R known; inconsistent filter diverges; innovation sequence whiteness is consistency test."
+  },
+  "C": {
+    "solver_class": "standard_Kalman_filter",
+    "convergence_rate_q": 2.0,
+    "error_bound": "NEES ~ chi2(n)/n in expectation for consistent filter; NIS ~ chi2(p)/p",
+    "complexity": "O(n ** 2 * p) per update step"
+  },
+  "physics_fingerprint": {
+    "carrier": "N/A",
+    "sensing_mechanism": "linear_optimal_state_estimation",
+    "integration_axis": "discrete_time",
+    "problem_class": "parameter_estimation",
+    "noise_model": "gaussian",
+    "solution_space": "state_estimate_covariance",
+    "primitives": [
+      "S.kalman.predict_update",
+      "M.riccati.steady_state",
+      "O.innov.sequence_whiteness"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "Q_R_mismatch",
+    "model_uncertainty",
+    "non_stationarity"
+  ],
+  "error_metric": "NEES_normalized_estimation_error_squared",
+  "error_metric_secondary": "NIS_normalized_innovation_squared",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "parameter_estimation",
+      "forward_operator": "linear_optimal_state_estimation",
+      "input_format": "measurement_only",
+      "omega": {
+        "n_state_dim": 4,
+        "p_obs_dim": 2,
+        "Q_R_ratio": 1.0,
+        "N_time_steps": 100
+      },
+      "epsilon_fn_center": "1.05 NEES_normalized_estimation_error_squared"
+    },
+    "allowed_forward_operators": [
+      "linear_optimal_state_estimation"
+    ],
+    "allowed_problem_classes": [
+      "parameter_estimation"
+    ],
+    "allowed_omega_dimensions": [
+      "n_state_dim",
+      "p_obs_dim",
+      "Q_R_ratio",
+      "N_time_steps"
+    ],
+    "omega_bounds": {
+      "n_state_dim": [
+        1,
+        20
+      ],
+      "p_obs_dim": [
+        1,
+        10
+      ],
+      "Q_R_ratio": [
+        0.01,
+        100
+      ],
+      "N_time_steps": [
+        10,
+        10000
+      ]
+    },
+    "epsilon_bounds": {
+      "NEES_normalized_estimation_error_squared": [
+        0.5,
+        3.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

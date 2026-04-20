@@ -1,0 +1,169 @@
+{
+  "artifact_id": "L2-011",
+  "layer": "L2",
+  "parent_l1": "L1-011",
+  "title": "PALM / STORM (single-molecule localization microscopy) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        64,
+        2048
+      ],
+      "W": [
+        64,
+        2048
+      ],
+      "T_frames": [
+        1000,
+        100000
+      ],
+      "pixel_nm": [
+        80,
+        300
+      ],
+      "NA": [
+        1.3,
+        1.49
+      ],
+      "photons_per_molecule": [
+        500,
+        20000
+      ],
+      "N_emitters_per_frame": [
+        5,
+        500
+      ],
+      "drift_nm_per_frame": [
+        0.0,
+        5.0
+      ],
+      "multi_emitter_overlap": [
+        0.0,
+        0.5
+      ],
+      "background_bias": [
+        10,
+        500
+      ],
+      "blinking_kinetics": [
+        0.0,
+        0.2
+      ]
+    },
+    "E": {
+      "forward": "y_t(r) = sum_i 1_{active_i,t} * PSF(r - r_i) * A_i + n; recover {r_i} over T frames",
+      "operator": "smlm_forward_mismatch",
+      "primitive_chain": "K.psf.airy -> D.threshold.isolated -> L.gaussian_fit -> int.temporal",
+      "inverse": "solve forward model for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "localization_precision_nm",
+      "residual_norm"
+    ],
+    "epsilon_fn": "8.0 + 5.0 * log10(photons_per_molecule / 500) - 2.0 * log10(N_emitters_per_frame) - 2.0 * drift_nm_per_frame"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "ThunderSTORM",
+        "method_sig": "L+O",
+        "expected_localization_nm": 18
+      },
+      {
+        "name": "DECODE",
+        "method_sig": "L+N",
+        "expected_localization_nm": 10
+      },
+      {
+        "name": "DeepSTORM",
+        "method_sig": "L+N",
+        "expected_localization_nm": 11
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 256,
+        "W": 256,
+        "T_frames": 10000,
+        "pixel_nm": 160,
+        "NA": 1.49,
+        "photons_per_molecule": 3000,
+        "N_emitters_per_frame": 50,
+        "drift_nm_per_frame": 0.0,
+        "background_bias": 50
+      },
+      "epsilon": 15.0
+    },
+    "tier_bounds": {
+      "H": [
+        64,
+        2048
+      ],
+      "W": [
+        64,
+        2048
+      ],
+      "T_frames": [
+        1000,
+        100000
+      ],
+      "pixel_nm": [
+        80,
+        300
+      ],
+      "NA": [
+        1.3,
+        1.49
+      ],
+      "photons_per_molecule": [
+        500,
+        20000
+      ],
+      "N_emitters_per_frame": [
+        5,
+        500
+      ],
+      "drift_nm_per_frame": [
+        0.0,
+        5.0
+      ],
+      "multi_emitter_overlap": [
+        0.0,
+        0.5
+      ],
+      "background_bias": [
+        10,
+        500
+      ],
+      "blinking_kinetics": [
+        0.0,
+        0.2
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.45,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

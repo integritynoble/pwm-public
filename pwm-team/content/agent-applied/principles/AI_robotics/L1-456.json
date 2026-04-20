@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-456",
+  "layer": "L1",
+  "principle_number": "456",
+  "title": "Rotor Dynamics Aeroelastic Inversion",
+  "domain": "Robotics",
+  "sub_domain": "Aerial robotics",
+  "source_file": "AI_robotics/456_rotor_dynamics.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "Rotor dynamics identification: infer rotor blade properties from thrust, torque, and vibration measurements.",
+    "forward_model": "T = 0.5*rho*A*(Omega*R) ** 2 * C_T(lambda_i, theta, a, e); blade element with flapping equation",
+    "world_state_x": "blade parameters: twist theta_0, collective, flapping a1 b1, stiffness EI",
+    "observation_y": "thrust T (N), torque Q (Nm), vibrational modes from accelerometers",
+    "physical_parameters_theta": [
+      "chord_c_m",
+      "blade_twist_deg",
+      "lift_slope_a_per_rad",
+      "hinge_offset_e_R"
+    ]
+  },
+  "G": {
+    "dag": "M.blade.element_momentum -> S.bvp.flapping_equation -> O.chi2.thrust_torque",
+    "vertices": [
+      "M.blade.element_momentum",
+      "S.bvp.flapping_equation",
+      "O.chi2.thrust_torque"
+    ],
+    "arcs": [
+      "M.blade.element_momentum -> S.bvp.flapping_equation",
+      "S.bvp.flapping_equation -> O.chi2.thrust_torque"
+    ],
+    "L_DAG": 4.0,
+    "n_c": 1
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 10000.0,
+    "condition_number_effective": 500,
+    "condition_number_mismatched": 2000,
+    "regime": "BEM valid for small advance ratios; dynamic stall at high angle of attack; aeroelastic coupling at high RPM."
+  },
+  "C": {
+    "solver_class": "BEM_parameter_fit or full_BEMT_numerical",
+    "convergence_rate_q": 2.0,
+    "error_bound": "C_T prediction within 5% for hover conditions",
+    "complexity": "O(N_blade_elements * N_azimuth * N_iter) per operating point"
+  },
+  "physics_fingerprint": {
+    "carrier": "N/A",
+    "sensing_mechanism": "rotor_thrust_torque_model",
+    "integration_axis": "azimuth_angle",
+    "problem_class": "parameter_estimation",
+    "noise_model": "gaussian",
+    "solution_space": "rotor_parameter_vector",
+    "primitives": [
+      "M.blade.element_momentum",
+      "S.bvp.flapping_equation",
+      "O.chi2.thrust_torque"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "dynamic_stall_effect",
+    "tip_loss_factor_uncertainty",
+    "blade_structural_damping"
+  ],
+  "error_metric": "thrust_prediction_RMSE_N",
+  "error_metric_secondary": "vibration_mode_error_Hz",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "parameter_estimation",
+      "forward_operator": "rotor_thrust_torque_model",
+      "input_format": "measurement_only",
+      "omega": {
+        "rotor_RPM": 3000,
+        "advance_ratio_mu": 0.0,
+        "collective_pitch_deg": 8.0,
+        "altitude_m": 0
+      },
+      "epsilon_fn_center": "5 thrust_prediction_RMSE_N"
+    },
+    "allowed_forward_operators": [
+      "rotor_thrust_torque_model"
+    ],
+    "allowed_problem_classes": [
+      "parameter_estimation"
+    ],
+    "allowed_omega_dimensions": [
+      "rotor_RPM",
+      "advance_ratio_mu",
+      "collective_pitch_deg",
+      "altitude_m"
+    ],
+    "omega_bounds": {
+      "rotor_RPM": [
+        500,
+        10000
+      ],
+      "advance_ratio_mu": [
+        0.0,
+        0.4
+      ],
+      "collective_pitch_deg": [
+        0,
+        20.0
+      ],
+      "altitude_m": [
+        0,
+        5000
+      ]
+    },
+    "epsilon_bounds": {
+      "thrust_prediction_RMSE_N": [
+        0.5,
+        50
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-415",
+  "layer": "L2",
+  "parent_l1": "L1-415",
+  "principle_ref": "sha256:<L1-415_principle_hash>",
+  "title": "Advection-Dispersion Transport Inversion \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "N_monitoring_wells": [
+        2,
+        50
+      ],
+      "domain_length_m": [
+        10,
+        10000
+      ],
+      "v_m_d": [
+        0.01,
+        10.0
+      ],
+      "N_time_steps": [
+        20,
+        500
+      ]
+    },
+    "E": {
+      "forward": "dC/dt + v*(dC/dx) = D*(d ** 2C/dx ** 2) - lambda*C + S(x,t)",
+      "operator": "tracer_concentration_measurement",
+      "primitive_chain": "M.ade.advection_dispersion -> O.tikhonov.regularization -> S.fdm.crank_nicolson",
+      "inverse": "recover source concentration history S(t) at source location x_s from breakthrough curves C(x_obs"
+    },
+    "B": {
+      "concentration_positivity": "C >= 0",
+      "mass_balance": "total mass conserved"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "source_concentration_RMSE_mg_L",
+      "BTC_fit_RMSE",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "5 + 5 * (5 / N_monitoring_wells) ** 0.5"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 1D_concentration_source"
+    },
+    "baselines": [
+      {
+        "name": "Tikhonov_reg",
+        "method_sig": "L+O",
+        "expected_score": 12
+      },
+      {
+        "name": "TSVD_truncated",
+        "method_sig": "L+O",
+        "expected_score": 9
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_monitoring_wells": 5,
+        "domain_length_m": 100,
+        "v_m_d": 1.0,
+        "N_time_steps": 100,
+        "velocity_field_uncertainty": 0.0,
+        "dispersion_coefficient_uncertainty": 0.0,
+        "heterogeneity_scale": 0.0
+      },
+      "epsilon": 10.0
+    },
+    "tier_bounds": {
+      "N_monitoring_wells": [
+        2,
+        50
+      ],
+      "domain_length_m": [
+        10,
+        10000
+      ],
+      "v_m_d": [
+        0.01,
+        10.0
+      ],
+      "N_time_steps": [
+        20,
+        500
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.28,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.28 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

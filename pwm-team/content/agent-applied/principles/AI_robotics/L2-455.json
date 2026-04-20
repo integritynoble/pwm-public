@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-455",
+  "layer": "L2",
+  "parent_l1": "L1-455",
+  "principle_ref": "sha256:<L1-455_principle_hash>",
+  "title": "Orbital Mechanics Inversion (Lambert) \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "transfer_time_days": [
+        0.01,
+        365
+      ],
+      "orbit_radius_km": [
+        200,
+        60000
+      ],
+      "transfer_angle_deg": [
+        10,
+        170
+      ],
+      "N_revolutions": [
+        0,
+        10
+      ]
+    },
+    "E": {
+      "forward": "r1, r2 given, TOF = T; find v1 such that propagating from (r1,v1) reaches r2 in time T",
+      "operator": "two_position_vector_orbit_determination",
+      "primitive_chain": "M.lambert.problem_solver -> S.gooding.algorithm -> O.chi2.residuals_orbit",
+      "inverse": "recover initial and final velocity vectors v1 from two position vectors r1"
+    },
+    "B": {
+      "energy": "orbit eccentricity e >= 0",
+      "2body": "Keplerian motion only"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "delta_v_accuracy_m_s",
+      "orbit_determination_RMSE_km",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.5 + 0.5 * (transfer_angle_deg / 90) ** 0.2"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 orbital_elements_vector"
+    },
+    "baselines": [
+      {
+        "name": "Izzo_Lambert",
+        "method_sig": "L+O",
+        "expected_score": 1.0
+      },
+      {
+        "name": "Gooding_algorithm",
+        "method_sig": "L+O",
+        "expected_score": 0.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "transfer_time_days": 1.0,
+        "orbit_radius_km": 7000,
+        "transfer_angle_deg": 90,
+        "N_revolutions": 0,
+        "position_observation_error_km": 0.0,
+        "perturbation_from_central_body": 0.0,
+        "timing_uncertainty_s": 0.0
+      },
+      "epsilon": 1.0
+    },
+    "tier_bounds": {
+      "transfer_time_days": [
+        0.01,
+        365
+      ],
+      "orbit_radius_km": [
+        200,
+        60000
+      ],
+      "transfer_angle_deg": [
+        10,
+        170
+      ],
+      "N_revolutions": [
+        0,
+        10
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.25,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.25 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

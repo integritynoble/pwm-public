@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-366",
+  "layer": "L1",
+  "principle_number": "366",
+  "title": "CMB Power Spectrum Parameter Estimation",
+  "domain": "Astrophysics",
+  "sub_domain": "CMB cosmology",
+  "source_file": "AC_astrophysics/366_cmb_power_spectrum.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "CMB parameter estimation: infer cosmological parameters from CMB temperature and polarization power spectra via Boltzmann code.",
+    "forward_model": "C_l^{TT,EE,TE}(theta) from CAMB/CLASS Boltzmann solver; chi2 = sum_l (2l+1)/2 [C_l ** obs/C_l ** th - 1 - ln(C_l ** obs/C_l ** th)]",
+    "world_state_x": "cosmological parameter vector theta = (Omega_b, Omega_c, h, A_s, n_s, tau)",
+    "observation_y": "CMB angular power spectra C_l^{TT,EE,TE,BB} from l=2 to l_max",
+    "physical_parameters_theta": [
+      "l_max",
+      "N_ell_bins",
+      "beam_FWHM_arcmin",
+      "noise_level_uK_arcmin"
+    ]
+  },
+  "G": {
+    "dag": "S.boltzmann.transfer -> M.fisher.fisher_matrix -> O.mcmc.sampler",
+    "vertices": [
+      "S.boltzmann.transfer",
+      "M.fisher.fisher_matrix",
+      "O.mcmc.sampler"
+    ],
+    "arcs": [
+      "S.boltzmann.transfer -> M.fisher.fisher_matrix",
+      "M.fisher.fisher_matrix -> O.mcmc.sampler"
+    ],
+    "L_DAG": 3.8,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 10000.0,
+    "condition_number_effective": 200,
+    "condition_number_mismatched": 1000,
+    "regime": "Gaussian likelihood in C_l space; well-posed for lmax >= 1000; degeneracies broken by polarization data."
+  },
+  "C": {
+    "solver_class": "MCMC_CosmoMC or Nested_Sampling_MultiNest",
+    "convergence_rate_q": 2.0,
+    "error_bound": "sigma(Omega_c) <= 0.01 at Planck noise level",
+    "complexity": "O(N_CAMB * N_MCMC) with N_CAMB ~ 1s per call"
+  },
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "boltzmann_cmb_transfer",
+    "integration_axis": "multipole_l",
+    "problem_class": "parameter_estimation",
+    "noise_model": "thermal_gaussian",
+    "solution_space": "cosmological_parameter_vector",
+    "primitives": [
+      "S.boltzmann.transfer",
+      "M.fisher.fisher_matrix",
+      "O.mcmc.sampler"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "foreground_contamination",
+    "beam_uncertainty_percent",
+    "calibration_uncertainty_percent"
+  ],
+  "error_metric": "parameter_constraint_sigma_Omega",
+  "error_metric_secondary": "chi2_reduced",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "parameter_estimation",
+      "forward_operator": "boltzmann_cmb_transfer",
+      "input_format": "measurement_only",
+      "omega": {
+        "l_max": 2500,
+        "noise_uK_arcmin": 10.0,
+        "beam_FWHM_arcmin": 5.0,
+        "N_ell_bins": 40
+      },
+      "epsilon_fn_center": "0.01 parameter_constraint_sigma_Omega"
+    },
+    "allowed_forward_operators": [
+      "boltzmann_cmb_transfer"
+    ],
+    "allowed_problem_classes": [
+      "parameter_estimation"
+    ],
+    "allowed_omega_dimensions": [
+      "l_max",
+      "noise_uK_arcmin",
+      "beam_FWHM_arcmin",
+      "N_ell_bins"
+    ],
+    "omega_bounds": {
+      "l_max": [
+        100,
+        5000
+      ],
+      "noise_uK_arcmin": [
+        1.0,
+        100.0
+      ],
+      "beam_FWHM_arcmin": [
+        1.0,
+        30.0
+      ],
+      "N_ell_bins": [
+        10,
+        100
+      ]
+    },
+    "epsilon_bounds": {
+      "parameter_constraint_sigma_Omega": [
+        0.001,
+        0.1
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

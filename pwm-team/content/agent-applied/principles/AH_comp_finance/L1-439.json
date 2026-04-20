@@ -1,0 +1,143 @@
+{
+  "artifact_id": "L1-439",
+  "layer": "L1",
+  "principle_number": "439",
+  "title": "Heston Stochastic Volatility Calibration",
+  "domain": "Computational Finance",
+  "sub_domain": "Stochastic volatility",
+  "source_file": "AH_comp_finance/439_heston_stochastic_vol.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "Heston model calibration: fit 5-parameter stochastic vol model to observed implied volatility surface.",
+    "forward_model": "dS = rS dt + sqrt(v) S dW_S; dv = kappa(theta-v)dt + xi*sqrt(v)*dW_v; option price via Fourier inversion",
+    "world_state_x": "Heston parameters (v0, kappa, theta, xi, rho) describing vol dynamics",
+    "observation_y": "implied vol surface sigma_impl(K, T) or market prices C(K_i, T_j)",
+    "physical_parameters_theta": [
+      "v0_initial_var",
+      "kappa_mean_reversion",
+      "theta_long_run_var",
+      "xi_vol_of_vol",
+      "rho_correlation"
+    ]
+  },
+  "G": {
+    "dag": "M.heston.characteristic_function -> F.fourier.carr_madan -> O.chi2.vol_surface",
+    "vertices": [
+      "M.heston.characteristic_function",
+      "F.fourier.carr_madan",
+      "O.chi2.vol_surface"
+    ],
+    "arcs": [
+      "M.heston.characteristic_function -> F.fourier.carr_madan",
+      "F.fourier.carr_madan -> O.chi2.vol_surface"
+    ],
+    "L_DAG": 3.5,
+    "n_c": 1
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 10000.0,
+    "condition_number_effective": 500,
+    "condition_number_mismatched": 2000,
+    "regime": "Non-convex optimization; multiple local minima; Feller condition for non-explosion; parameter correlations cause degeneracies."
+  },
+  "C": {
+    "solver_class": "differential_evolution or Levenberg_Marquardt or CMA-ES",
+    "convergence_rate_q": 2.0,
+    "error_bound": "vol surface RMSE < 50 bp for liquid options",
+    "complexity": "O(N_options * N_FFT_points) per forward evaluation"
+  },
+  "physics_fingerprint": {
+    "carrier": "N/A",
+    "sensing_mechanism": "vol_surface_calibration_heston",
+    "integration_axis": "parameter_space",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "market_bid_ask_gaussian",
+    "solution_space": "stochastic_vol_parameter_vector",
+    "primitives": [
+      "M.heston.characteristic_function",
+      "F.fourier.carr_madan",
+      "O.chi2.vol_surface"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "data_sparsity_OTM_options",
+    "term_structure_inversion_error",
+    "market_microstructure_noise"
+  ],
+  "error_metric": "vol_surface_RMSE_bp",
+  "error_metric_secondary": "Heston_price_RMSE_percent",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "nonlinear_inverse",
+      "forward_operator": "vol_surface_calibration_heston",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_strikes": 15,
+        "N_maturities": 8,
+        "max_maturity_yr": 2.0,
+        "data_noise_bp": 30
+      },
+      "epsilon_fn_center": "60 vol_surface_RMSE_bp"
+    },
+    "allowed_forward_operators": [
+      "vol_surface_calibration_heston"
+    ],
+    "allowed_problem_classes": [
+      "nonlinear_inverse"
+    ],
+    "allowed_omega_dimensions": [
+      "N_strikes",
+      "N_maturities",
+      "max_maturity_yr",
+      "data_noise_bp"
+    ],
+    "omega_bounds": {
+      "N_strikes": [
+        5,
+        50
+      ],
+      "N_maturities": [
+        3,
+        30
+      ],
+      "max_maturity_yr": [
+        0.5,
+        5.0
+      ],
+      "data_noise_bp": [
+        10,
+        200
+      ]
+    },
+    "epsilon_bounds": {
+      "vol_surface_RMSE_bp": [
+        10,
+        500
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

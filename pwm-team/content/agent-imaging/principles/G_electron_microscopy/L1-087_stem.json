@@ -1,0 +1,175 @@
+{
+  "artifact_id": "L1-087",
+  "layer": "L1",
+  "principle_number": "087",
+  "title": "Scanning TEM (STEM) \u2014 HAADF / BF imaging with convergent beam",
+  "domain": "Electron Microscopy",
+  "sub_domain": "Atom-resolution Z-contrast imaging",
+  "source_file": "G_electron_microscopy/087_stem.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical electron-microscopy literature for this principle.",
+  "E": {
+    "description": "Scanning TEM (STEM) \u2014 HAADF / BF imaging with convergent beam forward model.",
+    "forward_model": "y(r) = integral |Psi_probe(r'; aberration)|^2 * scatter_HAADF(r - r') d^2 r' + n",
+    "world_state_x": "Scene parameter (density / orientation / spectrum / complex field depending on principle)",
+    "observation_y": "Electron detector output at declared geometry + noise",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "pixel_A",
+      "kV",
+      "probe_aberration",
+      "scan_distortion",
+      "peak_electrons",
+      "beam_damage"
+    ]
+  },
+  "G": {
+    "dag": "L.illumination.convergent_probe -> S.scan.raster -> D.annular_detector -> int.temporal",
+    "vertices": [
+      "L.illumination.convergent_probe",
+      "S.scan.raster",
+      "D.annular_detector",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.illumination.convergent_probe -> S.scan.raster",
+      "S.scan.raster -> D.annular_detector",
+      "D.annular_detector -> int.temporal"
+    ],
+    "L_DAG": 3.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 360,
+    "condition_number_effective": 18,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Wiener-STEM, BM3D-STEM, STEM-UNet",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(electron_count) + mismatch bias.",
+    "complexity": "O(H W) to O(H W Z) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "electron",
+    "sensing_mechanism": "convergent_electron_probe",
+    "integration_axis": "temporal",
+    "problem_class": "linear_inverse",
+    "noise_model": "shot_poisson",
+    "solution_space": "2D_intensity",
+    "primitives": [
+      "L.illumination.convergent_probe",
+      "S.scan.raster",
+      "D.annular_detector",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "probe_aberration",
+    "scan_distortion",
+    "beam_damage"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "stem_haadf",
+      "forward_operator": "stem_haadf_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 2048,
+        "W": 2048,
+        "pixel_A": 0.5,
+        "kV": 200,
+        "probe_aberration": 0.0,
+        "scan_distortion": 0.0,
+        "peak_electrons": 200,
+        "beam_damage": 0.0
+      },
+      "epsilon_fn_center": "28.0"
+    },
+    "allowed_forward_operators": [
+      "stem_haadf_forward"
+    ],
+    "allowed_problem_classes": [
+      "stem_haadf"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "pixel_A",
+      "kV",
+      "probe_aberration",
+      "scan_distortion",
+      "peak_electrons",
+      "beam_damage",
+      "probe_aberration",
+      "scan_distortion",
+      "beam_damage"
+    ],
+    "omega_bounds": {
+      "H": [
+        512,
+        8192
+      ],
+      "W": [
+        512,
+        8192
+      ],
+      "pixel_A": [
+        0.1,
+        5.0
+      ],
+      "kV": [
+        60,
+        300
+      ],
+      "probe_aberration": [
+        0.0,
+        0.3
+      ],
+      "scan_distortion": [
+        0.0,
+        0.05
+      ],
+      "peak_electrons": [
+        5,
+        5000
+      ],
+      "beam_damage": [
+        0.0,
+        0.5
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        40.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

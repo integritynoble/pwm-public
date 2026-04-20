@@ -1,0 +1,161 @@
+{
+  "artifact_id": "L2-121",
+  "layer": "L2",
+  "parent_l1": "L1-121",
+  "title": "Magnetic Flux Leakage (MFL) \u2014 pipeline & rail inspection Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        64,
+        1024
+      ],
+      "W": [
+        512,
+        32768
+      ],
+      "N_sensors": [
+        8,
+        256
+      ],
+      "lift_off_mm": [
+        0.1,
+        10.0
+      ],
+      "velocity_mps": [
+        0.1,
+        20.0
+      ],
+      "SNR_dB": [
+        0.0,
+        35.0
+      ],
+      "liftoff_variation": [
+        0.0,
+        0.5
+      ],
+      "magnetization_non_uniformity": [
+        0.0,
+        0.3
+      ],
+      "external_interference": [
+        0.0,
+        0.3
+      ],
+      "velocity_effect": [
+        0.0,
+        0.3
+      ]
+    },
+    "E": {
+      "forward": "B_leak(x,y) = integral m(defect(r)) * kernel(r - (x,y), lift_off, velocity) + n",
+      "operator": "mfl_forward_mismatch",
+      "primitive_chain": "L.dc_magnetize -> L.flux_leakage -> D.hall_sensor -> int.spatial",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "16.0 + 0.3 * SNR_dB - 10.0 * liftoff_variation - 6.0 * magnetization_non_uniformity - 0.2 * velocity_effect * 20"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Dipole-Model",
+        "method_sig": "L+O",
+        "expected_psnr": 22.0
+      },
+      {
+        "name": "NN-MFL",
+        "method_sig": "L+N",
+        "expected_psnr": 24.5
+      },
+      {
+        "name": "Deep-MFL",
+        "method_sig": "L+N",
+        "expected_psnr": 27.0
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 256,
+        "W": 4096,
+        "N_sensors": 32,
+        "lift_off_mm": 1.0,
+        "velocity_mps": 1.0,
+        "SNR_dB": 20,
+        "liftoff_variation": 0.0,
+        "magnetization_non_uniformity": 0.0,
+        "external_interference": 0.0
+      },
+      "epsilon": 24.0
+    },
+    "tier_bounds": {
+      "H": [
+        64,
+        1024
+      ],
+      "W": [
+        512,
+        32768
+      ],
+      "N_sensors": [
+        8,
+        256
+      ],
+      "lift_off_mm": [
+        0.1,
+        10.0
+      ],
+      "velocity_mps": [
+        0.1,
+        20.0
+      ],
+      "SNR_dB": [
+        0.0,
+        35.0
+      ],
+      "liftoff_variation": [
+        0.0,
+        0.5
+      ],
+      "magnetization_non_uniformity": [
+        0.0,
+        0.3
+      ],
+      "external_interference": [
+        0.0,
+        0.3
+      ],
+      "velocity_effect": [
+        0.0,
+        0.3
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.5,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

@@ -1,0 +1,152 @@
+{
+  "artifact_id": "L2-104",
+  "layer": "L2",
+  "parent_l1": "L1-104",
+  "title": "Ground Penetrating Radar (GPR) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "N_samples": [
+        128,
+        2048
+      ],
+      "N_traces": [
+        64,
+        1024
+      ],
+      "f_MHz": [
+        25,
+        2000
+      ],
+      "depth_range_m": [
+        0.1,
+        100
+      ],
+      "SNR_dB": [
+        0.0,
+        30.0
+      ],
+      "soil_permittivity_variation": [
+        0.0,
+        0.3
+      ],
+      "clutter": [
+        0.0,
+        0.5
+      ],
+      "attenuation_depth": [
+        0.1,
+        2.0
+      ],
+      "antenna_coupling": [
+        0.0,
+        0.3
+      ]
+    },
+    "E": {
+      "forward": "y(t, x) = sum_z reflectivity(x, z) * pulse(t - 2 * traveltime(x,z)) + clutter + n; Kirchhoff or reverse-time migration for recovery",
+      "operator": "gpr_radar_forward_mismatch",
+      "primitive_chain": "L.emit.em_pulse -> L.subsurface_reflect -> L.migration -> int.temporal",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "12.0 + 0.2 * SNR_dB - 15.0 * soil_permittivity_variation - 8.0 * clutter"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Kirchhoff-Migration",
+        "method_sig": "L+O",
+        "expected_psnr": 16.5
+      },
+      {
+        "name": "Reverse-Time-Migration",
+        "method_sig": "L+O",
+        "expected_psnr": 18.5
+      },
+      {
+        "name": "GPR-Net",
+        "method_sig": "L+N",
+        "expected_psnr": 21.0
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_samples": 512,
+        "N_traces": 256,
+        "f_MHz": 250,
+        "depth_range_m": 10,
+        "SNR_dB": 15.0,
+        "soil_permittivity_variation": 0.05,
+        "clutter": 0.0,
+        "attenuation_depth": 0.5
+      },
+      "epsilon": 18.0
+    },
+    "tier_bounds": {
+      "N_samples": [
+        128,
+        2048
+      ],
+      "N_traces": [
+        64,
+        1024
+      ],
+      "f_MHz": [
+        25,
+        2000
+      ],
+      "depth_range_m": [
+        0.1,
+        100
+      ],
+      "SNR_dB": [
+        0.0,
+        30.0
+      ],
+      "soil_permittivity_variation": [
+        0.0,
+        0.3
+      ],
+      "clutter": [
+        0.0,
+        0.5
+      ],
+      "attenuation_depth": [
+        0.1,
+        2.0
+      ],
+      "antenna_coupling": [
+        0.0,
+        0.3
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.5,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

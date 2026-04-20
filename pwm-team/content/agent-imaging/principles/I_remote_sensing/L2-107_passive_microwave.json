@@ -1,0 +1,152 @@
+{
+  "artifact_id": "L2-107",
+  "layer": "L2",
+  "parent_l1": "L1-107",
+  "title": "Passive Microwave Radiometry Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        128,
+        4096
+      ],
+      "W": [
+        128,
+        4096
+      ],
+      "N_channels": [
+        2,
+        30
+      ],
+      "f_GHz": [
+        1,
+        300
+      ],
+      "SNR_dB": [
+        15.0,
+        45.0
+      ],
+      "antenna_sidelobe": [
+        0.0,
+        0.05
+      ],
+      "land_contamination": [
+        0.0,
+        0.5
+      ],
+      "RFI": [
+        0.0,
+        0.5
+      ],
+      "surface_emissivity_uncertainty": [
+        0.0,
+        0.2
+      ]
+    },
+    "E": {
+      "forward": "T_b(theta, phi) = integral antenna_pattern(theta, phi) * T_physical(surface) * emissivity + atm_contrib + n",
+      "operator": "passive_microwave_forward_mismatch",
+      "primitive_chain": "L.radiometer -> L.antenna_pattern -> int.temporal",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "20.0 + 0.2 * SNR_dB - 8.0 * antenna_sidelobe * 20 - 4.0 * land_contamination"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "GMI-Backus-Gilbert",
+        "method_sig": "L+O",
+        "expected_psnr": 26.0
+      },
+      {
+        "name": "Brightness-Interp",
+        "method_sig": "L+O",
+        "expected_psnr": 27.5
+      },
+      {
+        "name": "MW-UNet",
+        "method_sig": "L+N",
+        "expected_psnr": 30.0
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 1440,
+        "W": 720,
+        "N_channels": 12,
+        "f_GHz": 19,
+        "SNR_dB": 35.0,
+        "antenna_sidelobe": 0.01,
+        "land_contamination": 0.0,
+        "RFI": 0.0
+      },
+      "epsilon": 28.0
+    },
+    "tier_bounds": {
+      "H": [
+        128,
+        4096
+      ],
+      "W": [
+        128,
+        4096
+      ],
+      "N_channels": [
+        2,
+        30
+      ],
+      "f_GHz": [
+        1,
+        300
+      ],
+      "SNR_dB": [
+        15.0,
+        45.0
+      ],
+      "antenna_sidelobe": [
+        0.0,
+        0.05
+      ],
+      "land_contamination": [
+        0.0,
+        0.5
+      ],
+      "RFI": [
+        0.0,
+        0.5
+      ],
+      "surface_emissivity_uncertainty": [
+        0.0,
+        0.2
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.5,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

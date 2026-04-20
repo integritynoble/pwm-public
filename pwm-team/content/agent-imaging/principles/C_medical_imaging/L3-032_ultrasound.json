@@ -1,0 +1,181 @@
+{
+  "artifact_id": "L3-032",
+  "layer": "L3",
+  "parent_l2": "L2-032",
+  "parent_l1": "L1-032",
+  "title": "Clinical B-mode Ultrasound Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "canonical clinical/public dataset for this modality",
+    "secondary": "simulated forward synthesis at declared Omega",
+    "construction_method": "parametric forward + declared noise",
+    "num_dev_instances_per_tier": 20
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "N_elements": 128,
+        "N_lines": 256,
+        "f_MHz": 5,
+        "depth_cm": 15,
+        "SNR_dB": 25.0,
+        "acoustic_attenuation": 0.1,
+        "speed_of_sound_error": 0.0,
+        "shadowing": 0.0,
+        "reverberation": 0.0,
+        "probe_pressure": 0.0
+      },
+      "epsilon": 28.0,
+      "d_ibench": 0.14,
+      "baselines": [
+        {
+          "name": "Delay-Sum",
+          "score": 26.0,
+          "Q": 0.88
+        },
+        {
+          "name": "MVDR",
+          "score": 27.5,
+          "Q": 0.88
+        },
+        {
+          "name": "US-UNet",
+          "score": 29.5,
+          "Q": 0.88
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "N_elements": 128,
+        "N_lines": 256,
+        "f_MHz": 5,
+        "depth_cm": 15,
+        "SNR_dB": 22.0,
+        "acoustic_attenuation": 0.38,
+        "speed_of_sound_error": 0.010000000000000002,
+        "shadowing": 0.1,
+        "reverberation": 0.06,
+        "probe_pressure": 0.06
+      },
+      "epsilon": 22.96,
+      "d_ibench": 0.28,
+      "baselines": [
+        {
+          "name": "Delay-Sum",
+          "score": 24.0,
+          "Q": 0.68
+        },
+        {
+          "name": "MVDR",
+          "score": 25.5,
+          "Q": 0.68
+        },
+        {
+          "name": "US-UNet",
+          "score": 27.5,
+          "Q": 0.68
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "N_elements": 128,
+        "N_lines": 256,
+        "f_MHz": 5,
+        "depth_cm": 15,
+        "SNR_dB": 13.0,
+        "acoustic_attenuation": 0.7999999999999999,
+        "speed_of_sound_error": 0.025,
+        "shadowing": 0.25,
+        "reverberation": 0.15,
+        "probe_pressure": 0.15
+      },
+      "epsilon": 17.92,
+      "d_ibench": 0.48,
+      "baselines": [
+        {
+          "name": "Delay-Sum",
+          "score": 22.0,
+          "Q": 0.48
+        },
+        {
+          "name": "MVDR",
+          "score": 23.5,
+          "Q": 0.48
+        },
+        {
+          "name": "US-UNet",
+          "score": 25.5,
+          "Q": 0.48
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "N_elements": 128,
+        "N_lines": 256,
+        "f_MHz": 5,
+        "depth_cm": 15,
+        "SNR_dB": 0.0,
+        "acoustic_attenuation": 1.5,
+        "speed_of_sound_error": 0.05,
+        "shadowing": 0.5,
+        "reverberation": 0.3,
+        "probe_pressure": 0.3
+      },
+      "epsilon": 12.88,
+      "d_ibench": 0.72,
+      "baselines": [
+        {
+          "name": "Delay-Sum",
+          "score": 20.0,
+          "Q": 0.28
+        },
+        {
+          "name": "MVDR",
+          "score": 21.5,
+          "Q": 0.28
+        },
+        {
+          "name": "US-UNet",
+          "score": 23.5,
+          "Q": 0.28
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "full parametric sweep",
+      "num_dev_instances": 200,
+      "construction_method": "parametric Omega sweep"
+    },
+    "baselines": [
+      {
+        "name": "Delay-Sum",
+        "overall_Q": 0.7
+      },
+      {
+        "name": "MVDR",
+        "overall_Q": 0.6
+      },
+      {
+        "name": "US-UNet",
+        "overall_Q": 0.5
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind strata corner.",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

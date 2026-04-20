@@ -1,0 +1,140 @@
+{
+  "artifact_id": "L2-049",
+  "layer": "L2",
+  "parent_l1": "L1-049",
+  "title": "Fundus Imaging (retinal photography) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": 1024,
+      "W": 1024,
+      "fov_deg": [
+        20,
+        60
+      ],
+      "pupil_mm": [
+        2.0,
+        8.0
+      ],
+      "SNR_dB": [
+        15.0,
+        45.0
+      ],
+      "cataract_opacity": [
+        0.0,
+        0.5
+      ],
+      "reflex_artifact": [
+        0.0,
+        0.3
+      ],
+      "misalignment": [
+        0.0,
+        0.5
+      ],
+      "pupil_size_variation": [
+        0.0,
+        0.3
+      ]
+    },
+    "E": {
+      "forward": "y(r) = [PSF_eye conv retinal_reflectance] + flash_reflex + n",
+      "operator": "fundus_forward_mismatch",
+      "primitive_chain": "L.fundus_flash -> K.psf.eye_pupil -> int.spatial",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "25.0 + 0.3 * SNR_dB - 10.0 * cataract_opacity - 6.0 * reflex_artifact"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Vignette-Correct",
+        "method_sig": "L+O",
+        "expected_psnr": 30.0
+      },
+      {
+        "name": "CLAHE-Fundus",
+        "method_sig": "L+O",
+        "expected_psnr": 32.0
+      },
+      {
+        "name": "Fundus-Net",
+        "method_sig": "L+N",
+        "expected_psnr": 34.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 3000,
+        "W": 3000,
+        "fov_deg": 45,
+        "pupil_mm": 4.0,
+        "SNR_dB": 35,
+        "cataract_opacity": 0.0,
+        "reflex_artifact": 0.0,
+        "misalignment": 0.0
+      },
+      "epsilon": 33.0
+    },
+    "tier_bounds": {
+      "H": 1024,
+      "W": 1024,
+      "fov_deg": [
+        20,
+        60
+      ],
+      "pupil_mm": [
+        2.0,
+        8.0
+      ],
+      "SNR_dB": [
+        15.0,
+        45.0
+      ],
+      "cataract_opacity": [
+        0.0,
+        0.5
+      ],
+      "reflex_artifact": [
+        0.0,
+        0.3
+      ],
+      "misalignment": [
+        0.0,
+        0.5
+      ],
+      "pupil_size_variation": [
+        0.0,
+        0.3
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.5,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

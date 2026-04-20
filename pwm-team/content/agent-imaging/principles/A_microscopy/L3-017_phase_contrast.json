@@ -1,0 +1,177 @@
+{
+  "artifact_id": "L3-017",
+  "layer": "L3",
+  "parent_l2": "L2-017",
+  "parent_l1": "L1-017",
+  "title": "Zernike Phase-Contrast Microscopy Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "principle-appropriate canonical dataset (domain-standard)",
+    "secondary": "published follow-up benchmark dataset",
+    "construction_method": "parametric forward synthesis at declared Omega; Poisson/Gaussian noise at declared level",
+    "num_dev_instances_per_tier": 20
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "H": 1024,
+        "W": 1024,
+        "pixel_nm": 200,
+        "NA": 0.75,
+        "lambda_nm": 550,
+        "photon_count": 1000,
+        "phase_plate_alignment": 0.0,
+        "halo_artifact": 0.0,
+        "annulus_diaphragm_drift": 0.0
+      },
+      "epsilon": 28.0,
+      "d_ibench": 0.14,
+      "baselines": [
+        {
+          "name": "TIE-Phase",
+          "score": 26.0,
+          "Q": 0.8
+        },
+        {
+          "name": "PhaseCNN",
+          "score": 30.2,
+          "Q": 0.85
+        },
+        {
+          "name": "Gerchberg-Saxton",
+          "score": 27.0,
+          "Q": 0.9
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "H": 1024,
+        "W": 1024,
+        "pixel_nm": 200,
+        "NA": 0.75,
+        "lambda_nm": 550,
+        "photon_count": 500,
+        "phase_plate_alignment": 0.020000000000000004,
+        "halo_artifact": 0.1,
+        "annulus_diaphragm_drift": 0.020000000000000004
+      },
+      "epsilon": 22.4,
+      "d_ibench": 0.28,
+      "baselines": [
+        {
+          "name": "TIE-Phase",
+          "score": 23.5,
+          "Q": 0.6
+        },
+        {
+          "name": "PhaseCNN",
+          "score": 27.7,
+          "Q": 0.65
+        },
+        {
+          "name": "Gerchberg-Saxton",
+          "score": 24.5,
+          "Q": 0.7
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "H": 1024,
+        "W": 1024,
+        "pixel_nm": 200,
+        "NA": 0.75,
+        "lambda_nm": 550,
+        "photon_count": 200,
+        "phase_plate_alignment": 0.05,
+        "halo_artifact": 0.25,
+        "annulus_diaphragm_drift": 0.05
+      },
+      "epsilon": 16.8,
+      "d_ibench": 0.48,
+      "baselines": [
+        {
+          "name": "TIE-Phase",
+          "score": 21.0,
+          "Q": 0.4
+        },
+        {
+          "name": "PhaseCNN",
+          "score": 25.2,
+          "Q": 0.45
+        },
+        {
+          "name": "Gerchberg-Saxton",
+          "score": 22.0,
+          "Q": 0.5
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "H": 1024,
+        "W": 1024,
+        "pixel_nm": 200,
+        "NA": 0.75,
+        "lambda_nm": 550,
+        "photon_count": 83,
+        "phase_plate_alignment": 0.1,
+        "halo_artifact": 0.5,
+        "annulus_diaphragm_drift": 0.1
+      },
+      "epsilon": 11.2,
+      "d_ibench": 0.72,
+      "baselines": [
+        {
+          "name": "TIE-Phase",
+          "score": 18.5,
+          "Q": 0.2
+        },
+        {
+          "name": "PhaseCNN",
+          "score": 22.7,
+          "Q": 0.25
+        },
+        {
+          "name": "Gerchberg-Saxton",
+          "score": 19.5,
+          "Q": 0.3
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "full Omega parametric sweep",
+      "num_dev_instances": 200,
+      "construction_method": "parametric sweep of all declared Omega dimensions"
+    },
+    "baselines": [
+      {
+        "name": "TIE-Phase",
+        "overall_Q": 0.7
+      },
+      {
+        "name": "PhaseCNN",
+        "overall_Q": 0.6
+      },
+      {
+        "name": "Gerchberg-Saxton",
+        "overall_Q": 0.5
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind strata with simultaneous worst-case mismatch + low photon corner.",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

@@ -1,0 +1,185 @@
+{
+  "artifact_id": "L3-054",
+  "layer": "L3",
+  "parent_l2": "L2-054",
+  "parent_l1": "L1-054",
+  "title": "Photon-Counting CT (PCCT) \u2014 spectral detector CT Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "canonical clinical/public dataset for this modality",
+    "secondary": "simulated forward synthesis at declared Omega",
+    "construction_method": "parametric forward + declared noise",
+    "num_dev_instances_per_tier": 20
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "Z": 256,
+        "N_projections": 720,
+        "N_energy_bins": 5,
+        "mAs": 100,
+        "pixel_mm": 0.25,
+        "charge_sharing": 0.0,
+        "pulse_pileup": 0.0,
+        "beam_hardening": 0.0,
+        "k_edge_calibration": 0.0
+      },
+      "epsilon": 28.0,
+      "d_ibench": 0.14,
+      "baselines": [
+        {
+          "name": "FBP-Spectral",
+          "score": 25.5,
+          "Q": 0.88
+        },
+        {
+          "name": "Spectral-MBIR",
+          "score": 28.0,
+          "Q": 0.88
+        },
+        {
+          "name": "PCCT-Net",
+          "score": 30.5,
+          "Q": 0.88
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "Z": 256,
+        "N_projections": 720,
+        "N_energy_bins": 5,
+        "mAs": 50,
+        "pixel_mm": 0.25,
+        "charge_sharing": 0.06,
+        "pulse_pileup": 0.1,
+        "beam_hardening": 0.06,
+        "k_edge_calibration": 0.020000000000000004
+      },
+      "epsilon": 22.96,
+      "d_ibench": 0.28,
+      "baselines": [
+        {
+          "name": "FBP-Spectral",
+          "score": 23.5,
+          "Q": 0.68
+        },
+        {
+          "name": "Spectral-MBIR",
+          "score": 26.0,
+          "Q": 0.68
+        },
+        {
+          "name": "PCCT-Net",
+          "score": 28.5,
+          "Q": 0.68
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "Z": 256,
+        "N_projections": 720,
+        "N_energy_bins": 5,
+        "mAs": 20,
+        "pixel_mm": 0.25,
+        "charge_sharing": 0.15,
+        "pulse_pileup": 0.25,
+        "beam_hardening": 0.15,
+        "k_edge_calibration": 0.05
+      },
+      "epsilon": 17.92,
+      "d_ibench": 0.48,
+      "baselines": [
+        {
+          "name": "FBP-Spectral",
+          "score": 21.5,
+          "Q": 0.48
+        },
+        {
+          "name": "Spectral-MBIR",
+          "score": 24.0,
+          "Q": 0.48
+        },
+        {
+          "name": "PCCT-Net",
+          "score": 26.5,
+          "Q": 0.48
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "Z": 256,
+        "N_projections": 720,
+        "N_energy_bins": 5,
+        "mAs": 10,
+        "pixel_mm": 0.25,
+        "charge_sharing": 0.3,
+        "pulse_pileup": 0.5,
+        "beam_hardening": 0.3,
+        "k_edge_calibration": 0.1
+      },
+      "epsilon": 12.88,
+      "d_ibench": 0.72,
+      "baselines": [
+        {
+          "name": "FBP-Spectral",
+          "score": 19.5,
+          "Q": 0.28
+        },
+        {
+          "name": "Spectral-MBIR",
+          "score": 22.0,
+          "Q": 0.28
+        },
+        {
+          "name": "PCCT-Net",
+          "score": 24.5,
+          "Q": 0.28
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "full parametric sweep",
+      "num_dev_instances": 200,
+      "construction_method": "parametric Omega sweep"
+    },
+    "baselines": [
+      {
+        "name": "FBP-Spectral",
+        "overall_Q": 0.7
+      },
+      {
+        "name": "Spectral-MBIR",
+        "overall_Q": 0.6
+      },
+      {
+        "name": "PCCT-Net",
+        "overall_Q": 0.5
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind strata corner.",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

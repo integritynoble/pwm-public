@@ -1,0 +1,181 @@
+{
+  "artifact_id": "L3-050",
+  "layer": "L3",
+  "parent_l2": "L2-050",
+  "parent_l1": "L1-050",
+  "title": "OCT Angiography (OCTA) Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "canonical clinical/public dataset for this modality",
+    "secondary": "simulated forward synthesis at declared Omega",
+    "construction_method": "parametric forward + declared noise",
+    "num_dev_instances_per_tier": 20
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "Z": 1024,
+        "N_repeat": 4,
+        "scan_pattern": "raster",
+        "SNR_dB": 25.0,
+        "eye_motion": 0.0,
+        "signal_strength_variation": 0.0,
+        "projection_artifact": 0.0,
+        "decorrelation_tail": 0.0
+      },
+      "epsilon": 25.0,
+      "d_ibench": 0.14,
+      "baselines": [
+        {
+          "name": "Amplitude-Decorr",
+          "score": 22.5,
+          "Q": 0.88
+        },
+        {
+          "name": "SSADA",
+          "score": 25.0,
+          "Q": 0.88
+        },
+        {
+          "name": "OCTA-Net",
+          "score": 27.5,
+          "Q": 0.88
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "Z": 1024,
+        "N_repeat": 4,
+        "scan_pattern": "raster",
+        "SNR_dB": 22.0,
+        "eye_motion": 0.1,
+        "signal_strength_variation": 0.06,
+        "projection_artifact": 0.06,
+        "decorrelation_tail": 0.06
+      },
+      "epsilon": 20.5,
+      "d_ibench": 0.28,
+      "baselines": [
+        {
+          "name": "Amplitude-Decorr",
+          "score": 20.5,
+          "Q": 0.68
+        },
+        {
+          "name": "SSADA",
+          "score": 23.0,
+          "Q": 0.68
+        },
+        {
+          "name": "OCTA-Net",
+          "score": 25.5,
+          "Q": 0.68
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "Z": 1024,
+        "N_repeat": 4,
+        "scan_pattern": "raster",
+        "SNR_dB": 13.0,
+        "eye_motion": 0.25,
+        "signal_strength_variation": 0.15,
+        "projection_artifact": 0.15,
+        "decorrelation_tail": 0.15
+      },
+      "epsilon": 16.0,
+      "d_ibench": 0.48,
+      "baselines": [
+        {
+          "name": "Amplitude-Decorr",
+          "score": 18.5,
+          "Q": 0.48
+        },
+        {
+          "name": "SSADA",
+          "score": 21.0,
+          "Q": 0.48
+        },
+        {
+          "name": "OCTA-Net",
+          "score": 23.5,
+          "Q": 0.48
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "Z": 1024,
+        "N_repeat": 4,
+        "scan_pattern": "raster",
+        "SNR_dB": 10.0,
+        "eye_motion": 0.5,
+        "signal_strength_variation": 0.3,
+        "projection_artifact": 0.3,
+        "decorrelation_tail": 0.3
+      },
+      "epsilon": 11.5,
+      "d_ibench": 0.72,
+      "baselines": [
+        {
+          "name": "Amplitude-Decorr",
+          "score": 16.5,
+          "Q": 0.28
+        },
+        {
+          "name": "SSADA",
+          "score": 19.0,
+          "Q": 0.28
+        },
+        {
+          "name": "OCTA-Net",
+          "score": 21.5,
+          "Q": 0.28
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "full parametric sweep",
+      "num_dev_instances": 200,
+      "construction_method": "parametric Omega sweep"
+    },
+    "baselines": [
+      {
+        "name": "Amplitude-Decorr",
+        "overall_Q": 0.7
+      },
+      {
+        "name": "SSADA",
+        "overall_Q": 0.6
+      },
+      {
+        "name": "OCTA-Net",
+        "overall_Q": 0.5
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind strata corner.",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

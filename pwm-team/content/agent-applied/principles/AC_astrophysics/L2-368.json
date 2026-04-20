@@ -1,0 +1,126 @@
+{
+  "artifact_id": "L2-368",
+  "layer": "L2",
+  "parent_l1": "L1-368",
+  "principle_ref": "sha256:<L1-368_principle_hash>",
+  "title": "Strong Gravitational Lensing Inversion \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        50,
+        500
+      ],
+      "W": [
+        50,
+        500
+      ],
+      "theta_E_arcsec": [
+        0.2,
+        3.0
+      ],
+      "e_ellipticity": [
+        0.0,
+        0.5
+      ],
+      "gamma_shear": [
+        0.0,
+        0.2
+      ]
+    },
+    "E": {
+      "forward": "I_obs(theta) = integral PSF(theta-theta') * I_src(beta(theta', kappa)) dtheta' + noise",
+      "operator": "gravitational_deflection_mapping",
+      "primitive_chain": "M.lens.deflection -> S.source.pixelization -> O.chi2.image_plane",
+      "inverse": "recover convergence kappa(theta) (lens) and source surface brightness I_src(beta) from lensed image I_obs(theta) in R^{H x W} (HST/JWST quality)"
+    },
+    "B": {
+      "convergence": "kappa >= 0",
+      "source_positivity": "I_src >= 0"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "image_chi2_reduced",
+      "source_plane_regularization",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "1.0 + 0.1 * (e_ellipticity / 0.5) ** 2"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 2D_lens_mass_distribution"
+    },
+    "baselines": [
+      {
+        "name": "SIE_parametric",
+        "method_sig": "L+O",
+        "expected_score": 1.5
+      },
+      {
+        "name": "pixelized_SLI",
+        "method_sig": "L+O",
+        "expected_score": 1.05
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 100,
+        "W": 100,
+        "theta_E_arcsec": 1.0,
+        "e_ellipticity": 0.2,
+        "gamma_shear": 0.05,
+        "PSF_mismatch": 0.0,
+        "line_of_sight_contamination": 0.0,
+        "lens_light_residual": 0.0
+      },
+      "epsilon": 1.1
+    },
+    "tier_bounds": {
+      "H": [
+        50,
+        500
+      ],
+      "W": [
+        50,
+        500
+      ],
+      "theta_E_arcsec": [
+        0.2,
+        3.0
+      ],
+      "e_ellipticity": [
+        0.0,
+        0.5
+      ],
+      "gamma_shear": [
+        0.0,
+        0.2
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.48,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.48 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

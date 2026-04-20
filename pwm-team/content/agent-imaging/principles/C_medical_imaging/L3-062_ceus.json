@@ -1,0 +1,177 @@
+{
+  "artifact_id": "L3-062",
+  "layer": "L3",
+  "parent_l2": "L2-062",
+  "parent_l1": "L1-062",
+  "title": "Contrast-Enhanced Ultrasound (CEUS) Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "canonical clinical/public dataset for this modality",
+    "secondary": "simulated forward synthesis at declared Omega",
+    "construction_method": "parametric forward + declared noise",
+    "num_dev_instances_per_tier": 20
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "N_elements": 128,
+        "f_MHz": 3.5,
+        "MI": 0.1,
+        "N_frames": 200,
+        "SNR_dB": 22.0,
+        "bubble_destruction": 0.0,
+        "nonlinear_tissue_harmonics": 0.0,
+        "flow_artifacts": 0.0,
+        "contrast_washout": 0.0
+      },
+      "epsilon": 22.0,
+      "d_ibench": 0.14,
+      "baselines": [
+        {
+          "name": "Pulse-Inversion",
+          "score": 19.5,
+          "Q": 0.88
+        },
+        {
+          "name": "Amplitude-Mod",
+          "score": 22.0,
+          "Q": 0.88
+        },
+        {
+          "name": "CEUS-Net",
+          "score": 24.5,
+          "Q": 0.88
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "N_elements": 128,
+        "f_MHz": 3.5,
+        "MI": 0.1,
+        "N_frames": 200,
+        "SNR_dB": 19.0,
+        "bubble_destruction": 0.06,
+        "nonlinear_tissue_harmonics": 0.06,
+        "flow_artifacts": 0.06,
+        "contrast_washout": 0.1
+      },
+      "epsilon": 18.04,
+      "d_ibench": 0.28,
+      "baselines": [
+        {
+          "name": "Pulse-Inversion",
+          "score": 17.5,
+          "Q": 0.68
+        },
+        {
+          "name": "Amplitude-Mod",
+          "score": 20.0,
+          "Q": 0.68
+        },
+        {
+          "name": "CEUS-Net",
+          "score": 22.5,
+          "Q": 0.68
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "N_elements": 128,
+        "f_MHz": 3.5,
+        "MI": 0.1,
+        "N_frames": 200,
+        "SNR_dB": 10.0,
+        "bubble_destruction": 0.15,
+        "nonlinear_tissue_harmonics": 0.15,
+        "flow_artifacts": 0.15,
+        "contrast_washout": 0.25
+      },
+      "epsilon": 14.08,
+      "d_ibench": 0.48,
+      "baselines": [
+        {
+          "name": "Pulse-Inversion",
+          "score": 15.5,
+          "Q": 0.48
+        },
+        {
+          "name": "Amplitude-Mod",
+          "score": 18.0,
+          "Q": 0.48
+        },
+        {
+          "name": "CEUS-Net",
+          "score": 20.5,
+          "Q": 0.48
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "N_elements": 128,
+        "f_MHz": 3.5,
+        "MI": 0.1,
+        "N_frames": 200,
+        "SNR_dB": 0.0,
+        "bubble_destruction": 0.3,
+        "nonlinear_tissue_harmonics": 0.3,
+        "flow_artifacts": 0.3,
+        "contrast_washout": 0.5
+      },
+      "epsilon": 10.12,
+      "d_ibench": 0.72,
+      "baselines": [
+        {
+          "name": "Pulse-Inversion",
+          "score": 13.5,
+          "Q": 0.28
+        },
+        {
+          "name": "Amplitude-Mod",
+          "score": 16.0,
+          "Q": 0.28
+        },
+        {
+          "name": "CEUS-Net",
+          "score": 18.5,
+          "Q": 0.28
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "full parametric sweep",
+      "num_dev_instances": 200,
+      "construction_method": "parametric Omega sweep"
+    },
+    "baselines": [
+      {
+        "name": "Pulse-Inversion",
+        "overall_Q": 0.7
+      },
+      {
+        "name": "Amplitude-Mod",
+        "overall_Q": 0.6
+      },
+      {
+        "name": "CEUS-Net",
+        "overall_Q": 0.5
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind strata corner.",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

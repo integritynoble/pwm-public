@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-437",
+  "layer": "L2",
+  "parent_l1": "L1-437",
+  "principle_ref": "sha256:<L1-437_principle_hash>",
+  "title": "Nonlinear Observer Design \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "n_state": [
+        1,
+        15
+      ],
+      "Lipschitz_constant_gamma": [
+        0.1,
+        10.0
+      ],
+      "observer_gain_epsilon": [
+        0.01,
+        1.0
+      ],
+      "noise_SNR_dB": [
+        10,
+        60
+      ]
+    },
+    "E": {
+      "forward": "dx_hat/dt = f(x_hat, u) + L(y - h(x_hat)); gain L chosen for exponential error decay",
+      "operator": "high_gain_observer_estimation",
+      "primitive_chain": "S.hgo.high_gain_observer -> M.lyapunov.convergence_proof -> O.iss.input_to_state",
+      "inverse": "recover nonlinear state estimate x_hat(t) with exponential convergence to x(t) from output y(t) = h(x(t)) + noise from output map h"
+    },
+    "B": {
+      "Lipschitz": "f Lipschitz in x uniformly in u",
+      "observability": "nonlinear observability rank condition holds"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "observer_error_RMSE",
+      "convergence_time_s",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.05 + 0.05 * (Lipschitz_constant_gamma / 1.0) ** 0.5"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 nonlinear_state_estimate"
+    },
+    "baselines": [
+      {
+        "name": "high_gain_observer",
+        "method_sig": "L+O",
+        "expected_score": 0.12
+      },
+      {
+        "name": "ISS_Lyapunov_observer",
+        "method_sig": "L+O",
+        "expected_score": 0.08
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "n_state": 4,
+        "Lipschitz_constant_gamma": 1.0,
+        "observer_gain_epsilon": 0.1,
+        "noise_SNR_dB": 30,
+        "Lipschitz_constant_violation": 0.0,
+        "output_noise_amplification": 0.0,
+        "algebraic_loop": 0.0
+      },
+      "epsilon": 0.1
+    },
+    "tier_bounds": {
+      "n_state": [
+        1,
+        15
+      ],
+      "Lipschitz_constant_gamma": [
+        0.1,
+        10.0
+      ],
+      "observer_gain_epsilon": [
+        0.01,
+        1.0
+      ],
+      "noise_SNR_dB": [
+        10,
+        60
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.35,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.35 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

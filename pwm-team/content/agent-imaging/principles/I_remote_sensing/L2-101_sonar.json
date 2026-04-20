@@ -1,0 +1,152 @@
+{
+  "artifact_id": "L2-101",
+  "layer": "L2",
+  "parent_l1": "L1-101",
+  "title": "Active Sonar \u2014 underwater acoustic imaging Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "N_range_bins": [
+        256,
+        8192
+      ],
+      "N_beams": [
+        32,
+        1024
+      ],
+      "f_kHz": [
+        10,
+        1000
+      ],
+      "range_m": [
+        10,
+        5000
+      ],
+      "SNR_dB": [
+        0.0,
+        30.0
+      ],
+      "sound_speed_profile_error": [
+        0.0,
+        0.05
+      ],
+      "multipath": [
+        0.0,
+        0.5
+      ],
+      "platform_roll": [
+        0.0,
+        0.1
+      ],
+      "reverberation": [
+        0.0,
+        0.3
+      ]
+    },
+    "E": {
+      "forward": "y(t, theta) = sum_r reflectivity(r) * pulse(t - 2r/c(r)) + reverberation + n",
+      "operator": "sonar_active_forward_mismatch",
+      "primitive_chain": "L.emit.acoustic_pulse -> S.scan.beam -> L.beamform -> int.temporal",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "14.0 + 0.3 * SNR_dB - 20.0 * sound_speed_profile_error - 10.0 * multipath"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Delay-Sum-Beamform",
+        "method_sig": "L+O",
+        "expected_psnr": 20.0
+      },
+      {
+        "name": "MVDR",
+        "method_sig": "L+O",
+        "expected_psnr": 22.5
+      },
+      {
+        "name": "Sonar-Net",
+        "method_sig": "L+N",
+        "expected_psnr": 25.0
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_range_bins": 1024,
+        "N_beams": 128,
+        "f_kHz": 100,
+        "range_m": 500,
+        "SNR_dB": 20.0,
+        "sound_speed_profile_error": 0.0,
+        "multipath": 0.0,
+        "platform_roll": 0.0
+      },
+      "epsilon": 22.0
+    },
+    "tier_bounds": {
+      "N_range_bins": [
+        256,
+        8192
+      ],
+      "N_beams": [
+        32,
+        1024
+      ],
+      "f_kHz": [
+        10,
+        1000
+      ],
+      "range_m": [
+        10,
+        5000
+      ],
+      "SNR_dB": [
+        0.0,
+        30.0
+      ],
+      "sound_speed_profile_error": [
+        0.0,
+        0.05
+      ],
+      "multipath": [
+        0.0,
+        0.5
+      ],
+      "platform_roll": [
+        0.0,
+        0.1
+      ],
+      "reverberation": [
+        0.0,
+        0.3
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.5,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

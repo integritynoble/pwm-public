@@ -1,0 +1,178 @@
+{
+  "artifact_id": "L1-059",
+  "layer": "L1",
+  "principle_number": "059",
+  "title": "Susceptibility-Weighted Imaging (SWI)",
+  "domain": "Medical Imaging",
+  "sub_domain": "T2*/phase venous and microbleed imaging",
+  "source_file": "C_medical_imaging/059_swi.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical medical-imaging literature for this principle.",
+  "E": {
+    "description": "Susceptibility-Weighted Imaging (SWI) forward model.",
+    "forward_model": "Magnitude * phase_mask^n; phase tied to local susceptibility via convolution with dipole kernel",
+    "world_state_x": "Patient-side quantity of interest (attenuation / activity / perfusion / stiffness etc.)",
+    "observation_y": "Clinical sensor output at declared resolution + noise",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "Z",
+      "TE_ms",
+      "SNR_dB",
+      "B0_inhomogeneity",
+      "air_tissue_boundaries",
+      "phase_wrap",
+      "coil_phase_error"
+    ]
+  },
+  "G": {
+    "dag": "L.rf_excitation -> L.gradient_echo -> L.phase_mask -> int.spatial",
+    "vertices": [
+      "L.rf_excitation",
+      "L.gradient_echo",
+      "L.phase_mask",
+      "int.spatial"
+    ],
+    "arcs": [
+      "L.rf_excitation -> L.gradient_echo",
+      "L.gradient_echo -> L.phase_mask",
+      "L.phase_mask -> int.spatial"
+    ],
+    "L_DAG": 3.3,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 240,
+    "condition_number_effective": 12,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Homodyne-Filter, QSM, SWI-Net",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sensor SNR + mismatch bias + regularisation.",
+    "complexity": "O(H W) to O(H W Z) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "radio_wave",
+    "sensing_mechanism": "mri_fourier_encoding",
+    "integration_axis": "spatial",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "3D_susceptibility",
+    "primitives": [
+      "L.rf_excitation",
+      "L.gradient_echo",
+      "L.phase_mask",
+      "int.spatial"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "B0_inhomogeneity",
+    "air_tissue_boundaries",
+    "phase_wrap",
+    "coil_phase_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "swi",
+      "forward_operator": "swi_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 256,
+        "W": 256,
+        "Z": 64,
+        "TE_ms": 25,
+        "SNR_dB": 22,
+        "B0_inhomogeneity": 0.0,
+        "air_tissue_boundaries": 0.0,
+        "phase_wrap": 0.0,
+        "coil_phase_error": 0.0
+      },
+      "epsilon_fn_center": "24.0"
+    },
+    "allowed_forward_operators": [
+      "swi_forward"
+    ],
+    "allowed_problem_classes": [
+      "swi"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "Z",
+      "TE_ms",
+      "SNR_dB",
+      "B0_inhomogeneity",
+      "air_tissue_boundaries",
+      "phase_wrap",
+      "coil_phase_error",
+      "B0_inhomogeneity",
+      "air_tissue_boundaries",
+      "phase_wrap",
+      "coil_phase_error"
+    ],
+    "omega_bounds": {
+      "H": 128,
+      "W": 128,
+      "Z": [
+        16,
+        256
+      ],
+      "TE_ms": [
+        10,
+        80
+      ],
+      "SNR_dB": [
+        0.0,
+        35.0
+      ],
+      "B0_inhomogeneity": [
+        0.0,
+        0.3
+      ],
+      "air_tissue_boundaries": [
+        0.0,
+        0.5
+      ],
+      "phase_wrap": [
+        0.0,
+        0.3
+      ],
+      "coil_phase_error": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        5.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

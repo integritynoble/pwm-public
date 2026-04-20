@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-467",
+  "layer": "L2",
+  "parent_l1": "L1-467",
+  "principle_ref": "sha256:<L1-467_principle_hash>",
+  "title": "Satellite Orbit Determination \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "N_observations": [
+        50,
+        10000
+      ],
+      "arc_length_days": [
+        0.5,
+        10.0
+      ],
+      "drag_Cd_uncertainty": [
+        0.01,
+        0.5
+      ],
+      "altitude_km": [
+        200,
+        36000
+      ]
+    },
+    "E": {
+      "forward": "rho(t) = |X_sat(t; x0) - X_gs|; X_sat integrated from EOM with SRP, drag, gravity harmonics",
+      "operator": "range_range_rate_tracking",
+      "primitive_chain": "M.ode.equations_of_motion -> S.kalman.orbit_filter -> O.least_squares.batch",
+      "inverse": "recover initial state vector x0 = (r0 from ground station range rho(t)"
+    },
+    "B": {
+      "orbital_mechanics": "EOM from IERS Conventions 2010",
+      "drag_positivity": "Cd > 0"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "position_prediction_error_km",
+      "velocity_error_m_s",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.05 + 0.05 * (drag_Cd_uncertainty / 0.1) ** 0.5"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 6D_orbital_state_vector"
+    },
+    "baselines": [
+      {
+        "name": "batch_LS_SGP4",
+        "method_sig": "L+O",
+        "expected_score": 0.15
+      },
+      {
+        "name": "EKF_precision_orbit",
+        "method_sig": "L+O",
+        "expected_score": 0.08
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_observations": 1000,
+        "arc_length_days": 3.0,
+        "drag_Cd_uncertainty": 0.1,
+        "altitude_km": 500,
+        "atmospheric_drag_uncertainty": 0.0,
+        "SRP_modeling_error": 0.0,
+        "maneuver_detection_delay": 0.0
+      },
+      "epsilon": 0.1
+    },
+    "tier_bounds": {
+      "N_observations": [
+        50,
+        10000
+      ],
+      "arc_length_days": [
+        0.5,
+        10.0
+      ],
+      "drag_Cd_uncertainty": [
+        0.01,
+        0.5
+      ],
+      "altitude_km": [
+        200,
+        36000
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.3,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.3 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

@@ -1,0 +1,185 @@
+{
+  "artifact_id": "L3-033",
+  "layer": "L3",
+  "parent_l2": "L2-033",
+  "parent_l1": "L1-033",
+  "title": "Positron Emission Tomography (PET) Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "canonical clinical/public dataset for this modality",
+    "secondary": "simulated forward synthesis at declared Omega",
+    "construction_method": "parametric forward + declared noise",
+    "num_dev_instances_per_tier": 20
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "H": 256,
+        "W": 256,
+        "Z": 64,
+        "N_LORs": 100000000,
+        "counts_per_LOR": 10,
+        "SNR_dB": 20.0,
+        "random_coincidences": 0.0,
+        "scatter": 0.0,
+        "attenuation_correction_error": 0.0,
+        "patient_motion": 0.0,
+        "TOF_timing_jitter": 0.0
+      },
+      "epsilon": 25.0,
+      "d_ibench": 0.14,
+      "baselines": [
+        {
+          "name": "FBP-PET",
+          "score": 22.5,
+          "Q": 0.88
+        },
+        {
+          "name": "OSEM",
+          "score": 25.0,
+          "Q": 0.88
+        },
+        {
+          "name": "DeepPET",
+          "score": 27.5,
+          "Q": 0.88
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "H": 256,
+        "W": 256,
+        "Z": 64,
+        "N_LORs": 100000000,
+        "counts_per_LOR": 5,
+        "SNR_dB": 17.0,
+        "random_coincidences": 0.1,
+        "scatter": 0.1,
+        "attenuation_correction_error": 0.06,
+        "patient_motion": 0.06,
+        "TOF_timing_jitter": 0.1
+      },
+      "epsilon": 20.5,
+      "d_ibench": 0.28,
+      "baselines": [
+        {
+          "name": "FBP-PET",
+          "score": 20.5,
+          "Q": 0.68
+        },
+        {
+          "name": "OSEM",
+          "score": 23.0,
+          "Q": 0.68
+        },
+        {
+          "name": "DeepPET",
+          "score": 25.5,
+          "Q": 0.68
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "H": 256,
+        "W": 256,
+        "Z": 64,
+        "N_LORs": 100000000,
+        "counts_per_LOR": 2,
+        "SNR_dB": 8.0,
+        "random_coincidences": 0.25,
+        "scatter": 0.25,
+        "attenuation_correction_error": 0.15,
+        "patient_motion": 0.15,
+        "TOF_timing_jitter": 0.25
+      },
+      "epsilon": 16.0,
+      "d_ibench": 0.48,
+      "baselines": [
+        {
+          "name": "FBP-PET",
+          "score": 18.5,
+          "Q": 0.48
+        },
+        {
+          "name": "OSEM",
+          "score": 21.0,
+          "Q": 0.48
+        },
+        {
+          "name": "DeepPET",
+          "score": 23.5,
+          "Q": 0.48
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "H": 256,
+        "W": 256,
+        "Z": 64,
+        "N_LORs": 100000000,
+        "counts_per_LOR": 1,
+        "SNR_dB": 0.0,
+        "random_coincidences": 0.5,
+        "scatter": 0.5,
+        "attenuation_correction_error": 0.3,
+        "patient_motion": 0.3,
+        "TOF_timing_jitter": 0.5
+      },
+      "epsilon": 11.5,
+      "d_ibench": 0.72,
+      "baselines": [
+        {
+          "name": "FBP-PET",
+          "score": 16.5,
+          "Q": 0.28
+        },
+        {
+          "name": "OSEM",
+          "score": 19.0,
+          "Q": 0.28
+        },
+        {
+          "name": "DeepPET",
+          "score": 21.5,
+          "Q": 0.28
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "full parametric sweep",
+      "num_dev_instances": 200,
+      "construction_method": "parametric Omega sweep"
+    },
+    "baselines": [
+      {
+        "name": "FBP-PET",
+        "overall_Q": 0.7
+      },
+      {
+        "name": "OSEM",
+        "overall_Q": 0.6
+      },
+      {
+        "name": "DeepPET",
+        "overall_Q": 0.5
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind strata corner.",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

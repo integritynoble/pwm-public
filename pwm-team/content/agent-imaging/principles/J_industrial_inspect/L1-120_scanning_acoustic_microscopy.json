@@ -1,0 +1,188 @@
+{
+  "artifact_id": "L1-120",
+  "layer": "L1",
+  "principle_number": "120",
+  "title": "Scanning Acoustic Microscopy (SAM)",
+  "domain": "Industrial Inspection",
+  "sub_domain": "High-frequency ultrasonic microscopy for buried interfaces",
+  "source_file": "J_industrial_inspect/120_scanning_acoustic_microscopy.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical NDT/NDE literature for this principle.",
+  "E": {
+    "description": "Scanning Acoustic Microscopy (SAM) forward model.",
+    "forward_model": "y(t, x, y) = pulse conv reflectivity(x, y, z=c*t/2) + n; A/B/C-scan slicing",
+    "world_state_x": "Defect / strain / composition map depending on principle",
+    "observation_y": "Sensor output at declared geometry",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "Z",
+      "f_MHz",
+      "pixel_um",
+      "SNR_dB",
+      "coupling_fluid_variation",
+      "surface_curvature",
+      "multiple_reflections"
+    ]
+  },
+  "G": {
+    "dag": "L.acoustic_lens -> S.scan.raster -> L.pulse_echo -> int.temporal",
+    "vertices": [
+      "L.acoustic_lens",
+      "S.scan.raster",
+      "L.pulse_echo",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.acoustic_lens -> S.scan.raster",
+      "S.scan.raster -> L.pulse_echo",
+      "L.pulse_echo -> int.temporal"
+    ],
+    "L_DAG": 3.3,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 200,
+    "condition_number_effective": 10,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "TOF-Gating, SAFT, SAM-CNN",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sensor SNR + mismatch bias.",
+    "complexity": "O(H W) to O(H W Z) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "acoustic",
+    "sensing_mechanism": "scanning_acoustic_microscopy",
+    "integration_axis": "temporal",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "3D_acoustic_impedance",
+    "primitives": [
+      "L.acoustic_lens",
+      "S.scan.raster",
+      "L.pulse_echo",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "coupling_fluid_variation",
+    "surface_curvature",
+    "multiple_reflections",
+    "water_path_attenuation"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "sam",
+      "forward_operator": "sam_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 512,
+        "W": 512,
+        "Z": 64,
+        "f_MHz": 100,
+        "pixel_um": 10,
+        "SNR_dB": 25,
+        "coupling_fluid_variation": 0.0,
+        "surface_curvature": 0.0,
+        "multiple_reflections": 0.0
+      },
+      "epsilon_fn_center": "26.0"
+    },
+    "allowed_forward_operators": [
+      "sam_forward"
+    ],
+    "allowed_problem_classes": [
+      "sam"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "Z",
+      "f_MHz",
+      "pixel_um",
+      "SNR_dB",
+      "coupling_fluid_variation",
+      "surface_curvature",
+      "multiple_reflections",
+      "coupling_fluid_variation",
+      "surface_curvature",
+      "multiple_reflections",
+      "water_path_attenuation"
+    ],
+    "omega_bounds": {
+      "H": [
+        64,
+        2048
+      ],
+      "W": [
+        64,
+        2048
+      ],
+      "Z": [
+        16,
+        512
+      ],
+      "f_MHz": [
+        10,
+        2000
+      ],
+      "pixel_um": [
+        0.5,
+        500
+      ],
+      "SNR_dB": [
+        0.0,
+        40.0
+      ],
+      "coupling_fluid_variation": [
+        0.0,
+        0.2
+      ],
+      "surface_curvature": [
+        0.0,
+        0.3
+      ],
+      "multiple_reflections": [
+        0.0,
+        0.3
+      ],
+      "water_path_attenuation": [
+        0.0,
+        0.2
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        5.0,
+        40.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

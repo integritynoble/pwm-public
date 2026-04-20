@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-483",
+  "layer": "L1",
+  "principle_number": "483",
+  "title": "Calorimeter Energy Response Inversion",
+  "domain": "Particle Physics",
+  "sub_domain": "Detector calibration",
+  "source_file": "AM_particle_physics/483_calorimeter_response.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "Calorimeter calibration: determine energy response and resolution functions from test beam or in-situ data.",
+    "forward_model": "E_meas = a * E_true + b + sigma_E * noise; EM linearity + hadronic e/h ratio",
+    "world_state_x": "calibration coefficients a(eta, phi, E) and resolution parameters sigma_E/E",
+    "observation_y": "measured cluster energies E_meas for single particles (test beam) or in-situ (Z->ee, pi0->gamma gamma)",
+    "physical_parameters_theta": [
+      "EM_scale_factor",
+      "hadronic_compensation_ratio_e_h",
+      "noise_sigma_GeV",
+      "sampling_fraction"
+    ]
+  },
+  "G": {
+    "dag": "M.shower.em_hadronic -> S.clustering.topo_clustering -> O.chi2.energy_response",
+    "vertices": [
+      "M.shower.em_hadronic",
+      "S.clustering.topo_clustering",
+      "O.chi2.energy_response"
+    ],
+    "arcs": [
+      "M.shower.em_hadronic -> S.clustering.topo_clustering",
+      "S.clustering.topo_clustering -> O.chi2.energy_response"
+    ],
+    "L_DAG": 3.5,
+    "n_c": 1
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 10000.0,
+    "condition_number_effective": 500,
+    "condition_number_mismatched": 2000,
+    "regime": "EM calorimeter well-understood; hadronic compensation (e/h ~ 1) requires dual-readout; forward region less constrained."
+  },
+  "C": {
+    "solver_class": "in_situ_intercalibration or test_beam_chi2_minimization",
+    "convergence_rate_q": 2.0,
+    "error_bound": "energy resolution < 10%/sqrt(E) for EM, < 50%/sqrt(E) for hadronic",
+    "complexity": "O(N_cells * N_events) for calibration coefficient determination"
+  },
+  "physics_fingerprint": {
+    "carrier": "particle",
+    "sensing_mechanism": "electromagnetic_hadronic_calorimetry",
+    "integration_axis": "shower_depth",
+    "problem_class": "parameter_estimation",
+    "noise_model": "detector_gaussian",
+    "solution_space": "energy_calibration_coefficients",
+    "primitives": [
+      "M.shower.em_hadronic",
+      "S.clustering.topo_clustering",
+      "O.chi2.energy_response"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "aging_degradation_percent",
+    "temperature_variation_effect",
+    "inter_calibration_error"
+  ],
+  "error_metric": "energy_resolution_sigma_E_over_E",
+  "error_metric_secondary": "linearity_error_percent",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "parameter_estimation",
+      "forward_operator": "electromagnetic_hadronic_calorimetry",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_cells": 200000,
+        "E_range_GeV": 1000,
+        "eta_range": 5.0,
+        "noise_GeV": 0.5
+      },
+      "epsilon_fn_center": "0.05 energy_resolution_sigma_E_over_E"
+    },
+    "allowed_forward_operators": [
+      "electromagnetic_hadronic_calorimetry"
+    ],
+    "allowed_problem_classes": [
+      "parameter_estimation"
+    ],
+    "allowed_omega_dimensions": [
+      "N_cells",
+      "E_range_GeV",
+      "eta_range",
+      "noise_GeV"
+    ],
+    "omega_bounds": {
+      "N_cells": [
+        1000,
+        1000000
+      ],
+      "E_range_GeV": [
+        1,
+        14000
+      ],
+      "eta_range": [
+        0.0,
+        5.0
+      ],
+      "noise_GeV": [
+        0.1,
+        5.0
+      ]
+    },
+    "epsilon_bounds": {
+      "energy_resolution_sigma_E_over_E": [
+        0.01,
+        0.2
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

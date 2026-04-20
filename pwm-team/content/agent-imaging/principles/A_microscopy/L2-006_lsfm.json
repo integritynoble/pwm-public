@@ -1,0 +1,153 @@
+{
+  "artifact_id": "L2-006",
+  "layer": "L2",
+  "parent_l1": "L1-006",
+  "title": "Light Sheet Fluorescence Microscopy (LSFM / SPIM) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        512,
+        4096
+      ],
+      "W": [
+        512,
+        4096
+      ],
+      "Z": [
+        32,
+        1024
+      ],
+      "sheet_nm": [
+        500,
+        5000
+      ],
+      "z_step_nm": [
+        200,
+        2000
+      ],
+      "NA_det": [
+        0.8,
+        1.2
+      ],
+      "peak_photons": [
+        50,
+        5000
+      ],
+      "sheet_tilt": [
+        0.0,
+        0.05
+      ],
+      "sample_induced_aberration": [
+        0.0,
+        0.3
+      ]
+    },
+    "E": {
+      "forward": "y(r,z) = integral [sheet(r,z - z_k) * f(r,z) * PSF_det(r,z)] + n",
+      "operator": "lsfm_forward_mismatch",
+      "primitive_chain": "L.illumination.sheet -> K.psf.detection -> S.scan.axial -> int.temporal",
+      "inverse": "solve forward model for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "22.0 + 2.0 * log10(peak_photons / 50) - 10.0 * sheet_tilt - 12.0 * sample_induced_aberration"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Richardson-Lucy-LSFM",
+        "method_sig": "I+M",
+        "expected_psnr": 27.5
+      },
+      {
+        "name": "Multiview-Fusion",
+        "method_sig": "L+O",
+        "expected_psnr": 30.0
+      },
+      {
+        "name": "Content-Aware-LSFM",
+        "method_sig": "L+N",
+        "expected_psnr": 33.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 2048,
+        "W": 2048,
+        "Z": 200,
+        "sheet_nm": 2000,
+        "z_step_nm": 500,
+        "NA_det": 1.0,
+        "peak_photons": 500,
+        "sheet_tilt": 0.0,
+        "sample_induced_aberration": 0.0
+      },
+      "epsilon": 29.0
+    },
+    "tier_bounds": {
+      "H": [
+        512,
+        4096
+      ],
+      "W": [
+        512,
+        4096
+      ],
+      "Z": [
+        32,
+        1024
+      ],
+      "sheet_nm": [
+        500,
+        5000
+      ],
+      "z_step_nm": [
+        200,
+        2000
+      ],
+      "NA_det": [
+        0.8,
+        1.2
+      ],
+      "peak_photons": [
+        50,
+        5000
+      ],
+      "sheet_tilt": [
+        0.0,
+        0.05
+      ],
+      "sample_induced_aberration": [
+        0.0,
+        0.3
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.45,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

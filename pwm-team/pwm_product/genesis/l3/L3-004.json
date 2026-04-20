@@ -1,0 +1,196 @@
+{
+  "artifact_id": "L3-004",
+  "layer": "L3",
+  "parent_l2": "L2-004",
+  "parent_l1": "L1-004",
+  "title": "CACTI Mismatch-Only Benchmark Suite (P-benchmark + 4 I-benchmark tiers)",
+  "benchmark_type": "combined_P_and_I",
+
+  "dataset_registry": {
+    "primary": "CACTI high-speed video benchmark (kobe, traffic, drop, runner, crash, aerial)",
+    "secondary": "DAVIS-SCI reprocessed (high-speed motion subset)",
+    "tertiary": "UCF101-Sports subsample used for spatio-temporal validation",
+    "construction_method": "center crop to square; 2x2 hard stitch when H*W > 480*480; temporal chunks of B consecutive frames per instance",
+    "num_dev_instances_per_tier": 20,
+    "holdout_instances_per_tier": 10
+  },
+
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "H": 256,
+        "W": 256,
+        "B": 8,
+        "noise_level": 0.01,
+        "dx": 0.0,
+        "dy": 0.0,
+        "theta": 0.0,
+        "dt": 0.0,
+        "eta": 1.0,
+        "gamma": 1.0,
+        "offset": 0.0,
+        "sigma_n": 1.0
+      },
+      "dataset_description": "CACTI-6 standard 256x256x8 kobe/traffic/drop/runner/crash/aerial; calibrated mask (no mismatch).",
+      "epsilon": 26.0,
+      "d_ibench": 0.14,
+      "quality_thresholds": [
+        {"Q": 0.55, "tier": "Standard"},
+        {"Q": 0.75, "tier": "Strong"},
+        {"Q": 0.90, "tier": "Excellent"}
+      ],
+      "baselines": [
+        {"name": "GAP-TV",       "metric": "PSNR_dB", "score": 26.8, "SSIM": 0.82, "Q": 0.58},
+        {"name": "PnP-FFDNet",   "metric": "PSNR_dB", "score": 30.3, "SSIM": 0.89, "Q": 0.78},
+        {"name": "EfficientSCI", "metric": "PSNR_dB", "score": 34.5, "SSIM": 0.94, "Q": 0.92}
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "H": 256,
+        "W": 256,
+        "B": 8,
+        "noise_level": 0.02,
+        "dx": 0.2,
+        "dy": 0.2,
+        "theta": 0.02,
+        "dt": 0.02,
+        "eta": 0.98,
+        "gamma": 1.01,
+        "offset": 0.002,
+        "sigma_n": 1.2
+      },
+      "dataset_description": "CACTI-6 with small calibration drift (0.2 px mask shift, 2% clock offset, 0.02 deg rotation); emulates lab-grade SCI setup with typical jitter.",
+      "epsilon": 24.0,
+      "d_ibench": 0.28,
+      "quality_thresholds": [
+        {"Q": 0.55, "tier": "Standard"},
+        {"Q": 0.75, "tier": "Strong"}
+      ],
+      "baselines": [
+        {"name": "GAP-TV",       "metric": "PSNR_dB", "score": 24.1, "Q": 0.46},
+        {"name": "PnP-FFDNet",   "metric": "PSNR_dB", "score": 27.0, "Q": 0.62},
+        {"name": "EfficientSCI", "metric": "PSNR_dB", "score": 29.4, "Q": 0.75}
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "B": 16,
+        "noise_level": 0.05,
+        "dx": 0.5,
+        "dy": 0.5,
+        "theta": 0.07,
+        "dt": 0.05,
+        "eta": 0.95,
+        "gamma": 1.03,
+        "offset": 0.005,
+        "sigma_n": 1.5
+      },
+      "dataset_description": "DAVIS-SCI 512x512 B=16 with moderate mismatch (0.5 px shift, 5% clock offset, duty cycle 0.95); deployment-grade calibration error.",
+      "epsilon": 22.5,
+      "d_ibench": 0.48,
+      "quality_thresholds": [
+        {"Q": 0.55, "tier": "Standard"},
+        {"Q": 0.75, "tier": "Strong"}
+      ],
+      "baselines": [
+        {"name": "GAP-TV",       "metric": "PSNR_dB", "score": 21.8, "Q": 0.38},
+        {"name": "PnP-FFDNet",   "metric": "PSNR_dB", "score": 24.0, "Q": 0.53},
+        {"name": "EfficientSCI", "metric": "PSNR_dB", "score": 25.8, "Q": 0.62}
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "H": 1024,
+        "W": 1024,
+        "B": 32,
+        "noise_level": 0.08,
+        "dx": 1.0,
+        "dy": 1.0,
+        "theta": 0.14,
+        "dt": 0.1,
+        "eta": 0.90,
+        "gamma": 1.05,
+        "offset": 0.01,
+        "sigma_n": 2.0
+      },
+      "dataset_description": "UCF101-Sports 2x2 stitched 1024x1024 B=32 with severe mismatch at Omega bounds; solver has no oracle access to mask registration.",
+      "epsilon": 21.0,
+      "d_ibench": 0.71,
+      "quality_thresholds": [
+        {"Q": 0.55, "tier": "Standard"}
+      ],
+      "baselines": [
+        {"name": "GAP-TV",       "metric": "PSNR_dB", "score": 18.4, "Q": 0.22},
+        {"name": "PnP-FFDNet",   "metric": "PSNR_dB", "score": 19.8, "Q": 0.30},
+        {"name": "EfficientSCI", "metric": "PSNR_dB", "score": 20.1, "Q": 0.34}
+      ]
+    }
+  ],
+
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "CACTI-6 + DAVIS-SCI + UCF101-Sports union with parametric Omega sampling",
+      "construction_method": "For each rho-weighted draw, sample Omega uniformly over declared bounds; 2x2 hard stitch when H*W > 480*480; seam_map in true_phi for evaluators.",
+      "num_dev_instances": 200,
+      "num_holdout_instances": 100
+    },
+    "tracks": {
+      "track_A_stratified_worst_case": {
+        "strata": [
+          {"name": "S1_small",  "H_W_range": "<= 256^2",          "rep_difficulty": "easy"},
+          {"name": "S2_medium", "H_W_range": "256^2 < HW <= 512^2", "rep_difficulty": "standard"},
+          {"name": "S3_large",  "H_W_range": "512^2 < HW <= 1024^2","rep_difficulty": "hard"},
+          {"name": "S4_xlarge", "H_W_range": "> 1024^2",           "rep_difficulty": "very_hard"}
+        ],
+        "samples_per_stratum": 5,
+        "pass_condition": "min_i(PSNR_i) / epsilon_fn(Omega_centroid_s) >= 1.0 for all 4 strata"
+      },
+      "track_B_uniform_median": {
+        "num_samples": 50,
+        "pass_condition": "median_i(PSNR_i) / epsilon_fn(Omega_median) >= 1.0"
+      },
+      "track_C_mismatch_degradation": {
+        "sweep_points": [
+          {"phi": 0.00, "dx": 0.0,  "dt": 0.00, "theta": 0.000},
+          {"phi": 0.25, "dx": 0.25, "dt": 0.025,"theta": 0.0375},
+          {"phi": 0.50, "dx": 0.5,  "dt": 0.05, "theta": 0.075},
+          {"phi": 0.75, "dx": 0.75, "dt": 0.075,"theta": 0.1125},
+          {"phi": 1.00, "dx": 1.0,  "dt": 0.1,  "theta": 0.15}
+        ],
+        "scenes_per_point": 10,
+        "degradation_score": "(1/4) * sum_{i=1..4} [(Q_norm(phi_i) + Q_norm(phi_{i+1}))/2]"
+      }
+    },
+    "baselines": [
+      {"name": "GAP-TV",       "track_A_Q": 0.32, "track_B_Q": 0.45, "track_C_Q": 0.58, "overall_Q": 0.45},
+      {"name": "PnP-FFDNet",   "track_A_Q": 0.50, "track_B_Q": 0.65, "track_C_Q": 0.68, "overall_Q": 0.61},
+      {"name": "EfficientSCI", "track_A_Q": 0.64, "track_B_Q": 0.82, "track_C_Q": 0.55, "overall_Q": 0.67}
+    ]
+  },
+
+  "hardness_rule_check": "No baseline passes epsilon_fn over the entire declared Omega (EfficientSCI loses 20.58 dB under severe mask mismatch and fails at T4_blind). Hardness rule: SATISFIED.",
+
+  "anti_overfitting_mechanisms": {
+    "M1_random_instantiation": "generator/instantiate.py uses G(SHA256(h_sub || k)) seeded per submission.",
+    "M2_convergence_scoring":  "convergence/check_convergence.py verifies O(1/k^2) rate across spatial resolutions [64, 128, 256, 512].",
+    "M3_worst_case_eval":      "scoring/worst_case.py returns min score over 20 fixed dev scenes per tier.",
+    "M4_community_adversarial":"adversarial/submit_adversarial.py; adversarial submissions eligible for T_k rewards.",
+    "M5_method_sig_diversity": "Baselines span L+O (GAP-TV, DeSCI), L+N (PnP-FFDNet), T+N (EfficientSCI), R+N (BIRNAT).",
+    "M6_gate_checks":          "gates/check_s{1,2,3,4}.py embedded with thresholds.yaml."
+  },
+
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

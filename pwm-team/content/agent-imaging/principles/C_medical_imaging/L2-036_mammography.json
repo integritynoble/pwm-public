@@ -1,0 +1,140 @@
+{
+  "artifact_id": "L2-036",
+  "layer": "L2",
+  "parent_l1": "L1-036",
+  "title": "Digital Mammography Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": 2048,
+      "W": 1664,
+      "kVp": [
+        22,
+        34
+      ],
+      "mAs": [
+        10,
+        400
+      ],
+      "pixel_um": [
+        25,
+        100
+      ],
+      "scatter": [
+        0.0,
+        0.3
+      ],
+      "compression_variation": [
+        0.0,
+        0.2
+      ],
+      "dense_tissue_overlap": [
+        0.0,
+        0.5
+      ],
+      "geometric_magnification": [
+        1.0,
+        2.0
+      ]
+    },
+    "E": {
+      "forward": "y(u,v) = I_0 exp(-integral mu_breast ds) * geometric_magnification + scatter + n",
+      "operator": "mammography_forward_mismatch",
+      "primitive_chain": "L.xray_source -> L.compression -> L.beer_lambert -> int.spatial",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "25.0 + 2.0 * log10(mAs / 10) - 8.0 * scatter - 10.0 * dense_tissue_overlap"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Log-Transform",
+        "method_sig": "A+O",
+        "expected_psnr": 32.0
+      },
+      {
+        "name": "Scatter-Correct",
+        "method_sig": "L+O",
+        "expected_psnr": 34.0
+      },
+      {
+        "name": "Mammo-Net",
+        "method_sig": "L+N",
+        "expected_psnr": 36.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 4096,
+        "W": 3328,
+        "kVp": 28,
+        "mAs": 75,
+        "pixel_um": 50,
+        "scatter": 0.1,
+        "compression_variation": 0.0,
+        "dense_tissue_overlap": 0.0
+      },
+      "epsilon": 35.0
+    },
+    "tier_bounds": {
+      "H": 2048,
+      "W": 1664,
+      "kVp": [
+        22,
+        34
+      ],
+      "mAs": [
+        10,
+        400
+      ],
+      "pixel_um": [
+        25,
+        100
+      ],
+      "scatter": [
+        0.0,
+        0.3
+      ],
+      "compression_variation": [
+        0.0,
+        0.2
+      ],
+      "dense_tissue_overlap": [
+        0.0,
+        0.5
+      ],
+      "geometric_magnification": [
+        1.0,
+        2.0
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.5,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

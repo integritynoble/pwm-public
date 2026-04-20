@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-487",
+  "layer": "L1",
+  "principle_number": "487",
+  "title": "Jet Reconstruction (Anti-kT)",
+  "domain": "Particle Physics",
+  "sub_domain": "QCD jets",
+  "source_file": "AM_particle_physics/487_jet_reconstruction.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "Jet reconstruction: cluster final-state particles into jets using anti-kT algorithm with pileup subtraction and JES calibration.",
+    "forward_model": "d_ij = min(k_{Ti}^{-2}, k_{Tj}^{-2}) * Delta_ij ** 2 / R ** 2; jet E corrected by JES(eta, pt, mu)",
+    "world_state_x": "jet 4-vectors {E, px, py, pz} for N_jets jets above pt threshold",
+    "observation_y": "calorimeter clusters + track momenta for N_particles per event",
+    "physical_parameters_theta": [
+      "jet_radius_R",
+      "pt_threshold_GeV",
+      "pileup_vertices_mu",
+      "JES_uncertainty_percent"
+    ]
+  },
+  "G": {
+    "dag": "S.antikt.sequential_clustering -> M.pileup.area_subtraction -> O.jet.energy_scale_correction",
+    "vertices": [
+      "S.antikt.sequential_clustering",
+      "M.pileup.area_subtraction",
+      "O.jet.energy_scale_correction"
+    ],
+    "arcs": [
+      "S.antikt.sequential_clustering -> M.pileup.area_subtraction",
+      "M.pileup.area_subtraction -> O.jet.energy_scale_correction"
+    ],
+    "L_DAG": 3.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 1000.0,
+    "condition_number_effective": 100,
+    "condition_number_mismatched": 500,
+    "regime": "Anti-kT gives conical hard jets; pileup subtraction via jet area method; JES determined from gamma+jet/Z+jet in-situ."
+  },
+  "C": {
+    "solver_class": "FastJet_antikT + JES_calibration",
+    "convergence_rate_q": 2.0,
+    "error_bound": "JER < 5% for pt > 100 GeV; JES uncertainty < 1%",
+    "complexity": "O(N_particles ** 2) naive, O(N_particles * log N_particles) FastJet"
+  },
+  "physics_fingerprint": {
+    "carrier": "particle",
+    "sensing_mechanism": "sequential_jet_clustering",
+    "integration_axis": "rapidity_phi_plane",
+    "problem_class": "parameter_estimation",
+    "noise_model": "pileup_detector_gaussian",
+    "solution_space": "jet_4vector_list",
+    "primitives": [
+      "S.antikt.sequential_clustering",
+      "M.pileup.area_subtraction",
+      "O.jet.energy_scale_correction"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "pileup_contamination_residual",
+    "underlying_event_modeling",
+    "hadronization_correction"
+  ],
+  "error_metric": "jet_energy_resolution_sigma_E_over_E",
+  "error_metric_secondary": "jet_mass_RMSE_GeV",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "parameter_estimation",
+      "forward_operator": "sequential_jet_clustering",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_particles_per_event": 2000,
+        "pileup_mu": 50,
+        "jet_pt_GeV": 200,
+        "jet_radius_R": 0.4
+      },
+      "epsilon_fn_center": "0.05 jet_energy_resolution_sigma_E_over_E"
+    },
+    "allowed_forward_operators": [
+      "sequential_jet_clustering"
+    ],
+    "allowed_problem_classes": [
+      "parameter_estimation"
+    ],
+    "allowed_omega_dimensions": [
+      "N_particles_per_event",
+      "pileup_mu",
+      "jet_pt_GeV",
+      "jet_radius_R"
+    ],
+    "omega_bounds": {
+      "N_particles_per_event": [
+        100,
+        10000
+      ],
+      "pileup_mu": [
+        0,
+        200
+      ],
+      "jet_pt_GeV": [
+        30,
+        5000
+      ],
+      "jet_radius_R": [
+        0.2,
+        1.0
+      ]
+    },
+    "epsilon_bounds": {
+      "jet_energy_resolution_sigma_E_over_E": [
+        0.02,
+        0.15
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

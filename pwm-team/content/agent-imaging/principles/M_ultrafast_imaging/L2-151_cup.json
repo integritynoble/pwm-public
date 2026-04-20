@@ -1,0 +1,132 @@
+{
+  "artifact_id": "L2-151",
+  "layer": "L2",
+  "parent_l1": "L1-151",
+  "title": "Compressed Ultrafast Photography (CUP) \u2014 trillion fps imaging Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": 64,
+      "W": 64,
+      "N_frames": [
+        20,
+        500
+      ],
+      "photon_count": [
+        10,
+        5000
+      ],
+      "dmd_mask_drift": [
+        0.0,
+        0.3
+      ],
+      "streak_nonlinearity": [
+        0.0,
+        0.3
+      ],
+      "cross_talk": [
+        0.0,
+        0.3
+      ],
+      "low_photon_regime": [
+        0.0,
+        1.0
+      ]
+    },
+    "E": {
+      "forward": "y(x, y') = sum_t C(x, y - shear*t) * f(x, y, t) + n; recover 3D (x, y, t) from 2D streak image",
+      "operator": "cup_forward_mismatch",
+      "primitive_chain": "L.diag.binary -> S.temporal.coded -> L.streak_sweep -> L.modulus_squared -> int.temporal",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "14.0 + 2.0 * log10(photon_count / 10) - 10.0 * dmd_mask_drift - 8.0 * streak_nonlinearity - 6.0 * low_photon_regime"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "GAP-TV-CUP",
+        "method_sig": "L+O",
+        "expected_psnr": 20.0
+      },
+      {
+        "name": "ADMM-CUP",
+        "method_sig": "L+O",
+        "expected_psnr": 22.0
+      },
+      {
+        "name": "PnP-CUP",
+        "method_sig": "L+N",
+        "expected_psnr": 24.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 128,
+        "W": 128,
+        "N_frames": 100,
+        "photon_count": 200,
+        "dmd_mask_drift": 0.0,
+        "streak_nonlinearity": 0.0,
+        "cross_talk": 0.0,
+        "low_photon_regime": 0.0
+      },
+      "epsilon": 22.0
+    },
+    "tier_bounds": {
+      "H": 64,
+      "W": 64,
+      "N_frames": [
+        20,
+        500
+      ],
+      "photon_count": [
+        10,
+        5000
+      ],
+      "dmd_mask_drift": [
+        0.0,
+        0.3
+      ],
+      "streak_nonlinearity": [
+        0.0,
+        0.3
+      ],
+      "cross_talk": [
+        0.0,
+        0.3
+      ],
+      "low_photon_regime": [
+        0.0,
+        1.0
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.55,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

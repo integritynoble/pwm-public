@@ -1,0 +1,181 @@
+{
+  "artifact_id": "L3-035",
+  "layer": "L3",
+  "parent_l2": "L2-035",
+  "parent_l1": "L1-035",
+  "title": "Fluoroscopy (real-time X-ray) Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "canonical clinical/public dataset for this modality",
+    "secondary": "simulated forward synthesis at declared Omega",
+    "construction_method": "parametric forward + declared noise",
+    "num_dev_instances_per_tier": 20
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "H": 1024,
+        "W": 1024,
+        "fps": 30,
+        "kVp": 80,
+        "dose_rate_uGy_per_s": 0.5,
+        "pixel_um": 200,
+        "scatter": 0.0,
+        "low_dose_noise": 0.0,
+        "pincushion_distortion": 0.0,
+        "frame_rate_limits": 0.0
+      },
+      "epsilon": 26.0,
+      "d_ibench": 0.14,
+      "baselines": [
+        {
+          "name": "Wiener",
+          "score": 23.5,
+          "Q": 0.88
+        },
+        {
+          "name": "BM3D-Fluoro",
+          "score": 25.5,
+          "Q": 0.88
+        },
+        {
+          "name": "DeepFluoro",
+          "score": 28.0,
+          "Q": 0.88
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "H": 1024,
+        "W": 1024,
+        "fps": 30,
+        "kVp": 80,
+        "dose_rate_uGy_per_s": 0.25,
+        "pixel_um": 200,
+        "scatter": 0.08000000000000002,
+        "low_dose_noise": 0.06,
+        "pincushion_distortion": 0.020000000000000004,
+        "frame_rate_limits": 0.1
+      },
+      "epsilon": 21.32,
+      "d_ibench": 0.28,
+      "baselines": [
+        {
+          "name": "Wiener",
+          "score": 21.5,
+          "Q": 0.68
+        },
+        {
+          "name": "BM3D-Fluoro",
+          "score": 23.5,
+          "Q": 0.68
+        },
+        {
+          "name": "DeepFluoro",
+          "score": 26.0,
+          "Q": 0.68
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "H": 1024,
+        "W": 1024,
+        "fps": 30,
+        "kVp": 80,
+        "dose_rate_uGy_per_s": 0.1,
+        "pixel_um": 200,
+        "scatter": 0.2,
+        "low_dose_noise": 0.15,
+        "pincushion_distortion": 0.05,
+        "frame_rate_limits": 0.25
+      },
+      "epsilon": 16.64,
+      "d_ibench": 0.48,
+      "baselines": [
+        {
+          "name": "Wiener",
+          "score": 19.5,
+          "Q": 0.48
+        },
+        {
+          "name": "BM3D-Fluoro",
+          "score": 21.5,
+          "Q": 0.48
+        },
+        {
+          "name": "DeepFluoro",
+          "score": 24.0,
+          "Q": 0.48
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "H": 1024,
+        "W": 1024,
+        "fps": 30,
+        "kVp": 80,
+        "dose_rate_uGy_per_s": 0.1,
+        "pixel_um": 200,
+        "scatter": 0.4,
+        "low_dose_noise": 0.3,
+        "pincushion_distortion": 0.1,
+        "frame_rate_limits": 0.5
+      },
+      "epsilon": 11.96,
+      "d_ibench": 0.72,
+      "baselines": [
+        {
+          "name": "Wiener",
+          "score": 17.5,
+          "Q": 0.28
+        },
+        {
+          "name": "BM3D-Fluoro",
+          "score": 19.5,
+          "Q": 0.28
+        },
+        {
+          "name": "DeepFluoro",
+          "score": 22.0,
+          "Q": 0.28
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "full parametric sweep",
+      "num_dev_instances": 200,
+      "construction_method": "parametric Omega sweep"
+    },
+    "baselines": [
+      {
+        "name": "Wiener",
+        "overall_Q": 0.7
+      },
+      {
+        "name": "BM3D-Fluoro",
+        "overall_Q": 0.6
+      },
+      {
+        "name": "DeepFluoro",
+        "overall_Q": 0.5
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind strata corner.",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

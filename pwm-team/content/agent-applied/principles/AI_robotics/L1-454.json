@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-454",
+  "layer": "L1",
+  "principle_number": "454",
+  "title": "Spacecraft Attitude Determination",
+  "domain": "Robotics",
+  "sub_domain": "Spacecraft dynamics",
+  "source_file": "AI_robotics/454_spacecraft_attitude.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "Spacecraft attitude determination: estimate quaternion attitude from star tracker, magnetometer, and gyroscope measurements.",
+    "forward_model": "q_dot = 0.5 * Xi(q) * omega; y_star = C(q) * r_inertial_star + noise",
+    "world_state_x": "quaternion q(t) representing rotation from body to inertial frame",
+    "observation_y": "star tracker unit vectors {v_i}, magnetometer vector B_body, gyroscope omega_body",
+    "physical_parameters_theta": [
+      "star_tracker_accuracy_arcsec",
+      "gyro_bias_drift_deg_hr",
+      "magnetometer_noise_nT",
+      "sampling_Hz"
+    ]
+  },
+  "G": {
+    "dag": "S.quest.quaternion_estimator -> M.gyro.integration -> O.ekf.attitude_ekf",
+    "vertices": [
+      "S.quest.quaternion_estimator",
+      "M.gyro.integration",
+      "O.ekf.attitude_ekf"
+    ],
+    "arcs": [
+      "S.quest.quaternion_estimator -> M.gyro.integration",
+      "M.gyro.integration -> O.ekf.attitude_ekf"
+    ],
+    "L_DAG": 3.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 500,
+    "condition_number_effective": 20,
+    "condition_number_mismatched": 100,
+    "regime": "QUEST optimal single-frame; MEKF propagates state with gyro bias estimation; quaternion normalization at each step."
+  },
+  "C": {
+    "solver_class": "QUEST_TRIAD or MEKF_multiplicative_EKF",
+    "convergence_rate_q": 2.0,
+    "error_bound": "attitude knowledge < 1 arcsec with star tracker",
+    "complexity": "O(N_stars * n_state) per attitude update"
+  },
+  "physics_fingerprint": {
+    "carrier": "N/A",
+    "sensing_mechanism": "star_tracker_magnetometer_attitude",
+    "integration_axis": "time",
+    "problem_class": "parameter_estimation",
+    "noise_model": "gaussian",
+    "solution_space": "quaternion_attitude",
+    "primitives": [
+      "S.quest.quaternion_estimator",
+      "M.gyro.integration",
+      "O.ekf.attitude_ekf"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "gyro_bias_estimation_error",
+    "star_catalog_uncertainty",
+    "magnetic_anomaly"
+  ],
+  "error_metric": "attitude_error_arcsec",
+  "error_metric_secondary": "gyro_bias_estimation_error_deg_hr",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "parameter_estimation",
+      "forward_operator": "star_tracker_magnetometer_attitude",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_stars_tracked": 10,
+        "gyro_noise_deg_hr": 0.01,
+        "star_tracker_noise_arcsec": 2.0,
+        "update_rate_Hz": 10
+      },
+      "epsilon_fn_center": "3.0 attitude_error_arcsec"
+    },
+    "allowed_forward_operators": [
+      "star_tracker_magnetometer_attitude"
+    ],
+    "allowed_problem_classes": [
+      "parameter_estimation"
+    ],
+    "allowed_omega_dimensions": [
+      "N_stars_tracked",
+      "gyro_noise_deg_hr",
+      "star_tracker_noise_arcsec",
+      "update_rate_Hz"
+    ],
+    "omega_bounds": {
+      "N_stars_tracked": [
+        3,
+        50
+      ],
+      "gyro_noise_deg_hr": [
+        0.001,
+        1.0
+      ],
+      "star_tracker_noise_arcsec": [
+        0.5,
+        30.0
+      ],
+      "update_rate_Hz": [
+        0.1,
+        100
+      ]
+    },
+    "epsilon_bounds": {
+      "attitude_error_arcsec": [
+        0.1,
+        60.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-431",
+  "layer": "L2",
+  "parent_l1": "L1-431",
+  "principle_ref": "sha256:<L1-431_principle_hash>",
+  "title": "System Identification (N4SID/ARX) \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "model_order_n": [
+        1,
+        20
+      ],
+      "N_data_points": [
+        100,
+        100000
+      ],
+      "input_SNR_dB": [
+        10,
+        60
+      ],
+      "bandwidth_fraction": [
+        0.1,
+        0.9
+      ]
+    },
+    "E": {
+      "forward": "y(k) = C*x(k) + D*u(k) + e(k); x(k+1) = A*x(k) + B*u(k) + w(k); N4SID via block Hankel matrix SVD",
+      "operator": "input_output_system_identification",
+      "primitive_chain": "S.n4sid.subspace_id -> M.arx.regression -> O.chi2.one_step_ahead",
+      "inverse": "recover system matrices (A from input-output sequences {u(k)"
+    },
+    "B": {
+      "PE_condition": "input persistently exciting of order n",
+      "stability": "identified A stable"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "model_fit_percent",
+      "VRMS_validation",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "70 + 15 * (N_data_points / 1000) ** 0.2"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 system_matrices_ABCD"
+    },
+    "baselines": [
+      {
+        "name": "N4SID_subspace",
+        "method_sig": "L+O",
+        "expected_score": 85
+      },
+      {
+        "name": "ARX_RLS",
+        "method_sig": "L+O",
+        "expected_score": 80
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "model_order_n": 4,
+        "N_data_points": 1000,
+        "input_SNR_dB": 30,
+        "bandwidth_fraction": 0.3,
+        "undermodeling_order_mismatch": 0.0,
+        "feedback_in_data": 0.0,
+        "non_stationarity": 0.0
+      },
+      "epsilon": 85.0
+    },
+    "tier_bounds": {
+      "model_order_n": [
+        1,
+        20
+      ],
+      "N_data_points": [
+        100,
+        100000
+      ],
+      "input_SNR_dB": [
+        10,
+        60
+      ],
+      "bandwidth_fraction": [
+        0.1,
+        0.9
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.28,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.28 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

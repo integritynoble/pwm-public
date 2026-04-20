@@ -1,0 +1,95 @@
+{
+  "artifact_id": "L1-098",
+  "layer": "L1",
+  "principle_number": "098",
+  "title": "Photometric Stereo (shape-from-shading with multiple light directions)",
+  "domain": "Depth Imaging",
+  "sub_domain": "Surface-normal recovery from shading",
+  "source_file": "H_depth_imaging/098_photometric_stereo.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in Woodham 1980 photometric stereo and canonical follow-up (robust PS, deep PS).",
+
+  "E": {
+    "description": "K images are captured under known directional light L_k, same camera pose. Under Lambertian reflectance, I_k(u,v) = rho(u,v) * max(0, n(u,v) . L_k); stacking gives I_stack = N * L^T where N = rho * n is the albedo-modulated normal. Least-squares gives N_hat; Poisson integration converts normals to a height field.",
+    "forward_model": "I_k(u,v) = rho(u,v) * max(0, n(u,v) . L_k) * (1 - shadow_mask_k(u,v)) + I_ambient + n_k(u,v), k = 1..K",
+    "world_state_x": "Surface normal map n(u,v) in S^2 on H x W and albedo rho(u,v); integrated height z(u,v) optional",
+    "observation_y": "K images y_k(u,v) in R^{H x W x K} under distinct known light directions",
+    "physical_parameters_theta": [
+      "Known light directions {L_k}_{k=1..K} (typ K = 4-96)",
+      "Light intensity calibration {e_k}",
+      "Camera orthographic or weakly-perspective model",
+      "Surface BRDF (Lambertian default; specular + SSS cause outliers)",
+      "Integration scheme for normals (Poisson, SPS, RANSAC-based Horn)"
+    ]
+  },
+
+  "G": {
+    "dag": "S.scan.light_direction -> L.reflect_lambertian -> L.normal_ls -> int.spatial",
+    "vertices": ["S.scan.light_direction", "L.reflect_lambertian", "L.normal_ls", "int.spatial"],
+    "arcs": [
+      "S.scan.light_direction -> L.reflect_lambertian",
+      "L.reflect_lambertian -> L.normal_ls",
+      "L.normal_ls -> int.spatial"
+    ],
+    "L_DAG": 3.2,
+    "n_c": 0
+  },
+
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 400,
+    "condition_number_effective": 6,
+    "regime": "With K >= 3 non-coplanar light directions and Lambertian BRDF, the linear system has rank 3 and is well-conditioned. Degrades for specular highlights (outlier fraction), cast and attached shadows (reduced effective K), non-Lambertian materials; robust methods (RANSAC, rank-3 SVD, learned PS) handle outliers up to ~30% specular fraction."
+  },
+
+  "C": {
+    "solver_class": "Woodham least-squares, robust PCA rank-3, SVD / SFS, learned (PS-FCN, CNN-PS, DeepPS)",
+    "convergence_rate_q": 2.0,
+    "error_bound": "sigma_normal ~ sigma_pixel / (rho * sqrt(K_valid)) where K_valid = K - shadow_count - specular_outliers; integration error ~ sqrt(area) * local normal error",
+    "complexity": "O(H * W * K) for linear; O(N_iter * H * W * K) for robust PS"
+  },
+
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "multi_light_shading",
+    "integration_axis": "angular",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "2D_normal_and_depth",
+    "primitives": ["S.scan.light_direction", "L.reflect_lambertian", "L.normal_ls", "int.spatial"]
+  },
+
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+
+  "mismatch_parameters": ["specular_fraction", "cast_shadow_fraction", "ambient_residual", "light_direction_error", "inter_reflections"],
+  "error_metric": "normal_MAE_deg",
+  "error_metric_secondary": "depth_RMSE_mm",
+  "error_metric_tertiary": "albedo_relative_error",
+
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "photometric_stereo_normal",
+      "forward_operator": "lambertian_multi_light",
+      "input_format": "K_images_plus_light_directions",
+      "omega": {"H": 512, "W": 512, "K_lights": 10, "photon_count": 500, "specular_fraction": 0.0, "cast_shadow_fraction": 0.0, "ambient_residual": 0.0, "light_direction_error": 0.0},
+      "epsilon_fn_center": "8.0 deg normal MAE"
+    },
+    "allowed_forward_operators": ["lambertian_multi_light", "general_brdf_ps", "near_point_light_ps"],
+    "allowed_problem_classes": ["photometric_stereo_normal", "uncalibrated_ps", "shape_from_shading"],
+    "allowed_omega_dimensions": ["H", "W", "K_lights", "photon_count", "specular_fraction", "cast_shadow_fraction", "ambient_residual", "light_direction_error", "inter_reflections"],
+    "omega_bounds": {
+      "H": [128, 2048], "W": [128, 2048],
+      "K_lights": [3, 96], "photon_count": [50, 10000],
+      "specular_fraction": [0.0, 0.50], "cast_shadow_fraction": [0.0, 0.40],
+      "ambient_residual": [0.0, 0.30], "light_direction_error": [0.0, 0.05],
+      "inter_reflections": [0.0, 0.30]
+    },
+    "epsilon_bounds": {"normal_mae_deg": [2.0, 35.0]}
+  },
+
+  "p1_p10_tests": ["PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS"],
+  "s1_s4_gates": ["PASS", "PASS", "PASS", "PASS"],
+  "ipfs_cid": null
+}

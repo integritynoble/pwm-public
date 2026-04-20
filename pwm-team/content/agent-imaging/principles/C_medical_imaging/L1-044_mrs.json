@@ -1,0 +1,181 @@
+{
+  "artifact_id": "L1-044",
+  "layer": "L1",
+  "principle_number": "044",
+  "title": "Magnetic Resonance Spectroscopy (MRS)",
+  "domain": "Medical Imaging",
+  "sub_domain": "Proton chemical-shift tissue metabolite spectroscopy",
+  "source_file": "C_medical_imaging/044_mrs.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical medical-imaging literature for this principle.",
+  "E": {
+    "description": "Magnetic Resonance Spectroscopy (MRS) forward model.",
+    "forward_model": "FID(t) = sum_m A_m exp(i omega_m t - t / T2_m) + residual_water + lipid + n; quantify metabolites",
+    "world_state_x": "Patient-side quantity of interest (attenuation / activity / perfusion / stiffness etc.)",
+    "observation_y": "Clinical sensor output at declared resolution + noise",
+    "physical_parameters_theta": [
+      "N_samples",
+      "TR_ms",
+      "TE_ms",
+      "N_avg",
+      "SNR_dB",
+      "B0_shim",
+      "water_suppression_imperfection",
+      "lipid_contamination"
+    ]
+  },
+  "G": {
+    "dag": "L.rf_excitation -> L.chemical_shift_encode -> D.fid_acquisition -> int.spectral",
+    "vertices": [
+      "L.rf_excitation",
+      "L.chemical_shift_encode",
+      "D.fid_acquisition",
+      "int.spectral"
+    ],
+    "arcs": [
+      "L.rf_excitation -> L.chemical_shift_encode",
+      "L.chemical_shift_encode -> D.fid_acquisition",
+      "D.fid_acquisition -> int.spectral"
+    ],
+    "L_DAG": 3.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 300,
+    "condition_number_effective": 15,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "LCModel, AMARES, MRS-Net",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sensor SNR + mismatch bias + regularisation.",
+    "complexity": "O(H W) to O(H W Z) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "radio_wave",
+    "sensing_mechanism": "mrs_chemical_shift",
+    "integration_axis": "spectral",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "1D_metabolite_spectrum",
+    "primitives": [
+      "L.rf_excitation",
+      "L.chemical_shift_encode",
+      "D.fid_acquisition",
+      "int.spectral"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "B0_shim",
+    "water_suppression_imperfection",
+    "lipid_contamination",
+    "short_T2_signals"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "mrs",
+      "forward_operator": "mrs_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_samples": 2048,
+        "TR_ms": 2000,
+        "TE_ms": 30,
+        "N_avg": 128,
+        "SNR_dB": 10,
+        "B0_shim": 0.0,
+        "water_suppression_imperfection": 0.0,
+        "lipid_contamination": 0.0
+      },
+      "epsilon_fn_center": "18.0"
+    },
+    "allowed_forward_operators": [
+      "mrs_forward"
+    ],
+    "allowed_problem_classes": [
+      "mrs"
+    ],
+    "allowed_omega_dimensions": [
+      "N_samples",
+      "TR_ms",
+      "TE_ms",
+      "N_avg",
+      "SNR_dB",
+      "B0_shim",
+      "water_suppression_imperfection",
+      "lipid_contamination",
+      "B0_shim",
+      "water_suppression_imperfection",
+      "lipid_contamination",
+      "short_T2_signals"
+    ],
+    "omega_bounds": {
+      "N_samples": [
+        512,
+        8192
+      ],
+      "TR_ms": [
+        500,
+        10000
+      ],
+      "TE_ms": [
+        10,
+        500
+      ],
+      "N_avg": [
+        16,
+        2048
+      ],
+      "SNR_dB": [
+        0.0,
+        30.0
+      ],
+      "B0_shim": [
+        0.0,
+        0.2
+      ],
+      "water_suppression_imperfection": [
+        0.0,
+        0.3
+      ],
+      "lipid_contamination": [
+        0.0,
+        0.5
+      ],
+      "short_T2_signals": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        5.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

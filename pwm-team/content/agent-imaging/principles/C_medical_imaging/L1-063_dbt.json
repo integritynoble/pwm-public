@@ -1,0 +1,199 @@
+{
+  "artifact_id": "L1-063",
+  "layer": "L1",
+  "principle_number": "063",
+  "title": "Digital Breast Tomosynthesis (DBT)",
+  "domain": "Medical Imaging",
+  "sub_domain": "Limited-angle tomography of the breast",
+  "source_file": "C_medical_imaging/063_dbt.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical medical-imaging literature for this principle.",
+  "E": {
+    "description": "Digital Breast Tomosynthesis (DBT) forward model.",
+    "forward_model": "y_theta(u,v) = I_0 exp(-integral mu ds) + scatter + n; theta ranges +/-15 to +/-30 deg",
+    "world_state_x": "Patient-side quantity of interest (attenuation / activity / perfusion / stiffness etc.)",
+    "observation_y": "Clinical sensor output at declared resolution + noise",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "Z",
+      "N_projections",
+      "tilt_range_deg",
+      "kVp",
+      "mAs",
+      "pixel_um",
+      "limited_angle_artifacts",
+      "scatter",
+      "compression_variation",
+      "patient_motion"
+    ]
+  },
+  "G": {
+    "dag": "L.xray_source -> S.scan.limited_angle -> L.sart_reconstruct -> int.angular",
+    "vertices": [
+      "L.xray_source",
+      "S.scan.limited_angle",
+      "L.sart_reconstruct",
+      "int.angular"
+    ],
+    "arcs": [
+      "L.xray_source -> S.scan.limited_angle",
+      "S.scan.limited_angle -> L.sart_reconstruct",
+      "L.sart_reconstruct -> int.angular"
+    ],
+    "L_DAG": 3.8,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 360,
+    "condition_number_effective": 18,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "FBP-DBT, SART-DBT, DBT-Net",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sensor SNR + mismatch bias + regularisation.",
+    "complexity": "O(H W) to O(H W Z) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "x_ray",
+    "sensing_mechanism": "xray_ct",
+    "integration_axis": "angular",
+    "problem_class": "linear_inverse",
+    "noise_model": "shot_poisson",
+    "solution_space": "3D_attenuation_limited_angle",
+    "primitives": [
+      "L.xray_source",
+      "S.scan.limited_angle",
+      "L.sart_reconstruct",
+      "int.angular"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "limited_angle_artifacts",
+    "scatter",
+    "compression_variation",
+    "patient_motion"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "dbt",
+      "forward_operator": "dbt_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 3328,
+        "W": 2560,
+        "Z": 60,
+        "N_projections": 15,
+        "tilt_range_deg": 15,
+        "kVp": 28,
+        "mAs": 60,
+        "pixel_um": 85,
+        "limited_angle_artifacts": 0.3,
+        "scatter": 0.15,
+        "compression_variation": 0.0,
+        "patient_motion": 0.0
+      },
+      "epsilon_fn_center": "27.0"
+    },
+    "allowed_forward_operators": [
+      "dbt_forward"
+    ],
+    "allowed_problem_classes": [
+      "dbt"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "Z",
+      "N_projections",
+      "tilt_range_deg",
+      "kVp",
+      "mAs",
+      "pixel_um",
+      "limited_angle_artifacts",
+      "scatter",
+      "compression_variation",
+      "patient_motion",
+      "limited_angle_artifacts",
+      "scatter",
+      "compression_variation",
+      "patient_motion"
+    ],
+    "omega_bounds": {
+      "H": 1664,
+      "W": 1280,
+      "Z": [
+        16,
+        200
+      ],
+      "N_projections": [
+        9,
+        25
+      ],
+      "tilt_range_deg": [
+        7.5,
+        30
+      ],
+      "kVp": [
+        22,
+        34
+      ],
+      "mAs": [
+        10,
+        400
+      ],
+      "pixel_um": [
+        50,
+        200
+      ],
+      "limited_angle_artifacts": [
+        0.1,
+        0.7
+      ],
+      "scatter": [
+        0.0,
+        0.3
+      ],
+      "compression_variation": [
+        0.0,
+        0.2
+      ],
+      "patient_motion": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        5.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

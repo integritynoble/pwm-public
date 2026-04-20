@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-425",
+  "layer": "L1",
+  "principle_number": "425",
+  "title": "Groundwater Contaminant Transport Inversion",
+  "domain": "Environmental Science",
+  "sub_domain": "Subsurface hydrology",
+  "source_file": "AF_environmental_sci/425_groundwater_contaminant.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "Groundwater contaminant transport inversion: infer hydraulic conductivity K field from head and concentration data.",
+    "forward_model": "nabla*(K*nabla h) = S_s*(dh/dt) + q (Darcy); dC/dt + v*nabla C = nabla*(D*nabla C) - lambda*C",
+    "world_state_x": "hydraulic conductivity field K(x,y,z) in 3D aquifer domain",
+    "observation_y": "hydraulic head h(t) at N_wells observation wells, concentration breakthrough curves",
+    "physical_parameters_theta": [
+      "log_K_variance",
+      "correlation_length_m",
+      "specific_storage_Ss",
+      "effective_porosity_ne"
+    ]
+  },
+  "G": {
+    "dag": "M.darcy.groundwater_flow -> S.ade.solute_transport -> O.bayesian.heterogeneous_K",
+    "vertices": [
+      "M.darcy.groundwater_flow",
+      "S.ade.solute_transport",
+      "O.bayesian.heterogeneous_K"
+    ],
+    "arcs": [
+      "M.darcy.groundwater_flow -> S.ade.solute_transport",
+      "S.ade.solute_transport -> O.bayesian.heterogeneous_K"
+    ],
+    "L_DAG": 4.5,
+    "n_c": 1
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 100000.0,
+    "condition_number_effective": 2000,
+    "condition_number_mismatched": 10000.0,
+    "regime": "Highly heterogeneous K spans 6 orders of magnitude; non-unique solutions; kriging provides spatial structure; ensemble methods handle non-Gaussianity."
+  },
+  "C": {
+    "solver_class": "ensemble_Kalman_smoother or pilot_point_regularization (PEST)",
+    "convergence_rate_q": 1.5,
+    "error_bound": "head RMSE < 0.1 m; concentration within factor 2",
+    "complexity": "O(N_ensemble * N_sim * N_iter) or O(N_pilot_points ** 2 * N_obs) for PEST"
+  },
+  "physics_fingerprint": {
+    "carrier": "N/A",
+    "sensing_mechanism": "groundwater_monitoring_network",
+    "integration_axis": "3d_aquifer",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "measurement_gaussian",
+    "solution_space": "3D_hydraulic_conductivity",
+    "primitives": [
+      "M.darcy.groundwater_flow",
+      "S.ade.solute_transport",
+      "O.bayesian.heterogeneous_K"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "density_dependent_flow_effects",
+    "preferential_flow_paths",
+    "geochemical_reactions"
+  ],
+  "error_metric": "hydraulic_head_RMSE_m",
+  "error_metric_secondary": "concentration_RMSE_mg_L",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "nonlinear_inverse",
+      "forward_operator": "groundwater_monitoring_network",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_wells": 20,
+        "domain_area_km2": 1.0,
+        "log_K_variance": 2.0,
+        "contamination_years": 20
+      },
+      "epsilon_fn_center": "0.1 hydraulic_head_RMSE_m"
+    },
+    "allowed_forward_operators": [
+      "groundwater_monitoring_network"
+    ],
+    "allowed_problem_classes": [
+      "nonlinear_inverse"
+    ],
+    "allowed_omega_dimensions": [
+      "N_wells",
+      "domain_area_km2",
+      "log_K_variance",
+      "contamination_years"
+    ],
+    "omega_bounds": {
+      "N_wells": [
+        5,
+        200
+      ],
+      "domain_area_km2": [
+        0.01,
+        100
+      ],
+      "log_K_variance": [
+        0.5,
+        6.0
+      ],
+      "contamination_years": [
+        1,
+        100
+      ]
+    },
+    "epsilon_bounds": {
+      "hydraulic_head_RMSE_m": [
+        0.01,
+        1.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

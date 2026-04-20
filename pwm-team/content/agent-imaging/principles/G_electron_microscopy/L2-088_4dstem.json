@@ -1,0 +1,153 @@
+{
+  "artifact_id": "L2-088",
+  "layer": "L2",
+  "parent_l1": "L1-088",
+  "title": "4D-STEM \u2014 pixelated-detector scanning diffraction imaging Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        32,
+        1024
+      ],
+      "W": [
+        32,
+        1024
+      ],
+      "N_q": [
+        32,
+        1024
+      ],
+      "pixel_A": [
+        0.1,
+        2.0
+      ],
+      "kV": [
+        60,
+        300
+      ],
+      "dose_e_per_A2": [
+        100,
+        100000
+      ],
+      "probe_aberration": [
+        0.0,
+        0.3
+      ],
+      "scan_distortion": [
+        0.0,
+        0.05
+      ],
+      "partial_coherence": [
+        0.6,
+        1.0
+      ]
+    },
+    "E": {
+      "forward": "I(q, r) = |F{Psi_probe(r' - r) * O(r')}|^2 + n, recover O(r) via ptychography",
+      "operator": "stem_ptychography_forward_mismatch",
+      "primitive_chain": "L.illumination.convergent_probe -> S.scan.raster -> L.diffraction -> L.modulus_squared -> int.spatial",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "17.0 + 2.0 * log10(dose_e_per_A2 / 100) - 15.0 * probe_aberration - 25.0 * scan_distortion"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Single-Side-Band",
+        "method_sig": "L+O",
+        "expected_psnr": 22.5
+      },
+      {
+        "name": "EPIE-4DSTEM",
+        "method_sig": "I+O",
+        "expected_psnr": 24.5
+      },
+      {
+        "name": "Ptycho-Net",
+        "method_sig": "L+N",
+        "expected_psnr": 27.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 128,
+        "W": 128,
+        "N_q": 128,
+        "pixel_A": 0.3,
+        "kV": 200,
+        "dose_e_per_A2": 10000,
+        "probe_aberration": 0.0,
+        "scan_distortion": 0.0,
+        "partial_coherence": 1.0
+      },
+      "epsilon": 24.0
+    },
+    "tier_bounds": {
+      "H": [
+        32,
+        1024
+      ],
+      "W": [
+        32,
+        1024
+      ],
+      "N_q": [
+        32,
+        1024
+      ],
+      "pixel_A": [
+        0.1,
+        2.0
+      ],
+      "kV": [
+        60,
+        300
+      ],
+      "dose_e_per_A2": [
+        100,
+        100000
+      ],
+      "probe_aberration": [
+        0.0,
+        0.3
+      ],
+      "scan_distortion": [
+        0.0,
+        0.05
+      ],
+      "partial_coherence": [
+        0.6,
+        1.0
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.48,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

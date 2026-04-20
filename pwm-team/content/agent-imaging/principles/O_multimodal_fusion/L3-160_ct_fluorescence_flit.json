@@ -1,0 +1,181 @@
+{
+  "artifact_id": "L3-160",
+  "layer": "L3",
+  "parent_l2": "L2-160",
+  "parent_l1": "L1-160",
+  "title": "CT-FLIT (Fluorescence Lifetime Imaging Tomography) Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "canonical dataset for this principle",
+    "secondary": "simulated forward synthesis at declared Omega",
+    "construction_method": "parametric forward + declared noise",
+    "num_dev_instances_per_tier": 20
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "H": 128,
+        "W": 128,
+        "Z": 64,
+        "N_sources": 16,
+        "N_detectors": 32,
+        "SNR_dB": 20.0,
+        "tissue_scattering_model": 0.0,
+        "CT_prior_mismatch": 0.0,
+        "fluorophore_leakage": 0.0,
+        "registration_error": 0.0
+      },
+      "epsilon": 16.0,
+      "d_ibench": 0.14,
+      "baselines": [
+        {
+          "name": "Born-Linear",
+          "score": 13.5,
+          "Q": 0.88
+        },
+        {
+          "name": "CT-Regularized",
+          "score": 16.0,
+          "Q": 0.88
+        },
+        {
+          "name": "Joint-FLIT-Net",
+          "score": 18.5,
+          "Q": 0.88
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "H": 128,
+        "W": 128,
+        "Z": 64,
+        "N_sources": 16,
+        "N_detectors": 32,
+        "SNR_dB": 17.0,
+        "tissue_scattering_model": 0.1,
+        "CT_prior_mismatch": 0.1,
+        "fluorophore_leakage": 0.06,
+        "registration_error": 1.0
+      },
+      "epsilon": 13.12,
+      "d_ibench": 0.28,
+      "baselines": [
+        {
+          "name": "Born-Linear",
+          "score": 11.5,
+          "Q": 0.68
+        },
+        {
+          "name": "CT-Regularized",
+          "score": 14.0,
+          "Q": 0.68
+        },
+        {
+          "name": "Joint-FLIT-Net",
+          "score": 16.5,
+          "Q": 0.68
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "H": 128,
+        "W": 128,
+        "Z": 64,
+        "N_sources": 16,
+        "N_detectors": 32,
+        "SNR_dB": 8.0,
+        "tissue_scattering_model": 0.25,
+        "CT_prior_mismatch": 0.25,
+        "fluorophore_leakage": 0.15,
+        "registration_error": 2.5
+      },
+      "epsilon": 10.24,
+      "d_ibench": 0.48,
+      "baselines": [
+        {
+          "name": "Born-Linear",
+          "score": 9.5,
+          "Q": 0.48
+        },
+        {
+          "name": "CT-Regularized",
+          "score": 12.0,
+          "Q": 0.48
+        },
+        {
+          "name": "Joint-FLIT-Net",
+          "score": 14.5,
+          "Q": 0.48
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "H": 128,
+        "W": 128,
+        "Z": 64,
+        "N_sources": 16,
+        "N_detectors": 32,
+        "SNR_dB": 0.0,
+        "tissue_scattering_model": 0.5,
+        "CT_prior_mismatch": 0.5,
+        "fluorophore_leakage": 0.3,
+        "registration_error": 5.0
+      },
+      "epsilon": 7.36,
+      "d_ibench": 0.72,
+      "baselines": [
+        {
+          "name": "Born-Linear",
+          "score": 7.5,
+          "Q": 0.28
+        },
+        {
+          "name": "CT-Regularized",
+          "score": 10.0,
+          "Q": 0.28
+        },
+        {
+          "name": "Joint-FLIT-Net",
+          "score": 12.5,
+          "Q": 0.28
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "full parametric sweep",
+      "num_dev_instances": 200,
+      "construction_method": "parametric Omega sweep"
+    },
+    "baselines": [
+      {
+        "name": "Born-Linear",
+        "overall_Q": 0.7
+      },
+      {
+        "name": "CT-Regularized",
+        "overall_Q": 0.6
+      },
+      {
+        "name": "Joint-FLIT-Net",
+        "overall_Q": 0.5
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind strata corner.",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

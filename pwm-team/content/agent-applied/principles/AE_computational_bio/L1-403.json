@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-403",
+  "layer": "L1",
+  "principle_number": "403",
+  "title": "Physiologically Based PK (PBPK)",
+  "domain": "Computational Biology",
+  "sub_domain": "Systems pharmacology",
+  "source_file": "AE_computational_bio/403_pbpk.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "PBPK model: mechanistic organ-level pharmacokinetics connecting tissue concentrations to plasma via physiological parameters.",
+    "forward_model": "dA_org/dt = Q_org*(C_arterial - C_venous_org) - CL_int*C_org; conservation of mass across organs",
+    "world_state_x": "tissue-specific partition coefficients Kp and metabolic clearance CL_int per organ",
+    "observation_y": "plasma and (optionally) tissue concentration-time profiles from in vivo or in vitro data",
+    "physical_parameters_theta": [
+      "Kp_tissue_blood_partition",
+      "CL_int_hepatic_L_hr",
+      "Q_organ_blood_flow_L_hr",
+      "fraction_unbound_fu"
+    ]
+  },
+  "G": {
+    "dag": "M.ode.pbpk_organs -> S.qsr.tissue_binding -> O.nlme.pbpk_fit",
+    "vertices": [
+      "M.ode.pbpk_organs",
+      "S.qsr.tissue_binding",
+      "O.nlme.pbpk_fit"
+    ],
+    "arcs": [
+      "M.ode.pbpk_organs -> S.qsr.tissue_binding",
+      "S.qsr.tissue_binding -> O.nlme.pbpk_fit"
+    ],
+    "L_DAG": 4.0,
+    "n_c": 1
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 10000.0,
+    "condition_number_effective": 500,
+    "condition_number_mismatched": 2000,
+    "regime": "Mechanistic; parameterized from in vitro data; scaling rules (allometry) for cross-species; IVIVE uncertainty is dominant."
+  },
+  "C": {
+    "solver_class": "PK-Sim or GastroPlus or Simcyp_PBPK",
+    "convergence_rate_q": 2.0,
+    "error_bound": "plasma concentration within 2-fold; tissue Kp within 3-fold",
+    "complexity": "O(N_organs * N_timesteps) per ODE integration"
+  },
+  "physics_fingerprint": {
+    "carrier": "N/A",
+    "sensing_mechanism": "tissue_concentration_measurement",
+    "integration_axis": "organ_system",
+    "problem_class": "parameter_estimation",
+    "noise_model": "lognormal",
+    "solution_space": "PBPK_parameter_vector",
+    "primitives": [
+      "M.ode.pbpk_organs",
+      "S.qsr.tissue_binding",
+      "O.nlme.pbpk_fit"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "in_vitro_in_vivo_extrapolation_IVIVE_bias",
+    "enzyme_induction_inhibition",
+    "ontogeny_age_dependence"
+  ],
+  "error_metric": "plasma_RMSE_fold_error",
+  "error_metric_secondary": "tissue_Kp_RMSE_log",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "parameter_estimation",
+      "forward_operator": "tissue_concentration_measurement",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_organs_modeled": 15,
+        "CL_int_L_hr": 20,
+        "fu_fraction_unbound": 0.1,
+        "species_BW_kg": 70
+      },
+      "epsilon_fn_center": "2 plasma_RMSE_fold_error"
+    },
+    "allowed_forward_operators": [
+      "tissue_concentration_measurement"
+    ],
+    "allowed_problem_classes": [
+      "parameter_estimation"
+    ],
+    "allowed_omega_dimensions": [
+      "N_organs_modeled",
+      "CL_int_L_hr",
+      "fu_fraction_unbound",
+      "species_BW_kg"
+    ],
+    "omega_bounds": {
+      "N_organs_modeled": [
+        5,
+        25
+      ],
+      "CL_int_L_hr": [
+        0.1,
+        1000
+      ],
+      "fu_fraction_unbound": [
+        0.001,
+        1.0
+      ],
+      "species_BW_kg": [
+        0.02,
+        500
+      ]
+    },
+    "epsilon_bounds": {
+      "plasma_RMSE_fold_error": [
+        1.0,
+        10.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

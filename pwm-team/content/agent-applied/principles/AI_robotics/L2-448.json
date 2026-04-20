@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-448",
+  "layer": "L2",
+  "parent_l1": "L1-448",
+  "principle_ref": "sha256:<L1-448_principle_hash>",
+  "title": "Forward Dynamics \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "N_joints": [
+        2,
+        10
+      ],
+      "total_mass_kg": [
+        0.5,
+        1000
+      ],
+      "friction_coefficient": [
+        0.0,
+        1.0
+      ],
+      "simulation_time_s": [
+        0.1,
+        100
+      ]
+    },
+    "E": {
+      "forward": "M(q)*q_ddot + C(q,q_dot)*q_dot + g(q) = tau; solve q_ddot = M^{-1}(tau - C*q_dot - g)",
+      "operator": "torque_to_acceleration",
+      "primitive_chain": "M.newton_euler.forward -> S.articulated_body.aba -> O.ode.integration",
+      "inverse": "recover joint accelerations q_ddot(t) and integrated trajectory {q(t) from applied joint torques tau(t) and joint states {q"
+    },
+    "B": {
+      "M_PD": "mass matrix M positive definite",
+      "energy_conservation": "total energy conserved for lossless"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "joint_trajectory_RMSE_deg",
+      "energy_conservation_error",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.5 + 0.5 * friction_coefficient"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 joint_acceleration_vector"
+    },
+    "baselines": [
+      {
+        "name": "ABA_Featherstone",
+        "method_sig": "L+O",
+        "expected_score": 1.0
+      },
+      {
+        "name": "RNEA_recursive",
+        "method_sig": "L+O",
+        "expected_score": 1.2
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_joints": 6,
+        "total_mass_kg": 10,
+        "friction_coefficient": 0.1,
+        "simulation_time_s": 1.0,
+        "inertia_parameter_uncertainty": 0.0,
+        "friction_model_error": 0.0,
+        "flexibility_neglect": 0.0
+      },
+      "epsilon": 1.0
+    },
+    "tier_bounds": {
+      "N_joints": [
+        2,
+        10
+      ],
+      "total_mass_kg": [
+        0.5,
+        1000
+      ],
+      "friction_coefficient": [
+        0.0,
+        1.0
+      ],
+      "simulation_time_s": [
+        0.1,
+        100
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.22,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.22 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

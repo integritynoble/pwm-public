@@ -1,0 +1,95 @@
+{
+  "artifact_id": "L1-081",
+  "layer": "L1",
+  "principle_number": "081",
+  "title": "Integral Photography (Lippmann-style MLA capture + reconstruction)",
+  "domain": "Computational Optics",
+  "sub_domain": "Microlens-array 3D imaging",
+  "source_file": "F_computational_optics/081_integral_photography.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in Lippmann 1908 integral photography and modern Fourier-integral photography literature.",
+
+  "E": {
+    "description": "Integral photography records a scene through a microlens array in front of (or near) the sensor; each microlens forms a small image of the exit pupil. The result is an elemental-image array whose pixel-for-pixel rearrangement produces multiple sub-aperture views that jointly encode 3D structure. Viewing through a matched MLA recreates the light field; digital reconstruction solves for parallax, depth, or view synthesis.",
+    "forward_model": "y(i,j) = sum_k I_k(i - u_k, j - v_k) * mla_mask_k(i,j) + n(i,j)  where I_k is the k-th elemental image",
+    "world_state_x": "Scene represented either as (a) elemental-image array {I_k}_{k=1..N_ml}, or (b) equivalent 4D light field L(u,v,s,t), or (c) 3D scene + depth map",
+    "observation_y": "2D sensor mosaic y in R^{H_s x W_s} encoding the tiled elemental images",
+    "physical_parameters_theta": [
+      "MLA pitch p, N_ml microlenses",
+      "MLA-sensor gap g (sets angular field), focal length f_ml",
+      "Spatial resolution per elemental image (L_x, L_y) (pixels under each microlens)",
+      "Gamma-gap-unfocused (Fourier mode) vs. gamma-gap-focused (image mode)",
+      "MLA calibration drift (rotation, offset, vignetting)"
+    ]
+  },
+
+  "G": {
+    "dag": "L.project.pupil -> M.microlens_array -> L.rearrange -> int.spatial",
+    "vertices": ["L.project.pupil", "M.microlens_array", "L.rearrange", "int.spatial"],
+    "arcs": [
+      "L.project.pupil -> M.microlens_array",
+      "M.microlens_array -> L.rearrange",
+      "L.rearrange -> int.spatial"
+    ],
+    "L_DAG": 3.0,
+    "n_c": 0
+  },
+
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 1200,
+    "condition_number_effective": 18,
+    "regime": "Well-conditioned when MLA is rigidly calibrated and angular/spatial trade-off is sufficient (N_ml * L_x >= scene bandwidth). Fourier-mode integral photography trades angular for spatial resolution; reconstruction is linear with known MLA geometry."
+  },
+
+  "C": {
+    "solver_class": "pixel rearrangement + sub-aperture extraction, iterative MLA super-resolution (ADMM), learned LF super-resolution applied to IP views",
+    "convergence_rate_q": 2.0,
+    "error_bound": "|I_hat - I|_L2 <= C1 * sigma / sqrt(angular_samples) + C2 * mla_calibration_error + C3 * vignetting_residual",
+    "complexity": "O(H_s * W_s) for rearrangement; O(N_iter * H * W * L_x * L_y) for super-resolution"
+  },
+
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "microlens_array_sampling",
+    "integration_axis": "angular",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "4D_light_field",
+    "primitives": ["L.project.pupil", "M.microlens_array", "L.rearrange", "int.spatial"]
+  },
+
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+
+  "mismatch_parameters": ["mla_rotation", "mla_pitch_drift", "sensor_mla_gap_error", "vignetting_residual"],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "disparity_MAE_px",
+
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "integral_photography_decoding",
+      "forward_operator": "mla_integral_photo_capture",
+      "input_format": "raw_sensor_mosaic_plus_mla_calibration",
+      "omega": {"H_s": 2048, "W_s": 2048, "N_ml_x": 100, "N_ml_y": 100, "L_x": 20, "L_y": 20, "photon_count": 1000, "mla_rotation": 0.0, "mla_pitch_drift": 0.0},
+      "epsilon_fn_center": "30.0 dB PSNR"
+    },
+    "allowed_forward_operators": ["mla_integral_photo_capture", "fourier_integral_photo", "focused_integral"],
+    "allowed_problem_classes": ["integral_photography_decoding", "mla_super_resolution"],
+    "allowed_omega_dimensions": ["H_s", "W_s", "N_ml_x", "N_ml_y", "L_x", "L_y", "photon_count", "mla_rotation", "mla_pitch_drift", "sensor_mla_gap_error", "vignetting_residual"],
+    "omega_bounds": {
+      "H_s": [512, 8192], "W_s": [512, 8192],
+      "N_ml_x": [20, 400], "N_ml_y": [20, 400],
+      "L_x": [5, 50], "L_y": [5, 50],
+      "photon_count": [50, 10000],
+      "mla_rotation": [0.0, 0.05], "mla_pitch_drift": [0.0, 0.02],
+      "sensor_mla_gap_error": [0.0, 0.1], "vignetting_residual": [0.0, 0.2]
+    },
+    "epsilon_bounds": {"psnr_db": [18.0, 42.0]}
+  },
+
+  "p1_p10_tests": ["PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS"],
+  "s1_s4_gates": ["PASS", "PASS", "PASS", "PASS"],
+  "ipfs_cid": null
+}

@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-400",
+  "layer": "L2",
+  "parent_l1": "L1-400",
+  "principle_ref": "sha256:<L1-400_principle_hash>",
+  "title": "Hemodynamics (Navier-Stokes Cardiovascular) \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "N_mesh_elements": [
+        10000,
+        5000000
+      ],
+      "Re_Reynolds": [
+        100,
+        5000
+      ],
+      "cardiac_cycle_s": [
+        0.5,
+        2.0
+      ],
+      "MRI_voxel_mm": [
+        0.5,
+        5.0
+      ]
+    },
+    "E": {
+      "forward": "rho*(du/dt + u*nabla u) = -nabla p + mu*nabla ** 2 u; nabla*u = 0 (incompressible NS)",
+      "operator": "blood_flow_velocity_measurement",
+      "primitive_chain": "M.ns.incompressible -> S.fsi.fluid_structure -> O.chi2.4dflow_mri",
+      "inverse": "recover 3D velocity field u(x from 4D phase-contrast MRI velocity measurements v_MRI(x"
+    },
+    "B": {
+      "incompressibility": "div u = 0",
+      "no_slip": "u = 0 at walls"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "WSS_RMSE_Pa",
+      "pressure_drop_RMSE_mmHg",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.3 + 0.2 * (MRI_voxel_mm / 2.0) ** 0.5"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 3D_velocity_pressure_field"
+    },
+    "baselines": [
+      {
+        "name": "OpenFOAM_CFD",
+        "method_sig": "L+O",
+        "expected_score": 0.6
+      },
+      {
+        "name": "SimVascular_FSI",
+        "method_sig": "L+O",
+        "expected_score": 0.4
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_mesh_elements": 500000,
+        "Re_Reynolds": 2000,
+        "cardiac_cycle_s": 1.0,
+        "MRI_voxel_mm": 2.0,
+        "MRI_velocity_noise": 0.0,
+        "vessel_wall_motion": 0.0,
+        "non_Newtonian_viscosity": 0.0
+      },
+      "epsilon": 0.5
+    },
+    "tier_bounds": {
+      "N_mesh_elements": [
+        10000,
+        5000000
+      ],
+      "Re_Reynolds": [
+        100,
+        5000
+      ],
+      "cardiac_cycle_s": [
+        0.5,
+        2.0
+      ],
+      "MRI_voxel_mm": [
+        0.5,
+        5.0
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.42,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.42 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

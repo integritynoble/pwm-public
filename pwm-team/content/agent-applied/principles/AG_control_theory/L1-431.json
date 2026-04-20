@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-431",
+  "layer": "L1",
+  "principle_number": "431",
+  "title": "System Identification (N4SID/ARX)",
+  "domain": "Control Theory",
+  "sub_domain": "System identification",
+  "source_file": "AG_control_theory/431_system_identification.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "System identification: estimate state-space matrices (A,B,C,D) or ARX coefficients from input-output measurements.",
+    "forward_model": "y(k) = C*x(k) + D*u(k) + e(k); x(k+1) = A*x(k) + B*u(k) + w(k); N4SID via block Hankel matrix SVD",
+    "world_state_x": "system matrices (A,B,C,D) of order n, input delay",
+    "observation_y": "input-output sequences {u(k), y(k)} for k=1..N",
+    "physical_parameters_theta": [
+      "model_order_n",
+      "N_data_points",
+      "input_excitation_bandwidth_Hz",
+      "noise_SNR_dB"
+    ]
+  },
+  "G": {
+    "dag": "S.n4sid.subspace_id -> M.arx.regression -> O.chi2.one_step_ahead",
+    "vertices": [
+      "S.n4sid.subspace_id",
+      "M.arx.regression",
+      "O.chi2.one_step_ahead"
+    ],
+    "arcs": [
+      "S.n4sid.subspace_id -> M.arx.regression",
+      "M.arx.regression -> O.chi2.one_step_ahead"
+    ],
+    "L_DAG": 3.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 2000,
+    "condition_number_effective": 100,
+    "condition_number_mismatched": 500,
+    "regime": "Consistent for large N under PE condition; order selection via AIC/BIC/MDL; closed-loop identification requires instrumental variables."
+  },
+  "C": {
+    "solver_class": "N4SID_subspace or ARX_RLS or PEM_prediction_error_method",
+    "convergence_rate_q": 2.0,
+    "error_bound": "model fit > 80% for good data; N4SID optimal for large N",
+    "complexity": "O(N * n ** 2) for subspace methods"
+  },
+  "physics_fingerprint": {
+    "carrier": "N/A",
+    "sensing_mechanism": "input_output_system_identification",
+    "integration_axis": "time_series",
+    "problem_class": "parameter_estimation",
+    "noise_model": "gaussian",
+    "solution_space": "system_matrices_ABCD",
+    "primitives": [
+      "S.n4sid.subspace_id",
+      "M.arx.regression",
+      "O.chi2.one_step_ahead"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "undermodeling_order_mismatch",
+    "feedback_in_data",
+    "non_stationarity"
+  ],
+  "error_metric": "model_fit_percent",
+  "error_metric_secondary": "VRMS_validation",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "parameter_estimation",
+      "forward_operator": "input_output_system_identification",
+      "input_format": "measurement_only",
+      "omega": {
+        "model_order_n": 4,
+        "N_data_points": 1000,
+        "input_SNR_dB": 30,
+        "bandwidth_fraction": 0.3
+      },
+      "epsilon_fn_center": "85 model_fit_percent"
+    },
+    "allowed_forward_operators": [
+      "input_output_system_identification"
+    ],
+    "allowed_problem_classes": [
+      "parameter_estimation"
+    ],
+    "allowed_omega_dimensions": [
+      "model_order_n",
+      "N_data_points",
+      "input_SNR_dB",
+      "bandwidth_fraction"
+    ],
+    "omega_bounds": {
+      "model_order_n": [
+        1,
+        20
+      ],
+      "N_data_points": [
+        100,
+        100000
+      ],
+      "input_SNR_dB": [
+        10,
+        60
+      ],
+      "bandwidth_fraction": [
+        0.1,
+        0.9
+      ]
+    },
+    "epsilon_bounds": {
+      "model_fit_percent": [
+        50,
+        99
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

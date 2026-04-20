@@ -1,0 +1,181 @@
+{
+  "artifact_id": "L1-101",
+  "layer": "L1",
+  "principle_number": "101",
+  "title": "Active Sonar \u2014 underwater acoustic imaging",
+  "domain": "Remote Sensing",
+  "sub_domain": "Underwater acoustic imaging",
+  "source_file": "I_remote_sensing/101_sonar.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical remote-sensing literature for this principle.",
+  "E": {
+    "description": "Active Sonar \u2014 underwater acoustic imaging forward model.",
+    "forward_model": "y(t, theta) = sum_r reflectivity(r) * pulse(t - 2r/c(r)) + reverberation + n",
+    "world_state_x": "Scene-side quantity of interest (reflectance / velocity / phase / concentration)",
+    "observation_y": "Sensor output at declared resolution + noise",
+    "physical_parameters_theta": [
+      "N_range_bins",
+      "N_beams",
+      "f_kHz",
+      "range_m",
+      "SNR_dB",
+      "sound_speed_profile_error",
+      "multipath",
+      "platform_roll"
+    ]
+  },
+  "G": {
+    "dag": "L.emit.acoustic_pulse -> S.scan.beam -> L.beamform -> int.temporal",
+    "vertices": [
+      "L.emit.acoustic_pulse",
+      "S.scan.beam",
+      "L.beamform",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.emit.acoustic_pulse -> S.scan.beam",
+      "S.scan.beam -> L.beamform",
+      "L.beamform -> int.temporal"
+    ],
+    "L_DAG": 3.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 240,
+    "condition_number_effective": 12,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Delay-Sum-Beamform, MVDR, Sonar-Net",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sensor SNR + mismatch-induced bias.",
+    "complexity": "O(H W) to O(H W N_bands) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "acoustic",
+    "sensing_mechanism": "active_sonar_pulse",
+    "integration_axis": "temporal",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "2D_acoustic_reflectivity",
+    "primitives": [
+      "L.emit.acoustic_pulse",
+      "S.scan.beam",
+      "L.beamform",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "sound_speed_profile_error",
+    "multipath",
+    "platform_roll",
+    "reverberation"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "sonar_active",
+      "forward_operator": "sonar_active_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_range_bins": 1024,
+        "N_beams": 128,
+        "f_kHz": 100,
+        "range_m": 500,
+        "SNR_dB": 20.0,
+        "sound_speed_profile_error": 0.0,
+        "multipath": 0.0,
+        "platform_roll": 0.0
+      },
+      "epsilon_fn_center": "22.0"
+    },
+    "allowed_forward_operators": [
+      "sonar_active_forward"
+    ],
+    "allowed_problem_classes": [
+      "sonar_active"
+    ],
+    "allowed_omega_dimensions": [
+      "N_range_bins",
+      "N_beams",
+      "f_kHz",
+      "range_m",
+      "SNR_dB",
+      "sound_speed_profile_error",
+      "multipath",
+      "platform_roll",
+      "sound_speed_profile_error",
+      "multipath",
+      "platform_roll",
+      "reverberation"
+    ],
+    "omega_bounds": {
+      "N_range_bins": [
+        256,
+        8192
+      ],
+      "N_beams": [
+        32,
+        1024
+      ],
+      "f_kHz": [
+        10,
+        1000
+      ],
+      "range_m": [
+        10,
+        5000
+      ],
+      "SNR_dB": [
+        0.0,
+        30.0
+      ],
+      "sound_speed_profile_error": [
+        0.0,
+        0.05
+      ],
+      "multipath": [
+        0.0,
+        0.5
+      ],
+      "platform_roll": [
+        0.0,
+        0.1
+      ],
+      "reverberation": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        5.0,
+        40.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-443",
+  "layer": "L1",
+  "principle_number": "443",
+  "title": "Merton Credit Risk Structural Model",
+  "domain": "Computational Finance",
+  "sub_domain": "Credit risk",
+  "source_file": "AH_comp_finance/443_credit_risk_merton.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "Merton model: recover firm asset value V and asset volatility sigma_V from equity market cap and equity volatility.",
+    "forward_model": "E = V*N(d1) - D*e^{-rT}*N(d2) (equity=call on assets); sigma_E = (V/E)*N(d1)*sigma_V",
+    "world_state_x": "firm asset value V and asset volatility sigma_V",
+    "observation_y": "equity market cap E and equity volatility sigma_E from options",
+    "physical_parameters_theta": [
+      "debt_face_value_D",
+      "risk_free_rate_r",
+      "maturity_T",
+      "equity_vol_sigma_E"
+    ]
+  },
+  "G": {
+    "dag": "M.merton.structural -> O.newton.system_2eq -> S.bs.equity_as_call",
+    "vertices": [
+      "M.merton.structural",
+      "O.newton.system_2eq",
+      "S.bs.equity_as_call"
+    ],
+    "arcs": [
+      "M.merton.structural -> O.newton.system_2eq",
+      "O.newton.system_2eq -> S.bs.equity_as_call"
+    ],
+    "L_DAG": 2.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 2000,
+    "condition_number_effective": 80,
+    "condition_number_mismatched": 400,
+    "regime": "Two equations, two unknowns (V, sigma_V); nonlinear system; Duan MLE provides consistent estimates."
+  },
+  "C": {
+    "solver_class": "Newton_2eq_system or iterative_MLE (Duan 1994)",
+    "convergence_rate_q": 2.0,
+    "error_bound": "CDS spread prediction within 50 bp for investment grade",
+    "complexity": "O(N_firms * N_iter_Newton) for portfolio"
+  },
+  "physics_fingerprint": {
+    "carrier": "N/A",
+    "sensing_mechanism": "equity_option_credit_inversion",
+    "integration_axis": "capital_structure",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "market_gaussian",
+    "solution_space": "firm_value_vol_vector",
+    "primitives": [
+      "M.merton.structural",
+      "O.newton.system_2eq",
+      "S.bs.equity_as_call"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "debt_complexity_multiple_tranches",
+    "default_boundary_uncertainty",
+    "accounting_lag_in_equity"
+  ],
+  "error_metric": "CDS_spread_prediction_RMSE_bp",
+  "error_metric_secondary": "PD_calibration_error",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "nonlinear_inverse",
+      "forward_operator": "equity_option_credit_inversion",
+      "input_format": "measurement_only",
+      "omega": {
+        "leverage_ratio_D_V": 0.5,
+        "sigma_E_percent": 30,
+        "T_maturity_yr": 1.0,
+        "r_rate_percent": 3.0
+      },
+      "epsilon_fn_center": "50 CDS_spread_prediction_RMSE_bp"
+    },
+    "allowed_forward_operators": [
+      "equity_option_credit_inversion"
+    ],
+    "allowed_problem_classes": [
+      "nonlinear_inverse"
+    ],
+    "allowed_omega_dimensions": [
+      "leverage_ratio_D_V",
+      "sigma_E_percent",
+      "T_maturity_yr",
+      "r_rate_percent"
+    ],
+    "omega_bounds": {
+      "leverage_ratio_D_V": [
+        0.1,
+        0.9
+      ],
+      "sigma_E_percent": [
+        5,
+        100
+      ],
+      "T_maturity_yr": [
+        0.25,
+        5.0
+      ],
+      "r_rate_percent": [
+        0.0,
+        10.0
+      ]
+    },
+    "epsilon_bounds": {
+      "CDS_spread_prediction_RMSE_bp": [
+        5,
+        500
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

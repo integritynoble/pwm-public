@@ -1,0 +1,186 @@
+{
+  "artifact_id": "L1-018",
+  "layer": "L1",
+  "principle_number": "018",
+  "title": "Differential Interference Contrast (DIC / Nomarski) Microscopy",
+  "domain": "Microscopy",
+  "sub_domain": "Shear-interference phase-gradient imaging",
+  "source_file": "A_microscopy/018_dic.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical domain literature for this specific principle.",
+  "E": {
+    "description": "Differential Interference Contrast (DIC / Nomarski) Microscopy forward model.",
+    "forward_model": "I(r) = I_0 * |cos((phi(r + s) - phi(r - s))/2 + theta_bias)|^2",
+    "world_state_x": "Scene parameter of interest (density / complex field / lifetime / normals depending on spec).",
+    "observation_y": "Measured intensity or photon counts from the imaging system.",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "shear_nm",
+      "theta_bias_deg",
+      "pixel_nm",
+      "NA",
+      "photon_count",
+      "shear_drift",
+      "bias_retardation_error"
+    ]
+  },
+  "G": {
+    "dag": "L.wollaston_shear -> L.add_coherent -> L.modulus_squared -> int.temporal",
+    "vertices": [
+      "L.wollaston_shear",
+      "L.add_coherent",
+      "L.modulus_squared",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.wollaston_shear -> L.add_coherent",
+      "L.add_coherent -> L.modulus_squared",
+      "L.modulus_squared -> int.temporal"
+    ],
+    "L_DAG": 3.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 240,
+    "condition_number_effective": 12,
+    "regime": "Conditional stability; principle-specific mismatch dominates at Omega bounds (see `mismatch_parameters`)."
+  },
+  "C": {
+    "solver_class": "Inverse-DIC, DIC-TV-ADMM, DICNet",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(photon_count) + mismatch-induced bias.",
+    "complexity": "O(H W) to O(H W Z) per iteration depending on dimensionality"
+  },
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "shear_interferometry",
+    "integration_axis": "temporal",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "2D_phase",
+    "primitives": [
+      "L.wollaston_shear",
+      "L.add_coherent",
+      "L.modulus_squared",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "shear_drift",
+    "bias_retardation_error",
+    "condenser_misalignment"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "dic_nomarski",
+      "forward_operator": "dic_nomarski_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 1024,
+        "W": 1024,
+        "shear_nm": 200,
+        "theta_bias_deg": 90,
+        "pixel_nm": 100,
+        "NA": 1.4,
+        "photon_count": 1000,
+        "shear_drift": 0.0,
+        "bias_retardation_error": 0.0
+      },
+      "epsilon_fn_center": "26.0"
+    },
+    "allowed_forward_operators": [
+      "dic_nomarski_forward"
+    ],
+    "allowed_problem_classes": [
+      "dic_nomarski"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "shear_nm",
+      "theta_bias_deg",
+      "pixel_nm",
+      "NA",
+      "photon_count",
+      "shear_drift",
+      "bias_retardation_error",
+      "shear_drift",
+      "bias_retardation_error",
+      "condenser_misalignment"
+    ],
+    "omega_bounds": {
+      "H": [
+        256,
+        4096
+      ],
+      "W": [
+        256,
+        4096
+      ],
+      "shear_nm": [
+        50,
+        500
+      ],
+      "theta_bias_deg": [
+        30,
+        150
+      ],
+      "pixel_nm": [
+        50,
+        300
+      ],
+      "NA": [
+        0.3,
+        1.49
+      ],
+      "photon_count": [
+        100,
+        20000
+      ],
+      "shear_drift": [
+        0.0,
+        10.0
+      ],
+      "bias_retardation_error": [
+        0.0,
+        0.15
+      ],
+      "condenser_misalignment": [
+        0.0,
+        0.05
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        12.0,
+        42.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

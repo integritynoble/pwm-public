@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-433",
+  "layer": "L2",
+  "parent_l1": "L1-433",
+  "principle_ref": "sha256:<L1-433_principle_hash>",
+  "title": "Model Predictive Control (MPC/NMPC) \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "prediction_horizon_N": [
+        5,
+        100
+      ],
+      "n_states": [
+        2,
+        20
+      ],
+      "n_constraints": [
+        0,
+        50
+      ],
+      "computation_budget_ms": [
+        1,
+        1000
+      ]
+    },
+    "E": {
+      "forward": "min_{u} sum_{k=0}^{N} l(x_k, u_k) + V_f(x_N) s.t. x_{k+1}=f(x_k,u_k), u_min<=u<=u_max, x in X",
+      "operator": "receding_horizon_optimization",
+      "primitive_chain": "M.mpc.prediction_model -> O.qp.nlp_solver -> S.feasibility.constraint_satisfaction",
+      "inverse": "recover optimal control sequence U* = {u_0* from current state x(t) measurement (or estimate)"
+    },
+    "B": {
+      "recursive_feasibility": "feasibility maintained with terminal constraint",
+      "real_time": "solve within sampling period"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "tracking_RMSE_normalized",
+      "constraint_violation_rate",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.03 + 0.02 * (20 / prediction_horizon_N) ** 0.3"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 control_sequence_vector"
+    },
+    "baselines": [
+      {
+        "name": "linear_MPC_QP",
+        "method_sig": "L+O",
+        "expected_score": 0.07
+      },
+      {
+        "name": "NMPC_IPOPT",
+        "method_sig": "L+O",
+        "expected_score": 0.04
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "prediction_horizon_N": 20,
+        "n_states": 4,
+        "n_constraints": 10,
+        "computation_budget_ms": 100,
+        "model_plant_mismatch": 0.0,
+        "disturbance_unforeseen": 0.0,
+        "constraint_infeasibility": 0.0
+      },
+      "epsilon": 0.05
+    },
+    "tier_bounds": {
+      "prediction_horizon_N": [
+        5,
+        100
+      ],
+      "n_states": [
+        2,
+        20
+      ],
+      "n_constraints": [
+        0,
+        50
+      ],
+      "computation_budget_ms": [
+        1,
+        1000
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.38,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.38 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

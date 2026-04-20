@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-408",
+  "layer": "L2",
+  "parent_l1": "L1-408",
+  "principle_ref": "sha256:<L1-408_principle_hash>",
+  "title": "Wright-Fisher Population Genetics \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "Ne_effective": [
+        10,
+        100000
+      ],
+      "N_generations": [
+        5,
+        100
+      ],
+      "s_selection": [
+        -0.1,
+        0.1
+      ],
+      "N_sampled_alleles": [
+        10,
+        1000
+      ]
+    },
+    "E": {
+      "forward": "p_{t+1} | p_t ~ Binomial(2Ne, p_t + s*p_t*(1-p_t)); allele frequencies drift under genetic drift and selection",
+      "operator": "allele_frequency_sequencing",
+      "primitive_chain": "M.wf.wright_fisher_drift -> O.likelihood.allele_frequency -> S.mcmc.popgen_posterior",
+      "inverse": "recover effective population size Ne and selection coefficient s for each variant from allele frequencies p(t) from time-series sequencing or cross-sectional population samples"
+    },
+    "B": {
+      "allele_freq_range": "p in [0,1]",
+      "Ne_positivity": "Ne >= 1"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "Ne_estimation_RMSE_log",
+      "selection_coefficient_RMSE",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.2 + 0.1 * (20 / N_generations) ** 0.5"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 population_genetic_parameter_vector"
+    },
+    "baselines": [
+      {
+        "name": "WFABC_ABC_inference",
+        "method_sig": "L+O",
+        "expected_score": 0.35
+      },
+      {
+        "name": "MCMC_WF_SMC",
+        "method_sig": "L+O",
+        "expected_score": 0.25
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "Ne_effective": 1000,
+        "N_generations": 20,
+        "s_selection": 0.0,
+        "N_sampled_alleles": 100,
+        "population_structure_subdivision": 0.0,
+        "bottleneck_demographic_history": 0.0,
+        "linkage_disequilibrium": 0.0
+      },
+      "epsilon": 0.3
+    },
+    "tier_bounds": {
+      "Ne_effective": [
+        10,
+        100000
+      ],
+      "N_generations": [
+        5,
+        100
+      ],
+      "s_selection": [
+        -0.1,
+        0.1
+      ],
+      "N_sampled_alleles": [
+        10,
+        1000
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.38,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.38 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

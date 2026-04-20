@@ -1,0 +1,150 @@
+{
+  "artifact_id": "L2-165",
+  "layer": "L2",
+  "parent_l1": "L1-165",
+  "title": "Magnetic Force Microscopy (MFM) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": 64,
+      "W": 64,
+      "pixel_nm": [
+        2,
+        500
+      ],
+      "lift_height_nm": [
+        10,
+        500
+      ],
+      "tip_radius_nm": [
+        5,
+        200
+      ],
+      "SNR_dB": [
+        0.0,
+        40.0
+      ],
+      "crosstalk_topography": [
+        0.0,
+        0.5
+      ],
+      "stray_field": [
+        0.0,
+        0.3
+      ],
+      "tip_magnetization_drift": [
+        0.0,
+        0.3
+      ],
+      "vibration": [
+        0.0,
+        0.3
+      ]
+    },
+    "E": {
+      "forward": "delta_f(x,y) ~ -d^2 F_mag / dz^2 ~ gradient of H_sample * m_tip; lift-height mode",
+      "operator": "mfm_forward_mismatch",
+      "primitive_chain": "L.magnetic_cantilever -> S.scan.raster -> D.frequency_shift -> int.spatial",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "16.0 + 0.3 * SNR_dB - 8.0 * crosstalk_topography - 0.05 * lift_height_nm - 6.0 * tip_magnetization_drift"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Phase-MFM",
+        "method_sig": "L+O",
+        "expected_psnr": 21.5
+      },
+      {
+        "name": "Deconv-MFM",
+        "method_sig": "L+O",
+        "expected_psnr": 24.0
+      },
+      {
+        "name": "MFM-Net",
+        "method_sig": "L+N",
+        "expected_psnr": 26.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "pixel_nm": 20,
+        "lift_height_nm": 50,
+        "tip_radius_nm": 30,
+        "SNR_dB": 25,
+        "crosstalk_topography": 0.0,
+        "stray_field": 0.0,
+        "tip_magnetization_drift": 0.0,
+        "vibration": 0.0
+      },
+      "epsilon": 24.0
+    },
+    "tier_bounds": {
+      "H": 64,
+      "W": 64,
+      "pixel_nm": [
+        2,
+        500
+      ],
+      "lift_height_nm": [
+        10,
+        500
+      ],
+      "tip_radius_nm": [
+        5,
+        200
+      ],
+      "SNR_dB": [
+        0.0,
+        40.0
+      ],
+      "crosstalk_topography": [
+        0.0,
+        0.5
+      ],
+      "stray_field": [
+        0.0,
+        0.3
+      ],
+      "tip_magnetization_drift": [
+        0.0,
+        0.3
+      ],
+      "vibration": [
+        0.0,
+        0.3
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.55,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

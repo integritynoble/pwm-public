@@ -1,0 +1,166 @@
+{
+  "artifact_id": "L2-043",
+  "layer": "L2",
+  "parent_l1": "L1-043",
+  "title": "Functional MRI (BOLD) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": 32,
+      "W": 32,
+      "Z": [
+        16,
+        100
+      ],
+      "N_frames": [
+        50,
+        1000
+      ],
+      "TR_s": [
+        0.5,
+        5.0
+      ],
+      "TE_ms": [
+        15,
+        80
+      ],
+      "SNR_dB": [
+        0.0,
+        30.0
+      ],
+      "physiological_noise": [
+        0.0,
+        0.2
+      ],
+      "motion": [
+        0.0,
+        0.5
+      ],
+      "susceptibility_artifact": [
+        0.0,
+        0.3
+      ],
+      "acquisition_jitter": [
+        0.0,
+        0.1
+      ],
+      "multi_echo_bias": [
+        0.0,
+        0.2
+      ]
+    },
+    "E": {
+      "forward": "s(k, t) = integral rho(r) exp(-t/T2*(r, BOLD(t))) exp(-2pi i k.r) dr + n; GLM to recover BOLD",
+      "operator": "fmri_forward_mismatch",
+      "primitive_chain": "L.rf_excitation -> L.gradient_encoding -> L.T2_star_weighting -> int.temporal",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "5.0 + 0.3 * SNR_dB - 15.0 * physiological_noise - 10.0 * motion - 8.0 * susceptibility_artifact"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "GLM-OLS",
+        "method_sig": "L+O",
+        "expected_psnr": 10.5
+      },
+      {
+        "name": "GLM-AR1",
+        "method_sig": "L+O",
+        "expected_psnr": 12.0
+      },
+      {
+        "name": "Deep-fMRI",
+        "method_sig": "L+N",
+        "expected_psnr": 14.0
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 64,
+        "W": 64,
+        "Z": 40,
+        "N_frames": 300,
+        "TR_s": 2.0,
+        "TE_ms": 30,
+        "SNR_dB": 15,
+        "physiological_noise": 0.02,
+        "motion": 0.0,
+        "susceptibility_artifact": 0.0
+      },
+      "epsilon": 12.0
+    },
+    "tier_bounds": {
+      "H": 32,
+      "W": 32,
+      "Z": [
+        16,
+        100
+      ],
+      "N_frames": [
+        50,
+        1000
+      ],
+      "TR_s": [
+        0.5,
+        5.0
+      ],
+      "TE_ms": [
+        15,
+        80
+      ],
+      "SNR_dB": [
+        0.0,
+        30.0
+      ],
+      "physiological_noise": [
+        0.0,
+        0.2
+      ],
+      "motion": [
+        0.0,
+        0.5
+      ],
+      "susceptibility_artifact": [
+        0.0,
+        0.3
+      ],
+      "acquisition_jitter": [
+        0.0,
+        0.1
+      ],
+      "multi_echo_bias": [
+        0.0,
+        0.2
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.5,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

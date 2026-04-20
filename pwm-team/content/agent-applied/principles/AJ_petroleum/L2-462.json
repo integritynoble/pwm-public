@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-462",
+  "layer": "L2",
+  "parent_l1": "L1-462",
+  "principle_ref": "sha256:<L1-462_principle_hash>",
+  "title": "Enhanced Oil Recovery (EOR) Modeling \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "mobility_ratio_M": [
+        0.1,
+        10.0
+      ],
+      "Dykstra_Parsons_V_DP": [
+        0.3,
+        0.9
+      ],
+      "injection_PV": [
+        0.1,
+        3.0
+      ],
+      "temperature_F": [
+        100,
+        350
+      ]
+    },
+    "E": {
+      "forward": "dS_w/dt + df_w/dx = 0 (Buckley-Leverett); for CO2: compositional with MMP; for polymer: shear-thinning viscosity model",
+      "operator": "eor_displacement_modeling",
+      "primitive_chain": "M.fractional_flow.buckley_leverett -> S.fdm.convection_diffusion -> O.recovery_factor.prediction",
+      "inverse": "recover saturation S_w(x from production data {q_o"
+    },
+    "B": {
+      "saturation_sum": "S_o+S_w = 1 (2-phase)",
+      "rel_perm_monotone": "k_ro decreasing with S_w"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "recovery_factor_RMSE_percent",
+      "breakthrough_time_error_days",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "2 + 1 * (mobility_ratio_M / 1.5) ** 0.3"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 3D_saturation_composition"
+    },
+    "baselines": [
+      {
+        "name": "Buckley_Leverett_1D",
+        "method_sig": "L+O",
+        "expected_score": 4
+      },
+      {
+        "name": "CMG_STARS_polymer",
+        "method_sig": "L+O",
+        "expected_score": 2.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "mobility_ratio_M": 1.5,
+        "Dykstra_Parsons_V_DP": 0.7,
+        "injection_PV": 1.0,
+        "temperature_F": 200,
+        "viscous_fingering_onset": 0.0,
+        "gravity_override_degree": 0.0,
+        "wettability_alteration_uncertainty": 0.0
+      },
+      "epsilon": 3.0
+    },
+    "tier_bounds": {
+      "mobility_ratio_M": [
+        0.1,
+        10.0
+      ],
+      "Dykstra_Parsons_V_DP": [
+        0.3,
+        0.9
+      ],
+      "injection_PV": [
+        0.1,
+        3.0
+      ],
+      "temperature_F": [
+        100,
+        350
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.38,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.38 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

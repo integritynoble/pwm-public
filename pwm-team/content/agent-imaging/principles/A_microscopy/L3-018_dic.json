@@ -1,0 +1,181 @@
+{
+  "artifact_id": "L3-018",
+  "layer": "L3",
+  "parent_l2": "L2-018",
+  "parent_l1": "L1-018",
+  "title": "Differential Interference Contrast (DIC / Nomarski) Microscopy Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "principle-appropriate canonical dataset (domain-standard)",
+    "secondary": "published follow-up benchmark dataset",
+    "construction_method": "parametric forward synthesis at declared Omega; Poisson/Gaussian noise at declared level",
+    "num_dev_instances_per_tier": 20
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "H": 1024,
+        "W": 1024,
+        "shear_nm": 200,
+        "theta_bias_deg": 90,
+        "pixel_nm": 100,
+        "NA": 1.4,
+        "photon_count": 1000,
+        "shear_drift": 0.0,
+        "bias_retardation_error": 0.0,
+        "condenser_misalignment": 0.0
+      },
+      "epsilon": 26.0,
+      "d_ibench": 0.14,
+      "baselines": [
+        {
+          "name": "Inverse-DIC",
+          "score": 24.5,
+          "Q": 0.8
+        },
+        {
+          "name": "DIC-TV-ADMM",
+          "score": 25.8,
+          "Q": 0.85
+        },
+        {
+          "name": "DICNet",
+          "score": 28.5,
+          "Q": 0.9
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "H": 1024,
+        "W": 1024,
+        "shear_nm": 200,
+        "theta_bias_deg": 90,
+        "pixel_nm": 100,
+        "NA": 1.4,
+        "photon_count": 500,
+        "shear_drift": 2.0,
+        "bias_retardation_error": 0.03,
+        "condenser_misalignment": 0.010000000000000002
+      },
+      "epsilon": 20.8,
+      "d_ibench": 0.28,
+      "baselines": [
+        {
+          "name": "Inverse-DIC",
+          "score": 22.0,
+          "Q": 0.6
+        },
+        {
+          "name": "DIC-TV-ADMM",
+          "score": 23.3,
+          "Q": 0.65
+        },
+        {
+          "name": "DICNet",
+          "score": 26.0,
+          "Q": 0.7
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "H": 1024,
+        "W": 1024,
+        "shear_nm": 200,
+        "theta_bias_deg": 90,
+        "pixel_nm": 100,
+        "NA": 1.4,
+        "photon_count": 200,
+        "shear_drift": 5.0,
+        "bias_retardation_error": 0.075,
+        "condenser_misalignment": 0.025
+      },
+      "epsilon": 15.6,
+      "d_ibench": 0.48,
+      "baselines": [
+        {
+          "name": "Inverse-DIC",
+          "score": 19.5,
+          "Q": 0.4
+        },
+        {
+          "name": "DIC-TV-ADMM",
+          "score": 20.8,
+          "Q": 0.45
+        },
+        {
+          "name": "DICNet",
+          "score": 23.5,
+          "Q": 0.5
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "H": 1024,
+        "W": 1024,
+        "shear_nm": 200,
+        "theta_bias_deg": 90,
+        "pixel_nm": 100,
+        "NA": 1.4,
+        "photon_count": 83,
+        "shear_drift": 10.0,
+        "bias_retardation_error": 0.15,
+        "condenser_misalignment": 0.05
+      },
+      "epsilon": 10.4,
+      "d_ibench": 0.72,
+      "baselines": [
+        {
+          "name": "Inverse-DIC",
+          "score": 17.0,
+          "Q": 0.2
+        },
+        {
+          "name": "DIC-TV-ADMM",
+          "score": 18.3,
+          "Q": 0.25
+        },
+        {
+          "name": "DICNet",
+          "score": 21.0,
+          "Q": 0.3
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "full Omega parametric sweep",
+      "num_dev_instances": 200,
+      "construction_method": "parametric sweep of all declared Omega dimensions"
+    },
+    "baselines": [
+      {
+        "name": "Inverse-DIC",
+        "overall_Q": 0.7
+      },
+      {
+        "name": "DIC-TV-ADMM",
+        "overall_Q": 0.6
+      },
+      {
+        "name": "DICNet",
+        "overall_Q": 0.5
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind strata with simultaneous worst-case mismatch + low photon corner.",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

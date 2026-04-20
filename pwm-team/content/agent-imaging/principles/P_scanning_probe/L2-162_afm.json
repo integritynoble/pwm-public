@@ -1,0 +1,141 @@
+{
+  "artifact_id": "L2-162",
+  "layer": "L2",
+  "parent_l1": "L1-162",
+  "title": "Atomic Force Microscopy (AFM) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": 128,
+      "W": 128,
+      "pixel_nm": [
+        0.1,
+        100
+      ],
+      "tip_radius_nm": [
+        1,
+        100
+      ],
+      "tip_convolution": [
+        0.0,
+        0.5
+      ],
+      "thermal_drift": [
+        0.0,
+        10
+      ],
+      "tip_wear": [
+        0.0,
+        0.5
+      ],
+      "nonlinear_response": [
+        0.0,
+        0.3
+      ],
+      "SNR_dB": [
+        0.0,
+        40.0
+      ]
+    },
+    "E": {
+      "forward": "z(x,y) = height_true(x,y) conv tip_PSF + thermal_drift(t) + n",
+      "operator": "afm_forward_mismatch",
+      "primitive_chain": "L.cantilever_oscillator -> S.scan.raster -> D.laser_deflection -> int.spatial",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "20.0 + 0.3 * SNR_dB - 10.0 * tip_convolution - 0.5 * thermal_drift - 8.0 * tip_wear"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Deconv-Tip",
+        "method_sig": "L+O",
+        "expected_psnr": 25.5
+      },
+      {
+        "name": "TV-ADMM-AFM",
+        "method_sig": "L+O",
+        "expected_psnr": 28.0
+      },
+      {
+        "name": "AFM-Net",
+        "method_sig": "L+N",
+        "expected_psnr": 30.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "pixel_nm": 2,
+        "tip_radius_nm": 5,
+        "tip_convolution": 0.0,
+        "thermal_drift": 0.0,
+        "tip_wear": 0.0,
+        "nonlinear_response": 0.0,
+        "SNR_dB": 30
+      },
+      "epsilon": 28.0
+    },
+    "tier_bounds": {
+      "H": 128,
+      "W": 128,
+      "pixel_nm": [
+        0.1,
+        100
+      ],
+      "tip_radius_nm": [
+        1,
+        100
+      ],
+      "tip_convolution": [
+        0.0,
+        0.5
+      ],
+      "thermal_drift": [
+        0.0,
+        10
+      ],
+      "tip_wear": [
+        0.0,
+        0.5
+      ],
+      "nonlinear_response": [
+        0.0,
+        0.3
+      ],
+      "SNR_dB": [
+        0.0,
+        40.0
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.55,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

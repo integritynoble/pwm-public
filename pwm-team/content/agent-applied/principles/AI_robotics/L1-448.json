@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-448",
+  "layer": "L1",
+  "principle_number": "448",
+  "title": "Forward Dynamics",
+  "domain": "Robotics",
+  "sub_domain": "Robot dynamics",
+  "source_file": "AI_robotics/448_forward_dynamics.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "Forward dynamics: compute joint accelerations from applied torques and current state using Newton-Euler or Lagrangian mechanics.",
+    "forward_model": "M(q)*q_ddot + C(q,q_dot)*q_dot + g(q) = tau; solve q_ddot = M^{-1}(tau - C*q_dot - g)",
+    "world_state_x": "joint accelerations q_ddot(t) and integrated trajectory {q(t), q_dot(t)}",
+    "observation_y": "applied joint torques tau(t) and joint states {q, q_dot}",
+    "physical_parameters_theta": [
+      "link_masses_m_i",
+      "link_inertias_I_i",
+      "COM_positions",
+      "friction_coefficients"
+    ]
+  },
+  "G": {
+    "dag": "M.newton_euler.forward -> S.articulated_body.aba -> O.ode.integration",
+    "vertices": [
+      "M.newton_euler.forward",
+      "S.articulated_body.aba",
+      "O.ode.integration"
+    ],
+    "arcs": [
+      "M.newton_euler.forward -> S.articulated_body.aba",
+      "S.articulated_body.aba -> O.ode.integration"
+    ],
+    "L_DAG": 3.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 2000,
+    "condition_number_effective": 80,
+    "condition_number_mismatched": 400,
+    "regime": "Articulated body algorithm is O(n) optimal; mass matrix M is positive definite; friction and flexibility introduce model error."
+  },
+  "C": {
+    "solver_class": "Articulated_Body_Algorithm (Featherstone) or RNEA",
+    "convergence_rate_q": 2.0,
+    "error_bound": "trajectory error < 1% of motion range for calibrated model",
+    "complexity": "O(n) for ABA vs. O(n ** 3) for naive M inversion"
+  },
+  "physics_fingerprint": {
+    "carrier": "N/A",
+    "sensing_mechanism": "torque_to_acceleration",
+    "integration_axis": "time",
+    "problem_class": "parameter_estimation",
+    "noise_model": "gaussian",
+    "solution_space": "joint_acceleration_vector",
+    "primitives": [
+      "M.newton_euler.forward",
+      "S.articulated_body.aba",
+      "O.ode.integration"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "inertia_parameter_uncertainty",
+    "friction_model_error",
+    "flexibility_neglect"
+  ],
+  "error_metric": "joint_trajectory_RMSE_deg",
+  "error_metric_secondary": "energy_conservation_error",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "parameter_estimation",
+      "forward_operator": "torque_to_acceleration",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_joints": 6,
+        "total_mass_kg": 10,
+        "friction_coefficient": 0.1,
+        "simulation_time_s": 1.0
+      },
+      "epsilon_fn_center": "1.0 joint_trajectory_RMSE_deg"
+    },
+    "allowed_forward_operators": [
+      "torque_to_acceleration"
+    ],
+    "allowed_problem_classes": [
+      "parameter_estimation"
+    ],
+    "allowed_omega_dimensions": [
+      "N_joints",
+      "total_mass_kg",
+      "friction_coefficient",
+      "simulation_time_s"
+    ],
+    "omega_bounds": {
+      "N_joints": [
+        2,
+        10
+      ],
+      "total_mass_kg": [
+        0.5,
+        1000
+      ],
+      "friction_coefficient": [
+        0.0,
+        1.0
+      ],
+      "simulation_time_s": [
+        0.1,
+        100
+      ]
+    },
+    "epsilon_bounds": {
+      "joint_trajectory_RMSE_deg": [
+        0.01,
+        10.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

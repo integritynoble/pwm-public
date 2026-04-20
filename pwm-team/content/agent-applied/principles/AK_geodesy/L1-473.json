@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-473",
+  "layer": "L1",
+  "principle_number": "473",
+  "title": "Radiometric Sensor Calibration",
+  "domain": "Geodesy",
+  "sub_domain": "Sensor calibration",
+  "source_file": "AK_geodesy/473_radiometric_calibration.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "Absolute radiometric calibration: determine gain and offset coefficients converting DN to physical radiance/reflectance.",
+    "forward_model": "TOA_reflectance = gain * DN + offset; atmospheric correction: rho_surface = (rho_TOA - rho_path) / T_atm",
+    "world_state_x": "calibration coefficients (gain, offset) per spectral band for satellite sensor",
+    "observation_y": "DN values for calibration targets (pseudo-invariant sites, vicarious sites, on-board lamps)",
+    "physical_parameters_theta": [
+      "sensor_gain_band_k",
+      "sensor_offset_band_k",
+      "atmospheric_transmittance",
+      "surface_BRDF_factor"
+    ]
+  },
+  "G": {
+    "dag": "S.calibration.vicarious -> M.toa.reflectance_model -> O.least_squares.calibration",
+    "vertices": [
+      "S.calibration.vicarious",
+      "M.toa.reflectance_model",
+      "O.least_squares.calibration"
+    ],
+    "arcs": [
+      "S.calibration.vicarious -> M.toa.reflectance_model",
+      "M.toa.reflectance_model -> O.least_squares.calibration"
+    ],
+    "L_DAG": 2.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 500,
+    "condition_number_effective": 20,
+    "condition_number_mismatched": 100,
+    "regime": "Linear gain-offset model; temporal degradation requires trending; vicarious calibration accuracy limited by target knowledge."
+  },
+  "C": {
+    "solver_class": "vicarious_calibration_least_squares or cross_calibration",
+    "convergence_rate_q": 2.0,
+    "error_bound": "radiometric uncertainty < 3% for CEOS-calibrated sensors",
+    "complexity": "O(N_cal_sites * N_bands) per calibration update"
+  },
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "absolute_radiometric_calibration",
+    "integration_axis": "temporal_vicarious",
+    "problem_class": "parameter_estimation",
+    "noise_model": "gaussian",
+    "solution_space": "calibration_coefficient_vector",
+    "primitives": [
+      "S.calibration.vicarious",
+      "M.toa.reflectance_model",
+      "O.least_squares.calibration"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "sensor_degradation_drift_percent_yr",
+    "BRDF_angular_effect",
+    "aerosol_optical_depth_uncertainty"
+  ],
+  "error_metric": "radiometric_calibration_uncertainty_percent",
+  "error_metric_secondary": "reflectance_RMSE",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "parameter_estimation",
+      "forward_operator": "absolute_radiometric_calibration",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_bands": 10,
+        "N_cal_sites": 20,
+        "degradation_percent_yr": 0.5,
+        "aerosol_uncertainty_AOD": 0.02
+      },
+      "epsilon_fn_center": "2.0 radiometric_calibration_uncertainty_percent"
+    },
+    "allowed_forward_operators": [
+      "absolute_radiometric_calibration"
+    ],
+    "allowed_problem_classes": [
+      "parameter_estimation"
+    ],
+    "allowed_omega_dimensions": [
+      "N_bands",
+      "N_cal_sites",
+      "degradation_percent_yr",
+      "aerosol_uncertainty_AOD"
+    ],
+    "omega_bounds": {
+      "N_bands": [
+        1,
+        100
+      ],
+      "N_cal_sites": [
+        5,
+        100
+      ],
+      "degradation_percent_yr": [
+        0.0,
+        2.0
+      ],
+      "aerosol_uncertainty_AOD": [
+        0.005,
+        0.1
+      ]
+    },
+    "epsilon_bounds": {
+      "radiometric_calibration_uncertainty_percent": [
+        0.5,
+        10.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-423",
+  "layer": "L1",
+  "principle_number": "423",
+  "title": "Contaminant Source Identification",
+  "domain": "Environmental Science",
+  "sub_domain": "Inverse dispersion",
+  "source_file": "AF_environmental_sci/423_contaminant_source_id.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "Contaminant source identification: locate unknown pollution source and quantify emission history from sparse observations.",
+    "forward_model": "c(x,t) = integral G(x,t; x_s, t_s) * Q(x_s, t_s) dV dt_s (Green's function convolution)",
+    "world_state_x": "source location (x_s, y_s, z_s) and emission rate history Q(t_s)",
+    "observation_y": "contaminant concentration measurements c_i(x_i, t_i) at N_sensors locations",
+    "physical_parameters_theta": [
+      "transport_velocity_m_s",
+      "dispersion_D_m2_s",
+      "decay_lambda_s",
+      "N_monitoring_locations"
+    ]
+  },
+  "G": {
+    "dag": "M.transport.adjoint_source -> O.bayesian.mcmc_source -> S.green_function.transport",
+    "vertices": [
+      "M.transport.adjoint_source",
+      "O.bayesian.mcmc_source",
+      "S.green_function.transport"
+    ],
+    "arcs": [
+      "M.transport.adjoint_source -> O.bayesian.mcmc_source",
+      "O.bayesian.mcmc_source -> S.green_function.transport"
+    ],
+    "L_DAG": 4.0,
+    "n_c": 1
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 10000.0,
+    "condition_number_effective": 500,
+    "condition_number_mismatched": 2000,
+    "regime": "Highly ill-posed; multiple source combinations may explain observations; prior on source location and smoothness regularizes."
+  },
+  "C": {
+    "solver_class": "Bayesian_MCMC_source or adjoint_minimization",
+    "convergence_rate_q": 2.0,
+    "error_bound": "source location within 100 m for 10+ sensors in 1 km domain",
+    "complexity": "O(N_MCMC_samples * N_sensors * N_timesteps) for Bayesian inversion"
+  },
+  "physics_fingerprint": {
+    "carrier": "N/A",
+    "sensing_mechanism": "environmental_concentration_inversion",
+    "integration_axis": "spatiotemporal_domain",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "lognormal",
+    "solution_space": "source_location_strength_time",
+    "primitives": [
+      "M.transport.adjoint_source",
+      "O.bayesian.mcmc_source",
+      "S.green_function.transport"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "transport_model_uncertainty",
+    "background_contamination",
+    "missing_secondary_sources"
+  ],
+  "error_metric": "source_location_error_m",
+  "error_metric_secondary": "emission_rate_RMSE_percent",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "nonlinear_inverse",
+      "forward_operator": "environmental_concentration_inversion",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_sensors": 15,
+        "domain_radius_km": 5.0,
+        "transport_uncertainty_percent": 20,
+        "N_time_observations": 50
+      },
+      "epsilon_fn_center": "100 source_location_error_m"
+    },
+    "allowed_forward_operators": [
+      "environmental_concentration_inversion"
+    ],
+    "allowed_problem_classes": [
+      "nonlinear_inverse"
+    ],
+    "allowed_omega_dimensions": [
+      "N_sensors",
+      "domain_radius_km",
+      "transport_uncertainty_percent",
+      "N_time_observations"
+    ],
+    "omega_bounds": {
+      "N_sensors": [
+        3,
+        100
+      ],
+      "domain_radius_km": [
+        0.1,
+        100.0
+      ],
+      "transport_uncertainty_percent": [
+        5,
+        100
+      ],
+      "N_time_observations": [
+        5,
+        500
+      ]
+    },
+    "epsilon_bounds": {
+      "source_location_error_m": [
+        10,
+        1000
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

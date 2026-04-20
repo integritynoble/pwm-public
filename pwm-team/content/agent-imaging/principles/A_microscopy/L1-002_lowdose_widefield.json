@@ -1,0 +1,162 @@
+{
+  "artifact_id": "L1-002",
+  "layer": "L1",
+  "principle_number": "002",
+  "title": "Low-Dose Widefield Fluorescence (photon-starved Airy deconvolution)",
+  "domain": "Microscopy",
+  "sub_domain": "Photon-limited epifluorescence",
+  "source_file": "A_microscopy/002_lowdose_widefield.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical domain literature for this specific principle.",
+  "E": {
+    "description": "Low-Dose Widefield Fluorescence (photon-starved Airy deconvolution) forward model.",
+    "forward_model": "y = [PSF_Airy conv f] + n, n Poisson-dominated at <50 photons/px",
+    "world_state_x": "Scene parameter of interest (density / complex field / lifetime / normals depending on spec).",
+    "observation_y": "Measured intensity or photon counts from the imaging system.",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "pixel_nm",
+      "NA",
+      "peak_photons",
+      "dz_nm",
+      "sigma_bg"
+    ]
+  },
+  "G": {
+    "dag": "K.psf.airy -> int.temporal",
+    "vertices": [
+      "K.psf.airy",
+      "int.temporal"
+    ],
+    "arcs": [
+      "K.psf.airy -> int.temporal"
+    ],
+    "L_DAG": 1.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 160,
+    "condition_number_effective": 8,
+    "regime": "Conditional stability; principle-specific mismatch dominates at Omega bounds (see `mismatch_parameters`)."
+  },
+  "C": {
+    "solver_class": "Anscombe-BM3D, CARE-UNet-Poisson, Noise2Noise",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(photon_count) + mismatch-induced bias.",
+    "complexity": "O(H W) to O(H W Z) per iteration depending on dimensionality"
+  },
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "fluorescence_widefield",
+    "integration_axis": "temporal",
+    "problem_class": "linear_inverse",
+    "noise_model": "poisson_gaussian",
+    "solution_space": "2D_intensity",
+    "primitives": [
+      "K.psf.airy",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "dz_nm",
+    "sigma_bg",
+    "shot_noise_variance"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "airy_psf_low_dose",
+      "forward_operator": "airy_psf_low_dose",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 512,
+        "W": 512,
+        "pixel_nm": 65,
+        "NA": 1.4,
+        "peak_photons": 50,
+        "dz_nm": 0.0,
+        "sigma_bg": 0.0
+      },
+      "epsilon_fn_center": "24.0"
+    },
+    "allowed_forward_operators": [
+      "airy_psf_low_dose"
+    ],
+    "allowed_problem_classes": [
+      "airy_psf_low_dose"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "pixel_nm",
+      "NA",
+      "peak_photons",
+      "dz_nm",
+      "sigma_bg",
+      "dz_nm",
+      "sigma_bg",
+      "shot_noise_variance"
+    ],
+    "omega_bounds": {
+      "H": [
+        128,
+        4096
+      ],
+      "W": [
+        128,
+        4096
+      ],
+      "pixel_nm": [
+        30,
+        200
+      ],
+      "NA": [
+        0.4,
+        1.49
+      ],
+      "peak_photons": [
+        5,
+        200
+      ],
+      "dz_nm": [
+        0.0,
+        1500.0
+      ],
+      "sigma_bg": [
+        0.0,
+        0.1
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        12.0,
+        42.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

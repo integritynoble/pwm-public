@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-428",
+  "layer": "L2",
+  "parent_l1": "L1-428",
+  "principle_ref": "sha256:<L1-428_principle_hash>",
+  "title": "Extended Kalman Filter (EKF) \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "n_state_dim": [
+        2,
+        20
+      ],
+      "nonlinearity_degree": [
+        0.1,
+        3.0
+      ],
+      "Q_R_ratio": [
+        0.01,
+        100
+      ],
+      "N_steps": [
+        20,
+        5000
+      ]
+    },
+    "E": {
+      "forward": "x_{k+1} = f(x_k, u_k) + w_k; y_k = h(x_k) + v_k; F_k = df/dx|_{x_hat_k}, H_k = dh/dx|_{x_hat_k}",
+      "operator": "linearized_nonlinear_estimation",
+      "primitive_chain": "S.ekf.jacobian_linearization -> M.ode.runge_kutta -> O.innov.consistency_check",
+      "inverse": "recover nonlinear state estimate x_hat_k and covariance P_k for nonlinear system from nonlinear measurements {y_k} from sensors (GPS"
+    },
+    "B": {
+      "Jacobian_existence": "f, h differentiable",
+      "numerical_stability": "P matrix positive definite"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "RMSE_state_estimation",
+      "filter_consistency_NEES",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.04 + 0.04 * (nonlinearity_degree / 0.5) ** 0.5"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 nonlinear_state_estimate"
+    },
+    "baselines": [
+      {
+        "name": "EKF_standard",
+        "method_sig": "L+O",
+        "expected_score": 0.1
+      },
+      {
+        "name": "IEKF_iterated",
+        "method_sig": "L+O",
+        "expected_score": 0.07
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "n_state_dim": 6,
+        "nonlinearity_degree": 0.5,
+        "Q_R_ratio": 1.0,
+        "N_steps": 200,
+        "strong_nonlinearity": 0.0,
+        "bimodal_posterior": 0.0,
+        "Jacobian_computation_error": 0.0
+      },
+      "epsilon": 0.08
+    },
+    "tier_bounds": {
+      "n_state_dim": [
+        2,
+        20
+      ],
+      "nonlinearity_degree": [
+        0.1,
+        3.0
+      ],
+      "Q_R_ratio": [
+        0.01,
+        100
+      ],
+      "N_steps": [
+        20,
+        5000
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.28,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.28 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

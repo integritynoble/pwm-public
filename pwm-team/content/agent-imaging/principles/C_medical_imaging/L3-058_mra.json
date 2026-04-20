@@ -1,0 +1,181 @@
+{
+  "artifact_id": "L3-058",
+  "layer": "L3",
+  "parent_l2": "L2-058",
+  "parent_l1": "L1-058",
+  "title": "MR Angiography (time-of-flight / phase-contrast) Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "canonical clinical/public dataset for this modality",
+    "secondary": "simulated forward synthesis at declared Omega",
+    "construction_method": "parametric forward + declared noise",
+    "num_dev_instances_per_tier": 20
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "H": 256,
+        "W": 256,
+        "Z": 128,
+        "TR_ms": 25,
+        "TE_ms": 6,
+        "SNR_dB": 22.0,
+        "inplane_saturation": 0.0,
+        "motion": 0.0,
+        "turbulence_dephasing": 0.0,
+        "pulsatility": 0.0
+      },
+      "epsilon": 22.0,
+      "d_ibench": 0.14,
+      "baselines": [
+        {
+          "name": "MIP",
+          "score": 19.5,
+          "Q": 0.88
+        },
+        {
+          "name": "Kalman-Vessel",
+          "score": 22.0,
+          "Q": 0.88
+        },
+        {
+          "name": "MRA-Net",
+          "score": 24.5,
+          "Q": 0.88
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "H": 256,
+        "W": 256,
+        "Z": 128,
+        "TR_ms": 25,
+        "TE_ms": 6,
+        "SNR_dB": 19.0,
+        "inplane_saturation": 0.1,
+        "motion": 0.1,
+        "turbulence_dephasing": 0.06,
+        "pulsatility": 0.06
+      },
+      "epsilon": 18.04,
+      "d_ibench": 0.28,
+      "baselines": [
+        {
+          "name": "MIP",
+          "score": 17.5,
+          "Q": 0.68
+        },
+        {
+          "name": "Kalman-Vessel",
+          "score": 20.0,
+          "Q": 0.68
+        },
+        {
+          "name": "MRA-Net",
+          "score": 22.5,
+          "Q": 0.68
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "H": 256,
+        "W": 256,
+        "Z": 128,
+        "TR_ms": 25,
+        "TE_ms": 6,
+        "SNR_dB": 10.0,
+        "inplane_saturation": 0.25,
+        "motion": 0.25,
+        "turbulence_dephasing": 0.15,
+        "pulsatility": 0.15
+      },
+      "epsilon": 14.08,
+      "d_ibench": 0.48,
+      "baselines": [
+        {
+          "name": "MIP",
+          "score": 15.5,
+          "Q": 0.48
+        },
+        {
+          "name": "Kalman-Vessel",
+          "score": 18.0,
+          "Q": 0.48
+        },
+        {
+          "name": "MRA-Net",
+          "score": 20.5,
+          "Q": 0.48
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "H": 256,
+        "W": 256,
+        "Z": 128,
+        "TR_ms": 25,
+        "TE_ms": 6,
+        "SNR_dB": 0.0,
+        "inplane_saturation": 0.5,
+        "motion": 0.5,
+        "turbulence_dephasing": 0.3,
+        "pulsatility": 0.3
+      },
+      "epsilon": 10.12,
+      "d_ibench": 0.72,
+      "baselines": [
+        {
+          "name": "MIP",
+          "score": 13.5,
+          "Q": 0.28
+        },
+        {
+          "name": "Kalman-Vessel",
+          "score": 16.0,
+          "Q": 0.28
+        },
+        {
+          "name": "MRA-Net",
+          "score": 18.5,
+          "Q": 0.28
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "full parametric sweep",
+      "num_dev_instances": 200,
+      "construction_method": "parametric Omega sweep"
+    },
+    "baselines": [
+      {
+        "name": "MIP",
+        "overall_Q": 0.7
+      },
+      {
+        "name": "Kalman-Vessel",
+        "overall_Q": 0.6
+      },
+      {
+        "name": "MRA-Net",
+        "overall_Q": 0.5
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind strata corner.",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-397",
+  "layer": "L2",
+  "parent_l1": "L1-397",
+  "principle_ref": "sha256:<L1-397_principle_hash>",
+  "title": "FitzHugh-Nagumo Excitability Model \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "a_threshold": [
+        0.5,
+        1.5
+      ],
+      "b_recovery": [
+        0.5,
+        1.5
+      ],
+      "epsilon_timescale": [
+        0.01,
+        0.5
+      ],
+      "noise_sigma": [
+        0.0,
+        0.5
+      ]
+    },
+    "E": {
+      "forward": "dv/dt = v - v ** 3/3 - w + I; dw/dt = epsilon*(v + a - b*w)",
+      "operator": "action_potential_recording",
+      "primitive_chain": "M.ode.fitzhugh_nagumo -> O.chi2.phase_portrait -> S.continuation.bifurcation",
+      "inverse": "recover FHN parameters {a from voltage-like variable v(t) and recovery variable w(t)"
+    },
+    "B": {
+      "stability": "nullcline intersection determines equilibrium",
+      "excitability": "a,b within excitable range"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "phase_portrait_RMSE",
+      "bifurcation_point_error",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.02 + 0.03 * (noise_sigma / 0.1 + 1) ** 0.5"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 FHN_parameter_vector"
+    },
+    "baselines": [
+      {
+        "name": "NLS_FHN_fit",
+        "method_sig": "L+O",
+        "expected_score": 0.06
+      },
+      {
+        "name": "continuation_AUTO",
+        "method_sig": "L+O",
+        "expected_score": 0.04
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "a_threshold": 0.7,
+        "b_recovery": 0.8,
+        "epsilon_timescale": 0.08,
+        "noise_sigma": 0.0,
+        "noise_amplitude": 0.0,
+        "heterogeneity_in_network": 0.0,
+        "parameter_drift": 0.0
+      },
+      "epsilon": 0.05
+    },
+    "tier_bounds": {
+      "a_threshold": [
+        0.5,
+        1.5
+      ],
+      "b_recovery": [
+        0.5,
+        1.5
+      ],
+      "epsilon_timescale": [
+        0.01,
+        0.5
+      ],
+      "noise_sigma": [
+        0.0,
+        0.5
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.25,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.25 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

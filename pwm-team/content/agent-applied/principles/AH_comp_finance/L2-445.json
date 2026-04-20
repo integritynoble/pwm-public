@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-445",
+  "layer": "L2",
+  "parent_l1": "L1-445",
+  "principle_ref": "sha256:<L1-445_principle_hash>",
+  "title": "GARCH Volatility Estimation \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "T_observations": [
+        100,
+        10000
+      ],
+      "alpha_true": [
+        0.01,
+        0.3
+      ],
+      "beta_true": [
+        0.5,
+        0.99
+      ],
+      "structural_break_prob": [
+        0.0,
+        0.2
+      ]
+    },
+    "E": {
+      "forward": "r_t = sigma_t * z_t, sigma_t ** 2 = omega + alpha*r_{t-1}^2 + beta*sigma_{t-1}^2",
+      "operator": "mle_garch_estimation",
+      "primitive_chain": "M.garch.conditional_variance -> O.mle.log_likelihood -> S.recursion.garch_update",
+      "inverse": "recover conditional variance sigma_t ** 2 series and GARCH parameters (omega from financial return series {r_t} for t=1..T"
+    },
+    "B": {
+      "stationarity": "alpha+beta < 1",
+      "positivity": "omega,alpha,beta > 0"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "volatility_forecast_QLIKE",
+      "log_likelihood_per_obs",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.05 + 0.03 * (structural_break_prob / 0.1 + 1) ** 0.5"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 conditional_vol_series"
+    },
+    "baselines": [
+      {
+        "name": "GARCH_1_1_BFGS",
+        "method_sig": "L+O",
+        "expected_score": 0.09
+      },
+      {
+        "name": "EGARCH_QMLE",
+        "method_sig": "L+O",
+        "expected_score": 0.07
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "T_observations": 2000,
+        "alpha_true": 0.1,
+        "beta_true": 0.85,
+        "structural_break_prob": 0.0,
+        "structural_break_in_vol_regime": 0.0,
+        "fat_tail_misspecification": 0.0,
+        "leverage_effect_omission": 0.0
+      },
+      "epsilon": 0.08
+    },
+    "tier_bounds": {
+      "T_observations": [
+        100,
+        10000
+      ],
+      "alpha_true": [
+        0.01,
+        0.3
+      ],
+      "beta_true": [
+        0.5,
+        0.99
+      ],
+      "structural_break_prob": [
+        0.0,
+        0.2
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.25,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.25 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

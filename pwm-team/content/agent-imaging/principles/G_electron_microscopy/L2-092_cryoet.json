@@ -1,0 +1,175 @@
+{
+  "artifact_id": "L2-092",
+  "layer": "L2",
+  "parent_l1": "L1-092",
+  "title": "Cryo-Electron Tomography (cryoET) \u2014 in-situ 3D biology at nm scale Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        1024,
+        8192
+      ],
+      "W": [
+        1024,
+        8192
+      ],
+      "Z": [
+        64,
+        1024
+      ],
+      "N_tilts": [
+        20,
+        200
+      ],
+      "tilt_range_deg": [
+        40,
+        80
+      ],
+      "kV": [
+        300,
+        300
+      ],
+      "total_dose_e": [
+        20,
+        200
+      ],
+      "tilt_angle_error": [
+        0.0,
+        0.3
+      ],
+      "missing_wedge": [
+        0.1,
+        0.5
+      ],
+      "beam_damage": [
+        0.0,
+        0.8
+      ],
+      "dose_weighting": [
+        0.0,
+        1.0
+      ]
+    },
+    "E": {
+      "forward": "y_theta(r) = integral [rho(r) * CTF_theta(r)] * dose_weight(theta) + n; reconstruct 3D density",
+      "operator": "cryoet_tilt_series_forward_mismatch",
+      "primitive_chain": "L.transmit_sample -> S.scan.angular -> L.backproject -> L.subtomogram_average -> int.angular",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "14.0 + 3.0 * log2(N_tilts / 20) + 2.0 * log10(total_dose_e / 20) - 15.0 * missing_wedge - 5.0 * beam_damage"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "WBP",
+        "method_sig": "L+O",
+        "expected_psnr": 20.5
+      },
+      {
+        "name": "SIRT",
+        "method_sig": "I+O",
+        "expected_psnr": 22.0
+      },
+      {
+        "name": "IsoNet-cryoET",
+        "method_sig": "L+N",
+        "expected_psnr": 24.5
+      },
+      {
+        "name": "CryoCARE",
+        "method_sig": "L+N",
+        "expected_psnr": 24.0
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 4096,
+        "W": 4096,
+        "Z": 256,
+        "N_tilts": 61,
+        "tilt_range_deg": 60,
+        "kV": 300,
+        "total_dose_e": 60,
+        "tilt_angle_error": 0.0,
+        "missing_wedge": 0.33,
+        "beam_damage": 0.2
+      },
+      "epsilon": 22.0
+    },
+    "tier_bounds": {
+      "H": [
+        1024,
+        8192
+      ],
+      "W": [
+        1024,
+        8192
+      ],
+      "Z": [
+        64,
+        1024
+      ],
+      "N_tilts": [
+        20,
+        200
+      ],
+      "tilt_range_deg": [
+        40,
+        80
+      ],
+      "kV": [
+        300,
+        300
+      ],
+      "total_dose_e": [
+        20,
+        200
+      ],
+      "tilt_angle_error": [
+        0.0,
+        0.3
+      ],
+      "missing_wedge": [
+        0.1,
+        0.5
+      ],
+      "beam_damage": [
+        0.0,
+        0.8
+      ],
+      "dose_weighting": [
+        0.0,
+        1.0
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.48,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

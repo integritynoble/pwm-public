@@ -1,0 +1,144 @@
+{
+  "artifact_id": "L2-149",
+  "layer": "L2",
+  "parent_l1": "L1-149",
+  "title": "Streak Camera \u2014 picosecond 1D time-resolved imaging Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "N_x": [
+        128,
+        4096
+      ],
+      "N_t": [
+        128,
+        4096
+      ],
+      "sweep_ps": [
+        1,
+        1000
+      ],
+      "photon_count": [
+        10,
+        10000
+      ],
+      "sweep_nonlinearity": [
+        0.0,
+        0.3
+      ],
+      "photocathode_jitter": [
+        0.0,
+        5.0
+      ],
+      "space_charge": [
+        0.0,
+        0.3
+      ],
+      "afterglow": [
+        0.0,
+        0.3
+      ]
+    },
+    "E": {
+      "forward": "y(t, x) = sum_tau I_source(tau, x) * sweep_response(t - tau) + space_charge + n",
+      "operator": "streak_camera_forward_mismatch",
+      "primitive_chain": "L.photocathode -> L.sweep_voltage -> D.streaked_phosphor -> int.temporal",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "18.0 + 2.0 * log10(photon_count / 10) - 8.0 * sweep_nonlinearity - 0.5 * photocathode_jitter - 6.0 * space_charge"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Simple-Transform",
+        "method_sig": "A+O",
+        "expected_psnr": 23.0
+      },
+      {
+        "name": "TV-ADMM-Streak",
+        "method_sig": "L+O",
+        "expected_psnr": 25.5
+      },
+      {
+        "name": "Streak-Net",
+        "method_sig": "L+N",
+        "expected_psnr": 28.0
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_x": 1024,
+        "N_t": 1024,
+        "sweep_ps": 100,
+        "photon_count": 500,
+        "sweep_nonlinearity": 0.0,
+        "photocathode_jitter": 0.5,
+        "space_charge": 0.0,
+        "afterglow": 0.0
+      },
+      "epsilon": 26.0
+    },
+    "tier_bounds": {
+      "N_x": [
+        128,
+        4096
+      ],
+      "N_t": [
+        128,
+        4096
+      ],
+      "sweep_ps": [
+        1,
+        1000
+      ],
+      "photon_count": [
+        10,
+        10000
+      ],
+      "sweep_nonlinearity": [
+        0.0,
+        0.3
+      ],
+      "photocathode_jitter": [
+        0.0,
+        5.0
+      ],
+      "space_charge": [
+        0.0,
+        0.3
+      ],
+      "afterglow": [
+        0.0,
+        0.3
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.55,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

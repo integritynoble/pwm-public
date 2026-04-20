@@ -1,0 +1,161 @@
+{
+  "artifact_id": "L2-020",
+  "layer": "L2",
+  "parent_l1": "L1-020",
+  "title": "Lattice Light Sheet Microscopy (LLSM) \u2014 Bessel-lattice 3D imaging Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        512,
+        4096
+      ],
+      "W": [
+        256,
+        2048
+      ],
+      "Z": [
+        32,
+        512
+      ],
+      "lattice_pitch_nm": [
+        600,
+        3000
+      ],
+      "NA_det": [
+        0.8,
+        1.2
+      ],
+      "NA_illum": [
+        0.3,
+        0.8
+      ],
+      "peak_photons": [
+        30,
+        2000
+      ],
+      "lattice_registration": [
+        0.0,
+        0.1
+      ],
+      "dithering_phase_error": [
+        0.0,
+        0.2
+      ],
+      "sample_induced_aberration": [
+        0.0,
+        0.3
+      ]
+    },
+    "E": {
+      "forward": "y(r,z) = integral [lattice(r,z - z_k) * f(r,z) * PSF_det(r,z)] + n",
+      "operator": "llsm_forward_mismatch",
+      "primitive_chain": "L.illumination.lattice -> K.psf.detection -> S.scan.axial -> int.temporal",
+      "inverse": "solve forward model for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "22.0 + 2.0 * log10(peak_photons / 30) - 15.0 * lattice_registration - 10.0 * sample_induced_aberration"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Richardson-Lucy-LLSM",
+        "method_sig": "I+M",
+        "expected_psnr": 27.0
+      },
+      {
+        "name": "Multi-view-LLSM",
+        "method_sig": "L+O",
+        "expected_psnr": 29.0
+      },
+      {
+        "name": "CARE-LLSM",
+        "method_sig": "L+N",
+        "expected_psnr": 32.0
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 2048,
+        "W": 512,
+        "Z": 100,
+        "lattice_pitch_nm": 1500,
+        "NA_det": 1.1,
+        "NA_illum": 0.6,
+        "peak_photons": 200,
+        "lattice_registration": 0.0,
+        "dithering_phase_error": 0.0
+      },
+      "epsilon": 28.5
+    },
+    "tier_bounds": {
+      "H": [
+        512,
+        4096
+      ],
+      "W": [
+        256,
+        2048
+      ],
+      "Z": [
+        32,
+        512
+      ],
+      "lattice_pitch_nm": [
+        600,
+        3000
+      ],
+      "NA_det": [
+        0.8,
+        1.2
+      ],
+      "NA_illum": [
+        0.3,
+        0.8
+      ],
+      "peak_photons": [
+        30,
+        2000
+      ],
+      "lattice_registration": [
+        0.0,
+        0.1
+      ],
+      "dithering_phase_error": [
+        0.0,
+        0.2
+      ],
+      "sample_induced_aberration": [
+        0.0,
+        0.3
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.45,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

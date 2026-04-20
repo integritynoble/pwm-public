@@ -1,0 +1,185 @@
+{
+  "artifact_id": "L1-106",
+  "layer": "L1",
+  "principle_number": "106",
+  "title": "Very Long Baseline Interferometry (VLBI)",
+  "domain": "Remote Sensing",
+  "sub_domain": "Radio-astronomy aperture synthesis",
+  "source_file": "I_remote_sensing/106_vlbi.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical remote-sensing literature for this principle.",
+  "E": {
+    "description": "Very Long Baseline Interferometry (VLBI) forward model.",
+    "forward_model": "V(u,v) = integral I(l,m) * exp(-2*pi*i*(u*l + v*m)) dl dm; sparse (u,v) sampling",
+    "world_state_x": "Scene-side quantity of interest (reflectance / velocity / phase / concentration)",
+    "observation_y": "Sensor output at declared resolution + noise",
+    "physical_parameters_theta": [
+      "N_antennas",
+      "N_baselines",
+      "N_time",
+      "lambda_cm",
+      "UV_coverage_fraction",
+      "SNR_dB",
+      "ionospheric_delay",
+      "atomic_clock_drift"
+    ]
+  },
+  "G": {
+    "dag": "L.radio_antenna_array -> L.cross_correlation -> L.fourier_synthesis -> int.spatial",
+    "vertices": [
+      "L.radio_antenna_array",
+      "L.cross_correlation",
+      "L.fourier_synthesis",
+      "int.spatial"
+    ],
+    "arcs": [
+      "L.radio_antenna_array -> L.cross_correlation",
+      "L.cross_correlation -> L.fourier_synthesis",
+      "L.fourier_synthesis -> int.spatial"
+    ],
+    "L_DAG": 4.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 600,
+    "condition_number_effective": 30,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "CLEAN, MS-CLEAN, Compressed-Sensing-VLBI, EHT-RML",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sensor SNR + mismatch-induced bias.",
+    "complexity": "O(H W) to O(H W N_bands) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "radio_wave",
+    "sensing_mechanism": "radio_interferometry",
+    "integration_axis": "spatial",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "2D_brightness_temperature",
+    "primitives": [
+      "L.radio_antenna_array",
+      "L.cross_correlation",
+      "L.fourier_synthesis",
+      "int.spatial"
+    ]
+  },
+  "difficulty_delta": 10,
+  "difficulty_tier": "hard",
+  "mismatch_parameters": [
+    "ionospheric_delay",
+    "atomic_clock_drift",
+    "station_position_error",
+    "RFI"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "vlbi_synthesis",
+      "forward_operator": "vlbi_synthesis_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_antennas": 10,
+        "N_baselines": 45,
+        "N_time": 360,
+        "lambda_cm": 1.3,
+        "UV_coverage_fraction": 0.1,
+        "SNR_dB": 15.0,
+        "ionospheric_delay": 0.0,
+        "atomic_clock_drift": 0.0
+      },
+      "epsilon_fn_center": "16.0"
+    },
+    "allowed_forward_operators": [
+      "vlbi_synthesis_forward"
+    ],
+    "allowed_problem_classes": [
+      "vlbi_synthesis"
+    ],
+    "allowed_omega_dimensions": [
+      "N_antennas",
+      "N_baselines",
+      "N_time",
+      "lambda_cm",
+      "UV_coverage_fraction",
+      "SNR_dB",
+      "ionospheric_delay",
+      "atomic_clock_drift",
+      "ionospheric_delay",
+      "atomic_clock_drift",
+      "station_position_error",
+      "RFI"
+    ],
+    "omega_bounds": {
+      "N_antennas": [
+        4,
+        100
+      ],
+      "N_baselines": [
+        6,
+        4950
+      ],
+      "N_time": [
+        60,
+        3600
+      ],
+      "lambda_cm": [
+        0.01,
+        500
+      ],
+      "UV_coverage_fraction": [
+        0.005,
+        0.5
+      ],
+      "SNR_dB": [
+        0.0,
+        30.0
+      ],
+      "ionospheric_delay": [
+        0.0,
+        1.0
+      ],
+      "atomic_clock_drift": [
+        0.0,
+        0.01
+      ],
+      "station_position_error": [
+        0.0,
+        10.0
+      ],
+      "RFI": [
+        0.0,
+        0.5
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        5.0,
+        40.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

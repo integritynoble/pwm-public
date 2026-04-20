@@ -1,0 +1,116 @@
+{
+  "artifact_id": "L2-420",
+  "layer": "L2",
+  "parent_l1": "L1-420",
+  "principle_ref": "sha256:<L1-420_principle_hash>",
+  "title": "Sea Ice Thermodynamic-Dynamic Inversion \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "N_swath_pixels": [
+        1000,
+        1000000
+      ],
+      "ice_concentration_percent": [
+        0,
+        100
+      ],
+      "snow_depth_cm": [
+        0,
+        100
+      ],
+      "melt_pond_fraction": [
+        0.0,
+        0.5
+      ]
+    },
+    "E": {
+      "forward": "T_B(f, theta, p) = (1-A)*T_ocean + A*[T_ice + f_snow(T_snow)]; ice motion from TOPAZ/neXtSIM",
+      "operator": "passive_microwave_sea_ice",
+      "primitive_chain": "S.passive_microwave.brightness_temp -> M.sea_ice.thermodynamic_dynamic -> O.chi2.sia_sie",
+      "inverse": "recover sea ice concentration A (%) from satellite brightness temperatures T_B(19"
+    },
+    "B": {
+      "concentration": "A in [0, 100]%",
+      "thickness_positivity": "h_i >= 0"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "sea_ice_concentration_RMSE_percent",
+      "thickness_RMSE_m",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "3 + 2 * (melt_pond_fraction / 0.1 + 1) ** 0.5"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 sea_ice_state_vector"
+    },
+    "baselines": [
+      {
+        "name": "NASA_team_passive_MW",
+        "method_sig": "L+O",
+        "expected_score": 6
+      },
+      {
+        "name": "Bootstrap_algorithm",
+        "method_sig": "L+O",
+        "expected_score": 4.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_swath_pixels": 10000,
+        "ice_concentration_percent": 80,
+        "snow_depth_cm": 20,
+        "melt_pond_fraction": 0.0,
+        "snow_ice_interface_uncertainty": 0.0,
+        "multiyear_ice_misclassification": 0.0
+      },
+      "epsilon": 5.0
+    },
+    "tier_bounds": {
+      "N_swath_pixels": [
+        1000,
+        1000000
+      ],
+      "ice_concentration_percent": [
+        0,
+        100
+      ],
+      "snow_depth_cm": [
+        0,
+        100
+      ],
+      "melt_pond_fraction": [
+        0.0,
+        0.5
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.38,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.38 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

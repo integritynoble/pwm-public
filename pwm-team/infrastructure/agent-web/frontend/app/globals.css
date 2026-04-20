@@ -1,0 +1,47 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+@import "katex/dist/katex.min.css";
+
+:root {
+  color-scheme: dark;
+}
+
+body {
+  background: #050810;
+  color: #e2e8f0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+  min-height: 100vh;
+}
+
+.pwm-card {
+  @apply bg-pwm-panel/70 border border-slate-800 rounded-xl p-5;
+}
+
+.pwm-pill {
+  @apply inline-flex items-center px-2 py-0.5 rounded-full text-xs font-mono border border-slate-700 text-pwm-muted bg-slate-900/40;
+}
+
+.pwm-badge-pass {
+  @apply inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-emerald-900/40 text-emerald-300 border border-emerald-700/60;
+}
+.pwm-badge-fail {
+  @apply inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-rose-900/40 text-rose-300 border border-rose-700/60;
+}
+.pwm-badge-pending {
+  @apply inline-flex items-center px-2 py-0.5 rounded-full text-xs font-semibold bg-amber-900/40 text-amber-300 border border-amber-700/60;
+}
+
+.pwm-table {
+  @apply w-full text-sm;
+}
+.pwm-table th {
+  @apply text-left font-semibold text-pwm-muted pb-2 pr-4 border-b border-slate-800;
+}
+.pwm-table td {
+  @apply py-2 pr-4 border-b border-slate-800/50 align-top;
+}
+
+.pwm-link {
+  @apply text-pwm-accent hover:text-cyan-200 underline-offset-4 hover:underline;
+}

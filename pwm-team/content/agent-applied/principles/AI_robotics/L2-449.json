@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-449",
+  "layer": "L2",
+  "parent_l1": "L1-449",
+  "principle_ref": "sha256:<L1-449_principle_hash>",
+  "title": "Inverse Dynamics \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "N_joints": [
+        2,
+        10
+      ],
+      "excitation_bandwidth_Hz": [
+        0.5,
+        10.0
+      ],
+      "acceleration_noise_dB": [
+        -40,
+        -10
+      ],
+      "N_trajectory_samples": [
+        100,
+        10000
+      ]
+    },
+    "E": {
+      "forward": "tau = M(q)*q_ddot + C(q,q_dot)*q_dot + g(q) = Y(q,q_dot,q_ddot) * theta_dyn (linear in inertial params)",
+      "operator": "trajectory_to_torque_computation",
+      "primitive_chain": "M.rnea.recursive_newton_euler -> S.regressor.inertia_parameters -> O.least_squares.param_id",
+      "inverse": "recover joint torques tau(t) and/or inertial parameters theta_dyn from trajectory {q(t)"
+    },
+    "B": {
+      "inertia_positivity": "m_i > 0, I_i PD",
+      "causality": "torques physical"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "torque_prediction_RMSE_Nm",
+      "parameter_identification_RMSE",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "1.0 + 1.0 * (2.0 / excitation_bandwidth_Hz) ** 0.3"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 joint_torque_vector"
+    },
+    "baselines": [
+      {
+        "name": "RNEA_computed_torque",
+        "method_sig": "L+O",
+        "expected_score": 2.5
+      },
+      {
+        "name": "LS_parameter_ID",
+        "method_sig": "L+O",
+        "expected_score": 1.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_joints": 6,
+        "excitation_bandwidth_Hz": 2.0,
+        "acceleration_noise_dB": -20,
+        "N_trajectory_samples": 1000,
+        "acceleration_estimation_noise": 0.0,
+        "friction_unmodeled_dynamics": 0.0,
+        "joint_flexibility": 0.0
+      },
+      "epsilon": 2.0
+    },
+    "tier_bounds": {
+      "N_joints": [
+        2,
+        10
+      ],
+      "excitation_bandwidth_Hz": [
+        0.5,
+        10.0
+      ],
+      "acceleration_noise_dB": [
+        -40,
+        -10
+      ],
+      "N_trajectory_samples": [
+        100,
+        10000
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.22,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.22 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

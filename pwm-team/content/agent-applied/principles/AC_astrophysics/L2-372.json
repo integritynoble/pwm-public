@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-372",
+  "layer": "L2",
+  "parent_l1": "L1-372",
+  "principle_ref": "sha256:<L1-372_principle_hash>",
+  "title": "Supernova Light Curve Fitting \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "N_epochs": [
+        5,
+        100
+      ],
+      "N_bands": [
+        3,
+        6
+      ],
+      "photometric_noise_mmag": [
+        1.0,
+        50.0
+      ],
+      "redshift_z": [
+        0.01,
+        2.0
+      ]
+    },
+    "E": {
+      "forward": "m_x = M_x + mu + alpha*x1 - beta*c + delta_M*step(M_stellar); SALT2/SNooPy template",
+      "operator": "photometric_lc_sampling",
+      "primitive_chain": "M.sed.supernova_template -> O.chi2.lightcurve -> S.k_correction.photometric",
+      "inverse": "recover distance modulus mu = 5*log10(d_L/10pc) from multi-band photometry {m_B"
+    },
+    "B": {
+      "distance_positivity": "mu > 0",
+      "color_range": "c in [-0.3, 0.3]"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "distance_modulus_RMSE_mag",
+      "Hubble_residual_sigma",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.10 + 0.02 * (photometric_noise_mmag / 5.0) ** 0.5"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 lc_parameter_vector"
+    },
+    "baselines": [
+      {
+        "name": "SALT2_standard",
+        "method_sig": "L+O",
+        "expected_score": 0.13
+      },
+      {
+        "name": "BayeSN_hierarchical",
+        "method_sig": "L+O",
+        "expected_score": 0.1
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_epochs": 20,
+        "N_bands": 4,
+        "photometric_noise_mmag": 5.0,
+        "redshift_z": 0.5,
+        "host_galaxy_dust_uncertainty": 0.0,
+        "peculiar_velocity_km_s": 0.0,
+        "photometric_calibration_error_mmag": 0.0
+      },
+      "epsilon": 0.12
+    },
+    "tier_bounds": {
+      "N_epochs": [
+        5,
+        100
+      ],
+      "N_bands": [
+        3,
+        6
+      ],
+      "photometric_noise_mmag": [
+        1.0,
+        50.0
+      ],
+      "redshift_z": [
+        0.01,
+        2.0
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.32,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.32 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

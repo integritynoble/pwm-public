@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-434",
+  "layer": "L2",
+  "parent_l1": "L1-434",
+  "principle_ref": "sha256:<L1-434_principle_hash>",
+  "title": "PID Controller Tuning \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "plant_K": [
+        0.1,
+        10.0
+      ],
+      "plant_tau": [
+        0.01,
+        100.0
+      ],
+      "plant_L": [
+        0.001,
+        10.0
+      ],
+      "desired_PM_deg": [
+        30,
+        70
+      ]
+    },
+    "E": {
+      "forward": "C(s) = Kp*(1 + 1/(Ti*s) + Td*s); closed-loop T(s) = C(s)*G(s)/(1+C(s)*G(s))",
+      "operator": "closed_loop_step_response",
+      "primitive_chain": "M.pid.transfer_function -> S.zn.tuning_rule -> O.iae.integral_criterion",
+      "inverse": "recover PID parameters (Kp from step response y(t) and control effort u(t)"
+    },
+    "B": {
+      "stability_margins": "PM > 30 deg, GM > 6 dB",
+      "setpoint_tracking": "steady-state error = 0"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "IAE_integral_absolute_error",
+      "overshoot_percent",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.2 + 0.1 * (plant_L / plant_tau)"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 PID_parameter_vector"
+    },
+    "baselines": [
+      {
+        "name": "Ziegler_Nichols",
+        "method_sig": "L+O",
+        "expected_score": 0.4
+      },
+      {
+        "name": "SIMC_rule",
+        "method_sig": "L+O",
+        "expected_score": 0.25
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "plant_K": 1.0,
+        "plant_tau": 1.0,
+        "plant_L": 0.1,
+        "desired_PM_deg": 45,
+        "plant_gain_variation": 0.0,
+        "time_constant_change": 0.0,
+        "delay_variation": 0.0
+      },
+      "epsilon": 0.3
+    },
+    "tier_bounds": {
+      "plant_K": [
+        0.1,
+        10.0
+      ],
+      "plant_tau": [
+        0.01,
+        100.0
+      ],
+      "plant_L": [
+        0.001,
+        10.0
+      ],
+      "desired_PM_deg": [
+        30,
+        70
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.22,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.22 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

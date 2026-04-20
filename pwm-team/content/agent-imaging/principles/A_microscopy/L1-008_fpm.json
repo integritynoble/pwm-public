@@ -1,0 +1,175 @@
+{
+  "artifact_id": "L1-008",
+  "layer": "L1",
+  "principle_number": "008",
+  "title": "Fourier Ptychographic Microscopy (FPM)",
+  "domain": "Microscopy",
+  "sub_domain": "Synthetic-aperture low-NA wide-FOV microscopy",
+  "source_file": "A_microscopy/008_fpm.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical domain literature for this specific principle.",
+  "E": {
+    "description": "Fourier Ptychographic Microscopy (FPM) forward model.",
+    "forward_model": "I_k(r) = |F^-1{P(k - k_LED_k) * F{O}}|^2 + n, k = 1..N_LED",
+    "world_state_x": "Scene parameter of interest (density / complex field / lifetime / normals depending on spec).",
+    "observation_y": "Measured intensity or photon counts from the imaging system.",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "N_LED",
+      "NA_obj",
+      "overlap",
+      "peak_photons",
+      "LED_position_error",
+      "partial_coherence"
+    ]
+  },
+  "G": {
+    "dag": "S.scan.led_angle -> L.fourier_aperture -> L.modulus_squared -> int.angular",
+    "vertices": [
+      "S.scan.led_angle",
+      "L.fourier_aperture",
+      "L.modulus_squared",
+      "int.angular"
+    ],
+    "arcs": [
+      "S.scan.led_angle -> L.fourier_aperture",
+      "L.fourier_aperture -> L.modulus_squared",
+      "L.modulus_squared -> int.angular"
+    ],
+    "L_DAG": 4.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 1600,
+    "condition_number_effective": 80,
+    "regime": "Conditional stability; principle-specific mismatch dominates at Omega bounds (see `mismatch_parameters`)."
+  },
+  "C": {
+    "solver_class": "GS-FPM, EPIE-FPM, DeepFPM",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(photon_count) + mismatch-induced bias.",
+    "complexity": "O(H W) to O(H W Z) per iteration depending on dimensionality"
+  },
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "angular_illumination_scan",
+    "integration_axis": "angular",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "shot_poisson",
+    "solution_space": "complex_2D",
+    "primitives": [
+      "S.scan.led_angle",
+      "L.fourier_aperture",
+      "L.modulus_squared",
+      "int.angular"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "LED_position_error",
+    "LED_intensity_variation",
+    "partial_coherence"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "fpm",
+      "forward_operator": "fpm_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 512,
+        "W": 512,
+        "N_LED": 169,
+        "NA_obj": 0.1,
+        "overlap": 0.65,
+        "peak_photons": 1000,
+        "LED_position_error": 0.0,
+        "partial_coherence": 1.0
+      },
+      "epsilon_fn_center": "26.0"
+    },
+    "allowed_forward_operators": [
+      "fpm_forward"
+    ],
+    "allowed_problem_classes": [
+      "fpm"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "N_LED",
+      "NA_obj",
+      "overlap",
+      "peak_photons",
+      "LED_position_error",
+      "partial_coherence",
+      "LED_position_error",
+      "LED_intensity_variation",
+      "partial_coherence"
+    ],
+    "omega_bounds": {
+      "H": [
+        256,
+        4096
+      ],
+      "W": [
+        256,
+        4096
+      ],
+      "N_LED": [
+        49,
+        625
+      ],
+      "NA_obj": [
+        0.05,
+        0.3
+      ],
+      "overlap": [
+        0.35,
+        0.85
+      ],
+      "peak_photons": [
+        50,
+        10000
+      ],
+      "LED_position_error": [
+        0.0,
+        2.0
+      ],
+      "partial_coherence": [
+        0.7,
+        1.0
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        12.0,
+        42.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

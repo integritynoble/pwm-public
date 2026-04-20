@@ -1,0 +1,152 @@
+{
+  "artifact_id": "L2-017",
+  "layer": "L2",
+  "parent_l1": "L1-017",
+  "title": "Zernike Phase-Contrast Microscopy Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        256,
+        4096
+      ],
+      "W": [
+        256,
+        4096
+      ],
+      "pixel_nm": [
+        100,
+        500
+      ],
+      "NA": [
+        0.3,
+        1.0
+      ],
+      "lambda_nm": [
+        400,
+        700
+      ],
+      "photon_count": [
+        100,
+        20000
+      ],
+      "phase_plate_alignment": [
+        0.0,
+        0.1
+      ],
+      "halo_artifact": [
+        0.0,
+        0.5
+      ],
+      "annulus_diaphragm_drift": [
+        0.0,
+        0.1
+      ]
+    },
+    "E": {
+      "forward": "I(r) = |1 + i exp(i*phi(r)) + halo|^2; ~2 phi(r) for small phi",
+      "operator": "zernike_phase_contrast_forward_mismatch",
+      "primitive_chain": "L.phase_plate -> L.modulus_squared -> int.temporal",
+      "inverse": "solve forward model for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "22.0 + 1.5 * log10(photon_count / 100) - 5.0 * phase_plate_alignment - 6.0 * halo_artifact"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "TIE-Phase",
+        "method_sig": "L+O",
+        "expected_psnr": 26.0
+      },
+      {
+        "name": "PhaseCNN",
+        "method_sig": "L+N",
+        "expected_psnr": 30.2
+      },
+      {
+        "name": "Gerchberg-Saxton",
+        "method_sig": "I+O",
+        "expected_psnr": 27.0
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 1024,
+        "W": 1024,
+        "pixel_nm": 200,
+        "NA": 0.75,
+        "lambda_nm": 550,
+        "photon_count": 1000,
+        "phase_plate_alignment": 0.0,
+        "halo_artifact": 0.0
+      },
+      "epsilon": 28.0
+    },
+    "tier_bounds": {
+      "H": [
+        256,
+        4096
+      ],
+      "W": [
+        256,
+        4096
+      ],
+      "pixel_nm": [
+        100,
+        500
+      ],
+      "NA": [
+        0.3,
+        1.0
+      ],
+      "lambda_nm": [
+        400,
+        700
+      ],
+      "photon_count": [
+        100,
+        20000
+      ],
+      "phase_plate_alignment": [
+        0.0,
+        0.1
+      ],
+      "halo_artifact": [
+        0.0,
+        0.5
+      ],
+      "annulus_diaphragm_drift": [
+        0.0,
+        0.1
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.45,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

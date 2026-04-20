@@ -1,0 +1,159 @@
+{
+  "artifact_id": "L2-056",
+  "layer": "L2",
+  "parent_l1": "L1-056",
+  "title": "Chemical Exchange Saturation Transfer (CEST) MRI Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": 32,
+      "W": 32,
+      "Z": [
+        4,
+        64
+      ],
+      "N_offsets": [
+        10,
+        101
+      ],
+      "B1_uT": [
+        0.5,
+        5.0
+      ],
+      "TR_ms": [
+        1000,
+        10000
+      ],
+      "SNR_dB": [
+        0.0,
+        35.0
+      ],
+      "B0_inhomogeneity": [
+        0.0,
+        0.3
+      ],
+      "B1_inhomogeneity": [
+        0.0,
+        0.3
+      ],
+      "direct_water_saturation": [
+        0.0,
+        0.3
+      ],
+      "MT_contamination": [
+        0.0,
+        0.3
+      ]
+    },
+    "E": {
+      "forward": "S(omega_sat) = (1 - k_ex * alpha / R1) * S_0 + direct_sat; fit Z-spectrum for CEST contrast",
+      "operator": "cest_mri_forward_mismatch",
+      "primitive_chain": "L.rf_excitation -> L.saturation_rf_pulse -> L.z_spectrum_fit -> int.spectral",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "8.0 + 0.3 * SNR_dB - 10.0 * B0_inhomogeneity - 8.0 * B1_inhomogeneity - 8.0 * direct_water_saturation"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Asymmetry-Analysis",
+        "method_sig": "L+O",
+        "expected_psnr": 14.0
+      },
+      {
+        "name": "Lorentzian-Fit",
+        "method_sig": "L+O",
+        "expected_psnr": 16.0
+      },
+      {
+        "name": "CEST-Net",
+        "method_sig": "L+N",
+        "expected_psnr": 18.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 128,
+        "W": 128,
+        "Z": 16,
+        "N_offsets": 31,
+        "B1_uT": 2.0,
+        "TR_ms": 4000,
+        "SNR_dB": 20,
+        "B0_inhomogeneity": 0.0,
+        "B1_inhomogeneity": 0.0,
+        "direct_water_saturation": 0.0,
+        "MT_contamination": 0.0
+      },
+      "epsilon": 16.0
+    },
+    "tier_bounds": {
+      "H": 32,
+      "W": 32,
+      "Z": [
+        4,
+        64
+      ],
+      "N_offsets": [
+        10,
+        101
+      ],
+      "B1_uT": [
+        0.5,
+        5.0
+      ],
+      "TR_ms": [
+        1000,
+        10000
+      ],
+      "SNR_dB": [
+        0.0,
+        35.0
+      ],
+      "B0_inhomogeneity": [
+        0.0,
+        0.3
+      ],
+      "B1_inhomogeneity": [
+        0.0,
+        0.3
+      ],
+      "direct_water_saturation": [
+        0.0,
+        0.3
+      ],
+      "MT_contamination": [
+        0.0,
+        0.3
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.5,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

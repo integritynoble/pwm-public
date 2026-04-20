@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-450",
+  "layer": "L1",
+  "principle_number": "450",
+  "title": "Trajectory Optimization",
+  "domain": "Robotics",
+  "sub_domain": "Motion planning",
+  "source_file": "AI_robotics/450_trajectory_optimization.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "Trajectory optimization: find minimum-time or minimum-effort robot trajectory satisfying dynamics and obstacle constraints.",
+    "forward_model": "min integral_0 ** T l(x,u) dt; s.t. dx/dt = f(x,u), g(x,u) <= 0 (constraints), x(0)=x0, x(T)=xT",
+    "world_state_x": "optimal state-control trajectory {x*(t), u*(t)} over time horizon T",
+    "observation_y": "initial/final conditions, obstacle set, dynamics model",
+    "physical_parameters_theta": [
+      "N_time_nodes",
+      "obstacle_clearance_m",
+      "joint_torque_limits_Nm",
+      "T_horizon_s"
+    ]
+  },
+  "G": {
+    "dag": "M.collocation.direct_transcription -> O.nlp.ipopt_solver -> S.warm_start.previous_solution",
+    "vertices": [
+      "M.collocation.direct_transcription",
+      "O.nlp.ipopt_solver",
+      "S.warm_start.previous_solution"
+    ],
+    "arcs": [
+      "M.collocation.direct_transcription -> O.nlp.ipopt_solver",
+      "O.nlp.ipopt_solver -> S.warm_start.previous_solution"
+    ],
+    "L_DAG": 4.5,
+    "n_c": 2
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 100000.0,
+    "condition_number_effective": 2000,
+    "condition_number_mismatched": 10000.0,
+    "regime": "Non-convex due to dynamics and obstacle constraints; DDP local-optimal but fast; warm-starting critical for real-time."
+  },
+  "C": {
+    "solver_class": "direct_collocation_IPOPT or DDP_iLQR or CHOMP",
+    "convergence_rate_q": 2.0,
+    "error_bound": "cost within 5% of global optimum for convex costs; local minima for nonconvex",
+    "complexity": "O(N_nodes * n_state ** 2 * N_iter) for direct methods"
+  },
+  "physics_fingerprint": {
+    "carrier": "N/A",
+    "sensing_mechanism": "trajectory_collocation_optimization",
+    "integration_axis": "time_motion",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "deterministic",
+    "solution_space": "optimal_trajectory",
+    "primitives": [
+      "M.collocation.direct_transcription",
+      "O.nlp.ipopt_solver",
+      "S.warm_start.previous_solution"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "dynamic_obstacle_uncertainty",
+    "model_uncertainty",
+    "actuator_saturation_margin"
+  ],
+  "error_metric": "trajectory_feasibility_score",
+  "error_metric_secondary": "cost_optimality_ratio",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "nonlinear_inverse",
+      "forward_operator": "trajectory_collocation_optimization",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_dof": 7,
+        "N_obstacles": 5,
+        "T_horizon_s": 2.0,
+        "joint_vel_limit_rad_s": 3.0
+      },
+      "epsilon_fn_center": "0.90 trajectory_feasibility_score"
+    },
+    "allowed_forward_operators": [
+      "trajectory_collocation_optimization"
+    ],
+    "allowed_problem_classes": [
+      "nonlinear_inverse"
+    ],
+    "allowed_omega_dimensions": [
+      "N_dof",
+      "N_obstacles",
+      "T_horizon_s",
+      "joint_vel_limit_rad_s"
+    ],
+    "omega_bounds": {
+      "N_dof": [
+        2,
+        10
+      ],
+      "N_obstacles": [
+        0,
+        50
+      ],
+      "T_horizon_s": [
+        0.1,
+        10.0
+      ],
+      "joint_vel_limit_rad_s": [
+        0.5,
+        10.0
+      ]
+    },
+    "epsilon_bounds": {
+      "trajectory_feasibility_score": [
+        0.5,
+        1.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

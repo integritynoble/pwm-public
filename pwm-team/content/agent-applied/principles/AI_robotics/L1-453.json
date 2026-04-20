@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-453",
+  "layer": "L1",
+  "principle_number": "453",
+  "title": "Vehicle Dynamics (Bicycle Model)",
+  "domain": "Robotics",
+  "sub_domain": "Autonomous vehicles",
+  "source_file": "AI_robotics/453_vehicle_dynamics.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "Vehicle dynamics: estimate vehicle state (yaw rate, side-slip) from IMU and wheel encoders using bicycle model.",
+    "forward_model": "m*v*(beta_dot + psi_dot) = F_yf + F_yr; I_z*psi_ddot = l_f*F_yf - l_r*F_yr; Pacejka tire forces",
+    "world_state_x": "vehicle state (v_x, v_y, psi, psi_dot, beta) at each time step",
+    "observation_y": "IMU (psi_dot, a_x, a_y), wheel speeds omega_i, steering angle delta_f",
+    "physical_parameters_theta": [
+      "m_vehicle_kg",
+      "I_z_yaw_inertia",
+      "l_f_l_r_wheelbase",
+      "tire_stiffness_C_alpha"
+    ]
+  },
+  "G": {
+    "dag": "M.bicycle.lateral_dynamics -> S.tire.pacejka_model -> O.ekf.vehicle_state",
+    "vertices": [
+      "M.bicycle.lateral_dynamics",
+      "S.tire.pacejka_model",
+      "O.ekf.vehicle_state"
+    ],
+    "arcs": [
+      "M.bicycle.lateral_dynamics -> S.tire.pacejka_model",
+      "S.tire.pacejka_model -> O.ekf.vehicle_state"
+    ],
+    "L_DAG": 3.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 2000,
+    "condition_number_effective": 80,
+    "condition_number_mismatched": 400,
+    "regime": "Linear bicycle model valid at small slip angles; nonlinear Pacejka needed at high lateral acceleration; ESP uses yaw rate estimation."
+  },
+  "C": {
+    "solver_class": "EKF_vehicle_state or UKF_tire_model",
+    "convergence_rate_q": 2.0,
+    "error_bound": "yaw rate error < 1 deg/s for highway driving",
+    "complexity": "O(n_state * N_timesteps) for filter"
+  },
+  "physics_fingerprint": {
+    "carrier": "N/A",
+    "sensing_mechanism": "vehicle_state_estimation",
+    "integration_axis": "time",
+    "problem_class": "parameter_estimation",
+    "noise_model": "gaussian",
+    "solution_space": "vehicle_state_vector",
+    "primitives": [
+      "M.bicycle.lateral_dynamics",
+      "S.tire.pacejka_model",
+      "O.ekf.vehicle_state"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "tire_force_saturation",
+    "road_friction_uncertainty",
+    "sensor_bias"
+  ],
+  "error_metric": "yaw_rate_RMSE_deg_s",
+  "error_metric_secondary": "side_slip_angle_RMSE_deg",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "parameter_estimation",
+      "forward_operator": "vehicle_state_estimation",
+      "input_format": "measurement_only",
+      "omega": {
+        "vehicle_mass_kg": 1500,
+        "speed_m_s": 20,
+        "lateral_acceleration_m_s2": 3.0,
+        "road_mu": 0.8
+      },
+      "epsilon_fn_center": "1.0 yaw_rate_RMSE_deg_s"
+    },
+    "allowed_forward_operators": [
+      "vehicle_state_estimation"
+    ],
+    "allowed_problem_classes": [
+      "parameter_estimation"
+    ],
+    "allowed_omega_dimensions": [
+      "vehicle_mass_kg",
+      "speed_m_s",
+      "lateral_acceleration_m_s2",
+      "road_mu"
+    ],
+    "omega_bounds": {
+      "vehicle_mass_kg": [
+        500,
+        5000
+      ],
+      "speed_m_s": [
+        5,
+        50
+      ],
+      "lateral_acceleration_m_s2": [
+        0.5,
+        10.0
+      ],
+      "road_mu": [
+        0.3,
+        1.2
+      ]
+    },
+    "epsilon_bounds": {
+      "yaw_rate_RMSE_deg_s": [
+        0.1,
+        10.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

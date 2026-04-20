@@ -1,0 +1,153 @@
+{
+  "artifact_id": "L2-110",
+  "layer": "L2",
+  "parent_l1": "L1-110",
+  "title": "Ocean Color Remote Sensing (chlorophyll / CDOM / TSM) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        256,
+        8192
+      ],
+      "W": [
+        256,
+        8192
+      ],
+      "N_bands": [
+        4,
+        20
+      ],
+      "GSD_m": [
+        10,
+        5000
+      ],
+      "SNR_dB": [
+        15.0,
+        45.0
+      ],
+      "atmospheric_aerosol": [
+        0.0,
+        0.5
+      ],
+      "glint": [
+        0.0,
+        0.3
+      ],
+      "whitecaps": [
+        0.0,
+        0.2
+      ],
+      "bottom_reflectance": [
+        0.0,
+        0.5
+      ]
+    },
+    "E": {
+      "forward": "L_TOA(lambda) = L_atm + t * (L_w(chl, CDOM, TSM; lambda) + L_glint); invert for chl, CDOM, TSM",
+      "operator": "ocean_color_forward_mismatch",
+      "primitive_chain": "L.multispectral_sensor -> L.atmospheric_correction -> L.bio_optical_inversion -> int.spatial",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "17.0 + 0.2 * SNR_dB - 8.0 * atmospheric_aerosol - 10.0 * glint - 6.0 * bottom_reflectance"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "NASA-OC3M",
+        "method_sig": "L+O",
+        "expected_psnr": 23.0
+      },
+      {
+        "name": "QAA",
+        "method_sig": "L+O",
+        "expected_psnr": 24.5
+      },
+      {
+        "name": "OceanColor-Net",
+        "method_sig": "L+N",
+        "expected_psnr": 27.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 1024,
+        "W": 1024,
+        "N_bands": 9,
+        "GSD_m": 1000,
+        "SNR_dB": 40.0,
+        "atmospheric_aerosol": 0.1,
+        "glint": 0.0,
+        "whitecaps": 0.0,
+        "bottom_reflectance": 0.0
+      },
+      "epsilon": 25.0
+    },
+    "tier_bounds": {
+      "H": [
+        256,
+        8192
+      ],
+      "W": [
+        256,
+        8192
+      ],
+      "N_bands": [
+        4,
+        20
+      ],
+      "GSD_m": [
+        10,
+        5000
+      ],
+      "SNR_dB": [
+        15.0,
+        45.0
+      ],
+      "atmospheric_aerosol": [
+        0.0,
+        0.5
+      ],
+      "glint": [
+        0.0,
+        0.3
+      ],
+      "whitecaps": [
+        0.0,
+        0.2
+      ],
+      "bottom_reflectance": [
+        0.0,
+        0.5
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.5,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

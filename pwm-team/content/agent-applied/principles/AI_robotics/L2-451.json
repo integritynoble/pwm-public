@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-451",
+  "layer": "L2",
+  "parent_l1": "L1-451",
+  "principle_ref": "sha256:<L1-451_principle_hash>",
+  "title": "Rigid Body Dynamics Simulation \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "mass_kg": [
+        0.01,
+        1000
+      ],
+      "inertia_ratio_J1_J3": [
+        0.5,
+        10.0
+      ],
+      "integration_dt_ms": [
+        0.01,
+        10.0
+      ],
+      "simulation_duration_s": [
+        0.1,
+        1000
+      ]
+    },
+    "E": {
+      "forward": "p_dot = v; q_dot = 0.5*Omega(omega)*q; J*omega_dot = tau - omega x (J*omega); m*v_dot = F",
+      "operator": "euler_equations_quaternion",
+      "primitive_chain": "M.euler.rigid_body_equations -> S.quaternion.integration -> O.lyapunov.energy_based",
+      "inverse": "recover 6DOF state (position from applied forces F and torques tau"
+    },
+    "B": {
+      "quaternion_unit": "|q|=1",
+      "angular_momentum": "J*omega conserved for zero torque"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "quaternion_attitude_error_deg",
+      "position_RMSE_m",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.01 + 0.04 * (integration_dt_ms / 1.0) ** 2"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 6DOF_state_trajectory"
+    },
+    "baselines": [
+      {
+        "name": "RK4_quaternion",
+        "method_sig": "L+O",
+        "expected_score": 0.06
+      },
+      {
+        "name": "symplectic_Euler_quat",
+        "method_sig": "L+O",
+        "expected_score": 0.04
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "mass_kg": 1.0,
+        "inertia_ratio_J1_J3": 2.0,
+        "integration_dt_ms": 1.0,
+        "simulation_duration_s": 10.0,
+        "inertia_tensor_uncertainty": 0.0,
+        "aerodynamic_drag_neglect": 0.0,
+        "numerical_integration_error": 0.0
+      },
+      "epsilon": 0.05
+    },
+    "tier_bounds": {
+      "mass_kg": [
+        0.01,
+        1000
+      ],
+      "inertia_ratio_J1_J3": [
+        0.5,
+        10.0
+      ],
+      "integration_dt_ms": [
+        0.01,
+        10.0
+      ],
+      "simulation_duration_s": [
+        0.1,
+        1000
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.2,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.2 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

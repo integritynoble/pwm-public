@@ -1,0 +1,178 @@
+{
+  "artifact_id": "L1-047",
+  "layer": "L1",
+  "principle_number": "047",
+  "title": "Elastography (Shear-Wave / Strain)",
+  "domain": "Medical Imaging",
+  "sub_domain": "Tissue stiffness imaging via shear waves or compression",
+  "source_file": "C_medical_imaging/047_elastography.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical medical-imaging literature for this principle.",
+  "E": {
+    "description": "Elastography (Shear-Wave / Strain) forward model.",
+    "forward_model": "u(r, t) = shear_wave_propagator(mu(r), boundaries); recover mu(r) via Helmholtz or direct inversion",
+    "world_state_x": "Patient-side quantity of interest (attenuation / activity / perfusion / stiffness etc.)",
+    "observation_y": "Clinical sensor output at declared resolution + noise",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "f_push_Hz",
+      "N_time_samples",
+      "SNR_dB",
+      "wave_reflections",
+      "tissue_anisotropy",
+      "pre_load",
+      "boundary_conditions"
+    ]
+  },
+  "G": {
+    "dag": "L.shear_wave_excitation -> L.wave_tracking -> L.inverse_elasticity -> int.temporal",
+    "vertices": [
+      "L.shear_wave_excitation",
+      "L.wave_tracking",
+      "L.inverse_elasticity",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.shear_wave_excitation -> L.wave_tracking",
+      "L.wave_tracking -> L.inverse_elasticity",
+      "L.inverse_elasticity -> int.temporal"
+    ],
+    "L_DAG": 3.8,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 300,
+    "condition_number_effective": 15,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Helmholtz, Direct-Inversion, Elasto-Net",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sensor SNR + mismatch bias + regularisation.",
+    "complexity": "O(H W) to O(H W Z) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "acoustic",
+    "sensing_mechanism": "shear_wave_elastography",
+    "integration_axis": "temporal",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "2D_tissue_stiffness",
+    "primitives": [
+      "L.shear_wave_excitation",
+      "L.wave_tracking",
+      "L.inverse_elasticity",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "wave_reflections",
+    "tissue_anisotropy",
+    "pre_load",
+    "boundary_conditions"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "elastography",
+      "forward_operator": "elastography_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 512,
+        "W": 512,
+        "f_push_Hz": 150,
+        "N_time_samples": 200,
+        "SNR_dB": 22,
+        "wave_reflections": 0.0,
+        "tissue_anisotropy": 0.0,
+        "pre_load": 0.0,
+        "boundary_conditions": 0.0
+      },
+      "epsilon_fn_center": "20.0"
+    },
+    "allowed_forward_operators": [
+      "elastography_forward"
+    ],
+    "allowed_problem_classes": [
+      "elastography"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "f_push_Hz",
+      "N_time_samples",
+      "SNR_dB",
+      "wave_reflections",
+      "tissue_anisotropy",
+      "pre_load",
+      "boundary_conditions",
+      "wave_reflections",
+      "tissue_anisotropy",
+      "pre_load",
+      "boundary_conditions"
+    ],
+    "omega_bounds": {
+      "H": 128,
+      "W": 128,
+      "f_push_Hz": [
+        30,
+        500
+      ],
+      "N_time_samples": [
+        50,
+        1000
+      ],
+      "SNR_dB": [
+        0.0,
+        35.0
+      ],
+      "wave_reflections": [
+        0.0,
+        0.5
+      ],
+      "tissue_anisotropy": [
+        0.0,
+        0.3
+      ],
+      "pre_load": [
+        0.0,
+        0.3
+      ],
+      "boundary_conditions": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        5.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

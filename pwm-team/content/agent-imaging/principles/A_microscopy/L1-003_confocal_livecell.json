@@ -1,0 +1,172 @@
+{
+  "artifact_id": "L1-003",
+  "layer": "L1",
+  "principle_number": "003",
+  "title": "Confocal Fluorescence (pinhole-rejection livecell imaging)",
+  "domain": "Microscopy",
+  "sub_domain": "Laser-scanning confocal",
+  "source_file": "A_microscopy/003_confocal_livecell.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical domain literature for this specific principle.",
+  "E": {
+    "description": "Confocal Fluorescence (pinhole-rejection livecell imaging) forward model.",
+    "forward_model": "y(r) = [PSF_confocal(r; AU) conv f(r)] + n",
+    "world_state_x": "Scene parameter of interest (density / complex field / lifetime / normals depending on spec).",
+    "observation_y": "Measured intensity or photon counts from the imaging system.",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "pixel_nm",
+      "NA",
+      "pinhole_AU",
+      "peak_photons",
+      "scan_jitter",
+      "photobleaching_rate"
+    ]
+  },
+  "G": {
+    "dag": "K.psf.confocal -> S.scan.raster -> int.temporal",
+    "vertices": [
+      "K.psf.confocal",
+      "S.scan.raster",
+      "int.temporal"
+    ],
+    "arcs": [
+      "K.psf.confocal -> S.scan.raster",
+      "S.scan.raster -> int.temporal"
+    ],
+    "L_DAG": 2.3,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 120,
+    "condition_number_effective": 6,
+    "regime": "Conditional stability; principle-specific mismatch dominates at Omega bounds (see `mismatch_parameters`)."
+  },
+  "C": {
+    "solver_class": "Richardson-Lucy, TV-ADMM, CARE-Confocal",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(photon_count) + mismatch-induced bias.",
+    "complexity": "O(H W) to O(H W Z) per iteration depending on dimensionality"
+  },
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "confocal_laser_scan",
+    "integration_axis": "temporal",
+    "problem_class": "linear_inverse",
+    "noise_model": "poisson_gaussian",
+    "solution_space": "2D_intensity",
+    "primitives": [
+      "K.psf.confocal",
+      "S.scan.raster",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "pinhole_size_AU",
+    "scan_jitter",
+    "photobleaching_rate"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "confocal_livecell",
+      "forward_operator": "confocal_livecell_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 1024,
+        "W": 1024,
+        "pixel_nm": 100,
+        "NA": 1.3,
+        "pinhole_AU": 1.0,
+        "peak_photons": 300,
+        "scan_jitter": 0.0,
+        "photobleaching_rate": 0.0
+      },
+      "epsilon_fn_center": "28.0"
+    },
+    "allowed_forward_operators": [
+      "confocal_livecell_forward"
+    ],
+    "allowed_problem_classes": [
+      "confocal_livecell"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "pixel_nm",
+      "NA",
+      "pinhole_AU",
+      "peak_photons",
+      "scan_jitter",
+      "photobleaching_rate",
+      "pinhole_size_AU",
+      "scan_jitter",
+      "photobleaching_rate"
+    ],
+    "omega_bounds": {
+      "H": [
+        256,
+        4096
+      ],
+      "W": [
+        256,
+        4096
+      ],
+      "pixel_nm": [
+        50,
+        300
+      ],
+      "NA": [
+        0.8,
+        1.45
+      ],
+      "pinhole_AU": [
+        0.5,
+        3.0
+      ],
+      "peak_photons": [
+        20,
+        2000
+      ],
+      "scan_jitter": [
+        0.0,
+        2.0
+      ],
+      "photobleaching_rate": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        12.0,
+        42.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

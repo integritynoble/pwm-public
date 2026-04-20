@@ -1,0 +1,181 @@
+{
+  "artifact_id": "L1-060",
+  "layer": "L1",
+  "principle_number": "060",
+  "title": "MR Fingerprinting (MRF)",
+  "domain": "Medical Imaging",
+  "sub_domain": "Pseudo-random acquisition with dictionary matching for T1/T2/rho",
+  "source_file": "C_medical_imaging/060_mrf.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical medical-imaging literature for this principle.",
+  "E": {
+    "description": "MR Fingerprinting (MRF) forward model.",
+    "forward_model": "y_t = A(theta_t) * M(T1, T2, rho, B1) + aliasing + n; match fingerprint to dictionary",
+    "world_state_x": "Patient-side quantity of interest (attenuation / activity / perfusion / stiffness etc.)",
+    "observation_y": "Clinical sensor output at declared resolution + noise",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "Z",
+      "N_frames",
+      "TR_ms_variable",
+      "SNR_dB",
+      "B0_inhomogeneity",
+      "undersampling_artifacts",
+      "partial_volume",
+      "motion"
+    ]
+  },
+  "G": {
+    "dag": "L.rf_excitation_pseudorandom -> L.kspace_undersample -> L.dict_match -> int.temporal",
+    "vertices": [
+      "L.rf_excitation_pseudorandom",
+      "L.kspace_undersample",
+      "L.dict_match",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.rf_excitation_pseudorandom -> L.kspace_undersample",
+      "L.kspace_undersample -> L.dict_match",
+      "L.dict_match -> int.temporal"
+    ],
+    "L_DAG": 4.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 500,
+    "condition_number_effective": 25,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Dict-Match, LR-Dict-Match, MRF-Net",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sensor SNR + mismatch bias + regularisation.",
+    "complexity": "O(H W) to O(H W Z) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "radio_wave",
+    "sensing_mechanism": "mri_fingerprinting",
+    "integration_axis": "temporal",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "4D_parameter_maps",
+    "primitives": [
+      "L.rf_excitation_pseudorandom",
+      "L.kspace_undersample",
+      "L.dict_match",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 10,
+  "difficulty_tier": "hard",
+  "mismatch_parameters": [
+    "B0_inhomogeneity",
+    "undersampling_artifacts",
+    "partial_volume",
+    "motion"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "mrf",
+      "forward_operator": "mrf_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 256,
+        "W": 256,
+        "Z": 32,
+        "N_frames": 1000,
+        "TR_ms_variable": true,
+        "SNR_dB": 18,
+        "B0_inhomogeneity": 0.0,
+        "undersampling_artifacts": 0.0,
+        "partial_volume": 0.0,
+        "motion": 0.0
+      },
+      "epsilon_fn_center": "18.0"
+    },
+    "allowed_forward_operators": [
+      "mrf_forward"
+    ],
+    "allowed_problem_classes": [
+      "mrf"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "Z",
+      "N_frames",
+      "TR_ms_variable",
+      "SNR_dB",
+      "B0_inhomogeneity",
+      "undersampling_artifacts",
+      "partial_volume",
+      "motion",
+      "B0_inhomogeneity",
+      "undersampling_artifacts",
+      "partial_volume",
+      "motion"
+    ],
+    "omega_bounds": {
+      "H": 64,
+      "W": 64,
+      "Z": [
+        4,
+        64
+      ],
+      "N_frames": [
+        100,
+        5000
+      ],
+      "SNR_dB": [
+        0.0,
+        30.0
+      ],
+      "B0_inhomogeneity": [
+        0.0,
+        0.3
+      ],
+      "undersampling_artifacts": [
+        0.0,
+        0.5
+      ],
+      "partial_volume": [
+        0.0,
+        0.3
+      ],
+      "motion": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        5.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

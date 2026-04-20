@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-433",
+  "layer": "L1",
+  "principle_number": "433",
+  "title": "Model Predictive Control (MPC/NMPC)",
+  "domain": "Control Theory",
+  "sub_domain": "Receding horizon control",
+  "source_file": "AG_control_theory/433_model_predictive_control.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "MPC/NMPC: solve finite-horizon constrained optimization at each time step, apply first control action.",
+    "forward_model": "min_{u} sum_{k=0}^{N} l(x_k, u_k) + V_f(x_N) s.t. x_{k+1}=f(x_k,u_k), u_min<=u<=u_max, x in X",
+    "world_state_x": "optimal control sequence U* = {u_0*, ..., u_{N-1}*} for prediction horizon N",
+    "observation_y": "current state x(t) measurement (or estimate), disturbance preview",
+    "physical_parameters_theta": [
+      "prediction_horizon_N",
+      "control_horizon_M",
+      "stage_cost_Q_R",
+      "constraint_set_X_U"
+    ]
+  },
+  "G": {
+    "dag": "M.mpc.prediction_model -> O.qp.nlp_solver -> S.feasibility.constraint_satisfaction",
+    "vertices": [
+      "M.mpc.prediction_model",
+      "O.qp.nlp_solver",
+      "S.feasibility.constraint_satisfaction"
+    ],
+    "arcs": [
+      "M.mpc.prediction_model -> O.qp.nlp_solver",
+      "O.qp.nlp_solver -> S.feasibility.constraint_satisfaction"
+    ],
+    "L_DAG": 4.0,
+    "n_c": 1
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 10000.0,
+    "condition_number_effective": 500,
+    "condition_number_mismatched": 2000,
+    "regime": "Real-time iteration (RTI) enables fast NMPC at 100 Hz; constraint handling explicit; robust MPC handles bounded disturbances."
+  },
+  "C": {
+    "solver_class": "QP_solver_for_linear_MPC or NLP_IPOPT_ACADOS_for_NMPC",
+    "convergence_rate_q": 2.0,
+    "error_bound": "recursive feasibility guaranteed with terminal constraint; stability via Lyapunov function",
+    "complexity": "O(N * n_x ** 3) for QP MPC; O(N * NLP_iter) for NMPC"
+  },
+  "physics_fingerprint": {
+    "carrier": "N/A",
+    "sensing_mechanism": "receding_horizon_optimization",
+    "integration_axis": "prediction_horizon",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "deterministic",
+    "solution_space": "control_sequence_vector",
+    "primitives": [
+      "M.mpc.prediction_model",
+      "O.qp.nlp_solver",
+      "S.feasibility.constraint_satisfaction"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "model_plant_mismatch",
+    "disturbance_unforeseen",
+    "constraint_infeasibility"
+  ],
+  "error_metric": "tracking_RMSE_normalized",
+  "error_metric_secondary": "constraint_violation_rate",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "nonlinear_inverse",
+      "forward_operator": "receding_horizon_optimization",
+      "input_format": "measurement_only",
+      "omega": {
+        "prediction_horizon_N": 20,
+        "n_states": 4,
+        "n_constraints": 10,
+        "computation_budget_ms": 100
+      },
+      "epsilon_fn_center": "0.05 tracking_RMSE_normalized"
+    },
+    "allowed_forward_operators": [
+      "receding_horizon_optimization"
+    ],
+    "allowed_problem_classes": [
+      "nonlinear_inverse"
+    ],
+    "allowed_omega_dimensions": [
+      "prediction_horizon_N",
+      "n_states",
+      "n_constraints",
+      "computation_budget_ms"
+    ],
+    "omega_bounds": {
+      "prediction_horizon_N": [
+        5,
+        100
+      ],
+      "n_states": [
+        2,
+        20
+      ],
+      "n_constraints": [
+        0,
+        50
+      ],
+      "computation_budget_ms": [
+        1,
+        1000
+      ]
+    },
+    "epsilon_bounds": {
+      "tracking_RMSE_normalized": [
+        0.01,
+        0.3
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

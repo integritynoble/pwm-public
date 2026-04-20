@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-407",
+  "layer": "L1",
+  "principle_number": "407",
+  "title": "Lotka-Volterra Predator-Prey Dynamics",
+  "domain": "Computational Biology",
+  "sub_domain": "Population dynamics",
+  "source_file": "AE_computational_bio/407_lotka_volterra.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "Lotka-Volterra parameter estimation: infer growth rates and interaction coefficients from time-series population data.",
+    "forward_model": "dH/dt = r*H - a*H*P; dP/dt = b*a*H*P - m*P; neutrally stable oscillations",
+    "world_state_x": "LV parameters (r_prey_growth, a_predation, b_efficiency, m_predator_mortality)",
+    "observation_y": "population counts {H(t_i), P(t_i)} from census or survey data",
+    "physical_parameters_theta": [
+      "r_growth_per_yr",
+      "a_predation_rate",
+      "b_conversion_efficiency",
+      "m_mortality_per_yr"
+    ]
+  },
+  "G": {
+    "dag": "M.ode.lotka_volterra -> O.nls.population_fit -> S.continuation.bifurcation_LV",
+    "vertices": [
+      "M.ode.lotka_volterra",
+      "O.nls.population_fit",
+      "S.continuation.bifurcation_LV"
+    ],
+    "arcs": [
+      "M.ode.lotka_volterra -> O.nls.population_fit",
+      "O.nls.population_fit -> S.continuation.bifurcation_LV"
+    ],
+    "L_DAG": 2.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 500,
+    "condition_number_effective": 20,
+    "condition_number_mismatched": 100,
+    "regime": "Conservative oscillations; structural instability of Lotka-Volterra; extensions (Holling functional response) needed for real ecosystems."
+  },
+  "C": {
+    "solver_class": "NLS_ODE_fit or Bayesian_state_space_LV",
+    "convergence_rate_q": 2.0,
+    "error_bound": "log-population RMSE < 0.1 for well-sampled data",
+    "complexity": "O(N_timepoints * N_params) per ODE + fit"
+  },
+  "physics_fingerprint": {
+    "carrier": "N/A",
+    "sensing_mechanism": "population_census_survey",
+    "integration_axis": "time",
+    "problem_class": "parameter_estimation",
+    "noise_model": "lognormal",
+    "solution_space": "LV_parameter_vector",
+    "primitives": [
+      "M.ode.lotka_volterra",
+      "O.nls.population_fit",
+      "S.continuation.bifurcation_LV"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "stochastic_demographic_noise",
+    "environmental_variability",
+    "observation_error"
+  ],
+  "error_metric": "population_trajectory_RMSE_log",
+  "error_metric_secondary": "period_amplitude_error",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "parameter_estimation",
+      "forward_operator": "population_census_survey",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_observations": 50,
+        "amplitude_H_max": 1000,
+        "period_yr": 5,
+        "observation_noise_log_sigma": 0.1
+      },
+      "epsilon_fn_center": "0.10 population_trajectory_RMSE_log"
+    },
+    "allowed_forward_operators": [
+      "population_census_survey"
+    ],
+    "allowed_problem_classes": [
+      "parameter_estimation"
+    ],
+    "allowed_omega_dimensions": [
+      "N_observations",
+      "amplitude_H_max",
+      "period_yr",
+      "observation_noise_log_sigma"
+    ],
+    "omega_bounds": {
+      "N_observations": [
+        10,
+        300
+      ],
+      "amplitude_H_max": [
+        10,
+        100000
+      ],
+      "period_yr": [
+        0.5,
+        50
+      ],
+      "observation_noise_log_sigma": [
+        0.01,
+        1.0
+      ]
+    },
+    "epsilon_bounds": {
+      "population_trajectory_RMSE_log": [
+        0.01,
+        0.5
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

@@ -1,0 +1,149 @@
+{
+  "artifact_id": "L2-035",
+  "layer": "L2",
+  "parent_l1": "L1-035",
+  "title": "Fluoroscopy (real-time X-ray) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": 256,
+      "W": 256,
+      "fps": [
+        10,
+        60
+      ],
+      "kVp": [
+        60,
+        120
+      ],
+      "dose_rate_uGy_per_s": [
+        0.1,
+        10
+      ],
+      "pixel_um": [
+        100,
+        500
+      ],
+      "scatter": [
+        0.0,
+        0.4
+      ],
+      "low_dose_noise": [
+        0.0,
+        0.3
+      ],
+      "pincushion_distortion": [
+        0.0,
+        0.1
+      ],
+      "frame_rate_limits": [
+        0.0,
+        0.5
+      ]
+    },
+    "E": {
+      "forward": "y_t(u,v) = I_0 exp(-integral mu(r, t) ds) + scatter + n at frame rate 30 Hz",
+      "operator": "fluoroscopy_forward_mismatch",
+      "primitive_chain": "L.xray_source -> L.beer_lambert -> D.image_intensifier -> int.spatial",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "18.0 + 2.0 * log10(dose_rate_uGy_per_s / 0.1) - 8.0 * scatter - 10.0 * low_dose_noise"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Wiener",
+        "method_sig": "L+R",
+        "expected_psnr": 23.5
+      },
+      {
+        "name": "BM3D-Fluoro",
+        "method_sig": "L+R",
+        "expected_psnr": 25.5
+      },
+      {
+        "name": "DeepFluoro",
+        "method_sig": "L+N",
+        "expected_psnr": 28.0
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 1024,
+        "W": 1024,
+        "fps": 30,
+        "kVp": 80,
+        "dose_rate_uGy_per_s": 0.5,
+        "pixel_um": 200,
+        "scatter": 0.1,
+        "low_dose_noise": 0.0,
+        "pincushion_distortion": 0.0
+      },
+      "epsilon": 26.0
+    },
+    "tier_bounds": {
+      "H": 256,
+      "W": 256,
+      "fps": [
+        10,
+        60
+      ],
+      "kVp": [
+        60,
+        120
+      ],
+      "dose_rate_uGy_per_s": [
+        0.1,
+        10
+      ],
+      "pixel_um": [
+        100,
+        500
+      ],
+      "scatter": [
+        0.0,
+        0.4
+      ],
+      "low_dose_noise": [
+        0.0,
+        0.3
+      ],
+      "pincushion_distortion": [
+        0.0,
+        0.1
+      ],
+      "frame_rate_limits": [
+        0.0,
+        0.5
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.5,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

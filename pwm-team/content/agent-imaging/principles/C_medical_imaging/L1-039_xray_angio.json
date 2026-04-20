@@ -1,0 +1,182 @@
+{
+  "artifact_id": "L1-039",
+  "layer": "L1",
+  "principle_number": "039",
+  "title": "X-ray Angiography (DSA)",
+  "domain": "Medical Imaging",
+  "sub_domain": "Subtraction-based vascular imaging",
+  "source_file": "C_medical_imaging/039_xray_angio.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical medical-imaging literature for this principle.",
+  "E": {
+    "description": "X-ray Angiography (DSA) forward model.",
+    "forward_model": "y_t(u,v) = I_0 exp(-integral (mu + mu_contrast(t))) + scatter; DSA = -log(y_live / y_mask)",
+    "world_state_x": "Patient-side quantity of interest (attenuation / activity / perfusion / stiffness etc.)",
+    "observation_y": "Clinical sensor output at declared resolution + noise",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "fps",
+      "kVp",
+      "dose_per_frame_uGy",
+      "pixel_um",
+      "contrast_timing",
+      "patient_motion",
+      "misregistration"
+    ]
+  },
+  "G": {
+    "dag": "L.xray_source -> L.contrast_bolus -> L.digital_subtraction -> int.temporal",
+    "vertices": [
+      "L.xray_source",
+      "L.contrast_bolus",
+      "L.digital_subtraction",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.xray_source -> L.contrast_bolus",
+      "L.contrast_bolus -> L.digital_subtraction",
+      "L.digital_subtraction -> int.temporal"
+    ],
+    "L_DAG": 3.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 200,
+    "condition_number_effective": 10,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Simple-DSA, Reg-DSA, Vessel-Net",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sensor SNR + mismatch bias + regularisation.",
+    "complexity": "O(H W) to O(H W Z) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "x_ray",
+    "sensing_mechanism": "xray_projection",
+    "integration_axis": "temporal",
+    "problem_class": "linear_inverse",
+    "noise_model": "shot_poisson",
+    "solution_space": "2D_vessel_map",
+    "primitives": [
+      "L.xray_source",
+      "L.contrast_bolus",
+      "L.digital_subtraction",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "contrast_timing",
+    "patient_motion",
+    "misregistration",
+    "scatter"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "xray_angio",
+      "forward_operator": "xray_angio_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 1024,
+        "W": 1024,
+        "fps": 15,
+        "kVp": 80,
+        "dose_per_frame_uGy": 5,
+        "pixel_um": 150,
+        "contrast_timing": 0.0,
+        "patient_motion": 0.0,
+        "misregistration": 0.0
+      },
+      "epsilon_fn_center": "28.0"
+    },
+    "allowed_forward_operators": [
+      "xray_angio_forward"
+    ],
+    "allowed_problem_classes": [
+      "xray_angio"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "fps",
+      "kVp",
+      "dose_per_frame_uGy",
+      "pixel_um",
+      "contrast_timing",
+      "patient_motion",
+      "misregistration",
+      "contrast_timing",
+      "patient_motion",
+      "misregistration",
+      "scatter"
+    ],
+    "omega_bounds": {
+      "H": 512,
+      "W": 512,
+      "fps": [
+        1,
+        60
+      ],
+      "kVp": [
+        60,
+        120
+      ],
+      "dose_per_frame_uGy": [
+        0.5,
+        50
+      ],
+      "pixel_um": [
+        50,
+        300
+      ],
+      "contrast_timing": [
+        0.0,
+        0.5
+      ],
+      "patient_motion": [
+        0.0,
+        0.3
+      ],
+      "misregistration": [
+        0.0,
+        5.0
+      ],
+      "scatter": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        5.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

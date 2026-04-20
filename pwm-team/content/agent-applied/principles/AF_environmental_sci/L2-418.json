@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-418",
+  "layer": "L2",
+  "parent_l1": "L1-418",
+  "principle_ref": "sha256:<L1-418_principle_hash>",
+  "title": "Numerical Weather Prediction Data Assimilation \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "N_observations": [
+        100000,
+        5000000
+      ],
+      "window_hours": [
+        3,
+        12
+      ],
+      "model_resolution_km": [
+        2,
+        50
+      ],
+      "obs_error_ratio": [
+        0.5,
+        5.0
+      ]
+    },
+    "E": {
+      "forward": "J(x0) = 0.5*(x0-x_b) ** T B^{-1} (x0-x_b) + 0.5*sum_t (H_t M_t(x0) - y_t) ** T R_t^{-1} (H_t M_t(x0) - y_t)",
+      "operator": "4dvar_data_assimilation",
+      "primitive_chain": "M.nwp.primitive_equations -> S.4dvar.adjoint_method -> O.cost_function.background_observation",
+      "inverse": "recover atmospheric initial state x0 (T from conventional + satellite observations y_t over 6-12 hour window"
+    },
+    "B": {
+      "balance": "geostrophic balance in extratropics",
+      "positivity": "specific humidity q >= 0"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "analysis_error_RMSE_K",
+      "forecast_skill_score_S1",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.3 + 0.2 * (model_resolution_km / 10) ** 0.2"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 atmospheric_state_vector"
+    },
+    "baselines": [
+      {
+        "name": "3DVar_operational",
+        "method_sig": "L+O",
+        "expected_score": 0.7
+      },
+      {
+        "name": "4DVar_ECMWF",
+        "method_sig": "L+O",
+        "expected_score": 0.4
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_observations": 1000000,
+        "window_hours": 6,
+        "model_resolution_km": 10,
+        "obs_error_ratio": 1.0,
+        "model_error_during_window": 0.0,
+        "observation_bias_correction_error": 0.0,
+        "background_error_covariance_specification": 0.0
+      },
+      "epsilon": 0.5
+    },
+    "tier_bounds": {
+      "N_observations": [
+        100000,
+        5000000
+      ],
+      "window_hours": [
+        3,
+        12
+      ],
+      "model_resolution_km": [
+        2,
+        50
+      ],
+      "obs_error_ratio": [
+        0.5,
+        5.0
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.5,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.5 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

@@ -1,0 +1,178 @@
+{
+  "artifact_id": "L1-055",
+  "layer": "L1",
+  "principle_number": "055",
+  "title": "Magnetic Resonance Elastography (MRE)",
+  "domain": "Medical Imaging",
+  "sub_domain": "Tissue stiffness via synchronized MR motion encoding",
+  "source_file": "C_medical_imaging/055_mre.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical medical-imaging literature for this principle.",
+  "E": {
+    "description": "Magnetic Resonance Elastography (MRE) forward model.",
+    "forward_model": "phi = gamma * G_MEG * integral u(t) dt; extract u(r,t) -> stiffness via Helmholtz",
+    "world_state_x": "Patient-side quantity of interest (attenuation / activity / perfusion / stiffness etc.)",
+    "observation_y": "Clinical sensor output at declared resolution + noise",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "Z",
+      "f_mech_Hz",
+      "SNR_dB",
+      "wave_reflections",
+      "tissue_anisotropy",
+      "inversion_reg_error",
+      "motion_artifact"
+    ]
+  },
+  "G": {
+    "dag": "L.rf_excitation -> L.motion_encoding_gradient -> L.inverse_elasticity -> int.temporal",
+    "vertices": [
+      "L.rf_excitation",
+      "L.motion_encoding_gradient",
+      "L.inverse_elasticity",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.rf_excitation -> L.motion_encoding_gradient",
+      "L.motion_encoding_gradient -> L.inverse_elasticity",
+      "L.inverse_elasticity -> int.temporal"
+    ],
+    "L_DAG": 4.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 320,
+    "condition_number_effective": 16,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Direct-Inversion, Helmholtz-MRE, MRE-Net",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sensor SNR + mismatch bias + regularisation.",
+    "complexity": "O(H W) to O(H W Z) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "radio_wave",
+    "sensing_mechanism": "mri_motion_encode",
+    "integration_axis": "temporal",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "2D_tissue_stiffness",
+    "primitives": [
+      "L.rf_excitation",
+      "L.motion_encoding_gradient",
+      "L.inverse_elasticity",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "wave_reflections",
+    "tissue_anisotropy",
+    "inversion_reg_error",
+    "motion_artifact"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "mre",
+      "forward_operator": "mre_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 256,
+        "W": 256,
+        "Z": 32,
+        "f_mech_Hz": 60,
+        "SNR_dB": 20,
+        "wave_reflections": 0.0,
+        "tissue_anisotropy": 0.0,
+        "inversion_reg_error": 0.0,
+        "motion_artifact": 0.0
+      },
+      "epsilon_fn_center": "19.0"
+    },
+    "allowed_forward_operators": [
+      "mre_forward"
+    ],
+    "allowed_problem_classes": [
+      "mre"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "Z",
+      "f_mech_Hz",
+      "SNR_dB",
+      "wave_reflections",
+      "tissue_anisotropy",
+      "inversion_reg_error",
+      "motion_artifact",
+      "wave_reflections",
+      "tissue_anisotropy",
+      "inversion_reg_error",
+      "motion_artifact"
+    ],
+    "omega_bounds": {
+      "H": 64,
+      "W": 64,
+      "Z": [
+        8,
+        128
+      ],
+      "f_mech_Hz": [
+        20,
+        200
+      ],
+      "SNR_dB": [
+        0.0,
+        35.0
+      ],
+      "wave_reflections": [
+        0.0,
+        0.5
+      ],
+      "tissue_anisotropy": [
+        0.0,
+        0.3
+      ],
+      "inversion_reg_error": [
+        0.0,
+        0.3
+      ],
+      "motion_artifact": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        5.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

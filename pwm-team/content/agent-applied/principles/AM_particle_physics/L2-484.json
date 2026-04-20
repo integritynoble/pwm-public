@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-484",
+  "layer": "L2",
+  "parent_l1": "L1-484",
+  "principle_ref": "sha256:<L1-484_principle_hash>",
+  "title": "Charged Particle Track Reconstruction \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "N_layers": [
+        4,
+        20
+      ],
+      "B_field_T": [
+        0.5,
+        4.0
+      ],
+      "material_X0_percent": [
+        0.1,
+        3.0
+      ],
+      "pileup_mu": [
+        0,
+        200
+      ]
+    },
+    "E": {
+      "forward": "x_pred_k = F_k * x_{k-1} + noise; H_k * x_k = m_k (measurement); helix in B-field",
+      "operator": "silicon_tracker_hit_pattern",
+      "primitive_chain": "S.kalman.track_filter -> M.helix.propagation -> O.chi2.hit_residuals",
+      "inverse": "recover track state vector (d0 from silicon strip/pixel hit positions {u_k"
+    },
+    "B": {
+      "helix_consistency": "track parameters consistent with B-field",
+      "material_loss": "Bethe-Bloch energy loss applied"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "track_parameter_resolution_sigma_pt_over_pt",
+      "tracking_efficiency_percent",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.0005 + 0.0005 * (pileup_mu / 50) ** 0.3"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 track_parameter_vector"
+    },
+    "baselines": [
+      {
+        "name": "Kalman_filter_tracking",
+        "method_sig": "L+O",
+        "expected_score": 0.0012
+      },
+      {
+        "name": "global_chi2_tracker",
+        "method_sig": "L+O",
+        "expected_score": 0.0009
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_layers": 10,
+        "B_field_T": 2.0,
+        "material_X0_percent": 0.5,
+        "pileup_mu": 50,
+        "alignment_uncertainty_um": 0.0,
+        "B_field_map_error_T": 0.0,
+        "hit_efficiency_loss": 0.0
+      },
+      "epsilon": 0.001
+    },
+    "tier_bounds": {
+      "N_layers": [
+        4,
+        20
+      ],
+      "B_field_T": [
+        0.5,
+        4.0
+      ],
+      "material_X0_percent": [
+        0.1,
+        3.0
+      ],
+      "pileup_mu": [
+        0,
+        200
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.42,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.42 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

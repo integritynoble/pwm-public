@@ -1,0 +1,27 @@
+{
+  "artifact_id": "L2-001", "layer": "L2", "parent_l1": "L1-001",
+  "title": "Widefield Fluorescence Mismatch-Only Spec", "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {"H":[128,4096],"W":[128,4096],"pixel_nm":[30,200],"emission_nm":[400,800],"NA":[0.4,1.49],"peak_photons":[50,10000],"dz_nm":[0.0,1500.0],"sigma_bg":[0.0,0.10]},
+    "E": {"forward": "y = PSF_Airy(NA, lambda, dz) conv f + sigma_bg + n", "operator": "widefield_forward_mismatch", "primitive_chain": "K.psf.airy -> int.temporal", "inverse": "recover f (H x W non-neg) from single y"},
+    "B": {"nonnegativity": true, "bandlimited": true, "bounded_background": true},
+    "I": {"strategy": "zero_init"},
+    "O": ["PSNR","SSIM","resolution_nm","residual_norm"],
+    "epsilon_fn": "22.0 + 2.0 * log2(H / 128) + 1.5 * log10(peak_photons / 50)"
+  },
+  "protocol_fields": {
+    "input_format": {"measurement":"float32(H,W)","psf_hint":"optional_float32(K,K)"},
+    "output_format": {"intensity":"float32(H,W)"},
+    "baselines": [
+      {"name":"Richardson-Lucy","method_sig":"I+M","expected_psnr":28.0},
+      {"name":"Wiener","method_sig":"L+R","expected_psnr":30.5},
+      {"name":"CARE-UNet","method_sig":"L+N","expected_psnr":35.0}
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {"rho":1, "omega_tier":{"H":512,"W":512,"pixel_nm":65,"emission_nm":525,"NA":1.4,"peak_photons":1000,"dz_nm":0.0,"sigma_bg":0.0}, "epsilon":30.0},
+    "tier_bounds": {"H":[128,2048],"W":[128,2048],"pixel_nm":[30,200],"peak_photons":[50,10000],"dz_nm":[0.0,1500.0],"sigma_bg":[0.0,0.10]},
+    "proximity_threshold": 0.10
+  },
+  "d_spec": 0.30, "s1_s4_gates": ["PASS","PASS","PASS","PASS"], "ipfs_cid": null
+}

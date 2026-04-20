@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-421",
+  "layer": "L2",
+  "parent_l1": "L1-421",
+  "principle_ref": "sha256:<L1-421_principle_hash>",
+  "title": "River Hydraulics Shallow Water Inversion \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "N_gauges": [
+        2,
+        50
+      ],
+      "reach_length_km": [
+        1,
+        1000
+      ],
+      "discharge_peak_m3_s": [
+        10,
+        100000
+      ],
+      "roughness_n": [
+        0.01,
+        0.1
+      ]
+    },
+    "E": {
+      "forward": "dA/dt + dQ/dx = q_lat; dQ/dt + d(Q ** 2/A)/dx + g*A*dh/dx + g*A*S_f = 0; S_f = n ** 2*Q ** 2/(A ** 2*R^{4/3})",
+      "operator": "water_level_discharge_measurement",
+      "primitive_chain": "M.swe.saint_venant -> O.least_squares.rating_curve -> S.fdm.flood_routing",
+      "inverse": "recover Manning's roughness n(x) and cross-section bathymetry A(h from water stage H(t) at N_gauges gauging stations and discharge Q(t)"
+    },
+    "B": {
+      "CFL": "Courant number < 1",
+      "Manning_positivity": "n > 0"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "water_level_RMSE_m",
+      "discharge_RMSE_percent",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.05 + 0.05 * (discharge_peak_m3_s / 1000) ** 0.2"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 Manning_roughness_bathymetry"
+    },
+    "baselines": [
+      {
+        "name": "HEC_RAS_1D",
+        "method_sig": "L+O",
+        "expected_score": 0.12
+      },
+      {
+        "name": "TELEMAC_2D",
+        "method_sig": "L+O",
+        "expected_score": 0.08
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_gauges": 5,
+        "reach_length_km": 50,
+        "discharge_peak_m3_s": 1000,
+        "roughness_n": 0.035,
+        "bank_overflow_uncertainty": 0.0,
+        "sediment_transport_coupling": 0.0,
+        "groundwater_exchange": 0.0
+      },
+      "epsilon": 0.1
+    },
+    "tier_bounds": {
+      "N_gauges": [
+        2,
+        50
+      ],
+      "reach_length_km": [
+        1,
+        1000
+      ],
+      "discharge_peak_m3_s": [
+        10,
+        100000
+      ],
+      "roughness_n": [
+        0.01,
+        0.1
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.28,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.28 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

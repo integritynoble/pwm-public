@@ -1,0 +1,175 @@
+{
+  "artifact_id": "L1-048",
+  "layer": "L1",
+  "principle_number": "048",
+  "title": "Fiber-Optic Endoscopy",
+  "domain": "Medical Imaging",
+  "sub_domain": "Flexible multimode / coherent bundle endoscopy",
+  "source_file": "C_medical_imaging/048_fiber_endoscopy.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical medical-imaging literature for this principle.",
+  "E": {
+    "description": "Fiber-Optic Endoscopy forward model.",
+    "forward_model": "y(r) = [PSF_bundle conv f(r)] + comb_pattern(r) + n; undo pixelation + attenuation",
+    "world_state_x": "Patient-side quantity of interest (attenuation / activity / perfusion / stiffness etc.)",
+    "observation_y": "Clinical sensor output at declared resolution + noise",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "N_fibers",
+      "pixel_um",
+      "SNR_dB",
+      "fiber_bending",
+      "pixelation_comb",
+      "dynamic_range_compression"
+    ]
+  },
+  "G": {
+    "dag": "L.fiber_illumination -> L.fiber_transmission -> K.psf.bundle -> int.spatial",
+    "vertices": [
+      "L.fiber_illumination",
+      "L.fiber_transmission",
+      "K.psf.bundle",
+      "int.spatial"
+    ],
+    "arcs": [
+      "L.fiber_illumination -> L.fiber_transmission",
+      "L.fiber_transmission -> K.psf.bundle",
+      "K.psf.bundle -> int.spatial"
+    ],
+    "L_DAG": 3.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 240,
+    "condition_number_effective": 12,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Comb-Interp, Wiener-Bundle, FiberNet",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sensor SNR + mismatch bias + regularisation.",
+    "complexity": "O(H W) to O(H W Z) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "fiber_endoscopy",
+    "integration_axis": "spatial",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "2D_intensity",
+    "primitives": [
+      "L.fiber_illumination",
+      "L.fiber_transmission",
+      "K.psf.bundle",
+      "int.spatial"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "fiber_bending",
+    "pixelation_comb",
+    "dynamic_range_compression",
+    "fiber_attenuation"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "fiber_endoscopy",
+      "forward_operator": "fiber_endoscopy_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 512,
+        "W": 512,
+        "N_fibers": 30000,
+        "pixel_um": 10,
+        "SNR_dB": 25,
+        "fiber_bending": 0.0,
+        "pixelation_comb": 0.0,
+        "dynamic_range_compression": 0.0
+      },
+      "epsilon_fn_center": "26.0"
+    },
+    "allowed_forward_operators": [
+      "fiber_endoscopy_forward"
+    ],
+    "allowed_problem_classes": [
+      "fiber_endoscopy"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "N_fibers",
+      "pixel_um",
+      "SNR_dB",
+      "fiber_bending",
+      "pixelation_comb",
+      "dynamic_range_compression",
+      "fiber_bending",
+      "pixelation_comb",
+      "dynamic_range_compression",
+      "fiber_attenuation"
+    ],
+    "omega_bounds": {
+      "H": 128,
+      "W": 128,
+      "N_fibers": [
+        1000,
+        100000
+      ],
+      "pixel_um": [
+        2,
+        50
+      ],
+      "SNR_dB": [
+        0.0,
+        40.0
+      ],
+      "fiber_bending": [
+        0.0,
+        0.3
+      ],
+      "pixelation_comb": [
+        0.0,
+        0.5
+      ],
+      "dynamic_range_compression": [
+        0.0,
+        0.3
+      ],
+      "fiber_attenuation": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        5.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

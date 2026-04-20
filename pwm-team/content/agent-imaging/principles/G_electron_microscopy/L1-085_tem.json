@@ -1,0 +1,184 @@
+{
+  "artifact_id": "L1-085",
+  "layer": "L1",
+  "principle_number": "085",
+  "title": "Transmission Electron Microscopy (TEM) \u2014 thin-section contrast imaging",
+  "domain": "Electron Microscopy",
+  "sub_domain": "Phase-contrast electron transmission",
+  "source_file": "G_electron_microscopy/085_tem.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical electron-microscopy literature for this principle.",
+  "E": {
+    "description": "Transmission Electron Microscopy (TEM) \u2014 thin-section contrast imaging forward model.",
+    "forward_model": "y(r) = |exp(i*psi_obj(r)) conv CTF(r; Cs, defocus)|^2 + n, CTF = sin(chi(k))",
+    "world_state_x": "Scene parameter (density / orientation / spectrum / complex field depending on principle)",
+    "observation_y": "Electron detector output at declared geometry + noise",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "pixel_A",
+      "kV",
+      "Cs_mm",
+      "defocus_nm",
+      "peak_electrons",
+      "drift_nm",
+      "envelope_coherence"
+    ]
+  },
+  "G": {
+    "dag": "L.illumination.coherent_beam -> L.transmit_sample -> L.lens_aberration -> int.temporal",
+    "vertices": [
+      "L.illumination.coherent_beam",
+      "L.transmit_sample",
+      "L.lens_aberration",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.illumination.coherent_beam -> L.transmit_sample",
+      "L.transmit_sample -> L.lens_aberration",
+      "L.lens_aberration -> int.temporal"
+    ],
+    "L_DAG": 3.3,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 240,
+    "condition_number_effective": 12,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "CTF-Correction, RELION-2D, TEM-Net",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(electron_count) + mismatch bias.",
+    "complexity": "O(H W) to O(H W Z) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "electron",
+    "sensing_mechanism": "electron_transmission",
+    "integration_axis": "temporal",
+    "problem_class": "linear_inverse",
+    "noise_model": "shot_poisson",
+    "solution_space": "2D_phase",
+    "primitives": [
+      "L.illumination.coherent_beam",
+      "L.transmit_sample",
+      "L.lens_aberration",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "defocus_nm",
+    "Cs_aberration",
+    "drift_nm",
+    "envelope_coherence"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "tem_ctf",
+      "forward_operator": "tem_ctf_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 4096,
+        "W": 4096,
+        "pixel_A": 1.0,
+        "kV": 300,
+        "Cs_mm": 2.7,
+        "defocus_nm": -80,
+        "peak_electrons": 50,
+        "drift_nm": 0.0,
+        "envelope_coherence": 1.0
+      },
+      "epsilon_fn_center": "26.0"
+    },
+    "allowed_forward_operators": [
+      "tem_ctf_forward"
+    ],
+    "allowed_problem_classes": [
+      "tem_ctf"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "pixel_A",
+      "kV",
+      "Cs_mm",
+      "defocus_nm",
+      "peak_electrons",
+      "drift_nm",
+      "envelope_coherence",
+      "defocus_nm",
+      "Cs_aberration",
+      "drift_nm",
+      "envelope_coherence"
+    ],
+    "omega_bounds": {
+      "H": [
+        1024,
+        8192
+      ],
+      "W": [
+        1024,
+        8192
+      ],
+      "pixel_A": [
+        0.3,
+        5.0
+      ],
+      "kV": [
+        80,
+        300
+      ],
+      "Cs_mm": [
+        0.01,
+        5.0
+      ],
+      "defocus_nm": [
+        -2000,
+        2000
+      ],
+      "peak_electrons": [
+        1,
+        1000
+      ],
+      "drift_nm": [
+        0.0,
+        5.0
+      ],
+      "envelope_coherence": [
+        0.5,
+        1.0
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        40.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

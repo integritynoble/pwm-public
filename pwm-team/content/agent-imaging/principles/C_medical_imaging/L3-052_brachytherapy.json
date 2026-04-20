@@ -1,0 +1,177 @@
+{
+  "artifact_id": "L3-052",
+  "layer": "L3",
+  "parent_l2": "L2-052",
+  "parent_l1": "L1-052",
+  "title": "Brachytherapy Dose Imaging Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "canonical clinical/public dataset for this modality",
+    "secondary": "simulated forward synthesis at declared Omega",
+    "construction_method": "parametric forward + declared noise",
+    "num_dev_instances_per_tier": 20
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "H": 256,
+        "W": 256,
+        "Z": 128,
+        "N_sources": 20,
+        "SNR_dB": 30.0,
+        "source_position_error": 0.0,
+        "tissue_heterogeneity": 0.0,
+        "inter_source_shielding": 0.0,
+        "applicator_motion": 0.0
+      },
+      "epsilon": 26.0,
+      "d_ibench": 0.14,
+      "baselines": [
+        {
+          "name": "TG-43",
+          "score": 23.5,
+          "Q": 0.88
+        },
+        {
+          "name": "Model-Based",
+          "score": 26.0,
+          "Q": 0.88
+        },
+        {
+          "name": "Brachy-Net",
+          "score": 28.5,
+          "Q": 0.88
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "H": 256,
+        "W": 256,
+        "Z": 128,
+        "N_sources": 20,
+        "SNR_dB": 27.0,
+        "source_position_error": 0.6000000000000001,
+        "tissue_heterogeneity": 0.06,
+        "inter_source_shielding": 0.06,
+        "applicator_motion": 0.6000000000000001
+      },
+      "epsilon": 21.32,
+      "d_ibench": 0.28,
+      "baselines": [
+        {
+          "name": "TG-43",
+          "score": 21.5,
+          "Q": 0.68
+        },
+        {
+          "name": "Model-Based",
+          "score": 24.0,
+          "Q": 0.68
+        },
+        {
+          "name": "Brachy-Net",
+          "score": 26.5,
+          "Q": 0.68
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "H": 256,
+        "W": 256,
+        "Z": 128,
+        "N_sources": 20,
+        "SNR_dB": 18.0,
+        "source_position_error": 1.5,
+        "tissue_heterogeneity": 0.15,
+        "inter_source_shielding": 0.15,
+        "applicator_motion": 1.5
+      },
+      "epsilon": 16.64,
+      "d_ibench": 0.48,
+      "baselines": [
+        {
+          "name": "TG-43",
+          "score": 19.5,
+          "Q": 0.48
+        },
+        {
+          "name": "Model-Based",
+          "score": 22.0,
+          "Q": 0.48
+        },
+        {
+          "name": "Brachy-Net",
+          "score": 24.5,
+          "Q": 0.48
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "H": 256,
+        "W": 256,
+        "Z": 128,
+        "N_sources": 20,
+        "SNR_dB": 15.0,
+        "source_position_error": 3.0,
+        "tissue_heterogeneity": 0.3,
+        "inter_source_shielding": 0.3,
+        "applicator_motion": 3.0
+      },
+      "epsilon": 11.96,
+      "d_ibench": 0.72,
+      "baselines": [
+        {
+          "name": "TG-43",
+          "score": 17.5,
+          "Q": 0.28
+        },
+        {
+          "name": "Model-Based",
+          "score": 20.0,
+          "Q": 0.28
+        },
+        {
+          "name": "Brachy-Net",
+          "score": 22.5,
+          "Q": 0.28
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "full parametric sweep",
+      "num_dev_instances": 200,
+      "construction_method": "parametric Omega sweep"
+    },
+    "baselines": [
+      {
+        "name": "TG-43",
+        "overall_Q": 0.7
+      },
+      {
+        "name": "Model-Based",
+        "overall_Q": 0.6
+      },
+      {
+        "name": "Brachy-Net",
+        "overall_Q": 0.5
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind strata corner.",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

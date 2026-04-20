@@ -1,0 +1,153 @@
+{
+  "artifact_id": "L2-109",
+  "layer": "L2",
+  "parent_l1": "L1-109",
+  "title": "Polarimetric SAR (PolSAR) \u2014 full-polarimetric decomposition Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        1024,
+        16384
+      ],
+      "W": [
+        1024,
+        16384
+      ],
+      "pixel_m": [
+        0.5,
+        30
+      ],
+      "lambda_cm": [
+        0.5,
+        30
+      ],
+      "polarization_crosstalk": [
+        -40,
+        -15
+      ],
+      "calibration_drift": [
+        0.0,
+        2.0
+      ],
+      "speckle_coherence_loss": [
+        0.0,
+        0.5
+      ],
+      "faraday_rotation": [
+        0.0,
+        30.0
+      ],
+      "SNR_dB": [
+        0.0,
+        30.0
+      ]
+    },
+    "E": {
+      "forward": "S = [S_HH S_HV; S_VH S_VV] + polarization_crosstalk + faraday; Cloude-Pottier / Freeman-Durden decomposition",
+      "operator": "polsar_forward_mismatch",
+      "primitive_chain": "L.emit.polarized_chirp -> L.scattering_matrix -> L.polarimetric_decompose -> int.spatial",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "14.0 + 0.3 * SNR_dB - 0.4 * (polarization_crosstalk + 40) - 0.5 * calibration_drift - 0.3 * faraday_rotation"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Pauli-Decomp",
+        "method_sig": "L+O",
+        "expected_psnr": 20.0
+      },
+      {
+        "name": "Freeman-Durden",
+        "method_sig": "L+O",
+        "expected_psnr": 22.5
+      },
+      {
+        "name": "PolSAR-Net",
+        "method_sig": "L+N",
+        "expected_psnr": 25.0
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 4096,
+        "W": 4096,
+        "pixel_m": 5,
+        "lambda_cm": 5.6,
+        "polarization_crosstalk": -30,
+        "calibration_drift": 0.0,
+        "speckle_coherence_loss": 0.0,
+        "faraday_rotation": 0.0,
+        "SNR_dB": 18.0
+      },
+      "epsilon": 22.0
+    },
+    "tier_bounds": {
+      "H": [
+        1024,
+        16384
+      ],
+      "W": [
+        1024,
+        16384
+      ],
+      "pixel_m": [
+        0.5,
+        30
+      ],
+      "lambda_cm": [
+        0.5,
+        30
+      ],
+      "polarization_crosstalk": [
+        -40,
+        -15
+      ],
+      "calibration_drift": [
+        0.0,
+        2.0
+      ],
+      "speckle_coherence_loss": [
+        0.0,
+        0.5
+      ],
+      "faraday_rotation": [
+        0.0,
+        30.0
+      ],
+      "SNR_dB": [
+        0.0,
+        30.0
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.5,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

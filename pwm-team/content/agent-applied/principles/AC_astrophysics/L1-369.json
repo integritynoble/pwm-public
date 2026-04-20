@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-369",
+  "layer": "L1",
+  "principle_number": "369",
+  "title": "Weak Gravitational Lensing Shear Estimation",
+  "domain": "Astrophysics",
+  "sub_domain": "Cosmic shear",
+  "source_file": "AC_astrophysics/369_weak_lensing.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "Weak lensing: measure coherent distortion of galaxy shapes to infer projected matter distribution.",
+    "forward_model": "gamma_obs = gamma_true + e_intrinsic + noise; xi_pm(theta) = <gamma*_t gamma_t>(theta)",
+    "world_state_x": "matter power spectrum P(k) and cosmological parameters (sigma_8, Omega_m)",
+    "observation_y": "galaxy ellipticities e_obs for N_gal galaxies across survey area",
+    "physical_parameters_theta": [
+      "galaxy_number_density n_gal per arcmin2",
+      "intrinsic_alignment_amplitude A_IA",
+      "photoz_sigma_z",
+      "sigma_8"
+    ]
+  },
+  "G": {
+    "dag": "S.shear.ellipticity -> F.fourier.e_mode -> O.correlation.2pcf",
+    "vertices": [
+      "S.shear.ellipticity",
+      "F.fourier.e_mode",
+      "O.correlation.2pcf"
+    ],
+    "arcs": [
+      "S.shear.ellipticity -> F.fourier.e_mode",
+      "F.fourier.e_mode -> O.correlation.2pcf"
+    ],
+    "L_DAG": 3.2,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 500,
+    "condition_number_effective": 20,
+    "condition_number_mismatched": 100,
+    "regime": "Shape noise dominated; linear KSB approximation fails at 1% level; requires multiplicative bias correction."
+  },
+  "C": {
+    "solver_class": "KSB or metacalibration or BFD",
+    "convergence_rate_q": 2.0,
+    "error_bound": "shear calibration |m| < 0.01, |c| < 1e-4 for Stage-IV",
+    "complexity": "O(N_gal * N_ell) for power spectrum estimation"
+  },
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "ellipticity_shear_correlation",
+    "integration_axis": "angular_correlation",
+    "problem_class": "statistical_inverse",
+    "noise_model": "shape_noise_gaussian",
+    "solution_space": "2D_convergence_map",
+    "primitives": [
+      "S.shear.ellipticity",
+      "F.fourier.e_mode",
+      "O.correlation.2pcf"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "PSF_leakage",
+    "multiplicative_shear_bias_m",
+    "additive_shear_bias_c"
+  ],
+  "error_metric": "sigma_8_Omega_m_constraint_area",
+  "error_metric_secondary": "shear_calibration_bias",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "statistical_inverse",
+      "forward_operator": "ellipticity_shear_correlation",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_gal_million": 100,
+        "survey_area_deg2": 1000,
+        "n_gal_arcmin2": 10.0,
+        "A_IA": 0.5
+      },
+      "epsilon_fn_center": "0.015 sigma_8_Omega_m_constraint_area"
+    },
+    "allowed_forward_operators": [
+      "ellipticity_shear_correlation"
+    ],
+    "allowed_problem_classes": [
+      "statistical_inverse"
+    ],
+    "allowed_omega_dimensions": [
+      "N_gal_million",
+      "survey_area_deg2",
+      "n_gal_arcmin2",
+      "A_IA"
+    ],
+    "omega_bounds": {
+      "N_gal_million": [
+        1,
+        3000
+      ],
+      "survey_area_deg2": [
+        100,
+        20000
+      ],
+      "n_gal_arcmin2": [
+        5,
+        100
+      ],
+      "A_IA": [
+        0.0,
+        2.0
+      ]
+    },
+    "epsilon_bounds": {
+      "sigma_8_Omega_m_constraint_area": [
+        0.005,
+        0.05
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

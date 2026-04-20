@@ -1,0 +1,186 @@
+{
+  "artifact_id": "L1-020",
+  "layer": "L1",
+  "principle_number": "020",
+  "title": "Lattice Light Sheet Microscopy (LLSM) \u2014 Bessel-lattice 3D imaging",
+  "domain": "Microscopy",
+  "sub_domain": "High-resolution 3D live imaging via optical lattice",
+  "source_file": "A_microscopy/020_lattice_lightsheet.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical domain literature for this specific principle.",
+  "E": {
+    "description": "Lattice Light Sheet Microscopy (LLSM) \u2014 Bessel-lattice 3D imaging forward model.",
+    "forward_model": "y(r,z) = integral [lattice(r,z - z_k) * f(r,z) * PSF_det(r,z)] + n",
+    "world_state_x": "Scene parameter of interest (density / complex field / lifetime / normals depending on spec).",
+    "observation_y": "Measured intensity or photon counts from the imaging system.",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "Z",
+      "lattice_pitch_nm",
+      "NA_det",
+      "NA_illum",
+      "peak_photons",
+      "lattice_registration",
+      "dithering_phase_error"
+    ]
+  },
+  "G": {
+    "dag": "L.illumination.lattice -> K.psf.detection -> S.scan.axial -> int.temporal",
+    "vertices": [
+      "L.illumination.lattice",
+      "K.psf.detection",
+      "S.scan.axial",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.illumination.lattice -> K.psf.detection",
+      "K.psf.detection -> S.scan.axial",
+      "S.scan.axial -> int.temporal"
+    ],
+    "L_DAG": 3.8,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 360,
+    "condition_number_effective": 18,
+    "regime": "Conditional stability; principle-specific mismatch dominates at Omega bounds (see `mismatch_parameters`)."
+  },
+  "C": {
+    "solver_class": "Richardson-Lucy-LLSM, Multi-view-LLSM, CARE-LLSM",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(photon_count) + mismatch-induced bias.",
+    "complexity": "O(H W) to O(H W Z) per iteration depending on dimensionality"
+  },
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "lattice_illumination",
+    "integration_axis": "axial",
+    "problem_class": "linear_inverse",
+    "noise_model": "poisson_gaussian",
+    "solution_space": "3D_intensity",
+    "primitives": [
+      "L.illumination.lattice",
+      "K.psf.detection",
+      "S.scan.axial",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "lattice_registration",
+    "dithering_phase_error",
+    "sample_induced_aberration"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "llsm",
+      "forward_operator": "llsm_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 2048,
+        "W": 512,
+        "Z": 100,
+        "lattice_pitch_nm": 1500,
+        "NA_det": 1.1,
+        "NA_illum": 0.6,
+        "peak_photons": 200,
+        "lattice_registration": 0.0,
+        "dithering_phase_error": 0.0
+      },
+      "epsilon_fn_center": "28.5"
+    },
+    "allowed_forward_operators": [
+      "llsm_forward"
+    ],
+    "allowed_problem_classes": [
+      "llsm"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "Z",
+      "lattice_pitch_nm",
+      "NA_det",
+      "NA_illum",
+      "peak_photons",
+      "lattice_registration",
+      "dithering_phase_error",
+      "lattice_registration",
+      "dithering_phase_error",
+      "sample_induced_aberration"
+    ],
+    "omega_bounds": {
+      "H": [
+        512,
+        4096
+      ],
+      "W": [
+        256,
+        2048
+      ],
+      "Z": [
+        32,
+        512
+      ],
+      "lattice_pitch_nm": [
+        600,
+        3000
+      ],
+      "NA_det": [
+        0.8,
+        1.2
+      ],
+      "NA_illum": [
+        0.3,
+        0.8
+      ],
+      "peak_photons": [
+        30,
+        2000
+      ],
+      "lattice_registration": [
+        0.0,
+        0.1
+      ],
+      "dithering_phase_error": [
+        0.0,
+        0.2
+      ],
+      "sample_induced_aberration": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        12.0,
+        42.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

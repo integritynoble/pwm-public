@@ -1,0 +1,183 @@
+{
+  "artifact_id": "L2-029",
+  "layer": "L2",
+  "parent_l1": "L1-029",
+  "title": "Computed Tomography (CT) \u2014 fan/cone-beam X-ray reconstruction Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        256,
+        2048
+      ],
+      "W": [
+        256,
+        2048
+      ],
+      "Z": [
+        32,
+        4096
+      ],
+      "N_projections": [
+        60,
+        2880
+      ],
+      "kVp": [
+        60,
+        140
+      ],
+      "mAs": [
+        1,
+        1000
+      ],
+      "pixel_mm": [
+        0.1,
+        5.0
+      ],
+      "beam_hardening": [
+        0.0,
+        0.3
+      ],
+      "scatter": [
+        0.0,
+        0.3
+      ],
+      "patient_motion": [
+        0.0,
+        0.3
+      ],
+      "truncation": [
+        0.0,
+        0.2
+      ],
+      "metal_artifact": [
+        0.0,
+        0.5
+      ]
+    },
+    "E": {
+      "forward": "y_theta(u,v) = I_0 exp(-integral mu(r) ds) + scatter + n; FBP or iterative MBIR to reconstruct mu",
+      "operator": "ct_forward_mismatch",
+      "primitive_chain": "L.xray_source -> S.scan.angular -> L.beer_lambert -> L.backproject -> int.angular",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "24.0 + 2.0 * log10(mAs / 10) - 10.0 * beam_hardening - 8.0 * scatter - 5.0 * patient_motion"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "FBP",
+        "method_sig": "L+O",
+        "expected_psnr": 28.0
+      },
+      {
+        "name": "SART",
+        "method_sig": "I+O",
+        "expected_psnr": 30.0
+      },
+      {
+        "name": "MBIR",
+        "method_sig": "L+O",
+        "expected_psnr": 32.5
+      },
+      {
+        "name": "CT-DeepRecon",
+        "method_sig": "L+N",
+        "expected_psnr": 35.0
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "Z": 256,
+        "N_projections": 720,
+        "kVp": 120,
+        "mAs": 200,
+        "pixel_mm": 0.5,
+        "beam_hardening": 0.0,
+        "scatter": 0.0,
+        "patient_motion": 0.0
+      },
+      "epsilon": 32.0
+    },
+    "tier_bounds": {
+      "H": [
+        256,
+        2048
+      ],
+      "W": [
+        256,
+        2048
+      ],
+      "Z": [
+        32,
+        4096
+      ],
+      "N_projections": [
+        60,
+        2880
+      ],
+      "kVp": [
+        60,
+        140
+      ],
+      "mAs": [
+        1,
+        1000
+      ],
+      "pixel_mm": [
+        0.1,
+        5.0
+      ],
+      "beam_hardening": [
+        0.0,
+        0.3
+      ],
+      "scatter": [
+        0.0,
+        0.3
+      ],
+      "patient_motion": [
+        0.0,
+        0.3
+      ],
+      "truncation": [
+        0.0,
+        0.2
+      ],
+      "metal_artifact": [
+        0.0,
+        0.5
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.5,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

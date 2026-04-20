@@ -1,0 +1,143 @@
+{
+  "artifact_id": "L1-463",
+  "layer": "L1",
+  "principle_number": "463",
+  "title": "Seismic Rock Physics (Gassmann)",
+  "domain": "Petroleum Engineering",
+  "sub_domain": "Rock physics",
+  "source_file": "AJ_petroleum/463_seismic_rock_physics.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "Gassmann fluid substitution: predict seismic velocity changes from one fluid to another using Gassmann equations.",
+    "forward_model": "K_sat = K_dry + (1-K_dry/K_0) ** 2 / (phi/K_fl + (1-phi)/K_0 - K_dry/K_0 ** 2)",
+    "world_state_x": "saturated bulk modulus K_sat and shear modulus G_sat = G_dry for brine/oil/gas",
+    "observation_y": "seismic P-wave velocity Vp and S-wave velocity Vs measurements from well log",
+    "physical_parameters_theta": [
+      "K_mineral_GPa",
+      "K_fluid_GPa",
+      "porosity_phi",
+      "clay_content_percent",
+      "differential_pressure_MPa"
+    ]
+  },
+  "G": {
+    "dag": "M.gassmann.fluid_substitution -> S.hertz_mindlin.dry_frame -> O.chi2.elastic_moduli",
+    "vertices": [
+      "M.gassmann.fluid_substitution",
+      "S.hertz_mindlin.dry_frame",
+      "O.chi2.elastic_moduli"
+    ],
+    "arcs": [
+      "M.gassmann.fluid_substitution -> S.hertz_mindlin.dry_frame",
+      "S.hertz_mindlin.dry_frame -> O.chi2.elastic_moduli"
+    ],
+    "L_DAG": 3.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 2000,
+    "condition_number_effective": 100,
+    "condition_number_mismatched": 500,
+    "regime": "Gassmann valid at low frequency (seismic); high-frequency squirt flow needs Biot-Squirt model; clay content is dominant uncertainty."
+  },
+  "C": {
+    "solver_class": "Gassmann_analytical or Hertz_Mindlin_Biot",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Vp prediction within 50 m/s for well-characterized rocks",
+    "complexity": "O(N_samples) analytical computation"
+  },
+  "physics_fingerprint": {
+    "carrier": "acoustic",
+    "sensing_mechanism": "elastic_moduli_fluid_substitution",
+    "integration_axis": "pore_fluid",
+    "problem_class": "parameter_estimation",
+    "noise_model": "measurement_gaussian",
+    "solution_space": "elastic_moduli_vector",
+    "primitives": [
+      "M.gassmann.fluid_substitution",
+      "S.hertz_mindlin.dry_frame",
+      "O.chi2.elastic_moduli"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "clay_mineral_uncertainty",
+    "patchy_saturation_effect",
+    "squirt_flow_frequency_dependence"
+  ],
+  "error_metric": "Vp_prediction_RMSE_m_s",
+  "error_metric_secondary": "AI_acoustic_impedance_RMSE",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "parameter_estimation",
+      "forward_operator": "elastic_moduli_fluid_substitution",
+      "input_format": "measurement_only",
+      "omega": {
+        "porosity_phi": 0.2,
+        "clay_content_Vcl": 0.1,
+        "differential_pressure_MPa": 30,
+        "saturation_Sw": 0.8
+      },
+      "epsilon_fn_center": "50 Vp_prediction_RMSE_m_s"
+    },
+    "allowed_forward_operators": [
+      "elastic_moduli_fluid_substitution"
+    ],
+    "allowed_problem_classes": [
+      "parameter_estimation"
+    ],
+    "allowed_omega_dimensions": [
+      "porosity_phi",
+      "clay_content_Vcl",
+      "differential_pressure_MPa",
+      "saturation_Sw"
+    ],
+    "omega_bounds": {
+      "porosity_phi": [
+        0.05,
+        0.4
+      ],
+      "clay_content_Vcl": [
+        0.0,
+        0.6
+      ],
+      "differential_pressure_MPa": [
+        5,
+        80
+      ],
+      "saturation_Sw": [
+        0.0,
+        1.0
+      ]
+    },
+    "epsilon_bounds": {
+      "Vp_prediction_RMSE_m_s": [
+        10,
+        300
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

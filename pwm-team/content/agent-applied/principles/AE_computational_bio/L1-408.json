@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-408",
+  "layer": "L1",
+  "principle_number": "408",
+  "title": "Wright-Fisher Population Genetics",
+  "domain": "Computational Biology",
+  "sub_domain": "Population genetics",
+  "source_file": "AE_computational_bio/408_wright_fisher.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "Wright-Fisher inference: estimate effective population size Ne, selection coefficient s, and mutation rates from allele frequency data.",
+    "forward_model": "p_{t+1} | p_t ~ Binomial(2Ne, p_t + s*p_t*(1-p_t)); allele frequencies drift under genetic drift and selection",
+    "world_state_x": "effective population size Ne and selection coefficient s for each variant",
+    "observation_y": "allele frequencies p(t) from time-series sequencing or cross-sectional population samples",
+    "physical_parameters_theta": [
+      "Ne_effective_population_size",
+      "s_selection_coefficient",
+      "mu_mutation_rate",
+      "N_loci"
+    ]
+  },
+  "G": {
+    "dag": "M.wf.wright_fisher_drift -> O.likelihood.allele_frequency -> S.mcmc.popgen_posterior",
+    "vertices": [
+      "M.wf.wright_fisher_drift",
+      "O.likelihood.allele_frequency",
+      "S.mcmc.popgen_posterior"
+    ],
+    "arcs": [
+      "M.wf.wright_fisher_drift -> O.likelihood.allele_frequency",
+      "O.likelihood.allele_frequency -> S.mcmc.popgen_posterior"
+    ],
+    "L_DAG": 3.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 2000,
+    "condition_number_effective": 100,
+    "condition_number_mismatched": 500,
+    "regime": "Genetic drift strong for small Ne; selection dominates for |s| >> 1/(2Ne); demographic inference requires multiple loci to distinguish Ne from selection."
+  },
+  "C": {
+    "solver_class": "MCMC_Wright_Fisher or ABC_population_genetics or WFABC",
+    "convergence_rate_q": 2.0,
+    "error_bound": "log(Ne) uncertainty < 0.3 for 10+ generations of data",
+    "complexity": "O(N_generations * N_loci * N_MCMC)"
+  },
+  "physics_fingerprint": {
+    "carrier": "N/A",
+    "sensing_mechanism": "allele_frequency_sequencing",
+    "integration_axis": "generations",
+    "problem_class": "parameter_estimation",
+    "noise_model": "multinomial",
+    "solution_space": "population_genetic_parameter_vector",
+    "primitives": [
+      "M.wf.wright_fisher_drift",
+      "O.likelihood.allele_frequency",
+      "S.mcmc.popgen_posterior"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "population_structure_subdivision",
+    "bottleneck_demographic_history",
+    "linkage_disequilibrium"
+  ],
+  "error_metric": "Ne_estimation_RMSE_log",
+  "error_metric_secondary": "selection_coefficient_RMSE",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "parameter_estimation",
+      "forward_operator": "allele_frequency_sequencing",
+      "input_format": "measurement_only",
+      "omega": {
+        "Ne_effective": 1000,
+        "N_generations": 20,
+        "s_selection": 0.0,
+        "N_sampled_alleles": 100
+      },
+      "epsilon_fn_center": "0.3 Ne_estimation_RMSE_log"
+    },
+    "allowed_forward_operators": [
+      "allele_frequency_sequencing"
+    ],
+    "allowed_problem_classes": [
+      "parameter_estimation"
+    ],
+    "allowed_omega_dimensions": [
+      "Ne_effective",
+      "N_generations",
+      "s_selection",
+      "N_sampled_alleles"
+    ],
+    "omega_bounds": {
+      "Ne_effective": [
+        10,
+        100000
+      ],
+      "N_generations": [
+        5,
+        100
+      ],
+      "s_selection": [
+        -0.1,
+        0.1
+      ],
+      "N_sampled_alleles": [
+        10,
+        1000
+      ]
+    },
+    "epsilon_bounds": {
+      "Ne_estimation_RMSE_log": [
+        0.05,
+        1.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

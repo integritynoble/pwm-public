@@ -1,0 +1,169 @@
+{
+  "artifact_id": "L3-002",
+  "layer": "L3",
+  "parent_l2": "L2-002",
+  "parent_l1": "L1-002",
+  "title": "Low-Dose Widefield Fluorescence (photon-starved Airy deconvolution) Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "principle-appropriate canonical dataset (domain-standard)",
+    "secondary": "published follow-up benchmark dataset",
+    "construction_method": "parametric forward synthesis at declared Omega; Poisson/Gaussian noise at declared level",
+    "num_dev_instances_per_tier": 20
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "pixel_nm": 65,
+        "NA": 1.4,
+        "peak_photons": 50,
+        "dz_nm": 0.0,
+        "sigma_bg": 0.0
+      },
+      "epsilon": 24.0,
+      "d_ibench": 0.14,
+      "baselines": [
+        {
+          "name": "Anscombe-BM3D",
+          "score": 22.0,
+          "Q": 0.8
+        },
+        {
+          "name": "CARE-UNet-Poisson",
+          "score": 26.5,
+          "Q": 0.85
+        },
+        {
+          "name": "Noise2Noise",
+          "score": 25.5,
+          "Q": 0.9
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "pixel_nm": 65,
+        "NA": 1.4,
+        "peak_photons": 25,
+        "dz_nm": 300.0,
+        "sigma_bg": 0.020000000000000004
+      },
+      "epsilon": 19.2,
+      "d_ibench": 0.28,
+      "baselines": [
+        {
+          "name": "Anscombe-BM3D",
+          "score": 19.5,
+          "Q": 0.6
+        },
+        {
+          "name": "CARE-UNet-Poisson",
+          "score": 24.0,
+          "Q": 0.65
+        },
+        {
+          "name": "Noise2Noise",
+          "score": 23.0,
+          "Q": 0.7
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "pixel_nm": 65,
+        "NA": 1.4,
+        "peak_photons": 10,
+        "dz_nm": 750.0,
+        "sigma_bg": 0.05
+      },
+      "epsilon": 14.4,
+      "d_ibench": 0.48,
+      "baselines": [
+        {
+          "name": "Anscombe-BM3D",
+          "score": 17.0,
+          "Q": 0.4
+        },
+        {
+          "name": "CARE-UNet-Poisson",
+          "score": 21.5,
+          "Q": 0.45
+        },
+        {
+          "name": "Noise2Noise",
+          "score": 20.5,
+          "Q": 0.5
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "pixel_nm": 65,
+        "NA": 1.4,
+        "peak_photons": 5,
+        "dz_nm": 1500.0,
+        "sigma_bg": 0.1
+      },
+      "epsilon": 9.6,
+      "d_ibench": 0.72,
+      "baselines": [
+        {
+          "name": "Anscombe-BM3D",
+          "score": 14.5,
+          "Q": 0.2
+        },
+        {
+          "name": "CARE-UNet-Poisson",
+          "score": 19.0,
+          "Q": 0.25
+        },
+        {
+          "name": "Noise2Noise",
+          "score": 18.0,
+          "Q": 0.3
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "full Omega parametric sweep",
+      "num_dev_instances": 200,
+      "construction_method": "parametric sweep of all declared Omega dimensions"
+    },
+    "baselines": [
+      {
+        "name": "Anscombe-BM3D",
+        "overall_Q": 0.7
+      },
+      {
+        "name": "CARE-UNet-Poisson",
+        "overall_Q": 0.6
+      },
+      {
+        "name": "Noise2Noise",
+        "overall_Q": 0.5
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind strata with simultaneous worst-case mismatch + low photon corner.",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

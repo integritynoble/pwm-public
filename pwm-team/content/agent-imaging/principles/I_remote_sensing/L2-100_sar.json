@@ -1,0 +1,166 @@
+{
+  "artifact_id": "L2-100",
+  "layer": "L2",
+  "parent_l1": "L1-100",
+  "title": "Synthetic Aperture Radar (SAR) \u2014 range-Doppler coherent imaging Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        1024,
+        32768
+      ],
+      "W": [
+        1024,
+        32768
+      ],
+      "pixel_m": [
+        0.3,
+        30
+      ],
+      "lambda_cm": [
+        0.5,
+        30
+      ],
+      "N_pulses": [
+        256,
+        16384
+      ],
+      "platform_motion_error": [
+        0.0,
+        1.0
+      ],
+      "ionospheric_phase": [
+        0.0,
+        2.0
+      ],
+      "speckle_coherence_loss": [
+        0.0,
+        0.5
+      ],
+      "layover_shadow": [
+        0.0,
+        0.3
+      ],
+      "SNR_dB": [
+        0.0,
+        30.0
+      ]
+    },
+    "E": {
+      "forward": "y(t, phi) = chirp conv s(r, a) * exp(i*4*pi*R/lambda) + n; recover complex scattering field s",
+      "operator": "sar_range_doppler_forward_mismatch",
+      "primitive_chain": "L.emit.chirp -> S.scan.platform -> L.pulse_compression -> L.range_doppler -> int.spatial",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "12.0 + 0.3 * SNR_dB - 5.0 * platform_motion_error - 3.0 * ionospheric_phase"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Range-Doppler",
+        "method_sig": "L+O",
+        "expected_psnr": 16.5
+      },
+      {
+        "name": "Omega-K",
+        "method_sig": "L+O",
+        "expected_psnr": 18.0
+      },
+      {
+        "name": "CS-SAR",
+        "method_sig": "L+O",
+        "expected_psnr": 19.5
+      },
+      {
+        "name": "SAR-Net",
+        "method_sig": "L+N",
+        "expected_psnr": 21.0
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 8192,
+        "W": 8192,
+        "pixel_m": 3.0,
+        "lambda_cm": 5.6,
+        "N_pulses": 2048,
+        "platform_motion_error": 0.0,
+        "ionospheric_phase": 0.0,
+        "speckle_coherence_loss": 0.0,
+        "SNR_dB": 15.0
+      },
+      "epsilon": 18.0
+    },
+    "tier_bounds": {
+      "H": [
+        1024,
+        32768
+      ],
+      "W": [
+        1024,
+        32768
+      ],
+      "pixel_m": [
+        0.3,
+        30
+      ],
+      "lambda_cm": [
+        0.5,
+        30
+      ],
+      "N_pulses": [
+        256,
+        16384
+      ],
+      "platform_motion_error": [
+        0.0,
+        1.0
+      ],
+      "ionospheric_phase": [
+        0.0,
+        2.0
+      ],
+      "speckle_coherence_loss": [
+        0.0,
+        0.5
+      ],
+      "layover_shadow": [
+        0.0,
+        0.3
+      ],
+      "SNR_dB": [
+        0.0,
+        30.0
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.5,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

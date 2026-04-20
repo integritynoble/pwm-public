@@ -1,0 +1,147 @@
+{
+  "artifact_id": "L2-124",
+  "layer": "L2",
+  "parent_l1": "L1-124",
+  "title": "Vibration-Based Damage Detection (modal analysis NDT) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "N_sensors": [
+        4,
+        500
+      ],
+      "N_modes": [
+        3,
+        50
+      ],
+      "SNR_dB": [
+        0.0,
+        40.0
+      ],
+      "T_acquire_s": [
+        5,
+        3600
+      ],
+      "environmental_variability": [
+        0.0,
+        0.2
+      ],
+      "operational_load_variation": [
+        0.0,
+        0.3
+      ],
+      "sensor_noise": [
+        0.0,
+        0.2
+      ],
+      "mode_truncation": [
+        0.0,
+        0.5
+      ]
+    },
+    "E": {
+      "forward": "x(t) = sum_k phi_k * q_k(t); modal parameters (omega_k, zeta_k, phi_k) shift under damage; detect via change",
+      "operator": "vibration_damage_forward_mismatch",
+      "primitive_chain": "L.excite.broadband -> D.accelerometer_array -> L.modal_extract -> int.temporal",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "12.0 + 0.3 * SNR_dB - 10.0 * environmental_variability - 8.0 * operational_load_variation - 6.0 * mode_truncation"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Frequency-Shift",
+        "method_sig": "L+O",
+        "expected_psnr": 17.5
+      },
+      {
+        "name": "Mode-Shape-Curvature",
+        "method_sig": "L+O",
+        "expected_psnr": 20.0
+      },
+      {
+        "name": "AE-NN-Damage",
+        "method_sig": "L+N",
+        "expected_psnr": 22.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_sensors": 32,
+        "N_modes": 10,
+        "f_range_Hz": [
+          0.1,
+          200
+        ],
+        "SNR_dB": 25,
+        "T_acquire_s": 60,
+        "environmental_variability": 0.0,
+        "operational_load_variation": 0.0,
+        "mode_truncation": 0.0
+      },
+      "epsilon": 20.0
+    },
+    "tier_bounds": {
+      "N_sensors": [
+        4,
+        500
+      ],
+      "N_modes": [
+        3,
+        50
+      ],
+      "SNR_dB": [
+        0.0,
+        40.0
+      ],
+      "T_acquire_s": [
+        5,
+        3600
+      ],
+      "environmental_variability": [
+        0.0,
+        0.2
+      ],
+      "operational_load_variation": [
+        0.0,
+        0.3
+      ],
+      "sensor_noise": [
+        0.0,
+        0.2
+      ],
+      "mode_truncation": [
+        0.0,
+        0.5
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.5,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

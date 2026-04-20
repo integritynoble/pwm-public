@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-367",
+  "layer": "L2",
+  "parent_l1": "L1-367",
+  "principle_ref": "sha256:<L1-367_principle_hash>",
+  "title": "CMB Gravitational Lensing Reconstruction \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "N_pix_side": [
+        512,
+        8192
+      ],
+      "noise_uK_arcmin": [
+        1.0,
+        50.0
+      ],
+      "beam_FWHM_arcmin": [
+        0.5,
+        10.0
+      ],
+      "survey_area_deg2": [
+        1000,
+        40000
+      ]
+    },
+    "E": {
+      "forward": "T_lensed(n) = T_unlensed(n + nabla phi(n)); kappa = -nabla ** 2 phi / 2",
+      "operator": "quadratic_lensing_estimator",
+      "primitive_chain": "F.fourier.harmonic -> S.quadratic.estimator -> M.wiener.filter",
+      "inverse": "recover convergence map kappa(n) = -nabla ** 2 phi / 2 from CMB temperature and polarization maps T(n)"
+    },
+    "B": {
+      "reality": "kappa is real",
+      "convergence": "power spectrum positive"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "lensing_power_spectrum_C_kk_chi2",
+      "reconstruction_SNR",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "1.0 + 0.05 * (noise_uK_arcmin / 5.0) ** 0.5"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 2D_lensing_convergence"
+    },
+    "baselines": [
+      {
+        "name": "QE_hu_okamoto",
+        "method_sig": "L+O",
+        "expected_score": 1.08
+      },
+      {
+        "name": "iterative_lensing",
+        "method_sig": "L+O",
+        "expected_score": 1.02
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_pix_side": 2048,
+        "noise_uK_arcmin": 5.0,
+        "beam_FWHM_arcmin": 1.5,
+        "survey_area_deg2": 10000,
+        "foreground_bias": 0.0,
+        "point_source_contamination": 0.0,
+        "beam_anisotropy": 0.0
+      },
+      "epsilon": 1.05
+    },
+    "tier_bounds": {
+      "N_pix_side": [
+        512,
+        8192
+      ],
+      "noise_uK_arcmin": [
+        1.0,
+        50.0
+      ],
+      "beam_FWHM_arcmin": [
+        0.5,
+        10.0
+      ],
+      "survey_area_deg2": [
+        1000,
+        40000
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.38,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.38 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

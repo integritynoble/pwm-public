@@ -1,0 +1,181 @@
+{
+  "artifact_id": "L3-051",
+  "layer": "L3",
+  "parent_l2": "L2-051",
+  "parent_l1": "L1-051",
+  "title": "Proton Therapy (proton-beam radiation dose imaging) Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "canonical clinical/public dataset for this modality",
+    "secondary": "simulated forward synthesis at declared Omega",
+    "construction_method": "parametric forward + declared noise",
+    "num_dev_instances_per_tier": 20
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "H": 256,
+        "W": 256,
+        "Z": 128,
+        "N_beams": 3,
+        "proton_energy_MeV": 150,
+        "SNR_dB": 30.0,
+        "range_uncertainty": 0.0,
+        "organ_motion": 0.0,
+        "tissue_heterogeneity": 0.0,
+        "CT_hu_calibration_error": 0.0
+      },
+      "epsilon": 27.0,
+      "d_ibench": 0.14,
+      "baselines": [
+        {
+          "name": "Analytical-Dose",
+          "score": 24.5,
+          "Q": 0.88
+        },
+        {
+          "name": "Monte-Carlo",
+          "score": 27.0,
+          "Q": 0.88
+        },
+        {
+          "name": "Proton-Net",
+          "score": 29.5,
+          "Q": 0.88
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "H": 256,
+        "W": 256,
+        "Z": 128,
+        "N_beams": 3,
+        "proton_energy_MeV": 150,
+        "SNR_dB": 27.0,
+        "range_uncertainty": 0.010000000000000002,
+        "organ_motion": 0.06,
+        "tissue_heterogeneity": 0.06,
+        "CT_hu_calibration_error": 0.020000000000000004
+      },
+      "epsilon": 22.14,
+      "d_ibench": 0.28,
+      "baselines": [
+        {
+          "name": "Analytical-Dose",
+          "score": 22.5,
+          "Q": 0.68
+        },
+        {
+          "name": "Monte-Carlo",
+          "score": 25.0,
+          "Q": 0.68
+        },
+        {
+          "name": "Proton-Net",
+          "score": 27.5,
+          "Q": 0.68
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "H": 256,
+        "W": 256,
+        "Z": 128,
+        "N_beams": 3,
+        "proton_energy_MeV": 150,
+        "SNR_dB": 18.0,
+        "range_uncertainty": 0.025,
+        "organ_motion": 0.15,
+        "tissue_heterogeneity": 0.15,
+        "CT_hu_calibration_error": 0.05
+      },
+      "epsilon": 17.28,
+      "d_ibench": 0.48,
+      "baselines": [
+        {
+          "name": "Analytical-Dose",
+          "score": 20.5,
+          "Q": 0.48
+        },
+        {
+          "name": "Monte-Carlo",
+          "score": 23.0,
+          "Q": 0.48
+        },
+        {
+          "name": "Proton-Net",
+          "score": 25.5,
+          "Q": 0.48
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "H": 256,
+        "W": 256,
+        "Z": 128,
+        "N_beams": 3,
+        "proton_energy_MeV": 150,
+        "SNR_dB": 10.0,
+        "range_uncertainty": 0.05,
+        "organ_motion": 0.3,
+        "tissue_heterogeneity": 0.3,
+        "CT_hu_calibration_error": 0.1
+      },
+      "epsilon": 12.42,
+      "d_ibench": 0.72,
+      "baselines": [
+        {
+          "name": "Analytical-Dose",
+          "score": 18.5,
+          "Q": 0.28
+        },
+        {
+          "name": "Monte-Carlo",
+          "score": 21.0,
+          "Q": 0.28
+        },
+        {
+          "name": "Proton-Net",
+          "score": 23.5,
+          "Q": 0.28
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "full parametric sweep",
+      "num_dev_instances": 200,
+      "construction_method": "parametric Omega sweep"
+    },
+    "baselines": [
+      {
+        "name": "Analytical-Dose",
+        "overall_Q": 0.7
+      },
+      {
+        "name": "Monte-Carlo",
+        "overall_Q": 0.6
+      },
+      {
+        "name": "Proton-Net",
+        "overall_Q": 0.5
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind strata corner.",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

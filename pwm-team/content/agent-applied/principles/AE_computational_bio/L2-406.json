@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-406",
+  "layer": "L2",
+  "parent_l1": "L1-406",
+  "principle_ref": "sha256:<L1-406_principle_hash>",
+  "title": "SEIR Epidemic with Exposed Compartment \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "N_days": [
+        20,
+        730
+      ],
+      "R0_true": [
+        1.0,
+        10.0
+      ],
+      "incubation_period_days": [
+        1,
+        20
+      ],
+      "detection_rate": [
+        0.05,
+        1.0
+      ]
+    },
+    "E": {
+      "forward": "dS/dt = -beta*S*I/N; dE/dt = beta*S*I/N - sigma*E; dI/dt = sigma*E - gamma*I; dR/dt = gamma*I",
+      "operator": "seir_incubation_tracking",
+      "primitive_chain": "M.ode.seir_model -> O.likelihood.seir_incidence -> S.mcmc.seir_posterior",
+      "inverse": "recover SEIR parameters (beta from daily incidence I_new(t) and possibly hospitalization or death counts"
+    },
+    "B": {
+      "SEIR_conservation": "S+E+I+R=N",
+      "positivity": "all compartments >= 0"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "peak_incidence_RMSE_percent",
+      "timing_error_days",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "10 + 10 * (0.5 / detection_rate) ** 0.5"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 SEIR_parameter_vector"
+    },
+    "baselines": [
+      {
+        "name": "MCMC_SEIR",
+        "method_sig": "L+O",
+        "expected_score": 25
+      },
+      {
+        "name": "PF_sequential_SEIR",
+        "method_sig": "L+O",
+        "expected_score": 18
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_days": 150,
+        "R0_true": 2.5,
+        "incubation_period_days": 5,
+        "detection_rate": 0.5,
+        "age_structure_neglect": 0.0,
+        "spatial_heterogeneity": 0.0,
+        "variant_emergence": 0.0
+      },
+      "epsilon": 20.0
+    },
+    "tier_bounds": {
+      "N_days": [
+        20,
+        730
+      ],
+      "R0_true": [
+        1.0,
+        10.0
+      ],
+      "incubation_period_days": [
+        1,
+        20
+      ],
+      "detection_rate": [
+        0.05,
+        1.0
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.28,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.28 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

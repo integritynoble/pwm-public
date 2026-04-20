@@ -1,0 +1,170 @@
+{
+  "artifact_id": "L2-108",
+  "layer": "L2",
+  "parent_l1": "L1-108",
+  "title": "Interferometric SAR (InSAR) \u2014 deformation + DEM Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        1024,
+        32768
+      ],
+      "W": [
+        1024,
+        32768
+      ],
+      "pixel_m": [
+        0.3,
+        30
+      ],
+      "lambda_cm": [
+        0.5,
+        30
+      ],
+      "baseline_m": [
+        50,
+        2000
+      ],
+      "coherence": [
+        0.2,
+        1.0
+      ],
+      "SNR_dB": [
+        0.0,
+        30.0
+      ],
+      "atmospheric_phase_screen": [
+        0.0,
+        0.5
+      ],
+      "baseline_error": [
+        0.0,
+        10.0
+      ],
+      "temporal_decorrelation": [
+        0.0,
+        0.8
+      ],
+      "unwrap_error": [
+        0.0,
+        0.3
+      ]
+    },
+    "E": {
+      "forward": "phi_diff(x,y) = (4*pi/lambda) * (R1 - R2); recover Delta_h or deformation after flat-earth + topo corrections + unwrap",
+      "operator": "insar_forward_mismatch",
+      "primitive_chain": "L.emit.chirp -> S.scan.platform -> L.interferometric_phase -> L.phase_unwrap -> int.spatial",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "12.0 + 10.0 * coherence + 0.15 * SNR_dB - 10.0 * atmospheric_phase_screen - 15.0 * unwrap_error"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "SNAPHU",
+        "method_sig": "I+O",
+        "expected_psnr": 18.0
+      },
+      {
+        "name": "Minimum-Cost-Flow",
+        "method_sig": "I+O",
+        "expected_psnr": 19.5
+      },
+      {
+        "name": "PhaseNet-InSAR",
+        "method_sig": "L+N",
+        "expected_psnr": 22.0
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 8192,
+        "W": 8192,
+        "pixel_m": 3.0,
+        "lambda_cm": 5.6,
+        "baseline_m": 200,
+        "coherence": 0.8,
+        "SNR_dB": 20.0,
+        "atmospheric_phase_screen": 0.0,
+        "baseline_error": 0.0,
+        "temporal_decorrelation": 0.0
+      },
+      "epsilon": 20.0
+    },
+    "tier_bounds": {
+      "H": [
+        1024,
+        32768
+      ],
+      "W": [
+        1024,
+        32768
+      ],
+      "pixel_m": [
+        0.3,
+        30
+      ],
+      "lambda_cm": [
+        0.5,
+        30
+      ],
+      "baseline_m": [
+        50,
+        2000
+      ],
+      "coherence": [
+        0.2,
+        1.0
+      ],
+      "SNR_dB": [
+        0.0,
+        30.0
+      ],
+      "atmospheric_phase_screen": [
+        0.0,
+        0.5
+      ],
+      "baseline_error": [
+        0.0,
+        10.0
+      ],
+      "temporal_decorrelation": [
+        0.0,
+        0.8
+      ],
+      "unwrap_error": [
+        0.0,
+        0.3
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.5,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

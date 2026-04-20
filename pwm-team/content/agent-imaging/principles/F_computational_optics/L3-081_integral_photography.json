@@ -1,0 +1,77 @@
+{
+  "artifact_id": "L3-081",
+  "layer": "L3",
+  "parent_l2": "L2-081",
+  "parent_l1": "L1-081",
+  "title": "Integral Photography Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+
+  "dataset_registry": {
+    "primary": "LightField Integral dataset (NHK 3D TV research test set)",
+    "secondary": "Lippmann-3D synthetic plate dataset",
+    "tertiary": "Raytrix MLA capture subset",
+    "construction_method": "render scenes through calibrated MLA forward; inject rotation / pitch_drift as mismatch",
+    "num_dev_instances_per_tier": 20
+  },
+
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal", "rho": 1,
+      "omega_tier": {"H_s": 2048, "W_s": 2048, "N_ml_x": 100, "N_ml_y": 100, "L_x": 20, "L_y": 20, "photon_count": 1000, "mla_rotation": 0.0, "mla_pitch_drift": 0.0},
+      "epsilon": 30.0, "d_ibench": 0.14,
+      "baselines": [
+        {"name": "PixelRearrange",    "score": 28.5, "Q": 0.62},
+        {"name": "IP-ADMM-SR",        "score": 31.0, "Q": 0.78},
+        {"name": "LF-Transformer-IP", "score": 34.0, "Q": 0.92}
+      ]
+    },
+    {
+      "tier": "T2_low", "rho": 3,
+      "omega_tier": {"H_s": 2048, "W_s": 2048, "N_ml_x": 80, "N_ml_y": 80, "L_x": 15, "L_y": 15, "photon_count": 500, "mla_rotation": 0.01, "mla_pitch_drift": 0.005},
+      "epsilon": 27.0, "d_ibench": 0.28,
+      "baselines": [
+        {"name": "PixelRearrange",    "score": 25.0, "Q": 0.42},
+        {"name": "IP-ADMM-SR",        "score": 27.8, "Q": 0.58},
+        {"name": "LF-Transformer-IP", "score": 30.5, "Q": 0.74}
+      ]
+    },
+    {
+      "tier": "T3_moderate", "rho": 5,
+      "omega_tier": {"H_s": 4096, "W_s": 4096, "N_ml_x": 50, "N_ml_y": 50, "L_x": 10, "L_y": 10, "photon_count": 200, "mla_rotation": 0.025, "mla_pitch_drift": 0.010},
+      "epsilon": 24.0, "d_ibench": 0.48,
+      "baselines": [
+        {"name": "PixelRearrange",    "score": 21.0, "Q": 0.28},
+        {"name": "IP-ADMM-SR",        "score": 24.5, "Q": 0.52},
+        {"name": "LF-Transformer-IP", "score": 27.0, "Q": 0.64}
+      ]
+    },
+    {
+      "tier": "T4_blind", "rho": 10,
+      "omega_tier": {"H_s": 8192, "W_s": 8192, "N_ml_x": 30, "N_ml_y": 30, "L_x": 7, "L_y": 7, "photon_count": 80, "mla_rotation": 0.05, "mla_pitch_drift": 0.02},
+      "epsilon": 20.5, "d_ibench": 0.72,
+      "baselines": [
+        {"name": "PixelRearrange",    "score": 16.5, "Q": 0.12},
+        {"name": "IP-ADMM-SR",        "score": 20.0, "Q": 0.30},
+        {"name": "LF-Transformer-IP", "score": 22.8, "Q": 0.48}
+      ]
+    }
+  ],
+
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "NHK-LFI + Lippmann-3D + Raytrix union",
+      "num_dev_instances": 200,
+      "construction_method": "parametric (N_ml, L_x, mla_rotation) sweep"
+    },
+    "baselines": [
+      {"name": "PixelRearrange",    "overall_Q": 0.38},
+      {"name": "IP-ADMM-SR",        "overall_Q": 0.58},
+      {"name": "LF-Transformer-IP", "overall_Q": 0.72}
+    ]
+  },
+
+  "hardness_rule_check": "SATISFIED — LF-Transformer-IP fails T4_blind (L_x=7 + rotation=0.05 + low photons corner below angular-spatial trade-off bound).",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

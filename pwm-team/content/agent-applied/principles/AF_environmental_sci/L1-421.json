@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-421",
+  "layer": "L1",
+  "principle_number": "421",
+  "title": "River Hydraulics Shallow Water Inversion",
+  "domain": "Environmental Science",
+  "sub_domain": "Hydrology",
+  "source_file": "AF_environmental_sci/421_river_hydraulics.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "River hydraulics inversion: infer Manning's roughness and bathymetry from water level and discharge observations.",
+    "forward_model": "dA/dt + dQ/dx = q_lat; dQ/dt + d(Q ** 2/A)/dx + g*A*dh/dx + g*A*S_f = 0; S_f = n ** 2*Q ** 2/(A ** 2*R^{4/3})",
+    "world_state_x": "Manning's roughness n(x) and cross-section bathymetry A(h, x) along river reach",
+    "observation_y": "water stage H(t) at N_gauges gauging stations and discharge Q(t)",
+    "physical_parameters_theta": [
+      "reach_length_km",
+      "channel_slope_S0",
+      "N_cross_sections",
+      "bankfull_width_m"
+    ]
+  },
+  "G": {
+    "dag": "M.swe.saint_venant -> O.least_squares.rating_curve -> S.fdm.flood_routing",
+    "vertices": [
+      "M.swe.saint_venant",
+      "O.least_squares.rating_curve",
+      "S.fdm.flood_routing"
+    ],
+    "arcs": [
+      "M.swe.saint_venant -> O.least_squares.rating_curve",
+      "O.least_squares.rating_curve -> S.fdm.flood_routing"
+    ],
+    "L_DAG": 3.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 2000,
+    "condition_number_effective": 80,
+    "condition_number_mismatched": 400,
+    "regime": "Subcritical flow (Fr < 1) for most rivers; Manning's n non-unique at high water; floodplain dominated at peak flow."
+  },
+  "C": {
+    "solver_class": "HEC-RAS or TELEMAC or adjoint_Saint_Venant",
+    "convergence_rate_q": 2.0,
+    "error_bound": "stage RMSE < 0.1 m for calibrated HEC-RAS model",
+    "complexity": "O(N_cross_sections * N_timesteps) for 1D routing"
+  },
+  "physics_fingerprint": {
+    "carrier": "N/A",
+    "sensing_mechanism": "water_level_discharge_measurement",
+    "integration_axis": "river_reach",
+    "problem_class": "parameter_estimation",
+    "noise_model": "gaussian",
+    "solution_space": "Manning_roughness_bathymetry",
+    "primitives": [
+      "M.swe.saint_venant",
+      "O.least_squares.rating_curve",
+      "S.fdm.flood_routing"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "bank_overflow_uncertainty",
+    "sediment_transport_coupling",
+    "groundwater_exchange"
+  ],
+  "error_metric": "water_level_RMSE_m",
+  "error_metric_secondary": "discharge_RMSE_percent",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "parameter_estimation",
+      "forward_operator": "water_level_discharge_measurement",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_gauges": 5,
+        "reach_length_km": 50,
+        "discharge_peak_m3_s": 1000,
+        "roughness_n": 0.035
+      },
+      "epsilon_fn_center": "0.10 water_level_RMSE_m"
+    },
+    "allowed_forward_operators": [
+      "water_level_discharge_measurement"
+    ],
+    "allowed_problem_classes": [
+      "parameter_estimation"
+    ],
+    "allowed_omega_dimensions": [
+      "N_gauges",
+      "reach_length_km",
+      "discharge_peak_m3_s",
+      "roughness_n"
+    ],
+    "omega_bounds": {
+      "N_gauges": [
+        2,
+        50
+      ],
+      "reach_length_km": [
+        1,
+        1000
+      ],
+      "discharge_peak_m3_s": [
+        10,
+        100000
+      ],
+      "roughness_n": [
+        0.01,
+        0.1
+      ]
+    },
+    "epsilon_bounds": {
+      "water_level_RMSE_m": [
+        0.01,
+        0.5
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

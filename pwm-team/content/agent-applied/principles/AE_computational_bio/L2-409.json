@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-409",
+  "layer": "L2",
+  "parent_l1": "L1-409",
+  "principle_ref": "sha256:<L1-409_principle_hash>",
+  "title": "Phylogenetic Likelihood Inference \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "N_taxa": [
+        4,
+        10000
+      ],
+      "N_sites": [
+        100,
+        100000
+      ],
+      "divergence_time_My": [
+        1,
+        1000
+      ],
+      "mutation_rate_per_site_yr": [
+        1e-10,
+        1e-07
+      ]
+    },
+    "E": {
+      "forward": "L(tree, theta) = prod_site prod_node P(obs_node | obs_children, branch_length, substitution_model)",
+      "operator": "molecular_sequence_alignment",
+      "primitive_chain": "M.felsenstein.pruning_algorithm -> S.mcmc.tree_space_bayesian -> O.atr.total_tree_likelihood",
+      "inverse": "recover tree topology tau from multiple sequence alignment (MSA) with N_taxa taxa and N_sites alignment positions"
+    },
+    "B": {
+      "tree_binary": "binary tree for ultrametric",
+      "branch_lengths_positive": "t_i > 0"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "Robinson_Foulds_distance",
+      "branch_length_RMSE",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "3 + 2 * (50 / N_taxa) ** 0.3"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 phylogenetic_tree_topology"
+    },
+    "baselines": [
+      {
+        "name": "IQ-TREE2_ML",
+        "method_sig": "L+O",
+        "expected_score": 6
+      },
+      {
+        "name": "MrBayes_MCMC",
+        "method_sig": "L+O",
+        "expected_score": 4
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_taxa": 50,
+        "N_sites": 5000,
+        "divergence_time_My": 100,
+        "mutation_rate_per_site_yr": 1e-09,
+        "model_misspecification_substitution": 0.0,
+        "long_branch_attraction": 0.0,
+        "incomplete_lineage_sorting": 0.0
+      },
+      "epsilon": 5.0
+    },
+    "tier_bounds": {
+      "N_taxa": [
+        4,
+        10000
+      ],
+      "N_sites": [
+        100,
+        100000
+      ],
+      "divergence_time_My": [
+        1,
+        1000
+      ],
+      "mutation_rate_per_site_yr": [
+        1e-10,
+        1e-07
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.42,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.42 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

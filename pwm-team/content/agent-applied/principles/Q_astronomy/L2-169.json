@@ -1,0 +1,126 @@
+{
+  "artifact_id": "L2-169",
+  "layer": "L2",
+  "parent_l1": "L1-169",
+  "principle_ref": "sha256:<L1-169_principle_hash>",
+  "title": "Solar EUV/X-ray Image Reconstruction \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        128,
+        4096
+      ],
+      "W": [
+        128,
+        4096
+      ],
+      "N_channels": [
+        3,
+        12
+      ],
+      "N_T_bins": [
+        10,
+        50
+      ],
+      "noise_sigma_percent": [
+        1.0,
+        20.0
+      ]
+    },
+    "E": {
+      "forward": "I_c = integral K_c(T) * DEM(T) dT + noise_c, for each channel c",
+      "operator": "coded_aperture_euv",
+      "primitive_chain": "K.psf.coded_aperture -> int.spectral -> S.dem.inversion",
+      "inverse": "recover DEM(T) in R^{N_T x H x W}: emission measure per temperature bin per pixel from multi-channel EUV/X-ray images I_c in R^{H x W}"
+    },
+    "B": {
+      "nonnegativity": "DEM(T) >= 0",
+      "smoothness": "DEM smooth in log-T"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "DEM_reconstruction_chi2",
+      "temperature_peak_error_K",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "1.0 + 0.3 * exp(-N_channels / 6)"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 2D_emission_measure"
+    },
+    "baselines": [
+      {
+        "name": "Hannah_Kontar_2012",
+        "method_sig": "L+O",
+        "expected_score": 1.5
+      },
+      {
+        "name": "MCMC_DEM",
+        "method_sig": "L+O",
+        "expected_score": 1.2
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "N_channels": 6,
+        "N_T_bins": 20,
+        "noise_sigma_percent": 5.0,
+        "calibration_uncertainty_percent": 0.0,
+        "temperature_response_error": 0.0,
+        "line_of_sight_integration_depth": 0.0
+      },
+      "epsilon": 1.3
+    },
+    "tier_bounds": {
+      "H": [
+        128,
+        4096
+      ],
+      "W": [
+        128,
+        4096
+      ],
+      "N_channels": [
+        3,
+        12
+      ],
+      "N_T_bins": [
+        10,
+        50
+      ],
+      "noise_sigma_percent": [
+        1.0,
+        20.0
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.32,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.32 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

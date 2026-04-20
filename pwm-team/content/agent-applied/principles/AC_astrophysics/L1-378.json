@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-378",
+  "layer": "L1",
+  "principle_number": "378",
+  "title": "21cm Cosmology Reionization Signal",
+  "domain": "Astrophysics",
+  "sub_domain": "Epoch of reionization",
+  "source_file": "AC_astrophysics/378_21cm_cosmology.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "21cm reionization mapping: detect 21cm signal from neutral hydrogen during EoR against bright foreground emission.",
+    "forward_model": "T_b(z) = 27*x_HI*(1+delta)*((1+z)/10) ** 0.5 * (H/dv_r/dr) mK; foregrounds dominate at 4 orders of magnitude",
+    "world_state_x": "HI neutral fraction x_HI(z) and 21cm brightness temperature power spectrum P_21cm(k,z)",
+    "observation_y": "calibrated visibility data V(u,v,nu) from radio interferometer (HERA/SKA-Low)",
+    "physical_parameters_theta": [
+      "reionization_midpoint_z_re",
+      "duration_delta_z",
+      "x_e_ionization_fraction",
+      "foreground_level_K"
+    ]
+  },
+  "G": {
+    "dag": "F.fourier.power_spectrum_3d -> S.foreground.removal_wedge -> O.chi2.21cm_ps",
+    "vertices": [
+      "F.fourier.power_spectrum_3d",
+      "S.foreground.removal_wedge",
+      "O.chi2.21cm_ps"
+    ],
+    "arcs": [
+      "F.fourier.power_spectrum_3d -> S.foreground.removal_wedge",
+      "S.foreground.removal_wedge -> O.chi2.21cm_ps"
+    ],
+    "L_DAG": 4.5,
+    "n_c": 2
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 10000000.0,
+    "condition_number_effective": 5000,
+    "condition_number_mismatched": 20000.0,
+    "regime": "Foreground dominated at 4 orders of magnitude above signal; EoR wedge avoidance or foreground subtraction required."
+  },
+  "C": {
+    "solver_class": "delay_filtered_power_spectrum or GPR_foreground_removal",
+    "convergence_rate_q": 2.0,
+    "error_bound": "2-sigma detection at k ~ 0.1 h/Mpc requires 1000h HERA integration",
+    "complexity": "O(N_baselines * N_freq * N_time) for calibration + imaging"
+  },
+  "physics_fingerprint": {
+    "carrier": "radio_wave",
+    "sensing_mechanism": "radio_interferometry_21cm",
+    "integration_axis": "frequency_redshift",
+    "problem_class": "statistical_inverse",
+    "noise_model": "thermal_gaussian",
+    "solution_space": "3D_21cm_brightness_temperature",
+    "primitives": [
+      "F.fourier.power_spectrum_3d",
+      "S.foreground.removal_wedge",
+      "O.chi2.21cm_ps"
+    ]
+  },
+  "difficulty_delta": 10,
+  "difficulty_tier": "hard",
+  "mismatch_parameters": [
+    "calibration_errors_percent",
+    "ionospheric_distortion",
+    "foreground_model_incompleteness"
+  ],
+  "error_metric": "power_spectrum_detection_SNR",
+  "error_metric_secondary": "chi2_reduced_power_spectrum",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "statistical_inverse",
+      "forward_operator": "radio_interferometry_21cm",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_antennas": 350,
+        "integration_hours": 1000,
+        "foreground_level_K": 200,
+        "noise_K": 0.05
+      },
+      "epsilon_fn_center": "2.0 power_spectrum_detection_SNR"
+    },
+    "allowed_forward_operators": [
+      "radio_interferometry_21cm"
+    ],
+    "allowed_problem_classes": [
+      "statistical_inverse"
+    ],
+    "allowed_omega_dimensions": [
+      "N_antennas",
+      "integration_hours",
+      "foreground_level_K",
+      "noise_K"
+    ],
+    "omega_bounds": {
+      "N_antennas": [
+        20,
+        1000
+      ],
+      "integration_hours": [
+        100,
+        10000
+      ],
+      "foreground_level_K": [
+        50,
+        1000
+      ],
+      "noise_K": [
+        0.01,
+        0.5
+      ]
+    },
+    "epsilon_bounds": {
+      "power_spectrum_detection_SNR": [
+        1.0,
+        10.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

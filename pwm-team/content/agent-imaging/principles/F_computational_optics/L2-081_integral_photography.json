@@ -1,0 +1,58 @@
+{
+  "artifact_id": "L2-081",
+  "layer": "L2",
+  "parent_l1": "L1-081",
+  "title": "Integral Photography Decoding Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+
+  "six_tuple": {
+    "omega": {
+      "H_s": [512, 8192], "W_s": [512, 8192],
+      "N_ml_x": [20, 400], "N_ml_y": [20, 400],
+      "L_x": [5, 50], "L_y": [5, 50],
+      "photon_count": [50, 10000],
+      "mla_rotation": [0.0, 0.05], "mla_pitch_drift": [0.0, 0.02],
+      "sensor_mla_gap_error": [0.0, 0.1], "vignetting_residual": [0.0, 0.2]
+    },
+    "E": {
+      "forward": "y = mla_tile_encode(L) + vignetting + n; tile layout corrupted by mla_rotation + pitch_drift",
+      "operator": "ip_mla_forward_mismatch",
+      "primitive_chain": "L.project.pupil -> M.microlens_array -> L.rearrange -> int.spatial",
+      "inverse": "recover elemental images / 4D LF from sensor mosaic"
+    },
+    "B": {"angular_coherent_across_tiles": true, "intensity_bounded": "y in [0,1]"},
+    "I": {"strategy": "centroid_based_tile_assignment_plus_calibration_refine"},
+    "O": ["PSNR", "disparity_MAE_px", "tile_alignment_residual"],
+    "epsilon_fn": "24.0 + 3.0 * log2(L_x / 5) + 2.0 * log10(photon_count / 50) - 10.0 * mla_rotation / 0.05 - 5.0 * mla_pitch_drift / 0.02"
+  },
+
+  "protocol_fields": {
+    "input_format": {"raw_mosaic": "float32(H_s, W_s)", "mla_calibration": "dict"},
+    "output_format": {"elemental_images": "float32(N_ml_x, N_ml_y, L_x, L_y)"},
+    "baselines": [
+      {"name": "PixelRearrange",    "method_sig": "A+O", "expected_psnr": 28.0},
+      {"name": "IP-ADMM-SR",        "method_sig": "L+O", "expected_psnr": 30.5},
+      {"name": "LF-Transformer-IP", "method_sig": "L+N", "expected_psnr": 33.5}
+    ]
+  },
+
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {"H_s": 2048, "W_s": 2048, "N_ml_x": 100, "N_ml_y": 100, "L_x": 20, "L_y": 20, "photon_count": 1000, "mla_rotation": 0.0, "mla_pitch_drift": 0.0, "sensor_mla_gap_error": 0.0, "vignetting_residual": 0.0},
+      "epsilon": 30.0
+    },
+    "tier_bounds": {
+      "H_s": [512, 4096], "W_s": [512, 4096],
+      "N_ml_x": [30, 200], "L_x": [7, 30],
+      "photon_count": [100, 5000], "mla_rotation": [0.0, 0.05]
+    },
+    "proximity_threshold": 0.10
+  },
+
+  "d_spec": 0.30,
+  "d_spec_notes": "Integral photography is within 'Similar' band to plenoptic light field (d_spec ~ 0.30) because they share MLA primitive and 4D LF solution space; differ in omega_dim names (N_ml_x/y vs U/V) and vignetting-per-tile physics.",
+
+  "s1_s4_gates": ["PASS", "PASS", "PASS", "PASS"],
+  "ipfs_cid": null
+}

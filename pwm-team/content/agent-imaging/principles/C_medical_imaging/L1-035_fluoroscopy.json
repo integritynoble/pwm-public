@@ -1,0 +1,182 @@
+{
+  "artifact_id": "L1-035",
+  "layer": "L1",
+  "principle_number": "035",
+  "title": "Fluoroscopy (real-time X-ray)",
+  "domain": "Medical Imaging",
+  "sub_domain": "Live X-ray imaging with image intensifier / flat panel",
+  "source_file": "C_medical_imaging/035_fluoroscopy.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical medical-imaging literature for this principle.",
+  "E": {
+    "description": "Fluoroscopy (real-time X-ray) forward model.",
+    "forward_model": "y_t(u,v) = I_0 exp(-integral mu(r, t) ds) + scatter + n at frame rate 30 Hz",
+    "world_state_x": "Patient-side quantity of interest (attenuation / activity / perfusion / stiffness etc.)",
+    "observation_y": "Clinical sensor output at declared resolution + noise",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "fps",
+      "kVp",
+      "dose_rate_uGy_per_s",
+      "pixel_um",
+      "scatter",
+      "low_dose_noise",
+      "pincushion_distortion"
+    ]
+  },
+  "G": {
+    "dag": "L.xray_source -> L.beer_lambert -> D.image_intensifier -> int.spatial",
+    "vertices": [
+      "L.xray_source",
+      "L.beer_lambert",
+      "D.image_intensifier",
+      "int.spatial"
+    ],
+    "arcs": [
+      "L.xray_source -> L.beer_lambert",
+      "L.beer_lambert -> D.image_intensifier",
+      "D.image_intensifier -> int.spatial"
+    ],
+    "L_DAG": 2.8,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 200,
+    "condition_number_effective": 10,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Wiener, BM3D-Fluoro, DeepFluoro",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sensor SNR + mismatch bias + regularisation.",
+    "complexity": "O(H W) to O(H W Z) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "x_ray",
+    "sensing_mechanism": "xray_projection",
+    "integration_axis": "spatial",
+    "problem_class": "linear_inverse",
+    "noise_model": "shot_poisson",
+    "solution_space": "2D_attenuation_projection",
+    "primitives": [
+      "L.xray_source",
+      "L.beer_lambert",
+      "D.image_intensifier",
+      "int.spatial"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "scatter",
+    "frame_rate_limits",
+    "low_dose_noise",
+    "pincushion_distortion"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "fluoroscopy",
+      "forward_operator": "fluoroscopy_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 1024,
+        "W": 1024,
+        "fps": 30,
+        "kVp": 80,
+        "dose_rate_uGy_per_s": 0.5,
+        "pixel_um": 200,
+        "scatter": 0.1,
+        "low_dose_noise": 0.0,
+        "pincushion_distortion": 0.0
+      },
+      "epsilon_fn_center": "26.0"
+    },
+    "allowed_forward_operators": [
+      "fluoroscopy_forward"
+    ],
+    "allowed_problem_classes": [
+      "fluoroscopy"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "fps",
+      "kVp",
+      "dose_rate_uGy_per_s",
+      "pixel_um",
+      "scatter",
+      "low_dose_noise",
+      "pincushion_distortion",
+      "scatter",
+      "frame_rate_limits",
+      "low_dose_noise",
+      "pincushion_distortion"
+    ],
+    "omega_bounds": {
+      "H": 256,
+      "W": 256,
+      "fps": [
+        10,
+        60
+      ],
+      "kVp": [
+        60,
+        120
+      ],
+      "dose_rate_uGy_per_s": [
+        0.1,
+        10
+      ],
+      "pixel_um": [
+        100,
+        500
+      ],
+      "scatter": [
+        0.0,
+        0.4
+      ],
+      "low_dose_noise": [
+        0.0,
+        0.3
+      ],
+      "pincushion_distortion": [
+        0.0,
+        0.1
+      ],
+      "frame_rate_limits": [
+        0.0,
+        0.5
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        5.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

@@ -1,0 +1,181 @@
+{
+  "artifact_id": "L3-039",
+  "layer": "L3",
+  "parent_l2": "L2-039",
+  "parent_l1": "L1-039",
+  "title": "X-ray Angiography (DSA) Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "canonical clinical/public dataset for this modality",
+    "secondary": "simulated forward synthesis at declared Omega",
+    "construction_method": "parametric forward + declared noise",
+    "num_dev_instances_per_tier": 20
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "H": 1024,
+        "W": 1024,
+        "fps": 15,
+        "kVp": 80,
+        "dose_per_frame_uGy": 5,
+        "pixel_um": 150,
+        "contrast_timing": 0.0,
+        "patient_motion": 0.0,
+        "misregistration": 0.0,
+        "scatter": 0.0
+      },
+      "epsilon": 28.0,
+      "d_ibench": 0.14,
+      "baselines": [
+        {
+          "name": "Simple-DSA",
+          "score": 25.0,
+          "Q": 0.88
+        },
+        {
+          "name": "Reg-DSA",
+          "score": 27.5,
+          "Q": 0.88
+        },
+        {
+          "name": "Vessel-Net",
+          "score": 30.0,
+          "Q": 0.88
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "H": 1024,
+        "W": 1024,
+        "fps": 15,
+        "kVp": 80,
+        "dose_per_frame_uGy": 5,
+        "pixel_um": 150,
+        "contrast_timing": 0.1,
+        "patient_motion": 0.06,
+        "misregistration": 1.0,
+        "scatter": 0.06
+      },
+      "epsilon": 22.96,
+      "d_ibench": 0.28,
+      "baselines": [
+        {
+          "name": "Simple-DSA",
+          "score": 23.0,
+          "Q": 0.68
+        },
+        {
+          "name": "Reg-DSA",
+          "score": 25.5,
+          "Q": 0.68
+        },
+        {
+          "name": "Vessel-Net",
+          "score": 28.0,
+          "Q": 0.68
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "H": 1024,
+        "W": 1024,
+        "fps": 15,
+        "kVp": 80,
+        "dose_per_frame_uGy": 5,
+        "pixel_um": 150,
+        "contrast_timing": 0.25,
+        "patient_motion": 0.15,
+        "misregistration": 2.5,
+        "scatter": 0.15
+      },
+      "epsilon": 17.92,
+      "d_ibench": 0.48,
+      "baselines": [
+        {
+          "name": "Simple-DSA",
+          "score": 21.0,
+          "Q": 0.48
+        },
+        {
+          "name": "Reg-DSA",
+          "score": 23.5,
+          "Q": 0.48
+        },
+        {
+          "name": "Vessel-Net",
+          "score": 26.0,
+          "Q": 0.48
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "H": 1024,
+        "W": 1024,
+        "fps": 15,
+        "kVp": 80,
+        "dose_per_frame_uGy": 5,
+        "pixel_um": 150,
+        "contrast_timing": 0.5,
+        "patient_motion": 0.3,
+        "misregistration": 5.0,
+        "scatter": 0.3
+      },
+      "epsilon": 12.88,
+      "d_ibench": 0.72,
+      "baselines": [
+        {
+          "name": "Simple-DSA",
+          "score": 19.0,
+          "Q": 0.28
+        },
+        {
+          "name": "Reg-DSA",
+          "score": 21.5,
+          "Q": 0.28
+        },
+        {
+          "name": "Vessel-Net",
+          "score": 24.0,
+          "Q": 0.28
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "full parametric sweep",
+      "num_dev_instances": 200,
+      "construction_method": "parametric Omega sweep"
+    },
+    "baselines": [
+      {
+        "name": "Simple-DSA",
+        "overall_Q": 0.7
+      },
+      {
+        "name": "Reg-DSA",
+        "overall_Q": 0.6
+      },
+      {
+        "name": "Vessel-Net",
+        "overall_Q": 0.5
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind strata corner.",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

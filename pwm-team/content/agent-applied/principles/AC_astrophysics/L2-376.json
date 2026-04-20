@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-376",
+  "layer": "L2",
+  "parent_l1": "L1-376",
+  "principle_ref": "sha256:<L1-376_principle_hash>",
+  "title": "Cosmic Ray Propagation Inversion \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "D_0_cm2_s": [
+        1e+28,
+        1e+29
+      ],
+      "delta_diffusion": [
+        0.2,
+        0.6
+      ],
+      "z_halo_kpc": [
+        2.0,
+        8.0
+      ],
+      "solar_phi_GV": [
+        0.3,
+        1.5
+      ]
+    },
+    "E": {
+      "forward": "partial_t N = nabla(D nabla N) - nabla(v_c N) - N/tau + Q(r,E); B/C ratio from propagated spectra",
+      "operator": "diffusion_loss_transport",
+      "primitive_chain": "S.diffusion.galactic -> M.loss.ionization_synchrotron -> O.chi2.cr_ratios",
+      "inverse": "recover diffusion coefficient D_0 and spatial/energy dependence from B/C"
+    },
+    "B": {
+      "diffusion_positivity": "D(E) > 0",
+      "halo_height": "z_halo > 0"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "B_over_C_chi2",
+      "positron_fraction_chi2",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "1.0 + 0.3 * (solar_phi_GV - 0.5) ** 2"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 CR_spectral_source_distribution"
+    },
+    "baselines": [
+      {
+        "name": "GALPROP_grid_scan",
+        "method_sig": "L+O",
+        "expected_score": 1.4
+      },
+      {
+        "name": "DRAGON2_MCMC",
+        "method_sig": "L+O",
+        "expected_score": 1.2
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "D_0_cm2_s": 3e+28,
+        "delta_diffusion": 0.35,
+        "z_halo_kpc": 4.0,
+        "solar_phi_GV": 0.5,
+        "solar_modulation_uncertainty": 0.0,
+        "cross_section_uncertainty": 0.0,
+        "gas_density_model_error": 0.0
+      },
+      "epsilon": 1.3
+    },
+    "tier_bounds": {
+      "D_0_cm2_s": [
+        1e+28,
+        1e+29
+      ],
+      "delta_diffusion": [
+        0.2,
+        0.6
+      ],
+      "z_halo_kpc": [
+        2.0,
+        8.0
+      ],
+      "solar_phi_GV": [
+        0.3,
+        1.5
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.3,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.3 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

@@ -1,0 +1,189 @@
+{
+  "artifact_id": "L1-042",
+  "layer": "L1",
+  "principle_number": "042",
+  "title": "Optical Coherence Tomography (OCT)",
+  "domain": "Medical Imaging",
+  "sub_domain": "Coherence-gated depth-resolved imaging",
+  "source_file": "C_medical_imaging/042_oct.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical medical-imaging literature for this principle.",
+  "E": {
+    "description": "Optical Coherence Tomography (OCT) forward model.",
+    "forward_model": "I(k) = |E_ref + sum_z E(z) exp(i 2 k z)|^2 + n; IFT to recover depth profile",
+    "world_state_x": "Patient-side quantity of interest (attenuation / activity / perfusion / stiffness etc.)",
+    "observation_y": "Clinical sensor output at declared resolution + noise",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "Z",
+      "lambda_center_nm",
+      "lambda_bw_nm",
+      "pixel_um",
+      "SNR_dB",
+      "dispersion_mismatch",
+      "motion_artifacts",
+      "speckle_noise"
+    ]
+  },
+  "G": {
+    "dag": "L.sd_oct_spectral -> L.fourier_transform -> S.scan.raster -> int.spectral",
+    "vertices": [
+      "L.sd_oct_spectral",
+      "L.fourier_transform",
+      "S.scan.raster",
+      "int.spectral"
+    ],
+    "arcs": [
+      "L.sd_oct_spectral -> L.fourier_transform",
+      "L.fourier_transform -> S.scan.raster",
+      "S.scan.raster -> int.spectral"
+    ],
+    "L_DAG": 3.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 240,
+    "condition_number_effective": 12,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "IFFT-Filtering, Dispersion-Correct, OCT-Net",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sensor SNR + mismatch bias + regularisation.",
+    "complexity": "O(H W) to O(H W Z) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "oct_spectral_domain",
+    "integration_axis": "spectral",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "3D_tissue_reflectivity",
+    "primitives": [
+      "L.sd_oct_spectral",
+      "L.fourier_transform",
+      "S.scan.raster",
+      "int.spectral"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "dispersion_mismatch",
+    "motion_artifacts",
+    "speckle_noise",
+    "signal_roll_off"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "oct",
+      "forward_operator": "oct_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 512,
+        "W": 512,
+        "Z": 1024,
+        "lambda_center_nm": 840,
+        "lambda_bw_nm": 50,
+        "pixel_um": 5,
+        "SNR_dB": 30,
+        "dispersion_mismatch": 0.0,
+        "motion_artifacts": 0.0,
+        "speckle_noise": 0.0
+      },
+      "epsilon_fn_center": "28.0"
+    },
+    "allowed_forward_operators": [
+      "oct_forward"
+    ],
+    "allowed_problem_classes": [
+      "oct"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "Z",
+      "lambda_center_nm",
+      "lambda_bw_nm",
+      "pixel_um",
+      "SNR_dB",
+      "dispersion_mismatch",
+      "motion_artifacts",
+      "speckle_noise",
+      "dispersion_mismatch",
+      "motion_artifacts",
+      "speckle_noise",
+      "signal_roll_off"
+    ],
+    "omega_bounds": {
+      "H": 128,
+      "W": 128,
+      "Z": [
+        256,
+        4096
+      ],
+      "lambda_center_nm": [
+        830,
+        1310
+      ],
+      "lambda_bw_nm": [
+        20,
+        200
+      ],
+      "pixel_um": [
+        1,
+        20
+      ],
+      "SNR_dB": [
+        10.0,
+        45.0
+      ],
+      "dispersion_mismatch": [
+        0.0,
+        0.3
+      ],
+      "motion_artifacts": [
+        0.0,
+        0.3
+      ],
+      "speckle_noise": [
+        0.0,
+        0.3
+      ],
+      "signal_roll_off": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        5.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

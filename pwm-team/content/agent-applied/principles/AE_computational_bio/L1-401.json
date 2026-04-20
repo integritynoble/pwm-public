@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-401",
+  "layer": "L1",
+  "principle_number": "401",
+  "title": "Windkessel Cardiac Afterload Model",
+  "domain": "Computational Biology",
+  "sub_domain": "Cardiovascular physiology",
+  "source_file": "AE_computational_bio/401_windkessel.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "Windkessel model fitting: extract arterial compliance C, resistance R, and characteristic impedance Zc from pressure-flow data.",
+    "forward_model": "C*dP/dt + P/R = Q - Zc*dQ/dt; 3-element Windkessel (Westkessel model)",
+    "world_state_x": "arterial parameters (R_peripheral, C_arterial, Z_c_characteristic)",
+    "observation_y": "aortic pressure P(t) and flow Q(t) over one or more cardiac cycles",
+    "physical_parameters_theta": [
+      "R_peripheral_mmHg_ml_s",
+      "C_arterial_ml_mmHg",
+      "Z_c_characteristic",
+      "heart_rate_bpm"
+    ]
+  },
+  "G": {
+    "dag": "M.ode.windkessel_3element -> O.least_squares.pressure_fit -> S.gradient.ode_params",
+    "vertices": [
+      "M.ode.windkessel_3element",
+      "O.least_squares.pressure_fit",
+      "S.gradient.ode_params"
+    ],
+    "arcs": [
+      "M.ode.windkessel_3element -> O.least_squares.pressure_fit",
+      "O.least_squares.pressure_fit -> S.gradient.ode_params"
+    ],
+    "L_DAG": 2.2,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 500,
+    "condition_number_effective": 20,
+    "condition_number_mismatched": 100,
+    "regime": "3-element Windkessel fits 80% of hemodynamic features; wave reflections require distributed models; nonlinear C(P) improves accuracy."
+  },
+  "C": {
+    "solver_class": "NLS_parameter_fit or Bayesian_Windkessel",
+    "convergence_rate_q": 2.0,
+    "error_bound": "pressure RMSE < 2 mmHg for calibrated 3-element WK",
+    "complexity": "O(N_cycles * N_params) for ODE integration per cycle"
+  },
+  "physics_fingerprint": {
+    "carrier": "N/A",
+    "sensing_mechanism": "aortic_pressure_flow_measurement",
+    "integration_axis": "cardiac_cycle",
+    "problem_class": "parameter_estimation",
+    "noise_model": "measurement_gaussian",
+    "solution_space": "windkessel_parameter_vector",
+    "primitives": [
+      "M.ode.windkessel_3element",
+      "O.least_squares.pressure_fit",
+      "S.gradient.ode_params"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "nonlinearity_pressure_compliance",
+    "wave_reflection_neglect",
+    "peripheral_bed_heterogeneity"
+  ],
+  "error_metric": "pressure_waveform_RMSE_mmHg",
+  "error_metric_secondary": "parameter_identifiability_index",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "parameter_estimation",
+      "forward_operator": "aortic_pressure_flow_measurement",
+      "input_format": "measurement_only",
+      "omega": {
+        "heart_rate_bpm": 70,
+        "systolic_pressure_mmHg": 120,
+        "diastolic_pressure_mmHg": 80,
+        "N_cardiac_cycles": 10
+      },
+      "epsilon_fn_center": "2.0 pressure_waveform_RMSE_mmHg"
+    },
+    "allowed_forward_operators": [
+      "aortic_pressure_flow_measurement"
+    ],
+    "allowed_problem_classes": [
+      "parameter_estimation"
+    ],
+    "allowed_omega_dimensions": [
+      "heart_rate_bpm",
+      "systolic_pressure_mmHg",
+      "diastolic_pressure_mmHg",
+      "N_cardiac_cycles"
+    ],
+    "omega_bounds": {
+      "heart_rate_bpm": [
+        40,
+        120
+      ],
+      "systolic_pressure_mmHg": [
+        80,
+        200
+      ],
+      "diastolic_pressure_mmHg": [
+        50,
+        100
+      ],
+      "N_cardiac_cycles": [
+        3,
+        100
+      ]
+    },
+    "epsilon_bounds": {
+      "pressure_waveform_RMSE_mmHg": [
+        0.2,
+        10.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

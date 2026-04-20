@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-371",
+  "layer": "L2",
+  "parent_l1": "L1-371",
+  "principle_ref": "sha256:<L1-371_principle_hash>",
+  "title": "Stellar Atmosphere Spectral Inversion \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "N_lambda": [
+        1000,
+        50000
+      ],
+      "T_eff_K": [
+        3500,
+        7500
+      ],
+      "log_g_cgs": [
+        1.0,
+        5.0
+      ],
+      "SNR": [
+        10,
+        500
+      ]
+    },
+    "E": {
+      "forward": "F_lambda(T_eff, log_g, [M/H]) from MARCS/KURUCZ model atmosphere + spectral synthesis",
+      "operator": "radiative_transfer_spectral",
+      "primitive_chain": "S.radiative.transfer_lte -> M.spectrum.synthesis -> O.chi2.spectral_lines",
+      "inverse": "recover stellar parameters (T_eff from observed stellar spectrum F_lambda at resolution R=lambda/delta_lambda"
+    },
+    "B": {
+      "T_eff_positivity": "T_eff > 0",
+      "log_g_range": "log_g in [0, 6]"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "spectral_chi2_reduced",
+      "T_eff_RMSE_K",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "1.0 + 0.15 * (100 / SNR) ** 0.5"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 1D_atmospheric_profile"
+    },
+    "baselines": [
+      {
+        "name": "FERRE_grid_search",
+        "method_sig": "L+O",
+        "expected_score": 1.2
+      },
+      {
+        "name": "MCMC_MARCS",
+        "method_sig": "L+O",
+        "expected_score": 1.1
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_lambda": 5000,
+        "T_eff_K": 5500,
+        "log_g_cgs": 4.0,
+        "SNR": 100,
+        "continuum_normalization_error": 0.0,
+        "wavelength_calibration_error_kms": 0.0,
+        "LTE_assumption_NLTE_correction": 0.0
+      },
+      "epsilon": 1.15
+    },
+    "tier_bounds": {
+      "N_lambda": [
+        1000,
+        50000
+      ],
+      "T_eff_K": [
+        3500,
+        7500
+      ],
+      "log_g_cgs": [
+        1.0,
+        5.0
+      ],
+      "SNR": [
+        10,
+        500
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.38,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.38 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

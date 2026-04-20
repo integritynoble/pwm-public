@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-364",
+  "layer": "L2",
+  "parent_l1": "L1-364",
+  "principle_ref": "sha256:<L1-364_principle_hash>",
+  "title": "N-body Gravitational Simulation \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "N_bodies": [
+        10,
+        10000
+      ],
+      "dt_yr": [
+        0.001,
+        0.1
+      ],
+      "softening_AU": [
+        0.01,
+        1.0
+      ],
+      "t_end_yr": [
+        10,
+        10000
+      ]
+    },
+    "E": {
+      "forward": "m_i * r_i'' = sum_{j!=i} G m_i m_j (r_j - r_i) / |r_j - r_i|^3",
+      "operator": "gravitational_force_summation",
+      "primitive_chain": "F.gravity.nbody -> S.tree.barnes_hut -> O.leapfrog.integrator",
+      "inverse": "recover phase-space coordinates {r_i from sky-projected positions and radial velocities (astrometry + spectroscopy)"
+    },
+    "B": {
+      "energy_conservation": "Hamiltonian H conserved",
+      "angular_momentum": "L conserved"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "orbital_energy_conservation_relative",
+      "position_RMSE_AU",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "1e-5 * (dt_yr / 0.01) ** 2"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 6N_phase_space"
+    },
+    "baselines": [
+      {
+        "name": "leapfrog",
+        "method_sig": "L+O",
+        "expected_score": 1e-06
+      },
+      {
+        "name": "Hermite4",
+        "method_sig": "L+O",
+        "expected_score": 1e-08
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_bodies": 100,
+        "dt_yr": 0.01,
+        "softening_AU": 0.1,
+        "t_end_yr": 100.0,
+        "initial_condition_uncertainty": 0.0,
+        "missing_body_perturbation": 0.0,
+        "relativistic_correction": 0.0
+      },
+      "epsilon": 1e-06
+    },
+    "tier_bounds": {
+      "N_bodies": [
+        10,
+        10000
+      ],
+      "dt_yr": [
+        0.001,
+        0.1
+      ],
+      "softening_AU": [
+        0.01,
+        1.0
+      ],
+      "t_end_yr": [
+        10,
+        10000
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.3,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.3 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

@@ -1,0 +1,181 @@
+{
+  "artifact_id": "L1-123",
+  "layer": "L1",
+  "principle_number": "123",
+  "title": "Digital Image Correlation (DIC) for full-field strain",
+  "domain": "Industrial Inspection",
+  "sub_domain": "Full-field displacement and strain via speckle tracking",
+  "source_file": "J_industrial_inspect/123_digital_image_correlation.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical NDT/NDE literature for this principle.",
+  "E": {
+    "description": "Digital Image Correlation (DIC) for full-field strain forward model.",
+    "forward_model": "y_def(r) = y_ref(r - u(r)) + n; recover u(r) per subset via NCC/ZNCC; differentiate for strain",
+    "world_state_x": "Defect / strain / composition map depending on principle",
+    "observation_y": "Sensor output at declared geometry",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "subset_px",
+      "pixel_um",
+      "SNR_dB",
+      "speckle_size_variation",
+      "illumination_non_uniformity",
+      "out_of_plane_motion"
+    ]
+  },
+  "G": {
+    "dag": "L.speckle_pattern -> L.reference_deformed -> L.subset_correlation -> int.spatial",
+    "vertices": [
+      "L.speckle_pattern",
+      "L.reference_deformed",
+      "L.subset_correlation",
+      "int.spatial"
+    ],
+    "arcs": [
+      "L.speckle_pattern -> L.reference_deformed",
+      "L.reference_deformed -> L.subset_correlation",
+      "L.subset_correlation -> int.spatial"
+    ],
+    "L_DAG": 3.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 160,
+    "condition_number_effective": 8,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "NCC-Subset, ZNCC-Subpixel, DIC-Net",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sensor SNR + mismatch bias.",
+    "complexity": "O(H W) to O(H W Z) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "speckle_correlation_vision",
+    "integration_axis": "spatial",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "2D_displacement_strain",
+    "primitives": [
+      "L.speckle_pattern",
+      "L.reference_deformed",
+      "L.subset_correlation",
+      "int.spatial"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "speckle_size_variation",
+    "illumination_non_uniformity",
+    "out_of_plane_motion",
+    "camera_calibration_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "dic",
+      "forward_operator": "dic_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 2048,
+        "W": 2048,
+        "subset_px": 21,
+        "pixel_um": 5,
+        "SNR_dB": 30,
+        "speckle_size_variation": 0.0,
+        "illumination_non_uniformity": 0.0,
+        "out_of_plane_motion": 0.0
+      },
+      "epsilon_fn_center": "28.0"
+    },
+    "allowed_forward_operators": [
+      "dic_forward"
+    ],
+    "allowed_problem_classes": [
+      "dic"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "subset_px",
+      "pixel_um",
+      "SNR_dB",
+      "speckle_size_variation",
+      "illumination_non_uniformity",
+      "out_of_plane_motion",
+      "speckle_size_variation",
+      "illumination_non_uniformity",
+      "out_of_plane_motion",
+      "camera_calibration_error"
+    ],
+    "omega_bounds": {
+      "H": [
+        512,
+        8192
+      ],
+      "W": [
+        512,
+        8192
+      ],
+      "subset_px": [
+        9,
+        81
+      ],
+      "pixel_um": [
+        1,
+        50
+      ],
+      "SNR_dB": [
+        10.0,
+        40.0
+      ],
+      "speckle_size_variation": [
+        0.0,
+        0.3
+      ],
+      "illumination_non_uniformity": [
+        0.0,
+        0.3
+      ],
+      "out_of_plane_motion": [
+        0.0,
+        0.3
+      ],
+      "camera_calibration_error": [
+        0.0,
+        0.05
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        5.0,
+        40.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

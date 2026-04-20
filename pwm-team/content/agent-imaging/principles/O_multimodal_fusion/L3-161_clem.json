@@ -1,0 +1,181 @@
+{
+  "artifact_id": "L3-161",
+  "layer": "L3",
+  "parent_l2": "L2-161",
+  "parent_l1": "L1-161",
+  "title": "Correlative Light-Electron Microscopy (CLEM) Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "canonical dataset for this principle",
+    "secondary": "simulated forward synthesis at declared Omega",
+    "construction_method": "parametric forward + declared noise",
+    "num_dev_instances_per_tier": 20
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "H_lm": 2048,
+        "W_lm": 2048,
+        "H_em": 4096,
+        "W_em": 4096,
+        "pixel_lm_nm": 100,
+        "pixel_em_nm": 2,
+        "scale_mismatch": 0.0,
+        "sample_preparation_artifact": 0.0,
+        "registration_error": 0.0,
+        "photobleaching_pre_em": 0.0
+      },
+      "epsilon": 22.0,
+      "d_ibench": 0.14,
+      "baselines": [
+        {
+          "name": "Fiducial-Register",
+          "score": 19.5,
+          "Q": 0.88
+        },
+        {
+          "name": "Feature-Match",
+          "score": 22.0,
+          "Q": 0.88
+        },
+        {
+          "name": "CLEM-Net",
+          "score": 24.5,
+          "Q": 0.88
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "H_lm": 2048,
+        "W_lm": 2048,
+        "H_em": 4096,
+        "W_em": 4096,
+        "pixel_lm_nm": 100,
+        "pixel_em_nm": 2,
+        "scale_mismatch": 0.1,
+        "sample_preparation_artifact": 0.1,
+        "registration_error": 10.0,
+        "photobleaching_pre_em": 0.16000000000000003
+      },
+      "epsilon": 18.04,
+      "d_ibench": 0.28,
+      "baselines": [
+        {
+          "name": "Fiducial-Register",
+          "score": 17.5,
+          "Q": 0.68
+        },
+        {
+          "name": "Feature-Match",
+          "score": 20.0,
+          "Q": 0.68
+        },
+        {
+          "name": "CLEM-Net",
+          "score": 22.5,
+          "Q": 0.68
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "H_lm": 2048,
+        "W_lm": 2048,
+        "H_em": 4096,
+        "W_em": 4096,
+        "pixel_lm_nm": 100,
+        "pixel_em_nm": 2,
+        "scale_mismatch": 0.25,
+        "sample_preparation_artifact": 0.25,
+        "registration_error": 25.0,
+        "photobleaching_pre_em": 0.4
+      },
+      "epsilon": 14.08,
+      "d_ibench": 0.48,
+      "baselines": [
+        {
+          "name": "Fiducial-Register",
+          "score": 15.5,
+          "Q": 0.48
+        },
+        {
+          "name": "Feature-Match",
+          "score": 18.0,
+          "Q": 0.48
+        },
+        {
+          "name": "CLEM-Net",
+          "score": 20.5,
+          "Q": 0.48
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "H_lm": 2048,
+        "W_lm": 2048,
+        "H_em": 4096,
+        "W_em": 4096,
+        "pixel_lm_nm": 100,
+        "pixel_em_nm": 2,
+        "scale_mismatch": 0.5,
+        "sample_preparation_artifact": 0.5,
+        "registration_error": 50.0,
+        "photobleaching_pre_em": 0.8
+      },
+      "epsilon": 10.12,
+      "d_ibench": 0.72,
+      "baselines": [
+        {
+          "name": "Fiducial-Register",
+          "score": 13.5,
+          "Q": 0.28
+        },
+        {
+          "name": "Feature-Match",
+          "score": 16.0,
+          "Q": 0.28
+        },
+        {
+          "name": "CLEM-Net",
+          "score": 18.5,
+          "Q": 0.28
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "full parametric sweep",
+      "num_dev_instances": 200,
+      "construction_method": "parametric Omega sweep"
+    },
+    "baselines": [
+      {
+        "name": "Fiducial-Register",
+        "overall_Q": 0.7
+      },
+      {
+        "name": "Feature-Match",
+        "overall_Q": 0.6
+      },
+      {
+        "name": "CLEM-Net",
+        "overall_Q": 0.5
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind strata corner.",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

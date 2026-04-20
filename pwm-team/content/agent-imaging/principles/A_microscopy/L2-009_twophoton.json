@@ -1,0 +1,161 @@
+{
+  "artifact_id": "L2-009",
+  "layer": "L2",
+  "parent_l1": "L1-009",
+  "title": "Two-Photon Microscopy (chi-3 NLO excitation) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        128,
+        2048
+      ],
+      "W": [
+        128,
+        2048
+      ],
+      "Z": [
+        16,
+        512
+      ],
+      "pixel_nm": [
+        200,
+        1000
+      ],
+      "NA": [
+        0.6,
+        1.1
+      ],
+      "lambda_ex_nm": [
+        800,
+        1060
+      ],
+      "peak_photons": [
+        20,
+        2000
+      ],
+      "pulse_width_fs": [
+        50,
+        500
+      ],
+      "sample_scattering": [
+        0.0,
+        0.5
+      ],
+      "laser_pointing_jitter": [
+        0.0,
+        0.02
+      ]
+    },
+    "E": {
+      "forward": "y(r) ~ integral [PSF(r) * f(r) * I_excitation^2(r)] + n",
+      "operator": "twophoton_forward_mismatch",
+      "primitive_chain": "L.excitation.nonlinear_chi3 -> S.scan.raster -> int.temporal",
+      "inverse": "solve forward model for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "19.0 + 2.0 * log10(peak_photons / 20) - 8.0 * sample_scattering - 2.0 * log10(pulse_width_fs / 50)"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Richardson-Lucy-2P",
+        "method_sig": "I+M",
+        "expected_psnr": 23.5
+      },
+      {
+        "name": "TV-ADMM-2P",
+        "method_sig": "L+O",
+        "expected_psnr": 24.5
+      },
+      {
+        "name": "CARE-2P",
+        "method_sig": "L+N",
+        "expected_psnr": 27.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "Z": 100,
+        "pixel_nm": 400,
+        "NA": 1.0,
+        "lambda_ex_nm": 920,
+        "peak_photons": 200,
+        "pulse_width_fs": 150,
+        "sample_scattering": 0.0
+      },
+      "epsilon": 25.0
+    },
+    "tier_bounds": {
+      "H": [
+        128,
+        2048
+      ],
+      "W": [
+        128,
+        2048
+      ],
+      "Z": [
+        16,
+        512
+      ],
+      "pixel_nm": [
+        200,
+        1000
+      ],
+      "NA": [
+        0.6,
+        1.1
+      ],
+      "lambda_ex_nm": [
+        800,
+        1060
+      ],
+      "peak_photons": [
+        20,
+        2000
+      ],
+      "pulse_width_fs": [
+        50,
+        500
+      ],
+      "sample_scattering": [
+        0.0,
+        0.5
+      ],
+      "laser_pointing_jitter": [
+        0.0,
+        0.02
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.45,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

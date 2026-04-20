@@ -1,0 +1,259 @@
+{
+  "artifact_id": "L3-498",
+  "layer": "L3",
+  "parent_l2": "L2-498",
+  "parent_l1": "L1-498",
+  "title": "Topology Optimization (SIMP) \u2014 Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "benchmark_mbb_beam_50x100",
+    "secondary": "michell_cantilever_suite",
+    "tertiary": "held_out_real",
+    "construction_method": "Sample Omega uniformly; apply forward model; add domain-realistic noise.",
+    "num_dev_instances_per_tier": 20,
+    "holdout_instances_per_tier": 10
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "N_e": 2500,
+        "V_f": 0.5,
+        "penalty_p": 3.0,
+        "filter_r": 2.0,
+        "load_direction_error": 0.0,
+        "boundary_condition_uncertainty": 0.0,
+        "material_property_variation": 0.0
+      },
+      "dataset_description": "Standard Optimization conditions, clean data, calibrated model.",
+      "epsilon": 0.45,
+      "d_ibench": 0.15,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        },
+        {
+          "Q": 0.9,
+          "tier": "Excellent"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "OC_SIMP",
+          "metric": "compliance_ratio",
+          "score": 0.42,
+          "Q": 0.75
+        },
+        {
+          "name": "MMA",
+          "metric": "compliance_ratio",
+          "score": 0.38,
+          "Q": 0.68
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "N_e": 2500,
+        "V_f": 0.5,
+        "penalty_p": 3.0,
+        "filter_r": 2.0,
+        "load_direction_error": 5.0,
+        "boundary_condition_uncertainty": 0.0,
+        "material_property_variation": 0.0
+      },
+      "dataset_description": "Mild noise/mismatch, representative of good hardware.",
+      "epsilon": 0.405,
+      "d_ibench": 0.3,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "OC_SIMP",
+          "metric": "compliance_ratio",
+          "score": 0.378,
+          "Q": 0.75
+        },
+        {
+          "name": "MMA",
+          "metric": "compliance_ratio",
+          "score": 0.342,
+          "Q": 0.68
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "N_e": 2500,
+        "V_f": 0.5,
+        "penalty_p": 3.0,
+        "filter_r": 2.0,
+        "load_direction_error": 15.0,
+        "boundary_condition_uncertainty": 0.0,
+        "material_property_variation": 0.1
+      },
+      "dataset_description": "Moderate noise and model mismatch, real-world conditions.",
+      "epsilon": 0.369,
+      "d_ibench": 0.52,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "OC_SIMP",
+          "metric": "compliance_ratio",
+          "score": 0.336,
+          "Q": 0.73
+        },
+        {
+          "name": "MMA",
+          "metric": "compliance_ratio",
+          "score": 0.304,
+          "Q": 0.66
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "N_e": 2500,
+        "V_f": 0.5,
+        "penalty_p": 3.0,
+        "filter_r": 2.0,
+        "load_direction_error": 30.0,
+        "boundary_condition_uncertainty": 0.1,
+        "material_property_variation": 0.2
+      },
+      "dataset_description": "Severe noise, large mismatch, no oracle access to calibration.",
+      "epsilon": 0.338,
+      "d_ibench": 0.72,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "OC_SIMP",
+          "metric": "compliance_ratio",
+          "score": 0.294,
+          "Q": 0.7
+        },
+        {
+          "name": "MMA",
+          "metric": "compliance_ratio",
+          "score": 0.266,
+          "Q": 0.63
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "benchmark_mbb_beam_50x100 + parametric Omega sampling",
+      "construction_method": "Sample Omega uniformly over declared bounds; apply forward model with injected mismatch; ground truth stored separately.",
+      "num_dev_instances": 200,
+      "num_holdout_instances": 100
+    },
+    "tracks": {
+      "track_A_stratified_worst_case": {
+        "strata": [
+          {
+            "name": "S1_easy",
+            "rep_difficulty": "easy"
+          },
+          {
+            "name": "S2_standard",
+            "rep_difficulty": "standard"
+          },
+          {
+            "name": "S3_hard",
+            "rep_difficulty": "hard"
+          },
+          {
+            "name": "S4_frontier",
+            "rep_difficulty": "very_hard"
+          }
+        ],
+        "samples_per_stratum": 5,
+        "pass_condition": "min_i(score_i) / epsilon_fn(Omega_centroid_s) >= 1.0 for all 4 strata"
+      },
+      "track_B_uniform_median": {
+        "num_samples": 50,
+        "pass_condition": "median_i(score_i) / epsilon_fn(Omega_median) >= 1.0"
+      },
+      "track_C_mismatch_degradation": {
+        "sweep_points": [
+          {
+            "phi": 0.0
+          },
+          {
+            "phi": 0.25
+          },
+          {
+            "phi": 0.5
+          },
+          {
+            "phi": 0.75
+          },
+          {
+            "phi": 1.0
+          }
+        ],
+        "scenes_per_point": 10,
+        "degradation_score": "(1/4) * sum_{i=1..4} [(Q_norm(phi_i) + Q_norm(phi_{i+1}))/2]"
+      }
+    },
+    "baselines": [
+      {
+        "name": "OC_SIMP",
+        "track_A_Q": 0.61,
+        "track_B_Q": 0.7,
+        "track_C_Q": 0.65,
+        "overall_Q": 0.65
+      },
+      {
+        "name": "MMA",
+        "track_A_Q": 0.55,
+        "track_B_Q": 0.63,
+        "track_C_Q": 0.59,
+        "overall_Q": 0.59
+      }
+    ]
+  },
+  "hardness_rule_check": "No baseline passes epsilon_fn over entire Omega. Hardest baseline fails at T4_blind (score < epsilon at severe-mismatch corner). Hardness rule: SATISFIED.",
+  "anti_overfitting_mechanisms": {
+    "M1_random_instantiation": "generator/instantiate.py uses G(SHA256(h_sub || k)) seeded by benchmark hash.",
+    "M2_convergence_scoring": "convergence/check_convergence.py verifies convergence rate across problem sizes.",
+    "M3_worst_case_eval": "scoring/worst_case.py returns min score over 20 fixed dev scenes per tier.",
+    "M4_community_adversarial": "adversarial/submit_adversarial.py; adversarial submissions eligible for T_k.",
+    "M5_method_sig_diversity": "Baselines span multiple method signatures; novelty bonus for approaches beyond L+O.",
+    "M6_gate_checks": "gates/check_s{1,2,3,4}.py embedded with thresholds.yaml."
+  },
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

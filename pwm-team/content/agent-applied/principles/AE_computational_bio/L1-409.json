@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-409",
+  "layer": "L1",
+  "principle_number": "409",
+  "title": "Phylogenetic Likelihood Inference",
+  "domain": "Computational Biology",
+  "sub_domain": "Molecular evolution",
+  "source_file": "AE_computational_bio/409_phylogenetic_likelihood.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "Phylogenetic maximum likelihood: reconstruct evolutionary tree topology and branch lengths from DNA/protein alignment.",
+    "forward_model": "L(tree, theta) = prod_site prod_node P(obs_node | obs_children, branch_length, substitution_model)",
+    "world_state_x": "tree topology tau, branch lengths t, substitution model parameters (GTR rates, base frequencies)",
+    "observation_y": "multiple sequence alignment (MSA) with N_taxa taxa and N_sites alignment positions",
+    "physical_parameters_theta": [
+      "N_taxa",
+      "N_sites",
+      "substitution_model_GTR_params",
+      "N_rate_categories"
+    ]
+  },
+  "G": {
+    "dag": "M.felsenstein.pruning_algorithm -> S.mcmc.tree_space_bayesian -> O.atr.total_tree_likelihood",
+    "vertices": [
+      "M.felsenstein.pruning_algorithm",
+      "S.mcmc.tree_space_bayesian",
+      "O.atr.total_tree_likelihood"
+    ],
+    "arcs": [
+      "M.felsenstein.pruning_algorithm -> S.mcmc.tree_space_bayesian",
+      "S.mcmc.tree_space_bayesian -> O.atr.total_tree_likelihood"
+    ],
+    "L_DAG": 4.5,
+    "n_c": 2
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 100000.0,
+    "condition_number_effective": 2000,
+    "condition_number_mismatched": 10000.0,
+    "regime": "NP-hard tree search space (N_taxa!! topologies); ML approximated by heuristic search; Bayesian MCMC samples topology posterior."
+  },
+  "C": {
+    "solver_class": "IQ-TREE2_ML or MrBayes_MCMC or BEAST2",
+    "convergence_rate_q": 2.0,
+    "error_bound": "RF distance < 10% topology error for 100 taxa at N_sites > 1000",
+    "complexity": "O(N_taxa ** 2 * N_sites) per tree evaluation with Felsenstein pruning"
+  },
+  "physics_fingerprint": {
+    "carrier": "N/A",
+    "sensing_mechanism": "molecular_sequence_alignment",
+    "integration_axis": "phylogenetic_tree",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "multinomial",
+    "solution_space": "phylogenetic_tree_topology",
+    "primitives": [
+      "M.felsenstein.pruning_algorithm",
+      "S.mcmc.tree_space_bayesian",
+      "O.atr.total_tree_likelihood"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "model_misspecification_substitution",
+    "long_branch_attraction",
+    "incomplete_lineage_sorting"
+  ],
+  "error_metric": "Robinson_Foulds_distance",
+  "error_metric_secondary": "branch_length_RMSE",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "nonlinear_inverse",
+      "forward_operator": "molecular_sequence_alignment",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_taxa": 50,
+        "N_sites": 5000,
+        "divergence_time_My": 100,
+        "mutation_rate_per_site_yr": 1e-09
+      },
+      "epsilon_fn_center": "5 Robinson_Foulds_distance"
+    },
+    "allowed_forward_operators": [
+      "molecular_sequence_alignment"
+    ],
+    "allowed_problem_classes": [
+      "nonlinear_inverse"
+    ],
+    "allowed_omega_dimensions": [
+      "N_taxa",
+      "N_sites",
+      "divergence_time_My",
+      "mutation_rate_per_site_yr"
+    ],
+    "omega_bounds": {
+      "N_taxa": [
+        4,
+        10000
+      ],
+      "N_sites": [
+        100,
+        100000
+      ],
+      "divergence_time_My": [
+        1,
+        1000
+      ],
+      "mutation_rate_per_site_yr": [
+        1e-10,
+        1e-07
+      ]
+    },
+    "epsilon_bounds": {
+      "Robinson_Foulds_distance": [
+        0,
+        20
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

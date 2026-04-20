@@ -1,0 +1,77 @@
+{
+  "artifact_id": "L3-098",
+  "layer": "L3",
+  "parent_l2": "L2-098",
+  "parent_l1": "L1-098",
+  "title": "Photometric Stereo Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+
+  "dataset_registry": {
+    "primary": "DiLiGenT benchmark (10 real objects x 96 lights, ground-truth normals)",
+    "secondary": "Light Stage high-resolution human faces + CyberWare head scan set",
+    "tertiary": "Blender synthetic scenes with mixed BRDF and known illumination",
+    "construction_method": "downselect K lights per instance; inject specular/shadow/ambient mismatch",
+    "num_dev_instances_per_tier": 20
+  },
+
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal", "rho": 1,
+      "omega_tier": {"H": 512, "W": 512, "K_lights": 10, "photon_count": 500, "specular_fraction": 0.0, "cast_shadow_fraction": 0.0},
+      "epsilon": 8.0, "d_ibench": 0.14,
+      "baselines": [
+        {"name": "Woodham-LS",   "mae_deg": 11.0, "Q": 0.52},
+        {"name": "Robust-PCA-3", "mae_deg": 8.2,  "Q": 0.72},
+        {"name": "PS-FCN",       "mae_deg": 5.5,  "Q": 0.92}
+      ]
+    },
+    {
+      "tier": "T2_low", "rho": 3,
+      "omega_tier": {"H": 512, "W": 512, "K_lights": 8, "photon_count": 300, "specular_fraction": 0.10, "cast_shadow_fraction": 0.05, "light_direction_error": 0.01},
+      "epsilon": 10.5, "d_ibench": 0.28,
+      "baselines": [
+        {"name": "Woodham-LS",   "mae_deg": 15.0, "Q": 0.35},
+        {"name": "Robust-PCA-3", "mae_deg": 10.0, "Q": 0.60},
+        {"name": "PS-FCN",       "mae_deg": 7.0,  "Q": 0.82}
+      ]
+    },
+    {
+      "tier": "T3_moderate", "rho": 5,
+      "omega_tier": {"H": 1024, "W": 1024, "K_lights": 6, "photon_count": 150, "specular_fraction": 0.25, "cast_shadow_fraction": 0.20, "inter_reflections": 0.15, "light_direction_error": 0.025},
+      "epsilon": 15.0, "d_ibench": 0.48,
+      "baselines": [
+        {"name": "Woodham-LS",   "mae_deg": 22.0, "Q": 0.22},
+        {"name": "Robust-PCA-3", "mae_deg": 14.5, "Q": 0.52},
+        {"name": "PS-FCN",       "mae_deg": 10.2, "Q": 0.70}
+      ]
+    },
+    {
+      "tier": "T4_blind", "rho": 10,
+      "omega_tier": {"H": 2048, "W": 2048, "K_lights": 4, "photon_count": 80, "specular_fraction": 0.50, "cast_shadow_fraction": 0.40, "inter_reflections": 0.30, "light_direction_error": 0.05},
+      "epsilon": 22.0, "d_ibench": 0.72,
+      "baselines": [
+        {"name": "Woodham-LS",   "mae_deg": 34.0, "Q": 0.10},
+        {"name": "Robust-PCA-3", "mae_deg": 22.5, "Q": 0.42},
+        {"name": "PS-FCN",       "mae_deg": 16.0, "Q": 0.55}
+      ]
+    }
+  ],
+
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "DiLiGenT + LightStage + Blender-synthetic union",
+      "num_dev_instances": 200,
+      "construction_method": "parametric (K_lights, specular, shadow, light_direction_error) sweep"
+    },
+    "baselines": [
+      {"name": "Woodham-LS",   "overall_Q": 0.30},
+      {"name": "Robust-PCA-3", "overall_Q": 0.56},
+      {"name": "PS-FCN",       "overall_Q": 0.75}
+    ]
+  },
+
+  "hardness_rule_check": "SATISFIED — PS-FCN fails T4_blind (K=4 + specular=0.5 + shadow=0.4 + inter_reflections=0.3 corner).",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

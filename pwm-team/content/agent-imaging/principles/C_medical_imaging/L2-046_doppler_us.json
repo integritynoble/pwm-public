@@ -1,0 +1,152 @@
+{
+  "artifact_id": "L2-046",
+  "layer": "L2",
+  "parent_l1": "L1-046",
+  "title": "Doppler Ultrasound (color / spectral) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "N_elements": [
+        32,
+        256
+      ],
+      "PRF_kHz": [
+        0.5,
+        20
+      ],
+      "f_MHz": [
+        1,
+        15
+      ],
+      "depth_cm": [
+        1,
+        25
+      ],
+      "SNR_dB": [
+        0.0,
+        35.0
+      ],
+      "angle_correction": [
+        0.0,
+        0.5
+      ],
+      "wall_filter_bleedthrough": [
+        0.0,
+        0.3
+      ],
+      "aliasing": [
+        0.0,
+        0.5
+      ],
+      "low_velocity_sensitivity": [
+        0.0,
+        0.3
+      ]
+    },
+    "E": {
+      "forward": "delta_f = 2 v cos(theta) f_0 / c; autocorrelate packet for velocity estimate",
+      "operator": "doppler_us_forward_mismatch",
+      "primitive_chain": "L.emit.acoustic_pulse -> L.doppler_autocorrelation -> int.temporal",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "16.0 + 0.3 * SNR_dB - 8.0 * angle_correction - 6.0 * aliasing - 4.0 * wall_filter_bleedthrough"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Autocorrelation",
+        "method_sig": "L+O",
+        "expected_psnr": 22.0
+      },
+      {
+        "name": "PCA-Wall-Filter",
+        "method_sig": "L+O",
+        "expected_psnr": 24.0
+      },
+      {
+        "name": "Doppler-Net",
+        "method_sig": "L+N",
+        "expected_psnr": 26.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_elements": 128,
+        "PRF_kHz": 5,
+        "f_MHz": 5,
+        "depth_cm": 10,
+        "SNR_dB": 22,
+        "angle_correction": 0.0,
+        "wall_filter_bleedthrough": 0.0,
+        "aliasing": 0.0
+      },
+      "epsilon": 24.0
+    },
+    "tier_bounds": {
+      "N_elements": [
+        32,
+        256
+      ],
+      "PRF_kHz": [
+        0.5,
+        20
+      ],
+      "f_MHz": [
+        1,
+        15
+      ],
+      "depth_cm": [
+        1,
+        25
+      ],
+      "SNR_dB": [
+        0.0,
+        35.0
+      ],
+      "angle_correction": [
+        0.0,
+        0.5
+      ],
+      "wall_filter_bleedthrough": [
+        0.0,
+        0.3
+      ],
+      "aliasing": [
+        0.0,
+        0.5
+      ],
+      "low_velocity_sensitivity": [
+        0.0,
+        0.3
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.5,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

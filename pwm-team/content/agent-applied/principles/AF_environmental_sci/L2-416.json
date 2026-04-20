@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-416",
+  "layer": "L2",
+  "parent_l1": "L1-416",
+  "principle_ref": "sha256:<L1-416_principle_hash>",
+  "title": "Atmospheric Radiative Transfer Inversion \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "N_layers": [
+        10,
+        100
+      ],
+      "N_channels": [
+        100,
+        10000
+      ],
+      "noise_NEdT_K": [
+        0.01,
+        1.0
+      ],
+      "cloud_fraction": [
+        0.0,
+        1.0
+      ]
+    },
+    "E": {
+      "forward": "I(nu) = integral B(nu, T(z)) * d_tau/dz * exp(-tau(nu,z)/mu) dz (Schwarzschild equation)",
+      "operator": "satellite_radiance_inversion",
+      "primitive_chain": "S.rt.disort_solver -> M.mol.absorption_xsection -> O.optimal_estimation.rodgers",
+      "inverse": "recover atmospheric temperature T(z) and trace gas concentration profiles q_i(z) from top-of-atmosphere radiance spectra I(nu) from hyperspectral IR sounder"
+    },
+    "B": {
+      "positivity": "T(z) > 0, q_i(z) >= 0",
+      "hydrostatic": "dp = -rho*g*dz"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "temperature_profile_RMSE_K",
+      "ozone_column_RMSE_DU",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.5 + 0.5 * (noise_NEdT_K / 0.1) ** 0.5"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 1D_atmospheric_profile"
+    },
+    "baselines": [
+      {
+        "name": "optimal_estimation_Rodgers",
+        "method_sig": "L+O",
+        "expected_score": 1.2
+      },
+      {
+        "name": "NLLS_Marquardt_retrieval",
+        "method_sig": "L+O",
+        "expected_score": 1.0
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_layers": 40,
+        "N_channels": 2000,
+        "noise_NEdT_K": 0.1,
+        "cloud_fraction": 0.0,
+        "cloud_contamination": 0.0,
+        "nonLTE_effect": 0.0,
+        "spectroscopic_line_parameter_uncertainty": 0.0
+      },
+      "epsilon": 1.0
+    },
+    "tier_bounds": {
+      "N_layers": [
+        10,
+        100
+      ],
+      "N_channels": [
+        100,
+        10000
+      ],
+      "noise_NEdT_K": [
+        0.01,
+        1.0
+      ],
+      "cloud_fraction": [
+        0.0,
+        1.0
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.38,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.38 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

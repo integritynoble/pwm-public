@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-424",
+  "layer": "L1",
+  "principle_number": "424",
+  "title": "Carbon Cycle Biogeochemical Inversion",
+  "domain": "Environmental Science",
+  "sub_domain": "Carbon cycle",
+  "source_file": "AF_environmental_sci/424_carbon_cycle.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "Carbon cycle inversion: estimate surface CO2 fluxes (NEE, ocean uptake) from atmospheric CO2 observations.",
+    "forward_model": "C_atm(x, t) = integral G(x, t; x', t') * F(x', t') dx' dt' (AGCM transport)",
+    "world_state_x": "net ecosystem exchange NEE(x,t) and ocean-atmosphere CO2 flux F_ocean(x,t)",
+    "observation_y": "atmospheric CO2 mole fraction at N_stations ground stations + satellite (OCO-2)",
+    "physical_parameters_theta": [
+      "N_flux_regions",
+      "transport_model_GEOS-Chem",
+      "prior_flux_uncertainty_GtC_yr",
+      "data_noise_ppm"
+    ]
+  },
+  "G": {
+    "dag": "M.agcm.tracer_transport -> O.bayesian.flux_inversion -> S.prior.biosphere_model",
+    "vertices": [
+      "M.agcm.tracer_transport",
+      "O.bayesian.flux_inversion",
+      "S.prior.biosphere_model"
+    ],
+    "arcs": [
+      "M.agcm.tracer_transport -> O.bayesian.flux_inversion",
+      "O.bayesian.flux_inversion -> S.prior.biosphere_model"
+    ],
+    "L_DAG": 4.5,
+    "n_c": 1
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 100000.0,
+    "condition_number_effective": 2000,
+    "condition_number_mismatched": 10000.0,
+    "regime": "Underdetermined (few stations vs. many flux regions); transport model determines footprint; biosphere model prior critical."
+  },
+  "C": {
+    "solver_class": "Bayesian_inversion_CarbonTracker or 4DVar_GEOS-Chem",
+    "convergence_rate_q": 2.0,
+    "error_bound": "global NEE uncertainty < 1 GtC/yr with OCO-2 + surface network",
+    "complexity": "O(N_regions ** 2 * N_obs) for Hessian-based inversion"
+  },
+  "physics_fingerprint": {
+    "carrier": "N/A",
+    "sensing_mechanism": "atmospheric_CO2_inversion",
+    "integration_axis": "global_atmosphere_land_ocean",
+    "problem_class": "linear_inverse",
+    "noise_model": "observation_gaussian",
+    "solution_space": "NEE_flux_map",
+    "primitives": [
+      "M.agcm.tracer_transport",
+      "O.bayesian.flux_inversion",
+      "S.prior.biosphere_model"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "transport_model_error",
+    "prior_uncertainty_specification",
+    "OCO2_bias_correction"
+  ],
+  "error_metric": "global_NEE_uncertainty_GtC_yr",
+  "error_metric_secondary": "regional_flux_RMSE_GtC_yr",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "linear_inverse",
+      "forward_operator": "atmospheric_CO2_inversion",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_surface_stations": 100,
+        "N_flux_regions": 22,
+        "satellite_coverage_percent": 50,
+        "prior_uncertainty_GtC_yr": 1.0
+      },
+      "epsilon_fn_center": "0.5 global_NEE_uncertainty_GtC_yr"
+    },
+    "allowed_forward_operators": [
+      "atmospheric_CO2_inversion"
+    ],
+    "allowed_problem_classes": [
+      "linear_inverse"
+    ],
+    "allowed_omega_dimensions": [
+      "N_surface_stations",
+      "N_flux_regions",
+      "satellite_coverage_percent",
+      "prior_uncertainty_GtC_yr"
+    ],
+    "omega_bounds": {
+      "N_surface_stations": [
+        10,
+        300
+      ],
+      "N_flux_regions": [
+        11,
+        100
+      ],
+      "satellite_coverage_percent": [
+        0,
+        100
+      ],
+      "prior_uncertainty_GtC_yr": [
+        0.1,
+        5.0
+      ]
+    },
+    "epsilon_bounds": {
+      "global_NEE_uncertainty_GtC_yr": [
+        0.1,
+        3.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

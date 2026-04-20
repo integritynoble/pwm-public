@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-414",
+  "layer": "L1",
+  "principle_number": "414",
+  "title": "Gaussian Plume Atmospheric Dispersion",
+  "domain": "Environmental Science",
+  "sub_domain": "Air quality modeling",
+  "source_file": "AF_environmental_sci/414_gaussian_plume.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "Gaussian plume: infer point source emission rate Q and location from downwind concentration measurements.",
+    "forward_model": "C(x,y,z) = Q/(2*pi*sigma_y*sigma_z*u) * exp(-y ** 2/(2*sigma_y ** 2)) * [exp(-(z-H) ** 2/(2*sigma_z ** 2)) + exp(-(z+H) ** 2/(2*sigma_z ** 2))]",
+    "world_state_x": "source emission rate Q (g/s), source height H (m), source location (x0, y0)",
+    "observation_y": "ambient concentration measurements C_i (ug/m3) at N_sensors downwind",
+    "physical_parameters_theta": [
+      "wind_speed_u_m_s",
+      "wind_direction_deg",
+      "stability_class_A_F",
+      "mixing_height_m"
+    ]
+  },
+  "G": {
+    "dag": "M.gaussian.plume_model -> O.least_squares.source_inversion -> S.stability.pasquill_gifford",
+    "vertices": [
+      "M.gaussian.plume_model",
+      "O.least_squares.source_inversion",
+      "S.stability.pasquill_gifford"
+    ],
+    "arcs": [
+      "M.gaussian.plume_model -> O.least_squares.source_inversion",
+      "O.least_squares.source_inversion -> S.stability.pasquill_gifford"
+    ],
+    "L_DAG": 2.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 500,
+    "condition_number_effective": 25,
+    "condition_number_mismatched": 100,
+    "regime": "Linear in Q; nonlinear in source location; stability class determines sigma_y, sigma_z; valid for neutral/stable conditions."
+  },
+  "C": {
+    "solver_class": "OLS_source_inversion or MCMC_Bayesian_source",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Q estimate within 30% for stable conditions",
+    "complexity": "O(N_sensors * N_sources) per evaluation"
+  },
+  "physics_fingerprint": {
+    "carrier": "N/A",
+    "sensing_mechanism": "atmospheric_dispersion_gaussian",
+    "integration_axis": "downwind_distance",
+    "problem_class": "parameter_estimation",
+    "noise_model": "lognormal",
+    "solution_space": "source_strength_location",
+    "primitives": [
+      "M.gaussian.plume_model",
+      "O.least_squares.source_inversion",
+      "S.stability.pasquill_gifford"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "wind_direction_uncertainty_deg",
+    "stability_class_error",
+    "building_wake_effects"
+  ],
+  "error_metric": "source_strength_RMSE_percent",
+  "error_metric_secondary": "concentration_RMSE_ug_m3",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "parameter_estimation",
+      "forward_operator": "atmospheric_dispersion_gaussian",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_sensors": 20,
+        "distance_km": 1.0,
+        "wind_speed_m_s": 3.0,
+        "stability_class_int": 4
+      },
+      "epsilon_fn_center": "25 source_strength_RMSE_percent"
+    },
+    "allowed_forward_operators": [
+      "atmospheric_dispersion_gaussian"
+    ],
+    "allowed_problem_classes": [
+      "parameter_estimation"
+    ],
+    "allowed_omega_dimensions": [
+      "N_sensors",
+      "distance_km",
+      "wind_speed_m_s",
+      "stability_class_int"
+    ],
+    "omega_bounds": {
+      "N_sensors": [
+        3,
+        100
+      ],
+      "distance_km": [
+        0.1,
+        50.0
+      ],
+      "wind_speed_m_s": [
+        0.5,
+        10.0
+      ],
+      "stability_class_int": [
+        1,
+        6
+      ]
+    },
+    "epsilon_bounds": {
+      "source_strength_RMSE_percent": [
+        5,
+        100
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

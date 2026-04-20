@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-442",
+  "layer": "L2",
+  "parent_l1": "L1-442",
+  "principle_ref": "sha256:<L1-442_principle_hash>",
+  "title": "Implied Volatility Surface Construction \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "N_strikes_per_slice": [
+        3,
+        50
+      ],
+      "N_maturities": [
+        2,
+        30
+      ],
+      "data_noise_bp": [
+        5,
+        200
+      ],
+      "max_maturity_yr": [
+        0.1,
+        10.0
+      ]
+    },
+    "E": {
+      "forward": "sigma_impl(k, T) modeled by SVI parameterization: w(k) = a + b*(rho*(k-m) + sqrt((k-m) ** 2 + sigma ** 2))",
+      "operator": "vol_surface_interpolation",
+      "primitive_chain": "S.interpolation.cubic_spline -> M.arbitrage.butterfly_spread -> O.svi.calibration",
+      "inverse": "recover continuous implied vol surface sigma(K/F from sparse market implied vols sigma_i at (K_i"
+    },
+    "B": {
+      "no_arbitrage_butterfly": "d ** 2C/dK ** 2 >= 0",
+      "no_arbitrage_calendar": "total_variance monotone in T"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "vol_surface_interpolation_RMSE_bp",
+      "arbitrage_violation_count",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "10 + 10 * (data_noise_bp / 20) ** 0.5"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 implied_vol_surface"
+    },
+    "baselines": [
+      {
+        "name": "cubic_spline_per_slice",
+        "method_sig": "L+O",
+        "expected_score": 30
+      },
+      {
+        "name": "SVI_SSVI",
+        "method_sig": "L+O",
+        "expected_score": 18
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_strikes_per_slice": 10,
+        "N_maturities": 8,
+        "data_noise_bp": 20,
+        "max_maturity_yr": 2.0,
+        "sparse_data_interpolation_error": 0.0,
+        "butterfly_arbitrage_violation": 0.0,
+        "calendar_spread_arbitrage": 0.0
+      },
+      "epsilon": 20.0
+    },
+    "tier_bounds": {
+      "N_strikes_per_slice": [
+        3,
+        50
+      ],
+      "N_maturities": [
+        2,
+        30
+      ],
+      "data_noise_bp": [
+        5,
+        200
+      ],
+      "max_maturity_yr": [
+        0.1,
+        10.0
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.3,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.3 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

@@ -1,0 +1,173 @@
+{
+  "artifact_id": "L3-157",
+  "layer": "L3",
+  "parent_l2": "L2-157",
+  "parent_l1": "L1-157",
+  "title": "PET-MR Fusion (molecular + multi-contrast soft tissue) Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "canonical dataset for this principle",
+    "secondary": "simulated forward synthesis at declared Omega",
+    "construction_method": "parametric forward + declared noise",
+    "num_dev_instances_per_tier": 20
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "H": 256,
+        "W": 256,
+        "Z": 128,
+        "mr_based_attenuation_error": 0.0,
+        "motion_between_scans": 0.0,
+        "truncation": 0.0,
+        "susceptibility_distortion": 0.0,
+        "SNR_dB": 22.0
+      },
+      "epsilon": 24.0,
+      "d_ibench": 0.14,
+      "baselines": [
+        {
+          "name": "Segment-AC",
+          "score": 21.5,
+          "Q": 0.88
+        },
+        {
+          "name": "Dixon-AC",
+          "score": 24.0,
+          "Q": 0.88
+        },
+        {
+          "name": "DeepAC-PET-MR",
+          "score": 26.5,
+          "Q": 0.88
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "H": 256,
+        "W": 256,
+        "Z": 128,
+        "mr_based_attenuation_error": 0.06,
+        "motion_between_scans": 2.0,
+        "truncation": 0.06,
+        "susceptibility_distortion": 0.06,
+        "SNR_dB": 19.0
+      },
+      "epsilon": 19.68,
+      "d_ibench": 0.28,
+      "baselines": [
+        {
+          "name": "Segment-AC",
+          "score": 19.5,
+          "Q": 0.68
+        },
+        {
+          "name": "Dixon-AC",
+          "score": 22.0,
+          "Q": 0.68
+        },
+        {
+          "name": "DeepAC-PET-MR",
+          "score": 24.5,
+          "Q": 0.68
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "H": 256,
+        "W": 256,
+        "Z": 128,
+        "mr_based_attenuation_error": 0.15,
+        "motion_between_scans": 5.0,
+        "truncation": 0.15,
+        "susceptibility_distortion": 0.15,
+        "SNR_dB": 10.0
+      },
+      "epsilon": 15.36,
+      "d_ibench": 0.48,
+      "baselines": [
+        {
+          "name": "Segment-AC",
+          "score": 17.5,
+          "Q": 0.48
+        },
+        {
+          "name": "Dixon-AC",
+          "score": 20.0,
+          "Q": 0.48
+        },
+        {
+          "name": "DeepAC-PET-MR",
+          "score": 22.5,
+          "Q": 0.48
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "H": 256,
+        "W": 256,
+        "Z": 128,
+        "mr_based_attenuation_error": 0.3,
+        "motion_between_scans": 10.0,
+        "truncation": 0.3,
+        "susceptibility_distortion": 0.3,
+        "SNR_dB": 0.0
+      },
+      "epsilon": 11.04,
+      "d_ibench": 0.72,
+      "baselines": [
+        {
+          "name": "Segment-AC",
+          "score": 15.5,
+          "Q": 0.28
+        },
+        {
+          "name": "Dixon-AC",
+          "score": 18.0,
+          "Q": 0.28
+        },
+        {
+          "name": "DeepAC-PET-MR",
+          "score": 20.5,
+          "Q": 0.28
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "full parametric sweep",
+      "num_dev_instances": 200,
+      "construction_method": "parametric Omega sweep"
+    },
+    "baselines": [
+      {
+        "name": "Segment-AC",
+        "overall_Q": 0.7
+      },
+      {
+        "name": "Dixon-AC",
+        "overall_Q": 0.6
+      },
+      {
+        "name": "DeepAC-PET-MR",
+        "overall_Q": 0.5
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind strata corner.",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

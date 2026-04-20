@@ -1,0 +1,185 @@
+{
+  "artifact_id": "L1-051",
+  "layer": "L1",
+  "principle_number": "051",
+  "title": "Proton Therapy (proton-beam radiation dose imaging)",
+  "domain": "Medical Imaging",
+  "sub_domain": "Dose-deposition imaging for Bragg-peak therapy",
+  "source_file": "C_medical_imaging/051_proton_therapy.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical medical-imaging literature for this principle.",
+  "E": {
+    "description": "Proton Therapy (proton-beam radiation dose imaging) forward model.",
+    "forward_model": "D(r) = integral fluence(E) * dE/dx(r, E) dE + n; Bragg peak at finite depth",
+    "world_state_x": "Patient-side quantity of interest (attenuation / activity / perfusion / stiffness etc.)",
+    "observation_y": "Clinical sensor output at declared resolution + noise",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "Z",
+      "N_beams",
+      "proton_energy_MeV",
+      "SNR_dB",
+      "range_uncertainty",
+      "organ_motion",
+      "tissue_heterogeneity",
+      "CT_hu_calibration_error"
+    ]
+  },
+  "G": {
+    "dag": "L.proton_accelerator -> L.bragg_peak_energy_deposition -> D.dose_meter -> int.spatial",
+    "vertices": [
+      "L.proton_accelerator",
+      "L.bragg_peak_energy_deposition",
+      "D.dose_meter",
+      "int.spatial"
+    ],
+    "arcs": [
+      "L.proton_accelerator -> L.bragg_peak_energy_deposition",
+      "L.bragg_peak_energy_deposition -> D.dose_meter",
+      "D.dose_meter -> int.spatial"
+    ],
+    "L_DAG": 4.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 300,
+    "condition_number_effective": 15,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Analytical-Dose, Monte-Carlo, Proton-Net",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sensor SNR + mismatch bias + regularisation.",
+    "complexity": "O(H W) to O(H W Z) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "proton_therapy_dose",
+    "integration_axis": "spatial",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "shot_poisson",
+    "solution_space": "3D_dose_distribution",
+    "primitives": [
+      "L.proton_accelerator",
+      "L.bragg_peak_energy_deposition",
+      "D.dose_meter",
+      "int.spatial"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "range_uncertainty",
+    "organ_motion",
+    "tissue_heterogeneity",
+    "CT_hu_calibration_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "proton_therapy",
+      "forward_operator": "proton_therapy_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 256,
+        "W": 256,
+        "Z": 128,
+        "N_beams": 3,
+        "proton_energy_MeV": 150,
+        "SNR_dB": 30,
+        "range_uncertainty": 0.01,
+        "organ_motion": 0.0,
+        "tissue_heterogeneity": 0.05,
+        "CT_hu_calibration_error": 0.0
+      },
+      "epsilon_fn_center": "27.0"
+    },
+    "allowed_forward_operators": [
+      "proton_therapy_forward"
+    ],
+    "allowed_problem_classes": [
+      "proton_therapy"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "Z",
+      "N_beams",
+      "proton_energy_MeV",
+      "SNR_dB",
+      "range_uncertainty",
+      "organ_motion",
+      "tissue_heterogeneity",
+      "CT_hu_calibration_error",
+      "range_uncertainty",
+      "organ_motion",
+      "tissue_heterogeneity",
+      "CT_hu_calibration_error"
+    ],
+    "omega_bounds": {
+      "H": 128,
+      "W": 128,
+      "Z": [
+        32,
+        512
+      ],
+      "N_beams": [
+        1,
+        16
+      ],
+      "proton_energy_MeV": [
+        70,
+        250
+      ],
+      "SNR_dB": [
+        10.0,
+        40.0
+      ],
+      "range_uncertainty": [
+        0.0,
+        0.05
+      ],
+      "organ_motion": [
+        0.0,
+        0.3
+      ],
+      "tissue_heterogeneity": [
+        0.0,
+        0.3
+      ],
+      "CT_hu_calibration_error": [
+        0.0,
+        0.1
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        5.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

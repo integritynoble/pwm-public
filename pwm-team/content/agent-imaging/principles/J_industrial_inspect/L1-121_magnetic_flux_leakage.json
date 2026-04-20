@@ -1,0 +1,188 @@
+{
+  "artifact_id": "L1-121",
+  "layer": "L1",
+  "principle_number": "121",
+  "title": "Magnetic Flux Leakage (MFL) \u2014 pipeline & rail inspection",
+  "domain": "Industrial Inspection",
+  "sub_domain": "Ferromagnetic defect detection via DC flux",
+  "source_file": "J_industrial_inspect/121_magnetic_flux_leakage.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical NDT/NDE literature for this principle.",
+  "E": {
+    "description": "Magnetic Flux Leakage (MFL) \u2014 pipeline & rail inspection forward model.",
+    "forward_model": "B_leak(x,y) = integral m(defect(r)) * kernel(r - (x,y), lift_off, velocity) + n",
+    "world_state_x": "Defect / strain / composition map depending on principle",
+    "observation_y": "Sensor output at declared geometry",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "N_sensors",
+      "lift_off_mm",
+      "velocity_mps",
+      "SNR_dB",
+      "liftoff_variation",
+      "magnetization_non_uniformity",
+      "external_interference"
+    ]
+  },
+  "G": {
+    "dag": "L.dc_magnetize -> L.flux_leakage -> D.hall_sensor -> int.spatial",
+    "vertices": [
+      "L.dc_magnetize",
+      "L.flux_leakage",
+      "D.hall_sensor",
+      "int.spatial"
+    ],
+    "arcs": [
+      "L.dc_magnetize -> L.flux_leakage",
+      "L.flux_leakage -> D.hall_sensor",
+      "D.hall_sensor -> int.spatial"
+    ],
+    "L_DAG": 3.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 200,
+    "condition_number_effective": 10,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Dipole-Model, NN-MFL, Deep-MFL",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sensor SNR + mismatch bias.",
+    "complexity": "O(H W) to O(H W Z) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "radio_wave",
+    "sensing_mechanism": "magnetic_flux_leakage",
+    "integration_axis": "spatial",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "2D_defect_geometry",
+    "primitives": [
+      "L.dc_magnetize",
+      "L.flux_leakage",
+      "D.hall_sensor",
+      "int.spatial"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "liftoff_variation",
+    "magnetization_non_uniformity",
+    "external_interference",
+    "velocity_effect"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "mfl",
+      "forward_operator": "mfl_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 256,
+        "W": 4096,
+        "N_sensors": 32,
+        "lift_off_mm": 1.0,
+        "velocity_mps": 1.0,
+        "SNR_dB": 20,
+        "liftoff_variation": 0.0,
+        "magnetization_non_uniformity": 0.0,
+        "external_interference": 0.0
+      },
+      "epsilon_fn_center": "24.0"
+    },
+    "allowed_forward_operators": [
+      "mfl_forward"
+    ],
+    "allowed_problem_classes": [
+      "mfl"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "N_sensors",
+      "lift_off_mm",
+      "velocity_mps",
+      "SNR_dB",
+      "liftoff_variation",
+      "magnetization_non_uniformity",
+      "external_interference",
+      "liftoff_variation",
+      "magnetization_non_uniformity",
+      "external_interference",
+      "velocity_effect"
+    ],
+    "omega_bounds": {
+      "H": [
+        64,
+        1024
+      ],
+      "W": [
+        512,
+        32768
+      ],
+      "N_sensors": [
+        8,
+        256
+      ],
+      "lift_off_mm": [
+        0.1,
+        10.0
+      ],
+      "velocity_mps": [
+        0.1,
+        20.0
+      ],
+      "SNR_dB": [
+        0.0,
+        35.0
+      ],
+      "liftoff_variation": [
+        0.0,
+        0.5
+      ],
+      "magnetization_non_uniformity": [
+        0.0,
+        0.3
+      ],
+      "external_interference": [
+        0.0,
+        0.3
+      ],
+      "velocity_effect": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        5.0,
+        40.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

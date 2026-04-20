@@ -1,0 +1,158 @@
+{
+  "artifact_id": "L2-033",
+  "layer": "L2",
+  "parent_l1": "L1-033",
+  "title": "Positron Emission Tomography (PET) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": 128,
+      "W": 128,
+      "Z": [
+        16,
+        512
+      ],
+      "N_LORs": [
+        1000000,
+        10000000000
+      ],
+      "counts_per_LOR": [
+        0.1,
+        1000
+      ],
+      "SNR_dB": [
+        0.0,
+        35.0
+      ],
+      "random_coincidences": [
+        0.0,
+        0.5
+      ],
+      "scatter": [
+        0.0,
+        0.5
+      ],
+      "attenuation_correction_error": [
+        0.0,
+        0.3
+      ],
+      "patient_motion": [
+        0.0,
+        0.3
+      ],
+      "TOF_timing_jitter": [
+        0.0,
+        0.5
+      ]
+    },
+    "E": {
+      "forward": "n_projections(u, v) = integral A(r) * attenuation(r) along LOR + randoms + scatter + n",
+      "operator": "pet_forward_mismatch",
+      "primitive_chain": "L.annihilation_511keV -> D.coincidence_detector -> L.backproject -> int.angular",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "17.0 + 0.3 * SNR_dB - 8.0 * random_coincidences - 5.0 * scatter - 6.0 * patient_motion"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "FBP-PET",
+        "method_sig": "L+O",
+        "expected_psnr": 22.5
+      },
+      {
+        "name": "OSEM",
+        "method_sig": "I+O",
+        "expected_psnr": 25.0
+      },
+      {
+        "name": "DeepPET",
+        "method_sig": "L+N",
+        "expected_psnr": 27.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 256,
+        "W": 256,
+        "Z": 64,
+        "N_LORs": 100000000,
+        "counts_per_LOR": 10,
+        "SNR_dB": 20,
+        "random_coincidences": 0.1,
+        "scatter": 0.3,
+        "attenuation_correction_error": 0.0,
+        "patient_motion": 0.0
+      },
+      "epsilon": 25.0
+    },
+    "tier_bounds": {
+      "H": 128,
+      "W": 128,
+      "Z": [
+        16,
+        512
+      ],
+      "N_LORs": [
+        1000000,
+        10000000000
+      ],
+      "counts_per_LOR": [
+        0.1,
+        1000
+      ],
+      "SNR_dB": [
+        0.0,
+        35.0
+      ],
+      "random_coincidences": [
+        0.0,
+        0.5
+      ],
+      "scatter": [
+        0.0,
+        0.5
+      ],
+      "attenuation_correction_error": [
+        0.0,
+        0.3
+      ],
+      "patient_motion": [
+        0.0,
+        0.3
+      ],
+      "TOF_timing_jitter": [
+        0.0,
+        0.5
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.5,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

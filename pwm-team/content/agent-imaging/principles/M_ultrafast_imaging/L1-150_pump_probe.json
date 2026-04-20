@@ -1,0 +1,177 @@
+{
+  "artifact_id": "L1-150",
+  "layer": "L1",
+  "principle_number": "150",
+  "title": "Pump-Probe Spectroscopy / Imaging",
+  "domain": "Ultrafast Imaging",
+  "sub_domain": "Femtosecond two-pulse transient imaging",
+  "source_file": "M_ultrafast_imaging/150_pump_probe.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
+  "E": {
+    "description": "Pump-Probe Spectroscopy / Imaging forward model.",
+    "forward_model": "Delta_A(t, lambda) = -log(T_excited(t, lambda) / T_ground(lambda)) + n; scan pump-probe delay t",
+    "world_state_x": "Principle-specific quantity of interest",
+    "observation_y": "Detector output at declared geometry",
+    "physical_parameters_theta": [
+      "N_delays",
+      "N_wavelengths",
+      "pulse_fs",
+      "photon_count",
+      "pulse_jitter",
+      "delay_stage_drift",
+      "two_color_overlap",
+      "thermal_drift"
+    ]
+  },
+  "G": {
+    "dag": "L.pump_pulse -> L.probe_pulse -> L.delay_stage -> int.temporal",
+    "vertices": [
+      "L.pump_pulse",
+      "L.probe_pulse",
+      "L.delay_stage",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.pump_pulse -> L.probe_pulse",
+      "L.probe_pulse -> L.delay_stage",
+      "L.delay_stage -> int.temporal"
+    ],
+    "L_DAG": 3.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 280,
+    "condition_number_effective": 14,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Global-Analysis, Lifetime-PCA, PumpProbe-Net",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sensor SNR + mismatch bias + regularization.",
+    "complexity": "principle-dependent"
+  },
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "pump_probe_transient",
+    "integration_axis": "temporal",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "2D_transient_absorption",
+    "primitives": [
+      "L.pump_pulse",
+      "L.probe_pulse",
+      "L.delay_stage",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "pulse_jitter",
+    "delay_stage_drift",
+    "two_color_overlap",
+    "thermal_drift"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "pump_probe",
+      "forward_operator": "pump_probe_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_delays": 256,
+        "N_wavelengths": 512,
+        "pulse_fs": 50,
+        "photon_count": 1000,
+        "pulse_jitter": 0.0,
+        "delay_stage_drift": 0.0,
+        "two_color_overlap": 1.0,
+        "thermal_drift": 0.0
+      },
+      "epsilon_fn_center": "24.0"
+    },
+    "allowed_forward_operators": [
+      "pump_probe_forward"
+    ],
+    "allowed_problem_classes": [
+      "pump_probe"
+    ],
+    "allowed_omega_dimensions": [
+      "N_delays",
+      "N_wavelengths",
+      "pulse_fs",
+      "photon_count",
+      "pulse_jitter",
+      "delay_stage_drift",
+      "two_color_overlap",
+      "thermal_drift",
+      "pulse_jitter",
+      "delay_stage_drift",
+      "two_color_overlap",
+      "thermal_drift"
+    ],
+    "omega_bounds": {
+      "N_delays": [
+        32,
+        2048
+      ],
+      "N_wavelengths": [
+        64,
+        4096
+      ],
+      "pulse_fs": [
+        10,
+        500
+      ],
+      "photon_count": [
+        50,
+        10000
+      ],
+      "pulse_jitter": [
+        0.0,
+        50.0
+      ],
+      "delay_stage_drift": [
+        0.0,
+        5.0
+      ],
+      "two_color_overlap": [
+        0.3,
+        1.0
+      ],
+      "thermal_drift": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        5.0,
+        40.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

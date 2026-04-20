@@ -1,0 +1,178 @@
+{
+  "artifact_id": "L1-107",
+  "layer": "L1",
+  "principle_number": "107",
+  "title": "Passive Microwave Radiometry",
+  "domain": "Remote Sensing",
+  "sub_domain": "Thermal brightness satellite radiometry",
+  "source_file": "I_remote_sensing/107_passive_microwave.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical remote-sensing literature for this principle.",
+  "E": {
+    "description": "Passive Microwave Radiometry forward model.",
+    "forward_model": "T_b(theta, phi) = integral antenna_pattern(theta, phi) * T_physical(surface) * emissivity + atm_contrib + n",
+    "world_state_x": "Scene-side quantity of interest (reflectance / velocity / phase / concentration)",
+    "observation_y": "Sensor output at declared resolution + noise",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "N_channels",
+      "f_GHz",
+      "SNR_dB",
+      "antenna_sidelobe",
+      "land_contamination",
+      "RFI"
+    ]
+  },
+  "G": {
+    "dag": "L.radiometer -> L.antenna_pattern -> int.temporal",
+    "vertices": [
+      "L.radiometer",
+      "L.antenna_pattern",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.radiometer -> L.antenna_pattern",
+      "L.antenna_pattern -> int.temporal"
+    ],
+    "L_DAG": 2.7,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 140,
+    "condition_number_effective": 7,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "GMI-Backus-Gilbert, Brightness-Interp, MW-UNet",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sensor SNR + mismatch-induced bias.",
+    "complexity": "O(H W) to O(H W N_bands) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "radio_wave",
+    "sensing_mechanism": "microwave_radiometry",
+    "integration_axis": "temporal",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "2D_brightness_temperature",
+    "primitives": [
+      "L.radiometer",
+      "L.antenna_pattern",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "antenna_sidelobe",
+    "land_contamination",
+    "RFI",
+    "surface_emissivity_uncertainty"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "passive_microwave",
+      "forward_operator": "passive_microwave_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 1440,
+        "W": 720,
+        "N_channels": 12,
+        "f_GHz": 19,
+        "SNR_dB": 35.0,
+        "antenna_sidelobe": 0.01,
+        "land_contamination": 0.0,
+        "RFI": 0.0
+      },
+      "epsilon_fn_center": "28.0"
+    },
+    "allowed_forward_operators": [
+      "passive_microwave_forward"
+    ],
+    "allowed_problem_classes": [
+      "passive_microwave"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "N_channels",
+      "f_GHz",
+      "SNR_dB",
+      "antenna_sidelobe",
+      "land_contamination",
+      "RFI",
+      "antenna_sidelobe",
+      "land_contamination",
+      "RFI",
+      "surface_emissivity_uncertainty"
+    ],
+    "omega_bounds": {
+      "H": [
+        128,
+        4096
+      ],
+      "W": [
+        128,
+        4096
+      ],
+      "N_channels": [
+        2,
+        30
+      ],
+      "f_GHz": [
+        1,
+        300
+      ],
+      "SNR_dB": [
+        15.0,
+        45.0
+      ],
+      "antenna_sidelobe": [
+        0.0,
+        0.05
+      ],
+      "land_contamination": [
+        0.0,
+        0.5
+      ],
+      "RFI": [
+        0.0,
+        0.5
+      ],
+      "surface_emissivity_uncertainty": [
+        0.0,
+        0.2
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        5.0,
+        40.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

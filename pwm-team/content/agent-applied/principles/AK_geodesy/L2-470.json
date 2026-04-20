@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-470",
+  "layer": "L2",
+  "parent_l1": "L1-470",
+  "principle_ref": "sha256:<L1-470_principle_hash>",
+  "title": "Photogrammetry Structure-from-Motion \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "N_images": [
+        10,
+        10000
+      ],
+      "N_GCPs": [
+        0,
+        50
+      ],
+      "overlap_percent": [
+        50,
+        95
+      ],
+      "flight_altitude_m": [
+        30,
+        2000
+      ]
+    },
+    "E": {
+      "forward": "x_ij = P_i * X_j / lambda_ij; P_i = K * [R_i | t_i]; minimize sum ||x_ij - x_ij ** obs||^2",
+      "operator": "bundle_adjustment_sfm",
+      "primitive_chain": "S.sfm.feature_matching -> M.bundle.adjustment -> O.reprojection.error",
+      "inverse": "recover 3D point positions X_j and camera pose parameters (R_i from 2D keypoint observations x_ij for N_images images"
+    },
+    "B": {
+      "GCP_minimum": "N_GCPs >= 3 for datum fix",
+      "overlap": "overlap >= 60%"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "GCP_RMSE_cm",
+      "reprojection_error_px",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "2.0 + 1.0 * (flight_altitude_m / 120) ** 0.5"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 3D_point_cloud_camera_poses"
+    },
+    "baselines": [
+      {
+        "name": "COLMAP_SfM",
+        "method_sig": "L+O",
+        "expected_score": 3.5
+      },
+      {
+        "name": "Metashape_BA",
+        "method_sig": "L+O",
+        "expected_score": 2.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_images": 200,
+        "N_GCPs": 5,
+        "overlap_percent": 80,
+        "flight_altitude_m": 120,
+        "GPS_geotag_accuracy_m": 0.0,
+        "feature_matching_outlier_rate": 0.0,
+        "illumination_variation": 0.0
+      },
+      "epsilon": 3.0
+    },
+    "tier_bounds": {
+      "N_images": [
+        10,
+        10000
+      ],
+      "N_GCPs": [
+        0,
+        50
+      ],
+      "overlap_percent": [
+        50,
+        95
+      ],
+      "flight_altitude_m": [
+        30,
+        2000
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.3,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.3 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

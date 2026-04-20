@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-482",
+  "layer": "L2",
+  "parent_l1": "L1-482",
+  "principle_ref": "sha256:<L1-482_principle_hash>",
+  "title": "Monte Carlo Event Generation \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "N_observables": [
+        10,
+        200
+      ],
+      "N_events_per_point": [
+        100,
+        100000
+      ],
+      "alpha_s_range": [
+        0.1,
+        0.14
+      ],
+      "energy_GeV": [
+        14,
+        14000
+      ]
+    },
+    "E": {
+      "forward": "p(event) = sigma_hard * PSF(parton_shower, {alpha_s, lambda}) * H(Lund_model, {a,b,sigma_p})",
+      "operator": "parton_shower_hadronization",
+      "primitive_chain": "M.ps.parton_shower_dipole -> S.hadronization.lund_string -> O.chi2.event_shape",
+      "inverse": "recover Pythia8/Herwig7 tune parameters (alpha_s_ISR from event shape distributions (thrust"
+    },
+    "B": {
+      "alpha_s_range": "alpha_s in [0.10,0.14]",
+      "Lund_b_positivity": "b > 0"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "tune_chi2_per_dof",
+      "event_shape_RMSE",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "1.0 + 0.1 * (91.2 / energy_GeV) ** 0.1"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 shower_parameter_vector"
+    },
+    "baselines": [
+      {
+        "name": "Pythia8_Monash_tune",
+        "method_sig": "L+O",
+        "expected_score": 1.2
+      },
+      {
+        "name": "Professor_tune",
+        "method_sig": "L+O",
+        "expected_score": 1.05
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_observables": 50,
+        "N_events_per_point": 1000,
+        "alpha_s_range": 0.12,
+        "energy_GeV": 91.2,
+        "non_perturbative_power_corrections": 0.0,
+        "color_reconnection_model": 0.0,
+        "MPI_underling_event": 0.0
+      },
+      "epsilon": 1.1
+    },
+    "tier_bounds": {
+      "N_observables": [
+        10,
+        200
+      ],
+      "N_events_per_point": [
+        100,
+        100000
+      ],
+      "alpha_s_range": [
+        0.1,
+        0.14
+      ],
+      "energy_GeV": [
+        14,
+        14000
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.42,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.42 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

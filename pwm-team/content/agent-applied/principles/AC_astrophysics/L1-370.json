@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-370",
+  "layer": "L1",
+  "principle_number": "370",
+  "title": "Stellar Structure Inverse Problem",
+  "domain": "Astrophysics",
+  "sub_domain": "Stellar physics",
+  "source_file": "AC_astrophysics/370_stellar_structure.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "Stellar structure inversion: recover internal sound speed and density profiles from observed oscillation frequencies.",
+    "forward_model": "delta_nu_nl = integral K_nl(r) * delta_c ** 2(r)/c ** 2 dr + integral L_nl(r) * delta_rho(r)/rho dr",
+    "world_state_x": "internal sound speed profile c(r) and density rho(r) from center to surface",
+    "observation_y": "oscillation frequencies nu_nl for modes (n,l) from helioseismology/asteroseismology",
+    "physical_parameters_theta": [
+      "stellar_mass_Msun",
+      "stellar_age_Gyr",
+      "metallicity_Z",
+      "mixing_length_alpha"
+    ]
+  },
+  "G": {
+    "dag": "S.helioseismic.kernel -> O.rnla.inversion -> M.ode.stellar_structure",
+    "vertices": [
+      "S.helioseismic.kernel",
+      "O.rnla.inversion",
+      "M.ode.stellar_structure"
+    ],
+    "arcs": [
+      "S.helioseismic.kernel -> O.rnla.inversion",
+      "O.rnla.inversion -> M.ode.stellar_structure"
+    ],
+    "L_DAG": 3.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 1000.0,
+    "condition_number_effective": 50,
+    "condition_number_mismatched": 200,
+    "regime": "Linear inversion for small perturbations; kernel K_nl determined by reference model; surface term is systematic bias."
+  },
+  "C": {
+    "solver_class": "SOLA_inversion or OLA_regularized",
+    "convergence_rate_q": 2.0,
+    "error_bound": "delta_c ** 2/c ** 2 uncertainty < 0.5% for well-observed modes",
+    "complexity": "O(N_modes ** 2) for inversion matrix"
+  },
+  "physics_fingerprint": {
+    "carrier": "N/A",
+    "sensing_mechanism": "stellar_oscillation_inversion",
+    "integration_axis": "radial",
+    "problem_class": "parameter_estimation",
+    "noise_model": "observation_gaussian",
+    "solution_space": "1D_stellar_profile",
+    "primitives": [
+      "S.helioseismic.kernel",
+      "O.rnla.inversion",
+      "M.ode.stellar_structure"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "surface_term_offset",
+    "mode_misidentification",
+    "opacity_uncertainty"
+  ],
+  "error_metric": "sound_speed_inversion_chi2",
+  "error_metric_secondary": "density_profile_RMSE",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "parameter_estimation",
+      "forward_operator": "stellar_oscillation_inversion",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_modes": 200,
+        "mass_Msun": 1.0,
+        "metallicity_Z": 0.02,
+        "noise_sigma_microHz": 0.1
+      },
+      "epsilon_fn_center": "1.2 sound_speed_inversion_chi2"
+    },
+    "allowed_forward_operators": [
+      "stellar_oscillation_inversion"
+    ],
+    "allowed_problem_classes": [
+      "parameter_estimation"
+    ],
+    "allowed_omega_dimensions": [
+      "N_modes",
+      "mass_Msun",
+      "metallicity_Z",
+      "noise_sigma_microHz"
+    ],
+    "omega_bounds": {
+      "N_modes": [
+        20,
+        1000
+      ],
+      "mass_Msun": [
+        0.5,
+        2.0
+      ],
+      "metallicity_Z": [
+        0.001,
+        0.05
+      ],
+      "noise_sigma_microHz": [
+        0.01,
+        1.0
+      ]
+    },
+    "epsilon_bounds": {
+      "sound_speed_inversion_chi2": [
+        0.8,
+        3.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-380",
+  "layer": "L2",
+  "parent_l1": "L1-380",
+  "principle_ref": "sha256:<L1-380_principle_hash>",
+  "title": "Exoplanet Transit Photometry Inversion \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "N_transit_points": [
+        50,
+        10000
+      ],
+      "SNR_per_point_ppm": [
+        10,
+        1000
+      ],
+      "R_p_R_star_percent": [
+        0.1,
+        20.0
+      ],
+      "cadence_min": [
+        0.5,
+        30.0
+      ]
+    },
+    "E": {
+      "forward": "F(t) = F_0 * (1 - lambda(p, b, z(t), u1, u2)); p = R_p/R_star, b = a*cos(i)/R_star",
+      "operator": "transit_photometry",
+      "primitive_chain": "M.transit.mandel_agol -> O.chi2.lightcurve_transit -> S.limb.darkening",
+      "inverse": "recover transit parameters (R_p/R_star from normalized flux time series F(t) during transit (N_points epochs)"
+    },
+    "B": {
+      "R_p_positivity": "R_p/R_star > 0",
+      "impact_parameter": "b in [0, 1+R_p/R_star]"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "R_p_R_star_sigma_ppm",
+      "chi2_reduced",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "30 + 20 * (100 / SNR_per_point_ppm) ** 0.5"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 transit_parameter_vector"
+    },
+    "baselines": [
+      {
+        "name": "batman_MCMC",
+        "method_sig": "L+O",
+        "expected_score": 60
+      },
+      {
+        "name": "juliet_dynesty",
+        "method_sig": "L+O",
+        "expected_score": 45
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_transit_points": 500,
+        "SNR_per_point_ppm": 100,
+        "R_p_R_star_percent": 1.0,
+        "cadence_min": 2.0,
+        "stellar_activity_spots": 0.0,
+        "systematics_instrumental": 0.0,
+        "TTVs_TDVs": 0.0
+      },
+      "epsilon": 50.0
+    },
+    "tier_bounds": {
+      "N_transit_points": [
+        50,
+        10000
+      ],
+      "SNR_per_point_ppm": [
+        10,
+        1000
+      ],
+      "R_p_R_star_percent": [
+        0.1,
+        20.0
+      ],
+      "cadence_min": [
+        0.5,
+        30.0
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.3,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.3 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

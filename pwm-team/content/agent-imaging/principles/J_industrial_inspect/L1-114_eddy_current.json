@@ -1,0 +1,181 @@
+{
+  "artifact_id": "L1-114",
+  "layer": "L1",
+  "principle_number": "114",
+  "title": "Eddy-Current Testing (near-surface metallic defect detection)",
+  "domain": "Industrial Inspection",
+  "sub_domain": "Electromagnetic induction NDT",
+  "source_file": "J_industrial_inspect/114_eddy_current.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical NDT/NDE literature for this principle.",
+  "E": {
+    "description": "Eddy-Current Testing (near-surface metallic defect detection) forward model.",
+    "forward_model": "Delta_Z(x,y) = integral eddy_current(defect(r)) * kernel(r - (x,y), f, lift_off) + n",
+    "world_state_x": "Defect / strain / composition map depending on principle",
+    "observation_y": "Sensor output at declared geometry",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "f_kHz",
+      "lift_off_mm",
+      "SNR_dB",
+      "lift_off_variation",
+      "conductivity_variation",
+      "probe_tilt"
+    ]
+  },
+  "G": {
+    "dag": "L.induce_eddy_current -> L.secondary_field -> D.coil_impedance -> int.spatial",
+    "vertices": [
+      "L.induce_eddy_current",
+      "L.secondary_field",
+      "D.coil_impedance",
+      "int.spatial"
+    ],
+    "arcs": [
+      "L.induce_eddy_current -> L.secondary_field",
+      "L.secondary_field -> D.coil_impedance",
+      "D.coil_impedance -> int.spatial"
+    ],
+    "L_DAG": 3.2,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 200,
+    "condition_number_effective": 10,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Impedance-Plane, Kalman-Compensation, EC-CNN",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sensor SNR + mismatch bias.",
+    "complexity": "O(H W) to O(H W Z) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "radio_wave",
+    "sensing_mechanism": "eddy_current_impedance",
+    "integration_axis": "spatial",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "2D_conductivity_map",
+    "primitives": [
+      "L.induce_eddy_current",
+      "L.secondary_field",
+      "D.coil_impedance",
+      "int.spatial"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "lift_off_variation",
+    "conductivity_variation",
+    "edge_effect",
+    "probe_tilt"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "eddy_current",
+      "forward_operator": "eddy_current_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 256,
+        "W": 256,
+        "f_kHz": 100,
+        "lift_off_mm": 0.5,
+        "SNR_dB": 25.0,
+        "lift_off_variation": 0.0,
+        "conductivity_variation": 0.0,
+        "probe_tilt": 0.0
+      },
+      "epsilon_fn_center": "25.0"
+    },
+    "allowed_forward_operators": [
+      "eddy_current_forward"
+    ],
+    "allowed_problem_classes": [
+      "eddy_current"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "f_kHz",
+      "lift_off_mm",
+      "SNR_dB",
+      "lift_off_variation",
+      "conductivity_variation",
+      "probe_tilt",
+      "lift_off_variation",
+      "conductivity_variation",
+      "edge_effect",
+      "probe_tilt"
+    ],
+    "omega_bounds": {
+      "H": [
+        64,
+        2048
+      ],
+      "W": [
+        64,
+        2048
+      ],
+      "f_kHz": [
+        1,
+        10000
+      ],
+      "lift_off_mm": [
+        0.1,
+        10.0
+      ],
+      "SNR_dB": [
+        0.0,
+        40.0
+      ],
+      "lift_off_variation": [
+        0.0,
+        0.5
+      ],
+      "conductivity_variation": [
+        0.0,
+        0.3
+      ],
+      "edge_effect": [
+        0.0,
+        0.3
+      ],
+      "probe_tilt": [
+        0.0,
+        0.1
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        5.0,
+        40.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

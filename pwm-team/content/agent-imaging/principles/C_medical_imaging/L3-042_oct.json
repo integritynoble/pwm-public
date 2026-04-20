@@ -1,0 +1,185 @@
+{
+  "artifact_id": "L3-042",
+  "layer": "L3",
+  "parent_l2": "L2-042",
+  "parent_l1": "L1-042",
+  "title": "Optical Coherence Tomography (OCT) Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "canonical clinical/public dataset for this modality",
+    "secondary": "simulated forward synthesis at declared Omega",
+    "construction_method": "parametric forward + declared noise",
+    "num_dev_instances_per_tier": 20
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "Z": 1024,
+        "lambda_center_nm": 840,
+        "lambda_bw_nm": 50,
+        "pixel_um": 5,
+        "SNR_dB": 30.0,
+        "dispersion_mismatch": 0.0,
+        "motion_artifacts": 0.0,
+        "speckle_noise": 0.0,
+        "signal_roll_off": 0.0
+      },
+      "epsilon": 28.0,
+      "d_ibench": 0.14,
+      "baselines": [
+        {
+          "name": "IFFT-Filtering",
+          "score": 25.5,
+          "Q": 0.88
+        },
+        {
+          "name": "Dispersion-Correct",
+          "score": 27.5,
+          "Q": 0.88
+        },
+        {
+          "name": "OCT-Net",
+          "score": 30.0,
+          "Q": 0.88
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "Z": 1024,
+        "lambda_center_nm": 840,
+        "lambda_bw_nm": 50,
+        "pixel_um": 5,
+        "SNR_dB": 27.0,
+        "dispersion_mismatch": 0.06,
+        "motion_artifacts": 0.06,
+        "speckle_noise": 0.06,
+        "signal_roll_off": 0.06
+      },
+      "epsilon": 22.96,
+      "d_ibench": 0.28,
+      "baselines": [
+        {
+          "name": "IFFT-Filtering",
+          "score": 23.5,
+          "Q": 0.68
+        },
+        {
+          "name": "Dispersion-Correct",
+          "score": 25.5,
+          "Q": 0.68
+        },
+        {
+          "name": "OCT-Net",
+          "score": 28.0,
+          "Q": 0.68
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "Z": 1024,
+        "lambda_center_nm": 840,
+        "lambda_bw_nm": 50,
+        "pixel_um": 5,
+        "SNR_dB": 18.0,
+        "dispersion_mismatch": 0.15,
+        "motion_artifacts": 0.15,
+        "speckle_noise": 0.15,
+        "signal_roll_off": 0.15
+      },
+      "epsilon": 17.92,
+      "d_ibench": 0.48,
+      "baselines": [
+        {
+          "name": "IFFT-Filtering",
+          "score": 21.5,
+          "Q": 0.48
+        },
+        {
+          "name": "Dispersion-Correct",
+          "score": 23.5,
+          "Q": 0.48
+        },
+        {
+          "name": "OCT-Net",
+          "score": 26.0,
+          "Q": 0.48
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "Z": 1024,
+        "lambda_center_nm": 840,
+        "lambda_bw_nm": 50,
+        "pixel_um": 5,
+        "SNR_dB": 10.0,
+        "dispersion_mismatch": 0.3,
+        "motion_artifacts": 0.3,
+        "speckle_noise": 0.3,
+        "signal_roll_off": 0.3
+      },
+      "epsilon": 12.88,
+      "d_ibench": 0.72,
+      "baselines": [
+        {
+          "name": "IFFT-Filtering",
+          "score": 19.5,
+          "Q": 0.28
+        },
+        {
+          "name": "Dispersion-Correct",
+          "score": 21.5,
+          "Q": 0.28
+        },
+        {
+          "name": "OCT-Net",
+          "score": 24.0,
+          "Q": 0.28
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "full parametric sweep",
+      "num_dev_instances": 200,
+      "construction_method": "parametric Omega sweep"
+    },
+    "baselines": [
+      {
+        "name": "IFFT-Filtering",
+        "overall_Q": 0.7
+      },
+      {
+        "name": "Dispersion-Correct",
+        "overall_Q": 0.6
+      },
+      {
+        "name": "OCT-Net",
+        "overall_Q": 0.5
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind strata corner.",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

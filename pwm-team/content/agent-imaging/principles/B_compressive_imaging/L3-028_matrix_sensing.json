@@ -1,0 +1,77 @@
+{
+  "artifact_id": "L3-028",
+  "layer": "L3",
+  "parent_l2": "L2-028",
+  "parent_l1": "L1-028",
+  "title": "Gaussian Matrix Sensing Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+
+  "dataset_registry": {
+    "primary": "Synthetic rank-r matrices with spectrum decay (linear and exponential)",
+    "secondary": "MovieLens-100K / MovieLens-1M (matrix completion specialization)",
+    "tertiary": "Ozone-BOD atmospheric tensor unfold (real-world low-rank signal)",
+    "construction_method": "Sample U in R^{n1 x r}, V in R^{n2 x r} iid N(0,1); X = U V^T / ||U V^T||_F; draw A_k iid N(0, 1/m); y = <A_k, X> + sigma * n_k",
+    "num_dev_instances_per_tier": 20
+  },
+
+  "ibenchmarks": [
+    {
+      "tier": "T1_easy", "rho": 1,
+      "omega_tier": {"n1": 256, "n2": 256, "rank_r": 5, "m_over_minmn": 6, "noise_level": 0.01, "rank_misspec": 0, "measurement_noise_tail": 0.0},
+      "epsilon": 0.05, "d_ibench": 0.14,
+      "baselines": [
+        {"name": "SVT",      "rel_error": 0.06, "Q": 0.75},
+        {"name": "ScaledGD", "rel_error": 0.03, "Q": 0.92},
+        {"name": "AltGD-BM", "rel_error": 0.04, "Q": 0.88}
+      ]
+    },
+    {
+      "tier": "T2_moderate", "rho": 3,
+      "omega_tier": {"n1": 512, "n2": 512, "rank_r": 10, "m_over_minmn": 5, "noise_level": 0.02, "rank_misspec": 1, "measurement_noise_tail": 0.05},
+      "epsilon": 0.08, "d_ibench": 0.30,
+      "baselines": [
+        {"name": "SVT",      "rel_error": 0.12, "Q": 0.52},
+        {"name": "ScaledGD", "rel_error": 0.07, "Q": 0.78},
+        {"name": "AltGD-BM", "rel_error": 0.09, "Q": 0.68}
+      ]
+    },
+    {
+      "tier": "T3_hard", "rho": 5,
+      "omega_tier": {"n1": 1024, "n2": 1024, "rank_r": 20, "m_over_minmn": 4, "noise_level": 0.05, "rank_misspec": 3, "measurement_noise_tail": 0.10},
+      "epsilon": 0.12, "d_ibench": 0.48,
+      "baselines": [
+        {"name": "SVT",      "rel_error": 0.22, "Q": 0.35},
+        {"name": "ScaledGD", "rel_error": 0.11, "Q": 0.60},
+        {"name": "AltGD-BM", "rel_error": 0.15, "Q": 0.52}
+      ]
+    },
+    {
+      "tier": "T4_undersampled", "rho": 10,
+      "omega_tier": {"n1": 2048, "n2": 2048, "rank_r": 50, "m_over_minmn": 2.5, "noise_level": 0.08, "rank_misspec": 10, "measurement_noise_tail": 0.20},
+      "epsilon": 0.25, "d_ibench": 0.72,
+      "baselines": [
+        {"name": "SVT",      "rel_error": 0.42, "Q": 0.18},
+        {"name": "ScaledGD", "rel_error": 0.28, "Q": 0.38},
+        {"name": "AltGD-BM", "rel_error": 0.33, "Q": 0.28}
+      ]
+    }
+  ],
+
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "synthetic_lowrank + MovieLens + atmospheric-tensor union",
+      "num_dev_instances": 200,
+      "construction_method": "parametric sampling of (n1, n2, rank_r, m_over_minmn, noise_level)"
+    },
+    "baselines": [
+      {"name": "SVT",      "overall_Q": 0.38},
+      {"name": "ScaledGD", "overall_Q": 0.70},
+      {"name": "AltGD-BM", "overall_Q": 0.60}
+    ]
+  },
+
+  "hardness_rule_check": "SATISFIED — all baselines fail at T4_undersampled (m_over_minmn = 2.5 is below the RIP threshold ~ 3); no method passes epsilon_fn everywhere in Omega.",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

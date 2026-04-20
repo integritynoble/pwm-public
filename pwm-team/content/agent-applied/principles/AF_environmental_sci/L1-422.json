@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-422",
+  "layer": "L1",
+  "principle_number": "422",
+  "title": "Sediment Transport Inversion",
+  "domain": "Environmental Science",
+  "sub_domain": "Geomorphology",
+  "source_file": "AF_environmental_sci/422_sediment_transport.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "Sediment transport inversion: infer bed material size distribution and critical shear stress from bedload and suspended transport measurements.",
+    "forward_model": "q_b = 8*(tau* - tau*_c) ** 1.5 * sqrt((s-1)*g*d ** 3) (MPM); q_s = c_a * u * h (van Rijn suspended)",
+    "world_state_x": "d50 bed material grain size (mm), tau*_c critical Shields stress, bed roughness ks",
+    "observation_y": "bedload flux q_b (kg/m/s), suspended sediment concentration SSC (mg/L) vs. discharge",
+    "physical_parameters_theta": [
+      "median_grain_size_d50_mm",
+      "critical_shields_stress_tau*c",
+      "bed_roughness_ks_m",
+      "grain_density_kg_m3"
+    ]
+  },
+  "G": {
+    "dag": "M.mpm.bedload_formula -> S.vanrijn.suspended_load -> O.chi2.bedload_flux",
+    "vertices": [
+      "M.mpm.bedload_formula",
+      "S.vanrijn.suspended_load",
+      "O.chi2.bedload_flux"
+    ],
+    "arcs": [
+      "M.mpm.bedload_formula -> S.vanrijn.suspended_load",
+      "S.vanrijn.suspended_load -> O.chi2.bedload_flux"
+    ],
+    "L_DAG": 2.8,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 1000,
+    "condition_number_effective": 40,
+    "condition_number_mismatched": 200,
+    "regime": "Bedload is threshold process (highly nonlinear near critical shear); suspended load dominates at high Q; bimodal grain size causes complex transport."
+  },
+  "C": {
+    "solver_class": "MPM_formula_fit or neural_network_sediment_flux",
+    "convergence_rate_q": 2.0,
+    "error_bound": "bedload flux within factor 2 for well-constrained conditions",
+    "complexity": "O(N_measurements) for formula-based inversion"
+  },
+  "physics_fingerprint": {
+    "carrier": "N/A",
+    "sensing_mechanism": "bedload_suspended_measurement",
+    "integration_axis": "channel_cross_section",
+    "problem_class": "parameter_estimation",
+    "noise_model": "lognormal",
+    "solution_space": "sediment_flux_parameter_vector",
+    "primitives": [
+      "M.mpm.bedload_formula",
+      "S.vanrijn.suspended_load",
+      "O.chi2.bedload_flux"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "armoring_effect",
+    "wash_load_contamination",
+    "non_uniform_grain_size_distribution"
+  ],
+  "error_metric": "bedload_flux_RMSE_log",
+  "error_metric_secondary": "sediment_rating_curve_RMSE",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "parameter_estimation",
+      "forward_operator": "bedload_suspended_measurement",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_measurements": 100,
+        "d50_mm": 2.0,
+        "critical_shields_tau*c": 0.047,
+        "discharge_m3_s": 500
+      },
+      "epsilon_fn_center": "0.5 bedload_flux_RMSE_log"
+    },
+    "allowed_forward_operators": [
+      "bedload_suspended_measurement"
+    ],
+    "allowed_problem_classes": [
+      "parameter_estimation"
+    ],
+    "allowed_omega_dimensions": [
+      "N_measurements",
+      "d50_mm",
+      "critical_shields_tau*c",
+      "discharge_m3_s"
+    ],
+    "omega_bounds": {
+      "N_measurements": [
+        10,
+        1000
+      ],
+      "d50_mm": [
+        0.1,
+        100.0
+      ],
+      "critical_shields_tau*c": [
+        0.02,
+        0.1
+      ],
+      "discharge_m3_s": [
+        1,
+        100000
+      ]
+    },
+    "epsilon_bounds": {
+      "bedload_flux_RMSE_log": [
+        0.1,
+        2.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

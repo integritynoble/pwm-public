@@ -1,0 +1,149 @@
+{
+  "artifact_id": "L2-057",
+  "layer": "L2",
+  "parent_l1": "L1-057",
+  "title": "Arterial Spin Labeling (ASL) MRI Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": 32,
+      "W": 32,
+      "Z": [
+        4,
+        64
+      ],
+      "N_label_control_pairs": [
+        5,
+        200
+      ],
+      "PLD_ms": [
+        500,
+        3500
+      ],
+      "SNR_dB": [
+        0.0,
+        30.0
+      ],
+      "arterial_transit_time": [
+        500,
+        3000
+      ],
+      "labeling_efficiency": [
+        0.5,
+        1.0
+      ],
+      "motion": [
+        0.0,
+        0.5
+      ],
+      "noise_amplification": [
+        0.0,
+        0.3
+      ]
+    },
+    "E": {
+      "forward": "delta_S = S_control - S_label = 2 M_0 * CBF / lambda * exp(-PLD / T1) * alpha_label + n",
+      "operator": "asl_mri_forward_mismatch",
+      "primitive_chain": "L.rf_excitation -> L.arterial_labeling_pulse -> L.difference_image -> int.temporal",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "7.0 + 0.3 * SNR_dB + 5.0 * labeling_efficiency - 10.0 * motion - 0.002 * (arterial_transit_time - 1500)"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Simple-Subtract",
+        "method_sig": "L+O",
+        "expected_psnr": 11.5
+      },
+      {
+        "name": "Kinetic-Model",
+        "method_sig": "L+O",
+        "expected_psnr": 14.0
+      },
+      {
+        "name": "ASL-Net",
+        "method_sig": "L+N",
+        "expected_psnr": 16.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 96,
+        "W": 96,
+        "Z": 16,
+        "N_label_control_pairs": 30,
+        "PLD_ms": 1800,
+        "SNR_dB": 15,
+        "arterial_transit_time": 1500,
+        "labeling_efficiency": 0.9,
+        "motion": 0.0
+      },
+      "epsilon": 14.0
+    },
+    "tier_bounds": {
+      "H": 32,
+      "W": 32,
+      "Z": [
+        4,
+        64
+      ],
+      "N_label_control_pairs": [
+        5,
+        200
+      ],
+      "PLD_ms": [
+        500,
+        3500
+      ],
+      "SNR_dB": [
+        0.0,
+        30.0
+      ],
+      "arterial_transit_time": [
+        500,
+        3000
+      ],
+      "labeling_efficiency": [
+        0.5,
+        1.0
+      ],
+      "motion": [
+        0.0,
+        0.5
+      ],
+      "noise_amplification": [
+        0.0,
+        0.3
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.5,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

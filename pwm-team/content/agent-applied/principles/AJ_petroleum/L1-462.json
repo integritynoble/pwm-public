@@ -1,0 +1,141 @@
+{
+  "artifact_id": "L1-462",
+  "layer": "L1",
+  "principle_number": "462",
+  "title": "Enhanced Oil Recovery (EOR) Modeling",
+  "domain": "Petroleum Engineering",
+  "sub_domain": "EOR simulation",
+  "source_file": "AJ_petroleum/462_eor_modeling.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "EOR simulation: model waterflooding, CO2 miscible, or polymer flooding to predict incremental recovery factor.",
+    "forward_model": "dS_w/dt + df_w/dx = 0 (Buckley-Leverett); for CO2: compositional with MMP; for polymer: shear-thinning viscosity model",
+    "world_state_x": "saturation S_w(x,t) and composition z_i(x,t) after EOR injection",
+    "observation_y": "production data {q_o, q_w, tracers}(t), incremental recovery factor RF",
+    "physical_parameters_theta": [
+      "rel_perm_residual_oil_to_water",
+      "polymer_viscosity_multiplier",
+      "CO2_minimum_miscibility_pressure"
+    ]
+  },
+  "G": {
+    "dag": "M.fractional_flow.buckley_leverett -> S.fdm.convection_diffusion -> O.recovery_factor.prediction",
+    "vertices": [
+      "M.fractional_flow.buckley_leverett",
+      "S.fdm.convection_diffusion",
+      "O.recovery_factor.prediction"
+    ],
+    "arcs": [
+      "M.fractional_flow.buckley_leverett -> S.fdm.convection_diffusion",
+      "S.fdm.convection_diffusion -> O.recovery_factor.prediction"
+    ],
+    "L_DAG": 3.8,
+    "n_c": 1
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 10000.0,
+    "condition_number_effective": 500,
+    "condition_number_mismatched": 2000,
+    "regime": "Viscous fingering (M_o > 1); gravity segregation at large scale; compositional effects for CO2/enriched gas; nonlinear front tracking."
+  },
+  "C": {
+    "solver_class": "Buckley_Leverett_analytical or compositional_EOR_simulator",
+    "convergence_rate_q": 2.0,
+    "error_bound": "RF prediction within 3% of observed",
+    "complexity": "O(N_cells * N_timesteps) for displacement calculation"
+  },
+  "physics_fingerprint": {
+    "carrier": "acoustic",
+    "sensing_mechanism": "eor_displacement_modeling",
+    "integration_axis": "displacement_front",
+    "problem_class": "parameter_estimation",
+    "noise_model": "measurement_gaussian",
+    "solution_space": "3D_saturation_composition",
+    "primitives": [
+      "M.fractional_flow.buckley_leverett",
+      "S.fdm.convection_diffusion",
+      "O.recovery_factor.prediction"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "viscous_fingering_onset",
+    "gravity_override_degree",
+    "wettability_alteration_uncertainty"
+  ],
+  "error_metric": "recovery_factor_RMSE_percent",
+  "error_metric_secondary": "breakthrough_time_error_days",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "parameter_estimation",
+      "forward_operator": "eor_displacement_modeling",
+      "input_format": "measurement_only",
+      "omega": {
+        "mobility_ratio_M": 1.5,
+        "Dykstra_Parsons_V_DP": 0.7,
+        "injection_PV": 1.0,
+        "temperature_F": 200
+      },
+      "epsilon_fn_center": "3 recovery_factor_RMSE_percent"
+    },
+    "allowed_forward_operators": [
+      "eor_displacement_modeling"
+    ],
+    "allowed_problem_classes": [
+      "parameter_estimation"
+    ],
+    "allowed_omega_dimensions": [
+      "mobility_ratio_M",
+      "Dykstra_Parsons_V_DP",
+      "injection_PV",
+      "temperature_F"
+    ],
+    "omega_bounds": {
+      "mobility_ratio_M": [
+        0.1,
+        10.0
+      ],
+      "Dykstra_Parsons_V_DP": [
+        0.3,
+        0.9
+      ],
+      "injection_PV": [
+        0.1,
+        3.0
+      ],
+      "temperature_F": [
+        100,
+        350
+      ]
+    },
+    "epsilon_bounds": {
+      "recovery_factor_RMSE_percent": [
+        0.5,
+        15.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

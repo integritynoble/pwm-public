@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-458",
+  "layer": "L2",
+  "parent_l1": "L1-458",
+  "principle_ref": "sha256:<L1-458_principle_hash>",
+  "title": "Black-Oil Reservoir Simulation \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "N_cells": [
+        100,
+        1000000
+      ],
+      "permeability_K_mD": [
+        0.1,
+        10000
+      ],
+      "porosity_phi": [
+        0.05,
+        0.4
+      ],
+      "production_years": [
+        1,
+        50
+      ]
+    },
+    "E": {
+      "forward": "phi*(d(rho_a*S_a)/dt) = -nabla*(rho_a*k_ra/mu_a*K*nabla(P_a - rho_a*g*z)) + q_a",
+      "operator": "multiphase_flow_darcy",
+      "primitive_chain": "M.darcy.multiphase_flow -> S.fdm.implicit_pressure -> O.material_balance.residual",
+      "inverse": "recover pressure P(x from production rates q_o"
+    },
+    "B": {
+      "saturation_sum": "S_o+S_w+S_g=1",
+      "positive_porosity": "phi in (0,1)"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "production_history_match_NRMS",
+      "pressure_match_psi_RMSE",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.08 + 0.02 * (permeability_K_mD / 100) ** (-0.2)"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 3D_pressure_saturation_field"
+    },
+    "baselines": [
+      {
+        "name": "IMPES_Eclipse",
+        "method_sig": "L+O",
+        "expected_score": 0.12
+      },
+      {
+        "name": "fully_implicit_CMG",
+        "method_sig": "L+O",
+        "expected_score": 0.08
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_cells": 10000,
+        "permeability_K_mD": 100,
+        "porosity_phi": 0.2,
+        "production_years": 20,
+        "permeability_heterogeneity_uncertainty": 0.0,
+        "rel_perm_uncertainty": 0.0,
+        "fault_transmissibility_error": 0.0
+      },
+      "epsilon": 0.1
+    },
+    "tier_bounds": {
+      "N_cells": [
+        100,
+        1000000
+      ],
+      "permeability_K_mD": [
+        0.1,
+        10000
+      ],
+      "porosity_phi": [
+        0.05,
+        0.4
+      ],
+      "production_years": [
+        1,
+        50
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.38,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.38 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

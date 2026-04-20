@@ -1,0 +1,144 @@
+{
+  "artifact_id": "L2-087",
+  "layer": "L2",
+  "parent_l1": "L1-087",
+  "title": "Scanning TEM (STEM) \u2014 HAADF / BF imaging with convergent beam Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        512,
+        8192
+      ],
+      "W": [
+        512,
+        8192
+      ],
+      "pixel_A": [
+        0.1,
+        5.0
+      ],
+      "kV": [
+        60,
+        300
+      ],
+      "probe_aberration": [
+        0.0,
+        0.3
+      ],
+      "scan_distortion": [
+        0.0,
+        0.05
+      ],
+      "peak_electrons": [
+        5,
+        5000
+      ],
+      "beam_damage": [
+        0.0,
+        0.5
+      ]
+    },
+    "E": {
+      "forward": "y(r) = integral |Psi_probe(r'; aberration)|^2 * scatter_HAADF(r - r') d^2 r' + n",
+      "operator": "stem_haadf_forward_mismatch",
+      "primitive_chain": "L.illumination.convergent_probe -> S.scan.raster -> D.annular_detector -> int.temporal",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "20.0 + 2.0 * log10(peak_electrons / 5) - 15.0 * probe_aberration - 30.0 * scan_distortion"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Wiener-STEM",
+        "method_sig": "L+R",
+        "expected_psnr": 26.0
+      },
+      {
+        "name": "BM3D-STEM",
+        "method_sig": "L+R",
+        "expected_psnr": 27.5
+      },
+      {
+        "name": "STEM-UNet",
+        "method_sig": "L+N",
+        "expected_psnr": 30.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 2048,
+        "W": 2048,
+        "pixel_A": 0.5,
+        "kV": 200,
+        "probe_aberration": 0.0,
+        "scan_distortion": 0.0,
+        "peak_electrons": 200,
+        "beam_damage": 0.0
+      },
+      "epsilon": 28.0
+    },
+    "tier_bounds": {
+      "H": [
+        512,
+        8192
+      ],
+      "W": [
+        512,
+        8192
+      ],
+      "pixel_A": [
+        0.1,
+        5.0
+      ],
+      "kV": [
+        60,
+        300
+      ],
+      "probe_aberration": [
+        0.0,
+        0.3
+      ],
+      "scan_distortion": [
+        0.0,
+        0.05
+      ],
+      "peak_electrons": [
+        5,
+        5000
+      ],
+      "beam_damage": [
+        0.0,
+        0.5
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.48,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

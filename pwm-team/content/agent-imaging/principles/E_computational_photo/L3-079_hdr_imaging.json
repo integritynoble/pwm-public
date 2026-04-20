@@ -1,0 +1,77 @@
+{
+  "artifact_id": "L3-079",
+  "layer": "L3",
+  "parent_l2": "L2-079",
+  "parent_l1": "L1-079",
+  "title": "HDR Multi-Exposure Fusion Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+
+  "dataset_registry": {
+    "primary": "Kalantari HDR 2017 (74 dynamic scenes, 3 exposures each)",
+    "secondary": "Sen HDR deghosting dataset",
+    "tertiary": "Synthetic HDR from Unreal-rendered scenes with known irradiance",
+    "construction_method": "simulate K exposures with calibrated CRF; inject motion shifts as ghosting; clip at declared bit_depth",
+    "num_dev_instances_per_tier": 20
+  },
+
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal", "rho": 1,
+      "omega_tier": {"H": 1080, "W": 1920, "K_exposures": 3, "exposure_stops": 2.0, "bit_depth": 12, "crf_calibration_error": 0.0, "motion_ghosting": 0.0, "under_coverage": 0.0},
+      "epsilon": 42.0, "d_ibench": 0.14,
+      "baselines": [
+        {"name": "Debevec-Malik", "score": 40.0, "Q": 0.68},
+        {"name": "Mertens-Fusion","score": 41.5, "Q": 0.75},
+        {"name": "HDR-CNN",       "score": 44.5, "Q": 0.90}
+      ]
+    },
+    {
+      "tier": "T2_low", "rho": 3,
+      "omega_tier": {"H": 1080, "W": 1920, "K_exposures": 3, "exposure_stops": 2.0, "bit_depth": 10, "crf_calibration_error": 0.01, "motion_ghosting": 0.10, "under_coverage": 0.05},
+      "epsilon": 38.5, "d_ibench": 0.28,
+      "baselines": [
+        {"name": "Debevec-Malik", "score": 35.8, "Q": 0.45},
+        {"name": "Mertens-Fusion","score": 37.5, "Q": 0.58},
+        {"name": "HDR-CNN",       "score": 41.0, "Q": 0.78}
+      ]
+    },
+    {
+      "tier": "T3_moderate", "rho": 5,
+      "omega_tier": {"H": 2160, "W": 3840, "K_exposures": 2, "exposure_stops": 1.5, "bit_depth": 10, "crf_calibration_error": 0.025, "motion_ghosting": 0.25, "under_coverage": 0.15},
+      "epsilon": 34.0, "d_ibench": 0.48,
+      "baselines": [
+        {"name": "Debevec-Malik", "score": 30.5, "Q": 0.30},
+        {"name": "Mertens-Fusion","score": 33.0, "Q": 0.47},
+        {"name": "HDR-CNN",       "score": 36.8, "Q": 0.65}
+      ]
+    },
+    {
+      "tier": "T4_blind", "rho": 10,
+      "omega_tier": {"H": 4096, "W": 4096, "K_exposures": 2, "exposure_stops": 1.0, "bit_depth": 8, "crf_calibration_error": 0.05, "motion_ghosting": 0.5, "under_coverage": 0.30},
+      "epsilon": 28.5, "d_ibench": 0.72,
+      "baselines": [
+        {"name": "Debevec-Malik", "score": 24.0, "Q": 0.15},
+        {"name": "Mertens-Fusion","score": 26.5, "Q": 0.28},
+        {"name": "HDR-CNN",       "score": 30.5, "Q": 0.48}
+      ]
+    }
+  ],
+
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "Kalantari + Sen + synthetic-Unreal union",
+      "num_dev_instances": 200,
+      "construction_method": "parametric (K_exposures, motion_ghosting, under_coverage, bit_depth) sweep"
+    },
+    "baselines": [
+      {"name": "Debevec-Malik", "overall_Q": 0.40},
+      {"name": "Mertens-Fusion","overall_Q": 0.54},
+      {"name": "HDR-CNN",       "overall_Q": 0.72}
+    ]
+  },
+
+  "hardness_rule_check": "SATISFIED — HDR-CNN fails at T4_blind (motion_ghosting=0.5 + K=2 + 8-bit + under_coverage=0.3 corner is under-covered).",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

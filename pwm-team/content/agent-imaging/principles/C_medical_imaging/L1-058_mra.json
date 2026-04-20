@@ -1,0 +1,182 @@
+{
+  "artifact_id": "L1-058",
+  "layer": "L1",
+  "principle_number": "058",
+  "title": "MR Angiography (time-of-flight / phase-contrast)",
+  "domain": "Medical Imaging",
+  "sub_domain": "Non-contrast vascular MRI",
+  "source_file": "C_medical_imaging/058_mra.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical medical-imaging literature for this principle.",
+  "E": {
+    "description": "MR Angiography (time-of-flight / phase-contrast) forward model.",
+    "forward_model": "TOF: unsaturated inflow enhances vessels vs saturated static tissue; PC: phi = gamma * venc * v",
+    "world_state_x": "Patient-side quantity of interest (attenuation / activity / perfusion / stiffness etc.)",
+    "observation_y": "Clinical sensor output at declared resolution + noise",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "Z",
+      "TR_ms",
+      "TE_ms",
+      "SNR_dB",
+      "inplane_saturation",
+      "motion",
+      "turbulence_dephasing"
+    ]
+  },
+  "G": {
+    "dag": "L.rf_excitation -> L.tof_saturation -> L.kspace_readout -> int.spatial",
+    "vertices": [
+      "L.rf_excitation",
+      "L.tof_saturation",
+      "L.kspace_readout",
+      "int.spatial"
+    ],
+    "arcs": [
+      "L.rf_excitation -> L.tof_saturation",
+      "L.tof_saturation -> L.kspace_readout",
+      "L.kspace_readout -> int.spatial"
+    ],
+    "L_DAG": 3.4,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 260,
+    "condition_number_effective": 13,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "MIP, Kalman-Vessel, MRA-Net",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sensor SNR + mismatch bias + regularisation.",
+    "complexity": "O(H W) to O(H W Z) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "radio_wave",
+    "sensing_mechanism": "mri_fourier_encoding",
+    "integration_axis": "spatial",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "3D_vessel_map",
+    "primitives": [
+      "L.rf_excitation",
+      "L.tof_saturation",
+      "L.kspace_readout",
+      "int.spatial"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "inplane_saturation",
+    "motion",
+    "turbulence_dephasing",
+    "pulsatility"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "mra",
+      "forward_operator": "mra_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 256,
+        "W": 256,
+        "Z": 128,
+        "TR_ms": 25,
+        "TE_ms": 6,
+        "SNR_dB": 22,
+        "inplane_saturation": 0.0,
+        "motion": 0.0,
+        "turbulence_dephasing": 0.0
+      },
+      "epsilon_fn_center": "22.0"
+    },
+    "allowed_forward_operators": [
+      "mra_forward"
+    ],
+    "allowed_problem_classes": [
+      "mra"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "Z",
+      "TR_ms",
+      "TE_ms",
+      "SNR_dB",
+      "inplane_saturation",
+      "motion",
+      "turbulence_dephasing",
+      "inplane_saturation",
+      "motion",
+      "turbulence_dephasing",
+      "pulsatility"
+    ],
+    "omega_bounds": {
+      "H": 128,
+      "W": 128,
+      "Z": [
+        32,
+        512
+      ],
+      "TR_ms": [
+        10,
+        100
+      ],
+      "TE_ms": [
+        3,
+        30
+      ],
+      "SNR_dB": [
+        0.0,
+        35.0
+      ],
+      "inplane_saturation": [
+        0.0,
+        0.5
+      ],
+      "motion": [
+        0.0,
+        0.5
+      ],
+      "turbulence_dephasing": [
+        0.0,
+        0.3
+      ],
+      "pulsatility": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        5.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

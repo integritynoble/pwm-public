@@ -1,0 +1,153 @@
+{
+  "artifact_id": "L2-004",
+  "layer": "L2",
+  "parent_l1": "L1-004",
+  "title": "Confocal Z-Stack (3D axial deconvolution) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        128,
+        2048
+      ],
+      "W": [
+        128,
+        2048
+      ],
+      "Z": [
+        16,
+        512
+      ],
+      "z_step_nm": [
+        100,
+        2000
+      ],
+      "pixel_nm": [
+        50,
+        300
+      ],
+      "NA": [
+        0.8,
+        1.45
+      ],
+      "peak_photons": [
+        20,
+        2000
+      ],
+      "z_step_error": [
+        0.0,
+        0.2
+      ],
+      "spherical_aberration": [
+        0.0,
+        0.5
+      ]
+    },
+    "E": {
+      "forward": "y(r,z) = [PSF_3D(r,z - z_k) conv f(r,z)] + n",
+      "operator": "confocal_zstack_forward_mismatch",
+      "primitive_chain": "K.psf.confocal -> S.scan.raster -> S.scan.axial -> int.temporal",
+      "inverse": "solve forward model for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "20.0 + 1.5 * log10(peak_photons / 20) + 1.0 * log2(Z / 16) - 6.0 * spherical_aberration"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Richardson-Lucy-3D",
+        "method_sig": "I+M",
+        "expected_psnr": 24.5
+      },
+      {
+        "name": "DeconvolutionLab2",
+        "method_sig": "L+O",
+        "expected_psnr": 25.8
+      },
+      {
+        "name": "Content-Aware-3D",
+        "method_sig": "L+N",
+        "expected_psnr": 29.2
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "Z": 64,
+        "pixel_nm": 100,
+        "z_step_nm": 500,
+        "NA": 1.3,
+        "peak_photons": 300,
+        "z_step_error": 0.0,
+        "spherical_aberration": 0.0
+      },
+      "epsilon": 26.0
+    },
+    "tier_bounds": {
+      "H": [
+        128,
+        2048
+      ],
+      "W": [
+        128,
+        2048
+      ],
+      "Z": [
+        16,
+        512
+      ],
+      "z_step_nm": [
+        100,
+        2000
+      ],
+      "pixel_nm": [
+        50,
+        300
+      ],
+      "NA": [
+        0.8,
+        1.45
+      ],
+      "peak_photons": [
+        20,
+        2000
+      ],
+      "z_step_error": [
+        0.0,
+        0.2
+      ],
+      "spherical_aberration": [
+        0.0,
+        0.5
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.45,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-471",
+  "layer": "L1",
+  "principle_number": "471",
+  "title": "Satellite Gravity Gradiometry (GOCE)",
+  "domain": "Geodesy",
+  "sub_domain": "Earth gravity field",
+  "source_file": "AK_geodesy/471_satellite_gravity_gradiometry.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "GOCE gravity gradiometry: recover Earth gravity field spherical harmonic coefficients from gravity gradient tensor measurements.",
+    "forward_model": "V_ij(r,theta,phi) = sum_{n,m} (R/r)^{n+3} * sum_m [C_nm F_nm + S_nm G_nm]; gradiometer measures V_xx, V_yy, V_zz, V_xz",
+    "world_state_x": "Stokes coefficients C_nm, S_nm up to degree/order N_max",
+    "observation_y": "gravity gradient tensor components [mE] along orbit arc",
+    "physical_parameters_theta": [
+      "N_max_degree",
+      "orbit_altitude_km",
+      "gradiometer_noise_E_sqrt_Hz",
+      "arc_length_days"
+    ]
+  },
+  "G": {
+    "dag": "S.gravity.gradient_tensor -> M.spherical_harmonics.synthesis -> O.tikhonov.regularization",
+    "vertices": [
+      "S.gravity.gradient_tensor",
+      "M.spherical_harmonics.synthesis",
+      "O.tikhonov.regularization"
+    ],
+    "arcs": [
+      "S.gravity.gradient_tensor -> M.spherical_harmonics.synthesis",
+      "M.spherical_harmonics.synthesis -> O.tikhonov.regularization"
+    ],
+    "L_DAG": 3.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 100000.0,
+    "condition_number_effective": 5000,
+    "condition_number_mismatched": 20000.0,
+    "regime": "Very large linear system (N_max=300 gives 90000 unknowns); regularization mandatory; Kaula's rule as prior."
+  },
+  "C": {
+    "solver_class": "time_wise_approach or space_wise_approach or semi_analytic",
+    "convergence_rate_q": 2.0,
+    "error_bound": "geoid accuracy < 1 cm at 100 km resolution (GOCE requirement)",
+    "complexity": "O(N_max ** 2 * N_obs) for design matrix computation"
+  },
+  "physics_fingerprint": {
+    "carrier": "N/A",
+    "sensing_mechanism": "gravity_gradient_tensor_measurement",
+    "integration_axis": "orbital_track",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "spherical_harmonic_gravity",
+    "primitives": [
+      "S.gravity.gradient_tensor",
+      "M.spherical_harmonics.synthesis",
+      "O.tikhonov.regularization"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "calibration_bias_mE",
+    "non_gravitational_acceleration_residual",
+    "orbit_error_cm"
+  ],
+  "error_metric": "geoid_height_RMSE_mm",
+  "error_metric_secondary": "gravity_anomaly_RMSE_mGal",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "linear_inverse",
+      "forward_operator": "gravity_gradient_tensor_measurement",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_max_degree": 200,
+        "orbit_altitude_km": 255,
+        "noise_E_sqrt_Hz": 5.0,
+        "N_arc_days": 365
+      },
+      "epsilon_fn_center": "1.0 geoid_height_RMSE_mm"
+    },
+    "allowed_forward_operators": [
+      "gravity_gradient_tensor_measurement"
+    ],
+    "allowed_problem_classes": [
+      "linear_inverse"
+    ],
+    "allowed_omega_dimensions": [
+      "N_max_degree",
+      "orbit_altitude_km",
+      "noise_E_sqrt_Hz",
+      "N_arc_days"
+    ],
+    "omega_bounds": {
+      "N_max_degree": [
+        50,
+        300
+      ],
+      "orbit_altitude_km": [
+        200,
+        500
+      ],
+      "noise_E_sqrt_Hz": [
+        1.0,
+        50.0
+      ],
+      "N_arc_days": [
+        100,
+        1825
+      ]
+    },
+    "epsilon_bounds": {
+      "geoid_height_RMSE_mm": [
+        0.1,
+        50.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

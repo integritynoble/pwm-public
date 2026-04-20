@@ -1,0 +1,179 @@
+{
+  "artifact_id": "L1-084",
+  "layer": "L1",
+  "principle_number": "084",
+  "title": "Scanning Electron Microscopy (SEM) \u2014 secondary-electron surface imaging",
+  "domain": "Electron Microscopy",
+  "sub_domain": "Surface topography EM",
+  "source_file": "G_electron_microscopy/084_sem.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical electron-microscopy literature for this principle.",
+  "E": {
+    "description": "Scanning Electron Microscopy (SEM) \u2014 secondary-electron surface imaging forward model.",
+    "forward_model": "y(r) = [PSF_SE(r; kV, spot_size) conv SE_yield(r)] + n, SE_yield depends on topography and Z",
+    "world_state_x": "Scene parameter (density / orientation / spectrum / complex field depending on principle)",
+    "observation_y": "Electron detector output at declared geometry + noise",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "pixel_nm",
+      "kV",
+      "spot_nm",
+      "peak_electrons",
+      "beam_drift",
+      "charging_artifact"
+    ]
+  },
+  "G": {
+    "dag": "L.excitation.electron_beam -> S.scan.raster -> D.secondary_electron -> int.temporal",
+    "vertices": [
+      "L.excitation.electron_beam",
+      "S.scan.raster",
+      "D.secondary_electron",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.excitation.electron_beam -> S.scan.raster",
+      "S.scan.raster -> D.secondary_electron",
+      "D.secondary_electron -> int.temporal"
+    ],
+    "L_DAG": 3.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 160,
+    "condition_number_effective": 8,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Wiener-SE, BM3D-SEM, CARE-SEM",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(electron_count) + mismatch bias.",
+    "complexity": "O(H W) to O(H W Z) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "electron",
+    "sensing_mechanism": "electron_beam_scanning",
+    "integration_axis": "temporal",
+    "problem_class": "linear_inverse",
+    "noise_model": "shot_poisson",
+    "solution_space": "2D_intensity",
+    "primitives": [
+      "L.excitation.electron_beam",
+      "S.scan.raster",
+      "D.secondary_electron",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "beam_drift",
+    "charging_artifact",
+    "beam_damage"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "sem_se",
+      "forward_operator": "sem_se_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 2048,
+        "W": 2048,
+        "pixel_nm": 5,
+        "kV": 5,
+        "spot_nm": 1.5,
+        "peak_electrons": 100,
+        "beam_drift": 0.0,
+        "charging_artifact": 0.0
+      },
+      "epsilon_fn_center": "30.0"
+    },
+    "allowed_forward_operators": [
+      "sem_se_forward"
+    ],
+    "allowed_problem_classes": [
+      "sem_se"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "pixel_nm",
+      "kV",
+      "spot_nm",
+      "peak_electrons",
+      "beam_drift",
+      "charging_artifact",
+      "beam_drift",
+      "charging_artifact",
+      "beam_damage"
+    ],
+    "omega_bounds": {
+      "H": [
+        512,
+        8192
+      ],
+      "W": [
+        512,
+        8192
+      ],
+      "pixel_nm": [
+        0.5,
+        100
+      ],
+      "kV": [
+        1,
+        30
+      ],
+      "spot_nm": [
+        0.5,
+        10
+      ],
+      "peak_electrons": [
+        10,
+        10000
+      ],
+      "beam_drift": [
+        0.0,
+        2.0
+      ],
+      "charging_artifact": [
+        0.0,
+        0.3
+      ],
+      "beam_damage": [
+        0.0,
+        0.5
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        40.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

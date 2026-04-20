@@ -1,0 +1,152 @@
+{
+  "artifact_id": "L2-112",
+  "layer": "L2",
+  "parent_l1": "L1-112",
+  "title": "X-ray Non-Destructive Testing (2D radiography) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        512,
+        8192
+      ],
+      "W": [
+        512,
+        8192
+      ],
+      "kV": [
+        20,
+        450
+      ],
+      "pixel_um": [
+        1,
+        500
+      ],
+      "photon_count": [
+        100,
+        100000
+      ],
+      "beam_hardening": [
+        0.0,
+        0.3
+      ],
+      "scatter": [
+        0.0,
+        0.4
+      ],
+      "thickness_variation": [
+        0.0,
+        0.5
+      ],
+      "source_intensity_drift": [
+        0.0,
+        0.1
+      ]
+    },
+    "E": {
+      "forward": "y(u,v) = I_0 * exp(-integral mu(r) ds) + scatter + n (single projection)",
+      "operator": "xray_ndt_forward_mismatch",
+      "primitive_chain": "L.xray_source -> L.beer_lambert -> int.spatial",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "22.0 + 2.0 * log10(photon_count / 100) - 8.0 * beam_hardening - 6.0 * scatter"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "BG-Subtract",
+        "method_sig": "A+O",
+        "expected_psnr": 27.0
+      },
+      {
+        "name": "Scatter-Correct",
+        "method_sig": "L+O",
+        "expected_psnr": 29.0
+      },
+      {
+        "name": "NDT-CNN",
+        "method_sig": "L+N",
+        "expected_psnr": 32.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 2048,
+        "W": 2048,
+        "kV": 150,
+        "pixel_um": 100,
+        "photon_count": 5000,
+        "beam_hardening": 0.0,
+        "scatter": 0.0,
+        "thickness_variation": 0.0
+      },
+      "epsilon": 30.0
+    },
+    "tier_bounds": {
+      "H": [
+        512,
+        8192
+      ],
+      "W": [
+        512,
+        8192
+      ],
+      "kV": [
+        20,
+        450
+      ],
+      "pixel_um": [
+        1,
+        500
+      ],
+      "photon_count": [
+        100,
+        100000
+      ],
+      "beam_hardening": [
+        0.0,
+        0.3
+      ],
+      "scatter": [
+        0.0,
+        0.4
+      ],
+      "thickness_variation": [
+        0.0,
+        0.5
+      ],
+      "source_intensity_drift": [
+        0.0,
+        0.1
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.5,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

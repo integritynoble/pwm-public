@@ -1,0 +1,181 @@
+{
+  "artifact_id": "L3-045",
+  "layer": "L3",
+  "parent_l2": "L2-045",
+  "parent_l1": "L1-045",
+  "title": "Diffusion MRI (DWI / DTI / HARDI) Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "canonical clinical/public dataset for this modality",
+    "secondary": "simulated forward synthesis at declared Omega",
+    "construction_method": "parametric forward + declared noise",
+    "num_dev_instances_per_tier": 20
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "H": 128,
+        "W": 128,
+        "Z": 64,
+        "N_directions": 32,
+        "b_max_s_per_mm2": 1000,
+        "SNR_dB": 20.0,
+        "eddy_currents": 0.0,
+        "motion": 0.0,
+        "B0_distortion": 0.0,
+        "partial_volume_CSF": 0.0
+      },
+      "epsilon": 20.0,
+      "d_ibench": 0.14,
+      "baselines": [
+        {
+          "name": "DTI-LLS",
+          "score": 17.5,
+          "Q": 0.88
+        },
+        {
+          "name": "HARDI-CSD",
+          "score": 20.0,
+          "Q": 0.88
+        },
+        {
+          "name": "dMRI-Net",
+          "score": 22.5,
+          "Q": 0.88
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "H": 128,
+        "W": 128,
+        "Z": 64,
+        "N_directions": 32,
+        "b_max_s_per_mm2": 1000,
+        "SNR_dB": 17.0,
+        "eddy_currents": 0.06,
+        "motion": 0.1,
+        "B0_distortion": 0.06,
+        "partial_volume_CSF": 0.06
+      },
+      "epsilon": 16.4,
+      "d_ibench": 0.28,
+      "baselines": [
+        {
+          "name": "DTI-LLS",
+          "score": 15.5,
+          "Q": 0.68
+        },
+        {
+          "name": "HARDI-CSD",
+          "score": 18.0,
+          "Q": 0.68
+        },
+        {
+          "name": "dMRI-Net",
+          "score": 20.5,
+          "Q": 0.68
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "H": 128,
+        "W": 128,
+        "Z": 64,
+        "N_directions": 32,
+        "b_max_s_per_mm2": 1000,
+        "SNR_dB": 8.0,
+        "eddy_currents": 0.15,
+        "motion": 0.25,
+        "B0_distortion": 0.15,
+        "partial_volume_CSF": 0.15
+      },
+      "epsilon": 12.8,
+      "d_ibench": 0.48,
+      "baselines": [
+        {
+          "name": "DTI-LLS",
+          "score": 13.5,
+          "Q": 0.48
+        },
+        {
+          "name": "HARDI-CSD",
+          "score": 16.0,
+          "Q": 0.48
+        },
+        {
+          "name": "dMRI-Net",
+          "score": 18.5,
+          "Q": 0.48
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "H": 128,
+        "W": 128,
+        "Z": 64,
+        "N_directions": 32,
+        "b_max_s_per_mm2": 1000,
+        "SNR_dB": 0.0,
+        "eddy_currents": 0.3,
+        "motion": 0.5,
+        "B0_distortion": 0.3,
+        "partial_volume_CSF": 0.3
+      },
+      "epsilon": 9.2,
+      "d_ibench": 0.72,
+      "baselines": [
+        {
+          "name": "DTI-LLS",
+          "score": 11.5,
+          "Q": 0.28
+        },
+        {
+          "name": "HARDI-CSD",
+          "score": 14.0,
+          "Q": 0.28
+        },
+        {
+          "name": "dMRI-Net",
+          "score": 16.5,
+          "Q": 0.28
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "full parametric sweep",
+      "num_dev_instances": 200,
+      "construction_method": "parametric Omega sweep"
+    },
+    "baselines": [
+      {
+        "name": "DTI-LLS",
+        "overall_Q": 0.7
+      },
+      {
+        "name": "HARDI-CSD",
+        "overall_Q": 0.6
+      },
+      {
+        "name": "dMRI-Net",
+        "overall_Q": 0.5
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind strata corner.",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

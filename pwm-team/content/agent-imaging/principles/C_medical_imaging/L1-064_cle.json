@@ -1,0 +1,182 @@
+{
+  "artifact_id": "L1-064",
+  "layer": "L1",
+  "principle_number": "064",
+  "title": "Confocal Laser Endomicroscopy (CLE)",
+  "domain": "Medical Imaging",
+  "sub_domain": "In-vivo cellular-resolution fluorescence imaging",
+  "source_file": "C_medical_imaging/064_cle.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical medical-imaging literature for this principle.",
+  "E": {
+    "description": "Confocal Laser Endomicroscopy (CLE) forward model.",
+    "forward_model": "y(r) = [PSF_confocal conv f(r)] + n; in-vivo via probe tip",
+    "world_state_x": "Patient-side quantity of interest (attenuation / activity / perfusion / stiffness etc.)",
+    "observation_y": "Clinical sensor output at declared resolution + noise",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "pixel_um",
+      "NA",
+      "peak_photons",
+      "f_MHz",
+      "motion",
+      "photobleaching",
+      "tissue_contact_pressure"
+    ]
+  },
+  "G": {
+    "dag": "L.laser_excitation -> K.psf.confocal -> S.scan.raster -> int.temporal",
+    "vertices": [
+      "L.laser_excitation",
+      "K.psf.confocal",
+      "S.scan.raster",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.laser_excitation -> K.psf.confocal",
+      "K.psf.confocal -> S.scan.raster",
+      "S.scan.raster -> int.temporal"
+    ],
+    "L_DAG": 3.3,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 240,
+    "condition_number_effective": 12,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Wiener-CLE, RL-Confocal, CLE-Net",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sensor SNR + mismatch bias + regularisation.",
+    "complexity": "O(H W) to O(H W Z) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "confocal_laser_scan",
+    "integration_axis": "temporal",
+    "problem_class": "linear_inverse",
+    "noise_model": "poisson_gaussian",
+    "solution_space": "2D_intensity",
+    "primitives": [
+      "L.laser_excitation",
+      "K.psf.confocal",
+      "S.scan.raster",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "motion",
+    "photobleaching",
+    "tissue_contact_pressure",
+    "fluorophore_uptake_variation"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "cle",
+      "forward_operator": "cle_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 1024,
+        "W": 1024,
+        "pixel_um": 1.0,
+        "NA": 0.7,
+        "peak_photons": 200,
+        "f_MHz": 1,
+        "motion": 0.0,
+        "photobleaching": 0.0,
+        "tissue_contact_pressure": 0.0
+      },
+      "epsilon_fn_center": "26.0"
+    },
+    "allowed_forward_operators": [
+      "cle_forward"
+    ],
+    "allowed_problem_classes": [
+      "cle"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "pixel_um",
+      "NA",
+      "peak_photons",
+      "f_MHz",
+      "motion",
+      "photobleaching",
+      "tissue_contact_pressure",
+      "motion",
+      "photobleaching",
+      "tissue_contact_pressure",
+      "fluorophore_uptake_variation"
+    ],
+    "omega_bounds": {
+      "H": 256,
+      "W": 256,
+      "pixel_um": [
+        0.5,
+        5.0
+      ],
+      "NA": [
+        0.5,
+        1.2
+      ],
+      "peak_photons": [
+        20,
+        2000
+      ],
+      "f_MHz": [
+        0.1,
+        10
+      ],
+      "motion": [
+        0.0,
+        0.5
+      ],
+      "photobleaching": [
+        0.0,
+        0.5
+      ],
+      "tissue_contact_pressure": [
+        0.0,
+        0.3
+      ],
+      "fluorophore_uptake_variation": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        5.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

@@ -1,0 +1,149 @@
+{
+  "artifact_id": "L2-041",
+  "layer": "L2",
+  "parent_l1": "L1-041",
+  "title": "Photoacoustic Tomography (PAT) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "N_transducers": [
+        32,
+        1024
+      ],
+      "H": 64,
+      "W": 64,
+      "Z": [
+        16,
+        512
+      ],
+      "lambda_nm": [
+        650,
+        1064
+      ],
+      "SNR_dB": [
+        0.0,
+        35.0
+      ],
+      "sound_speed_heterogeneity": [
+        0.0,
+        0.05
+      ],
+      "limited_view_geometry": [
+        0.0,
+        0.6
+      ],
+      "laser_fluence_variation": [
+        0.0,
+        0.3
+      ],
+      "coupling_medium": [
+        0.0,
+        0.3
+      ]
+    },
+    "E": {
+      "forward": "p(r, t) = integral A(r') * envelope(t - |r-r'|/c) + n; reconstruct A(r) via UBP or model-based",
+      "operator": "pat_forward_mismatch",
+      "primitive_chain": "L.laser_pulse_excite -> L.thermoacoustic_generation -> D.ultrasound_array -> int.temporal",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "15.0 + 0.3 * SNR_dB - 20.0 * sound_speed_heterogeneity - 6.0 * limited_view_geometry - 5.0 * laser_fluence_variation"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "UBP",
+        "method_sig": "L+O",
+        "expected_psnr": 20.5
+      },
+      {
+        "name": "Model-Based-PA",
+        "method_sig": "L+O",
+        "expected_psnr": 23.0
+      },
+      {
+        "name": "PA-Net",
+        "method_sig": "L+N",
+        "expected_psnr": 25.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_transducers": 256,
+        "H": 256,
+        "W": 256,
+        "Z": 128,
+        "lambda_nm": 800,
+        "SNR_dB": 22,
+        "sound_speed_heterogeneity": 0.0,
+        "limited_view_geometry": 0.0,
+        "laser_fluence_variation": 0.0
+      },
+      "epsilon": 23.0
+    },
+    "tier_bounds": {
+      "N_transducers": [
+        32,
+        1024
+      ],
+      "H": 64,
+      "W": 64,
+      "Z": [
+        16,
+        512
+      ],
+      "lambda_nm": [
+        650,
+        1064
+      ],
+      "SNR_dB": [
+        0.0,
+        35.0
+      ],
+      "sound_speed_heterogeneity": [
+        0.0,
+        0.05
+      ],
+      "limited_view_geometry": [
+        0.0,
+        0.6
+      ],
+      "laser_fluence_variation": [
+        0.0,
+        0.3
+      ],
+      "coupling_medium": [
+        0.0,
+        0.3
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.5,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

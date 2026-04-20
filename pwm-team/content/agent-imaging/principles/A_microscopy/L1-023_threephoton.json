@@ -1,0 +1,183 @@
+{
+  "artifact_id": "L1-023",
+  "layer": "L1",
+  "principle_number": "023",
+  "title": "Three-Photon Microscopy (chi-5 deep-tissue imaging)",
+  "domain": "Microscopy",
+  "sub_domain": "Higher-order NLO microscopy for thick scattering tissue",
+  "source_file": "A_microscopy/023_threephoton.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical domain literature for this specific principle.",
+  "E": {
+    "description": "Three-Photon Microscopy (chi-5 deep-tissue imaging) forward model.",
+    "forward_model": "y(r) ~ [f(r) * I_ex^3(r)] * integral attenuation; depth penetration ~2x of 2P at 1300 nm",
+    "world_state_x": "Scene parameter of interest (density / complex field / lifetime / normals depending on spec).",
+    "observation_y": "Measured intensity or photon counts from the imaging system.",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "Z",
+      "pixel_nm",
+      "NA",
+      "lambda_ex_nm",
+      "peak_photons",
+      "pulse_width_fs",
+      "sample_scattering"
+    ]
+  },
+  "G": {
+    "dag": "L.excitation.nonlinear_chi5 -> S.scan.raster -> int.temporal",
+    "vertices": [
+      "L.excitation.nonlinear_chi5",
+      "S.scan.raster",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.excitation.nonlinear_chi5 -> S.scan.raster",
+      "S.scan.raster -> int.temporal"
+    ],
+    "L_DAG": 3.8,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 440,
+    "condition_number_effective": 22,
+    "regime": "Conditional stability; principle-specific mismatch dominates at Omega bounds (see `mismatch_parameters`)."
+  },
+  "C": {
+    "solver_class": "Richardson-Lucy-3P, TV-ADMM-3P, CARE-3P",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(photon_count) + mismatch-induced bias.",
+    "complexity": "O(H W) to O(H W Z) per iteration depending on dimensionality"
+  },
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "three_photon_nlo",
+    "integration_axis": "temporal",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "shot_poisson",
+    "solution_space": "3D_intensity",
+    "primitives": [
+      "L.excitation.nonlinear_chi5",
+      "S.scan.raster",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 10,
+  "difficulty_tier": "hard",
+  "mismatch_parameters": [
+    "pulse_compression_drift",
+    "sample_scattering",
+    "long_wavelength_absorption"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "three_photon",
+      "forward_operator": "three_photon_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 512,
+        "W": 512,
+        "Z": 100,
+        "pixel_nm": 400,
+        "NA": 1.0,
+        "lambda_ex_nm": 1300,
+        "peak_photons": 30,
+        "pulse_width_fs": 60,
+        "sample_scattering": 0.0
+      },
+      "epsilon_fn_center": "22.0"
+    },
+    "allowed_forward_operators": [
+      "three_photon_forward"
+    ],
+    "allowed_problem_classes": [
+      "three_photon"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "Z",
+      "pixel_nm",
+      "NA",
+      "lambda_ex_nm",
+      "peak_photons",
+      "pulse_width_fs",
+      "sample_scattering",
+      "pulse_compression_drift",
+      "sample_scattering",
+      "long_wavelength_absorption"
+    ],
+    "omega_bounds": {
+      "H": [
+        128,
+        2048
+      ],
+      "W": [
+        128,
+        2048
+      ],
+      "Z": [
+        16,
+        512
+      ],
+      "pixel_nm": [
+        200,
+        1000
+      ],
+      "NA": [
+        0.5,
+        1.1
+      ],
+      "lambda_ex_nm": [
+        1200,
+        1700
+      ],
+      "peak_photons": [
+        5,
+        500
+      ],
+      "pulse_width_fs": [
+        30,
+        300
+      ],
+      "sample_scattering": [
+        0.0,
+        0.8
+      ],
+      "long_wavelength_absorption": [
+        0.0,
+        0.5
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        12.0,
+        42.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

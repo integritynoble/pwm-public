@@ -1,0 +1,181 @@
+{
+  "artifact_id": "L3-121",
+  "layer": "L3",
+  "parent_l2": "L2-121",
+  "parent_l1": "L1-121",
+  "title": "Magnetic Flux Leakage (MFL) \u2014 pipeline & rail inspection Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "canonical NDT / NDE dataset for this principle",
+    "secondary": "simulated forward synthesis at declared Omega",
+    "construction_method": "parametric forward + declared noise",
+    "num_dev_instances_per_tier": 20
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "H": 256,
+        "W": 4096,
+        "N_sensors": 32,
+        "lift_off_mm": 1.0,
+        "velocity_mps": 1.0,
+        "SNR_dB": 20.0,
+        "liftoff_variation": 0.0,
+        "magnetization_non_uniformity": 0.0,
+        "external_interference": 0.0,
+        "velocity_effect": 0.0
+      },
+      "epsilon": 24.0,
+      "d_ibench": 0.14,
+      "baselines": [
+        {
+          "name": "Dipole-Model",
+          "score": 22.0,
+          "Q": 0.88
+        },
+        {
+          "name": "NN-MFL",
+          "score": 24.5,
+          "Q": 0.88
+        },
+        {
+          "name": "Deep-MFL",
+          "score": 27.0,
+          "Q": 0.88
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "H": 256,
+        "W": 4096,
+        "N_sensors": 32,
+        "lift_off_mm": 1.0,
+        "velocity_mps": 1.0,
+        "SNR_dB": 17.0,
+        "liftoff_variation": 0.1,
+        "magnetization_non_uniformity": 0.06,
+        "external_interference": 0.06,
+        "velocity_effect": 0.06
+      },
+      "epsilon": 19.68,
+      "d_ibench": 0.28,
+      "baselines": [
+        {
+          "name": "Dipole-Model",
+          "score": 20.0,
+          "Q": 0.68
+        },
+        {
+          "name": "NN-MFL",
+          "score": 22.5,
+          "Q": 0.68
+        },
+        {
+          "name": "Deep-MFL",
+          "score": 25.0,
+          "Q": 0.68
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "H": 256,
+        "W": 4096,
+        "N_sensors": 32,
+        "lift_off_mm": 1.0,
+        "velocity_mps": 1.0,
+        "SNR_dB": 8.0,
+        "liftoff_variation": 0.25,
+        "magnetization_non_uniformity": 0.15,
+        "external_interference": 0.15,
+        "velocity_effect": 0.15
+      },
+      "epsilon": 15.36,
+      "d_ibench": 0.48,
+      "baselines": [
+        {
+          "name": "Dipole-Model",
+          "score": 18.0,
+          "Q": 0.48
+        },
+        {
+          "name": "NN-MFL",
+          "score": 20.5,
+          "Q": 0.48
+        },
+        {
+          "name": "Deep-MFL",
+          "score": 23.0,
+          "Q": 0.48
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "H": 256,
+        "W": 4096,
+        "N_sensors": 32,
+        "lift_off_mm": 1.0,
+        "velocity_mps": 1.0,
+        "SNR_dB": 0.0,
+        "liftoff_variation": 0.5,
+        "magnetization_non_uniformity": 0.3,
+        "external_interference": 0.3,
+        "velocity_effect": 0.3
+      },
+      "epsilon": 11.04,
+      "d_ibench": 0.72,
+      "baselines": [
+        {
+          "name": "Dipole-Model",
+          "score": 16.0,
+          "Q": 0.28
+        },
+        {
+          "name": "NN-MFL",
+          "score": 18.5,
+          "Q": 0.28
+        },
+        {
+          "name": "Deep-MFL",
+          "score": 21.0,
+          "Q": 0.28
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "full parametric sweep",
+      "num_dev_instances": 200,
+      "construction_method": "parametric Omega sweep"
+    },
+    "baselines": [
+      {
+        "name": "Dipole-Model",
+        "overall_Q": 0.7
+      },
+      {
+        "name": "NN-MFL",
+        "overall_Q": 0.6
+      },
+      {
+        "name": "Deep-MFL",
+        "overall_Q": 0.5
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind strata corner.",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

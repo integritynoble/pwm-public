@@ -1,0 +1,181 @@
+{
+  "artifact_id": "L3-118",
+  "layer": "L3",
+  "parent_l2": "L2-118",
+  "parent_l1": "L1-118",
+  "title": "X-Ray Fluorescence (XRF) Mapping Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "canonical NDT / NDE dataset for this principle",
+    "secondary": "simulated forward synthesis at declared Omega",
+    "construction_method": "parametric forward + declared noise",
+    "num_dev_instances_per_tier": 20
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "N_elements": 10,
+        "kV": 30,
+        "dwell_ms": 100,
+        "peak_counts": 1000,
+        "matrix_effect": 0.0,
+        "detector_dead_time": 0.0,
+        "peak_overlap": 0.0,
+        "self_absorption": 0.0
+      },
+      "epsilon": 26.0,
+      "d_ibench": 0.14,
+      "baselines": [
+        {
+          "name": "Fundamental-Parameters",
+          "score": 23.5,
+          "Q": 0.88
+        },
+        {
+          "name": "NMF-XRF",
+          "score": 25.5,
+          "Q": 0.88
+        },
+        {
+          "name": "XRF-Net",
+          "score": 28.0,
+          "Q": 0.88
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "N_elements": 10,
+        "kV": 30,
+        "dwell_ms": 100,
+        "peak_counts": 500,
+        "matrix_effect": 0.06,
+        "detector_dead_time": 0.1,
+        "peak_overlap": 0.1,
+        "self_absorption": 0.1
+      },
+      "epsilon": 21.32,
+      "d_ibench": 0.28,
+      "baselines": [
+        {
+          "name": "Fundamental-Parameters",
+          "score": 21.5,
+          "Q": 0.68
+        },
+        {
+          "name": "NMF-XRF",
+          "score": 23.5,
+          "Q": 0.68
+        },
+        {
+          "name": "XRF-Net",
+          "score": 26.0,
+          "Q": 0.68
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "N_elements": 10,
+        "kV": 30,
+        "dwell_ms": 100,
+        "peak_counts": 200,
+        "matrix_effect": 0.15,
+        "detector_dead_time": 0.25,
+        "peak_overlap": 0.25,
+        "self_absorption": 0.25
+      },
+      "epsilon": 16.64,
+      "d_ibench": 0.48,
+      "baselines": [
+        {
+          "name": "Fundamental-Parameters",
+          "score": 19.5,
+          "Q": 0.48
+        },
+        {
+          "name": "NMF-XRF",
+          "score": 21.5,
+          "Q": 0.48
+        },
+        {
+          "name": "XRF-Net",
+          "score": 24.0,
+          "Q": 0.48
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "N_elements": 10,
+        "kV": 30,
+        "dwell_ms": 100,
+        "peak_counts": 100,
+        "matrix_effect": 0.3,
+        "detector_dead_time": 0.5,
+        "peak_overlap": 0.5,
+        "self_absorption": 0.5
+      },
+      "epsilon": 11.96,
+      "d_ibench": 0.72,
+      "baselines": [
+        {
+          "name": "Fundamental-Parameters",
+          "score": 17.5,
+          "Q": 0.28
+        },
+        {
+          "name": "NMF-XRF",
+          "score": 19.5,
+          "Q": 0.28
+        },
+        {
+          "name": "XRF-Net",
+          "score": 22.0,
+          "Q": 0.28
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "full parametric sweep",
+      "num_dev_instances": 200,
+      "construction_method": "parametric Omega sweep"
+    },
+    "baselines": [
+      {
+        "name": "Fundamental-Parameters",
+        "overall_Q": 0.7
+      },
+      {
+        "name": "NMF-XRF",
+        "overall_Q": 0.6
+      },
+      {
+        "name": "XRF-Net",
+        "overall_Q": 0.5
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind strata corner.",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

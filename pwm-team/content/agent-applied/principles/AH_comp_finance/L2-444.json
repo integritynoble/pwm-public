@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-444",
+  "layer": "L2",
+  "parent_l1": "L1-444",
+  "principle_ref": "sha256:<L1-444_principle_hash>",
+  "title": "Markowitz Mean-Variance Portfolio Optimization \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "N_assets": [
+        5,
+        500
+      ],
+      "T_lookback_days": [
+        63,
+        2520
+      ],
+      "estimation_error_sigma_mu": [
+        0.001,
+        0.05
+      ],
+      "risk_aversion_lambda": [
+        0.1,
+        10.0
+      ]
+    },
+    "E": {
+      "forward": "min_w w ** T Sigma w s.t. mu ** T w = mu_target, 1 ** T w = 1, w >= 0",
+      "operator": "expected_return_covariance_estimation",
+      "primitive_chain": "M.covariance.sample_shrinkage -> O.qp.quadratic_programming -> S.efficient_frontier.trace",
+      "inverse": "recover optimal portfolio weights w in R ** N satisfying constraints from historical return matrix R in R^{T x N} for N assets over T periods"
+    },
+    "B": {
+      "weights_sum": "sum w = 1",
+      "long_only": "w >= 0"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "out_of_sample_Sharpe_ratio",
+      "portfolio_turnover",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.4 + 0.2 * sqrt(T_lookback_days / 252)"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 portfolio_weight_vector"
+    },
+    "baselines": [
+      {
+        "name": "sample_covariance_MV",
+        "method_sig": "L+O",
+        "expected_score": 0.5
+      },
+      {
+        "name": "Ledoit_Wolf_shrinkage",
+        "method_sig": "L+O",
+        "expected_score": 0.65
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_assets": 50,
+        "T_lookback_days": 252,
+        "estimation_error_sigma_mu": 0.01,
+        "risk_aversion_lambda": 1.0,
+        "estimation_error_expected_returns": 0.0,
+        "covariance_matrix_instability": 0.0,
+        "transaction_cost_turnover": 0.0
+      },
+      "epsilon": 0.6
+    },
+    "tier_bounds": {
+      "N_assets": [
+        5,
+        500
+      ],
+      "T_lookback_days": [
+        63,
+        2520
+      ],
+      "estimation_error_sigma_mu": [
+        0.001,
+        0.05
+      ],
+      "risk_aversion_lambda": [
+        0.1,
+        10.0
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.28,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.28 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

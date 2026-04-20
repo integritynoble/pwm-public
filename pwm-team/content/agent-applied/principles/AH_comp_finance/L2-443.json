@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-443",
+  "layer": "L2",
+  "parent_l1": "L1-443",
+  "principle_ref": "sha256:<L1-443_principle_hash>",
+  "title": "Merton Credit Risk Structural Model \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "leverage_ratio_D_V": [
+        0.1,
+        0.9
+      ],
+      "sigma_E_percent": [
+        5,
+        100
+      ],
+      "T_maturity_yr": [
+        0.25,
+        5.0
+      ],
+      "r_rate_percent": [
+        0.0,
+        10.0
+      ]
+    },
+    "E": {
+      "forward": "E = V*N(d1) - D*e^{-rT}*N(d2) (equity=call on assets); sigma_E = (V/E)*N(d1)*sigma_V",
+      "operator": "equity_option_credit_inversion",
+      "primitive_chain": "M.merton.structural -> O.newton.system_2eq -> S.bs.equity_as_call",
+      "inverse": "recover firm asset value V and asset volatility sigma_V from equity market cap E and equity volatility sigma_E from options"
+    },
+    "B": {
+      "V_positivity": "V > 0",
+      "sigma_V_positivity": "sigma_V > 0"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "CDS_spread_prediction_RMSE_bp",
+      "PD_calibration_error",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "30 + 20 * (leverage_ratio_D_V / 0.5) ** 2"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 firm_value_vol_vector"
+    },
+    "baselines": [
+      {
+        "name": "Merton_Newton",
+        "method_sig": "L+O",
+        "expected_score": 60
+      },
+      {
+        "name": "Duan_MLE",
+        "method_sig": "L+O",
+        "expected_score": 45
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "leverage_ratio_D_V": 0.5,
+        "sigma_E_percent": 30,
+        "T_maturity_yr": 1.0,
+        "r_rate_percent": 3.0,
+        "debt_complexity_multiple_tranches": 0.0,
+        "default_boundary_uncertainty": 0.0,
+        "accounting_lag_in_equity": 0.0
+      },
+      "epsilon": 50.0
+    },
+    "tier_bounds": {
+      "leverage_ratio_D_V": [
+        0.1,
+        0.9
+      ],
+      "sigma_E_percent": [
+        5,
+        100
+      ],
+      "T_maturity_yr": [
+        0.25,
+        5.0
+      ],
+      "r_rate_percent": [
+        0.0,
+        10.0
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.35,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.35 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

@@ -1,0 +1,185 @@
+{
+  "artifact_id": "L3-108",
+  "layer": "L3",
+  "parent_l2": "L2-108",
+  "parent_l1": "L1-108",
+  "title": "Interferometric SAR (InSAR) \u2014 deformation + DEM Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "canonical remote-sensing dataset for this principle",
+    "secondary": "simulated forward synthesis at declared Omega",
+    "construction_method": "parametric forward + declared noise model",
+    "num_dev_instances_per_tier": 20
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "H": 8192,
+        "W": 8192,
+        "pixel_m": 3.0,
+        "lambda_cm": 5.6,
+        "baseline_m": 200,
+        "coherence": 0.8,
+        "SNR_dB": 20.0,
+        "atmospheric_phase_screen": 0.0,
+        "baseline_error": 0.0,
+        "temporal_decorrelation": 0.0,
+        "unwrap_error": 0.0
+      },
+      "epsilon": 20.0,
+      "d_ibench": 0.14,
+      "baselines": [
+        {
+          "name": "SNAPHU",
+          "score": 18.0,
+          "Q": 0.88
+        },
+        {
+          "name": "Minimum-Cost-Flow",
+          "score": 19.5,
+          "Q": 0.88
+        },
+        {
+          "name": "PhaseNet-InSAR",
+          "score": 22.0,
+          "Q": 0.88
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "H": 8192,
+        "W": 8192,
+        "pixel_m": 3.0,
+        "lambda_cm": 5.6,
+        "baseline_m": 200,
+        "coherence": 0.8,
+        "SNR_dB": 17.0,
+        "atmospheric_phase_screen": 0.1,
+        "baseline_error": 2.0,
+        "temporal_decorrelation": 0.16000000000000003,
+        "unwrap_error": 0.06
+      },
+      "epsilon": 16.4,
+      "d_ibench": 0.28,
+      "baselines": [
+        {
+          "name": "SNAPHU",
+          "score": 16.0,
+          "Q": 0.68
+        },
+        {
+          "name": "Minimum-Cost-Flow",
+          "score": 17.5,
+          "Q": 0.68
+        },
+        {
+          "name": "PhaseNet-InSAR",
+          "score": 20.0,
+          "Q": 0.68
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "H": 8192,
+        "W": 8192,
+        "pixel_m": 3.0,
+        "lambda_cm": 5.6,
+        "baseline_m": 200,
+        "coherence": 0.8,
+        "SNR_dB": 8.0,
+        "atmospheric_phase_screen": 0.25,
+        "baseline_error": 5.0,
+        "temporal_decorrelation": 0.4,
+        "unwrap_error": 0.15
+      },
+      "epsilon": 12.8,
+      "d_ibench": 0.48,
+      "baselines": [
+        {
+          "name": "SNAPHU",
+          "score": 14.0,
+          "Q": 0.48
+        },
+        {
+          "name": "Minimum-Cost-Flow",
+          "score": 15.5,
+          "Q": 0.48
+        },
+        {
+          "name": "PhaseNet-InSAR",
+          "score": 18.0,
+          "Q": 0.48
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "H": 8192,
+        "W": 8192,
+        "pixel_m": 3.0,
+        "lambda_cm": 5.6,
+        "baseline_m": 200,
+        "coherence": 0.8,
+        "SNR_dB": 0.0,
+        "atmospheric_phase_screen": 0.5,
+        "baseline_error": 10.0,
+        "temporal_decorrelation": 0.8,
+        "unwrap_error": 0.3
+      },
+      "epsilon": 9.2,
+      "d_ibench": 0.72,
+      "baselines": [
+        {
+          "name": "SNAPHU",
+          "score": 12.0,
+          "Q": 0.28
+        },
+        {
+          "name": "Minimum-Cost-Flow",
+          "score": 13.5,
+          "Q": 0.28
+        },
+        {
+          "name": "PhaseNet-InSAR",
+          "score": 16.0,
+          "Q": 0.28
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "full parametric sweep",
+      "num_dev_instances": 200,
+      "construction_method": "parametric Omega sweep"
+    },
+    "baselines": [
+      {
+        "name": "SNAPHU",
+        "overall_Q": 0.7
+      },
+      {
+        "name": "Minimum-Cost-Flow",
+        "overall_Q": 0.6
+      },
+      {
+        "name": "PhaseNet-InSAR",
+        "overall_Q": 0.5
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind strata corner.",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

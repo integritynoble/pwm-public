@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-500",
+  "layer": "L1",
+  "principle_number": "500",
+  "title": "Optimal Experimental Design",
+  "domain": "Optimization",
+  "sub_domain": "Information-theoretic design",
+  "source_file": "AO_optimization/500_optimal_experimental_design.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "Optimal experimental design: choose experiment conditions xi to maximize information content (Fisher information) about parameters theta.",
+    "forward_model": "y = f(xi, theta) + epsilon, I(xi, theta) = E[(d log p / d theta) ** 2], maximize det(I) or trace(I^{-1})",
+    "world_state_x": "model parameters theta in R ** p (unknown physical or biological parameters)",
+    "observation_y": "measurements y at design points xi (scalar or vector per experiment)",
+    "physical_parameters_theta": [
+      "design_space_bounds xi_min, xi_max",
+      "model_nonlinearity_level",
+      "noise_variance sigma ** 2",
+      "budget_N_experiments"
+    ]
+  },
+  "G": {
+    "dag": "M.fisher.information -> O.d_optimality.criterion -> S.gradient.update",
+    "vertices": [
+      "M.fisher.information",
+      "O.d_optimality.criterion",
+      "S.gradient.update"
+    ],
+    "arcs": [
+      "M.fisher.information -> O.d_optimality.criterion",
+      "O.d_optimality.criterion -> S.gradient.update"
+    ],
+    "L_DAG": 2.8,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 1000.0,
+    "condition_number_effective": 50,
+    "condition_number_mismatched": 200,
+    "regime": "D-optimal design is convex; E-optimal is quasiconvex; exchange algorithm converges to global optimum for discrete design spaces."
+  },
+  "C": {
+    "solver_class": "convex_relaxation (SDP) or sequential_exchange_algorithm",
+    "convergence_rate_q": 2.0,
+    "error_bound": "log det I(xi*) >= log det I(xi_opt) - epsilon for approximate design",
+    "complexity": "O(p ** 3 * N_candidates) for FIM computation per design point"
+  },
+  "physics_fingerprint": {
+    "carrier": "N/A",
+    "sensing_mechanism": "fisher_information_optimization",
+    "integration_axis": "parameter_space",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "experiment_design_vector",
+    "primitives": [
+      "M.fisher.information",
+      "O.d_optimality.criterion",
+      "S.gradient.update"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "prior_parameter_uncertainty",
+    "model_misspecification_level",
+    "noise_heteroscedasticity"
+  ],
+  "error_metric": "D_optimality_criterion",
+  "error_metric_secondary": "parameter_estimation_RMSE",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "nonlinear_inverse",
+      "forward_operator": "fisher_information_optimization",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_experiments": 20,
+        "p_parameters": 5,
+        "sigma2_noise": 0.1,
+        "nonlinearity_level": 0.5
+      },
+      "epsilon_fn_center": "0.80 D_optimality_criterion"
+    },
+    "allowed_forward_operators": [
+      "fisher_information_optimization"
+    ],
+    "allowed_problem_classes": [
+      "nonlinear_inverse"
+    ],
+    "allowed_omega_dimensions": [
+      "N_experiments",
+      "p_parameters",
+      "sigma2_noise",
+      "nonlinearity_level"
+    ],
+    "omega_bounds": {
+      "N_experiments": [
+        5,
+        100
+      ],
+      "p_parameters": [
+        2,
+        20
+      ],
+      "sigma2_noise": [
+        0.01,
+        1.0
+      ],
+      "nonlinearity_level": [
+        0.1,
+        2.0
+      ]
+    },
+    "epsilon_bounds": {
+      "D_optimality_criterion": [
+        0.3,
+        1.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

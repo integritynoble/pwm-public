@@ -1,0 +1,151 @@
+{
+  "artifact_id": "L2-031",
+  "layer": "L2",
+  "parent_l1": "L1-031",
+  "title": "Planar X-ray Radiography Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        1024,
+        4096
+      ],
+      "W": [
+        1024,
+        4096
+      ],
+      "kVp": [
+        30,
+        150
+      ],
+      "mAs": [
+        0.1,
+        200
+      ],
+      "pixel_um": [
+        50,
+        500
+      ],
+      "scatter": [
+        0.0,
+        0.4
+      ],
+      "patient_motion": [
+        0.0,
+        0.3
+      ],
+      "anti_scatter_grid": [
+        0.0,
+        0.5
+      ],
+      "tube_drift": [
+        0.0,
+        0.1
+      ]
+    },
+    "E": {
+      "forward": "y(u,v) = I_0 exp(-integral mu ds) + scatter + n",
+      "operator": "xray_radiography_forward_mismatch",
+      "primitive_chain": "L.xray_source -> L.beer_lambert -> int.spatial",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "26.0 + 2.0 * log10(mAs / 0.1) - 8.0 * scatter - 5.0 * patient_motion"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "LogTransform",
+        "method_sig": "A+O",
+        "expected_psnr": 30.0
+      },
+      {
+        "name": "Scatter-Correct",
+        "method_sig": "L+O",
+        "expected_psnr": 32.5
+      },
+      {
+        "name": "XR-Net",
+        "method_sig": "L+N",
+        "expected_psnr": 35.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 3072,
+        "W": 3072,
+        "kVp": 80,
+        "mAs": 20,
+        "pixel_um": 140,
+        "scatter": 0.0,
+        "patient_motion": 0.0
+      },
+      "epsilon": 34.0
+    },
+    "tier_bounds": {
+      "H": [
+        1024,
+        4096
+      ],
+      "W": [
+        1024,
+        4096
+      ],
+      "kVp": [
+        30,
+        150
+      ],
+      "mAs": [
+        0.1,
+        200
+      ],
+      "pixel_um": [
+        50,
+        500
+      ],
+      "scatter": [
+        0.0,
+        0.4
+      ],
+      "patient_motion": [
+        0.0,
+        0.3
+      ],
+      "anti_scatter_grid": [
+        0.0,
+        0.5
+      ],
+      "tube_drift": [
+        0.0,
+        0.1
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.5,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

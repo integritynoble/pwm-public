@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-451",
+  "layer": "L1",
+  "principle_number": "451",
+  "title": "Rigid Body Dynamics Simulation",
+  "domain": "Robotics",
+  "sub_domain": "Multibody simulation",
+  "source_file": "AI_robotics/451_rigid_body_dynamics.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "Rigid body dynamics: simulate 6-DOF motion of rigid body under forces and torques using quaternion representation.",
+    "forward_model": "p_dot = v; q_dot = 0.5*Omega(omega)*q; J*omega_dot = tau - omega x (J*omega); m*v_dot = F",
+    "world_state_x": "6DOF state (position, quaternion orientation, linear/angular velocity)",
+    "observation_y": "applied forces F and torques tau",
+    "physical_parameters_theta": [
+      "mass_m_kg",
+      "inertia_tensor_J",
+      "initial_state_x0",
+      "time_step_dt"
+    ]
+  },
+  "G": {
+    "dag": "M.euler.rigid_body_equations -> S.quaternion.integration -> O.lyapunov.energy_based",
+    "vertices": [
+      "M.euler.rigid_body_equations",
+      "S.quaternion.integration",
+      "O.lyapunov.energy_based"
+    ],
+    "arcs": [
+      "M.euler.rigid_body_equations -> S.quaternion.integration",
+      "S.quaternion.integration -> O.lyapunov.energy_based"
+    ],
+    "L_DAG": 2.8,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 1000,
+    "condition_number_effective": 50,
+    "condition_number_mismatched": 200,
+    "regime": "Euler's equations singularity-free with quaternions; angular momentum conserved; numerical gyroscopic terms require care."
+  },
+  "C": {
+    "solver_class": "RK4_integration or Adams_Bashforth",
+    "convergence_rate_q": 4.0,
+    "error_bound": "attitude error < 0.01 deg for RK4 with dt < 0.001s",
+    "complexity": "O(N_timesteps) for Euler equations integration"
+  },
+  "physics_fingerprint": {
+    "carrier": "N/A",
+    "sensing_mechanism": "euler_equations_quaternion",
+    "integration_axis": "time",
+    "problem_class": "parameter_estimation",
+    "noise_model": "gaussian",
+    "solution_space": "6DOF_state_trajectory",
+    "primitives": [
+      "M.euler.rigid_body_equations",
+      "S.quaternion.integration",
+      "O.lyapunov.energy_based"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "inertia_tensor_uncertainty",
+    "aerodynamic_drag_neglect",
+    "numerical_integration_error"
+  ],
+  "error_metric": "quaternion_attitude_error_deg",
+  "error_metric_secondary": "position_RMSE_m",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "parameter_estimation",
+      "forward_operator": "euler_equations_quaternion",
+      "input_format": "measurement_only",
+      "omega": {
+        "mass_kg": 1.0,
+        "inertia_ratio_J1_J3": 2.0,
+        "integration_dt_ms": 1.0,
+        "simulation_duration_s": 10.0
+      },
+      "epsilon_fn_center": "0.05 quaternion_attitude_error_deg"
+    },
+    "allowed_forward_operators": [
+      "euler_equations_quaternion"
+    ],
+    "allowed_problem_classes": [
+      "parameter_estimation"
+    ],
+    "allowed_omega_dimensions": [
+      "mass_kg",
+      "inertia_ratio_J1_J3",
+      "integration_dt_ms",
+      "simulation_duration_s"
+    ],
+    "omega_bounds": {
+      "mass_kg": [
+        0.01,
+        1000
+      ],
+      "inertia_ratio_J1_J3": [
+        0.5,
+        10.0
+      ],
+      "integration_dt_ms": [
+        0.01,
+        10.0
+      ],
+      "simulation_duration_s": [
+        0.1,
+        1000
+      ]
+    },
+    "epsilon_bounds": {
+      "quaternion_attitude_error_deg": [
+        0.001,
+        1.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

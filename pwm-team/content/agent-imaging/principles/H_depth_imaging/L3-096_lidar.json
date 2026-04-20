@@ -1,0 +1,77 @@
+{
+  "artifact_id": "L3-096",
+  "layer": "L3",
+  "parent_l2": "L2-096",
+  "parent_l1": "L1-096",
+  "title": "Scanning LiDAR Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+
+  "dataset_registry": {
+    "primary": "KITTI-360 LiDAR (Velodyne HDL-64E) + SemanticKITTI annotations",
+    "secondary": "nuScenes (32-beam Pandar + Ouster) + Waymo Open Dataset",
+    "tertiary": "CARLA/SIM fog/rain/snow simulated scenes for atmospheric-extinction stress",
+    "construction_method": "full-resolution scans; inject fog model (Koschmieder) + ego-motion distortion as mismatch",
+    "num_dev_instances_per_tier": 20
+  },
+
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal", "rho": 1,
+      "omega_tier": {"N_ch": 64, "f_scan_Hz": 10, "tau_pulse_ns": 5, "max_range_m": 200, "photon_count_per_beam": 500, "atmospheric_extinction": 0.0, "motion_distortion": 0.0},
+      "epsilon": 0.05, "d_ibench": 0.14,
+      "baselines": [
+        {"name": "Matched-Filter", "rmse_m": 0.048, "Q": 0.68},
+        {"name": "DeepLidar",      "rmse_m": 0.035, "Q": 0.88},
+        {"name": "RangeNet++",     "rmse_m": 0.040, "Q": 0.80}
+      ]
+    },
+    {
+      "tier": "T2_light_fog", "rho": 3,
+      "omega_tier": {"N_ch": 64, "f_scan_Hz": 10, "tau_pulse_ns": 5, "max_range_m": 200, "photon_count_per_beam": 200, "atmospheric_extinction": 0.3, "motion_distortion": 0.1},
+      "epsilon": 0.08, "d_ibench": 0.28,
+      "baselines": [
+        {"name": "Matched-Filter", "rmse_m": 0.085, "Q": 0.48},
+        {"name": "DeepLidar",      "rmse_m": 0.060, "Q": 0.72},
+        {"name": "RangeNet++",     "rmse_m": 0.070, "Q": 0.62}
+      ]
+    },
+    {
+      "tier": "T3_heavy_fog", "rho": 5,
+      "omega_tier": {"N_ch": 32, "f_scan_Hz": 10, "tau_pulse_ns": 7, "max_range_m": 200, "photon_count_per_beam": 80, "atmospheric_extinction": 1.0, "motion_distortion": 0.25},
+      "epsilon": 0.15, "d_ibench": 0.48,
+      "baselines": [
+        {"name": "Matched-Filter", "rmse_m": 0.20,  "Q": 0.30},
+        {"name": "DeepLidar",      "rmse_m": 0.14,  "Q": 0.55},
+        {"name": "RangeNet++",     "rmse_m": 0.17,  "Q": 0.42}
+      ]
+    },
+    {
+      "tier": "T4_blizzard", "rho": 10,
+      "omega_tier": {"N_ch": 16, "f_scan_Hz": 30, "tau_pulse_ns": 10, "max_range_m": 100, "photon_count_per_beam": 20, "atmospheric_extinction": 2.0, "motion_distortion": 0.5, "retroreflector_saturation": 0.2},
+      "epsilon": 0.30, "d_ibench": 0.72,
+      "baselines": [
+        {"name": "Matched-Filter", "rmse_m": 0.50,  "Q": 0.10},
+        {"name": "DeepLidar",      "rmse_m": 0.32,  "Q": 0.40},
+        {"name": "RangeNet++",     "rmse_m": 0.40,  "Q": 0.28}
+      ]
+    }
+  ],
+
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "KITTI-360 + nuScenes + Waymo + CARLA-fog union",
+      "num_dev_instances": 200,
+      "construction_method": "parametric (atmospheric_extinction, motion, photon_count, N_ch) sweep"
+    },
+    "baselines": [
+      {"name": "Matched-Filter", "overall_Q": 0.38},
+      {"name": "DeepLidar",      "overall_Q": 0.66},
+      {"name": "RangeNet++",     "overall_Q": 0.55}
+    ]
+  },
+
+  "hardness_rule_check": "SATISFIED — DeepLidar fails at T4_blizzard (atmospheric_extinction=2.0 Np + motion=0.5 + retroreflector_saturation=0.2 corner).",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

@@ -1,0 +1,173 @@
+{
+  "artifact_id": "L3-158",
+  "layer": "L3",
+  "parent_l2": "L2-158",
+  "parent_l1": "L1-158",
+  "title": "SPECT-CT Fusion Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "canonical dataset for this principle",
+    "secondary": "simulated forward synthesis at declared Omega",
+    "construction_method": "parametric forward + declared noise",
+    "num_dev_instances_per_tier": 20
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "H": 128,
+        "W": 128,
+        "Z": 64,
+        "registration_error": 0.0,
+        "patient_motion": 0.0,
+        "attenuation_correction_bias": 0.0,
+        "low_count_SPECT": 0.0,
+        "SNR_dB": 20.0
+      },
+      "epsilon": 23.0,
+      "d_ibench": 0.14,
+      "baselines": [
+        {
+          "name": "Rigid-Reg",
+          "score": 20.5,
+          "Q": 0.88
+        },
+        {
+          "name": "AC-OSEM",
+          "score": 22.5,
+          "Q": 0.88
+        },
+        {
+          "name": "SPECT-CT-Net",
+          "score": 25.0,
+          "Q": 0.88
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "H": 128,
+        "W": 128,
+        "Z": 64,
+        "registration_error": 1.0,
+        "patient_motion": 2.0,
+        "attenuation_correction_bias": 0.06,
+        "low_count_SPECT": 0.1,
+        "SNR_dB": 17.0
+      },
+      "epsilon": 18.86,
+      "d_ibench": 0.28,
+      "baselines": [
+        {
+          "name": "Rigid-Reg",
+          "score": 18.5,
+          "Q": 0.68
+        },
+        {
+          "name": "AC-OSEM",
+          "score": 20.5,
+          "Q": 0.68
+        },
+        {
+          "name": "SPECT-CT-Net",
+          "score": 23.0,
+          "Q": 0.68
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "H": 128,
+        "W": 128,
+        "Z": 64,
+        "registration_error": 2.5,
+        "patient_motion": 5.0,
+        "attenuation_correction_bias": 0.15,
+        "low_count_SPECT": 0.25,
+        "SNR_dB": 8.0
+      },
+      "epsilon": 14.72,
+      "d_ibench": 0.48,
+      "baselines": [
+        {
+          "name": "Rigid-Reg",
+          "score": 16.5,
+          "Q": 0.48
+        },
+        {
+          "name": "AC-OSEM",
+          "score": 18.5,
+          "Q": 0.48
+        },
+        {
+          "name": "SPECT-CT-Net",
+          "score": 21.0,
+          "Q": 0.48
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "H": 128,
+        "W": 128,
+        "Z": 64,
+        "registration_error": 5.0,
+        "patient_motion": 10.0,
+        "attenuation_correction_bias": 0.3,
+        "low_count_SPECT": 0.5,
+        "SNR_dB": 0.0
+      },
+      "epsilon": 10.58,
+      "d_ibench": 0.72,
+      "baselines": [
+        {
+          "name": "Rigid-Reg",
+          "score": 14.5,
+          "Q": 0.28
+        },
+        {
+          "name": "AC-OSEM",
+          "score": 16.5,
+          "Q": 0.28
+        },
+        {
+          "name": "SPECT-CT-Net",
+          "score": 19.0,
+          "Q": 0.28
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "full parametric sweep",
+      "num_dev_instances": 200,
+      "construction_method": "parametric Omega sweep"
+    },
+    "baselines": [
+      {
+        "name": "Rigid-Reg",
+        "overall_Q": 0.7
+      },
+      {
+        "name": "AC-OSEM",
+        "overall_Q": 0.6
+      },
+      {
+        "name": "SPECT-CT-Net",
+        "overall_Q": 0.5
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind strata corner.",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

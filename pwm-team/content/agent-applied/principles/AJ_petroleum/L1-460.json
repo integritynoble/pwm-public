@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-460",
+  "layer": "L1",
+  "principle_number": "460",
+  "title": "Reservoir History Matching",
+  "domain": "Petroleum Engineering",
+  "sub_domain": "Inverse modeling",
+  "source_file": "AJ_petroleum/460_history_matching.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "Reservoir history matching: infer 3D permeability/porosity fields from historical production data using ensemble methods or adjoint.",
+    "forward_model": "d_obs = G(m) + epsilon; m = {log(K), phi} per cell; G = reservoir simulator",
+    "world_state_x": "3D permeability K(x,y,z) and porosity phi(x,y,z) fields",
+    "observation_y": "historical production rates {q_o, q_w, q_g}(t) and BHP at N_wells wells",
+    "physical_parameters_theta": [
+      "N_cells",
+      "N_ensemble_members",
+      "variogram_range_m",
+      "prior_permeability_mD"
+    ]
+  },
+  "G": {
+    "dag": "S.ensemble.kalman_filter_reservoir -> M.adjoint.gradient_simulator -> O.misfit.production",
+    "vertices": [
+      "S.ensemble.kalman_filter_reservoir",
+      "M.adjoint.gradient_simulator",
+      "O.misfit.production"
+    ],
+    "arcs": [
+      "S.ensemble.kalman_filter_reservoir -> M.adjoint.gradient_simulator",
+      "M.adjoint.gradient_simulator -> O.misfit.production"
+    ],
+    "L_DAG": 5.0,
+    "n_c": 2
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 100000000.0,
+    "condition_number_effective": 100000.0,
+    "condition_number_mismatched": 1000000.0,
+    "regime": "Severely ill-posed (N_cells >> N_data); ensemble methods regularize implicitly; geologically-consistent updates needed."
+  },
+  "C": {
+    "solver_class": "ensemble_smoother_multiple_data_assimilation (ES-MDA) or adjoint_gradient",
+    "convergence_rate_q": 1.5,
+    "error_bound": "NRMS < 0.10 for matched model",
+    "complexity": "O(N_ensemble * N_sim_per_iteration * N_iterations)"
+  },
+  "physics_fingerprint": {
+    "carrier": "acoustic",
+    "sensing_mechanism": "reservoir_production_data_matching",
+    "integration_axis": "production_history",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "observation_gaussian",
+    "solution_space": "3D_permeability_field",
+    "primitives": [
+      "S.ensemble.kalman_filter_reservoir",
+      "M.adjoint.gradient_simulator",
+      "O.misfit.production"
+    ]
+  },
+  "difficulty_delta": 10,
+  "difficulty_tier": "hard",
+  "mismatch_parameters": [
+    "structural_uncertainty",
+    "rel_perm_uncertainty",
+    "aquifer_influx_uncertainty"
+  ],
+  "error_metric": "production_NRMS_match",
+  "error_metric_secondary": "permeability_uncertainty_reduction",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "nonlinear_inverse",
+      "forward_operator": "reservoir_production_data_matching",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_cells": 50000,
+        "N_wells": 20,
+        "N_ensemble": 100,
+        "production_years": 30
+      },
+      "epsilon_fn_center": "0.10 production_NRMS_match"
+    },
+    "allowed_forward_operators": [
+      "reservoir_production_data_matching"
+    ],
+    "allowed_problem_classes": [
+      "nonlinear_inverse"
+    ],
+    "allowed_omega_dimensions": [
+      "N_cells",
+      "N_wells",
+      "N_ensemble",
+      "production_years"
+    ],
+    "omega_bounds": {
+      "N_cells": [
+        1000,
+        500000
+      ],
+      "N_wells": [
+        5,
+        100
+      ],
+      "N_ensemble": [
+        50,
+        1000
+      ],
+      "production_years": [
+        5,
+        60
+      ]
+    },
+    "epsilon_bounds": {
+      "production_NRMS_match": [
+        0.02,
+        0.5
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

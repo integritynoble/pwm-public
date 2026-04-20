@@ -1,0 +1,94 @@
+{
+  "artifact_id": "L1-025",
+  "layer": "L1",
+  "principle_number": "025",
+  "title": "Coded Aperture Snapshot Spectral Imaging (CASSI)",
+  "domain": "Compressive Imaging",
+  "sub_domain": "Hyperspectral snapshot",
+  "source_file": "B_compressive_imaging/025_cassi.md",
+  "canonical_reference": "pwm_product/genesis/l1/L1-003.json",
+
+  "E": {
+    "description": "Single-shot compressive spectral forward model: a 2D binary coded aperture modulates the scene, a prism disperses each spectral band by a pixel-linear shift, and the detector integrates the dispersed, modulated cube onto a 2D snapshot.",
+    "forward_model": "y(x,y) = sum_lambda C(x, y + a*lambda) * f(x, y + a*lambda, lambda) + n(x,y)",
+    "world_state_x": "3D hyperspectral radiance cube f in R^{H x W x N_bands}, non-negative, compressible in wavelet/DCT basis",
+    "observation_y": "2D sensor snapshot y in R^{H x (W + a*N_bands)} (Poisson+Gaussian noise)",
+    "physical_parameters_theta": [
+      "C: binary coded aperture mask (H x W), mask_density in [0.3, 0.7]",
+      "a: dispersion slope in pixels per spectral band",
+      "alpha: dispersion axis angle (degrees from horizontal)",
+      "wavelength range [lambda_min, lambda_max] and N_bands",
+      "sensor gain, read noise sigma_read, photon_count peak"
+    ]
+  },
+
+  "G": {
+    "dag": "L.broadcast.spectral -> L.diag.binary -> L.shear.spectral -> int.spectral",
+    "vertices": ["L.broadcast.spectral", "L.diag.binary", "L.shear.spectral", "int.spectral"],
+    "arcs": [
+      "L.broadcast.spectral -> L.diag.binary",
+      "L.diag.binary -> L.shear.spectral",
+      "L.shear.spectral -> int.spectral"
+    ],
+    "L_DAG": 3.7,
+    "n_c": 0
+  },
+
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 5000,
+    "condition_number_effective": 50,
+    "condition_number_mismatched": 200,
+    "regime": "underdetermined compressive recovery (N_bands:1 compression); binary random mask at 50% fill satisfies RIP-like conditions; recovery unique under spectral sparsity prior."
+  },
+
+  "C": {
+    "solver_class": "iterative_proximal (GAP-TV, ADMM, PnP) or learned unrolling (HSICNN, MST-L)",
+    "convergence_rate_q": 2.0,
+    "error_bound": "||f_hat - f||_2 <= C1 * sigma_noise / sqrt(m) + C2 * ||f - f_s||_1",
+    "complexity": "O(H * W * N_bands * log(H*W)) per iteration"
+  },
+
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "coded_aperture",
+    "integration_axis": "spectral",
+    "problem_class": "linear_inverse",
+    "noise_model": "shot_poisson",
+    "solution_space": "3D_spectral",
+    "primitives": ["L.broadcast.spectral", "L.diag.binary", "L.shear.spectral", "int.spectral"]
+  },
+
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+
+  "mismatch_parameters": ["disp_a1_error", "disp_alpha_error", "mask_dx", "mask_dy", "mask_theta"],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "error_metric_tertiary": "SAM_deg",
+
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "spectral_reconstruction",
+      "forward_operator": "coded_aperture_spectral",
+      "input_format": "measurement_only",
+      "omega": {"H": 256, "W": 256, "N_bands": 28, "mask_density": 0.5, "noise_level": 0.01, "disp_a1_error": 0.0, "disp_alpha_error": 0.0, "mask_dx": 0.0, "mask_dy": 0.0, "mask_theta": 0.0},
+      "epsilon_fn_center": "28.0 dB PSNR"
+    },
+    "allowed_forward_operators": ["coded_aperture_spectral"],
+    "allowed_problem_classes": ["spectral_reconstruction", "hyperspectral_unmixing"],
+    "allowed_omega_dimensions": ["H", "W", "N_bands", "mask_density", "noise_level", "disp_a1_error", "disp_alpha_error", "mask_dx", "mask_dy", "mask_theta"],
+    "omega_bounds": {
+      "H": [64, 2048], "W": [64, 2048], "N_bands": [8, 128], "mask_density": [0.3, 0.7],
+      "noise_level": [0.001, 0.1], "disp_a1_error": [0.0, 0.05], "disp_alpha_error": [0.0, 0.30],
+      "mask_dx": [0.0, 1.0], "mask_dy": [0.0, 1.0], "mask_theta": [0.0, 0.15]
+    },
+    "epsilon_bounds": {"psnr_db": [20.0, 45.0]}
+  },
+
+  "p1_p10_tests": ["PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS"],
+  "s1_s4_gates": ["PASS", "PASS", "PASS", "PASS"],
+  "ipfs_cid": null
+}

@@ -1,0 +1,180 @@
+{
+  "artifact_id": "L1-116",
+  "layer": "L1",
+  "principle_number": "116",
+  "title": "Terahertz Imaging (0.1-10 THz time-domain / CW)",
+  "domain": "Industrial Inspection",
+  "sub_domain": "THz non-ionizing NDT for dielectrics",
+  "source_file": "J_industrial_inspect/116_terahertz_imaging.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical NDT/NDE literature for this principle.",
+  "E": {
+    "description": "Terahertz Imaging (0.1-10 THz time-domain / CW) forward model.",
+    "forward_model": "E(t, x, y) = source(t) * propagator(epsilon_r(x,y,omega), d) + n; invert for epsilon_r",
+    "world_state_x": "Defect / strain / composition map depending on principle",
+    "observation_y": "Sensor output at declared geometry",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "N_freq",
+      "f_THz_range",
+      "SNR_dB",
+      "water_absorption",
+      "scattering_at_defects",
+      "dispersive_media"
+    ]
+  },
+  "G": {
+    "dag": "L.thz_source -> L.transmit_sample -> D.thz_detector -> int.spectral",
+    "vertices": [
+      "L.thz_source",
+      "L.transmit_sample",
+      "D.thz_detector",
+      "int.spectral"
+    ],
+    "arcs": [
+      "L.thz_source -> L.transmit_sample",
+      "L.transmit_sample -> D.thz_detector",
+      "D.thz_detector -> int.spectral"
+    ],
+    "L_DAG": 3.3,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 280,
+    "condition_number_effective": 14,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Fabry-Perot-Analysis, TV-ADMM-THz, THz-Net",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sensor SNR + mismatch bias.",
+    "complexity": "O(H W) to O(H W Z) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "terahertz_time_domain",
+    "integration_axis": "spectral",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "2D_complex_permittivity",
+    "primitives": [
+      "L.thz_source",
+      "L.transmit_sample",
+      "D.thz_detector",
+      "int.spectral"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "water_absorption",
+    "scattering_at_defects",
+    "dispersive_media",
+    "power_fluctuation"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "thz_tds",
+      "forward_operator": "thz_tds_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 256,
+        "W": 256,
+        "N_freq": 512,
+        "f_THz_range": [
+          0.1,
+          3.0
+        ],
+        "SNR_dB": 25,
+        "water_absorption": 0.0,
+        "scattering_at_defects": 0.0,
+        "dispersive_media": 0.0
+      },
+      "epsilon_fn_center": "22.0"
+    },
+    "allowed_forward_operators": [
+      "thz_tds_forward"
+    ],
+    "allowed_problem_classes": [
+      "thz_tds"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "N_freq",
+      "f_THz_range",
+      "SNR_dB",
+      "water_absorption",
+      "scattering_at_defects",
+      "dispersive_media",
+      "water_absorption",
+      "scattering_at_defects",
+      "dispersive_media",
+      "power_fluctuation"
+    ],
+    "omega_bounds": {
+      "H": [
+        64,
+        1024
+      ],
+      "W": [
+        64,
+        1024
+      ],
+      "N_freq": [
+        64,
+        2048
+      ],
+      "SNR_dB": [
+        5.0,
+        40.0
+      ],
+      "water_absorption": [
+        0.0,
+        0.5
+      ],
+      "scattering_at_defects": [
+        0.0,
+        0.3
+      ],
+      "dispersive_media": [
+        0.0,
+        0.5
+      ],
+      "power_fluctuation": [
+        0.0,
+        0.2
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        5.0,
+        40.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-420",
+  "layer": "L1",
+  "principle_number": "420",
+  "title": "Sea Ice Thermodynamic-Dynamic Inversion",
+  "domain": "Environmental Science",
+  "sub_domain": "Cryosphere modeling",
+  "source_file": "AF_environmental_sci/420_sea_ice.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "Sea ice state estimation: retrieve ice concentration, thickness, and drift from passive microwave and altimetry.",
+    "forward_model": "T_B(f, theta, p) = (1-A)*T_ocean + A*[T_ice + f_snow(T_snow)]; ice motion from TOPAZ/neXtSIM",
+    "world_state_x": "sea ice concentration A (%), thickness h_i (m), drift velocity u_i (m/day)",
+    "observation_y": "satellite brightness temperatures T_B(19,37,85 GHz), ICESat/Cryosat-2 freeboard",
+    "physical_parameters_theta": [
+      "tie_point_temperatures",
+      "sea_ice_emissivity_model",
+      "snow_depth_distribution",
+      "ice_strength_P*"
+    ]
+  },
+  "G": {
+    "dag": "S.passive_microwave.brightness_temp -> M.sea_ice.thermodynamic_dynamic -> O.chi2.sia_sie",
+    "vertices": [
+      "S.passive_microwave.brightness_temp",
+      "M.sea_ice.thermodynamic_dynamic",
+      "O.chi2.sia_sie"
+    ],
+    "arcs": [
+      "S.passive_microwave.brightness_temp -> M.sea_ice.thermodynamic_dynamic",
+      "M.sea_ice.thermodynamic_dynamic -> O.chi2.sia_sie"
+    ],
+    "L_DAG": 3.5,
+    "n_c": 1
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 5000,
+    "condition_number_effective": 200,
+    "condition_number_mismatched": 1000,
+    "regime": "Summer melt ponds cause large algorithm uncertainty; thin ice thermodynamically coupled to atmosphere; Arctic amplification changes emissivity regimes."
+  },
+  "C": {
+    "solver_class": "NASA_team_algorithm or Bootstrap_algorithm or PIOMAS_assimilation",
+    "convergence_rate_q": 2.0,
+    "error_bound": "SIC uncertainty < 5% for compact ice; thickness < 0.5 m",
+    "complexity": "O(N_swath_pixels * N_frequencies) per orbit"
+  },
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "passive_microwave_sea_ice",
+    "integration_axis": "sea_ice_extent",
+    "problem_class": "parameter_estimation",
+    "noise_model": "measurement_gaussian",
+    "solution_space": "sea_ice_state_vector",
+    "primitives": [
+      "S.passive_microwave.brightness_temp",
+      "M.sea_ice.thermodynamic_dynamic",
+      "O.chi2.sia_sie"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "melt_pond_fraction",
+    "snow_ice_interface_uncertainty",
+    "multiyear_ice_misclassification"
+  ],
+  "error_metric": "sea_ice_concentration_RMSE_percent",
+  "error_metric_secondary": "thickness_RMSE_m",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "parameter_estimation",
+      "forward_operator": "passive_microwave_sea_ice",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_swath_pixels": 10000,
+        "ice_concentration_percent": 80,
+        "snow_depth_cm": 20,
+        "melt_pond_fraction": 0.0
+      },
+      "epsilon_fn_center": "5 sea_ice_concentration_RMSE_percent"
+    },
+    "allowed_forward_operators": [
+      "passive_microwave_sea_ice"
+    ],
+    "allowed_problem_classes": [
+      "parameter_estimation"
+    ],
+    "allowed_omega_dimensions": [
+      "N_swath_pixels",
+      "ice_concentration_percent",
+      "snow_depth_cm",
+      "melt_pond_fraction"
+    ],
+    "omega_bounds": {
+      "N_swath_pixels": [
+        1000,
+        1000000
+      ],
+      "ice_concentration_percent": [
+        0,
+        100
+      ],
+      "snow_depth_cm": [
+        0,
+        100
+      ],
+      "melt_pond_fraction": [
+        0.0,
+        0.5
+      ]
+    },
+    "epsilon_bounds": {
+      "sea_ice_concentration_RMSE_percent": [
+        1,
+        20
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

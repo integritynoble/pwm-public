@@ -1,0 +1,152 @@
+{
+  "artifact_id": "L2-084",
+  "layer": "L2",
+  "parent_l1": "L1-084",
+  "title": "Scanning Electron Microscopy (SEM) \u2014 secondary-electron surface imaging Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        512,
+        8192
+      ],
+      "W": [
+        512,
+        8192
+      ],
+      "pixel_nm": [
+        0.5,
+        100
+      ],
+      "kV": [
+        1,
+        30
+      ],
+      "spot_nm": [
+        0.5,
+        10
+      ],
+      "peak_electrons": [
+        10,
+        10000
+      ],
+      "beam_drift": [
+        0.0,
+        2.0
+      ],
+      "charging_artifact": [
+        0.0,
+        0.3
+      ],
+      "beam_damage": [
+        0.0,
+        0.5
+      ]
+    },
+    "E": {
+      "forward": "y(r) = [PSF_SE(r; kV, spot_size) conv SE_yield(r)] + n, SE_yield depends on topography and Z",
+      "operator": "sem_se_forward_mismatch",
+      "primitive_chain": "L.excitation.electron_beam -> S.scan.raster -> D.secondary_electron -> int.temporal",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "22.0 + 2.0 * log10(peak_electrons / 10) - 2.0 * beam_drift - 10.0 * charging_artifact"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Wiener-SE",
+        "method_sig": "L+R",
+        "expected_psnr": 27.5
+      },
+      {
+        "name": "BM3D-SEM",
+        "method_sig": "L+R",
+        "expected_psnr": 29.0
+      },
+      {
+        "name": "CARE-SEM",
+        "method_sig": "L+N",
+        "expected_psnr": 32.0
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 2048,
+        "W": 2048,
+        "pixel_nm": 5,
+        "kV": 5,
+        "spot_nm": 1.5,
+        "peak_electrons": 100,
+        "beam_drift": 0.0,
+        "charging_artifact": 0.0
+      },
+      "epsilon": 30.0
+    },
+    "tier_bounds": {
+      "H": [
+        512,
+        8192
+      ],
+      "W": [
+        512,
+        8192
+      ],
+      "pixel_nm": [
+        0.5,
+        100
+      ],
+      "kV": [
+        1,
+        30
+      ],
+      "spot_nm": [
+        0.5,
+        10
+      ],
+      "peak_electrons": [
+        10,
+        10000
+      ],
+      "beam_drift": [
+        0.0,
+        2.0
+      ],
+      "charging_artifact": [
+        0.0,
+        0.3
+      ],
+      "beam_damage": [
+        0.0,
+        0.5
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.48,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

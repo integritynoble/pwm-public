@@ -1,0 +1,188 @@
+{
+  "artifact_id": "L1-034",
+  "layer": "L1",
+  "principle_number": "034",
+  "title": "Single-Photon Emission Computed Tomography (SPECT)",
+  "domain": "Medical Imaging",
+  "sub_domain": "Gamma-camera rotating tomography",
+  "source_file": "C_medical_imaging/034_spect.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical medical-imaging literature for this principle.",
+  "E": {
+    "description": "Single-Photon Emission Computed Tomography (SPECT) forward model.",
+    "forward_model": "y_theta(u,v) = integral A(r) * attenuation(r) * collimator_PSF + scatter + n",
+    "world_state_x": "Patient-side quantity of interest (attenuation / activity / perfusion / stiffness etc.)",
+    "observation_y": "Clinical sensor output at declared resolution + noise",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "Z",
+      "N_angles",
+      "counts_per_pixel",
+      "SNR_dB",
+      "collimator_blur",
+      "attenuation_correction_error",
+      "scatter",
+      "patient_motion"
+    ]
+  },
+  "G": {
+    "dag": "L.gamma_emission -> L.collimator -> S.scan.angular -> L.backproject -> int.angular",
+    "vertices": [
+      "L.gamma_emission",
+      "L.collimator",
+      "S.scan.angular",
+      "L.backproject",
+      "int.angular"
+    ],
+    "arcs": [
+      "L.gamma_emission -> L.collimator",
+      "L.collimator -> S.scan.angular",
+      "S.scan.angular -> L.backproject",
+      "L.backproject -> int.angular"
+    ],
+    "L_DAG": 3.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 320,
+    "condition_number_effective": 16,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "FBP-SPECT, MLEM, SPECT-Net",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sensor SNR + mismatch bias + regularisation.",
+    "complexity": "O(H W) to O(H W Z) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "spect_gamma_camera",
+    "integration_axis": "angular",
+    "problem_class": "linear_inverse",
+    "noise_model": "shot_poisson",
+    "solution_space": "3D_activity_concentration",
+    "primitives": [
+      "L.gamma_emission",
+      "L.collimator",
+      "S.scan.angular",
+      "L.backproject",
+      "int.angular"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "collimator_blur",
+    "attenuation_correction_error",
+    "scatter",
+    "patient_motion"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "spect",
+      "forward_operator": "spect_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 128,
+        "W": 128,
+        "Z": 64,
+        "N_angles": 64,
+        "counts_per_pixel": 100,
+        "SNR_dB": 18,
+        "collimator_blur": 0.0,
+        "attenuation_correction_error": 0.0,
+        "scatter": 0.2,
+        "patient_motion": 0.0
+      },
+      "epsilon_fn_center": "22.0"
+    },
+    "allowed_forward_operators": [
+      "spect_forward"
+    ],
+    "allowed_problem_classes": [
+      "spect"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "Z",
+      "N_angles",
+      "counts_per_pixel",
+      "SNR_dB",
+      "collimator_blur",
+      "attenuation_correction_error",
+      "scatter",
+      "patient_motion",
+      "collimator_blur",
+      "attenuation_correction_error",
+      "scatter",
+      "patient_motion"
+    ],
+    "omega_bounds": {
+      "H": 64,
+      "W": 64,
+      "Z": [
+        16,
+        512
+      ],
+      "N_angles": [
+        8,
+        256
+      ],
+      "counts_per_pixel": [
+        1,
+        10000
+      ],
+      "SNR_dB": [
+        0.0,
+        35.0
+      ],
+      "collimator_blur": [
+        0.0,
+        0.3
+      ],
+      "attenuation_correction_error": [
+        0.0,
+        0.3
+      ],
+      "scatter": [
+        0.0,
+        0.5
+      ],
+      "patient_motion": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        5.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

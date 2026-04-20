@@ -1,0 +1,152 @@
+{
+  "artifact_id": "L2-114",
+  "layer": "L2",
+  "parent_l1": "L1-114",
+  "title": "Eddy-Current Testing (near-surface metallic defect detection) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        64,
+        2048
+      ],
+      "W": [
+        64,
+        2048
+      ],
+      "f_kHz": [
+        1,
+        10000
+      ],
+      "lift_off_mm": [
+        0.1,
+        10.0
+      ],
+      "SNR_dB": [
+        0.0,
+        40.0
+      ],
+      "lift_off_variation": [
+        0.0,
+        0.5
+      ],
+      "conductivity_variation": [
+        0.0,
+        0.3
+      ],
+      "edge_effect": [
+        0.0,
+        0.3
+      ],
+      "probe_tilt": [
+        0.0,
+        0.1
+      ]
+    },
+    "E": {
+      "forward": "Delta_Z(x,y) = integral eddy_current(defect(r)) * kernel(r - (x,y), f, lift_off) + n",
+      "operator": "eddy_current_forward_mismatch",
+      "primitive_chain": "L.induce_eddy_current -> L.secondary_field -> D.coil_impedance -> int.spatial",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "18.0 + 0.3 * SNR_dB - 10.0 * lift_off_variation - 6.0 * conductivity_variation - 5.0 * probe_tilt / 0.1"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Impedance-Plane",
+        "method_sig": "L+O",
+        "expected_psnr": 22.5
+      },
+      {
+        "name": "Kalman-Compensation",
+        "method_sig": "L+O",
+        "expected_psnr": 24.0
+      },
+      {
+        "name": "EC-CNN",
+        "method_sig": "L+N",
+        "expected_psnr": 27.0
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 256,
+        "W": 256,
+        "f_kHz": 100,
+        "lift_off_mm": 0.5,
+        "SNR_dB": 25.0,
+        "lift_off_variation": 0.0,
+        "conductivity_variation": 0.0,
+        "probe_tilt": 0.0
+      },
+      "epsilon": 25.0
+    },
+    "tier_bounds": {
+      "H": [
+        64,
+        2048
+      ],
+      "W": [
+        64,
+        2048
+      ],
+      "f_kHz": [
+        1,
+        10000
+      ],
+      "lift_off_mm": [
+        0.1,
+        10.0
+      ],
+      "SNR_dB": [
+        0.0,
+        40.0
+      ],
+      "lift_off_variation": [
+        0.0,
+        0.5
+      ],
+      "conductivity_variation": [
+        0.0,
+        0.3
+      ],
+      "edge_effect": [
+        0.0,
+        0.3
+      ],
+      "probe_tilt": [
+        0.0,
+        0.1
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.5,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

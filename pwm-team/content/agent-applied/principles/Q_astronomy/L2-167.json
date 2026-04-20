@@ -1,0 +1,126 @@
+{
+  "artifact_id": "L2-167",
+  "layer": "L2",
+  "parent_l1": "L1-167",
+  "principle_ref": "sha256:<L1-167_principle_hash>",
+  "title": "Lucky Imaging Atmospheric Turbulence Recovery \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        64,
+        1024
+      ],
+      "W": [
+        64,
+        1024
+      ],
+      "N_frames": [
+        100,
+        5000
+      ],
+      "seeing_r0_cm": [
+        5.0,
+        30.0
+      ],
+      "selection_fraction": [
+        0.001,
+        0.2
+      ]
+    },
+    "E": {
+      "forward": "I_k(r) = PSF_k(r; phi_k) * f(r) + n_k(r), select frames where Strehl(phi_k) > threshold",
+      "operator": "frame_selection_deconvolution",
+      "primitive_chain": "K.psf.turbulence -> S.frame.selection -> O.shift_add",
+      "inverse": "recover true object f in R^{H x W} at diffraction limit from stack of N_frames short-exposure images I_k in R^{H x W x N_frames}"
+    },
+    "B": {
+      "strehl_positivity": "Strehl in [0,1]",
+      "diffraction_limit": "FWHM >= lambda/D"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "Strehl_ratio",
+      "FWHM_lambda_over_D",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.25 + 0.05 * (seeing_r0_cm / 15.0) ** 0.5"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 2D_intensity"
+    },
+    "baselines": [
+      {
+        "name": "simple_shift_add",
+        "method_sig": "L+O",
+        "expected_score": 0.22
+      },
+      {
+        "name": "MFBD",
+        "method_sig": "L+O",
+        "expected_score": 0.35
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 256,
+        "W": 256,
+        "N_frames": 500,
+        "seeing_r0_cm": 15.0,
+        "selection_fraction": 0.05,
+        "seeing_variation": 0.0,
+        "anisoplanatism": 0.0,
+        "tip_tilt_residual": 0.0
+      },
+      "epsilon": 0.3
+    },
+    "tier_bounds": {
+      "H": [
+        64,
+        1024
+      ],
+      "W": [
+        64,
+        1024
+      ],
+      "N_frames": [
+        100,
+        5000
+      ],
+      "seeing_r0_cm": [
+        5.0,
+        30.0
+      ],
+      "selection_fraction": [
+        0.001,
+        0.2
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.3,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.3 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

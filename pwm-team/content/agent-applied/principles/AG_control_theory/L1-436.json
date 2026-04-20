@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-436",
+  "layer": "L1",
+  "principle_number": "436",
+  "title": "Ensemble Kalman Filter (EnKF)",
+  "domain": "Control Theory",
+  "sub_domain": "Ensemble data assimilation",
+  "source_file": "AG_control_theory/436_ensemble_kalman_filter.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "EnKF: ensemble-based approximation of Kalman filter covariance; scales to large state dimensions.",
+    "forward_model": "K = P_f H ** T (H P_f H ** T + R)^{-1}; P_f estimated from ensemble; analysis: x_a ** i = x_f ** i + K(y ** i - Hx_f ** i)",
+    "world_state_x": "ensemble of state estimates {x_a ** i} representing posterior distribution",
+    "observation_y": "observations {y_t} at each assimilation cycle",
+    "physical_parameters_theta": [
+      "ensemble_size_N_e",
+      "localization_radius_km",
+      "inflation_factor_rho",
+      "observation_error_R"
+    ]
+  },
+  "G": {
+    "dag": "S.enkf.ensemble_update -> M.localization.covariance -> O.inflation.ensemble_spread",
+    "vertices": [
+      "S.enkf.ensemble_update",
+      "M.localization.covariance",
+      "O.inflation.ensemble_spread"
+    ],
+    "arcs": [
+      "S.enkf.ensemble_update -> M.localization.covariance",
+      "M.localization.covariance -> O.inflation.ensemble_spread"
+    ],
+    "L_DAG": 3.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 10000.0,
+    "condition_number_effective": 500,
+    "condition_number_mismatched": 2000,
+    "regime": "Scales to O(10 ** 8) state dimensions with localization; N_e = 20-100 typically sufficient; inflation prevents ensemble collapse."
+  },
+  "C": {
+    "solver_class": "LETKF or serial_EnSRF or EAKF",
+    "convergence_rate_q": 2.0,
+    "error_bound": "spread-skill ratio ~ 1 for well-tuned ensemble; localization prevents sampling error",
+    "complexity": "O(N_e * n_state * N_obs) per cycle"
+  },
+  "physics_fingerprint": {
+    "carrier": "N/A",
+    "sensing_mechanism": "ensemble_state_estimation",
+    "integration_axis": "assimilation_cycle",
+    "problem_class": "parameter_estimation",
+    "noise_model": "gaussian",
+    "solution_space": "ensemble_state_distribution",
+    "primitives": [
+      "S.enkf.ensemble_update",
+      "M.localization.covariance",
+      "O.inflation.ensemble_spread"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "sampling_error_finite_ensemble",
+    "localization_radius_choice",
+    "ensemble_collapse"
+  ],
+  "error_metric": "spread_skill_ratio",
+  "error_metric_secondary": "RMSE_analysis_normalized",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "parameter_estimation",
+      "forward_operator": "ensemble_state_estimation",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_e_ensemble": 50,
+        "n_state_million": 1,
+        "obs_density_per_gridpt": 0.1,
+        "localization_km": 500
+      },
+      "epsilon_fn_center": "0.05 RMSE_analysis_normalized"
+    },
+    "allowed_forward_operators": [
+      "ensemble_state_estimation"
+    ],
+    "allowed_problem_classes": [
+      "parameter_estimation"
+    ],
+    "allowed_omega_dimensions": [
+      "N_e_ensemble",
+      "n_state_million",
+      "obs_density_per_gridpt",
+      "localization_km"
+    ],
+    "omega_bounds": {
+      "N_e_ensemble": [
+        10,
+        1000
+      ],
+      "n_state_million": [
+        0.001,
+        100
+      ],
+      "obs_density_per_gridpt": [
+        0.01,
+        10.0
+      ],
+      "localization_km": [
+        50,
+        5000
+      ]
+    },
+    "epsilon_bounds": {
+      "RMSE_analysis_normalized": [
+        0.01,
+        0.3
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

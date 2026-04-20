@@ -1,0 +1,185 @@
+{
+  "artifact_id": "L1-105",
+  "layer": "L1",
+  "principle_number": "105",
+  "title": "Doppler Weather Radar",
+  "domain": "Remote Sensing",
+  "sub_domain": "Atmospheric Doppler reflectivity + velocity",
+  "source_file": "I_remote_sensing/105_weather_radar.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical remote-sensing literature for this principle.",
+  "E": {
+    "description": "Doppler Weather Radar forward model.",
+    "forward_model": "P_r(r, az, el) = integral reflectivity(r) * Z_cross_section + speckle_fluct; Doppler v = lambda * f_Doppler / 2",
+    "world_state_x": "Scene-side quantity of interest (reflectance / velocity / phase / concentration)",
+    "observation_y": "Sensor output at declared resolution + noise",
+    "physical_parameters_theta": [
+      "N_range",
+      "N_az",
+      "N_el",
+      "lambda_cm",
+      "PRF_Hz",
+      "SNR_dB",
+      "beam_blockage",
+      "AP_propagation"
+    ]
+  },
+  "G": {
+    "dag": "L.emit.pulse -> L.volume_scatter -> L.doppler_frequency_shift -> int.temporal",
+    "vertices": [
+      "L.emit.pulse",
+      "L.volume_scatter",
+      "L.doppler_frequency_shift",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.emit.pulse -> L.volume_scatter",
+      "L.volume_scatter -> L.doppler_frequency_shift",
+      "L.doppler_frequency_shift -> int.temporal"
+    ],
+    "L_DAG": 3.3,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 180,
+    "condition_number_effective": 9,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Polar-to-Cartesian, Dual-PRF-Unfold, Weather-Net",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sensor SNR + mismatch-induced bias.",
+    "complexity": "O(H W) to O(H W N_bands) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "radio_wave",
+    "sensing_mechanism": "doppler_radar",
+    "integration_axis": "temporal",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "3D_reflectivity_velocity",
+    "primitives": [
+      "L.emit.pulse",
+      "L.volume_scatter",
+      "L.doppler_frequency_shift",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "beam_blockage",
+    "AP_propagation",
+    "aliasing",
+    "clutter"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "doppler_weather_radar",
+      "forward_operator": "doppler_weather_radar_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_range": 500,
+        "N_az": 720,
+        "N_el": 12,
+        "lambda_cm": 10,
+        "PRF_Hz": 1000,
+        "SNR_dB": 25.0,
+        "beam_blockage": 0.0,
+        "AP_propagation": 0.0
+      },
+      "epsilon_fn_center": "26.0"
+    },
+    "allowed_forward_operators": [
+      "doppler_weather_radar_forward"
+    ],
+    "allowed_problem_classes": [
+      "doppler_weather_radar"
+    ],
+    "allowed_omega_dimensions": [
+      "N_range",
+      "N_az",
+      "N_el",
+      "lambda_cm",
+      "PRF_Hz",
+      "SNR_dB",
+      "beam_blockage",
+      "AP_propagation",
+      "beam_blockage",
+      "AP_propagation",
+      "aliasing",
+      "clutter"
+    ],
+    "omega_bounds": {
+      "N_range": [
+        100,
+        2000
+      ],
+      "N_az": [
+        180,
+        1440
+      ],
+      "N_el": [
+        1,
+        25
+      ],
+      "lambda_cm": [
+        0.5,
+        30
+      ],
+      "PRF_Hz": [
+        200,
+        5000
+      ],
+      "SNR_dB": [
+        5.0,
+        40.0
+      ],
+      "beam_blockage": [
+        0.0,
+        0.3
+      ],
+      "AP_propagation": [
+        0.0,
+        0.3
+      ],
+      "aliasing": [
+        0.0,
+        0.5
+      ],
+      "clutter": [
+        0.0,
+        0.5
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        5.0,
+        40.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

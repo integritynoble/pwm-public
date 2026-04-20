@@ -1,0 +1,181 @@
+{
+  "artifact_id": "L1-119",
+  "layer": "L1",
+  "principle_number": "119",
+  "title": "Shearography (ESPI-based strain imaging)",
+  "domain": "Industrial Inspection",
+  "sub_domain": "Laser-speckle shearography for defect detection via strain",
+  "source_file": "J_industrial_inspect/119_shearography.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical NDT/NDE literature for this principle.",
+  "E": {
+    "description": "Shearography (ESPI-based strain imaging) forward model.",
+    "forward_model": "I_shear = |E(r) + E(r + Delta_r)|^2; phase difference tracks d(displacement)/dx + n",
+    "world_state_x": "Defect / strain / composition map depending on principle",
+    "observation_y": "Sensor output at declared geometry",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "pixel_um",
+      "shear_mm",
+      "SNR_dB",
+      "vibration_isolation",
+      "speckle_decorrelation",
+      "illumination_uniformity"
+    ]
+  },
+  "G": {
+    "dag": "L.laser_illumination -> L.shear_interferometer -> L.speckle_correlation -> int.spatial",
+    "vertices": [
+      "L.laser_illumination",
+      "L.shear_interferometer",
+      "L.speckle_correlation",
+      "int.spatial"
+    ],
+    "arcs": [
+      "L.laser_illumination -> L.shear_interferometer",
+      "L.shear_interferometer -> L.speckle_correlation",
+      "L.speckle_correlation -> int.spatial"
+    ],
+    "L_DAG": 3.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 280,
+    "condition_number_effective": 14,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Fourier-Demod-ESPI, Phase-Step-Shearo, Shearo-Net",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sensor SNR + mismatch bias.",
+    "complexity": "O(H W) to O(H W Z) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "shearography_espi",
+    "integration_axis": "spatial",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "2D_strain_gradient",
+    "primitives": [
+      "L.laser_illumination",
+      "L.shear_interferometer",
+      "L.speckle_correlation",
+      "int.spatial"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "vibration_isolation",
+    "speckle_decorrelation",
+    "illumination_uniformity",
+    "shear_calibration"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "shearography",
+      "forward_operator": "shearography_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 1024,
+        "W": 1024,
+        "pixel_um": 10,
+        "shear_mm": 1.0,
+        "SNR_dB": 20.0,
+        "vibration_isolation": 1.0,
+        "speckle_decorrelation": 0.0,
+        "illumination_uniformity": 1.0
+      },
+      "epsilon_fn_center": "22.0"
+    },
+    "allowed_forward_operators": [
+      "shearography_forward"
+    ],
+    "allowed_problem_classes": [
+      "shearography"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "pixel_um",
+      "shear_mm",
+      "SNR_dB",
+      "vibration_isolation",
+      "speckle_decorrelation",
+      "illumination_uniformity",
+      "vibration_isolation",
+      "speckle_decorrelation",
+      "illumination_uniformity",
+      "shear_calibration"
+    ],
+    "omega_bounds": {
+      "H": [
+        256,
+        4096
+      ],
+      "W": [
+        256,
+        4096
+      ],
+      "pixel_um": [
+        1,
+        100
+      ],
+      "shear_mm": [
+        0.1,
+        10
+      ],
+      "SNR_dB": [
+        0.0,
+        30.0
+      ],
+      "vibration_isolation": [
+        0.3,
+        1.0
+      ],
+      "speckle_decorrelation": [
+        0.0,
+        0.5
+      ],
+      "illumination_uniformity": [
+        0.5,
+        1.0
+      ],
+      "shear_calibration": [
+        0.0,
+        0.1
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        5.0,
+        40.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

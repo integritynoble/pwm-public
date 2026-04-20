@@ -1,0 +1,177 @@
+{
+  "artifact_id": "L3-112",
+  "layer": "L3",
+  "parent_l2": "L2-112",
+  "parent_l1": "L1-112",
+  "title": "X-ray Non-Destructive Testing (2D radiography) Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "canonical NDT / NDE dataset for this principle",
+    "secondary": "simulated forward synthesis at declared Omega",
+    "construction_method": "parametric forward + declared noise",
+    "num_dev_instances_per_tier": 20
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "H": 2048,
+        "W": 2048,
+        "kV": 150,
+        "pixel_um": 100,
+        "photon_count": 5000,
+        "beam_hardening": 0.0,
+        "scatter": 0.0,
+        "thickness_variation": 0.0,
+        "source_intensity_drift": 0.0
+      },
+      "epsilon": 30.0,
+      "d_ibench": 0.14,
+      "baselines": [
+        {
+          "name": "BG-Subtract",
+          "score": 27.0,
+          "Q": 0.88
+        },
+        {
+          "name": "Scatter-Correct",
+          "score": 29.0,
+          "Q": 0.88
+        },
+        {
+          "name": "NDT-CNN",
+          "score": 32.5,
+          "Q": 0.88
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "H": 2048,
+        "W": 2048,
+        "kV": 150,
+        "pixel_um": 100,
+        "photon_count": 2500,
+        "beam_hardening": 0.06,
+        "scatter": 0.08000000000000002,
+        "thickness_variation": 0.1,
+        "source_intensity_drift": 0.020000000000000004
+      },
+      "epsilon": 24.6,
+      "d_ibench": 0.28,
+      "baselines": [
+        {
+          "name": "BG-Subtract",
+          "score": 25.0,
+          "Q": 0.68
+        },
+        {
+          "name": "Scatter-Correct",
+          "score": 27.0,
+          "Q": 0.68
+        },
+        {
+          "name": "NDT-CNN",
+          "score": 30.5,
+          "Q": 0.68
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "H": 2048,
+        "W": 2048,
+        "kV": 150,
+        "pixel_um": 100,
+        "photon_count": 1000,
+        "beam_hardening": 0.15,
+        "scatter": 0.2,
+        "thickness_variation": 0.25,
+        "source_intensity_drift": 0.05
+      },
+      "epsilon": 19.2,
+      "d_ibench": 0.48,
+      "baselines": [
+        {
+          "name": "BG-Subtract",
+          "score": 23.0,
+          "Q": 0.48
+        },
+        {
+          "name": "Scatter-Correct",
+          "score": 25.0,
+          "Q": 0.48
+        },
+        {
+          "name": "NDT-CNN",
+          "score": 28.5,
+          "Q": 0.48
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "H": 2048,
+        "W": 2048,
+        "kV": 150,
+        "pixel_um": 100,
+        "photon_count": 500,
+        "beam_hardening": 0.3,
+        "scatter": 0.4,
+        "thickness_variation": 0.5,
+        "source_intensity_drift": 0.1
+      },
+      "epsilon": 13.8,
+      "d_ibench": 0.72,
+      "baselines": [
+        {
+          "name": "BG-Subtract",
+          "score": 21.0,
+          "Q": 0.28
+        },
+        {
+          "name": "Scatter-Correct",
+          "score": 23.0,
+          "Q": 0.28
+        },
+        {
+          "name": "NDT-CNN",
+          "score": 26.5,
+          "Q": 0.28
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "full parametric sweep",
+      "num_dev_instances": 200,
+      "construction_method": "parametric Omega sweep"
+    },
+    "baselines": [
+      {
+        "name": "BG-Subtract",
+        "overall_Q": 0.7
+      },
+      {
+        "name": "Scatter-Correct",
+        "overall_Q": 0.6
+      },
+      {
+        "name": "NDT-CNN",
+        "overall_Q": 0.5
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind strata corner.",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

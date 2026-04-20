@@ -1,0 +1,178 @@
+{
+  "artifact_id": "L1-050",
+  "layer": "L1",
+  "principle_number": "050",
+  "title": "OCT Angiography (OCTA)",
+  "domain": "Medical Imaging",
+  "sub_domain": "Motion-contrast OCT for retinal microvasculature",
+  "source_file": "C_medical_imaging/050_octa.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical medical-imaging literature for this principle.",
+  "E": {
+    "description": "OCT Angiography (OCTA) forward model.",
+    "forward_model": "A(r) = decorrelation(OCT_t(r), OCT_{t+dt}(r)); recover vessel mask",
+    "world_state_x": "Patient-side quantity of interest (attenuation / activity / perfusion / stiffness etc.)",
+    "observation_y": "Clinical sensor output at declared resolution + noise",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "Z",
+      "N_repeat",
+      "scan_pattern",
+      "SNR_dB",
+      "eye_motion",
+      "signal_strength_variation",
+      "projection_artifact"
+    ]
+  },
+  "G": {
+    "dag": "L.sd_oct_spectral -> L.decorrelation -> S.scan.repeated -> int.temporal",
+    "vertices": [
+      "L.sd_oct_spectral",
+      "L.decorrelation",
+      "S.scan.repeated",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.sd_oct_spectral -> L.decorrelation",
+      "L.decorrelation -> S.scan.repeated",
+      "S.scan.repeated -> int.temporal"
+    ],
+    "L_DAG": 3.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 260,
+    "condition_number_effective": 13,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Amplitude-Decorr, SSADA, OCTA-Net",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sensor SNR + mismatch bias + regularisation.",
+    "complexity": "O(H W) to O(H W Z) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "oct_angiography",
+    "integration_axis": "temporal",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "3D_vascular_network",
+    "primitives": [
+      "L.sd_oct_spectral",
+      "L.decorrelation",
+      "S.scan.repeated",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "eye_motion",
+    "signal_strength_variation",
+    "projection_artifact",
+    "decorrelation_tail"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "octa",
+      "forward_operator": "octa_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 512,
+        "W": 512,
+        "Z": 1024,
+        "N_repeat": 4,
+        "scan_pattern": "raster",
+        "SNR_dB": 25,
+        "eye_motion": 0.0,
+        "signal_strength_variation": 0.0,
+        "projection_artifact": 0.0
+      },
+      "epsilon_fn_center": "25.0"
+    },
+    "allowed_forward_operators": [
+      "octa_forward"
+    ],
+    "allowed_problem_classes": [
+      "octa"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "Z",
+      "N_repeat",
+      "scan_pattern",
+      "SNR_dB",
+      "eye_motion",
+      "signal_strength_variation",
+      "projection_artifact",
+      "eye_motion",
+      "signal_strength_variation",
+      "projection_artifact",
+      "decorrelation_tail"
+    ],
+    "omega_bounds": {
+      "H": 128,
+      "W": 128,
+      "Z": [
+        256,
+        2048
+      ],
+      "N_repeat": [
+        2,
+        16
+      ],
+      "SNR_dB": [
+        10.0,
+        40.0
+      ],
+      "eye_motion": [
+        0.0,
+        0.5
+      ],
+      "signal_strength_variation": [
+        0.0,
+        0.3
+      ],
+      "projection_artifact": [
+        0.0,
+        0.3
+      ],
+      "decorrelation_tail": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        5.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

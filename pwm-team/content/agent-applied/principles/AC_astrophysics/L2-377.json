@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-377",
+  "layer": "L2",
+  "parent_l1": "L1-377",
+  "principle_ref": "sha256:<L1-377_principle_hash>",
+  "title": "Galaxy SED Fitting \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "N_filters": [
+        3,
+        30
+      ],
+      "redshift_z": [
+        0.0,
+        6.0
+      ],
+      "SNR_per_band": [
+        3,
+        100
+      ],
+      "A_V_mag": [
+        0.0,
+        3.0
+      ]
+    },
+    "E": {
+      "forward": "F_lambda = integral SFH(t) * SSP_lambda(t, Z) dt * 10^(-0.4*A_lambda)",
+      "operator": "broadband_photometric_sed",
+      "primitive_chain": "M.sed.stellar_population -> S.dust.attenuation_calzetti -> O.chi2.photometric",
+      "inverse": "recover galaxy parameters: M_star from broadband fluxes F_nu in N_filters bands from UV to IR"
+    },
+    "B": {
+      "positivity": "M_star, SFR > 0",
+      "age": "age < Hubble_time(z)"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "SFR_log_RMSE",
+      "stellar_mass_log_RMSE",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.15 + 0.10 * (10 / SNR_per_band) ** 0.5"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 galaxy_parameter_vector"
+    },
+    "baselines": [
+      {
+        "name": "CIGALE_chi2",
+        "method_sig": "L+O",
+        "expected_score": 0.28
+      },
+      {
+        "name": "Prospector_MCMC",
+        "method_sig": "L+O",
+        "expected_score": 0.22
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_filters": 10,
+        "redshift_z": 0.5,
+        "SNR_per_band": 10,
+        "A_V_mag": 0.5,
+        "AGN_contamination": 0.0,
+        "stellar_IMF_uncertainty": 0.0,
+        "photometric_redshift_error": 0.0
+      },
+      "epsilon": 0.25
+    },
+    "tier_bounds": {
+      "N_filters": [
+        3,
+        30
+      ],
+      "redshift_z": [
+        0.0,
+        6.0
+      ],
+      "SNR_per_band": [
+        3,
+        100
+      ],
+      "A_V_mag": [
+        0.0,
+        3.0
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.3,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.3 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-367",
+  "layer": "L1",
+  "principle_number": "367",
+  "title": "CMB Gravitational Lensing Reconstruction",
+  "domain": "Astrophysics",
+  "sub_domain": "CMB lensing",
+  "source_file": "AC_astrophysics/367_cmb_lensing.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "CMB lensing reconstruction: recover projected matter density kappa from statistical anisotropy of CMB maps via quadratic estimator.",
+    "forward_model": "T_lensed(n) = T_unlensed(n + nabla phi(n)); kappa = -nabla ** 2 phi / 2",
+    "world_state_x": "convergence map kappa(n) = -nabla ** 2 phi / 2, related to matter along LOS",
+    "observation_y": "CMB temperature and polarization maps T(n), Q(n), U(n)",
+    "physical_parameters_theta": [
+      "beam_FWHM_arcmin",
+      "noise_uK_arcmin",
+      "survey_area_deg2",
+      "N_modes"
+    ]
+  },
+  "G": {
+    "dag": "F.fourier.harmonic -> S.quadratic.estimator -> M.wiener.filter",
+    "vertices": [
+      "F.fourier.harmonic",
+      "S.quadratic.estimator",
+      "M.wiener.filter"
+    ],
+    "arcs": [
+      "F.fourier.harmonic -> S.quadratic.estimator",
+      "S.quadratic.estimator -> M.wiener.filter"
+    ],
+    "L_DAG": 3.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 100000.0,
+    "condition_number_effective": 500,
+    "condition_number_mismatched": 2000,
+    "regime": "Linear in small-deflection limit; non-perturbative corrections at 1% level for next-gen CMB experiments."
+  },
+  "C": {
+    "solver_class": "quadratic_estimator (Hu_Okamoto) or iterative_lensing_reconstruction",
+    "convergence_rate_q": 2.0,
+    "error_bound": "N_l ** kk (lensing noise) scales as (noise*beam) ** 2 / C_l^{TT}",
+    "complexity": "O(N_pix * log N_pix) for FFT-based QE"
+  },
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "quadratic_lensing_estimator",
+    "integration_axis": "angular_multipole",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "thermal_gaussian",
+    "solution_space": "2D_lensing_convergence",
+    "primitives": [
+      "F.fourier.harmonic",
+      "S.quadratic.estimator",
+      "M.wiener.filter"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "foreground_bias",
+    "point_source_contamination",
+    "beam_anisotropy"
+  ],
+  "error_metric": "lensing_power_spectrum_C_kk_chi2",
+  "error_metric_secondary": "reconstruction_SNR",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "nonlinear_inverse",
+      "forward_operator": "quadratic_lensing_estimator",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_pix_side": 2048,
+        "noise_uK_arcmin": 5.0,
+        "beam_FWHM_arcmin": 1.5,
+        "survey_area_deg2": 10000
+      },
+      "epsilon_fn_center": "1.05 lensing_power_spectrum_C_kk_chi2"
+    },
+    "allowed_forward_operators": [
+      "quadratic_lensing_estimator"
+    ],
+    "allowed_problem_classes": [
+      "nonlinear_inverse"
+    ],
+    "allowed_omega_dimensions": [
+      "N_pix_side",
+      "noise_uK_arcmin",
+      "beam_FWHM_arcmin",
+      "survey_area_deg2"
+    ],
+    "omega_bounds": {
+      "N_pix_side": [
+        512,
+        8192
+      ],
+      "noise_uK_arcmin": [
+        1.0,
+        50.0
+      ],
+      "beam_FWHM_arcmin": [
+        0.5,
+        10.0
+      ],
+      "survey_area_deg2": [
+        1000,
+        40000
+      ]
+    },
+    "epsilon_bounds": {
+      "lensing_power_spectrum_C_kk_chi2": [
+        0.9,
+        2.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

@@ -1,0 +1,132 @@
+{
+  "artifact_id": "L2-158",
+  "layer": "L2",
+  "parent_l1": "L1-158",
+  "title": "SPECT-CT Fusion Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": 64,
+      "W": 64,
+      "Z": [
+        16,
+        256
+      ],
+      "registration_error": [
+        0.0,
+        5.0
+      ],
+      "patient_motion": [
+        0.0,
+        10.0
+      ],
+      "attenuation_correction_bias": [
+        0.0,
+        0.3
+      ],
+      "low_count_SPECT": [
+        0.0,
+        0.5
+      ],
+      "SNR_dB": [
+        0.0,
+        35.0
+      ]
+    },
+    "E": {
+      "forward": "F(r) = SPECT_AC(r, CT_mu) + CT(r) overlay; AC corrects gamma attenuation using CT density",
+      "operator": "spect_ct_fusion_forward_mismatch",
+      "primitive_chain": "L.ct_attenuation_map -> L.spect_activity_map -> L.registration -> int.spatial",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "15.0 + 0.3 * SNR_dB - 1.5 * registration_error - 10.0 * attenuation_correction_bias - 6.0 * low_count_SPECT"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Rigid-Reg",
+        "method_sig": "L+O",
+        "expected_psnr": 20.5
+      },
+      {
+        "name": "AC-OSEM",
+        "method_sig": "L+O",
+        "expected_psnr": 22.5
+      },
+      {
+        "name": "SPECT-CT-Net",
+        "method_sig": "L+N",
+        "expected_psnr": 25.0
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 128,
+        "W": 128,
+        "Z": 64,
+        "registration_error": 0.0,
+        "patient_motion": 0.0,
+        "attenuation_correction_bias": 0.0,
+        "low_count_SPECT": 0.0,
+        "SNR_dB": 20
+      },
+      "epsilon": 23.0
+    },
+    "tier_bounds": {
+      "H": 64,
+      "W": 64,
+      "Z": [
+        16,
+        256
+      ],
+      "registration_error": [
+        0.0,
+        5.0
+      ],
+      "patient_motion": [
+        0.0,
+        10.0
+      ],
+      "attenuation_correction_bias": [
+        0.0,
+        0.3
+      ],
+      "low_count_SPECT": [
+        0.0,
+        0.5
+      ],
+      "SNR_dB": [
+        0.0,
+        35.0
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.55,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-415",
+  "layer": "L1",
+  "principle_number": "415",
+  "title": "Advection-Dispersion Transport Inversion",
+  "domain": "Environmental Science",
+  "sub_domain": "Contaminant transport",
+  "source_file": "AF_environmental_sci/415_advection_dispersion.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "ADE inversion: recover solute source concentration history from downgradient breakthrough curves.",
+    "forward_model": "dC/dt + v*(dC/dx) = D*(d ** 2C/dx ** 2) - lambda*C + S(x,t)",
+    "world_state_x": "source concentration history S(t) at source location x_s",
+    "observation_y": "breakthrough curves C(x_obs, t) at N_monitoring wells",
+    "physical_parameters_theta": [
+      "seepage_velocity_v_m_d",
+      "dispersion_D_m2_d",
+      "decay_constant_lambda_d",
+      "retardation_R"
+    ]
+  },
+  "G": {
+    "dag": "M.ade.advection_dispersion -> O.tikhonov.regularization -> S.fdm.crank_nicolson",
+    "vertices": [
+      "M.ade.advection_dispersion",
+      "O.tikhonov.regularization",
+      "S.fdm.crank_nicolson"
+    ],
+    "arcs": [
+      "M.ade.advection_dispersion -> O.tikhonov.regularization",
+      "O.tikhonov.regularization -> S.fdm.crank_nicolson"
+    ],
+    "L_DAG": 3.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 5000,
+    "condition_number_effective": 200,
+    "condition_number_mismatched": 1000,
+    "regime": "Ill-posed due to diffusion smearing; Tikhonov regularization stabilizes; prior on source smoothness."
+  },
+  "C": {
+    "solver_class": "Tikhonov_regularization or TSVD_source_inversion",
+    "convergence_rate_q": 2.0,
+    "error_bound": "source concentration RMSE < 10% with well-constrained transport params",
+    "complexity": "O(N_wells * N_timesteps * N_source_bins) for design matrix"
+  },
+  "physics_fingerprint": {
+    "carrier": "N/A",
+    "sensing_mechanism": "tracer_concentration_measurement",
+    "integration_axis": "groundwater_domain",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "1D_concentration_source",
+    "primitives": [
+      "M.ade.advection_dispersion",
+      "O.tikhonov.regularization",
+      "S.fdm.crank_nicolson"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "velocity_field_uncertainty",
+    "dispersion_coefficient_uncertainty",
+    "heterogeneity_scale"
+  ],
+  "error_metric": "source_concentration_RMSE_mg_L",
+  "error_metric_secondary": "BTC_fit_RMSE",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "linear_inverse",
+      "forward_operator": "tracer_concentration_measurement",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_monitoring_wells": 5,
+        "domain_length_m": 100,
+        "v_m_d": 1.0,
+        "N_time_steps": 100
+      },
+      "epsilon_fn_center": "10 source_concentration_RMSE_mg_L"
+    },
+    "allowed_forward_operators": [
+      "tracer_concentration_measurement"
+    ],
+    "allowed_problem_classes": [
+      "linear_inverse"
+    ],
+    "allowed_omega_dimensions": [
+      "N_monitoring_wells",
+      "domain_length_m",
+      "v_m_d",
+      "N_time_steps"
+    ],
+    "omega_bounds": {
+      "N_monitoring_wells": [
+        2,
+        50
+      ],
+      "domain_length_m": [
+        10,
+        10000
+      ],
+      "v_m_d": [
+        0.01,
+        10.0
+      ],
+      "N_time_steps": [
+        20,
+        500
+      ]
+    },
+    "epsilon_bounds": {
+      "source_concentration_RMSE_mg_L": [
+        1,
+        100
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

@@ -1,0 +1,150 @@
+{
+  "artifact_id": "L2-163",
+  "layer": "L2",
+  "parent_l1": "L1-163",
+  "title": "Scanning Tunneling Microscopy (STM) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": 64,
+      "W": 64,
+      "pixel_A": [
+        0.05,
+        5.0
+      ],
+      "bias_mV": [
+        1,
+        3000
+      ],
+      "setpoint_pA": [
+        1,
+        10000
+      ],
+      "tip_apex_geometry": [
+        0.3,
+        1.0
+      ],
+      "thermal_drift": [
+        0.0,
+        5
+      ],
+      "piezo_nonlinearity": [
+        0.0,
+        0.3
+      ],
+      "electronic_noise": [
+        0.0,
+        0.3
+      ],
+      "SNR_dB": [
+        0.0,
+        40.0
+      ]
+    },
+    "E": {
+      "forward": "I_t = I_0 * exp(-2*kappa*d) * LDOS(E_F); constant-current mode gives z(x,y) map",
+      "operator": "stm_forward_mismatch",
+      "primitive_chain": "L.bias_voltage -> L.quantum_tunneling -> S.scan.raster -> D.tunneling_current -> int.spatial",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "20.0 + 0.3 * SNR_dB + 6.0 * tip_apex_geometry - 0.5 * thermal_drift - 8.0 * piezo_nonlinearity"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Simple-Height",
+        "method_sig": "A+O",
+        "expected_psnr": 26.0
+      },
+      {
+        "name": "Drift-Correct",
+        "method_sig": "L+O",
+        "expected_psnr": 29.0
+      },
+      {
+        "name": "STM-Net",
+        "method_sig": "L+N",
+        "expected_psnr": 31.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "pixel_A": 0.5,
+        "bias_mV": 100,
+        "setpoint_pA": 100,
+        "tip_apex_geometry": 1.0,
+        "thermal_drift": 0.0,
+        "piezo_nonlinearity": 0.0,
+        "electronic_noise": 0.0,
+        "SNR_dB": 30
+      },
+      "epsilon": 29.0
+    },
+    "tier_bounds": {
+      "H": 64,
+      "W": 64,
+      "pixel_A": [
+        0.05,
+        5.0
+      ],
+      "bias_mV": [
+        1,
+        3000
+      ],
+      "setpoint_pA": [
+        1,
+        10000
+      ],
+      "tip_apex_geometry": [
+        0.3,
+        1.0
+      ],
+      "thermal_drift": [
+        0.0,
+        5
+      ],
+      "piezo_nonlinearity": [
+        0.0,
+        0.3
+      ],
+      "electronic_noise": [
+        0.0,
+        0.3
+      ],
+      "SNR_dB": [
+        0.0,
+        40.0
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.55,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

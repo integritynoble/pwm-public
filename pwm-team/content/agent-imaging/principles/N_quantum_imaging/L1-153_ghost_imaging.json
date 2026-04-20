@@ -1,0 +1,174 @@
+{
+  "artifact_id": "L1-153",
+  "layer": "L1",
+  "principle_number": "153",
+  "title": "Ghost Imaging (correlated-photon imaging)",
+  "domain": "Quantum Imaging",
+  "sub_domain": "Imaging via photon-pair correlations between bucket and reference",
+  "source_file": "N_quantum_imaging/153_ghost_imaging.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
+  "E": {
+    "description": "Ghost Imaging (correlated-photon imaging) forward model.",
+    "forward_model": "<y_bucket * y_ref(r)> - <y_bucket><y_ref(r)> ~ object(r); requires N correlated pairs",
+    "world_state_x": "Principle-specific quantity of interest",
+    "observation_y": "Detector output at declared geometry",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "N_pairs",
+      "bucket_SNR_dB",
+      "photon_pair_rate",
+      "accidental_coincidences",
+      "reference_calibration",
+      "environmental_decoherence"
+    ]
+  },
+  "G": {
+    "dag": "L.photon_pair_source -> D.bucket_detector -> D.reference_imaging -> L.correlation -> int.temporal",
+    "vertices": [
+      "L.photon_pair_source",
+      "D.bucket_detector",
+      "D.reference_imaging",
+      "L.correlation",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.photon_pair_source -> D.bucket_detector",
+      "D.bucket_detector -> D.reference_imaging",
+      "D.reference_imaging -> L.correlation",
+      "L.correlation -> int.temporal"
+    ],
+    "L_DAG": 4.2,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 600,
+    "condition_number_effective": 30,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Direct-Correlation, Computational-Ghost, Ghost-Net",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sensor SNR + mismatch bias + regularization.",
+    "complexity": "principle-dependent"
+  },
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "photon_correlation_imaging",
+    "integration_axis": "temporal",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "shot_poisson",
+    "solution_space": "2D_intensity",
+    "primitives": [
+      "L.photon_pair_source",
+      "D.bucket_detector",
+      "D.reference_imaging",
+      "L.correlation",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 10,
+  "difficulty_tier": "hard",
+  "mismatch_parameters": [
+    "photon_pair_rate",
+    "accidental_coincidences",
+    "reference_calibration",
+    "environmental_decoherence"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "ghost_imaging",
+      "forward_operator": "ghost_imaging_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 128,
+        "W": 128,
+        "N_pairs": 100000,
+        "bucket_SNR_dB": 10,
+        "photon_pair_rate": 1.0,
+        "accidental_coincidences": 0.1,
+        "reference_calibration": 1.0,
+        "environmental_decoherence": 0.0
+      },
+      "epsilon_fn_center": "18.0"
+    },
+    "allowed_forward_operators": [
+      "ghost_imaging_forward"
+    ],
+    "allowed_problem_classes": [
+      "ghost_imaging"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "N_pairs",
+      "bucket_SNR_dB",
+      "photon_pair_rate",
+      "accidental_coincidences",
+      "reference_calibration",
+      "environmental_decoherence",
+      "photon_pair_rate",
+      "accidental_coincidences",
+      "reference_calibration",
+      "environmental_decoherence"
+    ],
+    "omega_bounds": {
+      "H": 32,
+      "W": 32,
+      "N_pairs": [
+        1000,
+        100000000
+      ],
+      "bucket_SNR_dB": [
+        0.0,
+        30.0
+      ],
+      "photon_pair_rate": [
+        0.1,
+        10.0
+      ],
+      "accidental_coincidences": [
+        0.0,
+        0.5
+      ],
+      "reference_calibration": [
+        0.3,
+        1.0
+      ],
+      "environmental_decoherence": [
+        0.0,
+        0.5
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        5.0,
+        40.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

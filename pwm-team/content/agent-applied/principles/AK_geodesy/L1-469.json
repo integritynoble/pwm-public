@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-469",
+  "layer": "L1",
+  "principle_number": "469",
+  "title": "LiDAR Point Cloud 3D Mapping",
+  "domain": "Geodesy",
+  "sub_domain": "Airborne laser scanning",
+  "source_file": "AK_geodesy/469_lidar_point_cloud.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "Airborne LiDAR mapping: recover 3D terrain/surface model from point cloud after boresight calibration.",
+    "forward_model": "X_obj = R_IMU * R_boresight * (R_scan * r_vec + t_scan) + X_IMU",
+    "world_state_x": "3D surface elevation model DEM(x,y) or DSM",
+    "observation_y": "point cloud (X,Y,Z,intensity) for N_points returns per flight strip",
+    "physical_parameters_theta": [
+      "boresight_roll_deg",
+      "boresight_pitch_deg",
+      "boresight_heading_deg",
+      "lever_arm_m"
+    ]
+  },
+  "G": {
+    "dag": "M.tof.range_equation -> S.boresight.calibration -> O.icp.registration",
+    "vertices": [
+      "M.tof.range_equation",
+      "S.boresight.calibration",
+      "O.icp.registration"
+    ],
+    "arcs": [
+      "M.tof.range_equation -> S.boresight.calibration",
+      "S.boresight.calibration -> O.icp.registration"
+    ],
+    "L_DAG": 2.8,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 500,
+    "condition_number_effective": 20,
+    "condition_number_mismatched": 100,
+    "regime": "Boresight calibration is linear; IMU/GPS integration is nonlinear; strip adjustment corrects systematic offsets."
+  },
+  "C": {
+    "solver_class": "boresight_calibration_strip_adjustment or ICP_registration",
+    "convergence_rate_q": 2.0,
+    "error_bound": "vertical RMSE < 5 cm for airborne, < 2 cm for terrestrial",
+    "complexity": "O(N_points * N_iter) for ICP registration"
+  },
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "time_of_flight_lidar",
+    "integration_axis": "3d_scan_volume",
+    "problem_class": "parameter_estimation",
+    "noise_model": "gaussian",
+    "solution_space": "3D_point_cloud",
+    "primitives": [
+      "M.tof.range_equation",
+      "S.boresight.calibration",
+      "O.icp.registration"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "IMU_drift_deg",
+    "GPS_accuracy_cm",
+    "scanning_angle_encoder_error"
+  ],
+  "error_metric": "vertical_accuracy_RMSE_cm",
+  "error_metric_secondary": "horizontal_accuracy_RMSE_cm",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "parameter_estimation",
+      "forward_operator": "time_of_flight_lidar",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_points_million": 10,
+        "flight_altitude_m": 1000,
+        "point_density_m2": 10,
+        "IMU_drift_deg_hr": 0.01
+      },
+      "epsilon_fn_center": "5.0 vertical_accuracy_RMSE_cm"
+    },
+    "allowed_forward_operators": [
+      "time_of_flight_lidar"
+    ],
+    "allowed_problem_classes": [
+      "parameter_estimation"
+    ],
+    "allowed_omega_dimensions": [
+      "N_points_million",
+      "flight_altitude_m",
+      "point_density_m2",
+      "IMU_drift_deg_hr"
+    ],
+    "omega_bounds": {
+      "N_points_million": [
+        0.1,
+        1000
+      ],
+      "flight_altitude_m": [
+        100,
+        5000
+      ],
+      "point_density_m2": [
+        1,
+        100
+      ],
+      "IMU_drift_deg_hr": [
+        0.001,
+        0.1
+      ]
+    },
+    "epsilon_bounds": {
+      "vertical_accuracy_RMSE_cm": [
+        1.0,
+        50.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

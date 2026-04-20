@@ -1,0 +1,140 @@
+{
+  "artifact_id": "L2-053",
+  "layer": "L2",
+  "parent_l1": "L1-053",
+  "title": "Electronic Portal Imaging (EPID) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": 512,
+      "W": 512,
+      "MV_energy": [
+        4,
+        18
+      ],
+      "MU": [
+        0.1,
+        200
+      ],
+      "pixel_mm": [
+        0.1,
+        2.0
+      ],
+      "scatter": [
+        0.0,
+        0.5
+      ],
+      "optical_glare": [
+        0.0,
+        0.3
+      ],
+      "panel_saturation": [
+        0.0,
+        0.3
+      ],
+      "beam_energy_drift": [
+        0.0,
+        0.05
+      ]
+    },
+    "E": {
+      "forward": "y(u,v) = I_0 exp(-integral mu_MV(r) ds) + glare + n; cone-beam geometry at iso-centre",
+      "operator": "portal_imaging_forward_mismatch",
+      "primitive_chain": "L.mv_xray_source -> L.patient_attenuation -> D.amorphous_silicon_panel -> int.spatial",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "17.0 + 2.0 * log10(MU / 0.1) - 8.0 * scatter - 6.0 * optical_glare"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Simple-Subtract",
+        "method_sig": "A+O",
+        "expected_psnr": 22.5
+      },
+      {
+        "name": "Scatter-Correct",
+        "method_sig": "L+O",
+        "expected_psnr": 25.0
+      },
+      {
+        "name": "Portal-Net",
+        "method_sig": "L+N",
+        "expected_psnr": 27.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 1024,
+        "W": 1024,
+        "MV_energy": 6,
+        "MU": 5,
+        "pixel_mm": 0.4,
+        "scatter": 0.2,
+        "optical_glare": 0.0,
+        "panel_saturation": 0.0
+      },
+      "epsilon": 25.0
+    },
+    "tier_bounds": {
+      "H": 512,
+      "W": 512,
+      "MV_energy": [
+        4,
+        18
+      ],
+      "MU": [
+        0.1,
+        200
+      ],
+      "pixel_mm": [
+        0.1,
+        2.0
+      ],
+      "scatter": [
+        0.0,
+        0.5
+      ],
+      "optical_glare": [
+        0.0,
+        0.3
+      ],
+      "panel_saturation": [
+        0.0,
+        0.3
+      ],
+      "beam_energy_drift": [
+        0.0,
+        0.05
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.5,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

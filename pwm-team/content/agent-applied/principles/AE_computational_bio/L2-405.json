@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-405",
+  "layer": "L2",
+  "parent_l1": "L1-405",
+  "principle_ref": "sha256:<L1-405_principle_hash>",
+  "title": "SIR Epidemic Parameter Estimation \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "N_incidence_days": [
+        10,
+        500
+      ],
+      "R0_true": [
+        1.0,
+        10.0
+      ],
+      "detection_rate": [
+        0.05,
+        1.0
+      ],
+      "overdispersion_k": [
+        1,
+        100
+      ]
+    },
+    "E": {
+      "forward": "dS/dt = -beta*S*I/N; dI/dt = beta*S*I/N - gamma*I; dR/dt = gamma*I; R0 = beta/gamma",
+      "operator": "incidence_case_surveillance",
+      "primitive_chain": "M.ode.sir_model -> O.likelihood.incidence_nb -> S.mcmc.epidemic_posterior",
+      "inverse": "recover SIR parameters (beta_transmission from daily/weekly incidence data I_new(t) = beta*S*I/N for epidemic period"
+    },
+    "B": {
+      "SIR_conservation": "S+I+R=N",
+      "positivity": "S,I,R >= 0"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "R0_estimation_RMSE",
+      "incidence_prediction_RMSE",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.1 + 0.1 * (0.5 / detection_rate) ** 0.5"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 SIR_parameter_vector"
+    },
+    "baselines": [
+      {
+        "name": "EpiEstim_Rt_estimation",
+        "method_sig": "L+O",
+        "expected_score": 0.25
+      },
+      {
+        "name": "MCMC_SIR_Bayesian",
+        "method_sig": "L+O",
+        "expected_score": 0.18
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_incidence_days": 100,
+        "R0_true": 2.5,
+        "detection_rate": 0.5,
+        "overdispersion_k": 10,
+        "under_reporting_factor": 0.0,
+        "heterogeneous_mixing": 0.0,
+        "waning_immunity": 0.0
+      },
+      "epsilon": 0.2
+    },
+    "tier_bounds": {
+      "N_incidence_days": [
+        10,
+        500
+      ],
+      "R0_true": [
+        1.0,
+        10.0
+      ],
+      "detection_rate": [
+        0.05,
+        1.0
+      ],
+      "overdispersion_k": [
+        1,
+        100
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.28,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.28 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

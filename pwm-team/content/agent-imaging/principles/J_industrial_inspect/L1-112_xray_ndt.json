@@ -1,0 +1,178 @@
+{
+  "artifact_id": "L1-112",
+  "layer": "L1",
+  "principle_number": "112",
+  "title": "X-ray Non-Destructive Testing (2D radiography)",
+  "domain": "Industrial Inspection",
+  "sub_domain": "2D projection radiography for defect detection",
+  "source_file": "J_industrial_inspect/112_xray_ndt.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical NDT/NDE literature for this principle.",
+  "E": {
+    "description": "X-ray Non-Destructive Testing (2D radiography) forward model.",
+    "forward_model": "y(u,v) = I_0 * exp(-integral mu(r) ds) + scatter + n (single projection)",
+    "world_state_x": "Defect / strain / composition map depending on principle",
+    "observation_y": "Sensor output at declared geometry",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "kV",
+      "pixel_um",
+      "photon_count",
+      "beam_hardening",
+      "scatter",
+      "thickness_variation"
+    ]
+  },
+  "G": {
+    "dag": "L.xray_source -> L.beer_lambert -> int.spatial",
+    "vertices": [
+      "L.xray_source",
+      "L.beer_lambert",
+      "int.spatial"
+    ],
+    "arcs": [
+      "L.xray_source -> L.beer_lambert",
+      "L.beer_lambert -> int.spatial"
+    ],
+    "L_DAG": 2.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 160,
+    "condition_number_effective": 8,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "BG-Subtract, Scatter-Correct, NDT-CNN",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sensor SNR + mismatch bias.",
+    "complexity": "O(H W) to O(H W Z) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "x_ray",
+    "sensing_mechanism": "xray_projection",
+    "integration_axis": "spatial",
+    "problem_class": "linear_inverse",
+    "noise_model": "shot_poisson",
+    "solution_space": "2D_attenuation_projection",
+    "primitives": [
+      "L.xray_source",
+      "L.beer_lambert",
+      "int.spatial"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "beam_hardening",
+    "scatter",
+    "thickness_variation",
+    "source_intensity_drift"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "xray_ndt",
+      "forward_operator": "xray_ndt_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 2048,
+        "W": 2048,
+        "kV": 150,
+        "pixel_um": 100,
+        "photon_count": 5000,
+        "beam_hardening": 0.0,
+        "scatter": 0.0,
+        "thickness_variation": 0.0
+      },
+      "epsilon_fn_center": "30.0"
+    },
+    "allowed_forward_operators": [
+      "xray_ndt_forward"
+    ],
+    "allowed_problem_classes": [
+      "xray_ndt"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "kV",
+      "pixel_um",
+      "photon_count",
+      "beam_hardening",
+      "scatter",
+      "thickness_variation",
+      "beam_hardening",
+      "scatter",
+      "thickness_variation",
+      "source_intensity_drift"
+    ],
+    "omega_bounds": {
+      "H": [
+        512,
+        8192
+      ],
+      "W": [
+        512,
+        8192
+      ],
+      "kV": [
+        20,
+        450
+      ],
+      "pixel_um": [
+        1,
+        500
+      ],
+      "photon_count": [
+        100,
+        100000
+      ],
+      "beam_hardening": [
+        0.0,
+        0.3
+      ],
+      "scatter": [
+        0.0,
+        0.4
+      ],
+      "thickness_variation": [
+        0.0,
+        0.5
+      ],
+      "source_intensity_drift": [
+        0.0,
+        0.1
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        5.0,
+        40.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

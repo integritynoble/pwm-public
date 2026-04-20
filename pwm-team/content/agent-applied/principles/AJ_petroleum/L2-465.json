@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-465",
+  "layer": "L2",
+  "parent_l1": "L1-465",
+  "principle_ref": "sha256:<L1-465_principle_hash>",
+  "title": "Well Productivity Index Inversion \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "N_pressure_points": [
+        50,
+        5000
+      ],
+      "k_mD": [
+        0.1,
+        10000
+      ],
+      "skin_factor": [
+        -5,
+        50
+      ],
+      "wellbore_storage_C_bbl_psi": [
+        0.001,
+        1.0
+      ]
+    },
+    "E": {
+      "forward": "p_ws(dt) = p* - (162.6*q*mu*B / (k*h)) * log10(dt + tp) - log10(tp) (Horner plot)",
+      "operator": "pressure_transient_analysis",
+      "primitive_chain": "M.darcy.radial_flow -> S.pta.derivative_analysis -> O.semi_log.straight_line",
+      "inverse": "recover reservoir permeability k (mD) from wellbore pressure p_ws(dt) during buildup/drawdown for N_points data points"
+    },
+    "B": {
+      "permeability_positivity": "k > 0",
+      "pay_positivity": "h > 0"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "permeability_estimation_error_percent",
+      "skin_factor_error",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "10 + 5 * (wellbore_storage_C_bbl_psi / 0.01) ** 0.2"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 reservoir_property_vector"
+    },
+    "baselines": [
+      {
+        "name": "Horner_semilog",
+        "method_sig": "L+O",
+        "expected_score": 18
+      },
+      {
+        "name": "Bourdet_derivative",
+        "method_sig": "L+O",
+        "expected_score": 12
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_pressure_points": 500,
+        "k_mD": 50,
+        "skin_factor": 5,
+        "wellbore_storage_C_bbl_psi": 0.01,
+        "wellbore_storage_distortion": 0.0,
+        "variable_rate_history": 0.0,
+        "superposition_error": 0.0
+      },
+      "epsilon": 15.0
+    },
+    "tier_bounds": {
+      "N_pressure_points": [
+        50,
+        5000
+      ],
+      "k_mD": [
+        0.1,
+        10000
+      ],
+      "skin_factor": [
+        -5,
+        50
+      ],
+      "wellbore_storage_C_bbl_psi": [
+        0.001,
+        1.0
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.25,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.25 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

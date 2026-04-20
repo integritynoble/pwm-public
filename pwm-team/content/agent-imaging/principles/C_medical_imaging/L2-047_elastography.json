@@ -1,0 +1,141 @@
+{
+  "artifact_id": "L2-047",
+  "layer": "L2",
+  "parent_l1": "L1-047",
+  "title": "Elastography (Shear-Wave / Strain) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": 128,
+      "W": 128,
+      "f_push_Hz": [
+        30,
+        500
+      ],
+      "N_time_samples": [
+        50,
+        1000
+      ],
+      "SNR_dB": [
+        0.0,
+        35.0
+      ],
+      "wave_reflections": [
+        0.0,
+        0.5
+      ],
+      "tissue_anisotropy": [
+        0.0,
+        0.3
+      ],
+      "pre_load": [
+        0.0,
+        0.3
+      ],
+      "boundary_conditions": [
+        0.0,
+        0.3
+      ]
+    },
+    "E": {
+      "forward": "u(r, t) = shear_wave_propagator(mu(r), boundaries); recover mu(r) via Helmholtz or direct inversion",
+      "operator": "elastography_forward_mismatch",
+      "primitive_chain": "L.shear_wave_excitation -> L.wave_tracking -> L.inverse_elasticity -> int.temporal",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "12.0 + 0.3 * SNR_dB - 10.0 * wave_reflections - 6.0 * tissue_anisotropy - 6.0 * boundary_conditions"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Helmholtz",
+        "method_sig": "L+O",
+        "expected_psnr": 18.0
+      },
+      {
+        "name": "Direct-Inversion",
+        "method_sig": "L+O",
+        "expected_psnr": 20.0
+      },
+      {
+        "name": "Elasto-Net",
+        "method_sig": "L+N",
+        "expected_psnr": 22.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "f_push_Hz": 150,
+        "N_time_samples": 200,
+        "SNR_dB": 22,
+        "wave_reflections": 0.0,
+        "tissue_anisotropy": 0.0,
+        "pre_load": 0.0,
+        "boundary_conditions": 0.0
+      },
+      "epsilon": 20.0
+    },
+    "tier_bounds": {
+      "H": 128,
+      "W": 128,
+      "f_push_Hz": [
+        30,
+        500
+      ],
+      "N_time_samples": [
+        50,
+        1000
+      ],
+      "SNR_dB": [
+        0.0,
+        35.0
+      ],
+      "wave_reflections": [
+        0.0,
+        0.5
+      ],
+      "tissue_anisotropy": [
+        0.0,
+        0.3
+      ],
+      "pre_load": [
+        0.0,
+        0.3
+      ],
+      "boundary_conditions": [
+        0.0,
+        0.3
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.5,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

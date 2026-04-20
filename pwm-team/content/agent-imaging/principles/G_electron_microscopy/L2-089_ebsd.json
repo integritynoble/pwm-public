@@ -1,0 +1,143 @@
+{
+  "artifact_id": "L2-089",
+  "layer": "L2",
+  "parent_l1": "L1-089",
+  "title": "Electron Backscatter Diffraction (EBSD) \u2014 crystallographic orientation mapping Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        256,
+        4096
+      ],
+      "W": [
+        256,
+        4096
+      ],
+      "kV": [
+        10,
+        30
+      ],
+      "step_nm": [
+        10,
+        1000
+      ],
+      "peak_electrons": [
+        20,
+        2000
+      ],
+      "pattern_center_drift": [
+        0.0,
+        0.1
+      ],
+      "band_contrast_degradation": [
+        0.0,
+        0.5
+      ],
+      "grain_boundary_ambiguity": [
+        0.0,
+        0.3
+      ]
+    },
+    "E": {
+      "forward": "I_kikuchi(theta, phi; orientation) = pattern_library(orientation); match per pixel to assign Euler angles",
+      "operator": "ebsd_kikuchi_forward_mismatch",
+      "primitive_chain": "L.excitation.electron_beam -> L.diffraction_kikuchi -> L.pattern_match -> int.angular",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "0.3 - 0.2 * log10(peak_electrons / 20) + 10.0 * pattern_center_drift + 1.5 * band_contrast_degradation"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Hough-EBSD",
+        "method_sig": "L+O",
+        "expected_psnr": 0.8
+      },
+      {
+        "name": "Dictionary-Match",
+        "method_sig": "L+O",
+        "expected_psnr": 0.4
+      },
+      {
+        "name": "EBSD-Net",
+        "method_sig": "L+N",
+        "expected_psnr": 0.3
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 1024,
+        "W": 1024,
+        "kV": 20,
+        "step_nm": 100,
+        "peak_electrons": 200,
+        "pattern_center_drift": 0.0,
+        "band_contrast_degradation": 0.0
+      },
+      "epsilon": 0.5
+    },
+    "tier_bounds": {
+      "H": [
+        256,
+        4096
+      ],
+      "W": [
+        256,
+        4096
+      ],
+      "kV": [
+        10,
+        30
+      ],
+      "step_nm": [
+        10,
+        1000
+      ],
+      "peak_electrons": [
+        20,
+        2000
+      ],
+      "pattern_center_drift": [
+        0.0,
+        0.1
+      ],
+      "band_contrast_degradation": [
+        0.0,
+        0.5
+      ],
+      "grain_boundary_ambiguity": [
+        0.0,
+        0.3
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.48,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

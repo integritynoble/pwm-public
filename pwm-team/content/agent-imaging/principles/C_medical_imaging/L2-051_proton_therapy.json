@@ -1,0 +1,150 @@
+{
+  "artifact_id": "L2-051",
+  "layer": "L2",
+  "parent_l1": "L1-051",
+  "title": "Proton Therapy (proton-beam radiation dose imaging) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": 128,
+      "W": 128,
+      "Z": [
+        32,
+        512
+      ],
+      "N_beams": [
+        1,
+        16
+      ],
+      "proton_energy_MeV": [
+        70,
+        250
+      ],
+      "SNR_dB": [
+        10.0,
+        40.0
+      ],
+      "range_uncertainty": [
+        0.0,
+        0.05
+      ],
+      "organ_motion": [
+        0.0,
+        0.3
+      ],
+      "tissue_heterogeneity": [
+        0.0,
+        0.3
+      ],
+      "CT_hu_calibration_error": [
+        0.0,
+        0.1
+      ]
+    },
+    "E": {
+      "forward": "D(r) = integral fluence(E) * dE/dx(r, E) dE + n; Bragg peak at finite depth",
+      "operator": "proton_therapy_forward_mismatch",
+      "primitive_chain": "L.proton_accelerator -> L.bragg_peak_energy_deposition -> D.dose_meter -> int.spatial",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "19.0 + 0.3 * SNR_dB - 100.0 * range_uncertainty - 8.0 * organ_motion - 10.0 * tissue_heterogeneity"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Analytical-Dose",
+        "method_sig": "L+O",
+        "expected_psnr": 24.5
+      },
+      {
+        "name": "Monte-Carlo",
+        "method_sig": "I+O",
+        "expected_psnr": 27.0
+      },
+      {
+        "name": "Proton-Net",
+        "method_sig": "L+N",
+        "expected_psnr": 29.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 256,
+        "W": 256,
+        "Z": 128,
+        "N_beams": 3,
+        "proton_energy_MeV": 150,
+        "SNR_dB": 30,
+        "range_uncertainty": 0.01,
+        "organ_motion": 0.0,
+        "tissue_heterogeneity": 0.05,
+        "CT_hu_calibration_error": 0.0
+      },
+      "epsilon": 27.0
+    },
+    "tier_bounds": {
+      "H": 128,
+      "W": 128,
+      "Z": [
+        32,
+        512
+      ],
+      "N_beams": [
+        1,
+        16
+      ],
+      "proton_energy_MeV": [
+        70,
+        250
+      ],
+      "SNR_dB": [
+        10.0,
+        40.0
+      ],
+      "range_uncertainty": [
+        0.0,
+        0.05
+      ],
+      "organ_motion": [
+        0.0,
+        0.3
+      ],
+      "tissue_heterogeneity": [
+        0.0,
+        0.3
+      ],
+      "CT_hu_calibration_error": [
+        0.0,
+        0.1
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.5,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

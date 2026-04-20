@@ -1,0 +1,143 @@
+{
+  "artifact_id": "L1-381",
+  "layer": "L1",
+  "principle_number": "381",
+  "title": "Type Ia Supernova Distance Standardization",
+  "domain": "Astrophysics",
+  "sub_domain": "Cosmological distance ladder",
+  "source_file": "AC_astrophysics/381_type_ia_distance.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "SN Ia distance standardization: calibrate stretch-color-luminosity relation to minimize Hubble residuals and constrain H0.",
+    "forward_model": "mu = m_B - M + alpha*x1 - beta*c + delta_M; H0 from slope of mu vs. log10(z)",
+    "world_state_x": "Hubble constant H0 and dark energy equation of state w",
+    "observation_y": "Hubble diagram {mu_i vs. z_i} for N_SN type Ia supernovae",
+    "physical_parameters_theta": [
+      "alpha_stretch",
+      "beta_color",
+      "M_B_absolute",
+      "delta_M_host_step",
+      "sigma_int"
+    ]
+  },
+  "G": {
+    "dag": "M.sed.salt2_template -> S.calibration.standardization -> O.chi2.hubble_residual",
+    "vertices": [
+      "M.sed.salt2_template",
+      "S.calibration.standardization",
+      "O.chi2.hubble_residual"
+    ],
+    "arcs": [
+      "M.sed.salt2_template -> S.calibration.standardization",
+      "S.calibration.standardization -> O.chi2.hubble_residual"
+    ],
+    "L_DAG": 2.8,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 300,
+    "condition_number_effective": 15,
+    "condition_number_mismatched": 80,
+    "regime": "Gaussian likelihood; stretch-color standardization well-understood; host mass step is 0.07 mag systematic."
+  },
+  "C": {
+    "solver_class": "BEAMS or UNITY or BHM hierarchical Bayesian",
+    "convergence_rate_q": 2.0,
+    "error_bound": "sigma(H0) < 1 km/s/Mpc for N_SN > 200 in Hubble flow",
+    "complexity": "O(N_SN * N_params) for likelihood evaluation"
+  },
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "photometric_sn_standardization",
+    "integration_axis": "spectral_temporal",
+    "problem_class": "parameter_estimation",
+    "noise_model": "observation_gaussian",
+    "solution_space": "distance_modulus_H0",
+    "primitives": [
+      "M.sed.salt2_template",
+      "S.calibration.standardization",
+      "O.chi2.hubble_residual"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "Malmquist_bias",
+    "peculiar_velocity_field_km_s",
+    "host_galaxy_metallicity_gradient"
+  ],
+  "error_metric": "H0_sigma_km_s_Mpc",
+  "error_metric_secondary": "sigma_int_mag",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "parameter_estimation",
+      "forward_operator": "photometric_sn_standardization",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_SN_hubble_flow": 500,
+        "median_z": 0.3,
+        "photometric_noise_mmag": 5.0,
+        "peculiar_v_kms": 200
+      },
+      "epsilon_fn_center": "0.8 H0_sigma_km_s_Mpc"
+    },
+    "allowed_forward_operators": [
+      "photometric_sn_standardization"
+    ],
+    "allowed_problem_classes": [
+      "parameter_estimation"
+    ],
+    "allowed_omega_dimensions": [
+      "N_SN_hubble_flow",
+      "median_z",
+      "photometric_noise_mmag",
+      "peculiar_v_kms"
+    ],
+    "omega_bounds": {
+      "N_SN_hubble_flow": [
+        50,
+        2000
+      ],
+      "median_z": [
+        0.02,
+        2.0
+      ],
+      "photometric_noise_mmag": [
+        1.0,
+        50.0
+      ],
+      "peculiar_v_kms": [
+        100,
+        600
+      ]
+    },
+    "epsilon_bounds": {
+      "H0_sigma_km_s_Mpc": [
+        0.2,
+        3.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

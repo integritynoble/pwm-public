@@ -1,0 +1,161 @@
+{
+  "artifact_id": "L2-023",
+  "layer": "L2",
+  "parent_l1": "L1-023",
+  "title": "Three-Photon Microscopy (chi-5 deep-tissue imaging) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        128,
+        2048
+      ],
+      "W": [
+        128,
+        2048
+      ],
+      "Z": [
+        16,
+        512
+      ],
+      "pixel_nm": [
+        200,
+        1000
+      ],
+      "NA": [
+        0.5,
+        1.1
+      ],
+      "lambda_ex_nm": [
+        1200,
+        1700
+      ],
+      "peak_photons": [
+        5,
+        500
+      ],
+      "pulse_width_fs": [
+        30,
+        300
+      ],
+      "sample_scattering": [
+        0.0,
+        0.8
+      ],
+      "long_wavelength_absorption": [
+        0.0,
+        0.5
+      ]
+    },
+    "E": {
+      "forward": "y(r) ~ [f(r) * I_ex^3(r)] * integral attenuation; depth penetration ~2x of 2P at 1300 nm",
+      "operator": "three_photon_forward_mismatch",
+      "primitive_chain": "L.excitation.nonlinear_chi5 -> S.scan.raster -> int.temporal",
+      "inverse": "solve forward model for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "15.0 + 2.5 * log10(peak_photons / 5) - 6.0 * sample_scattering - 4.0 * long_wavelength_absorption"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Richardson-Lucy-3P",
+        "method_sig": "I+M",
+        "expected_psnr": 20.5
+      },
+      {
+        "name": "TV-ADMM-3P",
+        "method_sig": "L+O",
+        "expected_psnr": 22.0
+      },
+      {
+        "name": "CARE-3P",
+        "method_sig": "L+N",
+        "expected_psnr": 25.0
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "Z": 100,
+        "pixel_nm": 400,
+        "NA": 1.0,
+        "lambda_ex_nm": 1300,
+        "peak_photons": 30,
+        "pulse_width_fs": 60,
+        "sample_scattering": 0.0
+      },
+      "epsilon": 22.0
+    },
+    "tier_bounds": {
+      "H": [
+        128,
+        2048
+      ],
+      "W": [
+        128,
+        2048
+      ],
+      "Z": [
+        16,
+        512
+      ],
+      "pixel_nm": [
+        200,
+        1000
+      ],
+      "NA": [
+        0.5,
+        1.1
+      ],
+      "lambda_ex_nm": [
+        1200,
+        1700
+      ],
+      "peak_photons": [
+        5,
+        500
+      ],
+      "pulse_width_fs": [
+        30,
+        300
+      ],
+      "sample_scattering": [
+        0.0,
+        0.8
+      ],
+      "long_wavelength_absorption": [
+        0.0,
+        0.5
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.45,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

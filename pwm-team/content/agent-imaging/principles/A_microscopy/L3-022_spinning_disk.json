@@ -1,0 +1,181 @@
+{
+  "artifact_id": "L3-022",
+  "layer": "L3",
+  "parent_l2": "L2-022",
+  "parent_l1": "L1-022",
+  "title": "Spinning Disk Confocal (Nipkow) Microscopy Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "principle-appropriate canonical dataset (domain-standard)",
+    "secondary": "published follow-up benchmark dataset",
+    "construction_method": "parametric forward synthesis at declared Omega; Poisson/Gaussian noise at declared level",
+    "num_dev_instances_per_tier": 20
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "H": 1024,
+        "W": 1024,
+        "Z": 50,
+        "pixel_nm": 100,
+        "NA": 1.3,
+        "pinhole_AU": 1.0,
+        "peak_photons": 300,
+        "disk_pattern_registration": 0.0,
+        "pinhole_crosstalk": 0.0,
+        "disk_speed_jitter": 0.0
+      },
+      "epsilon": 27.5,
+      "d_ibench": 0.14,
+      "baselines": [
+        {
+          "name": "Richardson-Lucy",
+          "score": 25.5,
+          "Q": 0.8
+        },
+        {
+          "name": "TV-ADMM",
+          "score": 27.0,
+          "Q": 0.85
+        },
+        {
+          "name": "CARE-SD",
+          "score": 30.5,
+          "Q": 0.9
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "H": 1024,
+        "W": 1024,
+        "Z": 50,
+        "pixel_nm": 100,
+        "NA": 1.3,
+        "pinhole_AU": 1.0,
+        "peak_photons": 150,
+        "disk_pattern_registration": 0.020000000000000004,
+        "pinhole_crosstalk": 0.03,
+        "disk_speed_jitter": 0.010000000000000002
+      },
+      "epsilon": 22.0,
+      "d_ibench": 0.28,
+      "baselines": [
+        {
+          "name": "Richardson-Lucy",
+          "score": 23.0,
+          "Q": 0.6
+        },
+        {
+          "name": "TV-ADMM",
+          "score": 24.5,
+          "Q": 0.65
+        },
+        {
+          "name": "CARE-SD",
+          "score": 28.0,
+          "Q": 0.7
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "H": 1024,
+        "W": 1024,
+        "Z": 50,
+        "pixel_nm": 100,
+        "NA": 1.3,
+        "pinhole_AU": 1.0,
+        "peak_photons": 60,
+        "disk_pattern_registration": 0.05,
+        "pinhole_crosstalk": 0.075,
+        "disk_speed_jitter": 0.025
+      },
+      "epsilon": 16.5,
+      "d_ibench": 0.48,
+      "baselines": [
+        {
+          "name": "Richardson-Lucy",
+          "score": 20.5,
+          "Q": 0.4
+        },
+        {
+          "name": "TV-ADMM",
+          "score": 22.0,
+          "Q": 0.45
+        },
+        {
+          "name": "CARE-SD",
+          "score": 25.5,
+          "Q": 0.5
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "H": 1024,
+        "W": 1024,
+        "Z": 50,
+        "pixel_nm": 100,
+        "NA": 1.3,
+        "pinhole_AU": 1.0,
+        "peak_photons": 25,
+        "disk_pattern_registration": 0.1,
+        "pinhole_crosstalk": 0.15,
+        "disk_speed_jitter": 0.05
+      },
+      "epsilon": 11.0,
+      "d_ibench": 0.72,
+      "baselines": [
+        {
+          "name": "Richardson-Lucy",
+          "score": 18.0,
+          "Q": 0.2
+        },
+        {
+          "name": "TV-ADMM",
+          "score": 19.5,
+          "Q": 0.25
+        },
+        {
+          "name": "CARE-SD",
+          "score": 23.0,
+          "Q": 0.3
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "full Omega parametric sweep",
+      "num_dev_instances": 200,
+      "construction_method": "parametric sweep of all declared Omega dimensions"
+    },
+    "baselines": [
+      {
+        "name": "Richardson-Lucy",
+        "overall_Q": 0.7
+      },
+      {
+        "name": "TV-ADMM",
+        "overall_Q": 0.6
+      },
+      {
+        "name": "CARE-SD",
+        "overall_Q": 0.5
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind strata with simultaneous worst-case mismatch + low photon corner.",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

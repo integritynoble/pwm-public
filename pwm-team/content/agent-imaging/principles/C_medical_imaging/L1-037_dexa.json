@@ -1,0 +1,182 @@
+{
+  "artifact_id": "L1-037",
+  "layer": "L1",
+  "principle_number": "037",
+  "title": "Dual-Energy X-ray Absorptiometry (DEXA)",
+  "domain": "Medical Imaging",
+  "sub_domain": "Bone mineral density via two-energy decomposition",
+  "source_file": "C_medical_imaging/037_dexa.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical medical-imaging literature for this principle.",
+  "E": {
+    "description": "Dual-Energy X-ray Absorptiometry (DEXA) forward model.",
+    "forward_model": "y_{hi, lo} = I_0 exp(-sum_m mu_m(E) * rho_m * d) + n; invert 2x2 system for [bone, soft]",
+    "world_state_x": "Patient-side quantity of interest (attenuation / activity / perfusion / stiffness etc.)",
+    "observation_y": "Clinical sensor output at declared resolution + noise",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "kVp_hi",
+      "kVp_lo",
+      "mAs",
+      "pixel_mm",
+      "beam_hardening",
+      "patient_alignment",
+      "fat_fraction_variation"
+    ]
+  },
+  "G": {
+    "dag": "L.xray_source_dual -> L.beer_lambert -> L.two_material_decompose -> int.spatial",
+    "vertices": [
+      "L.xray_source_dual",
+      "L.beer_lambert",
+      "L.two_material_decompose",
+      "int.spatial"
+    ],
+    "arcs": [
+      "L.xray_source_dual -> L.beer_lambert",
+      "L.beer_lambert -> L.two_material_decompose",
+      "L.two_material_decompose -> int.spatial"
+    ],
+    "L_DAG": 3.2,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 200,
+    "condition_number_effective": 10,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Dual-Energy-LS, Iterative-Dual, DEXA-Net",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sensor SNR + mismatch bias + regularisation.",
+    "complexity": "O(H W) to O(H W Z) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "x_ray",
+    "sensing_mechanism": "dual_energy_xray",
+    "integration_axis": "spatial",
+    "problem_class": "linear_inverse",
+    "noise_model": "shot_poisson",
+    "solution_space": "2D_bone_mineral_density",
+    "primitives": [
+      "L.xray_source_dual",
+      "L.beer_lambert",
+      "L.two_material_decompose",
+      "int.spatial"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "beam_hardening",
+    "patient_alignment",
+    "fat_fraction_variation",
+    "calibration_drift"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "dexa",
+      "forward_operator": "dexa_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 1024,
+        "W": 512,
+        "kVp_hi": 140,
+        "kVp_lo": 70,
+        "mAs": 10,
+        "pixel_mm": 0.5,
+        "beam_hardening": 0.05,
+        "patient_alignment": 0.0,
+        "fat_fraction_variation": 0.0
+      },
+      "epsilon_fn_center": "30.0"
+    },
+    "allowed_forward_operators": [
+      "dexa_forward"
+    ],
+    "allowed_problem_classes": [
+      "dexa"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "kVp_hi",
+      "kVp_lo",
+      "mAs",
+      "pixel_mm",
+      "beam_hardening",
+      "patient_alignment",
+      "fat_fraction_variation",
+      "beam_hardening",
+      "patient_alignment",
+      "fat_fraction_variation",
+      "calibration_drift"
+    ],
+    "omega_bounds": {
+      "H": 512,
+      "W": 256,
+      "kVp_hi": [
+        100,
+        150
+      ],
+      "kVp_lo": [
+        60,
+        80
+      ],
+      "mAs": [
+        1,
+        100
+      ],
+      "pixel_mm": [
+        0.1,
+        2.0
+      ],
+      "beam_hardening": [
+        0.0,
+        0.2
+      ],
+      "patient_alignment": [
+        0.0,
+        2.0
+      ],
+      "fat_fraction_variation": [
+        0.0,
+        0.3
+      ],
+      "calibration_drift": [
+        0.0,
+        0.05
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        5.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

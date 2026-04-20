@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-373",
+  "layer": "L1",
+  "principle_number": "373",
+  "title": "Pulsar Timing Array GW Background",
+  "domain": "Astrophysics",
+  "sub_domain": "Gravitational wave astronomy",
+  "source_file": "AC_astrophysics/373_pulsar_timing.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "Pulsar timing array: detect stochastic GW background from its Hellings-Downs correlation pattern in timing residuals.",
+    "forward_model": "R_a(t) = integral h_ab(t) * F ** ab_a(t) dt + n_a(t); HD_curve = 3/2*(1-x)/2*ln((1-x)/2) - (1-x)/4 + 1/2",
+    "world_state_x": "GW background strain spectrum h_c(f) = A*(f/f_yr) ** alpha",
+    "observation_y": "timing residuals R_a(t) for N_psr pulsars over T_obs years",
+    "physical_parameters_theta": [
+      "GWB_amplitude_A_15",
+      "spectral_index_alpha",
+      "timing_noise_red_amplitude",
+      "timing_noise_red_slope"
+    ]
+  },
+  "G": {
+    "dag": "S.pulsar.timing_residuals -> F.fourier.spectral_density -> O.entropy.bayesian",
+    "vertices": [
+      "S.pulsar.timing_residuals",
+      "F.fourier.spectral_density",
+      "O.entropy.bayesian"
+    ],
+    "arcs": [
+      "S.pulsar.timing_residuals -> F.fourier.spectral_density",
+      "F.fourier.spectral_density -> O.entropy.bayesian"
+    ],
+    "L_DAG": 4.0,
+    "n_c": 1
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 100000.0,
+    "condition_number_effective": 1000,
+    "condition_number_mismatched": 5000,
+    "regime": "Hellings-Downs correlation is the smoking gun; noise processes (red noise, DM variations) must be jointly modeled."
+  },
+  "C": {
+    "solver_class": "enterprise_MCMC or PTMCMCSampler with GW likelihood",
+    "convergence_rate_q": 2.0,
+    "error_bound": "sigma(log10 A_15) < 0.2 at SNR > 3 detection",
+    "complexity": "O(N_psr ** 2 * N_TOA ** 2) for full covariance matrix per likelihood eval"
+  },
+  "physics_fingerprint": {
+    "carrier": "radio_wave",
+    "sensing_mechanism": "pulsar_timing_residuals",
+    "integration_axis": "temporal_timing",
+    "problem_class": "statistical_inverse",
+    "noise_model": "timing_noise_red_white",
+    "solution_space": "GW_background_spectrum",
+    "primitives": [
+      "S.pulsar.timing_residuals",
+      "F.fourier.spectral_density",
+      "O.entropy.bayesian"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "solar_system_ephemeris_error",
+    "DM_variation_uncertainty",
+    "pulsar_mass_uncertainty"
+  ],
+  "error_metric": "GWB_Bayes_factor_log10",
+  "error_metric_secondary": "A_15_constraint_sigma",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "statistical_inverse",
+      "forward_operator": "pulsar_timing_residuals",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_psr": 25,
+        "T_obs_yr": 15,
+        "cadence_yr": 0.04,
+        "noise_rms_ns": 100
+      },
+      "epsilon_fn_center": "3.0 GWB_Bayes_factor_log10"
+    },
+    "allowed_forward_operators": [
+      "pulsar_timing_residuals"
+    ],
+    "allowed_problem_classes": [
+      "statistical_inverse"
+    ],
+    "allowed_omega_dimensions": [
+      "N_psr",
+      "T_obs_yr",
+      "cadence_yr",
+      "noise_rms_ns"
+    ],
+    "omega_bounds": {
+      "N_psr": [
+        10,
+        100
+      ],
+      "T_obs_yr": [
+        5,
+        25
+      ],
+      "cadence_yr": [
+        0.01,
+        0.1
+      ],
+      "noise_rms_ns": [
+        10,
+        1000
+      ]
+    },
+    "epsilon_bounds": {
+      "GWB_Bayes_factor_log10": [
+        0.5,
+        6.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

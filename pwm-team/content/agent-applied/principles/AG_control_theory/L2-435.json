@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-435",
+  "layer": "L2",
+  "parent_l1": "L1-435",
+  "principle_ref": "sha256:<L1-435_principle_hash>",
+  "title": "4D-Var Data Assimilation \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "state_dimension_n": [
+        100,
+        1000000
+      ],
+      "N_observations": [
+        100,
+        10000000
+      ],
+      "window_hours": [
+        1,
+        24
+      ],
+      "observation_density": [
+        0.1,
+        10.0
+      ]
+    },
+    "E": {
+      "forward": "J(x0) = ||x0-xb||^2_{B^{-1}} + sum_t ||H_t M_t(x0) - y_t||^2_{R_t^{-1}}; grad J via adjoint",
+      "operator": "variational_state_estimation",
+      "primitive_chain": "M.nwp.nonlinear_forecast -> S.adjoint.gradient_4dvar -> O.cost_function.4dvar",
+      "inverse": "recover optimal initial state x0 at analysis time t0 from observations {y_t} distributed in time window [t0"
+    },
+    "B": {
+      "background_prior": "x0 near xb within sigma_b",
+      "balance": "balanced initial conditions preferred"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "analysis_RMSE_vs_background",
+      "cost_function_reduction",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.3 + 0.2 * (6 / window_hours) ** 0.2"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 initial_condition_vector"
+    },
+    "baselines": [
+      {
+        "name": "3DVar_background",
+        "method_sig": "L+O",
+        "expected_score": 0.7
+      },
+      {
+        "name": "4DVar_adjoint",
+        "method_sig": "L+O",
+        "expected_score": 0.45
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "state_dimension_n": 10000,
+        "N_observations": 5000,
+        "window_hours": 6,
+        "observation_density": 1.0,
+        "model_error_within_window": 0.0,
+        "linearization_error": 0.0,
+        "B_matrix_misspecification": 0.0
+      },
+      "epsilon": 0.5
+    },
+    "tier_bounds": {
+      "state_dimension_n": [
+        100,
+        1000000
+      ],
+      "N_observations": [
+        100,
+        10000000
+      ],
+      "window_hours": [
+        1,
+        24
+      ],
+      "observation_density": [
+        0.1,
+        10.0
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.42,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.42 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

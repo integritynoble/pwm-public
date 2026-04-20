@@ -1,0 +1,173 @@
+{
+  "artifact_id": "L3-153",
+  "layer": "L3",
+  "parent_l2": "L2-153",
+  "parent_l1": "L1-153",
+  "title": "Ghost Imaging (correlated-photon imaging) Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "canonical dataset for this principle",
+    "secondary": "simulated forward synthesis at declared Omega",
+    "construction_method": "parametric forward + declared noise",
+    "num_dev_instances_per_tier": 20
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "H": 128,
+        "W": 128,
+        "N_pairs": 100000,
+        "bucket_SNR_dB": 10.0,
+        "photon_pair_rate": 0.1,
+        "accidental_coincidences": 0.0,
+        "reference_calibration": 0.3,
+        "environmental_decoherence": 0.0
+      },
+      "epsilon": 18.0,
+      "d_ibench": 0.14,
+      "baselines": [
+        {
+          "name": "Direct-Correlation",
+          "score": 15.0,
+          "Q": 0.88
+        },
+        {
+          "name": "Computational-Ghost",
+          "score": 18.0,
+          "Q": 0.88
+        },
+        {
+          "name": "Ghost-Net",
+          "score": 20.5,
+          "Q": 0.88
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "H": 128,
+        "W": 128,
+        "N_pairs": 50000,
+        "bucket_SNR_dB": 7.0,
+        "photon_pair_rate": 2.08,
+        "accidental_coincidences": 0.1,
+        "reference_calibration": 0.43999999999999995,
+        "environmental_decoherence": 0.1
+      },
+      "epsilon": 14.76,
+      "d_ibench": 0.28,
+      "baselines": [
+        {
+          "name": "Direct-Correlation",
+          "score": 13.0,
+          "Q": 0.68
+        },
+        {
+          "name": "Computational-Ghost",
+          "score": 16.0,
+          "Q": 0.68
+        },
+        {
+          "name": "Ghost-Net",
+          "score": 18.5,
+          "Q": 0.68
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "H": 128,
+        "W": 128,
+        "N_pairs": 20000,
+        "bucket_SNR_dB": 0.0,
+        "photon_pair_rate": 5.05,
+        "accidental_coincidences": 0.25,
+        "reference_calibration": 0.6499999999999999,
+        "environmental_decoherence": 0.25
+      },
+      "epsilon": 11.52,
+      "d_ibench": 0.48,
+      "baselines": [
+        {
+          "name": "Direct-Correlation",
+          "score": 11.0,
+          "Q": 0.48
+        },
+        {
+          "name": "Computational-Ghost",
+          "score": 14.0,
+          "Q": 0.48
+        },
+        {
+          "name": "Ghost-Net",
+          "score": 16.5,
+          "Q": 0.48
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "H": 128,
+        "W": 128,
+        "N_pairs": 10000,
+        "bucket_SNR_dB": 0.0,
+        "photon_pair_rate": 10.0,
+        "accidental_coincidences": 0.5,
+        "reference_calibration": 1.0,
+        "environmental_decoherence": 0.5
+      },
+      "epsilon": 8.28,
+      "d_ibench": 0.72,
+      "baselines": [
+        {
+          "name": "Direct-Correlation",
+          "score": 9.0,
+          "Q": 0.28
+        },
+        {
+          "name": "Computational-Ghost",
+          "score": 12.0,
+          "Q": 0.28
+        },
+        {
+          "name": "Ghost-Net",
+          "score": 14.5,
+          "Q": 0.28
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "full parametric sweep",
+      "num_dev_instances": 200,
+      "construction_method": "parametric Omega sweep"
+    },
+    "baselines": [
+      {
+        "name": "Direct-Correlation",
+        "overall_Q": 0.7
+      },
+      {
+        "name": "Computational-Ghost",
+        "overall_Q": 0.6
+      },
+      {
+        "name": "Ghost-Net",
+        "overall_Q": 0.5
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind strata corner.",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

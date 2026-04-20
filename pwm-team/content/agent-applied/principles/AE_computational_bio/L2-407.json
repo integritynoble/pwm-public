@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-407",
+  "layer": "L2",
+  "parent_l1": "L1-407",
+  "principle_ref": "sha256:<L1-407_principle_hash>",
+  "title": "Lotka-Volterra Predator-Prey Dynamics \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "N_observations": [
+        10,
+        300
+      ],
+      "amplitude_H_max": [
+        10,
+        100000
+      ],
+      "period_yr": [
+        0.5,
+        50
+      ],
+      "observation_noise_log_sigma": [
+        0.01,
+        1.0
+      ]
+    },
+    "E": {
+      "forward": "dH/dt = r*H - a*H*P; dP/dt = b*a*H*P - m*P; neutrally stable oscillations",
+      "operator": "population_census_survey",
+      "primitive_chain": "M.ode.lotka_volterra -> O.nls.population_fit -> S.continuation.bifurcation_LV",
+      "inverse": "recover LV parameters (r_prey_growth from population counts {H(t_i)"
+    },
+    "B": {
+      "positivity": "H, P >= 0",
+      "equilibrium": "H* = m/(b*a), P* = r/a"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "population_trajectory_RMSE_log",
+      "period_amplitude_error",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.05 + 0.05 * (observation_noise_log_sigma / 0.1) ** 0.5"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 LV_parameter_vector"
+    },
+    "baselines": [
+      {
+        "name": "NLS_ODE_LV",
+        "method_sig": "L+O",
+        "expected_score": 0.12
+      },
+      {
+        "name": "Bayesian_state_space",
+        "method_sig": "L+O",
+        "expected_score": 0.08
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_observations": 50,
+        "amplitude_H_max": 1000,
+        "period_yr": 5,
+        "observation_noise_log_sigma": 0.1,
+        "stochastic_demographic_noise": 0.0,
+        "environmental_variability": 0.0,
+        "observation_error": 0.0
+      },
+      "epsilon": 0.1
+    },
+    "tier_bounds": {
+      "N_observations": [
+        10,
+        300
+      ],
+      "amplitude_H_max": [
+        10,
+        100000
+      ],
+      "period_yr": [
+        0.5,
+        50
+      ],
+      "observation_noise_log_sigma": [
+        0.01,
+        1.0
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.25,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.25 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

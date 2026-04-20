@@ -1,0 +1,143 @@
+{
+  "artifact_id": "L1-482",
+  "layer": "L1",
+  "principle_number": "482",
+  "title": "Monte Carlo Event Generation",
+  "domain": "Particle Physics",
+  "sub_domain": "Collider phenomenology",
+  "source_file": "AM_particle_physics/482_mc_event_generators.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "MC event generator tuning: extract parton shower and hadronization parameters from LEP/LHC event shape distributions.",
+    "forward_model": "p(event) = sigma_hard * PSF(parton_shower, {alpha_s, lambda}) * H(Lund_model, {a,b,sigma_p})",
+    "world_state_x": "Pythia8/Herwig7 tune parameters (alpha_s_ISR, alpha_s_FSR, Lund_a, Lund_b, sigma_p)",
+    "observation_y": "event shape distributions (thrust, sphericity, C-parameter) and particle multiplicities",
+    "physical_parameters_theta": [
+      "alpha_s_FSR",
+      "alpha_s_ISR",
+      "Lund_a",
+      "Lund_b",
+      "sigma_p_GeV"
+    ]
+  },
+  "G": {
+    "dag": "M.ps.parton_shower_dipole -> S.hadronization.lund_string -> O.chi2.event_shape",
+    "vertices": [
+      "M.ps.parton_shower_dipole",
+      "S.hadronization.lund_string",
+      "O.chi2.event_shape"
+    ],
+    "arcs": [
+      "M.ps.parton_shower_dipole -> S.hadronization.lund_string",
+      "S.hadronization.lund_string -> O.chi2.event_shape"
+    ],
+    "L_DAG": 4.5,
+    "n_c": 2
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 100000.0,
+    "condition_number_effective": 1000.0,
+    "condition_number_mismatched": 10000.0,
+    "regime": "High-dimensional parameter space; collinear singularities in shower; hadronization non-perturbative below 1 GeV."
+  },
+  "C": {
+    "solver_class": "Professor_parametrization or Bayesian_opt_Rivet",
+    "convergence_rate_q": 2.0,
+    "error_bound": "chi2/dof ~ 1.0 for good tune; event shapes within 10%",
+    "complexity": "O(N_tune_points * N_events * N_observables)"
+  },
+  "physics_fingerprint": {
+    "carrier": "particle",
+    "sensing_mechanism": "parton_shower_hadronization",
+    "integration_axis": "phase_space",
+    "problem_class": "parameter_estimation",
+    "noise_model": "monte_carlo_statistical",
+    "solution_space": "shower_parameter_vector",
+    "primitives": [
+      "M.ps.parton_shower_dipole",
+      "S.hadronization.lund_string",
+      "O.chi2.event_shape"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "non_perturbative_power_corrections",
+    "color_reconnection_model",
+    "MPI_underling_event"
+  ],
+  "error_metric": "tune_chi2_per_dof",
+  "error_metric_secondary": "event_shape_RMSE",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "parameter_estimation",
+      "forward_operator": "parton_shower_hadronization",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_observables": 50,
+        "N_events_per_point": 1000,
+        "alpha_s_range": 0.12,
+        "energy_GeV": 91.2
+      },
+      "epsilon_fn_center": "1.1 tune_chi2_per_dof"
+    },
+    "allowed_forward_operators": [
+      "parton_shower_hadronization"
+    ],
+    "allowed_problem_classes": [
+      "parameter_estimation"
+    ],
+    "allowed_omega_dimensions": [
+      "N_observables",
+      "N_events_per_point",
+      "alpha_s_range",
+      "energy_GeV"
+    ],
+    "omega_bounds": {
+      "N_observables": [
+        10,
+        200
+      ],
+      "N_events_per_point": [
+        100,
+        100000
+      ],
+      "alpha_s_range": [
+        0.1,
+        0.14
+      ],
+      "energy_GeV": [
+        14,
+        14000
+      ]
+    },
+    "epsilon_bounds": {
+      "tune_chi2_per_dof": [
+        0.8,
+        3.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

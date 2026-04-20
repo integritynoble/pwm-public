@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-480",
+  "layer": "L2",
+  "parent_l1": "L1-480",
+  "principle_ref": "sha256:<L1-480_principle_hash>",
+  "title": "Lattice QCD Path Integral \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "N_L_spatial": [
+        8,
+        64
+      ],
+      "N_T_temporal": [
+        16,
+        128
+      ],
+      "beta_coupling": [
+        5.5,
+        7.0
+      ],
+      "N_configs": [
+        100,
+        10000
+      ]
+    },
+    "E": {
+      "forward": "Z = integral D[U] D[psi] D[psi_bar] exp(-S_gauge[U] - S_fermion[U,psi,psi_bar]); hadron mass from 2pt correlator decay",
+      "operator": "lattice_gauge_mc_sampling",
+      "primitive_chain": "S.hmc.hybrid_monte_carlo -> M.dirac.wilson_fermion -> O.correlator.hadron_spectrum",
+      "inverse": "recover quark mass spectrum {m_u from Euclidean two-point correlators C(tau) = <O(tau) O_dag(0)> for various hadron interpolators O"
+    },
+    "B": {
+      "gauge_invariance": "SU(3) gauge links U_mu in SU(3)",
+      "fermion_positivity": "det(D) > 0"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "hadron_mass_RMSE_MeV",
+      "continuum_extrapolation_chi2",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "2 + 3 * (N_L_spatial / 32) ** (-1)"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 QCD_observable_spectrum"
+    },
+    "baselines": [
+      {
+        "name": "Wilson_clover_quenched",
+        "method_sig": "L+O",
+        "expected_score": 10
+      },
+      {
+        "name": "domain_wall_Nf2p1",
+        "method_sig": "L+O",
+        "expected_score": 4
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_L_spatial": 32,
+        "N_T_temporal": 64,
+        "beta_coupling": 6.2,
+        "N_configs": 500,
+        "discretization_error_O_a2": 0.0,
+        "finite_volume_error": 0.0,
+        "quenching_error_Nf": 0.0
+      },
+      "epsilon": 5.0
+    },
+    "tier_bounds": {
+      "N_L_spatial": [
+        8,
+        64
+      ],
+      "N_T_temporal": [
+        16,
+        128
+      ],
+      "beta_coupling": [
+        5.5,
+        7.0
+      ],
+      "N_configs": [
+        100,
+        10000
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.6,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.6 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

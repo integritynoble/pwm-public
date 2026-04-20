@@ -1,0 +1,261 @@
+{
+  "artifact_id": "L3-428",
+  "layer": "L3",
+  "parent_l2": "L2-428",
+  "parent_l1": "L1-428",
+  "title": "Extended Kalman Filter (EKF) \u2014 Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "range_bearing_tracking_benchmark",
+    "secondary": "reentry_vehicle_EKF_benchmark",
+    "tertiary": "held_out_real",
+    "construction_method": "Sample Omega uniformly; apply forward model; add domain-realistic noise.",
+    "num_dev_instances_per_tier": 20,
+    "holdout_instances_per_tier": 10
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "n_state_dim": 6,
+        "nonlinearity_degree": 0.5,
+        "Q_R_ratio": 1.0,
+        "N_steps": 200,
+        "strong_nonlinearity": 0.0,
+        "bimodal_posterior": 0.0,
+        "Jacobian_computation_error": 0.0
+      },
+      "dataset_description": "Standard Control Theory conditions, clean data, calibrated model.",
+      "epsilon": 0.08,
+      "d_ibench": 0.15,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        },
+        {
+          "Q": 0.9,
+          "tier": "Excellent"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "EKF_standard",
+          "metric": "RMSE_state_estimation",
+          "score": 0.1,
+          "Q": 1.0
+        },
+        {
+          "name": "IEKF_iterated",
+          "metric": "RMSE_state_estimation",
+          "score": 0.07,
+          "Q": 0.7
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "n_state_dim": 6,
+        "nonlinearity_degree": 0.5,
+        "Q_R_ratio": 1.0,
+        "N_steps": 200,
+        "strong_nonlinearity": 0.5,
+        "bimodal_posterior": 0.0,
+        "Jacobian_computation_error": 0.0
+      },
+      "dataset_description": "Mild noise/mismatch, representative of good hardware.",
+      "epsilon": 0.072,
+      "d_ibench": 0.3,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "EKF_standard",
+          "metric": "RMSE_state_estimation",
+          "score": 0.09,
+          "Q": 1.0
+        },
+        {
+          "name": "IEKF_iterated",
+          "metric": "RMSE_state_estimation",
+          "score": 0.063,
+          "Q": 0.7
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "n_state_dim": 6,
+        "nonlinearity_degree": 0.5,
+        "Q_R_ratio": 1.0,
+        "N_steps": 200,
+        "strong_nonlinearity": 1.0,
+        "bimodal_posterior": 0.0,
+        "Jacobian_computation_error": 0.0,
+        "linearization_point_error": 0.1
+      },
+      "dataset_description": "Moderate noise and model mismatch, real-world conditions.",
+      "epsilon": 0.066,
+      "d_ibench": 0.52,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "EKF_standard",
+          "metric": "RMSE_state_estimation",
+          "score": 0.08,
+          "Q": 0.98
+        },
+        {
+          "name": "IEKF_iterated",
+          "metric": "RMSE_state_estimation",
+          "score": 0.056,
+          "Q": 0.68
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "n_state_dim": 6,
+        "nonlinearity_degree": 0.5,
+        "Q_R_ratio": 1.0,
+        "N_steps": 200,
+        "strong_nonlinearity": 2.0,
+        "bimodal_posterior": 0.2,
+        "Jacobian_computation_error": 0.0,
+        "linearization_point_error": 0.3
+      },
+      "dataset_description": "Severe noise, large mismatch, no oracle access to calibration.",
+      "epsilon": 0.06,
+      "d_ibench": 0.72,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "EKF_standard",
+          "metric": "RMSE_state_estimation",
+          "score": 0.07,
+          "Q": 0.93
+        },
+        {
+          "name": "IEKF_iterated",
+          "metric": "RMSE_state_estimation",
+          "score": 0.049,
+          "Q": 0.65
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "range_bearing_tracking_benchmark + parametric Omega sampling",
+      "construction_method": "Sample Omega uniformly over declared bounds; apply forward model with injected mismatch; ground truth stored separately.",
+      "num_dev_instances": 200,
+      "num_holdout_instances": 100
+    },
+    "tracks": {
+      "track_A_stratified_worst_case": {
+        "strata": [
+          {
+            "name": "S1_easy",
+            "rep_difficulty": "easy"
+          },
+          {
+            "name": "S2_standard",
+            "rep_difficulty": "standard"
+          },
+          {
+            "name": "S3_hard",
+            "rep_difficulty": "hard"
+          },
+          {
+            "name": "S4_frontier",
+            "rep_difficulty": "very_hard"
+          }
+        ],
+        "samples_per_stratum": 5,
+        "pass_condition": "min_i(score_i) / epsilon_fn(Omega_centroid_s) >= 1.0 for all 4 strata"
+      },
+      "track_B_uniform_median": {
+        "num_samples": 50,
+        "pass_condition": "median_i(score_i) / epsilon_fn(Omega_median) >= 1.0"
+      },
+      "track_C_mismatch_degradation": {
+        "sweep_points": [
+          {
+            "phi": 0.0
+          },
+          {
+            "phi": 0.25
+          },
+          {
+            "phi": 0.5
+          },
+          {
+            "phi": 0.75
+          },
+          {
+            "phi": 1.0
+          }
+        ],
+        "scenes_per_point": 10,
+        "degradation_score": "(1/4) * sum_{i=1..4} [(Q_norm(phi_i) + Q_norm(phi_{i+1}))/2]"
+      }
+    },
+    "baselines": [
+      {
+        "name": "EKF_standard",
+        "track_A_Q": 0.81,
+        "track_B_Q": 0.94,
+        "track_C_Q": 0.88,
+        "overall_Q": 0.88
+      },
+      {
+        "name": "IEKF_iterated",
+        "track_A_Q": 0.57,
+        "track_B_Q": 0.66,
+        "track_C_Q": 0.61,
+        "overall_Q": 0.61
+      }
+    ]
+  },
+  "hardness_rule_check": "No baseline passes epsilon_fn over entire Omega. Hardest baseline fails at T4_blind (score < epsilon at severe-mismatch corner). Hardness rule: SATISFIED.",
+  "anti_overfitting_mechanisms": {
+    "M1_random_instantiation": "generator/instantiate.py uses G(SHA256(h_sub || k)) seeded by benchmark hash.",
+    "M2_convergence_scoring": "convergence/check_convergence.py verifies convergence rate across problem sizes.",
+    "M3_worst_case_eval": "scoring/worst_case.py returns min score over 20 fixed dev scenes per tier.",
+    "M4_community_adversarial": "adversarial/submit_adversarial.py; adversarial submissions eligible for T_k.",
+    "M5_method_sig_diversity": "Baselines span multiple method signatures; novelty bonus for approaches beyond L+O.",
+    "M6_gate_checks": "gates/check_s{1,2,3,4}.py embedded with thresholds.yaml."
+  },
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

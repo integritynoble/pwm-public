@@ -1,0 +1,185 @@
+{
+  "artifact_id": "L1-069",
+  "layer": "L1",
+  "principle_number": "069",
+  "title": "Magnetic Particle Imaging (MPI)",
+  "domain": "Medical Imaging",
+  "sub_domain": "Superparamagnetic iron-oxide tracer imaging",
+  "source_file": "C_medical_imaging/069_mpi.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical medical-imaging literature for this principle.",
+  "E": {
+    "description": "Magnetic Particle Imaging (MPI) forward model.",
+    "forward_model": "u(t) = -d/dt integral m(c(r), H(r,t)) dr = system_matrix * c + n; recover tracer c(r)",
+    "world_state_x": "Patient-side quantity of interest (attenuation / activity / perfusion / stiffness etc.)",
+    "observation_y": "Clinical sensor output at declared resolution + noise",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "Z",
+      "N_harmonics",
+      "f_drive_kHz",
+      "SNR_dB",
+      "spatial_relaxation",
+      "tracer_distribution",
+      "drive_field_harmonics",
+      "coil_sensitivity_error"
+    ]
+  },
+  "G": {
+    "dag": "L.drive_field -> L.selection_field_ffp -> D.receive_coil -> int.temporal",
+    "vertices": [
+      "L.drive_field",
+      "L.selection_field_ffp",
+      "D.receive_coil",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.drive_field -> L.selection_field_ffp",
+      "L.selection_field_ffp -> D.receive_coil",
+      "D.receive_coil -> int.temporal"
+    ],
+    "L_DAG": 4.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 400,
+    "condition_number_effective": 20,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Kaczmarz, ADMM-MPI, MPI-Net",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sensor SNR + mismatch bias + regularisation.",
+    "complexity": "O(H W) to O(H W Z) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "radio_wave",
+    "sensing_mechanism": "mpi_ffp_scan",
+    "integration_axis": "temporal",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "3D_tracer_concentration",
+    "primitives": [
+      "L.drive_field",
+      "L.selection_field_ffp",
+      "D.receive_coil",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "spatial_relaxation",
+    "tracer_distribution",
+    "drive_field_harmonics",
+    "coil_sensitivity_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "mpi",
+      "forward_operator": "mpi_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 128,
+        "W": 128,
+        "Z": 64,
+        "N_harmonics": 20,
+        "f_drive_kHz": 25,
+        "SNR_dB": 20,
+        "spatial_relaxation": 0.0,
+        "tracer_distribution": 0.0,
+        "drive_field_harmonics": 0.0,
+        "coil_sensitivity_error": 0.0
+      },
+      "epsilon_fn_center": "20.0"
+    },
+    "allowed_forward_operators": [
+      "mpi_forward"
+    ],
+    "allowed_problem_classes": [
+      "mpi"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "Z",
+      "N_harmonics",
+      "f_drive_kHz",
+      "SNR_dB",
+      "spatial_relaxation",
+      "tracer_distribution",
+      "drive_field_harmonics",
+      "coil_sensitivity_error",
+      "spatial_relaxation",
+      "tracer_distribution",
+      "drive_field_harmonics",
+      "coil_sensitivity_error"
+    ],
+    "omega_bounds": {
+      "H": 32,
+      "W": 32,
+      "Z": [
+        8,
+        256
+      ],
+      "N_harmonics": [
+        5,
+        100
+      ],
+      "f_drive_kHz": [
+        5,
+        50
+      ],
+      "SNR_dB": [
+        0.0,
+        35.0
+      ],
+      "spatial_relaxation": [
+        0.0,
+        0.3
+      ],
+      "tracer_distribution": [
+        0.0,
+        0.3
+      ],
+      "drive_field_harmonics": [
+        0.0,
+        0.3
+      ],
+      "coil_sensitivity_error": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        5.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

@@ -1,0 +1,92 @@
+{
+  "artifact_id": "L1-077",
+  "layer": "L1",
+  "principle_number": "077",
+  "title": "Coded-Exposure Imaging for Motion Deblur",
+  "domain": "Computational Photography",
+  "sub_domain": "Temporal coding for motion robust imaging",
+  "source_file": "E_computational_photo/077_coded_exposure.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in the Raskar-Agrawal-Tumblin 2006 coded-exposure paper and follow-up deblurring literature.",
+
+  "E": {
+    "description": "A shutter opens and closes according to a binary temporal code c(t) during a single exposure T, so the camera integral of a moving scene is a convolution by a broadband temporal kernel h_c(t) = c(t) instead of a low-pass box h_box(t) = rect(t/T). The broadband kernel preserves high spatial frequencies of the moving object, making invertible motion deblur possible.",
+    "forward_model": "y(u,v) = integral_0^T c(t) * x(u - v_t * t, v) dt + n(u,v)   (1D motion along u-axis at velocity v_t)",
+    "world_state_x": "Sharp scene x(u,v) in R^{H x W} and (optionally) motion velocity v_t",
+    "observation_y": "Motion-blurred image y(u,v) with broadband temporal PSF imprint",
+    "physical_parameters_theta": [
+      "Shutter code c(t) in {0,1}^T: binary on/off sequence over T (typ. 52-bit MURA or Raskar-optimal)",
+      "Exposure duration T (ms)",
+      "Motion direction and velocity v_t (vector)",
+      "Sensor gain, read noise"
+    ]
+  },
+
+  "G": {
+    "dag": "S.temporal.coded -> L.conv.motion -> int.temporal",
+    "vertices": ["S.temporal.coded", "L.conv.motion", "int.temporal"],
+    "arcs": [
+      "S.temporal.coded -> L.conv.motion",
+      "L.conv.motion -> int.temporal"
+    ],
+    "L_DAG": 2.5,
+    "n_c": 0
+  },
+
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 900,
+    "condition_number_effective": 12,
+    "regime": "Coded kernel h_c is chosen to have approximately flat magnitude response (MURA or optimal binary codes); OTF is nonzero across full passband, so Wiener deconvolution is well-conditioned. Stability dominated by motion-direction / velocity mismatch and saturation clipping."
+  },
+
+  "C": {
+    "solver_class": "Wiener deconvolution, blind-deconv (BRISQ-conv, Fergus), learned (DeepDeblur, MPRNet when coded prior known)",
+    "convergence_rate_q": 2.0,
+    "error_bound": "||x_hat - x||_2 <= C1 * sigma / sqrt(T) + C2 * velocity_error + C3 * direction_error; OTF magnitude sets per-frequency amplification",
+    "complexity": "O(H * W * log(H*W)) per iteration (1D FFT along motion axis)"
+  },
+
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "coded_temporal_shutter",
+    "integration_axis": "temporal",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "2D_spatial",
+    "primitives": ["S.temporal.coded", "L.conv.motion", "int.temporal"]
+  },
+
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+
+  "mismatch_parameters": ["motion_velocity_error", "motion_direction_error", "exposure_duration_error", "saturation_clip"],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "motion_deblur_coded_exposure",
+      "forward_operator": "coded_exposure_convolution",
+      "input_format": "blurred_image_plus_code_plus_motion_hint",
+      "omega": {"H": 1024, "W": 1024, "T_ms": 52, "code_length_bits": 52, "velocity_px": 20.0, "photon_count": 1000, "motion_velocity_error": 0.0, "motion_direction_error": 0.0},
+      "epsilon_fn_center": "28.0 dB PSNR"
+    },
+    "allowed_forward_operators": ["coded_exposure_convolution", "flutter_shutter", "coded_exposure_stereo"],
+    "allowed_problem_classes": ["motion_deblur_coded_exposure", "rolling_shutter_coded"],
+    "allowed_omega_dimensions": ["H", "W", "T_ms", "code_length_bits", "velocity_px", "photon_count", "motion_velocity_error", "motion_direction_error", "exposure_duration_error", "saturation_clip"],
+    "omega_bounds": {
+      "H": [256, 4096], "W": [256, 4096], "T_ms": [5, 200],
+      "code_length_bits": [16, 128], "velocity_px": [1.0, 100.0],
+      "photon_count": [50, 10000], "motion_velocity_error": [0.0, 0.5],
+      "motion_direction_error": [0.0, 0.3], "exposure_duration_error": [0.0, 0.2],
+      "saturation_clip": [0.0, 0.1]
+    },
+    "epsilon_bounds": {"psnr_db": [18.0, 40.0]}
+  },
+
+  "p1_p10_tests": ["PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS"],
+  "s1_s4_gates": ["PASS", "PASS", "PASS", "PASS"],
+  "ipfs_cid": null
+}

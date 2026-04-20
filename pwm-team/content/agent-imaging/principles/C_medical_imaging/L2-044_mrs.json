@@ -1,0 +1,152 @@
+{
+  "artifact_id": "L2-044",
+  "layer": "L2",
+  "parent_l1": "L1-044",
+  "title": "Magnetic Resonance Spectroscopy (MRS) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "N_samples": [
+        512,
+        8192
+      ],
+      "TR_ms": [
+        500,
+        10000
+      ],
+      "TE_ms": [
+        10,
+        500
+      ],
+      "N_avg": [
+        16,
+        2048
+      ],
+      "SNR_dB": [
+        0.0,
+        30.0
+      ],
+      "B0_shim": [
+        0.0,
+        0.2
+      ],
+      "water_suppression_imperfection": [
+        0.0,
+        0.3
+      ],
+      "lipid_contamination": [
+        0.0,
+        0.5
+      ],
+      "short_T2_signals": [
+        0.0,
+        0.3
+      ]
+    },
+    "E": {
+      "forward": "FID(t) = sum_m A_m exp(i omega_m t - t / T2_m) + residual_water + lipid + n; quantify metabolites",
+      "operator": "mrs_forward_mismatch",
+      "primitive_chain": "L.rf_excitation -> L.chemical_shift_encode -> D.fid_acquisition -> int.spectral",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "10.0 + 0.3 * SNR_dB + 1.5 * log2(N_avg / 16) - 15.0 * B0_shim - 8.0 * lipid_contamination"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "LCModel",
+        "method_sig": "L+O",
+        "expected_psnr": 16.0
+      },
+      {
+        "name": "AMARES",
+        "method_sig": "L+O",
+        "expected_psnr": 18.0
+      },
+      {
+        "name": "MRS-Net",
+        "method_sig": "L+N",
+        "expected_psnr": 20.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_samples": 2048,
+        "TR_ms": 2000,
+        "TE_ms": 30,
+        "N_avg": 128,
+        "SNR_dB": 10,
+        "B0_shim": 0.0,
+        "water_suppression_imperfection": 0.0,
+        "lipid_contamination": 0.0
+      },
+      "epsilon": 18.0
+    },
+    "tier_bounds": {
+      "N_samples": [
+        512,
+        8192
+      ],
+      "TR_ms": [
+        500,
+        10000
+      ],
+      "TE_ms": [
+        10,
+        500
+      ],
+      "N_avg": [
+        16,
+        2048
+      ],
+      "SNR_dB": [
+        0.0,
+        30.0
+      ],
+      "B0_shim": [
+        0.0,
+        0.2
+      ],
+      "water_suppression_imperfection": [
+        0.0,
+        0.3
+      ],
+      "lipid_contamination": [
+        0.0,
+        0.5
+      ],
+      "short_T2_signals": [
+        0.0,
+        0.3
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.5,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

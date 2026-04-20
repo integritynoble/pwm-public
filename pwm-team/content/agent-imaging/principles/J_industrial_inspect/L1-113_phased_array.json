@@ -1,0 +1,184 @@
+{
+  "artifact_id": "L1-113",
+  "layer": "L1",
+  "principle_number": "113",
+  "title": "Phased-Array Ultrasonic Testing (PAUT)",
+  "domain": "Industrial Inspection",
+  "sub_domain": "Electronically steered ultrasonic NDT",
+  "source_file": "J_industrial_inspect/113_phased_array.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical NDT/NDE literature for this principle.",
+  "E": {
+    "description": "Phased-Array Ultrasonic Testing (PAUT) forward model.",
+    "forward_model": "y(t, theta) = sum_r reflectivity(r,theta) * pulse(t - 2r/c_ref) + grain_speckle + n",
+    "world_state_x": "Defect / strain / composition map depending on principle",
+    "observation_y": "Sensor output at declared geometry",
+    "physical_parameters_theta": [
+      "N_elements",
+      "N_angles",
+      "f_MHz",
+      "range_mm",
+      "SNR_dB",
+      "wedge_coupling",
+      "surface_curvature",
+      "sound_speed_uncertainty"
+    ]
+  },
+  "G": {
+    "dag": "L.emit.acoustic_pulse -> S.scan.beam -> L.beamform -> L.time_of_flight -> int.temporal",
+    "vertices": [
+      "L.emit.acoustic_pulse",
+      "S.scan.beam",
+      "L.beamform",
+      "L.time_of_flight",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.emit.acoustic_pulse -> S.scan.beam",
+      "S.scan.beam -> L.beamform",
+      "L.beamform -> L.time_of_flight",
+      "L.time_of_flight -> int.temporal"
+    ],
+    "L_DAG": 4.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 300,
+    "condition_number_effective": 15,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Delay-Sum, TFM, PAUT-Net",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sensor SNR + mismatch bias.",
+    "complexity": "O(H W) to O(H W Z) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "acoustic",
+    "sensing_mechanism": "phased_array_ultrasonics",
+    "integration_axis": "temporal",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "2D_acoustic_reflectivity",
+    "primitives": [
+      "L.emit.acoustic_pulse",
+      "S.scan.beam",
+      "L.beamform",
+      "L.time_of_flight",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "wedge_coupling",
+    "surface_curvature",
+    "sound_speed_uncertainty",
+    "grain_noise"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "phased_array_ut",
+      "forward_operator": "phased_array_ut_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_elements": 64,
+        "N_angles": 41,
+        "f_MHz": 5,
+        "range_mm": 50,
+        "SNR_dB": 20,
+        "wedge_coupling": 1.0,
+        "surface_curvature": 0.0,
+        "sound_speed_uncertainty": 0.0
+      },
+      "epsilon_fn_center": "24.0"
+    },
+    "allowed_forward_operators": [
+      "phased_array_ut_forward"
+    ],
+    "allowed_problem_classes": [
+      "phased_array_ut"
+    ],
+    "allowed_omega_dimensions": [
+      "N_elements",
+      "N_angles",
+      "f_MHz",
+      "range_mm",
+      "SNR_dB",
+      "wedge_coupling",
+      "surface_curvature",
+      "sound_speed_uncertainty",
+      "wedge_coupling",
+      "surface_curvature",
+      "sound_speed_uncertainty",
+      "grain_noise"
+    ],
+    "omega_bounds": {
+      "N_elements": [
+        16,
+        256
+      ],
+      "N_angles": [
+        11,
+        181
+      ],
+      "f_MHz": [
+        0.5,
+        25
+      ],
+      "range_mm": [
+        5,
+        500
+      ],
+      "SNR_dB": [
+        0.0,
+        30.0
+      ],
+      "wedge_coupling": [
+        0.3,
+        1.0
+      ],
+      "surface_curvature": [
+        0.0,
+        0.5
+      ],
+      "sound_speed_uncertainty": [
+        0.0,
+        0.05
+      ],
+      "grain_noise": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        5.0,
+        40.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

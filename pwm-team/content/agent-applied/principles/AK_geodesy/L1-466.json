@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-466",
+  "layer": "L1",
+  "principle_number": "466",
+  "title": "GNSS Positioning and Navigation",
+  "domain": "Geodesy",
+  "sub_domain": "Satellite positioning",
+  "source_file": "AK_geodesy/466_gnss_positioning.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "GNSS positioning: estimate 3D position and receiver clock bias from pseudorange and carrier phase measurements.",
+    "forward_model": "rho_i = |X - X_i| + c*dt_rcvr - c*dt_sat_i + I_i + T_i + epsilon_i",
+    "world_state_x": "receiver position (X,Y,Z) and clock bias dt_rcvr",
+    "observation_y": "pseudoranges rho_i and carrier phases phi_i from N_sat >= 4 satellites",
+    "physical_parameters_theta": [
+      "elevation_cutoff_deg",
+      "ionospheric_delay_TECU",
+      "tropospheric_delay_m",
+      "multipath_sigma_m"
+    ]
+  },
+  "G": {
+    "dag": "M.pseudorange.geometry -> S.kalman.navigation -> O.least_squares.weighted",
+    "vertices": [
+      "M.pseudorange.geometry",
+      "S.kalman.navigation",
+      "O.least_squares.weighted"
+    ],
+    "arcs": [
+      "M.pseudorange.geometry -> S.kalman.navigation",
+      "S.kalman.navigation -> O.least_squares.weighted"
+    ],
+    "L_DAG": 2.8,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 100,
+    "condition_number_effective": 10,
+    "condition_number_mismatched": 50,
+    "regime": "Overdetermined for N_sat >= 4; DOP degrades with poor satellite geometry; ionosphere dominant error source at L1-only."
+  },
+  "C": {
+    "solver_class": "WLS_least_squares or Kalman_filter_navigation",
+    "convergence_rate_q": 2.0,
+    "error_bound": "horizontal position < 2.5 m (C/A code), < 10 mm (RTK)",
+    "complexity": "O(N_sat * N_epoch) per position fix"
+  },
+  "physics_fingerprint": {
+    "carrier": "RF",
+    "sensing_mechanism": "pseudorange_doppler_measurement",
+    "integration_axis": "temporal_navigation",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "3D_position_velocity",
+    "primitives": [
+      "M.pseudorange.geometry",
+      "S.kalman.navigation",
+      "O.least_squares.weighted"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "ionospheric_model_error_m",
+    "tropospheric_model_error_m",
+    "multipath_bias_m"
+  ],
+  "error_metric": "position_RMSE_m",
+  "error_metric_secondary": "PDOP",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "linear_inverse",
+      "forward_operator": "pseudorange_doppler_measurement",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_sat": 8,
+        "elevation_cutoff_deg": 15.0,
+        "ionospheric_TECU": 5.0,
+        "multipath_sigma_m": 0.5
+      },
+      "epsilon_fn_center": "1.5 position_RMSE_m"
+    },
+    "allowed_forward_operators": [
+      "pseudorange_doppler_measurement"
+    ],
+    "allowed_problem_classes": [
+      "linear_inverse"
+    ],
+    "allowed_omega_dimensions": [
+      "N_sat",
+      "elevation_cutoff_deg",
+      "ionospheric_TECU",
+      "multipath_sigma_m"
+    ],
+    "omega_bounds": {
+      "N_sat": [
+        4,
+        30
+      ],
+      "elevation_cutoff_deg": [
+        5,
+        30
+      ],
+      "ionospheric_TECU": [
+        0.5,
+        50
+      ],
+      "multipath_sigma_m": [
+        0.1,
+        5.0
+      ]
+    },
+    "epsilon_bounds": {
+      "position_RMSE_m": [
+        0.01,
+        10.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

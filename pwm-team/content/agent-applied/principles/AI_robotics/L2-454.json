@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-454",
+  "layer": "L2",
+  "parent_l1": "L1-454",
+  "principle_ref": "sha256:<L1-454_principle_hash>",
+  "title": "Spacecraft Attitude Determination \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "N_stars_tracked": [
+        3,
+        50
+      ],
+      "gyro_noise_deg_hr": [
+        0.001,
+        1.0
+      ],
+      "star_tracker_noise_arcsec": [
+        0.5,
+        30.0
+      ],
+      "update_rate_Hz": [
+        0.1,
+        100
+      ]
+    },
+    "E": {
+      "forward": "q_dot = 0.5 * Xi(q) * omega; y_star = C(q) * r_inertial_star + noise",
+      "operator": "star_tracker_magnetometer_attitude",
+      "primitive_chain": "S.quest.quaternion_estimator -> M.gyro.integration -> O.ekf.attitude_ekf",
+      "inverse": "recover quaternion q(t) representing rotation from body to inertial frame from star tracker unit vectors {v_i}"
+    },
+    "B": {
+      "unit_quaternion": "|q|=1",
+      "observability": "at least 2 non-collinear vector measurements"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "attitude_error_arcsec",
+      "gyro_bias_estimation_error_deg_hr",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "1.0 + 2.0 * (star_tracker_noise_arcsec / 2.0) ** 0.5"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 quaternion_attitude"
+    },
+    "baselines": [
+      {
+        "name": "QUEST_single_frame",
+        "method_sig": "L+O",
+        "expected_score": 4.0
+      },
+      {
+        "name": "MEKF_gyro_bias",
+        "method_sig": "L+O",
+        "expected_score": 2.0
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_stars_tracked": 10,
+        "gyro_noise_deg_hr": 0.01,
+        "star_tracker_noise_arcsec": 2.0,
+        "update_rate_Hz": 10,
+        "gyro_bias_estimation_error": 0.0,
+        "star_catalog_uncertainty": 0.0,
+        "magnetic_anomaly": 0.0
+      },
+      "epsilon": 3.0
+    },
+    "tier_bounds": {
+      "N_stars_tracked": [
+        3,
+        50
+      ],
+      "gyro_noise_deg_hr": [
+        0.001,
+        1.0
+      ],
+      "star_tracker_noise_arcsec": [
+        0.5,
+        30.0
+      ],
+      "update_rate_Hz": [
+        0.1,
+        100
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.25,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.25 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

@@ -1,0 +1,156 @@
+{
+  "artifact_id": "L2-090",
+  "layer": "L2",
+  "parent_l1": "L1-090",
+  "title": "Electron Energy Loss Spectroscopy (EELS) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        64,
+        2048
+      ],
+      "W": [
+        64,
+        2048
+      ],
+      "N_E": [
+        256,
+        8192
+      ],
+      "pixel_nm": [
+        0.1,
+        10
+      ],
+      "kV": [
+        80,
+        300
+      ],
+      "peak_electrons": [
+        10,
+        5000
+      ],
+      "zero_loss_drift": [
+        0.0,
+        5.0
+      ],
+      "plural_scattering": [
+        0.0,
+        0.5
+      ],
+      "edge_overlap": [
+        0.0,
+        0.3
+      ]
+    },
+    "E": {
+      "forward": "S(E, r) = integral [PSF conv density_of_states(E, r)] + plural_scat + zero_loss + n",
+      "operator": "eels_hyperspectral_forward_mismatch",
+      "primitive_chain": "L.transmit_sample -> L.energy_dispersion -> D.eels_spectrum -> int.spectral",
+      "inverse": "solve forward for declared state variable"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR",
+      "residual_norm"
+    ],
+    "epsilon_fn": "15.0 + 2.5 * log10(peak_electrons / 10) - 0.5 * zero_loss_drift - 10.0 * plural_scattering"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Power-Law-BG",
+        "method_sig": "L+O",
+        "expected_psnr": 20.0
+      },
+      {
+        "name": "MLLS",
+        "method_sig": "L+O",
+        "expected_psnr": 22.5
+      },
+      {
+        "name": "EELS-UNet",
+        "method_sig": "L+N",
+        "expected_psnr": 25.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 256,
+        "W": 256,
+        "N_E": 2048,
+        "E_range_eV": [
+          0,
+          2000
+        ],
+        "pixel_nm": 1.0,
+        "kV": 200,
+        "peak_electrons": 500,
+        "zero_loss_drift": 0.0,
+        "plural_scattering": 0.0
+      },
+      "epsilon": 22.0
+    },
+    "tier_bounds": {
+      "H": [
+        64,
+        2048
+      ],
+      "W": [
+        64,
+        2048
+      ],
+      "N_E": [
+        256,
+        8192
+      ],
+      "pixel_nm": [
+        0.1,
+        10
+      ],
+      "kV": [
+        80,
+        300
+      ],
+      "peak_electrons": [
+        10,
+        5000
+      ],
+      "zero_loss_drift": [
+        0.0,
+        5.0
+      ],
+      "plural_scattering": [
+        0.0,
+        0.5
+      ],
+      "edge_overlap": [
+        0.0,
+        0.3
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.48,
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

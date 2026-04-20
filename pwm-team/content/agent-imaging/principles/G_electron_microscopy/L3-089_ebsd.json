@@ -1,0 +1,173 @@
+{
+  "artifact_id": "L3-089",
+  "layer": "L3",
+  "parent_l2": "L2-089",
+  "parent_l1": "L1-089",
+  "title": "Electron Backscatter Diffraction (EBSD) \u2014 crystallographic orientation mapping Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "canonical EM dataset for this principle (EMPIAR / CEM500K / etc.)",
+    "secondary": "simulated forward model at declared Omega",
+    "construction_method": "parametric forward synthesis + Poisson counting",
+    "num_dev_instances_per_tier": 20
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "H": 1024,
+        "W": 1024,
+        "kV": 20,
+        "step_nm": 100,
+        "peak_electrons": 200,
+        "pattern_center_drift": 0.0,
+        "band_contrast_degradation": 0.0,
+        "grain_boundary_ambiguity": 0.0
+      },
+      "epsilon": 0.5,
+      "d_ibench": 0.14,
+      "baselines": [
+        {
+          "name": "Hough-EBSD",
+          "score": 0.8,
+          "Q": 0.88
+        },
+        {
+          "name": "Dictionary-Match",
+          "score": 0.4,
+          "Q": 0.88
+        },
+        {
+          "name": "EBSD-Net",
+          "score": 0.3,
+          "Q": 0.88
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "H": 1024,
+        "W": 1024,
+        "kV": 20,
+        "step_nm": 100,
+        "peak_electrons": 100,
+        "pattern_center_drift": 0.020000000000000004,
+        "band_contrast_degradation": 0.1,
+        "grain_boundary_ambiguity": 0.06
+      },
+      "epsilon": 0.75,
+      "d_ibench": 0.28,
+      "baselines": [
+        {
+          "name": "Hough-EBSD",
+          "score": 1.12,
+          "Q": 0.68
+        },
+        {
+          "name": "Dictionary-Match",
+          "score": 0.56,
+          "Q": 0.68
+        },
+        {
+          "name": "EBSD-Net",
+          "score": 0.42,
+          "Q": 0.68
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "H": 1024,
+        "W": 1024,
+        "kV": 20,
+        "step_nm": 100,
+        "peak_electrons": 40,
+        "pattern_center_drift": 0.05,
+        "band_contrast_degradation": 0.25,
+        "grain_boundary_ambiguity": 0.15
+      },
+      "epsilon": 1.25,
+      "d_ibench": 0.48,
+      "baselines": [
+        {
+          "name": "Hough-EBSD",
+          "score": 1.6,
+          "Q": 0.48
+        },
+        {
+          "name": "Dictionary-Match",
+          "score": 0.8,
+          "Q": 0.48
+        },
+        {
+          "name": "EBSD-Net",
+          "score": 0.6,
+          "Q": 0.48
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "H": 1024,
+        "W": 1024,
+        "kV": 20,
+        "step_nm": 100,
+        "peak_electrons": 16,
+        "pattern_center_drift": 0.1,
+        "band_contrast_degradation": 0.5,
+        "grain_boundary_ambiguity": 0.3
+      },
+      "epsilon": 2.0,
+      "d_ibench": 0.72,
+      "baselines": [
+        {
+          "name": "Hough-EBSD",
+          "score": 2.4,
+          "Q": 0.28
+        },
+        {
+          "name": "Dictionary-Match",
+          "score": 1.2,
+          "Q": 0.28
+        },
+        {
+          "name": "EBSD-Net",
+          "score": 0.9,
+          "Q": 0.28
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "full parametric sweep",
+      "num_dev_instances": 200,
+      "construction_method": "parametric Omega sweep"
+    },
+    "baselines": [
+      {
+        "name": "Hough-EBSD",
+        "overall_Q": 0.7
+      },
+      {
+        "name": "Dictionary-Match",
+        "overall_Q": 0.6
+      },
+      {
+        "name": "EBSD-Net",
+        "overall_Q": 0.5
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind strata corner.",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

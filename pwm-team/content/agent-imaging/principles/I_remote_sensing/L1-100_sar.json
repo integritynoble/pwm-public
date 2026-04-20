@@ -1,0 +1,191 @@
+{
+  "artifact_id": "L1-100",
+  "layer": "L1",
+  "principle_number": "100",
+  "title": "Synthetic Aperture Radar (SAR) \u2014 range-Doppler coherent imaging",
+  "domain": "Remote Sensing",
+  "sub_domain": "Microwave coherent imaging",
+  "source_file": "I_remote_sensing/100_sar.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical remote-sensing literature for this principle.",
+  "E": {
+    "description": "Synthetic Aperture Radar (SAR) \u2014 range-Doppler coherent imaging forward model.",
+    "forward_model": "y(t, phi) = chirp conv s(r, a) * exp(i*4*pi*R/lambda) + n; recover complex scattering field s",
+    "world_state_x": "Scene-side quantity of interest (reflectance / velocity / phase / concentration)",
+    "observation_y": "Sensor output at declared resolution + noise",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "pixel_m",
+      "lambda_cm",
+      "N_pulses",
+      "platform_motion_error",
+      "ionospheric_phase",
+      "speckle_coherence_loss",
+      "SNR_dB"
+    ]
+  },
+  "G": {
+    "dag": "L.emit.chirp -> S.scan.platform -> L.pulse_compression -> L.range_doppler -> int.spatial",
+    "vertices": [
+      "L.emit.chirp",
+      "S.scan.platform",
+      "L.pulse_compression",
+      "L.range_doppler",
+      "int.spatial"
+    ],
+    "arcs": [
+      "L.emit.chirp -> S.scan.platform",
+      "S.scan.platform -> L.pulse_compression",
+      "L.pulse_compression -> L.range_doppler",
+      "L.range_doppler -> int.spatial"
+    ],
+    "L_DAG": 4.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 400,
+    "condition_number_effective": 20,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Range-Doppler, Omega-K, CS-SAR, SAR-Net",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sensor SNR + mismatch-induced bias.",
+    "complexity": "O(H W) to O(H W N_bands) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "radio_wave",
+    "sensing_mechanism": "sar_coherent_imaging",
+    "integration_axis": "angular",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "speckle",
+    "solution_space": "2D_complex_scattering",
+    "primitives": [
+      "L.emit.chirp",
+      "S.scan.platform",
+      "L.pulse_compression",
+      "L.range_doppler",
+      "int.spatial"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "platform_motion_error",
+    "ionospheric_phase",
+    "speckle_coherence_loss",
+    "layover_shadow"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "sar_range_doppler",
+      "forward_operator": "sar_range_doppler_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 8192,
+        "W": 8192,
+        "pixel_m": 3.0,
+        "lambda_cm": 5.6,
+        "N_pulses": 2048,
+        "platform_motion_error": 0.0,
+        "ionospheric_phase": 0.0,
+        "speckle_coherence_loss": 0.0,
+        "SNR_dB": 15.0
+      },
+      "epsilon_fn_center": "18.0"
+    },
+    "allowed_forward_operators": [
+      "sar_range_doppler_forward"
+    ],
+    "allowed_problem_classes": [
+      "sar_range_doppler"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "pixel_m",
+      "lambda_cm",
+      "N_pulses",
+      "platform_motion_error",
+      "ionospheric_phase",
+      "speckle_coherence_loss",
+      "SNR_dB",
+      "platform_motion_error",
+      "ionospheric_phase",
+      "speckle_coherence_loss",
+      "layover_shadow"
+    ],
+    "omega_bounds": {
+      "H": [
+        1024,
+        32768
+      ],
+      "W": [
+        1024,
+        32768
+      ],
+      "pixel_m": [
+        0.3,
+        30
+      ],
+      "lambda_cm": [
+        0.5,
+        30
+      ],
+      "N_pulses": [
+        256,
+        16384
+      ],
+      "platform_motion_error": [
+        0.0,
+        1.0
+      ],
+      "ionospheric_phase": [
+        0.0,
+        2.0
+      ],
+      "speckle_coherence_loss": [
+        0.0,
+        0.5
+      ],
+      "layover_shadow": [
+        0.0,
+        0.3
+      ],
+      "SNR_dB": [
+        0.0,
+        30.0
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        5.0,
+        40.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

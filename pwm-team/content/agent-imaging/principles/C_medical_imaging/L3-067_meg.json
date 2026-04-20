@@ -1,0 +1,173 @@
+{
+  "artifact_id": "L3-067",
+  "layer": "L3",
+  "parent_l2": "L2-067",
+  "parent_l1": "L1-067",
+  "title": "Magnetoencephalography (MEG) Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "canonical clinical/public dataset for this modality",
+    "secondary": "simulated forward synthesis at declared Omega",
+    "construction_method": "parametric forward + declared noise",
+    "num_dev_instances_per_tier": 20
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "N_sensors": 300,
+        "N_time": 10000,
+        "sampling_Hz": 1000,
+        "SNR_dB": 15.0,
+        "environmental_interference": 0.0,
+        "head_movement": 0.0,
+        "sensor_crosstalk": 0.0,
+        "signal_space_leakage": 0.0
+      },
+      "epsilon": 12.0,
+      "d_ibench": 0.14,
+      "baselines": [
+        {
+          "name": "MNE",
+          "score": 10.0,
+          "Q": 0.88
+        },
+        {
+          "name": "dSPM",
+          "score": 12.0,
+          "Q": 0.88
+        },
+        {
+          "name": "MEG-Net",
+          "score": 14.5,
+          "Q": 0.88
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "N_sensors": 300,
+        "N_time": 10000,
+        "sampling_Hz": 1000,
+        "SNR_dB": 12.0,
+        "environmental_interference": 0.1,
+        "head_movement": 0.06,
+        "sensor_crosstalk": 0.06,
+        "signal_space_leakage": 0.06
+      },
+      "epsilon": 9.84,
+      "d_ibench": 0.28,
+      "baselines": [
+        {
+          "name": "MNE",
+          "score": 8.0,
+          "Q": 0.68
+        },
+        {
+          "name": "dSPM",
+          "score": 10.0,
+          "Q": 0.68
+        },
+        {
+          "name": "MEG-Net",
+          "score": 12.5,
+          "Q": 0.68
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "N_sensors": 300,
+        "N_time": 10000,
+        "sampling_Hz": 1000,
+        "SNR_dB": 3.0,
+        "environmental_interference": 0.25,
+        "head_movement": 0.15,
+        "sensor_crosstalk": 0.15,
+        "signal_space_leakage": 0.15
+      },
+      "epsilon": 7.68,
+      "d_ibench": 0.48,
+      "baselines": [
+        {
+          "name": "MNE",
+          "score": 6.0,
+          "Q": 0.48
+        },
+        {
+          "name": "dSPM",
+          "score": 8.0,
+          "Q": 0.48
+        },
+        {
+          "name": "MEG-Net",
+          "score": 10.5,
+          "Q": 0.48
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "N_sensors": 300,
+        "N_time": 10000,
+        "sampling_Hz": 1000,
+        "SNR_dB": 0.0,
+        "environmental_interference": 0.5,
+        "head_movement": 0.3,
+        "sensor_crosstalk": 0.3,
+        "signal_space_leakage": 0.3
+      },
+      "epsilon": 5.52,
+      "d_ibench": 0.72,
+      "baselines": [
+        {
+          "name": "MNE",
+          "score": 4.0,
+          "Q": 0.28
+        },
+        {
+          "name": "dSPM",
+          "score": 6.0,
+          "Q": 0.28
+        },
+        {
+          "name": "MEG-Net",
+          "score": 8.5,
+          "Q": 0.28
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "full parametric sweep",
+      "num_dev_instances": 200,
+      "construction_method": "parametric Omega sweep"
+    },
+    "baselines": [
+      {
+        "name": "MNE",
+        "overall_Q": 0.7
+      },
+      {
+        "name": "dSPM",
+        "overall_Q": 0.6
+      },
+      {
+        "name": "MEG-Net",
+        "overall_Q": 0.5
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind strata corner.",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

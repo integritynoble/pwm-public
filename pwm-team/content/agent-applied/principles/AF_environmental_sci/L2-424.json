@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-424",
+  "layer": "L2",
+  "parent_l1": "L1-424",
+  "principle_ref": "sha256:<L1-424_principle_hash>",
+  "title": "Carbon Cycle Biogeochemical Inversion \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "N_surface_stations": [
+        10,
+        300
+      ],
+      "N_flux_regions": [
+        11,
+        100
+      ],
+      "satellite_coverage_percent": [
+        0,
+        100
+      ],
+      "prior_uncertainty_GtC_yr": [
+        0.1,
+        5.0
+      ]
+    },
+    "E": {
+      "forward": "C_atm(x, t) = integral G(x, t; x', t') * F(x', t') dx' dt' (AGCM transport)",
+      "operator": "atmospheric_CO2_inversion",
+      "primitive_chain": "M.agcm.tracer_transport -> O.bayesian.flux_inversion -> S.prior.biosphere_model",
+      "inverse": "recover net ecosystem exchange NEE(x from atmospheric CO2 mole fraction at N_stations ground stations + satellite (OCO-2)"
+    },
+    "B": {
+      "mass_conservation": "global CO2 budget balances fossil fuel emissions",
+      "positivity": "atmospheric CO2 > 280 ppm"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "global_NEE_uncertainty_GtC_yr",
+      "regional_flux_RMSE_GtC_yr",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.3 + 0.2 * (1.0 / prior_uncertainty_GtC_yr) ** 0.2"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 NEE_flux_map"
+    },
+    "baselines": [
+      {
+        "name": "CarbonTracker_Bayesian",
+        "method_sig": "L+O",
+        "expected_score": 0.6
+      },
+      {
+        "name": "GEOS_Chem_4DVar",
+        "method_sig": "L+O",
+        "expected_score": 0.4
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_surface_stations": 100,
+        "N_flux_regions": 22,
+        "satellite_coverage_percent": 50,
+        "prior_uncertainty_GtC_yr": 1.0,
+        "transport_model_error": 0.0,
+        "prior_uncertainty_specification": 0.0,
+        "OCO2_bias_correction": 0.0
+      },
+      "epsilon": 0.5
+    },
+    "tier_bounds": {
+      "N_surface_stations": [
+        10,
+        300
+      ],
+      "N_flux_regions": [
+        11,
+        100
+      ],
+      "satellite_coverage_percent": [
+        0,
+        100
+      ],
+      "prior_uncertainty_GtC_yr": [
+        0.1,
+        5.0
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.42,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.42 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

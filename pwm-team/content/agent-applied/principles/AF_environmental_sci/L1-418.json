@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-418",
+  "layer": "L1",
+  "principle_number": "418",
+  "title": "Numerical Weather Prediction Data Assimilation",
+  "domain": "Environmental Science",
+  "sub_domain": "Weather forecasting",
+  "source_file": "AF_environmental_sci/418_numerical_weather_prediction.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "4D-Var data assimilation: find optimal initial conditions minimizing misfit to observations over assimilation window.",
+    "forward_model": "J(x0) = 0.5*(x0-x_b) ** T B^{-1} (x0-x_b) + 0.5*sum_t (H_t M_t(x0) - y_t) ** T R_t^{-1} (H_t M_t(x0) - y_t)",
+    "world_state_x": "atmospheric initial state x0 (T, u, v, q, ps) at analysis time",
+    "observation_y": "conventional + satellite observations y_t over 6-12 hour window",
+    "physical_parameters_theta": [
+      "background_error_variance_B",
+      "observation_error_variance_R",
+      "window_length_hours",
+      "N_observations"
+    ]
+  },
+  "G": {
+    "dag": "M.nwp.primitive_equations -> S.4dvar.adjoint_method -> O.cost_function.background_observation",
+    "vertices": [
+      "M.nwp.primitive_equations",
+      "S.4dvar.adjoint_method",
+      "O.cost_function.background_observation"
+    ],
+    "arcs": [
+      "M.nwp.primitive_equations -> S.4dvar.adjoint_method",
+      "S.4dvar.adjoint_method -> O.cost_function.background_observation"
+    ],
+    "L_DAG": 5.5,
+    "n_c": 2
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 100000000.0,
+    "condition_number_effective": 100000.0,
+    "condition_number_mismatched": 1000000.0,
+    "regime": "Nonlinear NWP model; quadratic cost function approximated; outer loop linearizes model; balance constraints essential."
+  },
+  "C": {
+    "solver_class": "L-BFGS_4DVar or adjoint_based_gradient_descent",
+    "convergence_rate_q": 1.5,
+    "error_bound": "analysis RMSE < 0.5 K in temperature; 24h forecast skill S1 < 10",
+    "complexity": "O(N_iter * N_model_calls) with N_model_calls = O(N_obs_types) adjoint integrations"
+  },
+  "physics_fingerprint": {
+    "carrier": "N/A",
+    "sensing_mechanism": "4dvar_data_assimilation",
+    "integration_axis": "analysis_time_window",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "observation_gaussian",
+    "solution_space": "atmospheric_state_vector",
+    "primitives": [
+      "M.nwp.primitive_equations",
+      "S.4dvar.adjoint_method",
+      "O.cost_function.background_observation"
+    ]
+  },
+  "difficulty_delta": 10,
+  "difficulty_tier": "hard",
+  "mismatch_parameters": [
+    "model_error_during_window",
+    "observation_bias_correction_error",
+    "background_error_covariance_specification"
+  ],
+  "error_metric": "analysis_error_RMSE_K",
+  "error_metric_secondary": "forecast_skill_score_S1",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "nonlinear_inverse",
+      "forward_operator": "4dvar_data_assimilation",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_observations": 1000000,
+        "window_hours": 6,
+        "model_resolution_km": 10,
+        "obs_error_ratio": 1.0
+      },
+      "epsilon_fn_center": "0.5 analysis_error_RMSE_K"
+    },
+    "allowed_forward_operators": [
+      "4dvar_data_assimilation"
+    ],
+    "allowed_problem_classes": [
+      "nonlinear_inverse"
+    ],
+    "allowed_omega_dimensions": [
+      "N_observations",
+      "window_hours",
+      "model_resolution_km",
+      "obs_error_ratio"
+    ],
+    "omega_bounds": {
+      "N_observations": [
+        100000,
+        5000000
+      ],
+      "window_hours": [
+        3,
+        12
+      ],
+      "model_resolution_km": [
+        2,
+        50
+      ],
+      "obs_error_ratio": [
+        0.5,
+        5.0
+      ]
+    },
+    "epsilon_bounds": {
+      "analysis_error_RMSE_K": [
+        0.1,
+        2.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

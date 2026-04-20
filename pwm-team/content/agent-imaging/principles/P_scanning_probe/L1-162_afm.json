@@ -1,0 +1,178 @@
+{
+  "artifact_id": "L1-162",
+  "layer": "L1",
+  "principle_number": "162",
+  "title": "Atomic Force Microscopy (AFM)",
+  "domain": "Scanning Probe",
+  "sub_domain": "Cantilever-tip topography",
+  "source_file": "P_scanning_probe/162_afm.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
+  "E": {
+    "description": "Atomic Force Microscopy (AFM) forward model.",
+    "forward_model": "z(x,y) = height_true(x,y) conv tip_PSF + thermal_drift(t) + n",
+    "world_state_x": "Principle-specific quantity of interest",
+    "observation_y": "Detector output at declared geometry",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "pixel_nm",
+      "tip_radius_nm",
+      "tip_convolution",
+      "thermal_drift",
+      "tip_wear",
+      "nonlinear_response",
+      "SNR_dB"
+    ]
+  },
+  "G": {
+    "dag": "L.cantilever_oscillator -> S.scan.raster -> D.laser_deflection -> int.spatial",
+    "vertices": [
+      "L.cantilever_oscillator",
+      "S.scan.raster",
+      "D.laser_deflection",
+      "int.spatial"
+    ],
+    "arcs": [
+      "L.cantilever_oscillator -> S.scan.raster",
+      "S.scan.raster -> D.laser_deflection",
+      "D.laser_deflection -> int.spatial"
+    ],
+    "L_DAG": 3.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 240,
+    "condition_number_effective": 12,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Deconv-Tip, TV-ADMM-AFM, AFM-Net",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sensor SNR + mismatch bias + regularization.",
+    "complexity": "principle-dependent"
+  },
+  "physics_fingerprint": {
+    "carrier": "none",
+    "sensing_mechanism": "atomic_force_microscopy",
+    "integration_axis": "spatial",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "2D_topography",
+    "primitives": [
+      "L.cantilever_oscillator",
+      "S.scan.raster",
+      "D.laser_deflection",
+      "int.spatial"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "tip_convolution",
+    "thermal_drift",
+    "tip_wear",
+    "nonlinear_response"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "afm",
+      "forward_operator": "afm_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 512,
+        "W": 512,
+        "pixel_nm": 2,
+        "tip_radius_nm": 5,
+        "tip_convolution": 0.0,
+        "thermal_drift": 0.0,
+        "tip_wear": 0.0,
+        "nonlinear_response": 0.0,
+        "SNR_dB": 30
+      },
+      "epsilon_fn_center": "28.0"
+    },
+    "allowed_forward_operators": [
+      "afm_forward"
+    ],
+    "allowed_problem_classes": [
+      "afm"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "pixel_nm",
+      "tip_radius_nm",
+      "tip_convolution",
+      "thermal_drift",
+      "tip_wear",
+      "nonlinear_response",
+      "SNR_dB",
+      "tip_convolution",
+      "thermal_drift",
+      "tip_wear",
+      "nonlinear_response"
+    ],
+    "omega_bounds": {
+      "H": 128,
+      "W": 128,
+      "pixel_nm": [
+        0.1,
+        100
+      ],
+      "tip_radius_nm": [
+        1,
+        100
+      ],
+      "tip_convolution": [
+        0.0,
+        0.5
+      ],
+      "thermal_drift": [
+        0.0,
+        10
+      ],
+      "tip_wear": [
+        0.0,
+        0.5
+      ],
+      "nonlinear_response": [
+        0.0,
+        0.3
+      ],
+      "SNR_dB": [
+        0.0,
+        40.0
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        5.0,
+        40.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

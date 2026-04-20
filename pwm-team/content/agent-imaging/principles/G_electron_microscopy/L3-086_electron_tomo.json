@@ -1,0 +1,185 @@
+{
+  "artifact_id": "L3-086",
+  "layer": "L3",
+  "parent_l2": "L2-086",
+  "parent_l1": "L1-086",
+  "title": "Electron Tomography \u2014 tilt-series 3D reconstruction Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "canonical EM dataset for this principle (EMPIAR / CEM500K / etc.)",
+    "secondary": "simulated forward model at declared Omega",
+    "construction_method": "parametric forward synthesis + Poisson counting",
+    "num_dev_instances_per_tier": 20
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "H": 2048,
+        "W": 2048,
+        "Z": 128,
+        "N_tilts": 61,
+        "tilt_range_deg": 60,
+        "kV": 300,
+        "peak_electrons": 30,
+        "tilt_angle_error": 0.0,
+        "missing_wedge": 0.1,
+        "beam_damage": 0.0,
+        "alignment_error": 0.0
+      },
+      "epsilon": 24.0,
+      "d_ibench": 0.14,
+      "baselines": [
+        {
+          "name": "WBP",
+          "score": 23.0,
+          "Q": 0.88
+        },
+        {
+          "name": "SIRT",
+          "score": 24.5,
+          "Q": 0.88
+        },
+        {
+          "name": "IsoNet",
+          "score": 27.0,
+          "Q": 0.88
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "H": 2048,
+        "W": 2048,
+        "Z": 128,
+        "N_tilts": 61,
+        "tilt_range_deg": 60,
+        "kV": 300,
+        "peak_electrons": 15,
+        "tilt_angle_error": 0.1,
+        "missing_wedge": 0.2,
+        "beam_damage": 0.1,
+        "alignment_error": 1.0
+      },
+      "epsilon": 19.2,
+      "d_ibench": 0.28,
+      "baselines": [
+        {
+          "name": "WBP",
+          "score": 20.5,
+          "Q": 0.68
+        },
+        {
+          "name": "SIRT",
+          "score": 22.0,
+          "Q": 0.68
+        },
+        {
+          "name": "IsoNet",
+          "score": 24.5,
+          "Q": 0.68
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "H": 2048,
+        "W": 2048,
+        "Z": 128,
+        "N_tilts": 61,
+        "tilt_range_deg": 60,
+        "kV": 300,
+        "peak_electrons": 6,
+        "tilt_angle_error": 0.25,
+        "missing_wedge": 0.35,
+        "beam_damage": 0.25,
+        "alignment_error": 2.5
+      },
+      "epsilon": 15.6,
+      "d_ibench": 0.48,
+      "baselines": [
+        {
+          "name": "WBP",
+          "score": 18.0,
+          "Q": 0.48
+        },
+        {
+          "name": "SIRT",
+          "score": 19.5,
+          "Q": 0.48
+        },
+        {
+          "name": "IsoNet",
+          "score": 22.0,
+          "Q": 0.48
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "H": 2048,
+        "W": 2048,
+        "Z": 128,
+        "N_tilts": 61,
+        "tilt_range_deg": 60,
+        "kV": 300,
+        "peak_electrons": 2,
+        "tilt_angle_error": 0.5,
+        "missing_wedge": 0.6,
+        "beam_damage": 0.5,
+        "alignment_error": 5.0
+      },
+      "epsilon": 12.0,
+      "d_ibench": 0.72,
+      "baselines": [
+        {
+          "name": "WBP",
+          "score": 15.5,
+          "Q": 0.28
+        },
+        {
+          "name": "SIRT",
+          "score": 17.0,
+          "Q": 0.28
+        },
+        {
+          "name": "IsoNet",
+          "score": 19.5,
+          "Q": 0.28
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "full parametric sweep",
+      "num_dev_instances": 200,
+      "construction_method": "parametric Omega sweep"
+    },
+    "baselines": [
+      {
+        "name": "WBP",
+        "overall_Q": 0.7
+      },
+      {
+        "name": "SIRT",
+        "overall_Q": 0.6
+      },
+      {
+        "name": "IsoNet",
+        "overall_Q": 0.5
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind strata corner.",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

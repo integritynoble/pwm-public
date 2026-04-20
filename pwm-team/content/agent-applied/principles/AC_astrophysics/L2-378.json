@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-378",
+  "layer": "L2",
+  "parent_l1": "L1-378",
+  "principle_ref": "sha256:<L1-378_principle_hash>",
+  "title": "21cm Cosmology Reionization Signal \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "N_antennas": [
+        20,
+        1000
+      ],
+      "integration_hours": [
+        100,
+        10000
+      ],
+      "foreground_level_K": [
+        50,
+        1000
+      ],
+      "noise_K": [
+        0.01,
+        0.5
+      ]
+    },
+    "E": {
+      "forward": "T_b(z) = 27*x_HI*(1+delta)*((1+z)/10) ** 0.5 * (H/dv_r/dr) mK; foregrounds dominate at 4 orders of magnitude",
+      "operator": "radio_interferometry_21cm",
+      "primitive_chain": "F.fourier.power_spectrum_3d -> S.foreground.removal_wedge -> O.chi2.21cm_ps",
+      "inverse": "recover HI neutral fraction x_HI(z) and 21cm brightness temperature power spectrum P_21cm(k from calibrated visibility data V(u"
+    },
+    "B": {
+      "x_HI_range": "x_HI in [0,1]",
+      "z_reionization": "z_re in [5, 15]"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "power_spectrum_detection_SNR",
+      "chi2_reduced_power_spectrum",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "1.5 + 0.5 * sqrt(integration_hours / 1000)"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 3D_21cm_brightness_temperature"
+    },
+    "baselines": [
+      {
+        "name": "HERA_delay_spectrum",
+        "method_sig": "L+O",
+        "expected_score": 1.8
+      },
+      {
+        "name": "GPR_foreground_removal",
+        "method_sig": "L+O",
+        "expected_score": 2.2
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_antennas": 350,
+        "integration_hours": 1000,
+        "foreground_level_K": 200,
+        "noise_K": 0.05,
+        "calibration_errors_percent": 0.0,
+        "ionospheric_distortion": 0.0,
+        "foreground_model_incompleteness": 0.0
+      },
+      "epsilon": 2.0
+    },
+    "tier_bounds": {
+      "N_antennas": [
+        20,
+        1000
+      ],
+      "integration_hours": [
+        100,
+        10000
+      ],
+      "foreground_level_K": [
+        50,
+        1000
+      ],
+      "noise_K": [
+        0.01,
+        0.5
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.5,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.5 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

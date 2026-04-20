@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-453",
+  "layer": "L2",
+  "parent_l1": "L1-453",
+  "principle_ref": "sha256:<L1-453_principle_hash>",
+  "title": "Vehicle Dynamics (Bicycle Model) \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "vehicle_mass_kg": [
+        500,
+        5000
+      ],
+      "speed_m_s": [
+        5,
+        50
+      ],
+      "lateral_acceleration_m_s2": [
+        0.5,
+        10.0
+      ],
+      "road_mu": [
+        0.3,
+        1.2
+      ]
+    },
+    "E": {
+      "forward": "m*v*(beta_dot + psi_dot) = F_yf + F_yr; I_z*psi_ddot = l_f*F_yf - l_r*F_yr; Pacejka tire forces",
+      "operator": "vehicle_state_estimation",
+      "primitive_chain": "M.bicycle.lateral_dynamics -> S.tire.pacejka_model -> O.ekf.vehicle_state",
+      "inverse": "recover vehicle state (v_x from IMU (psi_dot"
+    },
+    "B": {
+      "friction_circle": "|F_total| <= mu*N",
+      "kinematics": "v_x > 0 forward motion"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "yaw_rate_RMSE_deg_s",
+      "side_slip_angle_RMSE_deg",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.5 + 0.5 * (lateral_acceleration_m_s2 / 3.0) ** 0.5"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 vehicle_state_vector"
+    },
+    "baselines": [
+      {
+        "name": "linear_bicycle_EKF",
+        "method_sig": "L+O",
+        "expected_score": 1.2
+      },
+      {
+        "name": "Pacejka_UKF",
+        "method_sig": "L+O",
+        "expected_score": 0.8
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "vehicle_mass_kg": 1500,
+        "speed_m_s": 20,
+        "lateral_acceleration_m_s2": 3.0,
+        "road_mu": 0.8,
+        "tire_force_saturation": 0.0,
+        "road_friction_uncertainty": 0.0,
+        "sensor_bias": 0.0
+      },
+      "epsilon": 1.0
+    },
+    "tier_bounds": {
+      "vehicle_mass_kg": [
+        500,
+        5000
+      ],
+      "speed_m_s": [
+        5,
+        50
+      ],
+      "lateral_acceleration_m_s2": [
+        0.5,
+        10.0
+      ],
+      "road_mu": [
+        0.3,
+        1.2
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.25,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.25 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

@@ -1,0 +1,61 @@
+{
+  "artifact_id": "L1-001",
+  "layer": "L1",
+  "principle_number": "001",
+  "title": "Widefield Fluorescence Microscopy (Airy-PSF deconvolution)",
+  "domain": "Microscopy",
+  "sub_domain": "Epifluorescence widefield",
+  "source_file": "A_microscopy/001_widefield_fluorescence.md",
+  "source_data_quality_note": "Source MD content matches this principle (one of the few source files whose content was preserved during fan-out).",
+  "E": {
+    "description": "Widefield epifluorescence: a fluorescent density f(r) is imaged through a diffraction-limited objective whose point-spread function is Airy(NA, lambda_em); the sensor integrates photon counts during exposure tau.",
+    "forward_model": "y(r) = [PSF_Airy(r; NA, lambda_em) conv f(r)] + n(r)",
+    "world_state_x": "Fluorophore density f(r) in R^{H x W}, non-negative, band-limited by OTF cutoff k_c = 2*NA/lambda_em",
+    "observation_y": "Raw camera image y(r) in R^{H x W} with Poisson signal + Gaussian read noise",
+    "physical_parameters_theta": ["NA", "lambda_em (nm)", "pixel_nm", "peak_photons", "sigma_read", "defocus Delta_z", "background sigma_bg"]
+  },
+  "G": {
+    "dag": "K.psf.airy -> int.temporal",
+    "vertices": ["K.psf.airy", "int.temporal"],
+    "arcs": ["K.psf.airy -> int.temporal"],
+    "L_DAG": 1.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true, "uniqueness": true, "stability": "conditional",
+    "condition_number_kappa": 15, "condition_number_effective": 5,
+    "regime": "Bounded pseudo-inverse via Wiener filter on OTF support; recovery unique for |k| <= k_c; defocus and background dominate mismatch."
+  },
+  "C": {
+    "solver_class": "Wiener, Richardson-Lucy, ADMM-TV, CARE-UNet",
+    "convergence_rate_q": 2.0,
+    "error_bound": "|f_hat - f|_2 <= C1 * sigma / sqrt(photon_count) + C2 * Delta_z",
+    "complexity": "O(H W log HW) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "photon", "sensing_mechanism": "fluorescence_widefield", "integration_axis": "temporal",
+    "problem_class": "linear_inverse", "noise_model": "poisson_gaussian",
+    "solution_space": "2D_intensity",
+    "primitives": ["K.psf.airy", "int.temporal"]
+  },
+  "difficulty_delta": 1, "difficulty_tier": "textbook",
+  "mismatch_parameters": ["dz_nm", "sigma_bg"],
+  "error_metric": "PSNR_dB", "error_metric_secondary": "SSIM", "error_metric_tertiary": "resolution_nm",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "fluorescence_deconvolution",
+      "forward_operator": "airy_psf_convolution",
+      "input_format": "measurement_only",
+      "omega": {"H": 512, "W": 512, "pixel_nm": 65, "emission_nm": 525, "NA": 1.4, "peak_photons": 1000, "dz_nm": 0.0, "sigma_bg": 0.0},
+      "epsilon_fn_center": "30.0 dB PSNR"
+    },
+    "allowed_forward_operators": ["airy_psf_convolution", "gaussian_psf_approx"],
+    "allowed_problem_classes": ["fluorescence_deconvolution", "blind_deconvolution", "background_estimation"],
+    "allowed_omega_dimensions": ["H","W","pixel_nm","emission_nm","NA","peak_photons","dz_nm","sigma_bg"],
+    "omega_bounds": {"H":[128,4096],"W":[128,4096],"pixel_nm":[30,200],"emission_nm":[400,800],"NA":[0.4,1.49],"peak_photons":[50,10000],"dz_nm":[0.0,1500.0],"sigma_bg":[0.0,0.10]},
+    "epsilon_bounds": {"psnr_db": [20.0, 45.0]}
+  },
+  "p1_p10_tests": ["PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS"],
+  "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
+  "ipfs_cid": null
+}

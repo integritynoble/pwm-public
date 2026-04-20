@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-399",
+  "layer": "L1",
+  "principle_number": "399",
+  "title": "Cardiac Electrophysiology (Monodomain)",
+  "domain": "Computational Biology",
+  "sub_domain": "Cardiac modeling",
+  "source_file": "AE_computational_bio/399_cardiac_electrophysiology.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "Cardiac EP inversion: recover 3D transmembrane potential distribution from body surface ECG recordings.",
+    "forward_model": "J_e = sigma_e * nabla phi_e; phi_body_surface = T * phi_e; T is body-heart transfer matrix",
+    "world_state_x": "3D transmembrane potential V_m(x,y,z,t) across cardiac muscle",
+    "observation_y": "body surface potentials phi_BSP(t) at N_electrodes ECG/ECGI electrodes",
+    "physical_parameters_theta": [
+      "sigma_e_conductivity",
+      "N_electrodes_BSP",
+      "mesh_resolution_mm",
+      "activation_time_ms"
+    ]
+  },
+  "G": {
+    "dag": "M.pde.monodomain_bidomain -> S.eikonal.fast_marching -> O.ecg.inverse_body_surface",
+    "vertices": [
+      "M.pde.monodomain_bidomain",
+      "S.eikonal.fast_marching",
+      "O.ecg.inverse_body_surface"
+    ],
+    "arcs": [
+      "M.pde.monodomain_bidomain -> S.eikonal.fast_marching",
+      "S.eikonal.fast_marching -> O.ecg.inverse_body_surface"
+    ],
+    "L_DAG": 4.5,
+    "n_c": 2
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 100000.0,
+    "condition_number_effective": 2000,
+    "condition_number_mismatched": 10000.0,
+    "regime": "Severely ill-posed inverse problem (few electrodes vs. many cardiac nodes); Tikhonov regularization; patient-specific geometry critical."
+  },
+  "C": {
+    "solver_class": "Tikhonov_regularization or Bayesian_electrocardiographic_imaging",
+    "convergence_rate_q": 2.0,
+    "error_bound": "activation time error < 5 ms for well-constrained geometry",
+    "complexity": "O(N_mesh_nodes ** 2) for transfer matrix computation"
+  },
+  "physics_fingerprint": {
+    "carrier": "N/A",
+    "sensing_mechanism": "ecg_body_surface_potential",
+    "integration_axis": "3d_cardiac_volume",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "observation_gaussian",
+    "solution_space": "3D_transmembrane_potential",
+    "primitives": [
+      "M.pde.monodomain_bidomain",
+      "S.eikonal.fast_marching",
+      "O.ecg.inverse_body_surface"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "torso_conductivity_uncertainty",
+    "electrode_placement_error_mm",
+    "geometric_model_uncertainty"
+  ],
+  "error_metric": "activation_time_error_ms",
+  "error_metric_secondary": "body_surface_potential_RMSE_mV",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "nonlinear_inverse",
+      "forward_operator": "ecg_body_surface_potential",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_electrodes_BSP": 128,
+        "N_mesh_nodes": 10000,
+        "noise_SNR_dB": 30,
+        "heart_torso_distance_mm": 50
+      },
+      "epsilon_fn_center": "5 activation_time_error_ms"
+    },
+    "allowed_forward_operators": [
+      "ecg_body_surface_potential"
+    ],
+    "allowed_problem_classes": [
+      "nonlinear_inverse"
+    ],
+    "allowed_omega_dimensions": [
+      "N_electrodes_BSP",
+      "N_mesh_nodes",
+      "noise_SNR_dB",
+      "heart_torso_distance_mm"
+    ],
+    "omega_bounds": {
+      "N_electrodes_BSP": [
+        32,
+        512
+      ],
+      "N_mesh_nodes": [
+        1000,
+        100000
+      ],
+      "noise_SNR_dB": [
+        10,
+        60
+      ],
+      "heart_torso_distance_mm": [
+        20,
+        100
+      ]
+    },
+    "epsilon_bounds": {
+      "activation_time_error_ms": [
+        1,
+        30
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}
