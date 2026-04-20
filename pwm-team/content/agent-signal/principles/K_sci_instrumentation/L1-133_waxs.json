@@ -1,0 +1,93 @@
+{
+  "artifact_id": "L1-133",
+  "layer": "L1",
+  "principle_number": "133",
+  "title": "WAXS — Wide-Angle X-ray Scattering",
+  "domain": "Scientific Instrumentation",
+  "sub_domain": "X-ray scattering probing Å-scale structure",
+  "source_file": "K_scientific_instrumentation/133_waxs.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence boilerplate. Physics grounded in Warren 1990 X-ray Diffraction textbook; Smilgies 2009 characterizing polymer WAXS; Polte 2017 simultaneous SAXS-WAXS.",
+
+  "E": {
+    "description": "X-rays scatter elastically at wide angle (q = 4*pi*sin(theta)/lambda, typically 5-30 Å^-1) from atomic-scale structure in polymers, glasses, liquids, nanocrystals. For crystalline samples, Bragg peaks; for amorphous, diffuse scattering encodes pair-distribution function g(r).",
+    "forward_model": "I(q) = |F(q)|^2 * N_atom + solvent_background; for polymer: scattering-function model fit",
+    "world_state_x": "Radial distribution function g(r), crystalline-fraction, orientation distribution",
+    "observation_y": "1D or 2D scattering pattern I(q) at wide angles",
+    "physical_parameters_theta": [
+      "Wavelength lambda, beam divergence",
+      "Sample-detector distance (50-200 mm for WAXS)",
+      "q-range [5, 30] Å^-1",
+      "Air scattering background",
+      "Sample thickness and transmission",
+      "Beam-stop placement"
+    ]
+  },
+
+  "G": {
+    "dag": "L.scatter.elastic -> L.project.q -> int.angular",
+    "vertices": ["L.scatter.elastic", "L.project.q", "int.angular"],
+    "arcs": ["L.scatter.elastic -> L.project.q", "L.project.q -> int.angular"],
+    "L_DAG": 2.7,
+    "n_c": 0
+  },
+
+  "W": {
+    "existence": true,
+    "uniqueness": "g(r) unique from I(q) via Fourier inversion (Zernike-Prins); crystalline fit unique under Rietveld constraints",
+    "stability": "conditional",
+    "condition_number_kappa": 200,
+    "condition_number_effective": 20,
+    "condition_number_mismatched": 400,
+    "regime": "Fourier inversion is ill-conditioned for truncated q-range; regularization (max-entropy, oversampling) stabilizes. Mismatch: background subtraction, termination ripples."
+  },
+
+  "C": {
+    "solver_class": "Fourier inversion, Warren-Bodenstein analysis, Rietveld crystalline fit, max-entropy g(r), learned (WAXS-Net)",
+    "convergence_rate_q": 2.0,
+    "error_bound": "g(r) precision ~ sigma/sqrt(N) + ripple (truncation); Rietveld R-weighted ~0.05",
+    "complexity": "FFT O(N_q log); Rietveld O(iter * N_peak * N_param)"
+  },
+
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "xray_wide_angle_scatter",
+    "integration_axis": "angular",
+    "problem_class": "inverse_fourier_scatter",
+    "noise_model": "shot_poisson",
+    "solution_space": "radial_structure_function",
+    "primitives": ["L.scatter.elastic", "L.project.q", "int.angular"]
+  },
+
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+
+  "mismatch_parameters": ["q_truncation", "background_subtraction", "termination_ripples", "beam_profile_mismatch", "preferred_orientation"],
+  "error_metric": "g_r_NMSE",
+  "error_metric_secondary": "Rwp_rietveld",
+  "error_metric_tertiary": "crystallinity_RMSE",
+
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "waxs_polymer_analysis",
+      "forward_operator": "waxs_iq_forward",
+      "input_format": "scattering_pattern",
+      "omega": {"N_q": 800, "q_min": 5, "q_max": 30, "sample_thickness_um": 100, "background_subtraction": 0.05},
+      "epsilon_fn_center": "g(r) NMSE 5e-3"
+    },
+    "allowed_forward_operators": ["waxs_iq_forward", "giwaxs_2d_forward"],
+    "allowed_problem_classes": ["waxs_polymer_analysis", "waxs_crystal_fraction", "waxs_nano_crystal_size"],
+    "allowed_omega_dimensions": ["N_q", "q_min", "q_max", "sample_thickness_um", "background_subtraction", "q_truncation", "termination_ripples", "beam_profile_mismatch", "preferred_orientation"],
+    "omega_bounds": {
+      "N_q": [100, 5000], "q_min": [1, 10], "q_max": [15, 50],
+      "sample_thickness_um": [1, 1000],
+      "background_subtraction": [0.0, 0.3], "q_truncation": [0.0, 0.5],
+      "termination_ripples": [0.0, 0.3], "beam_profile_mismatch": [0.0, 0.2],
+      "preferred_orientation": [0.0, 0.5]
+    },
+    "epsilon_bounds": {"g_r_nmse": [1e-4, 0.3]}
+  },
+
+  "p1_p10_tests": ["PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS"],
+  "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
+  "ipfs_cid": null
+}

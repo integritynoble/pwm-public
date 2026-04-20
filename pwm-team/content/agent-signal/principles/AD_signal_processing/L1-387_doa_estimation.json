@@ -1,0 +1,92 @@
+{
+  "artifact_id": "L1-387",
+  "layer": "L1",
+  "principle_number": "387",
+  "title": "Direction-of-Arrival Estimation (narrowband array processing)",
+  "domain": "Signal Processing",
+  "sub_domain": "Spatial spectral estimation with sensor arrays",
+  "source_file": "AD_signal_processing/387_doa_estimation.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence boilerplate. Physics grounded in Schmidt 1986 MUSIC; Roy-Kailath 1989 ESPRIT; Krim-Viberg 1996 array processing review; Stoica-Nehorai 1989 CRLB for DoA.",
+
+  "E": {
+    "description": "K narrowband plane-wave sources impinge on an L-element uniform linear (or arbitrary) sensor array; the array-manifold matrix A(theta) in C^{L x K} encodes the steering-vector per angle. Each snapshot is y[t] = A(theta) s[t] + n[t] with source vector s in C^K and sensor noise n ~ CN(0, sigma^2 I).",
+    "forward_model": "y[t] = A(theta) * s[t] + n[t];  A_lk(theta) = exp(-j*2*pi*d_l*sin(theta_k)/lambda)",
+    "world_state_x": "Set of DoA angles {theta_1, ..., theta_K} in (-pi/2, pi/2)",
+    "observation_y": "Array snapshots Y in C^{L x T}, T = number of snapshots",
+    "physical_parameters_theta": [
+      "Number of elements L (array aperture)",
+      "Inter-element spacing d / lambda (typically 1/2 wavelength)",
+      "Number of snapshots T",
+      "SNR per source (dB)",
+      "Source correlation matrix rank",
+      "Array calibration errors (gain, phase, position)"
+    ]
+  },
+
+  "G": {
+    "dag": "L.project.arraymanifold -> int.temporal",
+    "vertices": ["L.project.arraymanifold", "int.temporal"],
+    "arcs": ["L.project.arraymanifold -> int.temporal"],
+    "L_DAG": 2.3,
+    "n_c": 0
+  },
+
+  "W": {
+    "existence": true,
+    "uniqueness": "up to K < L (identifiability bound)",
+    "stability": "conditional",
+    "condition_number_kappa": 500,
+    "condition_number_effective": 15,
+    "condition_number_mismatched": 200,
+    "regime": "Identifiable when K <= L-1 for ULA; CRLB proportional to 1/(T * SNR * array_aperture); coherent sources require spatial smoothing; sub-wavelength (super-resolution) regimes rely on MUSIC/ESPRIT subspace projection or L1-min."
+  },
+
+  "C": {
+    "solver_class": "beamforming (conventional, Capon/MVDR), MUSIC, Root-MUSIC, ESPRIT, SPICE, L1-SVD, sparse Bayesian, ML grid-search",
+    "convergence_rate_q": 2.0,
+    "error_bound": "MSE_theta = sigma^2 / (2*T*SNR) * [1 + L*K/(L-K)] * 1/(d*pi*cos(theta))^2 (Stoica CRLB)",
+    "complexity": "MUSIC: O(L^3 + L^2*T + L*Ngrid); ESPRIT closed-form; L1-min O(Ngrid^3) or O(K^2 * L * Ngrid) with OMP"
+  },
+
+  "physics_fingerprint": {
+    "carrier": "RF",
+    "sensing_mechanism": "sensor_array",
+    "integration_axis": "temporal",
+    "problem_class": "parametric_spectral_estimation",
+    "noise_model": "complex_gaussian",
+    "solution_space": "angle_vector",
+    "primitives": ["L.project.arraymanifold", "int.temporal"]
+  },
+
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+
+  "mismatch_parameters": ["array_calibration_gain", "array_calibration_phase", "element_position_error", "K_overestimation", "correlation"],
+  "error_metric": "RMSE_deg",
+  "error_metric_secondary": "detection_probability",
+  "error_metric_tertiary": "resolution_at_2sigma",
+
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "narrowband_doa",
+      "forward_operator": "ula_narrowband",
+      "input_format": "snapshots_only",
+      "omega": {"L": 8, "K": 2, "T": 100, "SNR_dB": 10, "d_over_lambda": 0.5, "calib_gain_err": 0.0, "calib_phase_err_deg": 0.0, "position_err_lambda": 0.0},
+      "epsilon_fn_center": "0.5 deg RMSE"
+    },
+    "allowed_forward_operators": ["ula_narrowband", "uca_narrowband", "arbitrary_array", "wideband_array"],
+    "allowed_problem_classes": ["narrowband_doa", "wideband_doa", "coherent_doa", "compressive_doa"],
+    "allowed_omega_dimensions": ["L", "K", "T", "SNR_dB", "d_over_lambda", "calib_gain_err", "calib_phase_err_deg", "position_err_lambda", "correlation"],
+    "omega_bounds": {
+      "L": [4, 128], "K": [1, 32], "T": [1, 10000],
+      "SNR_dB": [-10, 40], "d_over_lambda": [0.25, 2.0],
+      "calib_gain_err": [0.0, 0.2], "calib_phase_err_deg": [0.0, 15],
+      "position_err_lambda": [0.0, 0.05], "correlation": [0.0, 1.0]
+    },
+    "epsilon_bounds": {"rmse_deg": [0.01, 10.0]}
+  },
+
+  "p1_p10_tests": ["PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS"],
+  "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
+  "ipfs_cid": null
+}

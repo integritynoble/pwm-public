@@ -1,0 +1,158 @@
+{
+  "artifact_id": "L3-142",
+  "layer": "L3",
+  "parent_l2": "L2-142",
+  "parent_l1": "L1-142",
+  "title": "Brillouin Microscopy Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "Scarcelli eye-lens Brillouin atlas; Prevedel fly-embryo mechanobiology dataset",
+    "secondary": "Water/glycerol calibration standards; PDMS/PMMA material reference",
+    "tertiary": "Synthetic VIPA spectra with Lorentzian peaks + Rayleigh leakage",
+    "construction_method": "Simulate or acquire confocal Brillouin cubes; inject thermal drift / Rayleigh leakage",
+    "num_dev_instances_per_tier": 20,
+    "holdout_instances_per_tier": 10
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_clean_water",
+      "rho": 1,
+      "omega_tier": {
+        "H": 128,
+        "W": 128,
+        "Z": 64,
+        "N_f": 200,
+        "tau_ms": 100,
+        "thermal_drift": 0.0
+      },
+      "epsilon": 10,
+      "d_ibench": 0.14,
+      "baselines": [
+        {
+          "name": "Voigt-LS",
+          "rmse_mhz": 10,
+          "Q": 0.8
+        },
+        {
+          "name": "Bayesian",
+          "rmse_mhz": 8,
+          "Q": 0.88
+        },
+        {
+          "name": "BrillouinNet",
+          "rmse_mhz": 6,
+          "Q": 0.94
+        }
+      ]
+    },
+    {
+      "tier": "T2_tissue_cell",
+      "rho": 3,
+      "omega_tier": {
+        "H": 128,
+        "W": 128,
+        "Z": 64,
+        "N_f": 200,
+        "tau_ms": 100,
+        "thermal_drift": 0.02,
+        "rayleigh_leakage": 0.1
+      },
+      "epsilon": 25,
+      "d_ibench": 0.28,
+      "baselines": [
+        {
+          "name": "Voigt-LS",
+          "rmse_mhz": 30,
+          "Q": 0.48
+        },
+        {
+          "name": "BrillouinNet",
+          "rmse_mhz": 18,
+          "Q": 0.72
+        }
+      ]
+    },
+    {
+      "tier": "T3_high_speed",
+      "rho": 5,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "Z": 128,
+        "N_f": 100,
+        "tau_ms": 5,
+        "thermal_drift": 0.05,
+        "rayleigh_leakage": 0.2,
+        "anisotropy": 0.1
+      },
+      "epsilon": 60,
+      "d_ibench": 0.52,
+      "baselines": [
+        {
+          "name": "Voigt-LS",
+          "rmse_mhz": 90,
+          "Q": 0.3
+        },
+        {
+          "name": "BrillouinNet",
+          "rmse_mhz": 70,
+          "Q": 0.45
+        }
+      ]
+    },
+    {
+      "tier": "T4_severe",
+      "rho": 10,
+      "omega_tier": {
+        "H": 1024,
+        "W": 1024,
+        "Z": 256,
+        "N_f": 50,
+        "tau_ms": 1,
+        "thermal_drift": 0.1,
+        "rayleigh_leakage": 0.5,
+        "anisotropy": 0.2,
+        "spectrometer_drift": 50
+      },
+      "epsilon": 200,
+      "d_ibench": 0.75,
+      "baselines": [
+        {
+          "name": "Voigt-LS",
+          "rmse_mhz": 350,
+          "Q": 0.13
+        },
+        {
+          "name": "BrillouinNet",
+          "rmse_mhz": 280,
+          "Q": 0.28
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "Scarcelli-eye + Prevedel-embryo + calibration union",
+      "num_dev_instances": 200,
+      "num_holdout_instances": 100
+    },
+    "baselines": [
+      {
+        "name": "Voigt-LS",
+        "overall_Q": 0.52
+      },
+      {
+        "name": "Bayesian",
+        "overall_Q": 0.6
+      },
+      {
+        "name": "BrillouinNet",
+        "overall_Q": 0.7
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 BrillouinNet fails at T4_severe: 280 MHz > epsilon_fn ~ 220 MHz.",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

@@ -1,0 +1,92 @@
+{
+  "artifact_id": "L1-125",
+  "layer": "L1",
+  "principle_number": "125",
+  "title": "X-ray Crystallography (single-crystal diffraction)",
+  "domain": "Scientific Instrumentation",
+  "sub_domain": "Atomic-resolution crystal structure determination",
+  "source_file": "K_scientific_instrumentation/125_xray_crystallography.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence boilerplate. Physics grounded in Rupp 2010 Biomolecular Crystallography; Giacovazzo et al. 2011 Fundamentals; Jeffrey 1997 Macromolecular Crystallography; Karplus-Diederichs 2012 data-quality metrics.",
+
+  "E": {
+    "description": "Monochromatic X-rays (typically 1.0-1.8 Å, from synchrotron or rotating anode) diffract off a single crystal; Bragg peaks at angles satisfying n*lambda = 2*d*sin(theta); intensities I(h,k,l) = |F(h,k,l)|^2 where F is Fourier transform of electron density. Phase problem requires SAD/MAD/MIR/MR methods; solvent flattening + refinement.",
+    "forward_model": "I(h,k,l) = |F(h,k,l)|^2 * LP(theta) * absorption(mu*t) * poisson_noise",
+    "world_state_x": "Electron density rho(x,y,z) in unit cell",
+    "observation_y": "Bragg-peak integrated intensities I(h,k,l) for reciprocal-lattice points",
+    "physical_parameters_theta": [
+      "Wavelength lambda (0.5-2.5 Å)",
+      "Crystal unit-cell parameters (a, b, c, alpha, beta, gamma)",
+      "Space group (230 possibilities)",
+      "Resolution limit d_min (1-4 Å typical)",
+      "Mosaicity, crystal size (dictates coherence)",
+      "Radiation damage dose"
+    ]
+  },
+
+  "G": {
+    "dag": "L.diffract.bragg -> L.project.rescipocal -> int.angular",
+    "vertices": ["L.diffract.bragg", "L.project.rescipocal", "int.angular"],
+    "arcs": ["L.diffract.bragg -> L.project.rescipocal", "L.project.rescipocal -> int.angular"],
+    "L_DAG": 3.0,
+    "n_c": 0
+  },
+
+  "W": {
+    "existence": true,
+    "uniqueness": "up to enantiomorph + phase choice (resolved by experimental phasing or MR)",
+    "stability": "conditional",
+    "condition_number_kappa": 1000,
+    "condition_number_effective": 30,
+    "condition_number_mismatched": 800,
+    "regime": "Phase problem fundamentally ill-posed from intensities alone; experimental phasing (MAD/SAD) adds constraints. Well-posed at atomic resolution (<1.2 Å) via direct methods."
+  },
+
+  "C": {
+    "solver_class": "Direct methods (SHELX), MIR/MAD phasing, molecular replacement (Phaser), density modification (DM), learned (AlphaFold-priors)",
+    "convergence_rate_q": 2.0,
+    "error_bound": "R_work ~ sqrt(sigma^2 / |F|^2); R_free independent measure; atomic-position uncertainty ~ R/sqrt(N_obs/N_param)",
+    "complexity": "Direct methods O(N_atoms^1.5); SAD phasing O(N_atoms * N_refl); DM iteration O(N_refl * log)"
+  },
+
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "xray_diffraction",
+    "integration_axis": "angular",
+    "problem_class": "phase_retrieval_inverse",
+    "noise_model": "shot_poisson",
+    "solution_space": "electron_density",
+    "primitives": ["L.diffract.bragg", "L.project.rescipocal", "int.angular"]
+  },
+
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+
+  "mismatch_parameters": ["radiation_damage", "mosaicity", "twinning_fraction", "absorption_anisotropy", "crystal_size_variability"],
+  "error_metric": "R_free",
+  "error_metric_secondary": "atomic_coord_RMSD_angstrom",
+  "error_metric_tertiary": "resolution_angstrom",
+
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "sad_phasing_refinement",
+      "forward_operator": "xrd_bragg_forward",
+      "input_format": "integrated_intensities",
+      "omega": {"resolution_A": 2.0, "N_refl": 50000, "N_atoms": 1000, "mosaicity_deg": 0.3, "radiation_damage": 0.0},
+      "epsilon_fn_center": "R_free 0.22"
+    },
+    "allowed_forward_operators": ["xrd_bragg_forward", "xfel_serial_forward"],
+    "allowed_problem_classes": ["sad_phasing_refinement", "molecular_replacement", "ab_initio_direct_methods", "twin_refinement"],
+    "allowed_omega_dimensions": ["resolution_A", "N_refl", "N_atoms", "mosaicity_deg", "radiation_damage", "twinning_fraction", "absorption_anisotropy", "crystal_size_variability"],
+    "omega_bounds": {
+      "resolution_A": [0.8, 4.0], "N_refl": [100, 1000000],
+      "N_atoms": [10, 100000], "mosaicity_deg": [0.05, 2.0],
+      "radiation_damage": [0.0, 1.0], "twinning_fraction": [0.0, 0.5],
+      "absorption_anisotropy": [0.0, 0.3], "crystal_size_variability": [0.0, 0.5]
+    },
+    "epsilon_bounds": {"r_free": [0.15, 0.50]}
+  },
+
+  "p1_p10_tests": ["PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS"],
+  "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
+  "ipfs_cid": null
+}

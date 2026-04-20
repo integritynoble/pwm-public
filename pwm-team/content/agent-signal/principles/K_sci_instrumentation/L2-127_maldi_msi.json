@@ -1,0 +1,64 @@
+{
+  "artifact_id": "L2-127",
+  "layer": "L2",
+  "parent_l1": "L1-127",
+  "principle_ref": "sha256:<L1-127_principle_hash>",
+  "title": "MALDI-MSI Mapping Spec (tissue lipid family)",
+  "spec_type": "mismatch_only",
+
+  "six_tuple": {
+    "omega": {
+      "H": [32, 2048], "W": [32, 2048], "N_mz": [1000, 200000],
+      "pixel_um": [5, 200], "R_mass": [2000, 500000],
+      "K": [1, 50],
+      "matrix_hot_spot_variability": [0.0, 0.5], "laser_energy_drift": [0.0, 0.2],
+      "mass_calibration_error": [0.0, 50], "ion_suppression": [0.0, 0.5],
+      "tissue_heterogeneity": [0.0, 0.3]
+    },
+    "E": {
+      "forward": "y(r, m/z) = c(r, m/z) * eta_MALDI(matrix) * (1 + hot_spot + laser_drift) + n_Poisson",
+      "operator": "maldi_msi_forward",
+      "primitive_chain": "S.desorb.laserMATRIX -> L.disperse.mass -> int.temporal",
+      "inverse": "recover c(r) in R^{HxWxK} from ion cube"
+    },
+    "B": {"nonnegativity_c": true, "Poisson_counts": true},
+    "I": {"strategy": "peak_integration_init"},
+    "O": ["concentration_NMSE", "spatial_resolution_um", "mass_accuracy_ppm", "residual_norm"],
+    "epsilon_fn": "0.02 + 0.1 * matrix_hot_spot_variability + 0.1 * laser_energy_drift + 0.1 * ion_suppression + 5e-4 * mass_calibration_error"
+  },
+
+  "protocol_fields": {
+    "input_format": {"cube": "uint16(H, W, N_mz)"},
+    "output_format": {"concentrations": "float32(H, W, K)"},
+    "baselines": [
+      {"name": "PeakInt",    "method_sig": "L+O", "expected_nmse": 0.08},
+      {"name": "NMF",        "method_sig": "L+O", "expected_nmse": 0.05},
+      {"name": "MCR-ALS",    "method_sig": "L+O", "expected_nmse": 0.04},
+      {"name": "HotSpotCorr","method_sig": "L+O", "expected_nmse": 0.035},
+      {"name": "CNN-MSI",    "method_sig": "L+N", "expected_nmse": 0.02}
+    ]
+  },
+
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {"H": 300, "W": 300, "N_mz": 30000, "pixel_um": 50, "R_mass": 20000, "K": 10, "matrix_hot_spot_variability": 0.0},
+      "epsilon": 0.05
+    },
+    "tier_bounds": {"H": [64, 1024], "K": [1, 30]},
+    "proximity_threshold": 0.10
+  },
+
+  "d_spec": 0.30,
+  "d_spec_notes": "Distance from 144 DESI ~= 0.30 (Similar — both MSI, different ionization). Distance from 143 SIMS ~= 0.35 (Related — vacuum vs. atmospheric).",
+
+  "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
+  "s1_s4_justifications": {
+    "S1": "Cube dim H x W x N_mz; library K consistent.",
+    "S2": "Linear per-pixel; matrix effects modeled as multiplicative.",
+    "S3": "NMF/MCR-ALS descent; HotSpotCorr linear normalization.",
+    "S4": "epsilon_fn defined; CNN-MSI fails at hot_spot=0.5 + suppression=0.5 (hardness)."
+  },
+
+  "ipfs_cid": null
+}

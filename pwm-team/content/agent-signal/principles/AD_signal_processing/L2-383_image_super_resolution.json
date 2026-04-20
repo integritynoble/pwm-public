@@ -1,0 +1,61 @@
+{
+  "artifact_id": "L2-383",
+  "layer": "L2",
+  "parent_l1": "L1-383",
+  "principle_ref": "sha256:<L1-383_principle_hash>",
+  "title": "Image Super-Resolution Real-World Spec (Real-ESRGAN family)",
+  "spec_type": "mismatch_only",
+
+  "six_tuple": {
+    "omega": {
+      "H": [64, 1024], "W": [64, 1024], "s": [2, 8],
+      "noise_level": [0.0, 0.08], "jpeg_q": [20, 100],
+      "sub_pixel_shift": [0.0, 1.0], "kernel_type_error": [0.0, 0.5]
+    },
+    "E": {
+      "forward": "y = DownSample_s(k_aa * x) + n (+ JPEG)",
+      "operator": "blind_decimate",
+      "primitive_chain": "K.blur.shiftinvariant -> D.decimate.spatial -> int.spatial",
+      "inverse": "recover x in R^{sH x sW x 3} from y in R^{H x W x 3}"
+    },
+    "B": {"nonnegativity": true, "piecewise_smooth": true, "bounded_intensity": "[0, 1]"},
+    "I": {"strategy": "bicubic_init"},
+    "O": ["PSNR_dB", "SSIM", "LPIPS", "NIQE", "residual_norm"],
+    "epsilon_fn": "22.0 + 3.0 * (4 / s) - 8.0 * noise_level + 0.02 * log10(jpeg_q)"
+  },
+
+  "protocol_fields": {
+    "input_format": {"lr": "float32(H, W, 3)"},
+    "output_format": {"hr": "float32(sH, sW, 3)"},
+    "baselines": [
+      {"name": "Bicubic",      "method_sig": "L+O", "expected_psnr": 24.0},
+      {"name": "SRCNN",        "method_sig": "L+N", "expected_psnr": 27.5},
+      {"name": "EDSR",         "method_sig": "L+N", "expected_psnr": 30.5},
+      {"name": "RCAN",         "method_sig": "L+N", "expected_psnr": 31.8},
+      {"name": "Real-ESRGAN",  "method_sig": "L+N", "expected_psnr": 28.0}
+    ]
+  },
+
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {"H": 256, "W": 256, "s": 4, "noise_level": 0.0, "jpeg_q": 100, "kernel_type_error": 0.0},
+      "epsilon": 28.0
+    },
+    "tier_bounds": {"H": [64, 512], "s": [2, 8], "noise_level": [0.0, 0.08], "jpeg_q": [30, 100]},
+    "proximity_threshold": 0.10
+  },
+
+  "d_spec": 0.42,
+  "d_spec_notes": "Reference from hypothetical bicubic-oracle spec d_spec ~= 0.20 (Similar). Distance from 382 deblurring ~= 0.35 (Related — both share K.blur primitive but SR adds decimation).",
+
+  "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
+  "s1_s4_justifications": {
+    "S1": "Dimensions: H x W LR, sH x sW HR; decimation factor s integer and consistent.",
+    "S2": "Underdetermined by s^2:1 but regularizable under natural image prior; perceptual score well-posed with LPIPS.",
+    "S3": "Bicubic trivial; EDSR/RCAN residual networks converge by construction; GAN-based Real-ESRGAN converges to Nash equilibrium empirically.",
+    "S4": "epsilon_fn(s=4, noise=0) = 25 dB floor; Real-ESRGAN fails at T4 kernel_type_error=0.5 (hardness satisfied)."
+  },
+
+  "ipfs_cid": null
+}

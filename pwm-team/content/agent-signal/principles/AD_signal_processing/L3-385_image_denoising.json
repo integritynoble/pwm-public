@@ -1,0 +1,70 @@
+{
+  "artifact_id": "L3-385",
+  "layer": "L3",
+  "parent_l2": "L2-385",
+  "parent_l1": "L1-385",
+  "title": "Image Denoising Benchmark Suite (SIDD + DND + Kodak)",
+  "benchmark_type": "combined_P_and_I",
+
+  "dataset_registry": {
+    "primary": "SIDD (Abdelhamed et al. 2018) — real smartphone noise pairs",
+    "secondary": "DND (Plotz-Roth 2017) + BSD68 + Kodak24",
+    "tertiary": "NIND + RENOIR real-noise datasets",
+    "construction_method": "Crop 256x256; synthetic tiers inject AWGN at sigma; real tiers use SIDD/DND pairs",
+    "num_dev_instances_per_tier": 20, "holdout_instances_per_tier": 10
+  },
+
+  "ibenchmarks": [
+    {
+      "tier": "T1_mild", "rho": 1,
+      "omega_tier": {"H": 256, "W": 256, "sigma_n": 15, "gain_uncertainty": 0.0, "spatial_correlation": 0.0},
+      "epsilon": 33.5, "d_ibench": 0.14,
+      "baselines": [
+        {"name": "BM3D",      "score": 32.0, "Q": 0.76},
+        {"name": "DnCNN",     "score": 33.8, "Q": 0.88},
+        {"name": "Restormer", "score": 35.2, "Q": 0.94}
+      ]
+    },
+    {
+      "tier": "T2_moderate", "rho": 3,
+      "omega_tier": {"H": 256, "W": 256, "sigma_n": 25, "gain_uncertainty": 0.05, "spatial_correlation": 0.1},
+      "epsilon": 30.0, "d_ibench": 0.27,
+      "baselines": [
+        {"name": "BM3D",      "score": 29.5, "Q": 0.70},
+        {"name": "DnCNN",     "score": 31.2, "Q": 0.80},
+        {"name": "Restormer", "score": 32.5, "Q": 0.86}
+      ]
+    },
+    {
+      "tier": "T3_high", "rho": 5,
+      "omega_tier": {"H": 512, "W": 512, "sigma_n": 50, "gain_uncertainty": 0.15, "spatial_correlation": 0.3},
+      "epsilon": 25.0, "d_ibench": 0.48,
+      "baselines": [
+        {"name": "DnCNN",     "score": 26.0, "Q": 0.58},
+        {"name": "Restormer", "score": 27.5, "Q": 0.68}
+      ]
+    },
+    {
+      "tier": "T4_extreme_real", "rho": 10,
+      "omega_tier": {"H": 512, "W": 512, "sigma_n": 75, "gain_uncertainty": 0.3, "spatial_correlation": 0.5},
+      "epsilon": 21.0, "d_ibench": 0.72,
+      "baselines": [
+        {"name": "Restormer",  "score": 22.0, "Q": 0.42},
+        {"name": "Noise2Void", "score": 20.5, "Q": 0.32}
+      ]
+    }
+  ],
+
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {"name": "SIDD + DND + BSD68 + Kodak24 union", "num_dev_instances": 200, "num_holdout_instances": 100},
+    "baselines": [
+      {"name": "BM3D",      "overall_Q": 0.58},
+      {"name": "DnCNN",     "overall_Q": 0.68},
+      {"name": "Restormer", "overall_Q": 0.76}
+    ]
+  },
+
+  "hardness_rule_check": "SATISFIED — Restormer fails at T4_extreme_real corner (sigma=75, gain_unc=0.3, corr=0.5): 22.0 dB < epsilon_fn ~ 22.5 dB.",
+  "ipfs_cid": null, "ground_truth_cid": null
+}

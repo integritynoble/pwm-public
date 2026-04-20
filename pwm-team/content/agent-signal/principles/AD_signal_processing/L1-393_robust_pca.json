@@ -1,0 +1,91 @@
+{
+  "artifact_id": "L1-393",
+  "layer": "L1",
+  "principle_number": "393",
+  "title": "Robust Principal Component Analysis (low-rank plus sparse)",
+  "domain": "Signal Processing",
+  "sub_domain": "L+S decomposition / Principal Component Pursuit",
+  "source_file": "AD_signal_processing/393_robust_pca.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence boilerplate. Physics grounded in Candes-Li-Ma-Wright 2011 PCP; Chandrasekaran et al. 2011 rank-sparsity incoherence; Bouwmans-Zahzah 2014 review; Lin-Chen-Ma 2013 ALM solver.",
+
+  "E": {
+    "description": "Observed matrix M is a sum of a low-rank component L* and a sparse outlier component S*; task is to exactly recover L* and S* under mutual-incoherence assumption via principal component pursuit (PCP).",
+    "forward_model": "M = L* + S* + N;  rank(L*) = r,  ||S*||_0 <= s",
+    "world_state_x": "Low-rank L* in R^{m x n} of rank r plus sparse S* in R^{m x n} with s non-zero entries",
+    "observation_y": "Corrupted measurement M in R^{m x n}",
+    "physical_parameters_theta": [
+      "Dimensions m, n",
+      "Rank r of low-rank component",
+      "Sparsity s of outlier component",
+      "Coherence mu_0 (incoherence condition)",
+      "Gaussian noise std sigma_n"
+    ]
+  },
+
+  "G": {
+    "dag": "L.synthesis.lowrank + L.synthesis.sparse -> int.spatial",
+    "vertices": ["L.synthesis.lowrank", "L.synthesis.sparse", "int.spatial"],
+    "arcs": ["L.synthesis.lowrank -> int.spatial", "L.synthesis.sparse -> int.spatial"],
+    "L_DAG": 2.7,
+    "n_c": 1
+  },
+
+  "W": {
+    "existence": true,
+    "uniqueness": "when rank r <= C * min(m,n) / (mu_0 * log^2(max(m,n))) and s < C * m*n (Candes-Li-Ma-Wright 2011)",
+    "stability": "conditional",
+    "condition_number_kappa": 1000,
+    "condition_number_effective": 20,
+    "condition_number_mismatched": 500,
+    "regime": "Identifiable under rank-sparsity incoherence: low-rank component must be incoherent w.r.t. standard basis; sparse component must be spread among entries. PCP (nuclear+L1) solves exactly under mild conditions."
+  },
+
+  "C": {
+    "solver_class": "Inexact ALM (IALM), ADMM-based PCP, GoDec, accelerated alt-min (AltProj), learned (deep-RPCA, Corenet)",
+    "convergence_rate_q": 1.5,
+    "error_bound": "||L_hat - L*||_F + ||S_hat - S*||_F <= C * sigma * sqrt(m*n); exact recovery when noise-free",
+    "complexity": "IALM: O(m*n*r*k) with k iterations; AltProj: O(m*n*r) per iteration"
+  },
+
+  "physics_fingerprint": {
+    "carrier": "abstract",
+    "sensing_mechanism": "additive_decomposition",
+    "integration_axis": "none",
+    "problem_class": "low_rank_plus_sparse",
+    "noise_model": "gaussian_plus_outlier",
+    "solution_space": "low_rank_plus_sparse_matrix",
+    "primitives": ["L.synthesis.lowrank", "L.synthesis.sparse", "int.spatial"]
+  },
+
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+
+  "mismatch_parameters": ["outlier_density", "rank_overestimation", "coherence", "noise_level", "lambda_tuning_error"],
+  "error_metric": "relative_frobenius_error_L",
+  "error_metric_secondary": "precision_recall_S",
+  "error_metric_tertiary": "rank_recovery_accuracy",
+
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "rpca_lowrank_sparse",
+      "forward_operator": "additive_L_plus_S",
+      "input_format": "observed_matrix_only",
+      "omega": {"m": 500, "n": 500, "r": 10, "s_fraction": 0.1, "mu_0": 1.0, "sigma_n": 0.001, "lambda": 1.0},
+      "epsilon_fn_center": "rel-Frob 1e-4"
+    },
+    "allowed_forward_operators": ["additive_L_plus_S", "masked_L_plus_S", "tensor_robust_pca"],
+    "allowed_problem_classes": ["rpca_lowrank_sparse", "robust_tensor_pca", "online_rpca"],
+    "allowed_omega_dimensions": ["m", "n", "r", "s_fraction", "mu_0", "sigma_n", "lambda", "column_corruption"],
+    "omega_bounds": {
+      "m": [50, 10000], "n": [50, 10000],
+      "r": [1, 500], "s_fraction": [0.0, 0.5],
+      "mu_0": [1.0, 10.0], "sigma_n": [0.0, 0.1],
+      "lambda": [0.1, 10], "column_corruption": [0.0, 0.3]
+    },
+    "epsilon_bounds": {"rel_frob": [1e-6, 1.0]}
+  },
+
+  "p1_p10_tests": ["PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS"],
+  "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
+  "ipfs_cid": null
+}

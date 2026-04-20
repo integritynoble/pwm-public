@@ -1,0 +1,146 @@
+{
+  "artifact_id": "L2-392",
+  "layer": "L2",
+  "parent_l1": "L1-392",
+  "principle_ref": "sha256:<L1-392_principle_hash>",
+  "title": "Matrix Completion Uniform-Sampling Spec (MovieLens family)",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "m": [
+        50,
+        10000
+      ],
+      "n": [
+        50,
+        10000
+      ],
+      "r": [
+        1,
+        500
+      ],
+      "p": [
+        0.05,
+        0.9
+      ],
+      "mu_0": [
+        1.0,
+        10.0
+      ],
+      "sigma_n": [
+        0.0,
+        0.1
+      ],
+      "sampling_bias": [
+        0.0,
+        1.0
+      ]
+    },
+    "E": {
+      "forward": "Y = P_Omega(M) + n; Omega uniform random subset of entries",
+      "operator": "uniform_entry_mask",
+      "primitive_chain": "D.mask.entry -> int.spatial",
+      "inverse": "recover M in R^{m x n} with rank r from observed entries"
+    },
+    "B": {
+      "low_rank": "rank(M) <= r",
+      "bounded_entries": "|M_ij| <= M_max",
+      "incoherence": "mu(U), mu(V) <= mu_0"
+    },
+    "I": {
+      "strategy": "zero_or_svd_init"
+    },
+    "O": [
+      "relative_frobenius_error",
+      "test_RMSE",
+      "rank_estimate",
+      "residual_norm"
+    ],
+    "epsilon_fn": "1e-3 * max(1, mu_0**2 * r * (m+n) / (p * m * n)) + 10 * sigma_n**2 + 2 * sampling_bias"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "indices": "int64(|Omega|, 2)",
+      "values": "float32(|Omega|)",
+      "shape": "int64(2)"
+    },
+    "output_format": {
+      "matrix": "float32(m, n)"
+    },
+    "baselines": [
+      {
+        "name": "SVT",
+        "method_sig": "L+O",
+        "expected_rel_frob": 0.001
+      },
+      {
+        "name": "OptSpace",
+        "method_sig": "L+O",
+        "expected_rel_frob": 0.0005
+      },
+      {
+        "name": "alt-min",
+        "method_sig": "L+O",
+        "expected_rel_frob": 0.0008
+      },
+      {
+        "name": "NuclearBP",
+        "method_sig": "L+O",
+        "expected_rel_frob": 0.0006
+      },
+      {
+        "name": "NeuralCF",
+        "method_sig": "L+N",
+        "expected_rel_frob": 0.0005
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "m": 500,
+        "n": 500,
+        "r": 10,
+        "p": 0.3,
+        "mu_0": 1.0,
+        "sigma_n": 0.001
+      },
+      "epsilon": 0.001
+    },
+    "tier_bounds": {
+      "m": [
+        100,
+        5000
+      ],
+      "n": [
+        100,
+        5000
+      ],
+      "r": [
+        1,
+        50
+      ],
+      "p": [
+        0.1,
+        0.8
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.5,
+  "d_spec_notes": "Distance from 393 robust PCA ~= 0.30 (Related, shared low-rank model, adds sparse error component). Distance from 386 CS ~= 0.45 (different solution-space geometry).",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Observation mask and matrix dimensions consistent.",
+    "S2": "Candes-Recht theorem guarantees uniqueness when p >= C*mu_0^2*r*(m+n)log^2(m+n)/(mn).",
+    "S3": "SVT contraction mapping; alt-min converges geometrically under incoherence; SDP convex.",
+    "S4": "epsilon_fn evaluates; alt-min fails at T4 (p=0.05, r=500, mu_0=10) \u2014 hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

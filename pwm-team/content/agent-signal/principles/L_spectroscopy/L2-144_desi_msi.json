@@ -1,0 +1,64 @@
+{
+  "artifact_id": "L2-144",
+  "layer": "L2",
+  "parent_l1": "L1-144",
+  "principle_ref": "sha256:<L1-144_principle_hash>",
+  "title": "DESI-MSI Mapping Spec (tissue ambient MSI family)",
+  "spec_type": "mismatch_only",
+
+  "six_tuple": {
+    "omega": {
+      "H": [32, 1024], "W": [32, 1024], "N_mz": [1000, 100000],
+      "pixel_um": [20, 500], "R_mass": [5000, 200000],
+      "K": [1, 50],
+      "ion_suppression": [0.0, 0.8], "spray_drift": [0.0, 0.3],
+      "scan_speed_variability": [0.0, 0.2], "mass_calibration_error": [0.0, 50],
+      "pixel_stitching_error": [0.0, 0.2]
+    },
+    "E": {
+      "forward": "y(r, m/z) = S * c * eta_DESI + n; ion suppression modulates eta per voxel",
+      "operator": "desi_msi_forward",
+      "primitive_chain": "L.spray.chargeddroplet -> L.disperse.mass -> int.temporal",
+      "inverse": "recover c(r) in R^{HxWxK} from y"
+    },
+    "B": {"nonnegativity_c": true, "ms_linear": "at low analyte density"},
+    "I": {"strategy": "peak_integration_init"},
+    "O": ["concentration_NMSE", "spatial_resolution_um", "mass_accuracy_ppm", "residual_norm"],
+    "epsilon_fn": "0.015 + 0.1 * ion_suppression + 0.2 * spray_drift + 0.1 * scan_speed_variability + 5e-4 * mass_calibration_error"
+  },
+
+  "protocol_fields": {
+    "input_format": {"cube": "float32(H, W, N_mz)"},
+    "output_format": {"concentrations": "float32(H, W, K)", "peak_mz": "float32(K)"},
+    "baselines": [
+      {"name": "PeakInt",      "method_sig": "L+O", "expected_nmse": 0.06},
+      {"name": "NMF",          "method_sig": "L+O", "expected_nmse": 0.04},
+      {"name": "MCR-ALS",      "method_sig": "L+O", "expected_nmse": 0.035},
+      {"name": "InternalStdCorr","method_sig": "L+O", "expected_nmse": 0.03},
+      {"name": "CNN-MSI",      "method_sig": "L+N", "expected_nmse": 0.02}
+    ]
+  },
+
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {"H": 200, "W": 200, "N_mz": 20000, "pixel_um": 100, "R_mass": 30000, "K": 10, "ion_suppression": 0.1},
+      "epsilon": 0.03
+    },
+    "tier_bounds": {"H": [32, 512], "K": [1, 30]},
+    "proximity_threshold": 0.10
+  },
+
+  "d_spec": 0.55,
+  "d_spec_notes": "Distance from 127 MALDI ~= 0.30 (Similar MSI, different ionization). Distance from 143 SIMS ~= 0.40 (Related — ambient vs. vacuum).",
+
+  "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
+  "s1_s4_justifications": {
+    "S1": "Cube dim H x W x N_mz; K-chemical library consistent.",
+    "S2": "Linear-response unique under non-saturating ionization; matrix-effect breaks at T4.",
+    "S3": "NMF/MCR-ALS monotonic descent; CNN-MSI feed-forward.",
+    "S4": "epsilon_fn defined; CNN-MSI fails at ion_suppression=0.8 + spray_drift=0.3 (hardness)."
+  },
+
+  "ipfs_cid": null
+}

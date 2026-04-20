@@ -1,0 +1,149 @@
+{
+  "artifact_id": "L3-126",
+  "layer": "L3",
+  "parent_l2": "L2-126",
+  "parent_l1": "L1-126",
+  "title": "SAXS Benchmark Suite (SASBDB + ATSAS-test)",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "SASBDB (Small-Angle Scattering Biological Data Bank) curated deposits",
+    "secondary": "ATSAS test set + BioSAXS curated benchmark (Svergun lab)",
+    "tertiary": "Synthetic SAXS curves from PDB models via CRYSOL with added aggregation",
+    "construction_method": "Use measured or CRYSOL-simulated curves; inject aggregation/polydispersity",
+    "num_dev_instances_per_tier": 20,
+    "holdout_instances_per_tier": 10
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_clean_globular",
+      "rho": 1,
+      "omega_tier": {
+        "N_q": 400,
+        "Rg_nm": 2.0,
+        "aggregation_fraction": 0.0,
+        "polydispersity": 0.05
+      },
+      "epsilon": 0.04,
+      "d_ibench": 0.14,
+      "baselines": [
+        {
+          "name": "GNOM",
+          "rmse_nm": 0.04,
+          "Q": 0.88
+        },
+        {
+          "name": "BIFT",
+          "rmse_nm": 0.035,
+          "Q": 0.92
+        },
+        {
+          "name": "SAX-ML",
+          "rmse_nm": 0.03,
+          "Q": 0.96
+        }
+      ]
+    },
+    {
+      "tier": "T2_mild_agg",
+      "rho": 3,
+      "omega_tier": {
+        "N_q": 400,
+        "Rg_nm": 5.0,
+        "aggregation_fraction": 0.1,
+        "polydispersity": 0.15,
+        "buffer_mismatch": 0.05
+      },
+      "epsilon": 0.1,
+      "d_ibench": 0.28,
+      "baselines": [
+        {
+          "name": "GNOM",
+          "rmse_nm": 0.12,
+          "Q": 0.52
+        },
+        {
+          "name": "SAX-ML",
+          "rmse_nm": 0.08,
+          "Q": 0.72
+        }
+      ]
+    },
+    {
+      "tier": "T3_flexible",
+      "rho": 5,
+      "omega_tier": {
+        "N_q": 400,
+        "Rg_nm": 8.0,
+        "aggregation_fraction": 0.2,
+        "polydispersity": 0.3,
+        "buffer_mismatch": 0.1
+      },
+      "epsilon": 0.2,
+      "d_ibench": 0.5,
+      "baselines": [
+        {
+          "name": "EOM",
+          "rmse_nm": 0.25,
+          "Q": 0.42
+        },
+        {
+          "name": "SAX-ML",
+          "rmse_nm": 0.18,
+          "Q": 0.6
+        }
+      ]
+    },
+    {
+      "tier": "T4_severe",
+      "rho": 10,
+      "omega_tier": {
+        "N_q": 100,
+        "Rg_nm": 50,
+        "aggregation_fraction": 0.5,
+        "polydispersity": 0.5,
+        "buffer_mismatch": 0.3,
+        "beam_damage": 0.5,
+        "q_range_truncation": 0.5
+      },
+      "epsilon": 0.5,
+      "d_ibench": 0.74,
+      "baselines": [
+        {
+          "name": "DAMMIF",
+          "rmse_nm": 0.85,
+          "Q": 0.13
+        },
+        {
+          "name": "SAX-ML",
+          "rmse_nm": 0.7,
+          "Q": 0.28
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "SASBDB + ATSAS + synthetic CRYSOL union",
+      "num_dev_instances": 200,
+      "num_holdout_instances": 100
+    },
+    "baselines": [
+      {
+        "name": "GNOM",
+        "overall_Q": 0.6
+      },
+      {
+        "name": "DAMMIF",
+        "overall_Q": 0.58
+      },
+      {
+        "name": "SAX-ML",
+        "overall_Q": 0.7
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 SAX-ML fails at T4_severe (agg=0.5, truncation=0.5): 0.7 > epsilon_fn ~ 0.55.",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

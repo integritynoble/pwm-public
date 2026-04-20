@@ -1,0 +1,94 @@
+{
+  "artifact_id": "L1-144",
+  "layer": "L1",
+  "principle_number": "144",
+  "title": "DESI-MSI — Desorption ElectroSpray Ionization Mass-Spec Imaging",
+  "domain": "Spectroscopy",
+  "sub_domain": "Ambient mass-spec imaging",
+  "source_file": "L_spectroscopy/144_desi_msi.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence boilerplate. Physics grounded in Takats-Wiseman-Gologan-Cooks 2004 DESI Science; Eberlin-Ifa-Wu-Cooks 2010 review; Paine et al. 2018 ambient MSI advances.",
+
+  "E": {
+    "description": "Electrosprayed charged solvent droplets impact a sample, re-dissolving and ionizing surface molecules; secondary droplets travel to mass spectrometer inlet where m/z is measured. A moving stage rasters the sample under the DESI spray to build a 2D image with spectrum per pixel.",
+    "forward_model": "y(r, m/z) = S(m/z) * c(r, m/z) * eta_DESI + n_Poisson",
+    "world_state_x": "Surface concentration maps c(r, m/z) for K analytes",
+    "observation_y": "m/z-resolved ion count cube y in N^{H x W x N_mz}",
+    "physical_parameters_theta": [
+      "Solvent composition (MeOH/H2O ratio, additives)",
+      "Spray flow rate, voltage, nebulizing gas pressure",
+      "Stage speed, pixel pitch (20-200 um)",
+      "MS instrument type (Orbitrap, QTOF)",
+      "Mass resolution R = M/dM (10-100k)",
+      "Ion-suppression (matrix effect)"
+    ]
+  },
+
+  "G": {
+    "dag": "L.spray.chargeddroplet -> L.disperse.mass -> int.temporal",
+    "vertices": ["L.spray.chargeddroplet", "L.disperse.mass", "int.temporal"],
+    "arcs": ["L.spray.chargeddroplet -> L.disperse.mass", "L.disperse.mass -> int.temporal"],
+    "L_DAG": 2.7,
+    "n_c": 0
+  },
+
+  "W": {
+    "existence": true,
+    "uniqueness": "mass-peak identity unique at high R; linear in c(r) for non-saturating ionization",
+    "stability": "conditional",
+    "condition_number_kappa": 500,
+    "condition_number_effective": 40,
+    "condition_number_mismatched": 1500,
+    "regime": "Linear regime at low analyte density; ion-suppression & matrix effects dominate at high concentration. Spray stability drift causes low-frequency artifacts in slow scans."
+  },
+
+  "C": {
+    "solver_class": "Peak integration, PCA/NMF, MCR-ALS, ion-suppression correction via internal standards, learned (CNN-MSI, GraphNN-MSI)",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Poisson-limited NMSE ~ 1/sqrt(N_counts); suppression error ~ matrix-effect std dev",
+    "complexity": "O(H*W*K*N_mz) linear unmix; MCR-ALS iter*..."
+  },
+
+  "physics_fingerprint": {
+    "carrier": "ion",
+    "sensing_mechanism": "ambient_ionization_ms",
+    "integration_axis": "mass_and_spatial",
+    "problem_class": "linear_inverse_count",
+    "noise_model": "shot_poisson",
+    "solution_space": "molecular_surface_map",
+    "primitives": ["L.spray.chargeddroplet", "L.disperse.mass", "int.temporal"]
+  },
+
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+
+  "mismatch_parameters": ["ion_suppression", "spray_drift", "scan_speed_variability", "mass_calibration_error", "pixel_stitching_error"],
+  "error_metric": "concentration_NMSE",
+  "error_metric_secondary": "spatial_resolution_um",
+  "error_metric_tertiary": "mass_accuracy_ppm",
+
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "desi_msi_mapping",
+      "forward_operator": "desi_msi_forward",
+      "input_format": "ion_count_cube",
+      "omega": {"H": 200, "W": 200, "N_mz": 20000, "pixel_um": 100, "R_mass": 30000, "K": 10, "ion_suppression": 0.1},
+      "epsilon_fn_center": "NMSE 0.03"
+    },
+    "allowed_forward_operators": ["desi_msi_forward", "nanoDESI_forward", "leco_ambient_forward"],
+    "allowed_problem_classes": ["desi_msi_mapping", "desi_classification", "desi_quantitation"],
+    "allowed_omega_dimensions": ["H", "W", "N_mz", "pixel_um", "R_mass", "K", "ion_suppression", "spray_drift", "scan_speed_variability", "mass_calibration_error", "pixel_stitching_error"],
+    "omega_bounds": {
+      "H": [32, 1024], "W": [32, 1024], "N_mz": [1000, 100000],
+      "pixel_um": [20, 500], "R_mass": [5000, 200000],
+      "K": [1, 50],
+      "ion_suppression": [0.0, 0.8], "spray_drift": [0.0, 0.3],
+      "scan_speed_variability": [0.0, 0.2], "mass_calibration_error": [0.0, 50],
+      "pixel_stitching_error": [0.0, 0.2]
+    },
+    "epsilon_bounds": {"nmse": [1e-3, 0.5]}
+  },
+
+  "p1_p10_tests": ["PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS"],
+  "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
+  "ipfs_cid": null
+}

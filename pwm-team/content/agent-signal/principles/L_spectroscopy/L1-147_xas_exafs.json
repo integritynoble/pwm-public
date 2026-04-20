@@ -1,0 +1,93 @@
+{
+  "artifact_id": "L1-147",
+  "layer": "L1",
+  "principle_number": "147",
+  "title": "XAS / EXAFS — X-ray Absorption & Extended X-ray Absorption Fine Structure",
+  "domain": "Spectroscopy",
+  "sub_domain": "Inner-shell X-ray absorption + multiple scattering oscillations",
+  "source_file": "L_spectroscopy/147_xas_exafs.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence boilerplate. Physics grounded in Sayers-Stern-Lytle 1971 EXAFS seminal paper; Rehr-Albers 2000 RMP review; Newville 2014 fundamentals; Koningsberger-Prins 1988 XAS principles book.",
+
+  "E": {
+    "description": "Above an absorption edge (K, L1-3), an X-ray photon ejects a core-level photoelectron whose outgoing spherical wave back-scatters off neighboring atoms, interfering with the outgoing wave. This creates oscillations chi(k) in the absorption coefficient vs. wavenumber k = sqrt(2m(E-E_0))/hbar. XANES (<50 eV above edge) probes oxidation/coordination; EXAFS (>50 eV) probes radial distribution functions.",
+    "forward_model": "mu(E) = mu_0(E) * [1 + chi(k)];  chi(k) = sum_j (N_j S_0^2 / (k R_j^2)) * F_j(k) * exp(-2 sigma_j^2 k^2) * sin(2 k R_j + phi_j(k))",
+    "world_state_x": "Radial coordination parameters {R_j, N_j, sigma_j^2, E_0 shift}",
+    "observation_y": "Absorption coefficient mu(E) measured via transmission or fluorescence yield",
+    "physical_parameters_theta": [
+      "Absorption-edge position E_0 (element-specific)",
+      "Energy step delta_E and range above edge",
+      "Signal-to-noise (depends on beam flux and detector)",
+      "Amplitude reduction factor S_0^2",
+      "Multiple-scattering truncation order",
+      "Self-absorption corrections (fluorescence mode)"
+    ]
+  },
+
+  "G": {
+    "dag": "L.absorb.photoionization -> L.scatter.multiple -> int.spectral",
+    "vertices": ["L.absorb.photoionization", "L.scatter.multiple", "int.spectral"],
+    "arcs": ["L.absorb.photoionization -> L.scatter.multiple", "L.scatter.multiple -> int.spectral"],
+    "L_DAG": 3.0,
+    "n_c": 0
+  },
+
+  "W": {
+    "existence": true,
+    "uniqueness": "structural parameters unique when Nyquist-sampled in k-space and shells non-degenerate",
+    "stability": "conditional",
+    "condition_number_kappa": 500,
+    "condition_number_effective": 30,
+    "condition_number_mismatched": 800,
+    "regime": "Fourier-transform EXAFS inversion is linear; parameter fitting (R_j, N_j, sigma_j^2) is nonlinear; correlation among N, S_0, sigma is a major ill-conditioning source."
+  },
+
+  "C": {
+    "solver_class": "FEFF path calculation + Artemis / IFEFFIT nonlinear LS fit; wavelet transform; learned (XANES-Net, EXAFS-CNN)",
+    "convergence_rate_q": 2.0,
+    "error_bound": "R uncertainty ~ 1/(2*k_max) = 0.05 A at k_max=10 A^-1; N uncertainty ~20% due to S_0^2 correlation",
+    "complexity": "FEFF O(N_path * N_energy); Artemis fit O(iter * N_param * N_E)"
+  },
+
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "xray_core_absorption",
+    "integration_axis": "spectral",
+    "problem_class": "nonlinear_inverse_structural",
+    "noise_model": "poisson",
+    "solution_space": "radial_coordination",
+    "primitives": ["L.absorb.photoionization", "L.scatter.multiple", "int.spectral"]
+  },
+
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+
+  "mismatch_parameters": ["e0_shift", "s0_squared_error", "multiple_scattering_truncation", "self_absorption_correction", "detector_saturation"],
+  "error_metric": "R_j_RMSE_angstrom",
+  "error_metric_secondary": "N_j_NMSE",
+  "error_metric_tertiary": "fit_R_factor",
+
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "exafs_radial_fit",
+      "forward_operator": "feff_exafs_forward",
+      "input_format": "absorption_vs_energy",
+      "omega": {"N_E": 400, "k_max": 10, "K_shells": 3, "SNR_dB": 30, "S_0_squared": 0.85, "e0_shift_eV": 0.0},
+      "epsilon_fn_center": "0.01 A R-RMSE"
+    },
+    "allowed_forward_operators": ["feff_exafs_forward", "ab_initio_xanes_forward"],
+    "allowed_problem_classes": ["exafs_radial_fit", "xanes_fingerprint", "operando_xas_reaction"],
+    "allowed_omega_dimensions": ["N_E", "k_max", "K_shells", "SNR_dB", "S_0_squared", "e0_shift_eV", "multiple_scattering_truncation", "self_absorption_correction", "detector_saturation"],
+    "omega_bounds": {
+      "N_E": [50, 2000], "k_max": [4, 16],
+      "K_shells": [1, 10], "SNR_dB": [-5, 45],
+      "S_0_squared": [0.5, 1.0], "e0_shift_eV": [-5, 5],
+      "multiple_scattering_truncation": [1, 5],
+      "self_absorption_correction": [0.0, 0.3], "detector_saturation": [0.0, 0.2]
+    },
+    "epsilon_bounds": {"rmse_angstrom": [0.001, 0.2]}
+  },
+
+  "p1_p10_tests": ["PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS"],
+  "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
+  "ipfs_cid": null
+}

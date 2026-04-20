@@ -1,0 +1,71 @@
+{
+  "artifact_id": "L3-384",
+  "layer": "L3",
+  "parent_l2": "L2-384",
+  "parent_l1": "L1-384",
+  "title": "Image Inpainting Benchmark Suite (Places2 + CelebA-HQ + irregular-mask)",
+  "benchmark_type": "combined_P_and_I",
+
+  "dataset_registry": {
+    "primary": "Places2 (Zhou et al. 2017) — 1.8M training scenes",
+    "secondary": "CelebA-HQ (Karras et al. 2018) + FFHQ + ImageNet",
+    "tertiary": "Liu et al. 2018 irregular-mask dataset (55k freeform masks)",
+    "construction_method": "Center crop 512x512; apply NVIDIA irregular mask distribution at tier-specified mask_ratio",
+    "num_dev_instances_per_tier": 20, "holdout_instances_per_tier": 10
+  },
+
+  "ibenchmarks": [
+    {
+      "tier": "T1_small_holes", "rho": 1,
+      "omega_tier": {"H": 512, "W": 512, "mask_ratio": 0.10, "hole_diameter_max": 32, "noise_level": 0.0},
+      "epsilon": 30.0, "d_ibench": 0.13,
+      "baselines": [
+        {"name": "TV-ADMM",    "score": 26.0, "Q": 0.58},
+        {"name": "DeepFillV2", "score": 30.5, "Q": 0.82},
+        {"name": "LaMa",       "score": 32.5, "Q": 0.90}
+      ]
+    },
+    {
+      "tier": "T2_medium", "rho": 3,
+      "omega_tier": {"H": 512, "W": 512, "mask_ratio": 0.25, "hole_diameter_max": 128, "noise_level": 0.01},
+      "epsilon": 27.0, "d_ibench": 0.28,
+      "baselines": [
+        {"name": "TV-ADMM",    "score": 22.5, "Q": 0.38},
+        {"name": "DeepFillV2", "score": 27.0, "Q": 0.68},
+        {"name": "LaMa",       "score": 29.5, "Q": 0.80}
+      ]
+    },
+    {
+      "tier": "T3_large", "rho": 5,
+      "omega_tier": {"H": 512, "W": 512, "mask_ratio": 0.50, "hole_diameter_max": 256, "noise_level": 0.02},
+      "epsilon": 23.0, "d_ibench": 0.52,
+      "baselines": [
+        {"name": "DeepFillV2", "score": 23.0, "Q": 0.48},
+        {"name": "LaMa",       "score": 25.5, "Q": 0.62},
+        {"name": "MAT",        "score": 26.0, "Q": 0.65}
+      ]
+    },
+    {
+      "tier": "T4_severe", "rho": 10,
+      "omega_tier": {"H": 1024, "W": 1024, "mask_ratio": 0.75, "hole_diameter_max": 512, "noise_level": 0.05},
+      "epsilon": 19.0, "d_ibench": 0.76,
+      "baselines": [
+        {"name": "LaMa", "score": 19.5, "Q": 0.30},
+        {"name": "MAT",  "score": 20.5, "Q": 0.38}
+      ]
+    }
+  ],
+
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {"name": "Places2 + CelebA-HQ + FFHQ + NVIDIA-irregular union", "num_dev_instances": 200, "num_holdout_instances": 100},
+    "baselines": [
+      {"name": "DeepFillV2", "overall_Q": 0.58},
+      {"name": "LaMa",       "overall_Q": 0.68},
+      {"name": "MAT",        "overall_Q": 0.72}
+    ]
+  },
+
+  "hardness_rule_check": "SATISFIED — MAT fails at T4_severe (mask_ratio=0.75, hole=512): 20.5 dB < epsilon_fn=21.0 dB at that corner.",
+  "ipfs_cid": null, "ground_truth_cid": null
+}

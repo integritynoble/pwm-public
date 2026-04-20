@@ -1,0 +1,62 @@
+{
+  "artifact_id": "L2-138",
+  "layer": "L2",
+  "parent_l1": "L1-138",
+  "principle_ref": "sha256:<L1-138_principle_hash>",
+  "title": "CARS Multiplex Spec (broadband CARS family)",
+  "spec_type": "mismatch_only",
+
+  "six_tuple": {
+    "omega": {
+      "H": [64, 1024], "W": [64, 1024], "N_omega": [1, 2048],
+      "lambda_p_nm": [750, 1100], "lambda_s_nm": [1000, 1300],
+      "rho_NR": [0.0, 5.0], "pulse_energy_fluct": [0.0, 0.3],
+      "frequency_drift_cm1": [0.0, 20.0], "focal_volume_error": [0.0, 0.2]
+    },
+    "E": {
+      "forward": "I_CARS(r, Omega) = |chi_R^(3)(Omega)*N(r) + chi_NR|^2 * I_p^2 * I_s",
+      "operator": "cars_chi3_forward",
+      "primitive_chain": "L.beat.twocolor -> S.nonlinear.chi3 -> int.temporal",
+      "inverse": "recover N(r) from CARS spectral images under known or estimated chi_NR"
+    },
+    "B": {"nonnegativity_N": true, "chi_R_Lorentzian_model": true},
+    "I": {"strategy": "kk_phase_init"},
+    "O": ["concentration_NMSE", "SNR_dB", "chemical_specificity_score", "residual_norm"],
+    "epsilon_fn": "1e-2 + 0.05 * rho_NR + 0.005 * frequency_drift_cm1 + 0.05 * pulse_energy_fluct"
+  },
+
+  "protocol_fields": {
+    "input_format": {"cube": "float32(H, W, N_omega)", "library": "float32(K, N_omega)"},
+    "output_format": {"concentrations": "float32(H, W, K)"},
+    "baselines": [
+      {"name": "CLS",            "method_sig": "L+O", "expected_nmse": 5e-2},
+      {"name": "KK+CLS",         "method_sig": "L+O", "expected_nmse": 2e-2},
+      {"name": "MaxEntropy",     "method_sig": "L+O", "expected_nmse": 1.5e-2},
+      {"name": "MCR-ALS",        "method_sig": "L+O", "expected_nmse": 2e-2},
+      {"name": "CARS-Net",       "method_sig": "L+N", "expected_nmse": 1e-2}
+    ]
+  },
+
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {"H": 256, "W": 256, "N_omega": 300, "rho_NR": 0.3, "pulse_energy_fluct": 0.05},
+      "epsilon": 2e-2
+    },
+    "tier_bounds": {"H": [64, 512], "N_omega": [1, 1000], "rho_NR": [0.0, 5.0]},
+    "proximity_threshold": 0.10
+  },
+
+  "d_spec": 0.35,
+  "d_spec_notes": "Distance from 139 SRS ~= 0.20 (Similar — both coherent Raman, SRS is background-free). Distance from 137 Raman ~= 0.30 (Related).",
+
+  "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
+  "s1_s4_justifications": {
+    "S1": "Cube y in R^{HxWxN_omega}, library K chemicals consistent.",
+    "S2": "|chi|^2 forward is non-convex in N; linearizable via KK phase retrieval to unique chi_R.",
+    "S3": "KK FFT closed-form; MaxEntropy Newton-descent.",
+    "S4": "epsilon_fn defined; CARS-Net fails at rho_NR=5 + drift=20 (hardness)."
+  },
+
+  "ipfs_cid": null
+}

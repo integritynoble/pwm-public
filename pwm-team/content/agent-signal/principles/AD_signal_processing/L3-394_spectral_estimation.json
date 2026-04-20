@@ -1,0 +1,154 @@
+{
+  "artifact_id": "L3-394",
+  "layer": "L3",
+  "parent_l2": "L2-394",
+  "parent_l1": "L1-394",
+  "title": "Spectral Estimation Benchmark Suite (synthetic + audio + radar)",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "Synthetic 1-64 closely-spaced complex exponentials with controllable delta_omega",
+    "secondary": "NMR free-induction decays (FID) with 5-20 chemical-shift components",
+    "tertiary": "FMCW radar range-Doppler bins (Simulink)",
+    "construction_method": "Monte-Carlo N=256 samples, K sinusoids, frequencies in (0, pi) with controlled separation",
+    "num_dev_instances_per_tier": 20,
+    "holdout_instances_per_tier": 10
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_well_separated",
+      "rho": 1,
+      "omega_tier": {
+        "N": 256,
+        "K": 3,
+        "SNR_dB": 20,
+        "delta_omega": 0.1,
+        "K_overestimation": 0
+      },
+      "epsilon": 0.0005,
+      "d_ibench": 0.14,
+      "baselines": [
+        {
+          "name": "MUSIC",
+          "freq_rmse": 0.0005,
+          "Q": 0.92
+        },
+        {
+          "name": "ESPRIT",
+          "freq_rmse": 0.0004,
+          "Q": 0.96
+        },
+        {
+          "name": "Atomic-Norm",
+          "freq_rmse": 0.0003,
+          "Q": 0.98
+        }
+      ]
+    },
+    {
+      "tier": "T2_close",
+      "rho": 3,
+      "omega_tier": {
+        "N": 256,
+        "K": 5,
+        "SNR_dB": 15,
+        "delta_omega": 0.03,
+        "K_overestimation": 2
+      },
+      "epsilon": 0.002,
+      "d_ibench": 0.28,
+      "baselines": [
+        {
+          "name": "MUSIC",
+          "freq_rmse": 0.0015,
+          "Q": 0.7
+        },
+        {
+          "name": "ESPRIT",
+          "freq_rmse": 0.0012,
+          "Q": 0.78
+        },
+        {
+          "name": "Atomic-Norm",
+          "freq_rmse": 0.0008,
+          "Q": 0.88
+        }
+      ]
+    },
+    {
+      "tier": "T3_subrayleigh",
+      "rho": 5,
+      "omega_tier": {
+        "N": 256,
+        "K": 8,
+        "SNR_dB": 10,
+        "delta_omega": 0.01,
+        "K_overestimation": 5
+      },
+      "epsilon": 0.01,
+      "d_ibench": 0.5,
+      "baselines": [
+        {
+          "name": "MUSIC",
+          "freq_rmse": 0.03,
+          "Q": 0.2
+        },
+        {
+          "name": "Atomic-Norm",
+          "freq_rmse": 0.008,
+          "Q": 0.6
+        }
+      ]
+    },
+    {
+      "tier": "T4_noise_irregular",
+      "rho": 10,
+      "omega_tier": {
+        "N": 128,
+        "K": 10,
+        "SNR_dB": -5,
+        "delta_omega": 0.005,
+        "K_overestimation": 20,
+        "sampling_irregularity": 0.5
+      },
+      "epsilon": 0.08,
+      "d_ibench": 0.74,
+      "baselines": [
+        {
+          "name": "MUSIC",
+          "freq_rmse": 2.0,
+          "Q": 0.13
+        },
+        {
+          "name": "Atomic-Norm",
+          "freq_rmse": 0.1,
+          "Q": 0.28
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "Synthetic + NMR-FID + FMCW-radar union",
+      "num_dev_instances": 200,
+      "num_holdout_instances": 100
+    },
+    "baselines": [
+      {
+        "name": "MUSIC",
+        "overall_Q": 0.58
+      },
+      {
+        "name": "ESPRIT",
+        "overall_Q": 0.62
+      },
+      {
+        "name": "Atomic-Norm",
+        "overall_Q": 0.72
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 Atomic-Norm fails at T4_noise_irregular (delta_omega=0.005 subwavelength, SNR=-5 dB): freq_rmse 0.1 > epsilon_fn ~ 0.05.",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}
