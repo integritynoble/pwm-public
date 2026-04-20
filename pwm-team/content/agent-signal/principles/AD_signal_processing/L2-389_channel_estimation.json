@@ -15,15 +15,15 @@
       "doppler_error": [0.0, 100]
     },
     "E": {
-      "forward": "y = H * x_pilot + n; H parameterized by h in C^{L_ch}",
+      "forward": "y = H * x_pilot + n; H parameterized by h in C**{L_ch}",
       "operator": "ofdm_pilot_channel",
       "primitive_chain": "L.project.pilot -> int.temporal",
       "inverse": "estimate h from y and known pilot pattern"
     },
-    "B": {"bounded_power": "||h||^2 <= 1", "causality": "h[l] = 0 for l < 0 or l >= L_ch"},
+    "B": {"bounded_power": "||h||**2 <= 1", "causality": "h[l] = 0 for l < 0 or l >= L_ch"},
     "I": {"strategy": "LS_initialize"},
     "O": ["NMSE", "BER_postequalization", "throughput_bps", "residual_norm"],
-    "epsilon_fn": "1e-2 * max(1, k / (alpha_p * L_ch)) * 10^(-SNR_dB/10) + 0.5 * (f_d_Hz/1000) + 0.2 * phase_noise_rms"
+    "epsilon_fn": "1e-2 * max(1, k / (alpha_p * L_ch)) * 10**(-SNR_dB/10) + 0.5 * (f_d_Hz/1000) + 0.2 * phase_noise_rms"
   },
 
   "protocol_fields": {
@@ -53,8 +53,8 @@
 
   "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
   "s1_s4_justifications": {
-    "S1": "H in C^{Nr x Nt x L_ch}, pilot-matrix dimensions consistent under 5G NR spec.",
-    "S2": "LS unique when N_pilot >= L_ch and kappa(X_pilot^H X_pilot) finite; sparse recovery under RIP for mmWave.",
+    "S1": "H in C**{Nr x Nt x L_ch}, pilot-matrix dimensions consistent under 5G NR spec.",
+    "S2": "LS unique when N_pilot >= L_ch and kappa(X_pilot**H X_pilot) finite; sparse recovery under RIP for mmWave.",
     "S3": "LS closed-form; MMSE closed-form given Rhh; OMP terminates in k; deep learned methods feed-forward.",
     "S4": "epsilon_fn evaluates; LS fails at alpha_p<<k/L_ch (hardness)."
   },

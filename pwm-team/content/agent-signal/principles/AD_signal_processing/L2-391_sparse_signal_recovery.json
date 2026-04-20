@@ -22,7 +22,7 @@
     "B": {"sparsity": "||alpha||_0 <= k", "bounded_amplitude": "||x||_inf <= 1"},
     "I": {"strategy": "zero_init"},
     "O": ["NMSE", "support_recovery_rate", "atom_selection_precision", "residual_norm"],
-    "epsilon_fn": "2e-3 * max(1, k*mu/sqrt(M)) * (1 + 5*basis_mismatch) + 10*sigma_n^2"
+    "epsilon_fn": "2e-3 * max(1, k*mu/sqrt(M)) * (1 + 5*basis_mismatch) + 10*sigma_n**2"
   },
 
   "protocol_fields": {
@@ -52,9 +52,9 @@
 
   "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
   "s1_s4_justifications": {
-    "S1": "Dictionary D in R^{N x K}, alpha in R^K, D*alpha in R^N, consistent dims.",
+    "S1": "Dictionary D in R**{N x K}, alpha in R**K, D*alpha in R**N, consistent dims.",
     "S2": "Mutual-coherence bound Donoho-Elad guarantees unique k-sparse alpha when k < 0.5*(1+1/mu).",
-    "S3": "OMP terminates in k steps; BPDN solved by FISTA O(1/k^2); LISTA feed-forward.",
+    "S3": "OMP terminates in k steps; BPDN solved by FISTA O(1/k**2); LISTA feed-forward.",
     "S4": "epsilon_fn evaluates; CoSaMP fails at basis_mismatch=0.5 (hardness)."
   },
 

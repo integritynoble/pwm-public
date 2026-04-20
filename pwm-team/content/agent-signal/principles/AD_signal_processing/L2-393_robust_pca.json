@@ -22,7 +22,7 @@
     "B": {"low_rank_L": "rank(L) <= r", "sparse_S": "||S||_0 <= s", "incoherence": "mu(U)<=mu_0"},
     "I": {"strategy": "SVD_init_plus_sign_threshold"},
     "O": ["relative_frobenius_error_L", "precision_recall_S", "rank_recovery", "residual_norm"],
-    "epsilon_fn": "1e-4 * max(1, r * mu_0 / min(m,n)) * (1 + 10 * s_fraction) + 5 * sigma_n^2"
+    "epsilon_fn": "1e-4 * max(1, r * mu_0 / min(m,n)) * (1 + 10 * s_fraction) + 5 * sigma_n**2"
   },
 
   "protocol_fields": {
@@ -52,7 +52,7 @@
 
   "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
   "s1_s4_justifications": {
-    "S1": "M, L, S share R^{m x n}; additive decomposition dimensionally consistent.",
+    "S1": "M, L, S share R**{m x n}; additive decomposition dimensionally consistent.",
     "S2": "Candes-Li-Ma-Wright theorem: exact recovery under incoherence and s < C*m*n constraint.",
     "S3": "IALM converges with rate O(1/k); AltProj linear convergence near ground truth; DeepRPCA feed-forward.",
     "S4": "epsilon_fn defined; GoDec fails at s_fraction=0.5 (hardness)."

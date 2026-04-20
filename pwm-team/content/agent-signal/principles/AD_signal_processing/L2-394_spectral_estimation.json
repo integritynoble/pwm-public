@@ -17,12 +17,12 @@
       "forward": "y[n] = sum_k c_k*exp(j*omega_k*n + j*phi_k) + w[n]",
       "operator": "uniform_sampling_complex_exp",
       "primitive_chain": "L.synthesis.harmonic -> int.temporal",
-      "inverse": "estimate (omega_k, c_k, phi_k) for k=1..K from y in C^N"
+      "inverse": "estimate (omega_k, c_k, phi_k) for k=1..K from y in C**N"
     },
     "B": {"bounded_amplitudes": "|c_k| <= 1", "frequency_range": "omega_k in [-pi, pi]"},
     "I": {"strategy": "fft_peak_init"},
     "O": ["frequency_RMSE_cyc", "amplitude_RMSE", "resolution_at_2sigma", "spurious_detections"],
-    "epsilon_fn": "5e-4 + 1.0 / (N * 10^(SNR_dB/20)) + 0.02 * max(0, 4*3.14159/N - delta_omega)"
+    "epsilon_fn": "5e-4 + 1.0 / (N * 10**(SNR_dB/20)) + 0.02 * max(0, 4*3.14159/N - delta_omega)"
   },
 
   "protocol_fields": {

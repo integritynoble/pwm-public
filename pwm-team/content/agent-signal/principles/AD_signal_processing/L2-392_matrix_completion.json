@@ -17,12 +17,12 @@
       "forward": "Y = P_Omega(M) + n; Omega uniform random subset of entries",
       "operator": "uniform_entry_mask",
       "primitive_chain": "D.mask.entry -> int.spatial",
-      "inverse": "recover M in R^{m x n} with rank r from observed entries"
+      "inverse": "recover M in R**{m x n} with rank r from observed entries"
     },
     "B": {"low_rank": "rank(M) <= r", "bounded_entries": "|M_ij| <= M_max", "incoherence": "mu(U), mu(V) <= mu_0"},
     "I": {"strategy": "zero_or_svd_init"},
     "O": ["relative_frobenius_error", "test_RMSE", "rank_estimate", "residual_norm"],
-    "epsilon_fn": "1e-3 * max(1, mu_0^2 * r * (m+n) / (p * m * n)) + 10 * sigma_n^2 + 2 * sampling_bias"
+    "epsilon_fn": "1e-3 * max(1, mu_0**2 * r * (m+n) / (p * m * n)) + 10 * sigma_n**2 + 2 * sampling_bias"
   },
 
   "protocol_fields": {
@@ -53,7 +53,7 @@
   "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
   "s1_s4_justifications": {
     "S1": "Observation mask and matrix dimensions consistent.",
-    "S2": "Candes-Recht theorem guarantees uniqueness when p >= C*mu_0^2*r*(m+n)log^2(m+n)/(mn).",
+    "S2": "Candes-Recht theorem guarantees uniqueness when p >= C*mu_0**2*r*(m+n)log**2(m+n)/(mn).",
     "S3": "SVT contraction mapping; alt-min converges geometrically under incoherence; SDP convex.",
     "S4": "epsilon_fn evaluates; alt-min fails at T4 (p=0.05, r=500, mu_0=10) — hardness rule satisfied."
   },
