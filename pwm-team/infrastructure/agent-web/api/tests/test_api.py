@@ -138,6 +138,10 @@ def test_health(seeded_env):
     assert body["ok"] is True
     assert body["counts"]["principles"] == 1
     assert body["genesis"]["l1"] == 1
+    # Seed data has a fixed-in-the-past timestamp (1_700_000_000 = 2023-11-14),
+    # so the indexer appears stale relative to "now" -> degraded.
+    assert body["status"] in {"degraded", "bootstrapping", "healthy"}
+    assert "last_indexed_block" in body
 
 
 def test_overview_has_recent_draws(seeded_env):

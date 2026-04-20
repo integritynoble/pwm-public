@@ -54,10 +54,41 @@ def _load_addresses() -> dict:
 
 @app.get("/api/health")
 def health():
+    import time
     conn = store.get_conn()
     try:
+        last_block_row = conn.execute(
+            "SELECT value FROM meta WHERE key='last_block'"
+        ).fetchone()
+        last_block = int(last_block_row[0]) if last_block_row else None
+        # Freshness: the indexer writes `last_block` each scan. If it hasn't
+        # been updated for > PWM_STALE_SECONDS (default 10 min = 2x the bounty
+        # "updates within <=5 min" criterion), we report degraded.
+        latest_event_row = conn.execute(
+            "SELECT MAX(timestamp) FROM ("
+            " SELECT timestamp FROM artifacts UNION ALL"
+            " SELECT submitted_at FROM certificates UNION ALL"
+            " SELECT settled_at FROM draws UNION ALL"
+            " SELECT timestamp FROM pool_events UNION ALL"
+            " SELECT timestamp FROM treasury_events UNION ALL"
+            " SELECT timestamp FROM stakes UNION ALL"
+            " SELECT timestamp FROM mints"
+            ")"
+        ).fetchone()
+        latest_event_ts = int(latest_event_row[0]) if latest_event_row and latest_event_row[0] else None
+        stale_seconds = int(os.environ.get("PWM_STALE_SECONDS", "600"))
+        now = int(time.time())
+        if last_block is None:
+            status = "bootstrapping"
+        elif latest_event_ts and (now - latest_event_ts) > stale_seconds:
+            status = "degraded"
+        else:
+            status = "healthy"
         return _cached({
             "ok": True,
+            "status": status,
+            "last_indexed_block": last_block,
+            "latest_event_timestamp": latest_event_ts,
             "counts": store.counts(conn),
             "genesis": {
                 "l1": len(genesis.principles()),

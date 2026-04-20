@@ -234,3 +234,25 @@ def test_schema_is_idempotent(tmp_path):
     db.set_meta(c, "last_block", "42")
     assert db.get_meta(c, "last_block") == "42"
     c.close()
+
+
+def test_check_cli_collect(tmp_path):
+    """`indexer.check.collect` reports counts for every declared table."""
+    from indexer import check
+
+    c = db.connect(tmp_path / "y.db")
+    db.init_db(c)
+    state = check.collect(c)
+    assert state["last_block"] is None
+    assert set(state["counts"]) == set(check.TABLES)
+    assert all(v == 0 for v in state["counts"].values())
+
+    db.set_meta(c, "last_block", "1234")
+    handlers.handle_artifact_registered(
+        c, {"hash": b"\x01" * 32, "layer": 1, "creator": "0x" + "00" * 20, "timestamp": 1}, _ctx()
+    )
+    c.commit()
+    state = check.collect(c)
+    assert state["last_block"] == 1234
+    assert state["counts"]["artifacts"] == 1
+    c.close()
