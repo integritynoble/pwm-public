@@ -1,7 +1,7 @@
 # Agent Role: agent-cli
-## pwm-node CLI — Bounty Reference Implementation
+## pwm-node CLI — Reference Implementation
 
-This component is a **Reserve bounty target** (100,000 PWM). The founding team builds a reference implementation to validate the interface and acceptance criteria. Third-party developers compete to build the production implementation.
+The founding team builds this reference implementation first. After merge, it opens as a **100,000 PWM bounty** — external developers compete to build a better or independent version. The reference implementation remains live as the fallback and serves as the acceptance test harness.
 
 You build the `pwm-node` command-line tool — the primary interface for individual miners (SP role). It wraps the scoring engine and contract calls behind human-readable commands. Install with one command; works on Linux, macOS, Windows.
 

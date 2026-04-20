@@ -1,7 +1,7 @@
 # Agent Role: agent-web
-## Web Explorer — Bounty Reference Implementation
+## Web Explorer — Reference Implementation
 
-This component is a **Reserve bounty target** (80,000 PWM). The founding team builds a reference implementation to validate the interface and acceptance criteria. Third-party developers compete to build the production implementation.
+The founding team builds this reference implementation first. After merge, it opens as an **80,000 PWM bounty** — external developers compete to build a better or independent version. The reference implementation remains live as the fallback and serves as the acceptance test harness.
 
 You build the web explorer — the public face of PWM. It makes the protocol legible to researchers, miners, investors, and users without requiring them to run a CLI.
 

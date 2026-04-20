@@ -32,7 +32,7 @@ Read `CLAUDE.md` first (your role, domain list, and full JSON schemas). This fil
 | Acoustics | V_acoustics/ | ~15 | principles/V_acoustics/ |
 | Geophysics | W_geophysics/ | ~20 | principles/W_geophysics/ |
 | Plasma physics | AA_plasma_physics/ | ~18 | principles/AA_plasma_physics/ |
-| Nuclear/radiation | AB_nuclear_radiation/ | ~9 | principles/AB_nuclear_radiation/ |
+| Nuclear/radiation | AB_nuclear_engineering/ | ~9 | principles/AB_nuclear_engineering/ |
 
 **Total: ~147 principles**
 
@@ -42,7 +42,7 @@ Read `CLAUDE.md` first (your role, domain list, and full JSON schemas). This fil
 
 1. **V_acoustics** (~15 files) — start here, well-defined inverse problems
 2. **S_heat_transfer** (~18 files)
-3. **AB_nuclear_radiation** (~9 files)
+3. **AB_nuclear_engineering** (~9 files)
 4. **U_electromagnetics** (~22 files) — work in sub-batches of 8
 5. **T_structural_mechanics** (~20 files)
 6. **W_geophysics** (~20 files)

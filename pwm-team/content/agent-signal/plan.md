@@ -25,7 +25,7 @@ Read `CLAUDE.md` first (your role, domain list, and full JSON schemas). This fil
 
 | Domain | Source folder | Count | Output folder |
 |---|---|---|---|
-| Scientific instrumentation | K_sci_instrumentation/ | 12 | principles/K_sci_instrumentation/ |
+| Scientific instrumentation | K_scientific_instrumentation/ | 12 | principles/K_scientific_instrumentation/ |
 | Spectroscopy | L_spectroscopy/ | 12 | principles/L_spectroscopy/ |
 | Signal processing | AD_signal_processing/ | 14 | principles/AD_signal_processing/ |
 
@@ -39,7 +39,7 @@ Read `CLAUDE.md` first (your role, domain list, and full JSON schemas). This fil
 
 1. **AD_signal_processing** (14 files) — start here, most generalizable
 2. **L_spectroscopy** (12 files)
-3. **K_sci_instrumentation** (12 files)
+3. **K_scientific_instrumentation** (12 files)
 
 ---
 
@@ -128,7 +128,7 @@ After completing each domain, update `../../coordination/agent-coord/progress.md
 ```
 | agent-signal | AD_signal_processing   | 0/14 | IN_PROGRESS |
 | agent-signal | L_spectroscopy         | 12/12 | DONE |
-| agent-signal | K_sci_instrumentation  | 0/12 | NOT_STARTED |
+| agent-signal | K_scientific_instrumentation  | 0/12 | NOT_STARTED |
 ```
 
 ---
