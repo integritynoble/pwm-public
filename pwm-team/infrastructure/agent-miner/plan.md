@@ -2,7 +2,7 @@
 
 Read `CLAUDE.md` first (your role and all security requirements). This file is your step-by-step work order.
 
-> This is a **bounty reference implementation** (80,000 PWM). You are building a reference to validate the interface — third-party developers will compete to build the production version.
+> The founding team builds this **reference implementation** first (80,000 PWM bounty). After merge, it opens as a bounty — external developers compete to build a better or independent version. The reference implementation remains live as the fallback.
 
 ---
 

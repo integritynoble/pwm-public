@@ -2,7 +2,7 @@
 
 Read `CLAUDE.md` first (your role and all command specs). This file is your step-by-step work order.
 
-> This is a **bounty reference implementation** (100,000 PWM). You are building a reference to validate the interface — third-party developers will compete to build the production version.
+> The founding team builds this **reference implementation** first (100,000 PWM bounty). After merge, it opens as a bounty — external developers compete to build a better or independent version. The reference implementation remains live as the fallback.
 
 ---
 
@@ -153,8 +153,8 @@ Read `CLAUDE.md` first (your role and all command specs). This file is your step
 
 ## Step 8 — stake.py and agent.py
 
-- [ ] **8.1** `pwm-node ac register --entry-point <solve.py> --share-ratio <float> --min-vram-gb <int> --framework <str>`:
-  - Register AC (Algorithm Creator) profile on-chain
+- [ ] **8.1** `pwm-node sp register --entry-point <solve.py> --share-ratio <float> --min-vram-gb <int> --framework <str>`:
+  - Register SP (Solution Provider) profile on-chain
   - Store entry-point hash in PWMRegistry
 - [ ] **8.2** `pwm-node agent mine-all --domain <domain> --model <model_id>`:
   - Fetch all benchmarks for domain from PWMRegistry

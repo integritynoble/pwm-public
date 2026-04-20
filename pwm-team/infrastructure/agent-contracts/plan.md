@@ -55,9 +55,9 @@ Read `CLAUDE.md` first (your role and all contract specs). This file is your ste
 - [ ] **3.1** Create `contracts/PWMStaking.sol`.
 - [ ] **3.2** Implement:
   - USD-denominated staking with formula `S = max(PWM_floor, ceil(USD_target / TWAP_30d))`:
-    - L2 spec: floor = 500 PWM, target = $50
-    - L3 benchmark: floor = 200 PWM, target = $20
-    - L4 solution: floor = 50 PWM, target = $5
+    - L1 Principle: floor = 10 PWM, target = $50
+    - L2 Spec: floor = 2 PWM, target = $5
+    - L3 I-benchmark: floor = 1 PWM, target = $1
     (stored in contract, adjustable via governance)
   - Chainlink TWAP_30d oracle: `AggregatorV3Interface` for PWM/USD price
   - `stake(uint8 layer, bytes32 artifactHash) external payable`

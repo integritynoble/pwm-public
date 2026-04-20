@@ -2,7 +2,7 @@
 
 Read `CLAUDE.md` first (your role and all interface specs). This file is your step-by-step work order.
 
-> This is a **bounty reference implementation** (200,000 PWM). You are building a reference to validate the interface — third-party developers will compete to build the production version.
+> The founding team builds this **reference implementation** first (200,000 PWM bounty). After merge, it opens as a bounty — external developers compete to build a better or independent version. The reference implementation remains live as the fallback.
 
 ---
 
@@ -91,8 +91,12 @@ Read `CLAUDE.md` first (your role and all interface specs). This file is your st
   1. Run check_s1 through check_s4 (gates)
   2. If any gate fails: return SolutionScore with Q=0.0, gate_verdicts showing failure
   3. Run track_a, track_b, track_c
-  4. With Track C: Q_p = 0.35 × T_A + 0.45 × T_B + 0.20 × T_C
-     Without Track C: Q_p = 0.40 × T_A + 0.60 × T_B
+  4. With Track C: Q_p = 0.35 × coverage + 0.35 × margin + 0.15 × stratum_pass_frac + 0.15 × degradation_score
+     Without Track C: Q_p = 0.40 × coverage + 0.40 × margin + 0.20 × stratum_pass_frac
+     Where: coverage = fraction of Ω points where r_i ≥ 1.0
+            margin = mean(r_i - 1.0) over passing instances
+            stratum_pass_frac = fraction of strata where all instances pass (Track A)
+            degradation_score = AUC of normalized degradation curve (Track C)
      Certification: Standard ≥ 0.55, Strong ≥ 0.75
   5. Build cert_payload matching cert_schema.json
   6. Return SolutionScore
