@@ -166,12 +166,14 @@ After completing each domain, update `../../coordination/agent-coord/progress.md
 
 ## Final Step — Signal Completion
 
-- [ ] All ~111 principles have L1, L2, L3 JSON in `principles/<domain>/`.
-- [ ] All JSONs pass schema validation.
-- [ ] Self-review checklist passes for all.
-- [ ] Update `../../coordination/agent-coord/progress.md` — mark applied principles `DONE`.
-- [ ] Open PR: `feat/genesis-principles-applied`
-  - PR description: count per domain, any Frontier (δ=50) principles flagged for review
+- [x] All ~111 principles have L1, L2, L3 JSON in `principles/<domain>/`.
+- [x] All JSONs pass schema validation (333/333, 0 errors).
+- [x] Self-review checklist passes for all.
+- [x] Update `../../coordination/agent-coord/progress.md` — mark applied principles `DONE`.
+- [x] Branch pushed: `feat/genesis-principles-applied` @ 1360bf3 (2026-04-20)
+- [ ] Open PR: `feat/genesis-principles-applied` — PENDING gh auth
+  - URL: https://github.com/integritynoble/pwm/pull/new/feat/genesis-principles-applied
+  - PR description: count per domain, Frontier (δ=50) principles flagged for review
 
 > **→ SIGNAL OUT (per batch):** After each domain cluster is complete, add to `progress.md`:
 > `agent-applied/<domain> = DONE  # <count> principles — <date>`
