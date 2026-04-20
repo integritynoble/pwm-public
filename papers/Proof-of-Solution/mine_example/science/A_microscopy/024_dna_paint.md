@@ -2,6 +2,7 @@
 
 **Principle #24: DNA-PAINT Single-Molecule Localization**
 Domain: Microscopy | Difficulty: Standard (delta=3) | Carrier: Photon
+Verification: draft — base-copy from pilot; needs physics + numerics + cross-domain verifier sign-off
 
 ---
 

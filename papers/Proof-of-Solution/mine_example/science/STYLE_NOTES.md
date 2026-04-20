@@ -150,3 +150,38 @@ Drafts are permitted in narrative sections (Reference citations, step-by-step
 worked examples). Drafts are NOT permitted in the Physics Fingerprint, the
 P = (E, G, W, C) box, or the yaml seed — these are the principle's identity
 and must be authored confidently.
+
+## 10. Verification-level field
+
+Every principle file carries a `Verification:` line in the top-matter stating
+its review status. Four levels:
+
+| Level | Meaning |
+|-------|---------|
+| `draft` | Structural skeleton exists; physics not yet independently reviewed. Base-copies from the pilot start here. |
+| `single-reviewer` | One verifier agent (physics, numerics, or cross-domain) has written an ACCEPT review. |
+| `triple-verified` | All three verifier agents have written ACCEPT reviews, filed in `pwm-team/coordination/agent-{physics,numerics,cross-domain}-verifier/reviews/`. |
+| `production` | `triple-verified` + ≥1 M4 adversarial test passed + ≥30 days in registry without a successful challenge. |
+
+### Transition rules
+
+- `draft` → `single-reviewer` when *any* verifier agent writes an ACCEPT.
+- `single-reviewer` → `triple-verified` only when all three verifier agents have ACCEPT reviews on file.
+- `triple-verified` → `production` via automated gate: ≥1 M4 test passed + ≥30 days without successful adversarial challenge.
+- **Any level can DEGRADE** to a lower level if new evidence (successful adversarial test, a verifier files an adversarial re-review with findings) contradicts the current level.
+
+### Ownership
+
+- `agent-coord` maintains the `Verification:` level based on reviews filed in `pwm-team/coordination/agent-*-verifier/reviews/`.
+- Principle authors do NOT self-upgrade their own work.
+- Never mark a principle `triple-verified` without all three review files existing on disk.
+
+### Grep conventions
+
+```bash
+# Count principles at each level
+grep -rh "^Verification:" papers/Proof-of-Solution/mine_example/science/ | cut -d'—' -f1 | sort | uniq -c
+
+# Find principles awaiting a specific verifier
+grep -rl "^Verification: draft" papers/Proof-of-Solution/mine_example/science/
+```
