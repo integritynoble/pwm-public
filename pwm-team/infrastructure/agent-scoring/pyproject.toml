@@ -1,0 +1,28 @@
+[build-system]
+requires = ["hatchling>=1.24.0"]
+build-backend = "hatchling.build"
+
+[project]
+name = "pwm-scoring"
+version = "0.1.0"
+description = "PWM L4 Scoring Engine — reference implementation of the 200k PWM bounty."
+requires-python = ">=3.10"
+license = {text = "Apache-2.0"}
+authors = [{ name = "PWM Contributors" }]
+dependencies = [
+    "numpy>=1.24",
+    "scipy>=1.10",
+    "scikit-image>=0.21",
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest>=7.4",
+    "jsonschema>=4.0",
+]
+
+[tool.hatch.build.targets.wheel]
+packages = ["pwm_scoring"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
