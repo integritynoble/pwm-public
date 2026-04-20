@@ -25,14 +25,14 @@
       ]
     },
     "E": {
-      "forward": "delta_nu_nl = integral K_nl(r) * delta_c^2(r)/c^2 dr + integral L_nl(r) * delta_rho(r)/rho dr",
+      "forward": "delta_nu_nl = integral K_nl(r) * delta_c ** 2(r)/c ** 2 dr + integral L_nl(r) * delta_rho(r)/rho dr",
       "operator": "stellar_oscillation_inversion",
       "primitive_chain": "S.helioseismic.kernel -> O.rnla.inversion -> M.ode.stellar_structure",
       "inverse": "recover internal sound speed profile c(r) and density rho(r) from center to surface from oscillation frequencies nu_nl for modes (n"
     },
     "B": {
       "hydrostatic": "dp/dr = -rho*g(r)",
-      "mass_continuity": "dm/dr = 4*pi*r^2*rho"
+      "mass_continuity": "dm/dr = 4*pi*r ** 2*rho"
     },
     "I": {
       "strategy": "zero_init"
@@ -43,7 +43,7 @@
       "residual_norm",
       "convergence_curve"
     ],
-    "epsilon_fn": "1.0 + 0.2 * (noise_sigma_microHz / 0.1)^0.5"
+    "epsilon_fn": "1.0 + 0.2 * (noise_sigma_microHz / 0.1) ** 0.5"
   },
   "protocol_fields": {
     "input_format": {

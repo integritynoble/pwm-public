@@ -46,7 +46,7 @@
     "solver_class": "standard_Kalman_filter",
     "convergence_rate_q": 2.0,
     "error_bound": "NEES ~ chi2(n)/n in expectation for consistent filter; NIS ~ chi2(p)/p",
-    "complexity": "O(n^2 * p) per update step"
+    "complexity": "O(n ** 2 * p) per update step"
   },
   "physics_fingerprint": {
     "carrier": "N/A",

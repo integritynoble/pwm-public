@@ -9,7 +9,7 @@
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
     "description": "PD model fitting: estimate E_max, EC50, and Hill coefficient from dose-effect data using Emax model.",
-    "forward_model": "E = E_0 + E_max * C^n / (EC50^n + C^n) (sigmoidal Emax/Hill equation)",
+    "forward_model": "E = E_0 + E_max * C ** n / (EC50 ** n + C ** n) (sigmoidal Emax/Hill equation)",
     "world_state_x": "PD parameters (E_0, E_max, EC50, n_Hill) for drug effect",
     "observation_y": "effect measurements E_i at concentrations C_i",
     "physical_parameters_theta": [

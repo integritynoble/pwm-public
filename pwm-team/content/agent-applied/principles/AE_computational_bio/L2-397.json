@@ -25,7 +25,7 @@
       ]
     },
     "E": {
-      "forward": "dv/dt = v - v^3/3 - w + I; dw/dt = epsilon*(v + a - b*w)",
+      "forward": "dv/dt = v - v ** 3/3 - w + I; dw/dt = epsilon*(v + a - b*w)",
       "operator": "action_potential_recording",
       "primitive_chain": "M.ode.fitzhugh_nagumo -> O.chi2.phase_portrait -> S.continuation.bifurcation",
       "inverse": "recover FHN parameters {a from voltage-like variable v(t) and recovery variable w(t)"
@@ -43,7 +43,7 @@
       "residual_norm",
       "convergence_curve"
     ],
-    "epsilon_fn": "0.02 + 0.03 * (noise_sigma / 0.1 + 1)^0.5"
+    "epsilon_fn": "0.02 + 0.03 * (noise_sigma / 0.1 + 1) ** 0.5"
   },
   "protocol_fields": {
     "input_format": {

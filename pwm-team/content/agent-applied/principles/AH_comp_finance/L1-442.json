@@ -9,7 +9,7 @@
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
     "description": "Implied vol surface construction: build smooth, arbitrage-free implied volatility surface from sparse market quotes.",
-    "forward_model": "sigma_impl(k, T) modeled by SVI parameterization: w(k) = a + b*(rho*(k-m) + sqrt((k-m)^2 + sigma^2))",
+    "forward_model": "sigma_impl(k, T) modeled by SVI parameterization: w(k) = a + b*(rho*(k-m) + sqrt((k-m) ** 2 + sigma ** 2))",
     "world_state_x": "continuous implied vol surface sigma(K/F, T) satisfying calendar and butterfly arbitrage constraints",
     "observation_y": "sparse market implied vols sigma_i at (K_i, T_j) grid points",
     "physical_parameters_theta": [

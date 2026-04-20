@@ -43,7 +43,7 @@
       "residual_norm",
       "convergence_curve"
     ],
-    "epsilon_fn": "1.5 + 0.5 * (degradation_percent_yr / 0.5)^0.3"
+    "epsilon_fn": "1.5 + 0.5 * (degradation_percent_yr / 0.5) ** 0.3"
   },
   "protocol_fields": {
     "input_format": {

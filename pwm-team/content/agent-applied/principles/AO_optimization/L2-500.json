@@ -25,10 +25,10 @@
       ]
     },
     "E": {
-      "forward": "y = f(xi, theta) + epsilon, I(xi, theta) = E[(d log p / d theta)^2], maximize det(I) or trace(I^{-1})",
+      "forward": "y = f(xi, theta) + epsilon, I(xi, theta) = E[(d log p / d theta) ** 2], maximize det(I) or trace(I^{-1})",
       "operator": "fisher_information_optimization",
       "primitive_chain": "M.fisher.information -> O.d_optimality.criterion -> S.gradient.update",
-      "inverse": "recover model parameters theta in R^p (unknown physical or biological parameters) from measurements y at design points xi (scalar or vector per experiment)"
+      "inverse": "recover model parameters theta in R ** p (unknown physical or biological parameters) from measurements y at design points xi (scalar or vector per experiment)"
     },
     "B": {
       "budget": "sum(w_i) = 1, w_i >= 0 (design weights)",
@@ -43,7 +43,7 @@
       "residual_norm",
       "convergence_curve"
     ],
-    "epsilon_fn": "0.70 + 0.10 * (N_experiments / 20)^0.3"
+    "epsilon_fn": "0.70 + 0.10 * (N_experiments / 20) ** 0.3"
   },
   "protocol_fields": {
     "input_format": {

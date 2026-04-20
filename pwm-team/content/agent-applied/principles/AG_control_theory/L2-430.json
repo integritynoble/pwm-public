@@ -25,7 +25,7 @@
       ]
     },
     "E": {
-      "forward": "p(x_k | y_{1:k}) prop p(y_k | x_k) * p(x_k | x_{k-1}); approximated by N_p particles {x_k^i, w_k^i}",
+      "forward": "p(x_k | y_{1:k}) prop p(y_k | x_k) * p(x_k | x_{k-1}); approximated by N_p particles {x_k ** i, w_k ** i}",
       "operator": "sequential_monte_carlo_estimation",
       "primitive_chain": "S.pf.importance_sampling -> M.pf.systematic_resampling -> O.ess.effective_sample_size",
       "inverse": "recover posterior distribution p(x_k | y_{1:k}) represented by weighted particles from sequential observations {y_k} for nonlinear/non-Gaussian system"
@@ -43,7 +43,7 @@
       "residual_norm",
       "convergence_curve"
     ],
-    "epsilon_fn": "0.10 + 0.05 * (1000 / N_particles)^0.5"
+    "epsilon_fn": "0.10 + 0.05 * (1000 / N_particles) ** 0.5"
   },
   "protocol_fields": {
     "input_format": {

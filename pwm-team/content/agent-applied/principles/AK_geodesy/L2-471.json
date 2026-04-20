@@ -31,7 +31,7 @@
       "inverse": "recover Stokes coefficients C_nm from gravity gradient tensor components [mE] along orbit arc"
     },
     "B": {
-      "Kaula_rule": "prior sigma_n ~ 1e-5 / n^2",
+      "Kaula_rule": "prior sigma_n ~ 1e-5 / n ** 2",
       "degree_order": "m <= n"
     },
     "I": {
@@ -43,7 +43,7 @@
       "residual_norm",
       "convergence_curve"
     ],
-    "epsilon_fn": "0.5 + 0.5 * (noise_E_sqrt_Hz / 5.0)^0.5"
+    "epsilon_fn": "0.5 + 0.5 * (noise_E_sqrt_Hz / 5.0) ** 0.5"
   },
   "protocol_fields": {
     "input_format": {

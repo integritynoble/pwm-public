@@ -28,7 +28,7 @@
       "forward": "C = e^{-rT} * E[max(S_T - K, 0)]; estimate by sample average over N_paths simulated paths",
       "operator": "monte_carlo_path_simulation",
       "primitive_chain": "S.mc.path_generation -> O.discounting.expectation -> M.variance.reduction",
-      "inverse": "recover option price C and Greeks (delta from simulated payoffs g(S_T^i) for i=1..N_paths"
+      "inverse": "recover option price C and Greeks (delta from simulated payoffs g(S_T ** i) for i=1..N_paths"
     },
     "B": {
       "positivity": "N_paths >= 1000",

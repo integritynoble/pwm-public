@@ -9,8 +9,8 @@
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
     "description": "CMB lensing reconstruction: recover projected matter density kappa from statistical anisotropy of CMB maps via quadratic estimator.",
-    "forward_model": "T_lensed(n) = T_unlensed(n + nabla phi(n)); kappa = -nabla^2 phi / 2",
-    "world_state_x": "convergence map kappa(n) = -nabla^2 phi / 2, related to matter along LOS",
+    "forward_model": "T_lensed(n) = T_unlensed(n + nabla phi(n)); kappa = -nabla ** 2 phi / 2",
+    "world_state_x": "convergence map kappa(n) = -nabla ** 2 phi / 2, related to matter along LOS",
     "observation_y": "CMB temperature and polarization maps T(n), Q(n), U(n)",
     "physical_parameters_theta": [
       "beam_FWHM_arcmin",
@@ -45,7 +45,7 @@
   "C": {
     "solver_class": "quadratic_estimator (Hu_Okamoto) or iterative_lensing_reconstruction",
     "convergence_rate_q": 2.0,
-    "error_bound": "N_l^kk (lensing noise) scales as (noise*beam)^2 / C_l^{TT}",
+    "error_bound": "N_l ** kk (lensing noise) scales as (noise*beam) ** 2 / C_l^{TT}",
     "complexity": "O(N_pix * log N_pix) for FFT-based QE"
   },
   "physics_fingerprint": {

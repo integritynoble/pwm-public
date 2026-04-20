@@ -43,7 +43,7 @@
       "residual_norm",
       "convergence_curve"
     ],
-    "epsilon_fn": "3.0 + 2.0 * (flight_altitude_m / 1000)^0.5"
+    "epsilon_fn": "3.0 + 2.0 * (flight_altitude_m / 1000) ** 0.5"
   },
   "protocol_fields": {
     "input_format": {

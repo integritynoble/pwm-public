@@ -9,9 +9,9 @@
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
     "description": "Linear state-space: recover state x(t) from output y(t) for system dx/dt = Ax + Bu, y = Cx + Du.",
-    "forward_model": "y(t) = C*exp(A*t)*x0 + integral_0^t C*exp(A*(t-s))*B*u(s) ds + D*u(t) + n(t)",
-    "world_state_x": "state vector x(t) in R^n, initial condition x0",
-    "observation_y": "output y(t) in R^p for p <= n observables",
+    "forward_model": "y(t) = C*exp(A*t)*x0 + integral_0 ** t C*exp(A*(t-s))*B*u(s) ds + D*u(t) + n(t)",
+    "world_state_x": "state vector x(t) in R ** n, initial condition x0",
+    "observation_y": "output y(t) in R ** p for p <= n observables",
     "physical_parameters_theta": [
       "system_order_n",
       "observability_index",
@@ -46,7 +46,7 @@
     "solver_class": "Luenberger_observer or Kalman_filter (optimal)",
     "convergence_rate_q": 2.0,
     "error_bound": "state error decays as exp(-lambda_min(A+LC)*t) with observer gain L",
-    "complexity": "O(n^3) for eigenvalue decomposition"
+    "complexity": "O(n ** 3) for eigenvalue decomposition"
   },
   "physics_fingerprint": {
     "carrier": "N/A",

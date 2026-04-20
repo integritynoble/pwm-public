@@ -25,10 +25,10 @@
       ]
     },
     "E": {
-      "forward": "r_t = sigma_t * z_t, sigma_t^2 = omega + alpha*r_{t-1}^2 + beta*sigma_{t-1}^2",
+      "forward": "r_t = sigma_t * z_t, sigma_t ** 2 = omega + alpha*r_{t-1}^2 + beta*sigma_{t-1}^2",
       "operator": "mle_garch_estimation",
       "primitive_chain": "M.garch.conditional_variance -> O.mle.log_likelihood -> S.recursion.garch_update",
-      "inverse": "recover conditional variance sigma_t^2 series and GARCH parameters (omega from financial return series {r_t} for t=1..T"
+      "inverse": "recover conditional variance sigma_t ** 2 series and GARCH parameters (omega from financial return series {r_t} for t=1..T"
     },
     "B": {
       "stationarity": "alpha+beta < 1",
@@ -43,7 +43,7 @@
       "residual_norm",
       "convergence_curve"
     ],
-    "epsilon_fn": "0.05 + 0.03 * (structural_break_prob / 0.1 + 1)^0.5"
+    "epsilon_fn": "0.05 + 0.03 * (structural_break_prob / 0.1 + 1) ** 0.5"
   },
   "protocol_fields": {
     "input_format": {

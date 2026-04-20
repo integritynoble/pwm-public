@@ -11,7 +11,7 @@
     "description": "Monte Carlo option pricing: estimate exotic option price via simulation with variance reduction techniques.",
     "forward_model": "C = e^{-rT} * E[max(S_T - K, 0)]; estimate by sample average over N_paths simulated paths",
     "world_state_x": "option price C and Greeks (delta, gamma, vega)",
-    "observation_y": "simulated payoffs g(S_T^i) for i=1..N_paths",
+    "observation_y": "simulated payoffs g(S_T ** i) for i=1..N_paths",
     "physical_parameters_theta": [
       "N_paths",
       "N_timesteps",
@@ -46,7 +46,7 @@
   "C": {
     "solver_class": "standard_MC or antithetic_variates or quasi_MC_Sobol",
     "convergence_rate_q": 1.0,
-    "error_bound": "standard error scales as 1/sqrt(N_paths); quasi-MC as O(log^d N / N)",
+    "error_bound": "standard error scales as 1/sqrt(N_paths); quasi-MC as O(log ** d N / N)",
     "complexity": "O(N_paths * N_timesteps) for path generation"
   },
   "physics_fingerprint": {

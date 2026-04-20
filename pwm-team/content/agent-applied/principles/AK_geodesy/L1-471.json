@@ -46,7 +46,7 @@
     "solver_class": "time_wise_approach or space_wise_approach or semi_analytic",
     "convergence_rate_q": 2.0,
     "error_bound": "geoid accuracy < 1 cm at 100 km resolution (GOCE requirement)",
-    "complexity": "O(N_max^2 * N_obs) for design matrix computation"
+    "complexity": "O(N_max ** 2 * N_obs) for design matrix computation"
   },
   "physics_fingerprint": {
     "carrier": "N/A",

@@ -46,7 +46,7 @@
     "solver_class": "batch_least_squares or extended_Kalman_filter (SGP4 for TLE)",
     "convergence_rate_q": 2.0,
     "error_bound": "position prediction error < 100 m at 24h for LEO with SRP+drag",
-    "complexity": "O(N_obs * N_state^2) for batch normal equations"
+    "complexity": "O(N_obs * N_state ** 2) for batch normal equations"
   },
   "physics_fingerprint": {
     "carrier": "RF",

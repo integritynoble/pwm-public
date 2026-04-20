@@ -9,7 +9,7 @@
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
     "description": "SfM photogrammetry: recover 3D scene structure and camera poses from unordered image set via bundle adjustment.",
-    "forward_model": "x_ij = P_i * X_j / lambda_ij; P_i = K * [R_i | t_i]; minimize sum ||x_ij - x_ij^obs||^2",
+    "forward_model": "x_ij = P_i * X_j / lambda_ij; P_i = K * [R_i | t_i]; minimize sum ||x_ij - x_ij ** obs||^2",
     "world_state_x": "3D point positions X_j and camera pose parameters (R_i, t_i, K_i)",
     "observation_y": "2D keypoint observations x_ij for N_images images, M_points 3D points",
     "physical_parameters_theta": [

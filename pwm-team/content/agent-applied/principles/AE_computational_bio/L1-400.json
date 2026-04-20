@@ -9,7 +9,7 @@
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
     "description": "Cardiovascular hemodynamics: infer blood flow, pressure, and wall shear stress from 4D flow MRI data.",
-    "forward_model": "rho*(du/dt + u*nabla u) = -nabla p + mu*nabla^2 u; nabla*u = 0 (incompressible NS)",
+    "forward_model": "rho*(du/dt + u*nabla u) = -nabla p + mu*nabla ** 2 u; nabla*u = 0 (incompressible NS)",
     "world_state_x": "3D velocity field u(x,t) and pressure p(x,t) throughout vascular geometry",
     "observation_y": "4D phase-contrast MRI velocity measurements v_MRI(x,t) at ~2mm resolution",
     "physical_parameters_theta": [

@@ -45,8 +45,8 @@
   "C": {
     "solver_class": "leapfrog or Hermite_integrator or tree_code",
     "convergence_rate_q": 2.0,
-    "error_bound": "energy error dE/E0 <= epsilon_step^2 per orbit",
-    "complexity": "O(N^2) direct, O(N log N) Barnes-Hut per timestep"
+    "error_bound": "energy error dE/E0 <= epsilon_step ** 2 per orbit",
+    "complexity": "O(N ** 2) direct, O(N log N) Barnes-Hut per timestep"
   },
   "physics_fingerprint": {
     "carrier": "N/A",

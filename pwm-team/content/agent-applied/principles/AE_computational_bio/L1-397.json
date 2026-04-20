@@ -9,7 +9,7 @@
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
     "description": "FitzHugh-Nagumo model: 2D reduction of HH capturing excitability and bifurcation structure.",
-    "forward_model": "dv/dt = v - v^3/3 - w + I; dw/dt = epsilon*(v + a - b*w)",
+    "forward_model": "dv/dt = v - v ** 3/3 - w + I; dw/dt = epsilon*(v + a - b*w)",
     "world_state_x": "FHN parameters {a, b, epsilon, I_bias} controlling excitability and oscillation",
     "observation_y": "voltage-like variable v(t) and recovery variable w(t)",
     "physical_parameters_theta": [

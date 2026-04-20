@@ -9,7 +9,7 @@
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
     "description": "Accretion disk spectral fitting: constrain BH spin and disk emissivity from relativistically-broadened iron line profiles.",
-    "forward_model": "F_obs(E) = integral epsilon(r) * F_rest(E/g(r)) * g(r)^4 * r dr / d^2",
+    "forward_model": "F_obs(E) = integral epsilon(r) * F_rest(E/g(r)) * g(r) ** 4 * r dr / d ** 2",
     "world_state_x": "BH spin a*, emissivity profile epsilon(r), inclination i",
     "observation_y": "X-ray spectrum F_obs(E) from 1-100 keV (XMM/NuSTAR)",
     "physical_parameters_theta": [

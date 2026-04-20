@@ -9,9 +9,9 @@
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
     "description": "SIMP topology optimization: minimize structural compliance subject to volume fraction constraint using density-based penalization.",
-    "forward_model": "K(rho)*u = f, C = f^T u, rho_e in [rho_min, 1], penalty p=3",
+    "forward_model": "K(rho)*u = f, C = f ** T u, rho_e in [rho_min, 1], penalty p=3",
     "world_state_x": "density field rho in [0,1]^N_e, N_e finite elements",
-    "observation_y": "compliance C = f^T K(rho)^{-1} f (scalar objective)",
+    "observation_y": "compliance C = f ** T K(rho)^{-1} f (scalar objective)",
     "physical_parameters_theta": [
       "volume_fraction V_f in [0.3,0.7]",
       "penalty p in [1,5]",

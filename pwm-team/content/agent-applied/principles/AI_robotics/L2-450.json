@@ -25,7 +25,7 @@
       ]
     },
     "E": {
-      "forward": "min integral_0^T l(x,u) dt; s.t. dx/dt = f(x,u), g(x,u) <= 0 (constraints), x(0)=x0, x(T)=xT",
+      "forward": "min integral_0 ** T l(x,u) dt; s.t. dx/dt = f(x,u), g(x,u) <= 0 (constraints), x(0)=x0, x(T)=xT",
       "operator": "trajectory_collocation_optimization",
       "primitive_chain": "M.collocation.direct_transcription -> O.nlp.ipopt_solver -> S.warm_start.previous_solution",
       "inverse": "recover optimal state-control trajectory {x*(t) from initial/final conditions"

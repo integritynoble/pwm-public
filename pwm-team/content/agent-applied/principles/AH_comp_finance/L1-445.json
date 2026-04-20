@@ -9,8 +9,8 @@
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
     "description": "GARCH(1,1) model: estimate conditional volatility and model parameters from return series via maximum likelihood.",
-    "forward_model": "r_t = sigma_t * z_t, sigma_t^2 = omega + alpha*r_{t-1}^2 + beta*sigma_{t-1}^2",
-    "world_state_x": "conditional variance sigma_t^2 series and GARCH parameters (omega, alpha, beta)",
+    "forward_model": "r_t = sigma_t * z_t, sigma_t ** 2 = omega + alpha*r_{t-1}^2 + beta*sigma_{t-1}^2",
+    "world_state_x": "conditional variance sigma_t ** 2 series and GARCH parameters (omega, alpha, beta)",
     "observation_y": "financial return series {r_t} for t=1..T",
     "physical_parameters_theta": [
       "omega_intercept",

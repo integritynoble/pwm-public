@@ -25,7 +25,7 @@
       ]
     },
     "E": {
-      "forward": "u = -K*x; K = R^{-1} B^T P; P solves algebraic Riccati: A^T P + P A - P B R^{-1} B^T P + Q = 0",
+      "forward": "u = -K*x; K = R^{-1} B ** T P; P solves algebraic Riccati: A ** T P + P A - P B R^{-1} B ** T P + Q = 0",
       "operator": "full_state_feedback_lqr",
       "primitive_chain": "M.riccati.algebraic -> S.lqr.gain_computation -> O.lyapunov.closed_loop",
       "inverse": "recover optimal control gain matrix K in R^{m x n} from system matrices (A"

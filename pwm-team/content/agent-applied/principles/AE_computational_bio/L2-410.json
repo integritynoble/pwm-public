@@ -43,7 +43,7 @@
       "residual_norm",
       "convergence_curve"
     ],
-    "epsilon_fn": "10 + 5 * (imaging_noise_percent / 10)^0.5"
+    "epsilon_fn": "10 + 5 * (imaging_noise_percent / 10) ** 0.5"
   },
   "protocol_fields": {
     "input_format": {

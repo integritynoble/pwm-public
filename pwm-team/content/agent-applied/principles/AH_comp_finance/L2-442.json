@@ -25,13 +25,13 @@
       ]
     },
     "E": {
-      "forward": "sigma_impl(k, T) modeled by SVI parameterization: w(k) = a + b*(rho*(k-m) + sqrt((k-m)^2 + sigma^2))",
+      "forward": "sigma_impl(k, T) modeled by SVI parameterization: w(k) = a + b*(rho*(k-m) + sqrt((k-m) ** 2 + sigma ** 2))",
       "operator": "vol_surface_interpolation",
       "primitive_chain": "S.interpolation.cubic_spline -> M.arbitrage.butterfly_spread -> O.svi.calibration",
       "inverse": "recover continuous implied vol surface sigma(K/F from sparse market implied vols sigma_i at (K_i"
     },
     "B": {
-      "no_arbitrage_butterfly": "d^2C/dK^2 >= 0",
+      "no_arbitrage_butterfly": "d ** 2C/dK ** 2 >= 0",
       "no_arbitrage_calendar": "total_variance monotone in T"
     },
     "I": {
@@ -43,7 +43,7 @@
       "residual_norm",
       "convergence_curve"
     ],
-    "epsilon_fn": "10 + 10 * (data_noise_bp / 20)^0.5"
+    "epsilon_fn": "10 + 10 * (data_noise_bp / 20) ** 0.5"
   },
   "protocol_fields": {
     "input_format": {

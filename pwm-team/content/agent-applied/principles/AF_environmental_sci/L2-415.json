@@ -25,7 +25,7 @@
       ]
     },
     "E": {
-      "forward": "dC/dt + v*(dC/dx) = D*(d^2C/dx^2) - lambda*C + S(x,t)",
+      "forward": "dC/dt + v*(dC/dx) = D*(d ** 2C/dx ** 2) - lambda*C + S(x,t)",
       "operator": "tracer_concentration_measurement",
       "primitive_chain": "M.ade.advection_dispersion -> O.tikhonov.regularization -> S.fdm.crank_nicolson",
       "inverse": "recover source concentration history S(t) at source location x_s from breakthrough curves C(x_obs"
@@ -43,7 +43,7 @@
       "residual_norm",
       "convergence_curve"
     ],
-    "epsilon_fn": "5 + 5 * (5 / N_monitoring_wells)^0.5"
+    "epsilon_fn": "5 + 5 * (5 / N_monitoring_wells) ** 0.5"
   },
   "protocol_fields": {
     "input_format": {

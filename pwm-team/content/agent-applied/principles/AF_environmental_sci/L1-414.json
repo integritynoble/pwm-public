@@ -9,7 +9,7 @@
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
     "description": "Gaussian plume: infer point source emission rate Q and location from downwind concentration measurements.",
-    "forward_model": "C(x,y,z) = Q/(2*pi*sigma_y*sigma_z*u) * exp(-y^2/(2*sigma_y^2)) * [exp(-(z-H)^2/(2*sigma_z^2)) + exp(-(z+H)^2/(2*sigma_z^2))]",
+    "forward_model": "C(x,y,z) = Q/(2*pi*sigma_y*sigma_z*u) * exp(-y ** 2/(2*sigma_y ** 2)) * [exp(-(z-H) ** 2/(2*sigma_z ** 2)) + exp(-(z+H) ** 2/(2*sigma_z ** 2))]",
     "world_state_x": "source emission rate Q (g/s), source height H (m), source location (x0, y0)",
     "observation_y": "ambient concentration measurements C_i (ug/m3) at N_sensors downwind",
     "physical_parameters_theta": [

@@ -9,8 +9,8 @@
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
     "description": "Markowitz portfolio: find minimum variance portfolio for target return using covariance matrix from historical data.",
-    "forward_model": "min_w w^T Sigma w s.t. mu^T w = mu_target, 1^T w = 1, w >= 0",
-    "world_state_x": "optimal portfolio weights w in R^N satisfying constraints",
+    "forward_model": "min_w w ** T Sigma w s.t. mu ** T w = mu_target, 1 ** T w = 1, w >= 0",
+    "world_state_x": "optimal portfolio weights w in R ** N satisfying constraints",
     "observation_y": "historical return matrix R in R^{T x N} for N assets over T periods",
     "physical_parameters_theta": [
       "N_assets",
@@ -46,7 +46,7 @@
     "solver_class": "quadratic_programming_CVXPY or analytical_frontier",
     "convergence_rate_q": 2.0,
     "error_bound": "out-of-sample Sharpe > 0.5 for 1-year lookback",
-    "complexity": "O(N^2 * T) for covariance estimation + O(N^3) for QP"
+    "complexity": "O(N ** 2 * T) for covariance estimation + O(N ** 3) for QP"
   },
   "physics_fingerprint": {
     "carrier": "N/A",

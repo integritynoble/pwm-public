@@ -9,7 +9,7 @@
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
     "description": "Sediment transport inversion: infer bed material size distribution and critical shear stress from bedload and suspended transport measurements.",
-    "forward_model": "q_b = 8*(tau* - tau*_c)^1.5 * sqrt((s-1)*g*d^3) (MPM); q_s = c_a * u * h (van Rijn suspended)",
+    "forward_model": "q_b = 8*(tau* - tau*_c) ** 1.5 * sqrt((s-1)*g*d ** 3) (MPM); q_s = c_a * u * h (van Rijn suspended)",
     "world_state_x": "d50 bed material grain size (mm), tau*_c critical Shields stress, bed roughness ks",
     "observation_y": "bedload flux q_b (kg/m/s), suspended sediment concentration SSC (mg/L) vs. discharge",
     "physical_parameters_theta": [

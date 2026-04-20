@@ -47,7 +47,7 @@
     "solver_class": "pixelized_source_inversion (Warren_Dye) or semi_linear_inversion (Vegetti_Koopmans)",
     "convergence_rate_q": 2.0,
     "error_bound": "chi2_red ~ 1.0 at convergence; residual < 3-sigma per pixel",
-    "complexity": "O(N_src_pix * N_img_pix^2) for linear inversion"
+    "complexity": "O(N_src_pix * N_img_pix ** 2) for linear inversion"
   },
   "physics_fingerprint": {
     "carrier": "photon",

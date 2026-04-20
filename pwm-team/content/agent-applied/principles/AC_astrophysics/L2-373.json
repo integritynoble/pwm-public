@@ -25,10 +25,10 @@
       ]
     },
     "E": {
-      "forward": "R_a(t) = integral h_ab(t) * F^ab_a(t) dt + n_a(t); HD_curve = 3/2*(1-x)/2*ln((1-x)/2) - (1-x)/4 + 1/2",
+      "forward": "R_a(t) = integral h_ab(t) * F ** ab_a(t) dt + n_a(t); HD_curve = 3/2*(1-x)/2*ln((1-x)/2) - (1-x)/4 + 1/2",
       "operator": "pulsar_timing_residuals",
       "primitive_chain": "S.pulsar.timing_residuals -> F.fourier.spectral_density -> O.entropy.bayesian",
-      "inverse": "recover GW background strain spectrum h_c(f) = A*(f/f_yr)^alpha from timing residuals R_a(t) for N_psr pulsars over T_obs years"
+      "inverse": "recover GW background strain spectrum h_c(f) = A*(f/f_yr) ** alpha from timing residuals R_a(t) for N_psr pulsars over T_obs years"
     },
     "B": {
       "positivity": "h_c(f) >= 0",
@@ -43,7 +43,7 @@
       "residual_norm",
       "convergence_curve"
     ],
-    "epsilon_fn": "2.0 + 1.0 * (N_psr / 25)^0.5"
+    "epsilon_fn": "2.0 + 1.0 * (N_psr / 25) ** 0.5"
   },
   "protocol_fields": {
     "input_format": {

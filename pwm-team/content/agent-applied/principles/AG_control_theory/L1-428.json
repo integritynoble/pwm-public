@@ -46,7 +46,7 @@
     "solver_class": "standard_EKF or iterated_EKF (IEKF)",
     "convergence_rate_q": 2.0,
     "error_bound": "EKF suboptimal for strong nonlinearity; RMSE increases with nonlinearity degree",
-    "complexity": "O(n^3 + n^2 * p) per step for Jacobian + update"
+    "complexity": "O(n ** 3 + n ** 2 * p) per step for Jacobian + update"
   },
   "physics_fingerprint": {
     "carrier": "N/A",

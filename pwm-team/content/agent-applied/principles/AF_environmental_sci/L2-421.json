@@ -25,7 +25,7 @@
       ]
     },
     "E": {
-      "forward": "dA/dt + dQ/dx = q_lat; dQ/dt + d(Q^2/A)/dx + g*A*dh/dx + g*A*S_f = 0; S_f = n^2*Q^2/(A^2*R^{4/3})",
+      "forward": "dA/dt + dQ/dx = q_lat; dQ/dt + d(Q ** 2/A)/dx + g*A*dh/dx + g*A*S_f = 0; S_f = n ** 2*Q ** 2/(A ** 2*R^{4/3})",
       "operator": "water_level_discharge_measurement",
       "primitive_chain": "M.swe.saint_venant -> O.least_squares.rating_curve -> S.fdm.flood_routing",
       "inverse": "recover Manning's roughness n(x) and cross-section bathymetry A(h from water stage H(t) at N_gauges gauging stations and discharge Q(t)"
@@ -43,7 +43,7 @@
       "residual_norm",
       "convergence_curve"
     ],
-    "epsilon_fn": "0.05 + 0.05 * (discharge_peak_m3_s / 1000)^0.2"
+    "epsilon_fn": "0.05 + 0.05 * (discharge_peak_m3_s / 1000) ** 0.2"
   },
   "protocol_fields": {
     "input_format": {

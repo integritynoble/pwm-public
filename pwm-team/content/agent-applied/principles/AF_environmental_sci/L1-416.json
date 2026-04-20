@@ -46,7 +46,7 @@
     "solver_class": "optimal_estimation_Rodgers or NLLS_Marquardt",
     "convergence_rate_q": 2.0,
     "error_bound": "temperature retrieval < 1 K RMS for clear sky",
-    "complexity": "O(N_layers^2 * N_nu) per Jacobian calculation"
+    "complexity": "O(N_layers ** 2 * N_nu) per Jacobian calculation"
   },
   "physics_fingerprint": {
     "carrier": "photon",

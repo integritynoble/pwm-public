@@ -9,8 +9,8 @@
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
     "description": "EnKF: ensemble-based approximation of Kalman filter covariance; scales to large state dimensions.",
-    "forward_model": "K = P_f H^T (H P_f H^T + R)^{-1}; P_f estimated from ensemble; analysis: x_a^i = x_f^i + K(y^i - Hx_f^i)",
-    "world_state_x": "ensemble of state estimates {x_a^i} representing posterior distribution",
+    "forward_model": "K = P_f H ** T (H P_f H ** T + R)^{-1}; P_f estimated from ensemble; analysis: x_a ** i = x_f ** i + K(y ** i - Hx_f ** i)",
+    "world_state_x": "ensemble of state estimates {x_a ** i} representing posterior distribution",
     "observation_y": "observations {y_t} at each assimilation cycle",
     "physical_parameters_theta": [
       "ensemble_size_N_e",
@@ -40,7 +40,7 @@
     "condition_number_kappa": 10000.0,
     "condition_number_effective": 500,
     "condition_number_mismatched": 2000,
-    "regime": "Scales to O(10^8) state dimensions with localization; N_e = 20-100 typically sufficient; inflation prevents ensemble collapse."
+    "regime": "Scales to O(10 ** 8) state dimensions with localization; N_e = 20-100 typically sufficient; inflation prevents ensemble collapse."
   },
   "C": {
     "solver_class": "LETKF or serial_EnSRF or EAKF",

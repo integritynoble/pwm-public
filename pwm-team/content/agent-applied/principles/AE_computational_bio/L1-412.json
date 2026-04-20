@@ -9,7 +9,7 @@
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
     "description": "Protein structure determination: recover 3D atomic coordinates from cryo-EM density map or experimental NMR restraints.",
-    "forward_model": "rho_exp(r) = sum_i w_i * exp(-|r - r_i|^2 / (2*sigma^2)) (cryo-EM density); NOE distances r_ij ~ |r_i - r_j|",
+    "forward_model": "rho_exp(r) = sum_i w_i * exp(-|r - r_i|^2 / (2*sigma ** 2)) (cryo-EM density); NOE distances r_ij ~ |r_i - r_j|",
     "world_state_x": "3D protein structure: atomic coordinates {r_i} for all N_atoms atoms",
     "observation_y": "cryo-EM density map rho_exp or NMR NOE distance restraints {d_ij_obs}",
     "physical_parameters_theta": [
@@ -46,7 +46,7 @@
     "solver_class": "PHENIX_real_space_refinement or HADDOCK or AlphaFold2_structure_prediction",
     "convergence_rate_q": 2.0,
     "error_bound": "TM-score > 0.5 for remotely homologous proteins; RMSD < 2 A for high-res cryo-EM",
-    "complexity": "O(N_atoms * N_iterations) for MD refinement; O(N_atoms^2) for energy evaluation"
+    "complexity": "O(N_atoms * N_iterations) for MD refinement; O(N_atoms ** 2) for energy evaluation"
   },
   "physics_fingerprint": {
     "carrier": "N/A",

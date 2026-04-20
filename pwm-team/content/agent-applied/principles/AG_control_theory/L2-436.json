@@ -25,10 +25,10 @@
       ]
     },
     "E": {
-      "forward": "K = P_f H^T (H P_f H^T + R)^{-1}; P_f estimated from ensemble; analysis: x_a^i = x_f^i + K(y^i - Hx_f^i)",
+      "forward": "K = P_f H ** T (H P_f H ** T + R)^{-1}; P_f estimated from ensemble; analysis: x_a ** i = x_f ** i + K(y ** i - Hx_f ** i)",
       "operator": "ensemble_state_estimation",
       "primitive_chain": "S.enkf.ensemble_update -> M.localization.covariance -> O.inflation.ensemble_spread",
-      "inverse": "recover ensemble of state estimates {x_a^i} representing posterior distribution from observations {y_t} at each assimilation cycle"
+      "inverse": "recover ensemble of state estimates {x_a ** i} representing posterior distribution from observations {y_t} at each assimilation cycle"
     },
     "B": {
       "ensemble_spread": "spread > 0",
@@ -43,7 +43,7 @@
       "residual_norm",
       "convergence_curve"
     ],
-    "epsilon_fn": "0.03 + 0.02 * (50 / N_e_ensemble)^0.5"
+    "epsilon_fn": "0.03 + 0.02 * (50 / N_e_ensemble) ** 0.5"
   },
   "protocol_fields": {
     "input_format": {

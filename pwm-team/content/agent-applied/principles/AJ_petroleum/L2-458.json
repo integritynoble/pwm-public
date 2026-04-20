@@ -43,7 +43,7 @@
       "residual_norm",
       "convergence_curve"
     ],
-    "epsilon_fn": "0.08 + 0.02 * (permeability_K_mD / 100)^(-0.2)"
+    "epsilon_fn": "0.08 + 0.02 * (permeability_K_mD / 100) ** (-0.2)"
   },
   "protocol_fields": {
     "input_format": {

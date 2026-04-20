@@ -8,8 +8,8 @@
   "source_file": "AG_control_theory/432_optimal_control_lqr.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "LQR optimal control: find state feedback gain K minimizing infinite-horizon quadratic cost J = integral(x^T Q x + u^T R u) dt.",
-    "forward_model": "u = -K*x; K = R^{-1} B^T P; P solves algebraic Riccati: A^T P + P A - P B R^{-1} B^T P + Q = 0",
+    "description": "LQR optimal control: find state feedback gain K minimizing infinite-horizon quadratic cost J = integral(x ** T Q x + u ** T R u) dt.",
+    "forward_model": "u = -K*x; K = R^{-1} B ** T P; P solves algebraic Riccati: A ** T P + P A - P B R^{-1} B ** T P + Q = 0",
     "world_state_x": "optimal control gain matrix K in R^{m x n}",
     "observation_y": "system matrices (A, B) and cost weights (Q, R) as inputs",
     "physical_parameters_theta": [
@@ -45,8 +45,8 @@
   "C": {
     "solver_class": "DARE_Riccati_solver (MATLAB lqr or scipy.signal.lqr)",
     "convergence_rate_q": 2.0,
-    "error_bound": "optimal cost J* = x0^T P x0; guaranteed stability margins: PM >= 60 deg, GM >= 6 dB",
-    "complexity": "O(n^3) for Riccati equation solution"
+    "error_bound": "optimal cost J* = x0 ** T P x0; guaranteed stability margins: PM >= 60 deg, GM >= 6 dB",
+    "complexity": "O(n ** 3) for Riccati equation solution"
   },
   "physics_fingerprint": {
     "carrier": "N/A",

@@ -9,7 +9,7 @@
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
     "description": "Trajectory optimization: find minimum-time or minimum-effort robot trajectory satisfying dynamics and obstacle constraints.",
-    "forward_model": "min integral_0^T l(x,u) dt; s.t. dx/dt = f(x,u), g(x,u) <= 0 (constraints), x(0)=x0, x(T)=xT",
+    "forward_model": "min integral_0 ** T l(x,u) dt; s.t. dx/dt = f(x,u), g(x,u) <= 0 (constraints), x(0)=x0, x(T)=xT",
     "world_state_x": "optimal state-control trajectory {x*(t), u*(t)} over time horizon T",
     "observation_y": "initial/final conditions, obstacle set, dynamics model",
     "physical_parameters_theta": [
@@ -46,7 +46,7 @@
     "solver_class": "direct_collocation_IPOPT or DDP_iLQR or CHOMP",
     "convergence_rate_q": 2.0,
     "error_bound": "cost within 5% of global optimum for convex costs; local minima for nonconvex",
-    "complexity": "O(N_nodes * n_state^2 * N_iter) for direct methods"
+    "complexity": "O(N_nodes * n_state ** 2 * N_iter) for direct methods"
   },
   "physics_fingerprint": {
     "carrier": "N/A",

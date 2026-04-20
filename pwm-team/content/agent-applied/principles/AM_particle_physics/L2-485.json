@@ -25,7 +25,7 @@
       ]
     },
     "E": {
-      "forward": "P(nu_alpha -> nu_beta) = |sum_i U_{alpha_i} e^{-i m_i^2 L/(2E)} U*_{beta_i}|^2",
+      "forward": "P(nu_alpha -> nu_beta) = |sum_i U_{alpha_i} e^{-i m_i ** 2 L/(2E)} U*_{beta_i}|^2",
       "operator": "neutrino_disappearance_appearance",
       "primitive_chain": "M.pmns.mixing_matrix -> S.matter.msw_effect -> O.chi2.event_rates",
       "inverse": "recover PMNS parameters (theta_12 from measured neutrino event rates N_obs(E"
@@ -43,7 +43,7 @@
       "residual_norm",
       "convergence_curve"
     ],
-    "epsilon_fn": "10 + 10 * (5.0 / POT_1e21)^0.5"
+    "epsilon_fn": "10 + 10 * (5.0 / POT_1e21) ** 0.5"
   },
   "protocol_fields": {
     "input_format": {

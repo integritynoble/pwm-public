@@ -31,7 +31,7 @@
       "inverse": "recover Heston parameters (v0 from implied vol surface sigma_impl(K"
     },
     "B": {
-      "Feller_condition": "2*kappa*theta > xi^2",
+      "Feller_condition": "2*kappa*theta > xi ** 2",
       "correlation": "rho in (-1,1)",
       "positivity": "v0,kappa,theta,xi > 0"
     },
@@ -44,7 +44,7 @@
       "residual_norm",
       "convergence_curve"
     ],
-    "epsilon_fn": "40 + 20 * (data_noise_bp / 30)^0.5"
+    "epsilon_fn": "40 + 20 * (data_noise_bp / 30) ** 0.5"
   },
   "protocol_fields": {
     "input_format": {

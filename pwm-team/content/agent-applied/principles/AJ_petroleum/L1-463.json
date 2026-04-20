@@ -9,7 +9,7 @@
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
     "description": "Gassmann fluid substitution: predict seismic velocity changes from one fluid to another using Gassmann equations.",
-    "forward_model": "K_sat = K_dry + (1-K_dry/K_0)^2 / (phi/K_fl + (1-phi)/K_0 - K_dry/K_0^2)",
+    "forward_model": "K_sat = K_dry + (1-K_dry/K_0) ** 2 / (phi/K_fl + (1-phi)/K_0 - K_dry/K_0 ** 2)",
     "world_state_x": "saturated bulk modulus K_sat and shear modulus G_sat = G_dry for brine/oil/gas",
     "observation_y": "seismic P-wave velocity Vp and S-wave velocity Vs measurements from well log",
     "physical_parameters_theta": [

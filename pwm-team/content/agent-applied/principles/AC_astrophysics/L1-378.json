@@ -9,7 +9,7 @@
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
     "description": "21cm reionization mapping: detect 21cm signal from neutral hydrogen during EoR against bright foreground emission.",
-    "forward_model": "T_b(z) = 27*x_HI*(1+delta)*((1+z)/10)^0.5 * (H/dv_r/dr) mK; foregrounds dominate at 4 orders of magnitude",
+    "forward_model": "T_b(z) = 27*x_HI*(1+delta)*((1+z)/10) ** 0.5 * (H/dv_r/dr) mK; foregrounds dominate at 4 orders of magnitude",
     "world_state_x": "HI neutral fraction x_HI(z) and 21cm brightness temperature power spectrum P_21cm(k,z)",
     "observation_y": "calibrated visibility data V(u,v,nu) from radio interferometer (HERA/SKA-Low)",
     "physical_parameters_theta": [

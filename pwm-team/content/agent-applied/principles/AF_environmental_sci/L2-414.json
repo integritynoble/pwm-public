@@ -25,7 +25,7 @@
       ]
     },
     "E": {
-      "forward": "C(x,y,z) = Q/(2*pi*sigma_y*sigma_z*u) * exp(-y^2/(2*sigma_y^2)) * [exp(-(z-H)^2/(2*sigma_z^2)) + exp(-(z+H)^2/(2*sigma_z^2))]",
+      "forward": "C(x,y,z) = Q/(2*pi*sigma_y*sigma_z*u) * exp(-y ** 2/(2*sigma_y ** 2)) * [exp(-(z-H) ** 2/(2*sigma_z ** 2)) + exp(-(z+H) ** 2/(2*sigma_z ** 2))]",
       "operator": "atmospheric_dispersion_gaussian",
       "primitive_chain": "M.gaussian.plume_model -> O.least_squares.source_inversion -> S.stability.pasquill_gifford",
       "inverse": "recover source emission rate Q (g/s) from ambient concentration measurements C_i (ug/m3) at N_sensors downwind"
@@ -43,7 +43,7 @@
       "residual_norm",
       "convergence_curve"
     ],
-    "epsilon_fn": "15 + 10 * (6 / N_sensors)^0.5"
+    "epsilon_fn": "15 + 10 * (6 / N_sensors) ** 0.5"
   },
   "protocol_fields": {
     "input_format": {

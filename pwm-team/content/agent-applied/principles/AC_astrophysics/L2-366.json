@@ -25,7 +25,7 @@
       ]
     },
     "E": {
-      "forward": "C_l^{TT,EE,TE}(theta) from CAMB/CLASS Boltzmann solver; chi2 = sum_l (2l+1)/2 [C_l^obs/C_l^th - 1 - ln(C_l^obs/C_l^th)]",
+      "forward": "C_l^{TT,EE,TE}(theta) from CAMB/CLASS Boltzmann solver; chi2 = sum_l (2l+1)/2 [C_l ** obs/C_l ** th - 1 - ln(C_l ** obs/C_l ** th)]",
       "operator": "boltzmann_cmb_transfer",
       "primitive_chain": "S.boltzmann.transfer -> M.fisher.fisher_matrix -> O.mcmc.sampler",
       "inverse": "recover cosmological parameter vector theta = (Omega_b from CMB angular power spectra C_l^{TT"
@@ -43,7 +43,7 @@
       "residual_norm",
       "convergence_curve"
     ],
-    "epsilon_fn": "0.005 + 0.005 * (noise_uK_arcmin / 10.0)^0.5"
+    "epsilon_fn": "0.005 + 0.005 * (noise_uK_arcmin / 10.0) ** 0.5"
   },
   "protocol_fields": {
     "input_format": {

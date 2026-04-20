@@ -25,10 +25,10 @@
       ]
     },
     "E": {
-      "forward": "K(rho)*u = f, C = f^T u, rho_e in [rho_min, 1], penalty p=3",
+      "forward": "K(rho)*u = f, C = f ** T u, rho_e in [rho_min, 1], penalty p=3",
       "operator": "compliance_minimization",
       "primitive_chain": "F.filter.density -> S.simp.penalty -> M.fem.stiffness -> O.compliance.gradient",
-      "inverse": "recover density field rho in [0 from compliance C = f^T K(rho)^{-1} f (scalar objective)"
+      "inverse": "recover density field rho in [0 from compliance C = f ** T K(rho)^{-1} f (scalar objective)"
     },
     "B": {
       "density_nonnegativity": "rho_e >= rho_min=0.001",

@@ -46,7 +46,7 @@
     "solver_class": "HMMER4_Baum_Welch or ViterbiEM",
     "convergence_rate_q": 2.0,
     "error_bound": "alignment sensitivity > 80% at 25% sequence identity",
-    "complexity": "O(N_seq * L^2 * M) for Viterbi + Baum-Welch"
+    "complexity": "O(N_seq * L ** 2 * M) for Viterbi + Baum-Welch"
   },
   "physics_fingerprint": {
     "carrier": "N/A",

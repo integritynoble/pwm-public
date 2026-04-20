@@ -46,7 +46,7 @@
     "solver_class": "N4SID_subspace or ARX_RLS or PEM_prediction_error_method",
     "convergence_rate_q": 2.0,
     "error_bound": "model fit > 80% for good data; N4SID optimal for large N",
-    "complexity": "O(N * n^2) for subspace methods"
+    "complexity": "O(N * n ** 2) for subspace methods"
   },
   "physics_fingerprint": {
     "carrier": "N/A",

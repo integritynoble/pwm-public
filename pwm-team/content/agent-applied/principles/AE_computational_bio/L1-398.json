@@ -9,7 +9,7 @@
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
     "description": "Cable equation inversion: recover dendritic conductance distribution from voltage recordings at one or few locations.",
-    "forward_model": "C_m * dV/dt = (1/r_i) * d^2V/dx^2 - g_L*(V-E_L) - g_syn(x,t)*(V-E_syn)",
+    "forward_model": "C_m * dV/dt = (1/r_i) * d ** 2V/dx ** 2 - g_L*(V-E_L) - g_syn(x,t)*(V-E_syn)",
     "world_state_x": "synaptic conductance distribution g_syn(x,t) along dendritic cable",
     "observation_y": "voltage V(t) recorded at soma or branch point from synaptic inputs",
     "physical_parameters_theta": [

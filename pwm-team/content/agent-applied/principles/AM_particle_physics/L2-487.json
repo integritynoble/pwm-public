@@ -25,7 +25,7 @@
       ]
     },
     "E": {
-      "forward": "d_ij = min(k_{Ti}^{-2}, k_{Tj}^{-2}) * Delta_ij^2 / R^2; jet E corrected by JES(eta, pt, mu)",
+      "forward": "d_ij = min(k_{Ti}^{-2}, k_{Tj}^{-2}) * Delta_ij ** 2 / R ** 2; jet E corrected by JES(eta, pt, mu)",
       "operator": "sequential_jet_clustering",
       "primitive_chain": "S.antikt.sequential_clustering -> M.pileup.area_subtraction -> O.jet.energy_scale_correction",
       "inverse": "recover jet 4-vectors {E from calorimeter clusters + track momenta for N_particles per event"
@@ -43,7 +43,7 @@
       "residual_norm",
       "convergence_curve"
     ],
-    "epsilon_fn": "0.03 + 0.02 * (pileup_mu / 50)^0.3"
+    "epsilon_fn": "0.03 + 0.02 * (pileup_mu / 50) ** 0.3"
   },
   "protocol_fields": {
     "input_format": {

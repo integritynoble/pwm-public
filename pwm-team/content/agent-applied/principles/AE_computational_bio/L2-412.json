@@ -25,7 +25,7 @@
       ]
     },
     "E": {
-      "forward": "rho_exp(r) = sum_i w_i * exp(-|r - r_i|^2 / (2*sigma^2)) (cryo-EM density); NOE distances r_ij ~ |r_i - r_j|",
+      "forward": "rho_exp(r) = sum_i w_i * exp(-|r - r_i|^2 / (2*sigma ** 2)) (cryo-EM density); NOE distances r_ij ~ |r_i - r_j|",
       "operator": "cryo_em_nmr_structure_determination",
       "primitive_chain": "M.energy.force_field -> S.md.molecular_dynamics -> O.rmsd.structure_comparison",
       "inverse": "recover 3D protein structure: atomic coordinates {r_i} for all N_atoms atoms from cryo-EM density map rho_exp or NMR NOE distance restraints {d_ij_obs}"
@@ -44,7 +44,7 @@
       "residual_norm",
       "convergence_curve"
     ],
-    "epsilon_fn": "0.50 + 0.20 * (3.0 / resolution_Angstrom)^0.5"
+    "epsilon_fn": "0.50 + 0.20 * (3.0 / resolution_Angstrom) ** 0.5"
   },
   "protocol_fields": {
     "input_format": {

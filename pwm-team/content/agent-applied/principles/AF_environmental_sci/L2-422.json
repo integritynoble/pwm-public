@@ -25,7 +25,7 @@
       ]
     },
     "E": {
-      "forward": "q_b = 8*(tau* - tau*_c)^1.5 * sqrt((s-1)*g*d^3) (MPM); q_s = c_a * u * h (van Rijn suspended)",
+      "forward": "q_b = 8*(tau* - tau*_c) ** 1.5 * sqrt((s-1)*g*d ** 3) (MPM); q_s = c_a * u * h (van Rijn suspended)",
       "operator": "bedload_suspended_measurement",
       "primitive_chain": "M.mpm.bedload_formula -> S.vanrijn.suspended_load -> O.chi2.bedload_flux",
       "inverse": "recover d50 bed material grain size (mm) from bedload flux q_b (kg/m/s)"

@@ -43,7 +43,7 @@
       "residual_norm",
       "convergence_curve"
     ],
-    "epsilon_fn": "0.3 + 0.2 * (1.0 / prior_uncertainty_GtC_yr)^0.2"
+    "epsilon_fn": "0.3 + 0.2 * (1.0 / prior_uncertainty_GtC_yr) ** 0.2"
   },
   "protocol_fields": {
     "input_format": {

@@ -46,7 +46,7 @@
     "solver_class": "QP_solver_for_linear_MPC or NLP_IPOPT_ACADOS_for_NMPC",
     "convergence_rate_q": 2.0,
     "error_bound": "recursive feasibility guaranteed with terminal constraint; stability via Lyapunov function",
-    "complexity": "O(N * n_x^3) for QP MPC; O(N * NLP_iter) for NMPC"
+    "complexity": "O(N * n_x ** 3) for QP MPC; O(N * NLP_iter) for NMPC"
   },
   "physics_fingerprint": {
     "carrier": "N/A",

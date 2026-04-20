@@ -25,7 +25,7 @@
       ]
     },
     "E": {
-      "forward": "[M, -J^T; J, 0] [q_ddot; lambda] = [Q; b]; constraint stabilization: Baumgarte method",
+      "forward": "[M, -J ** T; J, 0] [q_ddot; lambda] = [Q; b]; constraint stabilization: Baumgarte method",
       "operator": "lagrange_multiplier_constraint",
       "primitive_chain": "M.lagrange.multiplier_dynamics -> S.baumgarte.stabilization -> O.constraint.violation_check",
       "inverse": "recover generalized accelerations q_ddot and constraint forces lambda from generalized forces Q(t) and current state {q"
@@ -43,7 +43,7 @@
       "residual_norm",
       "convergence_curve"
     ],
-    "epsilon_fn": "1e-5 * (Baumgarte_alpha / 20)^(-0.5)"
+    "epsilon_fn": "1e-5 * (Baumgarte_alpha / 20) ** (-0.5)"
   },
   "protocol_fields": {
     "input_format": {

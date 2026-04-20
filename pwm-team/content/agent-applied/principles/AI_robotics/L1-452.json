@@ -9,7 +9,7 @@
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
     "description": "Multibody dynamics with holonomic constraints: simulate articulated mechanism using Lagrange multipliers.",
-    "forward_model": "[M, -J^T; J, 0] [q_ddot; lambda] = [Q; b]; constraint stabilization: Baumgarte method",
+    "forward_model": "[M, -J ** T; J, 0] [q_ddot; lambda] = [Q; b]; constraint stabilization: Baumgarte method",
     "world_state_x": "generalized accelerations q_ddot and constraint forces lambda",
     "observation_y": "generalized forces Q(t) and current state {q, q_dot}",
     "physical_parameters_theta": [
@@ -46,7 +46,7 @@
     "solver_class": "DAE_index_reduction or Baumgarte_stabilization or SHAKE_RATTLE",
     "convergence_rate_q": 2.0,
     "error_bound": "constraint violation < 1e-6 m with Baumgarte stabilization",
-    "complexity": "O((n+m)^3) for KKT system inversion, n generalized coords, m constraints"
+    "complexity": "O((n+m) ** 3) for KKT system inversion, n generalized coords, m constraints"
   },
   "physics_fingerprint": {
     "carrier": "N/A",

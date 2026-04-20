@@ -28,7 +28,7 @@
       "forward": "FK(q) = T_desired; solved iteratively via Jacobian J: dq = J^+ * de",
       "operator": "cartesian_to_joint_space_inversion",
       "primitive_chain": "S.ik.jacobian_pseudo_inverse -> M.dls.damped_least_squares -> O.gradient.task_space",
-      "inverse": "recover joint angle vector q in R^n satisfying FK(q) = T_desired from desired end-effector pose (position + orientation) as input"
+      "inverse": "recover joint angle vector q in R ** n satisfying FK(q) = T_desired from desired end-effector pose (position + orientation) as input"
     },
     "B": {
       "joint_limits": "q in joint limit set",
@@ -43,7 +43,7 @@
       "residual_norm",
       "convergence_curve"
     ],
-    "epsilon_fn": "0.5 + 0.5 * (10 / singularity_distance_cm)^0.5"
+    "epsilon_fn": "0.5 + 0.5 * (10 / singularity_distance_cm) ** 0.5"
   },
   "protocol_fields": {
     "input_format": {

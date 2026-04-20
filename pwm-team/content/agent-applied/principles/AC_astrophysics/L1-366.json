@@ -9,7 +9,7 @@
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
     "description": "CMB parameter estimation: infer cosmological parameters from CMB temperature and polarization power spectra via Boltzmann code.",
-    "forward_model": "C_l^{TT,EE,TE}(theta) from CAMB/CLASS Boltzmann solver; chi2 = sum_l (2l+1)/2 [C_l^obs/C_l^th - 1 - ln(C_l^obs/C_l^th)]",
+    "forward_model": "C_l^{TT,EE,TE}(theta) from CAMB/CLASS Boltzmann solver; chi2 = sum_l (2l+1)/2 [C_l ** obs/C_l ** th - 1 - ln(C_l ** obs/C_l ** th)]",
     "world_state_x": "cosmological parameter vector theta = (Omega_b, Omega_c, h, A_s, n_s, tau)",
     "observation_y": "CMB angular power spectra C_l^{TT,EE,TE,BB} from l=2 to l_max",
     "physical_parameters_theta": [

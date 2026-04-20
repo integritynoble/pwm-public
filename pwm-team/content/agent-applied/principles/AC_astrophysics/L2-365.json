@@ -25,7 +25,7 @@
       ]
     },
     "E": {
-      "forward": "x'' + 2H x' = -nabla phi/a^2, nabla^2 phi = 4*pi*G*a^2*(rho - rho_bar)",
+      "forward": "x'' + 2H x' = -nabla phi/a ** 2, nabla ** 2 phi = 4*pi*G*a ** 2*(rho - rho_bar)",
       "operator": "pm_tree_gravity",
       "primitive_chain": "F.fourier.pm_gravity -> S.tree.force_softening -> O.leapfrog.comoving",
       "inverse": "recover dark matter density field delta(x) and velocity field v(x) in comoving coordinates from galaxy catalog (angular positions"
@@ -43,7 +43,7 @@
       "residual_norm",
       "convergence_curve"
     ],
-    "epsilon_fn": "1.0 + 0.05 * (sigma_8 - 0.8)^2 / 0.04"
+    "epsilon_fn": "1.0 + 0.05 * (sigma_8 - 0.8) ** 2 / 0.04"
   },
   "protocol_fields": {
     "input_format": {

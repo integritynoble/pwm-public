@@ -47,7 +47,7 @@
       "residual_norm",
       "convergence_curve"
     ],
-    "epsilon_fn": "1.0 + 0.2 * (N_baselines / 15)^(-0.5)"
+    "epsilon_fn": "1.0 + 0.2 * (N_baselines / 15) ** (-0.5)"
   },
   "protocol_fields": {
     "input_format": {

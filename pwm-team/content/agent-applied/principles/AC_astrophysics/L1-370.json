@@ -9,7 +9,7 @@
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
     "description": "Stellar structure inversion: recover internal sound speed and density profiles from observed oscillation frequencies.",
-    "forward_model": "delta_nu_nl = integral K_nl(r) * delta_c^2(r)/c^2 dr + integral L_nl(r) * delta_rho(r)/rho dr",
+    "forward_model": "delta_nu_nl = integral K_nl(r) * delta_c ** 2(r)/c ** 2 dr + integral L_nl(r) * delta_rho(r)/rho dr",
     "world_state_x": "internal sound speed profile c(r) and density rho(r) from center to surface",
     "observation_y": "oscillation frequencies nu_nl for modes (n,l) from helioseismology/asteroseismology",
     "physical_parameters_theta": [
@@ -45,8 +45,8 @@
   "C": {
     "solver_class": "SOLA_inversion or OLA_regularized",
     "convergence_rate_q": 2.0,
-    "error_bound": "delta_c^2/c^2 uncertainty < 0.5% for well-observed modes",
-    "complexity": "O(N_modes^2) for inversion matrix"
+    "error_bound": "delta_c ** 2/c ** 2 uncertainty < 0.5% for well-observed modes",
+    "complexity": "O(N_modes ** 2) for inversion matrix"
   },
   "physics_fingerprint": {
     "carrier": "N/A",

@@ -25,7 +25,7 @@
       ]
     },
     "E": {
-      "forward": "d/dx(h^3/eta * dp/dx) + d/dz(h^3/eta * dp/dz) = 6*U*dh/dx (Reynolds equation); p >= 0",
+      "forward": "d/dx(h ** 3/eta * dp/dx) + d/dz(h ** 3/eta * dp/dz) = 6*U*dh/dx (Reynolds equation); p >= 0",
       "operator": "pressure_film_measurement",
       "primitive_chain": "M.reynolds.thin_film -> S.fdm.cavitation_constraint -> O.least_squares.bearing",
       "inverse": "recover film pressure field p(x from pressure measurements p_i at N_sensors sensor locations in bearing"
@@ -43,7 +43,7 @@
       "residual_norm",
       "convergence_curve"
     ],
-    "epsilon_fn": "0.3 + 0.2 * (eccentricity_ratio_e / 0.5)^0.5"
+    "epsilon_fn": "0.3 + 0.2 * (eccentricity_ratio_e / 0.5) ** 0.5"
   },
   "protocol_fields": {
     "input_format": {

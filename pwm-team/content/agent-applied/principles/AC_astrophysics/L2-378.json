@@ -25,7 +25,7 @@
       ]
     },
     "E": {
-      "forward": "T_b(z) = 27*x_HI*(1+delta)*((1+z)/10)^0.5 * (H/dv_r/dr) mK; foregrounds dominate at 4 orders of magnitude",
+      "forward": "T_b(z) = 27*x_HI*(1+delta)*((1+z)/10) ** 0.5 * (H/dv_r/dr) mK; foregrounds dominate at 4 orders of magnitude",
       "operator": "radio_interferometry_21cm",
       "primitive_chain": "F.fourier.power_spectrum_3d -> S.foreground.removal_wedge -> O.chi2.21cm_ps",
       "inverse": "recover HI neutral fraction x_HI(z) and 21cm brightness temperature power spectrum P_21cm(k from calibrated visibility data V(u"

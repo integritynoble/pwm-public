@@ -9,7 +9,7 @@
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
     "description": "4D-Var data assimilation: find optimal initial conditions minimizing misfit to observations over assimilation window.",
-    "forward_model": "J(x0) = 0.5*(x0-x_b)^T B^{-1} (x0-x_b) + 0.5*sum_t (H_t M_t(x0) - y_t)^T R_t^{-1} (H_t M_t(x0) - y_t)",
+    "forward_model": "J(x0) = 0.5*(x0-x_b) ** T B^{-1} (x0-x_b) + 0.5*sum_t (H_t M_t(x0) - y_t) ** T R_t^{-1} (H_t M_t(x0) - y_t)",
     "world_state_x": "atmospheric initial state x0 (T, u, v, q, ps) at analysis time",
     "observation_y": "conventional + satellite observations y_t over 6-12 hour window",
     "physical_parameters_theta": [

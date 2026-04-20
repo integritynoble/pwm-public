@@ -45,7 +45,7 @@
     "solver_class": "RNEA_closed_form or LS_parameter_identification (Gautier)",
     "convergence_rate_q": 2.0,
     "error_bound": "torque prediction < 5% error for identified parameters",
-    "complexity": "O(n) for RNEA; O(N_traj * n_theta^2) for parameter ID"
+    "complexity": "O(n) for RNEA; O(N_traj * n_theta ** 2) for parameter ID"
   },
   "physics_fingerprint": {
     "carrier": "N/A",

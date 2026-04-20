@@ -25,7 +25,7 @@
       ]
     },
     "E": {
-      "forward": "C_m * dV/dt = (1/r_i) * d^2V/dx^2 - g_L*(V-E_L) - g_syn(x,t)*(V-E_syn)",
+      "forward": "C_m * dV/dt = (1/r_i) * d ** 2V/dx ** 2 - g_L*(V-E_L) - g_syn(x,t)*(V-E_syn)",
       "operator": "intracellular_voltage_recording",
       "primitive_chain": "M.pde.cable_equation -> S.green_function.cable -> O.tikhonov.cable_inversion",
       "inverse": "recover synaptic conductance distribution g_syn(x from voltage V(t) recorded at soma or branch point from synaptic inputs"
@@ -43,7 +43,7 @@
       "residual_norm",
       "convergence_curve"
     ],
-    "epsilon_fn": "0.10 + 0.05 * (3 / N_recording_sites)^0.5"
+    "epsilon_fn": "0.10 + 0.05 * (3 / N_recording_sites) ** 0.5"
   },
   "protocol_fields": {
     "input_format": {

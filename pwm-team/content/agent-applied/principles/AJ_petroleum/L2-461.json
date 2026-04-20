@@ -43,7 +43,7 @@
       "residual_norm",
       "convergence_curve"
     ],
-    "epsilon_fn": "20 + 10 * (fluid_viscosity_cP / 50)^0.3"
+    "epsilon_fn": "20 + 10 * (fluid_viscosity_cP / 50) ** 0.3"
   },
   "protocol_fields": {
     "input_format": {

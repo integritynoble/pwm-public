@@ -46,7 +46,7 @@
     "solver_class": "ensemble_Kalman_smoother or pilot_point_regularization (PEST)",
     "convergence_rate_q": 1.5,
     "error_bound": "head RMSE < 0.1 m; concentration within factor 2",
-    "complexity": "O(N_ensemble * N_sim * N_iter) or O(N_pilot_points^2 * N_obs) for PEST"
+    "complexity": "O(N_ensemble * N_sim * N_iter) or O(N_pilot_points ** 2 * N_obs) for PEST"
   },
   "physics_fingerprint": {
     "carrier": "N/A",

@@ -25,10 +25,10 @@
       ]
     },
     "E": {
-      "forward": "y(t) = C*exp(A*t)*x0 + integral_0^t C*exp(A*(t-s))*B*u(s) ds + D*u(t) + n(t)",
+      "forward": "y(t) = C*exp(A*t)*x0 + integral_0 ** t C*exp(A*(t-s))*B*u(s) ds + D*u(t) + n(t)",
       "operator": "state_space_output_measurement",
       "primitive_chain": "M.ss.matrices_ABCD -> S.observability.gramian -> O.lyapunov.stability",
-      "inverse": "recover state vector x(t) in R^n from output y(t) in R^p for p <= n observables"
+      "inverse": "recover state vector x(t) in R ** n from output y(t) in R ** p for p <= n observables"
     },
     "B": {
       "observability": "observability matrix full rank",
@@ -43,7 +43,7 @@
       "residual_norm",
       "convergence_curve"
     ],
-    "epsilon_fn": "0.02 + 0.03 * (100 / condition_number_kappa)^0.3"
+    "epsilon_fn": "0.02 + 0.03 * (100 / condition_number_kappa) ** 0.3"
   },
   "protocol_fields": {
     "input_format": {

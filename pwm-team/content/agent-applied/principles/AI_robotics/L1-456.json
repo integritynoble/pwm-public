@@ -9,7 +9,7 @@
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
     "description": "Rotor dynamics identification: infer rotor blade properties from thrust, torque, and vibration measurements.",
-    "forward_model": "T = 0.5*rho*A*(Omega*R)^2 * C_T(lambda_i, theta, a, e); blade element with flapping equation",
+    "forward_model": "T = 0.5*rho*A*(Omega*R) ** 2 * C_T(lambda_i, theta, a, e); blade element with flapping equation",
     "world_state_x": "blade parameters: twist theta_0, collective, flapping a1 b1, stiffness EI",
     "observation_y": "thrust T (N), torque Q (Nm), vibrational modes from accelerometers",
     "physical_parameters_theta": [

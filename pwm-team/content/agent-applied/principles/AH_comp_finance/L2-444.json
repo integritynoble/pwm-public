@@ -25,10 +25,10 @@
       ]
     },
     "E": {
-      "forward": "min_w w^T Sigma w s.t. mu^T w = mu_target, 1^T w = 1, w >= 0",
+      "forward": "min_w w ** T Sigma w s.t. mu ** T w = mu_target, 1 ** T w = 1, w >= 0",
       "operator": "expected_return_covariance_estimation",
       "primitive_chain": "M.covariance.sample_shrinkage -> O.qp.quadratic_programming -> S.efficient_frontier.trace",
-      "inverse": "recover optimal portfolio weights w in R^N satisfying constraints from historical return matrix R in R^{T x N} for N assets over T periods"
+      "inverse": "recover optimal portfolio weights w in R ** N satisfying constraints from historical return matrix R in R^{T x N} for N assets over T periods"
     },
     "B": {
       "weights_sum": "sum w = 1",

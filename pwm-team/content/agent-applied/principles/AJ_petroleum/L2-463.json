@@ -25,7 +25,7 @@
       ]
     },
     "E": {
-      "forward": "K_sat = K_dry + (1-K_dry/K_0)^2 / (phi/K_fl + (1-phi)/K_0 - K_dry/K_0^2)",
+      "forward": "K_sat = K_dry + (1-K_dry/K_0) ** 2 / (phi/K_fl + (1-phi)/K_0 - K_dry/K_0 ** 2)",
       "operator": "elastic_moduli_fluid_substitution",
       "primitive_chain": "M.gassmann.fluid_substitution -> S.hertz_mindlin.dry_frame -> O.chi2.elastic_moduli",
       "inverse": "recover saturated bulk modulus K_sat and shear modulus G_sat = G_dry for brine/oil/gas from seismic P-wave velocity Vp and S-wave velocity Vs measurements from well log"
@@ -43,7 +43,7 @@
       "residual_norm",
       "convergence_curve"
     ],
-    "epsilon_fn": "30 + 20 * (clay_content_Vcl / 0.1)^0.3"
+    "epsilon_fn": "30 + 20 * (clay_content_Vcl / 0.1) ** 0.3"
   },
   "protocol_fields": {
     "input_format": {

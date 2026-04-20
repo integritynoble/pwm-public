@@ -43,7 +43,7 @@
       "residual_norm",
       "convergence_curve"
     ],
-    "epsilon_fn": "2 + 1 * (mobility_ratio_M / 1.5)^0.3"
+    "epsilon_fn": "2 + 1 * (mobility_ratio_M / 1.5) ** 0.3"
   },
   "protocol_fields": {
     "input_format": {

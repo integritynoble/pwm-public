@@ -43,7 +43,7 @@
       "residual_norm",
       "convergence_curve"
     ],
-    "epsilon_fn": "1.0 + 1.0 * (2.0 / excitation_bandwidth_Hz)^0.3"
+    "epsilon_fn": "1.0 + 1.0 * (2.0 / excitation_bandwidth_Hz) ** 0.3"
   },
   "protocol_fields": {
     "input_format": {

@@ -43,7 +43,7 @@
       "residual_norm",
       "convergence_curve"
     ],
-    "epsilon_fn": "1e-5 * (dt_yr / 0.01)^2"
+    "epsilon_fn": "1e-5 * (dt_yr / 0.01) ** 2"
   },
   "protocol_fields": {
     "input_format": {

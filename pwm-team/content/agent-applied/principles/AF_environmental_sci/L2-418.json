@@ -25,7 +25,7 @@
       ]
     },
     "E": {
-      "forward": "J(x0) = 0.5*(x0-x_b)^T B^{-1} (x0-x_b) + 0.5*sum_t (H_t M_t(x0) - y_t)^T R_t^{-1} (H_t M_t(x0) - y_t)",
+      "forward": "J(x0) = 0.5*(x0-x_b) ** T B^{-1} (x0-x_b) + 0.5*sum_t (H_t M_t(x0) - y_t) ** T R_t^{-1} (H_t M_t(x0) - y_t)",
       "operator": "4dvar_data_assimilation",
       "primitive_chain": "M.nwp.primitive_equations -> S.4dvar.adjoint_method -> O.cost_function.background_observation",
       "inverse": "recover atmospheric initial state x0 (T from conventional + satellite observations y_t over 6-12 hour window"
@@ -43,7 +43,7 @@
       "residual_norm",
       "convergence_curve"
     ],
-    "epsilon_fn": "0.3 + 0.2 * (model_resolution_km / 10)^0.2"
+    "epsilon_fn": "0.3 + 0.2 * (model_resolution_km / 10) ** 0.2"
   },
   "protocol_fields": {
     "input_format": {

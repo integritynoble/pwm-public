@@ -9,13 +9,13 @@
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
     "description": "Optimal experimental design: choose experiment conditions xi to maximize information content (Fisher information) about parameters theta.",
-    "forward_model": "y = f(xi, theta) + epsilon, I(xi, theta) = E[(d log p / d theta)^2], maximize det(I) or trace(I^{-1})",
-    "world_state_x": "model parameters theta in R^p (unknown physical or biological parameters)",
+    "forward_model": "y = f(xi, theta) + epsilon, I(xi, theta) = E[(d log p / d theta) ** 2], maximize det(I) or trace(I^{-1})",
+    "world_state_x": "model parameters theta in R ** p (unknown physical or biological parameters)",
     "observation_y": "measurements y at design points xi (scalar or vector per experiment)",
     "physical_parameters_theta": [
       "design_space_bounds xi_min, xi_max",
       "model_nonlinearity_level",
-      "noise_variance sigma^2",
+      "noise_variance sigma ** 2",
       "budget_N_experiments"
     ]
   },
@@ -46,7 +46,7 @@
     "solver_class": "convex_relaxation (SDP) or sequential_exchange_algorithm",
     "convergence_rate_q": 2.0,
     "error_bound": "log det I(xi*) >= log det I(xi_opt) - epsilon for approximate design",
-    "complexity": "O(p^3 * N_candidates) for FIM computation per design point"
+    "complexity": "O(p ** 3 * N_candidates) for FIM computation per design point"
   },
   "physics_fingerprint": {
     "carrier": "N/A",

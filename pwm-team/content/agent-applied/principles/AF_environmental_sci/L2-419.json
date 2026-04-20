@@ -43,7 +43,7 @@
       "residual_norm",
       "convergence_curve"
     ],
-    "epsilon_fn": "0.2 + 0.1 * (1.0 / N_Argo_profiles * 3000)^0.3"
+    "epsilon_fn": "0.2 + 0.1 * (1.0 / N_Argo_profiles * 3000) ** 0.3"
   },
   "protocol_fields": {
     "input_format": {

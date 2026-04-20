@@ -43,7 +43,7 @@
       "residual_norm",
       "convergence_curve"
     ],
-    "epsilon_fn": "0.03 + 0.02 * (20 / prediction_horizon_N)^0.3"
+    "epsilon_fn": "0.03 + 0.02 * (20 / prediction_horizon_N) ** 0.3"
   },
   "protocol_fields": {
     "input_format": {

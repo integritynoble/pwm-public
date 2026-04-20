@@ -9,8 +9,8 @@
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
     "description": "Pulsar timing array: detect stochastic GW background from its Hellings-Downs correlation pattern in timing residuals.",
-    "forward_model": "R_a(t) = integral h_ab(t) * F^ab_a(t) dt + n_a(t); HD_curve = 3/2*(1-x)/2*ln((1-x)/2) - (1-x)/4 + 1/2",
-    "world_state_x": "GW background strain spectrum h_c(f) = A*(f/f_yr)^alpha",
+    "forward_model": "R_a(t) = integral h_ab(t) * F ** ab_a(t) dt + n_a(t); HD_curve = 3/2*(1-x)/2*ln((1-x)/2) - (1-x)/4 + 1/2",
+    "world_state_x": "GW background strain spectrum h_c(f) = A*(f/f_yr) ** alpha",
     "observation_y": "timing residuals R_a(t) for N_psr pulsars over T_obs years",
     "physical_parameters_theta": [
       "GWB_amplitude_A_15",
@@ -46,7 +46,7 @@
     "solver_class": "enterprise_MCMC or PTMCMCSampler with GW likelihood",
     "convergence_rate_q": 2.0,
     "error_bound": "sigma(log10 A_15) < 0.2 at SNR > 3 detection",
-    "complexity": "O(N_psr^2 * N_TOA^2) for full covariance matrix per likelihood eval"
+    "complexity": "O(N_psr ** 2 * N_TOA ** 2) for full covariance matrix per likelihood eval"
   },
   "physics_fingerprint": {
     "carrier": "radio_wave",

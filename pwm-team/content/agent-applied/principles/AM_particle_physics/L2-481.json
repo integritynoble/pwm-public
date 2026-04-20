@@ -25,14 +25,14 @@
       ]
     },
     "E": {
-      "forward": "d/d(ln Q^2) f_i(x, Q^2) = sum_j integral_{x}^{1} (dz/z) P_{ij}(z) f_j(x/z, Q^2)",
+      "forward": "d/d(ln Q ** 2) f_i(x, Q ** 2) = sum_j integral_{x}^{1} (dz/z) P_{ij}(z) f_j(x/z, Q ** 2)",
       "operator": "deep_inelastic_scattering",
       "primitive_chain": "M.dglap.splitting_functions -> F.mellin.transform -> O.chi2.cross_section_data",
       "inverse": "recover parton distribution functions f_i(x from measured cross sections sigma_exp for DIS (HERA)"
     },
     "B": {
       "momentum_sum": "sum_i integral x*f_i dx = 1",
-      "positivity": "f_i(x,Q^2) >= 0 for x > 0.1"
+      "positivity": "f_i(x,Q ** 2) >= 0 for x > 0.1"
     },
     "I": {
       "strategy": "zero_init"
@@ -43,7 +43,7 @@
       "residual_norm",
       "convergence_curve"
     ],
-    "epsilon_fn": "1.0 + 0.05 * (3000 / N_data_points)^0.3"
+    "epsilon_fn": "1.0 + 0.05 * (3000 / N_data_points) ** 0.3"
   },
   "protocol_fields": {
     "input_format": {

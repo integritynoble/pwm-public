@@ -43,7 +43,7 @@
       "residual_norm",
       "convergence_curve"
     ],
-    "epsilon_fn": "0.05 + 0.05 * (aerosol_forcing_Wm2 / -1.0)^2"
+    "epsilon_fn": "0.05 + 0.05 * (aerosol_forcing_Wm2 / -1.0) ** 2"
   },
   "protocol_fields": {
     "input_format": {

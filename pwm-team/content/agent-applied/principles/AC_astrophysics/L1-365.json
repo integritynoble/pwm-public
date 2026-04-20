@@ -9,7 +9,7 @@
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
     "description": "Cosmological N-body: evolve dark matter particles in expanding universe under gravity to form large-scale structure.",
-    "forward_model": "x'' + 2H x' = -nabla phi/a^2, nabla^2 phi = 4*pi*G*a^2*(rho - rho_bar)",
+    "forward_model": "x'' + 2H x' = -nabla phi/a ** 2, nabla ** 2 phi = 4*pi*G*a ** 2*(rho - rho_bar)",
     "world_state_x": "dark matter density field delta(x) and velocity field v(x) in comoving coordinates",
     "observation_y": "galaxy catalog (angular positions, redshifts), weak lensing convergence maps",
     "physical_parameters_theta": [

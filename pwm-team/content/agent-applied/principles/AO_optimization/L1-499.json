@@ -45,7 +45,7 @@
   "C": {
     "solver_class": "gradient_descent with shape derivative or level_set_evolution",
     "convergence_rate_q": 1.5,
-    "error_bound": "|J(Omega_k) - J*| <= C * alpha^k",
+    "error_bound": "|J(Omega_k) - J*| <= C * alpha ** k",
     "complexity": "O(N_dof * N_iter) for FEM + adjoint per iteration"
   },
   "physics_fingerprint": {

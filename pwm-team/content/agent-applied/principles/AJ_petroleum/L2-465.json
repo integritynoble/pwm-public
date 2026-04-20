@@ -43,7 +43,7 @@
       "residual_norm",
       "convergence_curve"
     ],
-    "epsilon_fn": "10 + 5 * (wellbore_storage_C_bbl_psi / 0.01)^0.2"
+    "epsilon_fn": "10 + 5 * (wellbore_storage_C_bbl_psi / 0.01) ** 0.2"
   },
   "protocol_fields": {
     "input_format": {

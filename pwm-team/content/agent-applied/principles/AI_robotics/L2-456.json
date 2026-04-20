@@ -25,7 +25,7 @@
       ]
     },
     "E": {
-      "forward": "T = 0.5*rho*A*(Omega*R)^2 * C_T(lambda_i, theta, a, e); blade element with flapping equation",
+      "forward": "T = 0.5*rho*A*(Omega*R) ** 2 * C_T(lambda_i, theta, a, e); blade element with flapping equation",
       "operator": "rotor_thrust_torque_model",
       "primitive_chain": "M.blade.element_momentum -> S.bvp.flapping_equation -> O.chi2.thrust_torque",
       "inverse": "recover blade parameters: twist theta_0 from thrust T (N)"
@@ -43,7 +43,7 @@
       "residual_norm",
       "convergence_curve"
     ],
-    "epsilon_fn": "3 + 2 * (advance_ratio_mu / 0.1 + 1)^0.3"
+    "epsilon_fn": "3 + 2 * (advance_ratio_mu / 0.1 + 1) ** 0.3"
   },
   "protocol_fields": {
     "input_format": {

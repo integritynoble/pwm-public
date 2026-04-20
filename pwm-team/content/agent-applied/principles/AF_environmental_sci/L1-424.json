@@ -46,7 +46,7 @@
     "solver_class": "Bayesian_inversion_CarbonTracker or 4DVar_GEOS-Chem",
     "convergence_rate_q": 2.0,
     "error_bound": "global NEE uncertainty < 1 GtC/yr with OCO-2 + surface network",
-    "complexity": "O(N_regions^2 * N_obs) for Hessian-based inversion"
+    "complexity": "O(N_regions ** 2 * N_obs) for Hessian-based inversion"
   },
   "physics_fingerprint": {
     "carrier": "N/A",

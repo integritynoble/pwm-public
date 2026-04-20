@@ -46,7 +46,7 @@
     "solver_class": "Tikhonov_regularization or Bayesian_electrocardiographic_imaging",
     "convergence_rate_q": 2.0,
     "error_bound": "activation time error < 5 ms for well-constrained geometry",
-    "complexity": "O(N_mesh_nodes^2) for transfer matrix computation"
+    "complexity": "O(N_mesh_nodes ** 2) for transfer matrix computation"
   },
   "physics_fingerprint": {
     "carrier": "N/A",

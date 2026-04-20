@@ -25,10 +25,10 @@
       ]
     },
     "E": {
-      "forward": "T_lensed(n) = T_unlensed(n + nabla phi(n)); kappa = -nabla^2 phi / 2",
+      "forward": "T_lensed(n) = T_unlensed(n + nabla phi(n)); kappa = -nabla ** 2 phi / 2",
       "operator": "quadratic_lensing_estimator",
       "primitive_chain": "F.fourier.harmonic -> S.quadratic.estimator -> M.wiener.filter",
-      "inverse": "recover convergence map kappa(n) = -nabla^2 phi / 2 from CMB temperature and polarization maps T(n)"
+      "inverse": "recover convergence map kappa(n) = -nabla ** 2 phi / 2 from CMB temperature and polarization maps T(n)"
     },
     "B": {
       "reality": "kappa is real",
@@ -43,7 +43,7 @@
       "residual_norm",
       "convergence_curve"
     ],
-    "epsilon_fn": "1.0 + 0.05 * (noise_uK_arcmin / 5.0)^0.5"
+    "epsilon_fn": "1.0 + 0.05 * (noise_uK_arcmin / 5.0) ** 0.5"
   },
   "protocol_fields": {
     "input_format": {

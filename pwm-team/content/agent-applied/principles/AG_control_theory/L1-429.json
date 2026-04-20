@@ -46,7 +46,7 @@
     "solver_class": "UKF_Wan_Merwe or SRUKF_square_root",
     "convergence_rate_q": 2.0,
     "error_bound": "UKF accurate to 3rd order vs. EKF 1st order; SRUKF numerically stable",
-    "complexity": "O(n^3) per step (2n+1 sigma points each requiring f evaluation)"
+    "complexity": "O(n ** 3) per step (2n+1 sigma points each requiring f evaluation)"
   },
   "physics_fingerprint": {
     "carrier": "N/A",

@@ -10,7 +10,7 @@
   "E": {
     "description": "Inverse kinematics: find joint angles q that achieve desired end-effector pose T_desired.",
     "forward_model": "FK(q) = T_desired; solved iteratively via Jacobian J: dq = J^+ * de",
-    "world_state_x": "joint angle vector q in R^n satisfying FK(q) = T_desired",
+    "world_state_x": "joint angle vector q in R ** n satisfying FK(q) = T_desired",
     "observation_y": "desired end-effector pose (position + orientation) as input",
     "physical_parameters_theta": [
       "N_joints",
@@ -46,7 +46,7 @@
     "solver_class": "Jacobian_pseudo_inverse or DLS or FABRIK or analytical_closed_form",
     "convergence_rate_q": 2.0,
     "error_bound": "position error < 0.1 mm in 50 iterations for non-singular config",
-    "complexity": "O(n^3 * N_iter) per IK solution"
+    "complexity": "O(n ** 3 * N_iter) per IK solution"
   },
   "physics_fingerprint": {
     "carrier": "N/A",

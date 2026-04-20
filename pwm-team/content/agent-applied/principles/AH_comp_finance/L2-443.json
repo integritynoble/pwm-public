@@ -43,7 +43,7 @@
       "residual_norm",
       "convergence_curve"
     ],
-    "epsilon_fn": "30 + 20 * (leverage_ratio_D_V / 0.5)^2"
+    "epsilon_fn": "30 + 20 * (leverage_ratio_D_V / 0.5) ** 2"
   },
   "protocol_fields": {
     "input_format": {

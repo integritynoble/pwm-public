@@ -9,7 +9,7 @@
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
     "description": "Reynolds equation inversion: recover bearing geometry, clearance, and lubricant properties from pressure measurements.",
-    "forward_model": "d/dx(h^3/eta * dp/dx) + d/dz(h^3/eta * dp/dz) = 6*U*dh/dx (Reynolds equation); p >= 0",
+    "forward_model": "d/dx(h ** 3/eta * dp/dx) + d/dz(h ** 3/eta * dp/dz) = 6*U*dh/dx (Reynolds equation); p >= 0",
     "world_state_x": "film pressure field p(x,z) and bearing load capacity W",
     "observation_y": "pressure measurements p_i at N_sensors sensor locations in bearing",
     "physical_parameters_theta": [
