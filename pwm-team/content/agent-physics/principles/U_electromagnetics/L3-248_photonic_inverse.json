@@ -1,0 +1,256 @@
+{
+  "artifact_id": "L3-248",
+  "layer": "L3",
+  "parent_l2": "L2-248",
+  "parent_l1": "L1-248",
+  "title": "Photonic Inverse Design \u2014 nanostructure topology optimization Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "canonical Electromagnetics dataset for this principle",
+    "secondary": "simulated forward model at declared Omega",
+    "construction_method": "parametric forward synthesis + declared noise model",
+    "num_dev_instances_per_tier": 20,
+    "holdout_instances_per_tier": 10
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "H": 256,
+        "W": 256,
+        "N_freqs": 16,
+        "N_iter": 500,
+        "SNR_dB": 40.0,
+        "fab_discretization_error": 0.0,
+        "material_error": 0.0,
+        "source_error": 0.0
+      },
+      "epsilon": 0.8,
+      "d_ibench": 0.14,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "TopOpt-MMA",
+          "metric": "FOM_rel_score",
+          "score": 0.75,
+          "Q": 0.88
+        },
+        {
+          "name": "Density-filter",
+          "metric": "FOM_rel_score",
+          "score": 0.82,
+          "Q": 0.88
+        },
+        {
+          "name": "DL-inverse",
+          "metric": "FOM_rel_score",
+          "score": 0.85,
+          "Q": 0.88
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "H": 256,
+        "W": 256,
+        "N_freqs": 8,
+        "N_iter": 500,
+        "SNR_dB": 35.0,
+        "fab_discretization_error": 0.05,
+        "material_error": 0.025,
+        "source_error": 0.025
+      },
+      "epsilon": 0.68,
+      "d_ibench": 0.28,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "TopOpt-MMA",
+          "metric": "FOM_rel_score",
+          "score": -1.75,
+          "Q": 0.68
+        },
+        {
+          "name": "Density-filter",
+          "metric": "FOM_rel_score",
+          "score": -1.68,
+          "Q": 0.68
+        },
+        {
+          "name": "DL-inverse",
+          "metric": "FOM_rel_score",
+          "score": -1.65,
+          "Q": 0.68
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "H": 396,
+        "W": 396,
+        "N_freqs": 4,
+        "N_iter": 500,
+        "SNR_dB": 20.0,
+        "fab_discretization_error": 0.11000000000000001,
+        "material_error": 0.05500000000000001,
+        "source_error": 0.05500000000000001
+      },
+      "epsilon": 0.56,
+      "d_ibench": 0.48,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "TopOpt-MMA",
+          "metric": "FOM_rel_score",
+          "score": -4.25,
+          "Q": 0.48
+        },
+        {
+          "name": "Density-filter",
+          "metric": "FOM_rel_score",
+          "score": -4.18,
+          "Q": 0.48
+        },
+        {
+          "name": "DL-inverse",
+          "metric": "FOM_rel_score",
+          "score": -4.15,
+          "Q": 0.48
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "N_freqs": 2,
+        "N_iter": 500,
+        "SNR_dB": -10,
+        "fab_discretization_error": 0.2,
+        "material_error": 0.1,
+        "source_error": 0.1
+      },
+      "epsilon": 0.44,
+      "d_ibench": 0.72,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "TopOpt-MMA",
+          "metric": "FOM_rel_score",
+          "score": -6.75,
+          "Q": 0.28
+        },
+        {
+          "name": "Density-filter",
+          "metric": "FOM_rel_score",
+          "score": -6.68,
+          "Q": 0.28
+        },
+        {
+          "name": "DL-inverse",
+          "metric": "FOM_rel_score",
+          "score": -6.65,
+          "Q": 0.28
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "full parametric sweep over ['H', 'W', 'N_freqs', 'N_iter', 'SNR_dB']",
+      "construction_method": "uniform Omega sampling within declared bounds",
+      "num_dev_instances": 200,
+      "num_holdout_instances": 100
+    },
+    "tracks": {
+      "track_A_stratified_worst_case": {
+        "samples_per_stratum": 5,
+        "pass_condition": "min_i(metric_i) beats epsilon_fn at Omega_centroid across all strata"
+      },
+      "track_B_uniform_median": {
+        "num_samples": 50,
+        "pass_condition": "median metric beats epsilon_fn at Omega_median"
+      },
+      "track_C_mismatch_degradation": {
+        "sweep_points": [
+          0.0,
+          0.25,
+          0.5,
+          0.75,
+          1.0
+        ],
+        "scenes_per_point": 10,
+        "degradation_score": "mean Q_norm across sweep"
+      }
+    },
+    "baselines": [
+      {
+        "name": "TopOpt-MMA",
+        "overall_Q": 0.7
+      },
+      {
+        "name": "Density-filter",
+        "overall_Q": 0.6
+      },
+      {
+        "name": "DL-inverse",
+        "overall_Q": 0.5
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind Omega corner under max mismatch.",
+  "anti_overfitting_mechanisms": {
+    "M1_random_instantiation": "generator/instantiate.py uses G(SHA256(h_sub || k)) seeded per submission.",
+    "M2_convergence_scoring": "convergence/check_convergence.py verifies declared q-rate across mesh refinements.",
+    "M3_worst_case_eval": "scoring/worst_case.py returns min score over 20 fixed dev scenes per tier.",
+    "M4_community_adversarial": "adversarial submissions eligible under anti-overfitting bounty.",
+    "M5_method_sig_diversity": "baselines span classical (L+O), learned (L+N), and iterative (I+O) method signatures.",
+    "M6_gate_checks": "S1-S4 gate checks embedded with thresholds.yaml."
+  },
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

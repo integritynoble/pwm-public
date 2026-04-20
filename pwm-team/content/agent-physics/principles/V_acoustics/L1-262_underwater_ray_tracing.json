@@ -1,0 +1,184 @@
+{
+  "artifact_id": "L1-262",
+  "layer": "L1",
+  "principle_number": "262",
+  "title": "Underwater Acoustic Ray Tracing (Bellhop)",
+  "domain": "Acoustics",
+  "sub_domain": "Range-depth ocean-acoustic ray / gaussian beam tracing",
+  "source_file": "V_acoustics/262_underwater_ray_tracing.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Underwater Acoustic Ray Tracing (Bellhop) forward model.",
+    "forward_model": "dtheta/ds = -(1/c) * dc/dz * cos(theta); intensity ~ 1/(J*|r_0|); sum arrivals to form p(r,z,t)",
+    "world_state_x": "sound speed profile c(z) + bathymetry + source/receiver positions => transmission loss TL(r,z)",
+    "observation_y": "complex pressure / transmission loss at hydrophone array at (r,z)",
+    "physical_parameters_theta": [
+      "N_range",
+      "N_depth",
+      "N_rays",
+      "freq_Hz",
+      "SNR_dB",
+      "ssp_error",
+      "bathymetry_error",
+      "bottom_properties_error",
+      "range_error"
+    ]
+  },
+  "G": {
+    "dag": "L.source_emit -> L.refract.sspe -> L.bottom_reflect -> int.temporal",
+    "vertices": [
+      "L.source_emit",
+      "L.refract.sspe",
+      "L.bottom_reflect",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.source_emit -> L.refract.sspe",
+      "L.refract.sspe -> L.bottom_reflect",
+      "L.bottom_reflect -> int.temporal"
+    ],
+    "L_DAG": 3.2,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 600,
+    "condition_number_effective": 30,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Bellhop-Gaussian, Bellhop-eigenray, Ray-NN",
+    "convergence_rate_q": 1.5,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "acoustic",
+    "sensing_mechanism": "hydrophones",
+    "integration_axis": "temporal",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "transmission_loss_range_depth",
+    "primitives": [
+      "L.source_emit",
+      "L.refract.sspe",
+      "L.bottom_reflect",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "ssp_error",
+    "bathymetry_error",
+    "bottom_properties_error",
+    "range_error"
+  ],
+  "error_metric": "TL_error_dB",
+  "error_metric_secondary": "arrival_time_MAE_ms",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "bellhop_ray",
+      "forward_operator": "bellhop_ray_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_range": 512,
+        "N_depth": 256,
+        "N_rays": 10000,
+        "freq_Hz": 1000,
+        "SNR_dB": 30,
+        "ssp_error": 0.0,
+        "bathymetry_error": 0.0,
+        "bottom_properties_error": 0.0,
+        "range_error": 0.0
+      },
+      "epsilon_fn_center": "3.0"
+    },
+    "allowed_forward_operators": [
+      "bellhop_ray_forward"
+    ],
+    "allowed_problem_classes": [
+      "bellhop_ray"
+    ],
+    "allowed_omega_dimensions": [
+      "N_range",
+      "N_depth",
+      "N_rays",
+      "freq_Hz",
+      "SNR_dB",
+      "ssp_error",
+      "bathymetry_error",
+      "bottom_properties_error",
+      "range_error",
+      "ssp_error",
+      "bathymetry_error",
+      "bottom_properties_error",
+      "range_error"
+    ],
+    "omega_bounds": {
+      "N_range": [
+        64,
+        4096
+      ],
+      "N_depth": [
+        32,
+        1024
+      ],
+      "N_rays": [
+        1000,
+        1000000
+      ],
+      "freq_Hz": [
+        10,
+        100000
+      ],
+      "SNR_dB": [
+        -10,
+        40
+      ],
+      "ssp_error": [
+        0.0,
+        0.02
+      ],
+      "bathymetry_error": [
+        0.0,
+        10.0
+      ],
+      "bottom_properties_error": [
+        0.0,
+        0.3
+      ],
+      "range_error": [
+        0.0,
+        50.0
+      ]
+    },
+    "epsilon_bounds": {
+      "TL_dB": [
+        0.5,
+        20.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

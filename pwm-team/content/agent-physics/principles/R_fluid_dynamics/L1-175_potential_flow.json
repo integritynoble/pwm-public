@@ -1,0 +1,161 @@
+{
+  "artifact_id": "L1-175",
+  "layer": "L1",
+  "principle_number": "175",
+  "title": "Potential Flow \u2014 irrotational inviscid",
+  "domain": "Fluid Dynamics",
+  "sub_domain": "Laplace equation for irrotational flow",
+  "source_file": "R_fluid_dynamics/175_potential_flow.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Potential Flow \u2014 irrotational inviscid forward model.",
+    "forward_model": "Laplacian phi = 0; u = grad phi; dynamic p via Bernoulli",
+    "world_state_x": "velocity potential phi(x) -> u + p",
+    "observation_y": "surface pressure + stagnation pressure + PIV",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "SNR_dB",
+      "circulation_error",
+      "bc_error",
+      "compressibility_correction_error"
+    ]
+  },
+  "G": {
+    "dag": "L.laplace -> L.source_sink -> L.boundary_match -> int.spatial",
+    "vertices": [
+      "L.laplace",
+      "L.source_sink",
+      "L.boundary_match",
+      "int.spatial"
+    ],
+    "arcs": [
+      "L.laplace -> L.source_sink",
+      "L.source_sink -> L.boundary_match",
+      "L.boundary_match -> int.spatial"
+    ],
+    "L_DAG": 2.8,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 160,
+    "condition_number_effective": 8,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Panel-method, VPM, Pot-flow-NN",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "mechanical",
+    "sensing_mechanism": "pressure_aerodynamic",
+    "integration_axis": "spatial",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "velocity_potential",
+    "primitives": [
+      "L.laplace",
+      "L.source_sink",
+      "L.boundary_match",
+      "int.spatial"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "circulation_error",
+    "bc_error",
+    "compressibility_correction_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "potential",
+      "forward_operator": "potential_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 256,
+        "W": 256,
+        "SNR_dB": 30,
+        "circulation_error": 0.0,
+        "bc_error": 0.0,
+        "compressibility_correction_error": 0.0
+      },
+      "epsilon_fn_center": "25.0"
+    },
+    "allowed_forward_operators": [
+      "potential_forward"
+    ],
+    "allowed_problem_classes": [
+      "potential"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "SNR_dB",
+      "circulation_error",
+      "bc_error",
+      "compressibility_correction_error",
+      "circulation_error",
+      "bc_error",
+      "compressibility_correction_error"
+    ],
+    "omega_bounds": {
+      "H": [
+        32,
+        2048
+      ],
+      "W": [
+        32,
+        2048
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "circulation_error": [
+        0.0,
+        0.2
+      ],
+      "bc_error": [
+        0.0,
+        0.3
+      ],
+      "compressibility_correction_error": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

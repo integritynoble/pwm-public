@@ -1,0 +1,175 @@
+{
+  "artifact_id": "L1-254",
+  "layer": "L1",
+  "principle_number": "254",
+  "title": "X-ray Phase Contrast \u2014 propagation / grating / analyzer",
+  "domain": "Electromagnetics",
+  "sub_domain": "X-ray phase and attenuation imaging",
+  "source_file": "U_electromagnetics/254_xray_phase_contrast.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "X-ray Phase Contrast \u2014 propagation / grating / analyzer forward model.",
+    "forward_model": "I_obs(x) = [(1 - z*Laplacian)/k^2] * I_0(x) * exp(-mu * L); TIE for phase retrieval",
+    "world_state_x": "3D complex refractive index decrement delta(x) - j*beta(x)",
+    "observation_y": "X-ray CCD images at different propagation distances",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "Z",
+      "N_distances",
+      "SNR_dB",
+      "z_error",
+      "coherence_error",
+      "beam_harmonics_error"
+    ]
+  },
+  "G": {
+    "dag": "L.xray_source -> L.refract_sample -> L.propagate -> int.spatial",
+    "vertices": [
+      "L.xray_source",
+      "L.refract_sample",
+      "L.propagate",
+      "int.spatial"
+    ],
+    "arcs": [
+      "L.xray_source -> L.refract_sample",
+      "L.refract_sample -> L.propagate",
+      "L.propagate -> int.spatial"
+    ],
+    "L_DAG": 3.3,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 400,
+    "condition_number_effective": 20,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "TIE, CTF-retrieval, Paganin, PC-Net",
+    "convergence_rate_q": 1.5,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "em",
+    "sensing_mechanism": "xray_ccd",
+    "integration_axis": "spatial",
+    "problem_class": "linear_inverse",
+    "noise_model": "shot_poisson",
+    "solution_space": "3D_refractive_index_delta_beta",
+    "primitives": [
+      "L.xray_source",
+      "L.refract_sample",
+      "L.propagate",
+      "int.spatial"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "z_error",
+    "coherence_error",
+    "beam_harmonics_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "xray_pc",
+      "forward_operator": "xray_pc_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 2048,
+        "W": 2048,
+        "Z": 128,
+        "N_distances": 3,
+        "SNR_dB": 30,
+        "z_error": 0.0,
+        "coherence_error": 0.0,
+        "beam_harmonics_error": 0.0
+      },
+      "epsilon_fn_center": "25.0"
+    },
+    "allowed_forward_operators": [
+      "xray_pc_forward"
+    ],
+    "allowed_problem_classes": [
+      "xray_pc"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "Z",
+      "N_distances",
+      "SNR_dB",
+      "z_error",
+      "coherence_error",
+      "beam_harmonics_error",
+      "z_error",
+      "coherence_error",
+      "beam_harmonics_error"
+    ],
+    "omega_bounds": {
+      "H": [
+        256,
+        8192
+      ],
+      "W": [
+        256,
+        8192
+      ],
+      "Z": [
+        32,
+        1024
+      ],
+      "N_distances": [
+        1,
+        50
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "z_error": [
+        0.0,
+        0.1
+      ],
+      "coherence_error": [
+        0.0,
+        0.3
+      ],
+      "beam_harmonics_error": [
+        0.0,
+        0.2
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

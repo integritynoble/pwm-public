@@ -1,0 +1,133 @@
+{
+  "artifact_id": "L2-225",
+  "layer": "L2",
+  "parent_l1": "L1-225",
+  "title": "Hertzian Contact \u2014 elastic sphere/cylinder contact Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "R_m": [
+        1e-05,
+        10
+      ],
+      "F_N": [
+        0.1,
+        10000000.0
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "radius_error": [
+        0.0,
+        0.05
+      ],
+      "E_error": [
+        0.0,
+        0.1
+      ],
+      "friction_error": [
+        0.0,
+        0.2
+      ]
+    },
+    "E": {
+      "forward": "p(r) = p_0 * sqrt(1 - r^2/a^2); a = ((3FR)/(4E*))^(1/3)",
+      "operator": "hertz_contact_forward_mismatch",
+      "primitive_chain": "L.hertz_theory -> L.contact_pressure -> L.elastic_deformation -> int.spatial",
+      "inverse": "solve forward for declared state variable under Omega bounds"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR_dB",
+      "residual_norm"
+    ],
+    "epsilon_fn": "21.0 + 0.3*SNR_dB - 50.0*radius_error - 30.0*E_error - 10.0*friction_error"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Hertz-closed-form",
+        "method_sig": "L+O",
+        "expected_psnr": 26.0
+      },
+      {
+        "name": "FEM-contact",
+        "method_sig": "L+O",
+        "expected_psnr": 26.5
+      },
+      {
+        "name": "Contact-NN",
+        "method_sig": "L+N",
+        "expected_psnr": 27.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "R_m": 0.01,
+        "F_N": 100,
+        "SNR_dB": 30,
+        "radius_error": 0.0,
+        "E_error": 0.0,
+        "friction_error": 0.0
+      },
+      "epsilon": 27.0
+    },
+    "tier_bounds": {
+      "R_m": [
+        1e-05,
+        10
+      ],
+      "F_N": [
+        0.1,
+        10000000.0
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "radius_error": [
+        0.0,
+        0.05
+      ],
+      "E_error": [
+        0.0,
+        0.1
+      ],
+      "friction_error": [
+        0.0,
+        0.2
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.48,
+  "d_spec_notes": "Distance computed from problem_class, forward_operator, carrier, integration_axis against neighboring specs; within same principle this spec is mismatch-only canonical and sits at the Omega centroid.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions are consistent across the DAG; forward operator maps state space to measurement space at declared shapes.",
+    "S2": "kappa_eff = 10 within tolerance after regularization; RIP-like or coercivity conditions satisfied over most of Omega.",
+    "S3": "Solvers converge at rate q=2.0 in well-posed regime; mismatch parameters degrade convergence but not divergence.",
+    "S4": "epsilon_fn evaluates across 10+ random Omega samples; hardness rule verified \u2014 no baseline passes everywhere."
+  },
+  "ipfs_cid": null
+}

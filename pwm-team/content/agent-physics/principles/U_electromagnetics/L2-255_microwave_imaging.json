@@ -1,0 +1,160 @@
+{
+  "artifact_id": "L2-255",
+  "layer": "L2",
+  "parent_l1": "L1-255",
+  "title": "Microwave Imaging \u2014 permittivity imaging for biomed/NDE Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        32,
+        1024
+      ],
+      "W": [
+        32,
+        1024
+      ],
+      "Z": [
+        8,
+        512
+      ],
+      "N_antennas": [
+        4,
+        256
+      ],
+      "N_freqs": [
+        1,
+        256
+      ],
+      "SNR_dB": [
+        -5,
+        40
+      ],
+      "coupling_medium_error": [
+        0.0,
+        0.2
+      ],
+      "antenna_pos_error": [
+        0.0,
+        0.05
+      ],
+      "skin_effect_error": [
+        0.0,
+        0.3
+      ]
+    },
+    "E": {
+      "forward": "E_scat(r_m) = int k_b^2 * contrast(r') * G_b(r_m, r') * E_total(r') dr'",
+      "operator": "microwave_tomo_forward_mismatch",
+      "primitive_chain": "L.incident_field -> L.scatter_equation -> L.born_contrast -> int.frequency",
+      "inverse": "solve forward for declared state variable under Omega bounds"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR_dB",
+      "residual_norm"
+    ],
+    "epsilon_fn": "13.0 + 1.0*log2(N_antennas/4) + 0.25*SNR_dB - 10.0*coupling_medium_error - 20.0*antenna_pos_error"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Born-iterative",
+        "method_sig": "I+O",
+        "expected_psnr": 19.0
+      },
+      {
+        "name": "DBIM",
+        "method_sig": "I+O",
+        "expected_psnr": 20.5
+      },
+      {
+        "name": "MWT-Net",
+        "method_sig": "L+N",
+        "expected_psnr": 22.0
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 128,
+        "W": 128,
+        "Z": 32,
+        "N_antennas": 16,
+        "N_freqs": 16,
+        "SNR_dB": 25,
+        "coupling_medium_error": 0.0,
+        "antenna_pos_error": 0.0,
+        "skin_effect_error": 0.0
+      },
+      "epsilon": 20.0
+    },
+    "tier_bounds": {
+      "H": [
+        32,
+        1024
+      ],
+      "W": [
+        32,
+        1024
+      ],
+      "Z": [
+        8,
+        512
+      ],
+      "N_antennas": [
+        4,
+        256
+      ],
+      "N_freqs": [
+        1,
+        256
+      ],
+      "SNR_dB": [
+        -5,
+        40
+      ],
+      "coupling_medium_error": [
+        0.0,
+        0.2
+      ],
+      "antenna_pos_error": [
+        0.0,
+        0.05
+      ],
+      "skin_effect_error": [
+        0.0,
+        0.3
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.48,
+  "d_spec_notes": "Distance computed from problem_class, forward_operator, carrier, integration_axis against neighboring specs; within same principle this spec is mismatch-only canonical and sits at the Omega centroid.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions are consistent across the DAG; forward operator maps state space to measurement space at declared shapes.",
+    "S2": "kappa_eff = 40 within tolerance after regularization; RIP-like or coercivity conditions satisfied over most of Omega.",
+    "S3": "Solvers converge at rate q=1.0 in well-posed regime; mismatch parameters degrade convergence but not divergence.",
+    "S4": "epsilon_fn evaluates across 10+ random Omega samples; hardness rule verified \u2014 no baseline passes everywhere."
+  },
+  "ipfs_cid": null
+}

@@ -1,0 +1,177 @@
+{
+  "artifact_id": "L1-290",
+  "layer": "L1",
+  "principle_number": "290",
+  "title": "Geothermal Reservoir \u2014 coupled thermo-hydraulic inversion",
+  "domain": "Geophysics",
+  "sub_domain": "Fractured geothermal reservoir simulation",
+  "source_file": "W_geophysics/290_geothermal_reservoir.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Geothermal Reservoir \u2014 coupled thermo-hydraulic inversion forward model.",
+    "forward_model": "Darcy + energy + reactive transport coupled in fractured porous medium",
+    "world_state_x": "permeability k(x) + fracture network + temperature field",
+    "observation_y": "well temp / pressure / tracer / microseismic",
+    "physical_parameters_theta": [
+      "N_cells",
+      "N_wells",
+      "N_times",
+      "SNR_dB",
+      "permeability_error",
+      "porosity_error",
+      "rock_cp_error",
+      "fracture_mapping_error"
+    ]
+  },
+  "G": {
+    "dag": "L.darcy_flow -> L.heat_transport -> L.chem_reactive -> int.temporal",
+    "vertices": [
+      "L.darcy_flow",
+      "L.heat_transport",
+      "L.chem_reactive",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.darcy_flow -> L.heat_transport",
+      "L.heat_transport -> L.chem_reactive",
+      "L.chem_reactive -> int.temporal"
+    ],
+    "L_DAG": 3.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 560,
+    "condition_number_effective": 28,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "TOUGH2, FALCON, Geoth-NN",
+    "convergence_rate_q": 1.5,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "thermal",
+    "sensing_mechanism": "well_logs_tracer",
+    "integration_axis": "temporal",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "permeability_temperature_3D",
+    "primitives": [
+      "L.darcy_flow",
+      "L.heat_transport",
+      "L.chem_reactive",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "permeability_error",
+    "porosity_error",
+    "rock_cp_error",
+    "fracture_mapping_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "geothermal",
+      "forward_operator": "geothermal_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_cells": 10000,
+        "N_wells": 10,
+        "N_times": 500,
+        "SNR_dB": 30,
+        "permeability_error": 0.0,
+        "porosity_error": 0.0,
+        "rock_cp_error": 0.0,
+        "fracture_mapping_error": 0.0
+      },
+      "epsilon_fn_center": "20.0"
+    },
+    "allowed_forward_operators": [
+      "geothermal_forward"
+    ],
+    "allowed_problem_classes": [
+      "geothermal"
+    ],
+    "allowed_omega_dimensions": [
+      "N_cells",
+      "N_wells",
+      "N_times",
+      "SNR_dB",
+      "permeability_error",
+      "porosity_error",
+      "rock_cp_error",
+      "fracture_mapping_error",
+      "permeability_error",
+      "porosity_error",
+      "rock_cp_error",
+      "fracture_mapping_error"
+    ],
+    "omega_bounds": {
+      "N_cells": [
+        100,
+        1000000
+      ],
+      "N_wells": [
+        1,
+        100
+      ],
+      "N_times": [
+        10,
+        100000
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "permeability_error": [
+        0.0,
+        0.3
+      ],
+      "porosity_error": [
+        0.0,
+        0.1
+      ],
+      "rock_cp_error": [
+        0.0,
+        0.1
+      ],
+      "fracture_mapping_error": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

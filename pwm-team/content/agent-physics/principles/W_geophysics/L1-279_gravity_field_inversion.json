@@ -1,0 +1,175 @@
+{
+  "artifact_id": "L1-279",
+  "layer": "L1",
+  "principle_number": "279",
+  "title": "Gravity Field Inversion \u2014 density imaging",
+  "domain": "Geophysics",
+  "sub_domain": "3D gravity inversion for subsurface density",
+  "source_file": "W_geophysics/279_gravity_field_inversion.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Gravity Field Inversion \u2014 density imaging forward model.",
+    "forward_model": "g(x_obs) = G * int rho(x_src) * (x_obs - x_src) / |x_obs - x_src|^3 dV",
+    "world_state_x": "3D density contrast rho(x,y,z) in subsurface",
+    "observation_y": "surface/airborne gravity anomaly map g(x,y)",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "Z",
+      "N_observations",
+      "SNR_dB",
+      "terrain_correction_error",
+      "tidal_error",
+      "background_error"
+    ]
+  },
+  "G": {
+    "dag": "L.newton_gravity -> L.linear_forward -> L.regularize -> int.spatial",
+    "vertices": [
+      "L.newton_gravity",
+      "L.linear_forward",
+      "L.regularize",
+      "int.spatial"
+    ],
+    "arcs": [
+      "L.newton_gravity -> L.linear_forward",
+      "L.linear_forward -> L.regularize",
+      "L.regularize -> int.spatial"
+    ],
+    "L_DAG": 3.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "unstable",
+    "condition_number_kappa": 500,
+    "condition_number_effective": 25,
+    "regime": "Non-unique (Coulomb's inverse potential); requires smoothness/sparsity priors."
+  },
+  "C": {
+    "solver_class": "Li-Oldenburg, MINIMUM-support, Gravity-NN",
+    "convergence_rate_q": 1.5,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "mechanical",
+    "sensing_mechanism": "gravimeter",
+    "integration_axis": "spatial",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "3D_density_anomaly",
+    "primitives": [
+      "L.newton_gravity",
+      "L.linear_forward",
+      "L.regularize",
+      "int.spatial"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "terrain_correction_error",
+    "tidal_error",
+    "background_error"
+  ],
+  "error_metric": "density_rel_error_percent",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "gravity_inversion",
+      "forward_operator": "gravity_inversion_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 256,
+        "W": 256,
+        "Z": 64,
+        "N_observations": 1024,
+        "SNR_dB": 30,
+        "terrain_correction_error": 0.0,
+        "tidal_error": 0.0,
+        "background_error": 0.0
+      },
+      "epsilon_fn_center": "4.0"
+    },
+    "allowed_forward_operators": [
+      "gravity_inversion_forward"
+    ],
+    "allowed_problem_classes": [
+      "gravity_inversion"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "Z",
+      "N_observations",
+      "SNR_dB",
+      "terrain_correction_error",
+      "tidal_error",
+      "background_error",
+      "terrain_correction_error",
+      "tidal_error",
+      "background_error"
+    ],
+    "omega_bounds": {
+      "H": [
+        32,
+        2048
+      ],
+      "W": [
+        32,
+        2048
+      ],
+      "Z": [
+        8,
+        512
+      ],
+      "N_observations": [
+        64,
+        100000
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "terrain_correction_error": [
+        0.0,
+        0.2
+      ],
+      "tidal_error": [
+        0.0,
+        0.2
+      ],
+      "background_error": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "density_rel": [
+        0.5,
+        30.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

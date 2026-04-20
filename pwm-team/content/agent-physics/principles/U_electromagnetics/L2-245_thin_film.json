@@ -1,0 +1,133 @@
+{
+  "artifact_id": "L2-245",
+  "layer": "L2",
+  "parent_l1": "L1-245",
+  "title": "Thin Film Interference \u2014 transfer-matrix optical design Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "N_layers": [
+        1,
+        100
+      ],
+      "N_wavelengths": [
+        11,
+        10001
+      ],
+      "SNR_dB": [
+        10,
+        60
+      ],
+      "thickness_error": [
+        0.0,
+        0.05
+      ],
+      "n_error": [
+        0.0,
+        0.05
+      ],
+      "substrate_error": [
+        0.0,
+        0.05
+      ]
+    },
+    "E": {
+      "forward": "M = prod_j M_j(n_j, d_j, lambda, theta); R = |r|^2, T = |t|^2",
+      "operator": "thin_film_forward_mismatch",
+      "primitive_chain": "L.transfer_matrix -> L.layer_phase -> L.boundary_match -> int.frequency",
+      "inverse": "solve forward for declared state variable under Omega bounds"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR_dB",
+      "residual_norm"
+    ],
+    "epsilon_fn": "22.0 + 0.3*SNR_dB - 30.0*thickness_error - 40.0*n_error - 20.0*substrate_error"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "TMM-analytic",
+        "method_sig": "L+O",
+        "expected_psnr": 29.0
+      },
+      {
+        "name": "TMM-Abeles",
+        "method_sig": "L+O",
+        "expected_psnr": 30.0
+      },
+      {
+        "name": "Film-inv-NN",
+        "method_sig": "L+N",
+        "expected_psnr": 31.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_layers": 5,
+        "N_wavelengths": 401,
+        "SNR_dB": 40,
+        "thickness_error": 0.0,
+        "n_error": 0.0,
+        "substrate_error": 0.0
+      },
+      "epsilon": 30.0
+    },
+    "tier_bounds": {
+      "N_layers": [
+        1,
+        100
+      ],
+      "N_wavelengths": [
+        11,
+        10001
+      ],
+      "SNR_dB": [
+        10,
+        60
+      ],
+      "thickness_error": [
+        0.0,
+        0.05
+      ],
+      "n_error": [
+        0.0,
+        0.05
+      ],
+      "substrate_error": [
+        0.0,
+        0.05
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.48,
+  "d_spec_notes": "Distance computed from problem_class, forward_operator, carrier, integration_axis against neighboring specs; within same principle this spec is mismatch-only canonical and sits at the Omega centroid.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions are consistent across the DAG; forward operator maps state space to measurement space at declared shapes.",
+    "S2": "kappa_eff = 10 within tolerance after regularization; RIP-like or coercivity conditions satisfied over most of Omega.",
+    "S3": "Solvers converge at rate q=2.0 in well-posed regime; mismatch parameters degrade convergence but not divergence.",
+    "S4": "epsilon_fn evaluates across 10+ random Omega samples; hardness rule verified \u2014 no baseline passes everywhere."
+  },
+  "ipfs_cid": null
+}

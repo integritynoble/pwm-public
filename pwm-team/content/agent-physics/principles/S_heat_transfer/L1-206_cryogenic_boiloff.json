@@ -1,0 +1,175 @@
+{
+  "artifact_id": "L1-206",
+  "layer": "L1",
+  "principle_number": "206",
+  "title": "Cryogenic Storage Boiloff \u2014 MLI heat-leak estimation",
+  "domain": "Heat Transfer",
+  "sub_domain": "Multi-layer insulation heat-leak inverse",
+  "source_file": "S_heat_transfer/206_cryogenic_boiloff.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Cryogenic Storage Boiloff \u2014 MLI heat-leak estimation forward model.",
+    "forward_model": "q_leak = q_rad + q_gas + q_solid; q_rad = sigma(T_h^4 - T_c^4)/((N-1)(2/eps - 1))",
+    "world_state_x": "effective MLI heat leak q''_leak (W/m^2)",
+    "observation_y": "boiloff gas flow-rate over time, tank temperature probes",
+    "physical_parameters_theta": [
+      "N_layers",
+      "T_h_K",
+      "T_c_K",
+      "N_samples",
+      "SNR_dB",
+      "layer_emissivity_error",
+      "vacuum_pressure_error",
+      "layer_spacing_error"
+    ]
+  },
+  "G": {
+    "dag": "L.radiation_between_layers -> L.gas_conduction -> L.solid_conduction -> int.temporal",
+    "vertices": [
+      "L.radiation_between_layers",
+      "L.gas_conduction",
+      "L.solid_conduction",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.radiation_between_layers -> L.gas_conduction",
+      "L.gas_conduction -> L.solid_conduction",
+      "L.solid_conduction -> int.temporal"
+    ],
+    "L_DAG": 3.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 200,
+    "condition_number_effective": 10,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Lockheed-eqn, MLI-net, Finite-layer",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "thermal",
+    "sensing_mechanism": "boiloff_flowmeter",
+    "integration_axis": "temporal",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "heat_leak_W_per_m2",
+    "primitives": [
+      "L.radiation_between_layers",
+      "L.gas_conduction",
+      "L.solid_conduction",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "layer_emissivity_error",
+    "vacuum_pressure_error",
+    "layer_spacing_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "mli_boiloff",
+      "forward_operator": "mli_boiloff_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_layers": 20,
+        "T_h_K": 300,
+        "T_c_K": 77,
+        "N_samples": 200,
+        "SNR_dB": 30,
+        "layer_emissivity_error": 0.0,
+        "vacuum_pressure_error": 0.0,
+        "layer_spacing_error": 0.0
+      },
+      "epsilon_fn_center": "24.0"
+    },
+    "allowed_forward_operators": [
+      "mli_boiloff_forward"
+    ],
+    "allowed_problem_classes": [
+      "mli_boiloff"
+    ],
+    "allowed_omega_dimensions": [
+      "N_layers",
+      "T_h_K",
+      "T_c_K",
+      "N_samples",
+      "SNR_dB",
+      "layer_emissivity_error",
+      "vacuum_pressure_error",
+      "layer_spacing_error",
+      "layer_emissivity_error",
+      "vacuum_pressure_error",
+      "layer_spacing_error"
+    ],
+    "omega_bounds": {
+      "N_layers": [
+        1,
+        100
+      ],
+      "T_h_K": [
+        77,
+        500
+      ],
+      "T_c_K": [
+        4,
+        250
+      ],
+      "N_samples": [
+        10,
+        10000
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "layer_emissivity_error": [
+        0.0,
+        0.3
+      ],
+      "vacuum_pressure_error": [
+        0.0,
+        0.001
+      ],
+      "layer_spacing_error": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

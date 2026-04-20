@@ -1,0 +1,147 @@
+{
+  "artifact_id": "L2-265",
+  "layer": "L2",
+  "parent_l1": "L1-265",
+  "title": "Acoustic Beamforming \u2014 DOA & imaging from array Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "N_mic": [
+        4,
+        256
+      ],
+      "N_snapshots": [
+        16,
+        8192
+      ],
+      "N_sources": [
+        1,
+        8
+      ],
+      "SNR_dB": [
+        -10,
+        40
+      ],
+      "element_gain_error": [
+        0.0,
+        0.2
+      ],
+      "element_phase_error": [
+        0.0,
+        0.3
+      ],
+      "sensor_pos_error": [
+        0.0,
+        0.1
+      ]
+    },
+    "E": {
+      "forward": "P(theta) = a(theta)^H R_xx a(theta); R_xx = E[x x^H] for mic-array snapshots x",
+      "operator": "doa_beamforming_forward_mismatch",
+      "primitive_chain": "S.array_capture -> L.steering_vector -> L.power_map -> int.spatial",
+      "inverse": "solve forward for declared state variable under Omega bounds"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "DOA_MAE_deg",
+      "residual_norm"
+    ],
+    "epsilon_fn": "3.0 - 0.2*SNR_dB + 30.0*sensor_pos_error + 10.0*element_phase_error"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Delay-and-Sum",
+        "method_sig": "L+O",
+        "expected_psnr": 2.5
+      },
+      {
+        "name": "MUSIC",
+        "method_sig": "L+O",
+        "expected_psnr": 1.2
+      },
+      {
+        "name": "ESPRIT",
+        "method_sig": "L+O",
+        "expected_psnr": 1.1
+      },
+      {
+        "name": "Deep-DOA",
+        "method_sig": "L+N",
+        "expected_psnr": 0.9
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_mic": 16,
+        "N_snapshots": 256,
+        "N_sources": 2,
+        "SNR_dB": 20,
+        "element_gain_error": 0.0,
+        "element_phase_error": 0.0,
+        "sensor_pos_error": 0.0
+      },
+      "epsilon": 1.5
+    },
+    "tier_bounds": {
+      "N_mic": [
+        4,
+        256
+      ],
+      "N_snapshots": [
+        16,
+        8192
+      ],
+      "N_sources": [
+        1,
+        8
+      ],
+      "SNR_dB": [
+        -10,
+        40
+      ],
+      "element_gain_error": [
+        0.0,
+        0.2
+      ],
+      "element_phase_error": [
+        0.0,
+        0.3
+      ],
+      "sensor_pos_error": [
+        0.0,
+        0.1
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.48,
+  "d_spec_notes": "Distance computed from problem_class, forward_operator, carrier, integration_axis against neighboring specs; within same principle this spec is mismatch-only canonical and sits at the Omega centroid.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions are consistent across the DAG; forward operator maps state space to measurement space at declared shapes.",
+    "S2": "kappa_eff = 12 within tolerance after regularization; RIP-like or coercivity conditions satisfied over most of Omega.",
+    "S3": "Solvers converge at rate q=1.0 in well-posed regime; mismatch parameters degrade convergence but not divergence.",
+    "S4": "epsilon_fn evaluates across 10+ random Omega samples; hardness rule verified \u2014 no baseline passes everywhere."
+  },
+  "ipfs_cid": null
+}

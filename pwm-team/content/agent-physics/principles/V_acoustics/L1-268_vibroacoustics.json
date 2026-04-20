@@ -1,0 +1,177 @@
+{
+  "artifact_id": "L1-268",
+  "layer": "L1",
+  "principle_number": "268",
+  "title": "Vibroacoustics \u2014 structure-acoustic coupling",
+  "domain": "Acoustics",
+  "sub_domain": "FEM-BEM coupled vibro-acoustic",
+  "source_file": "V_acoustics/268_vibroacoustics.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Vibroacoustics \u2014 structure-acoustic coupling forward model.",
+    "forward_model": "[K_s - omega^2 M_s, -C_sf; -omega^2 C_sf^T, K_f - omega^2 M_f] {u; p} = {f_s; f_f}",
+    "world_state_x": "coupled structural displacement u and acoustic pressure p fields",
+    "observation_y": "structural acceleration + radiated pressure at receiver set",
+    "physical_parameters_theta": [
+      "N_struct",
+      "N_fluid",
+      "N_freqs",
+      "SNR_dB",
+      "coupling_error",
+      "structural_damping_error",
+      "fluid_impedance_error",
+      "mesh_error"
+    ]
+  },
+  "G": {
+    "dag": "L.fem_structure -> L.bem_acoustic -> L.coupling -> int.frequency",
+    "vertices": [
+      "L.fem_structure",
+      "L.bem_acoustic",
+      "L.coupling",
+      "int.frequency"
+    ],
+    "arcs": [
+      "L.fem_structure -> L.bem_acoustic",
+      "L.bem_acoustic -> L.coupling",
+      "L.coupling -> int.frequency"
+    ],
+    "L_DAG": 3.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 600,
+    "condition_number_effective": 30,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "FEM-BEM-direct, SEA, Hybrid-FEM-NN",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "acoustic",
+    "sensing_mechanism": "pressure_accel_hybrid",
+    "integration_axis": "frequency",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "pressure_displacement_coupled_2D",
+    "primitives": [
+      "L.fem_structure",
+      "L.bem_acoustic",
+      "L.coupling",
+      "int.frequency"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "coupling_error",
+    "structural_damping_error",
+    "fluid_impedance_error",
+    "mesh_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "vibroacoustic_coupled",
+      "forward_operator": "vibroacoustic_coupled_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_struct": 10000,
+        "N_fluid": 10000,
+        "N_freqs": 64,
+        "SNR_dB": 30,
+        "coupling_error": 0.0,
+        "structural_damping_error": 0.0,
+        "fluid_impedance_error": 0.0,
+        "mesh_error": 0.0
+      },
+      "epsilon_fn_center": "22.0"
+    },
+    "allowed_forward_operators": [
+      "vibroacoustic_coupled_forward"
+    ],
+    "allowed_problem_classes": [
+      "vibroacoustic_coupled"
+    ],
+    "allowed_omega_dimensions": [
+      "N_struct",
+      "N_fluid",
+      "N_freqs",
+      "SNR_dB",
+      "coupling_error",
+      "structural_damping_error",
+      "fluid_impedance_error",
+      "mesh_error",
+      "coupling_error",
+      "structural_damping_error",
+      "fluid_impedance_error",
+      "mesh_error"
+    ],
+    "omega_bounds": {
+      "N_struct": [
+        500,
+        500000
+      ],
+      "N_fluid": [
+        500,
+        500000
+      ],
+      "N_freqs": [
+        4,
+        512
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "coupling_error": [
+        0.0,
+        0.2
+      ],
+      "structural_damping_error": [
+        0.0,
+        0.5
+      ],
+      "fluid_impedance_error": [
+        0.0,
+        0.3
+      ],
+      "mesh_error": [
+        0.0,
+        0.1
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

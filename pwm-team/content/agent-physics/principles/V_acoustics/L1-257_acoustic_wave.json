@@ -1,0 +1,198 @@
+{
+  "artifact_id": "L1-257",
+  "layer": "L1",
+  "principle_number": "257",
+  "title": "Acoustic Wave Equation \u2014 time-domain pressure field reconstruction",
+  "domain": "Acoustics",
+  "sub_domain": "3D linear acoustic wave propagation",
+  "source_file": "V_acoustics/257_acoustic_wave.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Acoustic Wave Equation \u2014 time-domain pressure field reconstruction forward model.",
+    "forward_model": "1/c^2 * d^2 p/dt^2 - Laplacian(p) = s(x,t); p(x,0)=p0(x), dp/dt(x,0)=0",
+    "world_state_x": "3D initial pressure field p0(x,y,z) or source distribution s(x,t) in a bounded domain",
+    "observation_y": "time series p(x_r, t) at N_R receiver positions over [0, T]",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "Z",
+      "N_receivers",
+      "N_samples",
+      "fs_kHz",
+      "SNR_dB",
+      "c_error",
+      "rho_error",
+      "receiver_pos_error",
+      "boundary_reflectivity"
+    ]
+  },
+  "G": {
+    "dag": "L.initial_condition -> L.wave_propagate -> S.record.receivers -> int.temporal",
+    "vertices": [
+      "L.initial_condition",
+      "L.wave_propagate",
+      "S.record.receivers",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.initial_condition -> L.wave_propagate",
+      "L.wave_propagate -> S.record.receivers",
+      "S.record.receivers -> int.temporal"
+    ],
+    "L_DAG": 3.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 800,
+    "condition_number_effective": 40,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "FDTD-reverse, Kirchhoff-migration, PINN-wave",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "acoustic",
+    "sensing_mechanism": "pressure_receivers",
+    "integration_axis": "temporal",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "3D_pressure_field_spacetime",
+    "primitives": [
+      "L.initial_condition",
+      "L.wave_propagate",
+      "S.record.receivers",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "c_error",
+    "rho_error",
+    "receiver_pos_error",
+    "boundary_reflectivity"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "acoustic_wave",
+      "forward_operator": "acoustic_wave_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 128,
+        "W": 128,
+        "Z": 64,
+        "N_receivers": 64,
+        "N_samples": 512,
+        "fs_kHz": 100,
+        "SNR_dB": 30,
+        "c_error": 0.0,
+        "rho_error": 0.0,
+        "receiver_pos_error": 0.0,
+        "boundary_reflectivity": 0.0
+      },
+      "epsilon_fn_center": "26.0"
+    },
+    "allowed_forward_operators": [
+      "acoustic_wave_forward"
+    ],
+    "allowed_problem_classes": [
+      "acoustic_wave"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "Z",
+      "N_receivers",
+      "N_samples",
+      "fs_kHz",
+      "SNR_dB",
+      "c_error",
+      "rho_error",
+      "receiver_pos_error",
+      "boundary_reflectivity",
+      "c_error",
+      "rho_error",
+      "receiver_pos_error",
+      "boundary_reflectivity"
+    ],
+    "omega_bounds": {
+      "H": [
+        64,
+        512
+      ],
+      "W": [
+        64,
+        512
+      ],
+      "Z": [
+        32,
+        256
+      ],
+      "N_receivers": [
+        16,
+        512
+      ],
+      "N_samples": [
+        128,
+        4096
+      ],
+      "fs_kHz": [
+        10,
+        1000
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "c_error": [
+        0.0,
+        0.1
+      ],
+      "rho_error": [
+        0.0,
+        0.1
+      ],
+      "receiver_pos_error": [
+        0.0,
+        0.02
+      ],
+      "boundary_reflectivity": [
+        0.0,
+        0.5
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

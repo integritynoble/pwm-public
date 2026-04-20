@@ -1,0 +1,188 @@
+{
+  "artifact_id": "L1-259",
+  "layer": "L1",
+  "principle_number": "259",
+  "title": "Room Acoustics \u2014 ray-tracing impulse response",
+  "domain": "Acoustics",
+  "sub_domain": "Geometric-acoustic ray/beam tracing",
+  "source_file": "V_acoustics/259_room_acoustics_ray.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Room Acoustics \u2014 ray-tracing impulse response forward model.",
+    "forward_model": "h(t) = sum_paths A_path * delta(t - L_path/c); A_path = prod_i (1 - alpha_i) * dir_gain",
+    "world_state_x": "room impulse response h(t) between source and microphone (or echogram)",
+    "observation_y": "microphone recording y(t) = x(t) * h(t) + n(t)",
+    "physical_parameters_theta": [
+      "L_m",
+      "W_m",
+      "H_m",
+      "N_rays",
+      "T_s",
+      "fs_kHz",
+      "absorption_error",
+      "geometry_error",
+      "src_rec_pos_error"
+    ]
+  },
+  "G": {
+    "dag": "L.source_emit -> S.trace.rays -> L.absorb_reflect -> int.temporal",
+    "vertices": [
+      "L.source_emit",
+      "S.trace.rays",
+      "L.absorb_reflect",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.source_emit -> S.trace.rays",
+      "S.trace.rays -> L.absorb_reflect",
+      "L.absorb_reflect -> int.temporal"
+    ],
+    "L_DAG": 3.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 300,
+    "condition_number_effective": 15,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Stochastic-ray, Beam-tracing, Hybrid-ODEON",
+    "convergence_rate_q": 1.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "acoustic",
+    "sensing_mechanism": "pressure_mic",
+    "integration_axis": "temporal",
+    "problem_class": "forward",
+    "noise_model": "gaussian",
+    "solution_space": "room_impulse_response_1D",
+    "primitives": [
+      "L.source_emit",
+      "S.trace.rays",
+      "L.absorb_reflect",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "absorption_error",
+    "geometry_error",
+    "src_rec_pos_error",
+    "diffraction_unresolved"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "room_ray_tracing",
+      "forward_operator": "room_ray_tracing_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "L_m": 6,
+        "W_m": 8,
+        "H_m": 3,
+        "N_rays": 200000,
+        "T_s": 1.0,
+        "fs_kHz": 48,
+        "absorption_error": 0.0,
+        "geometry_error": 0.0,
+        "src_rec_pos_error": 0.0
+      },
+      "epsilon_fn_center": "22.0"
+    },
+    "allowed_forward_operators": [
+      "room_ray_tracing_forward"
+    ],
+    "allowed_problem_classes": [
+      "room_ray_tracing"
+    ],
+    "allowed_omega_dimensions": [
+      "L_m",
+      "W_m",
+      "H_m",
+      "N_rays",
+      "T_s",
+      "fs_kHz",
+      "absorption_error",
+      "geometry_error",
+      "src_rec_pos_error",
+      "absorption_error",
+      "geometry_error",
+      "src_rec_pos_error",
+      "diffraction_unresolved"
+    ],
+    "omega_bounds": {
+      "L_m": [
+        2,
+        50
+      ],
+      "W_m": [
+        2,
+        50
+      ],
+      "H_m": [
+        2,
+        20
+      ],
+      "N_rays": [
+        10000,
+        2000000
+      ],
+      "T_s": [
+        0.1,
+        5.0
+      ],
+      "fs_kHz": [
+        8,
+        96
+      ],
+      "absorption_error": [
+        0.0,
+        0.3
+      ],
+      "geometry_error": [
+        0.0,
+        0.05
+      ],
+      "src_rec_pos_error": [
+        0.0,
+        0.1
+      ],
+      "diffraction_unresolved": [
+        0.0,
+        0.2
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

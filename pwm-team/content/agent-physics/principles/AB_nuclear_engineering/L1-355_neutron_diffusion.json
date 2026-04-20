@@ -1,0 +1,191 @@
+{
+  "artifact_id": "L1-355",
+  "layer": "L1",
+  "principle_number": "355",
+  "title": "Neutron Diffusion \u2014 multi-group diffusion approximation",
+  "domain": "Nuclear Engineering",
+  "sub_domain": "Multi-group diffusion (PWR / BWR core physics)",
+  "source_file": "AB_nuclear_engineering/355_neutron_diffusion.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Neutron Diffusion \u2014 multi-group diffusion approximation forward model.",
+    "forward_model": "-grad D_g grad phi_g + Sigma_r_g phi_g = sum_{g'!=g} Sigma_s_{g'->g} phi_{g'} + chi_g/k * sum_g' nu_sigma_f_{g'} phi_{g'}",
+    "world_state_x": "scalar flux phi_g(r) in each energy group g",
+    "observation_y": "in-core detector response at selected flux map locations",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "Z",
+      "N_groups",
+      "N_detectors",
+      "SNR_dB",
+      "D_coeff_error",
+      "sigma_a_error",
+      "nu_sigma_f_error",
+      "extrapol_dist_error"
+    ]
+  },
+  "G": {
+    "dag": "L.diffusion -> L.group_coupling -> L.fission_source -> int.energy",
+    "vertices": [
+      "L.diffusion",
+      "L.group_coupling",
+      "L.fission_source",
+      "int.energy"
+    ],
+    "arcs": [
+      "L.diffusion -> L.group_coupling",
+      "L.group_coupling -> L.fission_source",
+      "L.fission_source -> int.energy"
+    ],
+    "L_DAG": 3.2,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 400,
+    "condition_number_effective": 20,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "FEM-diffusion, Nodal-diffusion, CITATION",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "neutron",
+    "sensing_mechanism": "flux_map_incore",
+    "integration_axis": "energy",
+    "problem_class": "linear_inverse",
+    "noise_model": "poisson",
+    "solution_space": "core_flux_map",
+    "primitives": [
+      "L.diffusion",
+      "L.group_coupling",
+      "L.fission_source",
+      "int.energy"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "D_coeff_error",
+    "sigma_a_error",
+    "nu_sigma_f_error",
+    "extrapol_dist_error"
+  ],
+  "error_metric": "flux_rel_error_percent",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "diffusion",
+      "forward_operator": "diffusion_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 128,
+        "W": 128,
+        "Z": 64,
+        "N_groups": 2,
+        "N_detectors": 64,
+        "SNR_dB": 30,
+        "D_coeff_error": 0.0,
+        "sigma_a_error": 0.0,
+        "nu_sigma_f_error": 0.0,
+        "extrapol_dist_error": 0.0
+      },
+      "epsilon_fn_center": "3.0"
+    },
+    "allowed_forward_operators": [
+      "diffusion_forward"
+    ],
+    "allowed_problem_classes": [
+      "diffusion"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "Z",
+      "N_groups",
+      "N_detectors",
+      "SNR_dB",
+      "D_coeff_error",
+      "sigma_a_error",
+      "nu_sigma_f_error",
+      "extrapol_dist_error",
+      "D_coeff_error",
+      "sigma_a_error",
+      "nu_sigma_f_error",
+      "extrapol_dist_error"
+    ],
+    "omega_bounds": {
+      "H": [
+        32,
+        512
+      ],
+      "W": [
+        32,
+        512
+      ],
+      "Z": [
+        32,
+        512
+      ],
+      "N_groups": [
+        1,
+        10
+      ],
+      "N_detectors": [
+        8,
+        512
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "D_coeff_error": [
+        0.0,
+        0.05
+      ],
+      "sigma_a_error": [
+        0.0,
+        0.05
+      ],
+      "nu_sigma_f_error": [
+        0.0,
+        0.05
+      ],
+      "extrapol_dist_error": [
+        0.0,
+        0.1
+      ]
+    },
+    "epsilon_bounds": {
+      "flux_rel_error": [
+        0.5,
+        30.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

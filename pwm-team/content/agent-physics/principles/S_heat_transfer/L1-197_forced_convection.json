@@ -1,0 +1,184 @@
+{
+  "artifact_id": "L1-197",
+  "layer": "L1",
+  "principle_number": "197",
+  "title": "Forced Convection \u2014 conjugate heat transfer inversion",
+  "domain": "Heat Transfer",
+  "sub_domain": "Convective heat transfer coefficient estimation",
+  "source_file": "S_heat_transfer/197_forced_convection.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Forced Convection \u2014 conjugate heat transfer inversion forward model.",
+    "forward_model": "q'' = h(x) * (T_wall - T_inf); Nu = f(Re, Pr) via forced convection correlation",
+    "world_state_x": "local convective heat transfer coefficient h(x) map",
+    "observation_y": "IR surface temperature of an active-heated wall under known q''",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "Re",
+      "Pr",
+      "SNR_dB",
+      "Re_error",
+      "Pr_error",
+      "wall_emissivity_error",
+      "freestream_T_error"
+    ]
+  },
+  "G": {
+    "dag": "L.nav_stokes_flow -> L.heat_transport -> L.convect_coupling -> int.temporal",
+    "vertices": [
+      "L.nav_stokes_flow",
+      "L.heat_transport",
+      "L.convect_coupling",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.nav_stokes_flow -> L.heat_transport",
+      "L.heat_transport -> L.convect_coupling",
+      "L.convect_coupling -> int.temporal"
+    ],
+    "L_DAG": 3.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 800,
+    "condition_number_effective": 40,
+    "regime": "Coupled Navier-Stokes + energy; well-posed for moderate Re, unstable at high Re."
+  },
+  "C": {
+    "solver_class": "Gnielinski, CFD-RANS, Conv-NN",
+    "convergence_rate_q": 1.5,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "thermal",
+    "sensing_mechanism": "ir_camera_thermocouples",
+    "integration_axis": "temporal",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "2D_heat_transfer_coeff",
+    "primitives": [
+      "L.nav_stokes_flow",
+      "L.heat_transport",
+      "L.convect_coupling",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "Re_error",
+    "Pr_error",
+    "wall_emissivity_error",
+    "freestream_T_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "forced_convection",
+      "forward_operator": "forced_convection_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 256,
+        "W": 256,
+        "Re": 50000,
+        "Pr": 0.7,
+        "SNR_dB": 30,
+        "Re_error": 0.0,
+        "Pr_error": 0.0,
+        "wall_emissivity_error": 0.0,
+        "freestream_T_error": 0.0
+      },
+      "epsilon_fn_center": "22.0"
+    },
+    "allowed_forward_operators": [
+      "forced_convection_forward"
+    ],
+    "allowed_problem_classes": [
+      "forced_convection"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "Re",
+      "Pr",
+      "SNR_dB",
+      "Re_error",
+      "Pr_error",
+      "wall_emissivity_error",
+      "freestream_T_error",
+      "Re_error",
+      "Pr_error",
+      "wall_emissivity_error",
+      "freestream_T_error"
+    ],
+    "omega_bounds": {
+      "H": [
+        64,
+        2048
+      ],
+      "W": [
+        64,
+        2048
+      ],
+      "Re": [
+        100,
+        10000000
+      ],
+      "Pr": [
+        0.01,
+        1000
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "Re_error": [
+        0.0,
+        0.1
+      ],
+      "Pr_error": [
+        0.0,
+        0.1
+      ],
+      "wall_emissivity_error": [
+        0.0,
+        0.3
+      ],
+      "freestream_T_error": [
+        0.0,
+        5.0
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

@@ -1,0 +1,184 @@
+{
+  "artifact_id": "L1-356",
+  "layer": "L1",
+  "principle_number": "356",
+  "title": "Criticality Eigenvalue \u2014 k-effective calculation",
+  "domain": "Nuclear Engineering",
+  "sub_domain": "k-eff generalized eigenvalue",
+  "source_file": "AB_nuclear_engineering/356_criticality_eigenvalue.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Criticality Eigenvalue \u2014 k-effective calculation forward model.",
+    "forward_model": "L phi = (1/k) F phi; k = nu/k_inf * Sigma_f * phi integrated; power iteration",
+    "world_state_x": "dominant eigenvalue k_eff and eigenfunction phi_fund(r)",
+    "observation_y": "reactivity-meter data + flux shape measurements during startup/critical approach",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "Z",
+      "N_groups",
+      "SNR_dB",
+      "xs_error",
+      "reflector_error",
+      "burnup_error",
+      "power_shape_error"
+    ]
+  },
+  "G": {
+    "dag": "L.diffusion_or_transport -> L.power_iteration -> L.fission_source_scale -> int.eigenvalue",
+    "vertices": [
+      "L.diffusion_or_transport",
+      "L.power_iteration",
+      "L.fission_source_scale",
+      "int.eigenvalue"
+    ],
+    "arcs": [
+      "L.diffusion_or_transport -> L.power_iteration",
+      "L.power_iteration -> L.fission_source_scale",
+      "L.fission_source_scale -> int.eigenvalue"
+    ],
+    "L_DAG": 3.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 500,
+    "condition_number_effective": 25,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "MCNP-kcode, OpenMC, Serpent",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "neutron",
+    "sensing_mechanism": "reactivity_meter",
+    "integration_axis": "eigenvalue",
+    "problem_class": "linear_inverse",
+    "noise_model": "poisson",
+    "solution_space": "k_eff_scalar_and_fundamental_mode",
+    "primitives": [
+      "L.diffusion_or_transport",
+      "L.power_iteration",
+      "L.fission_source_scale",
+      "int.eigenvalue"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "xs_error",
+    "reflector_error",
+    "burnup_error",
+    "power_shape_error"
+  ],
+  "error_metric": "k_eff_absolute_error",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "keff",
+      "forward_operator": "keff_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 128,
+        "W": 128,
+        "Z": 64,
+        "N_groups": 8,
+        "SNR_dB": 30,
+        "xs_error": 0.0,
+        "reflector_error": 0.0,
+        "burnup_error": 0.0,
+        "power_shape_error": 0.0
+      },
+      "epsilon_fn_center": "0.002"
+    },
+    "allowed_forward_operators": [
+      "keff_forward"
+    ],
+    "allowed_problem_classes": [
+      "keff"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "Z",
+      "N_groups",
+      "SNR_dB",
+      "xs_error",
+      "reflector_error",
+      "burnup_error",
+      "power_shape_error",
+      "xs_error",
+      "reflector_error",
+      "burnup_error",
+      "power_shape_error"
+    ],
+    "omega_bounds": {
+      "H": [
+        32,
+        512
+      ],
+      "W": [
+        32,
+        512
+      ],
+      "Z": [
+        32,
+        512
+      ],
+      "N_groups": [
+        1,
+        47
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "xs_error": [
+        0.0,
+        0.02
+      ],
+      "reflector_error": [
+        0.0,
+        0.05
+      ],
+      "burnup_error": [
+        0.0,
+        0.2
+      ],
+      "power_shape_error": [
+        0.0,
+        0.1
+      ]
+    },
+    "epsilon_bounds": {
+      "k_eff_delta": [
+        0.0001,
+        0.05
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

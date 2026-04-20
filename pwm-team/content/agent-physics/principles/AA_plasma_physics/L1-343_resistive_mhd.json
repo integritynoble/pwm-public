@@ -1,0 +1,184 @@
+{
+  "artifact_id": "L1-343",
+  "layer": "L1",
+  "principle_number": "343",
+  "title": "Resistive MHD \u2014 finite-resistivity plasma",
+  "domain": "Plasma Physics",
+  "sub_domain": "Reconnection and resistive tearing modes",
+  "source_file": "AA_plasma_physics/343_resistive_mhd.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Resistive MHD \u2014 finite-resistivity plasma forward model.",
+    "forward_model": "dB/dt = curl(u x B) + eta * Laplacian B; E + u x B = eta J",
+    "world_state_x": "reconnection rate + current sheet structure",
+    "observation_y": "soft X-ray emission + interferometer density fringes",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "N_times",
+      "eta",
+      "SNR_dB",
+      "eta_error",
+      "hyper_resistivity_error",
+      "grid_error",
+      "bc_error"
+    ]
+  },
+  "G": {
+    "dag": "L.ohm_finite -> L.induction_resistive -> L.reconnect -> int.temporal",
+    "vertices": [
+      "L.ohm_finite",
+      "L.induction_resistive",
+      "L.reconnect",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.ohm_finite -> L.induction_resistive",
+      "L.induction_resistive -> L.reconnect",
+      "L.reconnect -> int.temporal"
+    ],
+    "L_DAG": 3.7,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 1000,
+    "condition_number_effective": 50,
+    "regime": "Reconnection has multiple scales (resistive, Hall, electron inertia)."
+  },
+  "C": {
+    "solver_class": "NIMROD, M3D-C1, Reconn-Net",
+    "convergence_rate_q": 1.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "plasma",
+    "sensing_mechanism": "soft_xray_interferometer",
+    "integration_axis": "temporal",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "plasma_with_reconnection",
+    "primitives": [
+      "L.ohm_finite",
+      "L.induction_resistive",
+      "L.reconnect",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 10,
+  "difficulty_tier": "hard",
+  "mismatch_parameters": [
+    "eta_error",
+    "hyper_resistivity_error",
+    "grid_error",
+    "bc_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "resistive_mhd",
+      "forward_operator": "resistive_mhd_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 512,
+        "W": 512,
+        "N_times": 2000,
+        "eta": 0.0001,
+        "SNR_dB": 25,
+        "eta_error": 0.0,
+        "hyper_resistivity_error": 0.0,
+        "grid_error": 0.0,
+        "bc_error": 0.0
+      },
+      "epsilon_fn_center": "18.0"
+    },
+    "allowed_forward_operators": [
+      "resistive_mhd_forward"
+    ],
+    "allowed_problem_classes": [
+      "resistive_mhd"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "N_times",
+      "eta",
+      "SNR_dB",
+      "eta_error",
+      "hyper_resistivity_error",
+      "grid_error",
+      "bc_error",
+      "eta_error",
+      "hyper_resistivity_error",
+      "grid_error",
+      "bc_error"
+    ],
+    "omega_bounds": {
+      "H": [
+        64,
+        4096
+      ],
+      "W": [
+        64,
+        4096
+      ],
+      "N_times": [
+        100,
+        100000
+      ],
+      "eta": [
+        1e-08,
+        0.1
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "eta_error": [
+        0.0,
+        0.3
+      ],
+      "hyper_resistivity_error": [
+        0.0,
+        0.3
+      ],
+      "grid_error": [
+        0.0,
+        0.2
+      ],
+      "bc_error": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

@@ -1,0 +1,175 @@
+{
+  "artifact_id": "L1-196",
+  "layer": "L1",
+  "principle_number": "196",
+  "title": "Steady Heat Conduction \u2014 conductivity imaging",
+  "domain": "Heat Transfer",
+  "sub_domain": "Elliptic PDE conductivity inversion",
+  "source_file": "S_heat_transfer/196_steady_heat.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Steady Heat Conduction \u2014 conductivity imaging forward model.",
+    "forward_model": "div(k(x) grad T) = 0 in Omega; T=T_D on Gamma_D, k dT/dn = q on Gamma_N",
+    "world_state_x": "3D thermal conductivity k(x) field",
+    "observation_y": "surface temperature map T(x_s) over accessible Dirichlet boundary",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "Z",
+      "N_sensors",
+      "SNR_dB",
+      "bc_flux_error",
+      "geometry_error",
+      "sensor_pos_error"
+    ]
+  },
+  "G": {
+    "dag": "L.apply_flux -> L.elliptic_solve -> S.record.surface -> int.spatial",
+    "vertices": [
+      "L.apply_flux",
+      "L.elliptic_solve",
+      "S.record.surface",
+      "int.spatial"
+    ],
+    "arcs": [
+      "L.apply_flux -> L.elliptic_solve",
+      "L.elliptic_solve -> S.record.surface",
+      "S.record.surface -> int.spatial"
+    ],
+    "L_DAG": 3.2,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 700,
+    "condition_number_effective": 35,
+    "regime": "Calderon inverse conductivity problem \u2014 well-posed with full boundary data, ill-posed with sparse measurements."
+  },
+  "C": {
+    "solver_class": "FEM-Newton, Levenberg-Marquardt, DeepONet-k",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "thermal",
+    "sensing_mechanism": "surface_temp",
+    "integration_axis": "spatial",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "3D_conductivity_field",
+    "primitives": [
+      "L.apply_flux",
+      "L.elliptic_solve",
+      "S.record.surface",
+      "int.spatial"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "bc_flux_error",
+    "geometry_error",
+    "sensor_pos_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "steady_heat",
+      "forward_operator": "steady_heat_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 128,
+        "W": 128,
+        "Z": 32,
+        "N_sensors": 128,
+        "SNR_dB": 30,
+        "bc_flux_error": 0.0,
+        "geometry_error": 0.0,
+        "sensor_pos_error": 0.0
+      },
+      "epsilon_fn_center": "24.0"
+    },
+    "allowed_forward_operators": [
+      "steady_heat_forward"
+    ],
+    "allowed_problem_classes": [
+      "steady_heat"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "Z",
+      "N_sensors",
+      "SNR_dB",
+      "bc_flux_error",
+      "geometry_error",
+      "sensor_pos_error",
+      "bc_flux_error",
+      "geometry_error",
+      "sensor_pos_error"
+    ],
+    "omega_bounds": {
+      "H": [
+        32,
+        1024
+      ],
+      "W": [
+        32,
+        1024
+      ],
+      "Z": [
+        8,
+        512
+      ],
+      "N_sensors": [
+        16,
+        4096
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "bc_flux_error": [
+        0.0,
+        0.1
+      ],
+      "geometry_error": [
+        0.0,
+        0.05
+      ],
+      "sensor_pos_error": [
+        0.0,
+        0.02
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

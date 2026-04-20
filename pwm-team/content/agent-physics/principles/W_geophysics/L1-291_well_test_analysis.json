@@ -1,0 +1,154 @@
+{
+  "artifact_id": "L1-291",
+  "layer": "L1",
+  "principle_number": "291",
+  "title": "Well Test Analysis \u2014 transient pressure testing",
+  "domain": "Geophysics",
+  "sub_domain": "Pressure-transient analysis (PTA) for reservoir properties",
+  "source_file": "W_geophysics/291_well_test_analysis.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Well Test Analysis \u2014 transient pressure testing forward model.",
+    "forward_model": "dp/dt = (k/(phi*mu*c_t)) * (1/r) * d/dr(r * dp/dr); log-log derivative diagnostic",
+    "world_state_x": "permeability-thickness kh, skin factor s, boundary distance",
+    "observation_y": "downhole pressure vs time during drawdown/buildup",
+    "physical_parameters_theta": [
+      "N_times",
+      "SNR_dB",
+      "skin_factor_error",
+      "kh_prior_error",
+      "boundary_error"
+    ]
+  },
+  "G": {
+    "dag": "L.diffusivity -> L.radial_flow -> L.boundary_detect -> int.temporal",
+    "vertices": [
+      "L.diffusivity",
+      "L.radial_flow",
+      "L.boundary_detect",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.diffusivity -> L.radial_flow",
+      "L.radial_flow -> L.boundary_detect",
+      "L.boundary_detect -> int.temporal"
+    ],
+    "L_DAG": 3.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 240,
+    "condition_number_effective": 12,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Bourdet-deriv, Pressure-match, PTA-NN",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "mechanical",
+    "sensing_mechanism": "downhole_pressure",
+    "integration_axis": "temporal",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "kh_skin_params",
+    "primitives": [
+      "L.diffusivity",
+      "L.radial_flow",
+      "L.boundary_detect",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "skin_factor_error",
+    "kh_prior_error",
+    "boundary_error"
+  ],
+  "error_metric": "kh_rel_error_percent",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "pta",
+      "forward_operator": "pta_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_times": 1000,
+        "SNR_dB": 30,
+        "skin_factor_error": 0.0,
+        "kh_prior_error": 0.0,
+        "boundary_error": 0.0
+      },
+      "epsilon_fn_center": "3.0"
+    },
+    "allowed_forward_operators": [
+      "pta_forward"
+    ],
+    "allowed_problem_classes": [
+      "pta"
+    ],
+    "allowed_omega_dimensions": [
+      "N_times",
+      "SNR_dB",
+      "skin_factor_error",
+      "kh_prior_error",
+      "boundary_error",
+      "skin_factor_error",
+      "kh_prior_error",
+      "boundary_error"
+    ],
+    "omega_bounds": {
+      "N_times": [
+        10,
+        100000
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "skin_factor_error": [
+        0.0,
+        0.3
+      ],
+      "kh_prior_error": [
+        0.0,
+        0.2
+      ],
+      "boundary_error": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "kh_rel": [
+        0.3,
+        30.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

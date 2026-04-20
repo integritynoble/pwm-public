@@ -1,0 +1,151 @@
+{
+  "artifact_id": "L2-260",
+  "layer": "L2",
+  "parent_l1": "L1-260",
+  "title": "Room Acoustics \u2014 image-source method (shoebox rooms) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "L_m": [
+        2,
+        30
+      ],
+      "W_m": [
+        2,
+        30
+      ],
+      "H_m": [
+        2,
+        15
+      ],
+      "max_order": [
+        1,
+        80
+      ],
+      "fs_kHz": [
+        8,
+        96
+      ],
+      "reflection_coeff_error": [
+        0.0,
+        0.3
+      ],
+      "geometry_error": [
+        0.0,
+        0.02
+      ],
+      "src_rec_pos_error": [
+        0.0,
+        0.1
+      ]
+    },
+    "E": {
+      "forward": "h(t) = sum_{n,m,p} R_wall^order * delta(t - d_{nmp}/c) / (4*pi*d_{nmp})",
+      "operator": "image_source_forward_mismatch",
+      "primitive_chain": "L.mirror.images -> L.delay_sum -> L.absorb -> int.temporal",
+      "inverse": "solve forward for declared state variable under Omega bounds"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR_dB",
+      "residual_norm"
+    ],
+    "epsilon_fn": "19.0 + 1.5*log2(max_order/1) - 20.0*reflection_coeff_error - 20.0*geometry_error"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "ISM-Allen-Berkley",
+        "method_sig": "L+O",
+        "expected_psnr": 24.0
+      },
+      {
+        "name": "ISM-hybrid",
+        "method_sig": "L+O",
+        "expected_psnr": 25.5
+      },
+      {
+        "name": "Neural-RIR",
+        "method_sig": "L+N",
+        "expected_psnr": 27.0
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "L_m": 6,
+        "W_m": 8,
+        "H_m": 3,
+        "max_order": 20,
+        "fs_kHz": 48,
+        "reflection_coeff_error": 0.0,
+        "geometry_error": 0.0,
+        "src_rec_pos_error": 0.0
+      },
+      "epsilon": 25.0
+    },
+    "tier_bounds": {
+      "L_m": [
+        2,
+        30
+      ],
+      "W_m": [
+        2,
+        30
+      ],
+      "H_m": [
+        2,
+        15
+      ],
+      "max_order": [
+        1,
+        80
+      ],
+      "fs_kHz": [
+        8,
+        96
+      ],
+      "reflection_coeff_error": [
+        0.0,
+        0.3
+      ],
+      "geometry_error": [
+        0.0,
+        0.02
+      ],
+      "src_rec_pos_error": [
+        0.0,
+        0.1
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.22,
+  "d_spec_notes": "Distance computed from problem_class, forward_operator, carrier, integration_axis against neighboring specs; within same principle this spec is mismatch-only canonical and sits at the Omega centroid.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions are consistent across the DAG; forward operator maps state space to measurement space at declared shapes.",
+    "S2": "kappa_eff = 8 within tolerance after regularization; RIP-like or coercivity conditions satisfied over most of Omega.",
+    "S3": "Solvers converge at rate q=1.0 in well-posed regime; mismatch parameters degrade convergence but not divergence.",
+    "S4": "epsilon_fn evaluates across 10+ random Omega samples; hardness rule verified \u2014 no baseline passes everywhere."
+  },
+  "ipfs_cid": null
+}

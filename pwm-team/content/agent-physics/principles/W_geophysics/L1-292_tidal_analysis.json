@@ -1,0 +1,161 @@
+{
+  "artifact_id": "L1-292",
+  "layer": "L1",
+  "principle_number": "292",
+  "title": "Tidal Analysis \u2014 harmonic tidal constituent extraction",
+  "domain": "Geophysics",
+  "sub_domain": "Harmonic tidal analysis from tide gauge",
+  "source_file": "W_geophysics/292_tidal_analysis.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Tidal Analysis \u2014 harmonic tidal constituent extraction forward model.",
+    "forward_model": "h(t) = Z_0 + sum_i f_i * A_i * cos(omega_i t + phi_i + u_i); nodal correction f, u",
+    "world_state_x": "amplitudes A_i and phases phi_i of tidal constituents (M2, S2, N2, K1, O1, ...)",
+    "observation_y": "tide-gauge water level time series",
+    "physical_parameters_theta": [
+      "N_constituents",
+      "N_samples",
+      "SNR_dB",
+      "nodal_error",
+      "shallow_water_error",
+      "residual_surge"
+    ]
+  },
+  "G": {
+    "dag": "L.fourier_harmonic -> L.nodal_correction -> L.least_squares -> int.frequency",
+    "vertices": [
+      "L.fourier_harmonic",
+      "L.nodal_correction",
+      "L.least_squares",
+      "int.frequency"
+    ],
+    "arcs": [
+      "L.fourier_harmonic -> L.nodal_correction",
+      "L.nodal_correction -> L.least_squares",
+      "L.least_squares -> int.frequency"
+    ],
+    "L_DAG": 3.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 200,
+    "condition_number_effective": 10,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "T-TIDE, UTide, Tide-NN",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "mechanical",
+    "sensing_mechanism": "tide_gauge",
+    "integration_axis": "frequency",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "tidal_harmonic_amps_phases",
+    "primitives": [
+      "L.fourier_harmonic",
+      "L.nodal_correction",
+      "L.least_squares",
+      "int.frequency"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "nodal_error",
+    "shallow_water_error",
+    "residual_surge"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "tide_harmonic",
+      "forward_operator": "tide_harmonic_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_constituents": 37,
+        "N_samples": 17520,
+        "SNR_dB": 40,
+        "nodal_error": 0.0,
+        "shallow_water_error": 0.0,
+        "residual_surge": 0.0
+      },
+      "epsilon_fn_center": "28.0"
+    },
+    "allowed_forward_operators": [
+      "tide_harmonic_forward"
+    ],
+    "allowed_problem_classes": [
+      "tide_harmonic"
+    ],
+    "allowed_omega_dimensions": [
+      "N_constituents",
+      "N_samples",
+      "SNR_dB",
+      "nodal_error",
+      "shallow_water_error",
+      "residual_surge",
+      "nodal_error",
+      "shallow_water_error",
+      "residual_surge"
+    ],
+    "omega_bounds": {
+      "N_constituents": [
+        5,
+        200
+      ],
+      "N_samples": [
+        720,
+        525600
+      ],
+      "SNR_dB": [
+        10,
+        60
+      ],
+      "nodal_error": [
+        0.0,
+        0.05
+      ],
+      "shallow_water_error": [
+        0.0,
+        0.2
+      ],
+      "residual_surge": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

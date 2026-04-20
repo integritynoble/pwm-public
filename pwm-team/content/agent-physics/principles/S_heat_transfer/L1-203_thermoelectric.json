@@ -1,0 +1,170 @@
+{
+  "artifact_id": "L1-203",
+  "layer": "L1",
+  "principle_number": "203",
+  "title": "Thermoelectric Transport \u2014 coupled Seebeck-Peltier",
+  "domain": "Heat Transfer",
+  "sub_domain": "ZT figure-of-merit inversion",
+  "source_file": "S_heat_transfer/203_thermoelectric.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Thermoelectric Transport \u2014 coupled Seebeck-Peltier forward model.",
+    "forward_model": "J = sigma(E - alpha grad T); q = Pi J - kappa grad T; coupled continuity + heat",
+    "world_state_x": "electrical conductivity sigma, Seebeck alpha, thermal conductivity kappa => ZT",
+    "observation_y": "voltage + temperature gradient at N_probe points across test specimen",
+    "physical_parameters_theta": [
+      "N_probes",
+      "T_K",
+      "SNR_dB",
+      "sigma_error",
+      "alpha_error",
+      "kappa_error",
+      "contact_R_error"
+    ]
+  },
+  "G": {
+    "dag": "L.onsager_coupling -> L.peltier_flux -> L.seebeck_emf -> int.frequency",
+    "vertices": [
+      "L.onsager_coupling",
+      "L.peltier_flux",
+      "L.seebeck_emf",
+      "int.frequency"
+    ],
+    "arcs": [
+      "L.onsager_coupling -> L.peltier_flux",
+      "L.peltier_flux -> L.seebeck_emf",
+      "L.seebeck_emf -> int.frequency"
+    ],
+    "L_DAG": 3.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 240,
+    "condition_number_effective": 12,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Harman, 3-omega, ZT-net",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "thermal",
+    "sensing_mechanism": "V_T_dual",
+    "integration_axis": "frequency",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "ZT_materials_map",
+    "primitives": [
+      "L.onsager_coupling",
+      "L.peltier_flux",
+      "L.seebeck_emf",
+      "int.frequency"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "sigma_error",
+    "alpha_error",
+    "kappa_error",
+    "contact_R_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "thermoelectric",
+      "forward_operator": "thermoelectric_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_probes": 8,
+        "T_K": 300,
+        "SNR_dB": 30,
+        "sigma_error": 0.0,
+        "alpha_error": 0.0,
+        "kappa_error": 0.0,
+        "contact_R_error": 0.0
+      },
+      "epsilon_fn_center": "25.0"
+    },
+    "allowed_forward_operators": [
+      "thermoelectric_forward"
+    ],
+    "allowed_problem_classes": [
+      "thermoelectric"
+    ],
+    "allowed_omega_dimensions": [
+      "N_probes",
+      "T_K",
+      "SNR_dB",
+      "sigma_error",
+      "alpha_error",
+      "kappa_error",
+      "contact_R_error",
+      "sigma_error",
+      "alpha_error",
+      "kappa_error",
+      "contact_R_error"
+    ],
+    "omega_bounds": {
+      "N_probes": [
+        2,
+        64
+      ],
+      "T_K": [
+        4,
+        1500
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "sigma_error": [
+        0.0,
+        0.1
+      ],
+      "alpha_error": [
+        0.0,
+        0.1
+      ],
+      "kappa_error": [
+        0.0,
+        0.1
+      ],
+      "contact_R_error": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

@@ -1,0 +1,154 @@
+{
+  "artifact_id": "L1-350",
+  "layer": "L1",
+  "principle_number": "350",
+  "title": "Plasma Sheath \u2014 Debye-scale boundary layer",
+  "domain": "Plasma Physics",
+  "sub_domain": "Plasma-wall sheath region",
+  "source_file": "AA_plasma_physics/350_plasma_sheath.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Plasma Sheath \u2014 Debye-scale boundary layer forward model.",
+    "forward_model": "Laplacian phi = -e(n_i - n_e)/eps_0; n_e = n_0 exp(e phi/T_e); n_i from fluid eqs",
+    "world_state_x": "potential phi(z), density n(z), ion velocity u_i(z) in sheath",
+    "observation_y": "Langmuir probe I-V curves",
+    "physical_parameters_theta": [
+      "N_z",
+      "SNR_dB",
+      "boundary_error",
+      "electron_temp_error",
+      "bohm_criterion_error"
+    ]
+  },
+  "G": {
+    "dag": "L.poisson -> L.fluid_ion -> L.boltzmann_electron -> int.spatial",
+    "vertices": [
+      "L.poisson",
+      "L.fluid_ion",
+      "L.boltzmann_electron",
+      "int.spatial"
+    ],
+    "arcs": [
+      "L.poisson -> L.fluid_ion",
+      "L.fluid_ion -> L.boltzmann_electron",
+      "L.boltzmann_electron -> int.spatial"
+    ],
+    "L_DAG": 3.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 240,
+    "condition_number_effective": 12,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Bohm-criterion, Sheath-PIC, Sheath-NN",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "plasma",
+    "sensing_mechanism": "langmuir_probe",
+    "integration_axis": "spatial",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "potential_density_sheath",
+    "primitives": [
+      "L.poisson",
+      "L.fluid_ion",
+      "L.boltzmann_electron",
+      "int.spatial"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "boundary_error",
+    "electron_temp_error",
+    "bohm_criterion_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "sheath",
+      "forward_operator": "sheath_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_z": 128,
+        "SNR_dB": 30,
+        "boundary_error": 0.0,
+        "electron_temp_error": 0.0,
+        "bohm_criterion_error": 0.0
+      },
+      "epsilon_fn_center": "25.0"
+    },
+    "allowed_forward_operators": [
+      "sheath_forward"
+    ],
+    "allowed_problem_classes": [
+      "sheath"
+    ],
+    "allowed_omega_dimensions": [
+      "N_z",
+      "SNR_dB",
+      "boundary_error",
+      "electron_temp_error",
+      "bohm_criterion_error",
+      "boundary_error",
+      "electron_temp_error",
+      "bohm_criterion_error"
+    ],
+    "omega_bounds": {
+      "N_z": [
+        32,
+        4096
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "boundary_error": [
+        0.0,
+        0.2
+      ],
+      "electron_temp_error": [
+        0.0,
+        0.1
+      ],
+      "bohm_criterion_error": [
+        0.0,
+        0.2
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

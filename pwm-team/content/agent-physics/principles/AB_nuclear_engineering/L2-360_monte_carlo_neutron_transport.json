@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L2-360",
+  "layer": "L2",
+  "parent_l1": "L1-360",
+  "title": "Monte Carlo Neutron Transport \u2014 stochastic particle tracking Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "N_histories": [
+        10000.0,
+        100000000000.0
+      ],
+      "N_tallies": [
+        1,
+        10000
+      ],
+      "N_cells": [
+        10,
+        1000000
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "ace_data_error": [
+        0.0,
+        0.05
+      ],
+      "source_biasing_error": [
+        0.0,
+        0.2
+      ],
+      "variance_reduction_error": [
+        0.0,
+        0.3
+      ]
+    },
+    "E": {
+      "forward": "<f> = E_source[ int f(tau) exp(-int_0^tau sigma_t ds) psi(tau) dtau ]; estimated via Monte Carlo",
+      "operator": "mc_neutron_transport_forward_mismatch",
+      "primitive_chain": "L.sample_source -> L.track_particle -> L.score_tally -> int.stochastic",
+      "inverse": "solve forward for declared state variable under Omega bounds"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "tally_rel_uncertainty_percent",
+      "residual_norm"
+    ],
+    "epsilon_fn": "1.0 + 50.0*ace_data_error + 10.0*source_biasing_error + 5.0*variance_reduction_error"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "MCNP6",
+        "method_sig": "I+O",
+        "expected_psnr": 1.8
+      },
+      {
+        "name": "OpenMC",
+        "method_sig": "I+O",
+        "expected_psnr": 1.5
+      },
+      {
+        "name": "Serpent",
+        "method_sig": "I+O",
+        "expected_psnr": 1.7
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_histories": 10000000.0,
+        "N_tallies": 50,
+        "N_cells": 10000,
+        "SNR_dB": 30,
+        "ace_data_error": 0.0,
+        "source_biasing_error": 0.0,
+        "variance_reduction_error": 0.0
+      },
+      "epsilon": 2.0
+    },
+    "tier_bounds": {
+      "N_histories": [
+        10000.0,
+        100000000000.0
+      ],
+      "N_tallies": [
+        1,
+        10000
+      ],
+      "N_cells": [
+        10,
+        1000000
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "ace_data_error": [
+        0.0,
+        0.05
+      ],
+      "source_biasing_error": [
+        0.0,
+        0.2
+      ],
+      "variance_reduction_error": [
+        0.0,
+        0.3
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.48,
+  "d_spec_notes": "Distance computed from problem_class, forward_operator, carrier, integration_axis against neighboring specs; within same principle this spec is mismatch-only canonical and sits at the Omega centroid.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions are consistent across the DAG; forward operator maps state space to measurement space at declared shapes.",
+    "S2": "kappa_eff = 40 within tolerance after regularization; RIP-like or coercivity conditions satisfied over most of Omega.",
+    "S3": "Solvers converge at rate q=0.5 in well-posed regime; mismatch parameters degrade convergence but not divergence.",
+    "S4": "epsilon_fn evaluates across 10+ random Omega samples; hardness rule verified \u2014 no baseline passes everywhere."
+  },
+  "ipfs_cid": null
+}

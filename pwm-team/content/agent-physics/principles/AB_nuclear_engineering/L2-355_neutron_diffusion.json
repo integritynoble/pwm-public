@@ -1,0 +1,169 @@
+{
+  "artifact_id": "L2-355",
+  "layer": "L2",
+  "parent_l1": "L1-355",
+  "title": "Neutron Diffusion \u2014 multi-group diffusion approximation Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        32,
+        512
+      ],
+      "W": [
+        32,
+        512
+      ],
+      "Z": [
+        32,
+        512
+      ],
+      "N_groups": [
+        1,
+        10
+      ],
+      "N_detectors": [
+        8,
+        512
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "D_coeff_error": [
+        0.0,
+        0.05
+      ],
+      "sigma_a_error": [
+        0.0,
+        0.05
+      ],
+      "nu_sigma_f_error": [
+        0.0,
+        0.05
+      ],
+      "extrapol_dist_error": [
+        0.0,
+        0.1
+      ]
+    },
+    "E": {
+      "forward": "-grad D_g grad phi_g + Sigma_r_g phi_g = sum_{g'!=g} Sigma_s_{g'->g} phi_{g'} + chi_g/k * sum_g' nu_sigma_f_{g'} phi_{g'}",
+      "operator": "diffusion_forward_mismatch",
+      "primitive_chain": "L.diffusion -> L.group_coupling -> L.fission_source -> int.energy",
+      "inverse": "solve forward for declared state variable under Omega bounds"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "flux_rel_error_percent",
+      "residual_norm"
+    ],
+    "epsilon_fn": "1.5 + 50.0*D_coeff_error + 50.0*sigma_a_error + 30.0*nu_sigma_f_error"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "FEM-diffusion",
+        "method_sig": "L+O",
+        "expected_psnr": 2.8
+      },
+      {
+        "name": "Nodal-diffusion",
+        "method_sig": "L+O",
+        "expected_psnr": 2.2
+      },
+      {
+        "name": "CITATION",
+        "method_sig": "L+O",
+        "expected_psnr": 2.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 128,
+        "W": 128,
+        "Z": 64,
+        "N_groups": 2,
+        "N_detectors": 64,
+        "SNR_dB": 30,
+        "D_coeff_error": 0.0,
+        "sigma_a_error": 0.0,
+        "nu_sigma_f_error": 0.0,
+        "extrapol_dist_error": 0.0
+      },
+      "epsilon": 3.0
+    },
+    "tier_bounds": {
+      "H": [
+        32,
+        512
+      ],
+      "W": [
+        32,
+        512
+      ],
+      "Z": [
+        32,
+        512
+      ],
+      "N_groups": [
+        1,
+        10
+      ],
+      "N_detectors": [
+        8,
+        512
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "D_coeff_error": [
+        0.0,
+        0.05
+      ],
+      "sigma_a_error": [
+        0.0,
+        0.05
+      ],
+      "nu_sigma_f_error": [
+        0.0,
+        0.05
+      ],
+      "extrapol_dist_error": [
+        0.0,
+        0.1
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.48,
+  "d_spec_notes": "Distance computed from problem_class, forward_operator, carrier, integration_axis against neighboring specs; within same principle this spec is mismatch-only canonical and sits at the Omega centroid.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions are consistent across the DAG; forward operator maps state space to measurement space at declared shapes.",
+    "S2": "kappa_eff = 20 within tolerance after regularization; RIP-like or coercivity conditions satisfied over most of Omega.",
+    "S3": "Solvers converge at rate q=2.0 in well-posed regime; mismatch parameters degrade convergence but not divergence.",
+    "S4": "epsilon_fn evaluates across 10+ random Omega samples; hardness rule verified \u2014 no baseline passes everywhere."
+  },
+  "ipfs_cid": null
+}

@@ -1,0 +1,170 @@
+{
+  "artifact_id": "L1-209",
+  "layer": "L1",
+  "principle_number": "209",
+  "title": "Timoshenko Beam \u2014 shear-deformation thick-beam",
+  "domain": "Structural Mechanics",
+  "sub_domain": "Thick-beam bending with shear",
+  "source_file": "T_structural_mechanics/209_timoshenko_beam.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Timoshenko Beam \u2014 shear-deformation thick-beam forward model.",
+    "forward_model": "d/dx(kGA (dw/dx - phi)) + q = 0; d/dx(EI d phi/dx) + kGA (dw/dx - phi) = 0",
+    "world_state_x": "deflection w(x) + rotation phi(x)",
+    "observation_y": "LVDT + strain-gauge + inclinometer along beam",
+    "physical_parameters_theta": [
+      "N_elements",
+      "N_sensors",
+      "SNR_dB",
+      "k_shear_error",
+      "EI_error",
+      "GA_error",
+      "bc_error"
+    ]
+  },
+  "G": {
+    "dag": "L.shear_stiffness -> L.bending -> L.coupled_w_phi -> int.spatial",
+    "vertices": [
+      "L.shear_stiffness",
+      "L.bending",
+      "L.coupled_w_phi",
+      "int.spatial"
+    ],
+    "arcs": [
+      "L.shear_stiffness -> L.bending",
+      "L.bending -> L.coupled_w_phi",
+      "L.coupled_w_phi -> int.spatial"
+    ],
+    "L_DAG": 3.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 200,
+    "condition_number_effective": 10,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "FEM-Timoshenko, Locking-free-FEM, Thick-beam-NN",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "mechanical",
+    "sensing_mechanism": "strain_gauges_lvdt",
+    "integration_axis": "spatial",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "beam_w_and_phi_1D",
+    "primitives": [
+      "L.shear_stiffness",
+      "L.bending",
+      "L.coupled_w_phi",
+      "int.spatial"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "k_shear_error",
+    "EI_error",
+    "GA_error",
+    "bc_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "timoshenko",
+      "forward_operator": "timoshenko_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_elements": 50,
+        "N_sensors": 16,
+        "SNR_dB": 30,
+        "k_shear_error": 0.0,
+        "EI_error": 0.0,
+        "GA_error": 0.0,
+        "bc_error": 0.0
+      },
+      "epsilon_fn_center": "27.0"
+    },
+    "allowed_forward_operators": [
+      "timoshenko_forward"
+    ],
+    "allowed_problem_classes": [
+      "timoshenko"
+    ],
+    "allowed_omega_dimensions": [
+      "N_elements",
+      "N_sensors",
+      "SNR_dB",
+      "k_shear_error",
+      "EI_error",
+      "GA_error",
+      "bc_error",
+      "k_shear_error",
+      "EI_error",
+      "GA_error",
+      "bc_error"
+    ],
+    "omega_bounds": {
+      "N_elements": [
+        5,
+        10000
+      ],
+      "N_sensors": [
+        2,
+        256
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "k_shear_error": [
+        0.0,
+        0.1
+      ],
+      "EI_error": [
+        0.0,
+        0.1
+      ],
+      "GA_error": [
+        0.0,
+        0.1
+      ],
+      "bc_error": [
+        0.0,
+        0.2
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

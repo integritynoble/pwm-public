@@ -1,0 +1,154 @@
+{
+  "artifact_id": "L1-204",
+  "layer": "L1",
+  "principle_number": "204",
+  "title": "Thermal Contact Resistance \u2014 interface conductance estimation",
+  "domain": "Heat Transfer",
+  "sub_domain": "Interface thermal conductance inversion",
+  "source_file": "S_heat_transfer/204_contact_resistance.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Thermal Contact Resistance \u2014 interface conductance estimation forward model.",
+    "forward_model": "q'' = h_c * (T_1 - T_2) at interface; T_bulk(x) satisfies steady conduction in each body",
+    "world_state_x": "interface thermal conductance h_c(x) distribution",
+    "observation_y": "thermocouples across interface at known applied heat flux",
+    "physical_parameters_theta": [
+      "N_probes",
+      "SNR_dB",
+      "surface_flatness_error",
+      "k_bulk_error",
+      "pressure_error"
+    ]
+  },
+  "G": {
+    "dag": "L.apply_flux -> L.interface_jump -> L.elliptic_solve -> int.spatial",
+    "vertices": [
+      "L.apply_flux",
+      "L.interface_jump",
+      "L.elliptic_solve",
+      "int.spatial"
+    ],
+    "arcs": [
+      "L.apply_flux -> L.interface_jump",
+      "L.interface_jump -> L.elliptic_solve",
+      "L.elliptic_solve -> int.spatial"
+    ],
+    "L_DAG": 2.8,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 200,
+    "condition_number_effective": 10,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "ASTM-D5470, Laser-flash, FEM-inverse",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "thermal",
+    "sensing_mechanism": "thermocouples",
+    "integration_axis": "spatial",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "interface_h_map",
+    "primitives": [
+      "L.apply_flux",
+      "L.interface_jump",
+      "L.elliptic_solve",
+      "int.spatial"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "surface_flatness_error",
+    "k_bulk_error",
+    "pressure_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "contact_R",
+      "forward_operator": "contact_R_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_probes": 8,
+        "SNR_dB": 30,
+        "surface_flatness_error": 0.0,
+        "k_bulk_error": 0.0,
+        "pressure_error": 0.0
+      },
+      "epsilon_fn_center": "24.0"
+    },
+    "allowed_forward_operators": [
+      "contact_R_forward"
+    ],
+    "allowed_problem_classes": [
+      "contact_R"
+    ],
+    "allowed_omega_dimensions": [
+      "N_probes",
+      "SNR_dB",
+      "surface_flatness_error",
+      "k_bulk_error",
+      "pressure_error",
+      "surface_flatness_error",
+      "k_bulk_error",
+      "pressure_error"
+    ],
+    "omega_bounds": {
+      "N_probes": [
+        2,
+        64
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "surface_flatness_error": [
+        0.0,
+        5.0
+      ],
+      "k_bulk_error": [
+        0.0,
+        0.1
+      ],
+      "pressure_error": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

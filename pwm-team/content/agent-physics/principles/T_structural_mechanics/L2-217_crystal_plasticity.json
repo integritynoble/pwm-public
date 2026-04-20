@@ -1,0 +1,151 @@
+{
+  "artifact_id": "L2-217",
+  "layer": "L2",
+  "parent_l1": "L1-217",
+  "title": "Crystal Plasticity \u2014 slip-system resolved plasticity Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "N_DOF": [
+        1000,
+        10000000
+      ],
+      "N_grains": [
+        1,
+        10000
+      ],
+      "N_slipsys": [
+        3,
+        48
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "tau_0_error": [
+        0.0,
+        0.1
+      ],
+      "h_hardening_error": [
+        0.0,
+        0.2
+      ],
+      "texture_error": [
+        0.0,
+        0.3
+      ],
+      "grain_boundary_error": [
+        0.0,
+        0.3
+      ]
+    },
+    "E": {
+      "forward": "dot gamma_alpha = dot gamma_0 * (tau_alpha/g_alpha)^n * sign(tau_alpha); F_p = dot gamma_alpha (s x m)",
+      "operator": "crystal_plasticity_forward_mismatch",
+      "primitive_chain": "L.slip_systems -> L.rate_dependent -> L.grain_assembly -> int.spatial",
+      "inverse": "solve forward for declared state variable under Omega bounds"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR_dB",
+      "residual_norm"
+    ],
+    "epsilon_fn": "13.0 + 0.25*SNR_dB - 25.0*tau_0_error - 10.0*h_hardening_error - 5.0*texture_error - 5.0*grain_boundary_error"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "DAMASK",
+        "method_sig": "I+O",
+        "expected_psnr": 17.0
+      },
+      {
+        "name": "Abaqus-UMAT",
+        "method_sig": "I+O",
+        "expected_psnr": 17.5
+      },
+      {
+        "name": "CP-NN",
+        "method_sig": "L+N",
+        "expected_psnr": 18.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_DOF": 100000,
+        "N_grains": 100,
+        "N_slipsys": 12,
+        "SNR_dB": 25,
+        "tau_0_error": 0.0,
+        "h_hardening_error": 0.0,
+        "texture_error": 0.0,
+        "grain_boundary_error": 0.0
+      },
+      "epsilon": 18.0
+    },
+    "tier_bounds": {
+      "N_DOF": [
+        1000,
+        10000000
+      ],
+      "N_grains": [
+        1,
+        10000
+      ],
+      "N_slipsys": [
+        3,
+        48
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "tau_0_error": [
+        0.0,
+        0.1
+      ],
+      "h_hardening_error": [
+        0.0,
+        0.2
+      ],
+      "texture_error": [
+        0.0,
+        0.3
+      ],
+      "grain_boundary_error": [
+        0.0,
+        0.3
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.48,
+  "d_spec_notes": "Distance computed from problem_class, forward_operator, carrier, integration_axis against neighboring specs; within same principle this spec is mismatch-only canonical and sits at the Omega centroid.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions are consistent across the DAG; forward operator maps state space to measurement space at declared shapes.",
+    "S2": "kappa_eff = 50 within tolerance after regularization; RIP-like or coercivity conditions satisfied over most of Omega.",
+    "S3": "Solvers converge at rate q=1.0 in well-posed regime; mismatch parameters degrade convergence but not divergence.",
+    "S4": "epsilon_fn evaluates across 10+ random Omega samples; hardness rule verified \u2014 no baseline passes everywhere."
+  },
+  "ipfs_cid": null
+}

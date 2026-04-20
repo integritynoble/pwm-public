@@ -1,0 +1,175 @@
+{
+  "artifact_id": "L1-352",
+  "layer": "L1",
+  "principle_number": "352",
+  "title": "Laser-Plasma Interaction \u2014 relativistic electron acceleration",
+  "domain": "Plasma Physics",
+  "sub_domain": "Ultra-intense laser-driven plasma",
+  "source_file": "AA_plasma_physics/352_laser_plasma.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Laser-Plasma Interaction \u2014 relativistic electron acceleration forward model.",
+    "forward_model": "Relativistic PIC / Vlasov + Maxwell; wakefield E_acc ~ mc omega_p / e at a_0 ~ 1",
+    "world_state_x": "accelerated electron beam energy distribution + wakefield structure",
+    "observation_y": "electron spectrometer + optical probe shadowgraphy + betatron X-rays",
+    "physical_parameters_theta": [
+      "N_cells",
+      "N_times",
+      "a_0",
+      "n_e_per_nc",
+      "SNR_dB",
+      "laser_phase_error",
+      "plasma_density_error",
+      "ionization_error"
+    ]
+  },
+  "G": {
+    "dag": "L.laser_pulse -> L.nonlinear_plasma -> L.wakefield -> int.temporal",
+    "vertices": [
+      "L.laser_pulse",
+      "L.nonlinear_plasma",
+      "L.wakefield",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.laser_pulse -> L.nonlinear_plasma",
+      "L.nonlinear_plasma -> L.wakefield",
+      "L.wakefield -> int.temporal"
+    ],
+    "L_DAG": 3.8,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 800,
+    "condition_number_effective": 40,
+    "regime": "Highly nonlinear; electron energies to GeV; strong radiation backreaction."
+  },
+  "C": {
+    "solver_class": "OSIRIS-LWFA, EPOCH, WarpX-LP",
+    "convergence_rate_q": 1.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "plasma",
+    "sensing_mechanism": "electron_spectrometer_shadowgraphy",
+    "integration_axis": "temporal",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "poisson",
+    "solution_space": "electron_beam_properties",
+    "primitives": [
+      "L.laser_pulse",
+      "L.nonlinear_plasma",
+      "L.wakefield",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 10,
+  "difficulty_tier": "hard",
+  "mismatch_parameters": [
+    "laser_phase_error",
+    "plasma_density_error",
+    "ionization_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "laser_plasma",
+      "forward_operator": "laser_plasma_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_cells": 10000000.0,
+        "N_times": 2000,
+        "a_0": 2.0,
+        "n_e_per_nc": 0.01,
+        "SNR_dB": 25,
+        "laser_phase_error": 0.0,
+        "plasma_density_error": 0.0,
+        "ionization_error": 0.0
+      },
+      "epsilon_fn_center": "18.0"
+    },
+    "allowed_forward_operators": [
+      "laser_plasma_forward"
+    ],
+    "allowed_problem_classes": [
+      "laser_plasma"
+    ],
+    "allowed_omega_dimensions": [
+      "N_cells",
+      "N_times",
+      "a_0",
+      "n_e_per_nc",
+      "SNR_dB",
+      "laser_phase_error",
+      "plasma_density_error",
+      "ionization_error",
+      "laser_phase_error",
+      "plasma_density_error",
+      "ionization_error"
+    ],
+    "omega_bounds": {
+      "N_cells": [
+        100000.0,
+        100000000000.0
+      ],
+      "N_times": [
+        100,
+        1000000
+      ],
+      "a_0": [
+        0.01,
+        100
+      ],
+      "n_e_per_nc": [
+        0.0001,
+        10
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "laser_phase_error": [
+        0.0,
+        0.3
+      ],
+      "plasma_density_error": [
+        0.0,
+        0.3
+      ],
+      "ionization_error": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

@@ -1,0 +1,168 @@
+{
+  "artifact_id": "L1-242",
+  "layer": "L1",
+  "principle_number": "242",
+  "title": "Geometric Optics \u2014 ray tracing / eikonal",
+  "domain": "Electromagnetics",
+  "sub_domain": "Eikonal equation / Fermat ray tracing",
+  "source_file": "U_electromagnetics/242_geometric_optics.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Geometric Optics \u2014 ray tracing / eikonal forward model.",
+    "forward_model": "|grad S|^2 = n^2(x); rays x(tau) follow d/dtau(n dx/dtau) = grad n",
+    "world_state_x": "image plane irradiance + aberration polynomials (Zernike)",
+    "observation_y": "spot-diagram / MTF / through-focus camera images",
+    "physical_parameters_theta": [
+      "N_rays",
+      "N_fields",
+      "N_wavelengths",
+      "SNR_dB",
+      "lens_prescription_error",
+      "alignment_error",
+      "wavelength_error"
+    ]
+  },
+  "G": {
+    "dag": "L.eikonal -> L.ray_trace -> L.snell_refract -> int.spatial",
+    "vertices": [
+      "L.eikonal",
+      "L.ray_trace",
+      "L.snell_refract",
+      "int.spatial"
+    ],
+    "arcs": [
+      "L.eikonal -> L.ray_trace",
+      "L.ray_trace -> L.snell_refract",
+      "L.snell_refract -> int.spatial"
+    ],
+    "L_DAG": 2.8,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 160,
+    "condition_number_effective": 8,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Zemax-sequential, Code-V, POV-ray",
+    "convergence_rate_q": 1.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "em",
+    "sensing_mechanism": "camera_image",
+    "integration_axis": "spatial",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "image_plane_irradiance",
+    "primitives": [
+      "L.eikonal",
+      "L.ray_trace",
+      "L.snell_refract",
+      "int.spatial"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "lens_prescription_error",
+    "alignment_error",
+    "wavelength_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "ray_trace",
+      "forward_operator": "ray_trace_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_rays": 10000,
+        "N_fields": 5,
+        "N_wavelengths": 3,
+        "SNR_dB": 30,
+        "lens_prescription_error": 0.0,
+        "alignment_error": 0.0,
+        "wavelength_error": 0.0
+      },
+      "epsilon_fn_center": "26.0"
+    },
+    "allowed_forward_operators": [
+      "ray_trace_forward"
+    ],
+    "allowed_problem_classes": [
+      "ray_trace"
+    ],
+    "allowed_omega_dimensions": [
+      "N_rays",
+      "N_fields",
+      "N_wavelengths",
+      "SNR_dB",
+      "lens_prescription_error",
+      "alignment_error",
+      "wavelength_error",
+      "lens_prescription_error",
+      "alignment_error",
+      "wavelength_error"
+    ],
+    "omega_bounds": {
+      "N_rays": [
+        100,
+        10000000
+      ],
+      "N_fields": [
+        1,
+        50
+      ],
+      "N_wavelengths": [
+        1,
+        50
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "lens_prescription_error": [
+        0.0,
+        0.01
+      ],
+      "alignment_error": [
+        0.0,
+        0.05
+      ],
+      "wavelength_error": [
+        0.0,
+        0.02
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L2-285",
+  "layer": "L2",
+  "parent_l1": "L1-285",
+  "title": "Satellite Gravity Recovery \u2014 GRACE/GRACE-FO mass change Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "N_months": [
+        24,
+        400
+      ],
+      "N_harmonics": [
+        10,
+        300
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "orbit_error": [
+        0.0,
+        0.1
+      ],
+      "striping_error": [
+        0.0,
+        0.3
+      ],
+      "leakage_error": [
+        0.0,
+        0.3
+      ],
+      "glacial_isostatic_bias": [
+        0.0,
+        0.3
+      ]
+    },
+    "E": {
+      "forward": "delta_g / g = (R/r)^n * C_nm * P_nm(cos theta); monthly Stokes coeff from inter-satellite K/Ka ranging",
+      "operator": "grace_forward_mismatch",
+      "primitive_chain": "L.orbit_perturbation -> L.spherical_harm_decomp -> L.destripe -> int.temporal",
+      "inverse": "solve forward for declared state variable under Omega bounds"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "mass_anomaly_rel_error_percent",
+      "residual_norm"
+    ],
+    "epsilon_fn": "1.5 + 10.0*orbit_error + 5.0*striping_error + 5.0*leakage_error + 5.0*glacial_isostatic_bias"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "CSR-mascon",
+        "method_sig": "L+O",
+        "expected_psnr": 3.5
+      },
+      {
+        "name": "JPL-RL06",
+        "method_sig": "L+O",
+        "expected_psnr": 3.2
+      },
+      {
+        "name": "GRACE-NN",
+        "method_sig": "L+N",
+        "expected_psnr": 2.8
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_months": 200,
+        "N_harmonics": 60,
+        "SNR_dB": 30,
+        "orbit_error": 0.0,
+        "striping_error": 0.0,
+        "leakage_error": 0.0,
+        "glacial_isostatic_bias": 0.0
+      },
+      "epsilon": 3.0
+    },
+    "tier_bounds": {
+      "N_months": [
+        24,
+        400
+      ],
+      "N_harmonics": [
+        10,
+        300
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "orbit_error": [
+        0.0,
+        0.1
+      ],
+      "striping_error": [
+        0.0,
+        0.3
+      ],
+      "leakage_error": [
+        0.0,
+        0.3
+      ],
+      "glacial_isostatic_bias": [
+        0.0,
+        0.3
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.48,
+  "d_spec_notes": "Distance computed from problem_class, forward_operator, carrier, integration_axis against neighboring specs; within same principle this spec is mismatch-only canonical and sits at the Omega centroid.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions are consistent across the DAG; forward operator maps state space to measurement space at declared shapes.",
+    "S2": "kappa_eff = 30 within tolerance after regularization; RIP-like or coercivity conditions satisfied over most of Omega.",
+    "S3": "Solvers converge at rate q=1.5 in well-posed regime; mismatch parameters degrade convergence but not divergence.",
+    "S4": "epsilon_fn evaluates across 10+ random Omega samples; hardness rule verified \u2014 no baseline passes everywhere."
+  },
+  "ipfs_cid": null
+}

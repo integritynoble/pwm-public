@@ -1,0 +1,168 @@
+{
+  "artifact_id": "L1-353",
+  "layer": "L1",
+  "principle_number": "353",
+  "title": "Hall MHD \u2014 ion-scale physics in reconnection",
+  "domain": "Plasma Physics",
+  "sub_domain": "Hall term in resistive MHD (ion inertial scale)",
+  "source_file": "AA_plasma_physics/353_hall_mhd.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Hall MHD \u2014 ion-scale physics in reconnection forward model.",
+    "forward_model": "E + u x B = eta J + (J x B - grad p_e)/n*e; Hall term dominates at ion inertial scale",
+    "world_state_x": "ion/electron decoupled reconnection structure",
+    "observation_y": "MMS spacecraft in-situ B, E, plasma moments",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "N_times",
+      "SNR_dB",
+      "hall_closure_error",
+      "electron_inertia_error",
+      "finite_larmor_error"
+    ]
+  },
+  "G": {
+    "dag": "L.hall_term -> L.ion_inertia -> L.electron_MHD -> int.temporal",
+    "vertices": [
+      "L.hall_term",
+      "L.ion_inertia",
+      "L.electron_MHD",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.hall_term -> L.ion_inertia",
+      "L.ion_inertia -> L.electron_MHD",
+      "L.electron_MHD -> int.temporal"
+    ],
+    "L_DAG": 3.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 600,
+    "condition_number_effective": 30,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "F3D, Gkeyll, Hall-Net",
+    "convergence_rate_q": 1.5,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "plasma",
+    "sensing_mechanism": "mms_in_situ_spacecraft",
+    "integration_axis": "temporal",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "hall_reconnection_structure",
+    "primitives": [
+      "L.hall_term",
+      "L.ion_inertia",
+      "L.electron_MHD",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "hall_closure_error",
+    "electron_inertia_error",
+    "finite_larmor_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "hall_mhd",
+      "forward_operator": "hall_mhd_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 256,
+        "W": 256,
+        "N_times": 1000,
+        "SNR_dB": 25,
+        "hall_closure_error": 0.0,
+        "electron_inertia_error": 0.0,
+        "finite_larmor_error": 0.0
+      },
+      "epsilon_fn_center": "20.0"
+    },
+    "allowed_forward_operators": [
+      "hall_mhd_forward"
+    ],
+    "allowed_problem_classes": [
+      "hall_mhd"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "N_times",
+      "SNR_dB",
+      "hall_closure_error",
+      "electron_inertia_error",
+      "finite_larmor_error",
+      "hall_closure_error",
+      "electron_inertia_error",
+      "finite_larmor_error"
+    ],
+    "omega_bounds": {
+      "H": [
+        32,
+        2048
+      ],
+      "W": [
+        32,
+        2048
+      ],
+      "N_times": [
+        50,
+        100000
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "hall_closure_error": [
+        0.0,
+        0.2
+      ],
+      "electron_inertia_error": [
+        0.0,
+        0.2
+      ],
+      "finite_larmor_error": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

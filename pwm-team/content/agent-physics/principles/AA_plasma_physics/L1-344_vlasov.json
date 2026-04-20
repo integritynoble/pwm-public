@@ -1,0 +1,168 @@
+{
+  "artifact_id": "L1-344",
+  "layer": "L1",
+  "principle_number": "344",
+  "title": "Vlasov Equation \u2014 collisionless kinetic plasma",
+  "domain": "Plasma Physics",
+  "sub_domain": "6D phase-space Vlasov-Poisson",
+  "source_file": "AA_plasma_physics/344_vlasov.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Vlasov Equation \u2014 collisionless kinetic plasma forward model.",
+    "forward_model": "df/dt + v.grad_x f + (q/m)(E + v x B).grad_v f = 0; coupled Poisson or Maxwell",
+    "world_state_x": "distribution function f(x, v, t)",
+    "observation_y": "velocity distribution via LIF + bulk moments (density/velocity/pressure)",
+    "physical_parameters_theta": [
+      "N_x",
+      "N_v",
+      "N_times",
+      "SNR_dB",
+      "grid_phase_space_error",
+      "electric_field_error",
+      "initial_f_error"
+    ]
+  },
+  "G": {
+    "dag": "L.distribution_f -> L.advect_phase_space -> L.poisson_coupling -> int.phase_space",
+    "vertices": [
+      "L.distribution_f",
+      "L.advect_phase_space",
+      "L.poisson_coupling",
+      "int.phase_space"
+    ],
+    "arcs": [
+      "L.distribution_f -> L.advect_phase_space",
+      "L.advect_phase_space -> L.poisson_coupling",
+      "L.poisson_coupling -> int.phase_space"
+    ],
+    "L_DAG": 3.8,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 1200,
+    "condition_number_effective": 60,
+    "regime": "6D phase space + time = enormous compute requirements; filamentation common."
+  },
+  "C": {
+    "solver_class": "Semi-Lagrangian, PIC-Vlasov, Vlasov-Net",
+    "convergence_rate_q": 1.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "plasma",
+    "sensing_mechanism": "faraday_cup_lif",
+    "integration_axis": "phase_space",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "distribution_function_6D",
+    "primitives": [
+      "L.distribution_f",
+      "L.advect_phase_space",
+      "L.poisson_coupling",
+      "int.phase_space"
+    ]
+  },
+  "difficulty_delta": 10,
+  "difficulty_tier": "hard",
+  "mismatch_parameters": [
+    "grid_phase_space_error",
+    "electric_field_error",
+    "initial_f_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "vlasov",
+      "forward_operator": "vlasov_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_x": 64,
+        "N_v": 64,
+        "N_times": 500,
+        "SNR_dB": 25,
+        "grid_phase_space_error": 0.0,
+        "electric_field_error": 0.0,
+        "initial_f_error": 0.0
+      },
+      "epsilon_fn_center": "17.0"
+    },
+    "allowed_forward_operators": [
+      "vlasov_forward"
+    ],
+    "allowed_problem_classes": [
+      "vlasov"
+    ],
+    "allowed_omega_dimensions": [
+      "N_x",
+      "N_v",
+      "N_times",
+      "SNR_dB",
+      "grid_phase_space_error",
+      "electric_field_error",
+      "initial_f_error",
+      "grid_phase_space_error",
+      "electric_field_error",
+      "initial_f_error"
+    ],
+    "omega_bounds": {
+      "N_x": [
+        16,
+        2048
+      ],
+      "N_v": [
+        16,
+        2048
+      ],
+      "N_times": [
+        50,
+        100000
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "grid_phase_space_error": [
+        0.0,
+        0.2
+      ],
+      "electric_field_error": [
+        0.0,
+        0.2
+      ],
+      "initial_f_error": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

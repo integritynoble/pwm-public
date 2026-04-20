@@ -1,0 +1,151 @@
+{
+  "artifact_id": "L2-252",
+  "layer": "L2",
+  "parent_l1": "L1-252",
+  "title": "Inverse Synthetic Aperture Radar (ISAR) \u2014 rotating-target imaging Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "N_pulses": [
+        32,
+        4096
+      ],
+      "N_range_bins": [
+        64,
+        4096
+      ],
+      "PRF_Hz": [
+        10,
+        100000
+      ],
+      "SNR_dB": [
+        -10,
+        40
+      ],
+      "motion_error": [
+        0.0,
+        0.3
+      ],
+      "phase_error": [
+        0.0,
+        0.2
+      ],
+      "doppler_ambiguity_error": [
+        0.0,
+        0.3
+      ],
+      "cross_range_aberration": [
+        0.0,
+        0.3
+      ]
+    },
+    "E": {
+      "forward": "s(tau, f_D) = sum_k sigma_k * exp(-j*2*pi*f_D*t_k) * p(tau - 2*R_k/c)",
+      "operator": "isar_forward_mismatch",
+      "primitive_chain": "L.pulse_doppler -> L.motion_compensate -> L.range_doppler_map -> int.temporal",
+      "inverse": "solve forward for declared state variable under Omega bounds"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR_dB",
+      "residual_norm"
+    ],
+    "epsilon_fn": "15.0 + 0.25*SNR_dB - 10.0*motion_error - 15.0*phase_error - 8.0*doppler_ambiguity_error"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Keystone",
+        "method_sig": "L+O",
+        "expected_psnr": 20.5
+      },
+      {
+        "name": "PGA",
+        "method_sig": "L+O",
+        "expected_psnr": 22.0
+      },
+      {
+        "name": "CS-ISAR",
+        "method_sig": "L+O",
+        "expected_psnr": 22.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_pulses": 256,
+        "N_range_bins": 256,
+        "PRF_Hz": 1000,
+        "SNR_dB": 20,
+        "motion_error": 0.0,
+        "phase_error": 0.0,
+        "doppler_ambiguity_error": 0.0,
+        "cross_range_aberration": 0.0
+      },
+      "epsilon": 22.0
+    },
+    "tier_bounds": {
+      "N_pulses": [
+        32,
+        4096
+      ],
+      "N_range_bins": [
+        64,
+        4096
+      ],
+      "PRF_Hz": [
+        10,
+        100000
+      ],
+      "SNR_dB": [
+        -10,
+        40
+      ],
+      "motion_error": [
+        0.0,
+        0.3
+      ],
+      "phase_error": [
+        0.0,
+        0.2
+      ],
+      "doppler_ambiguity_error": [
+        0.0,
+        0.3
+      ],
+      "cross_range_aberration": [
+        0.0,
+        0.3
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.48,
+  "d_spec_notes": "Distance computed from problem_class, forward_operator, carrier, integration_axis against neighboring specs; within same principle this spec is mismatch-only canonical and sits at the Omega centroid.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions are consistent across the DAG; forward operator maps state space to measurement space at declared shapes.",
+    "S2": "kappa_eff = 30 within tolerance after regularization; RIP-like or coercivity conditions satisfied over most of Omega.",
+    "S3": "Solvers converge at rate q=1.5 in well-posed regime; mismatch parameters degrade convergence but not divergence.",
+    "S4": "epsilon_fn evaluates across 10+ random Omega samples; hardness rule verified \u2014 no baseline passes everywhere."
+  },
+  "ipfs_cid": null
+}

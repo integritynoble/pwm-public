@@ -1,0 +1,160 @@
+{
+  "artifact_id": "L2-283",
+  "layer": "L2",
+  "parent_l1": "L1-283",
+  "title": "Electrical Resistivity Tomography (ERT) \u2014 near-surface Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        16,
+        1024
+      ],
+      "W": [
+        16,
+        1024
+      ],
+      "Z": [
+        4,
+        256
+      ],
+      "N_electrodes": [
+        4,
+        1024
+      ],
+      "N_quadrupoles": [
+        10,
+        100000
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "electrode_contact_error": [
+        0.0,
+        0.2
+      ],
+      "topography_error": [
+        0.0,
+        0.2
+      ],
+      "anisotropy_unmodelled": [
+        0.0,
+        0.3
+      ]
+    },
+    "E": {
+      "forward": "div(sigma grad phi) = -I delta(x_src); measure V at remote electrodes",
+      "operator": "ert_forward_mismatch",
+      "primitive_chain": "L.current_injection -> L.poisson_steady -> L.regularize -> int.spatial",
+      "inverse": "solve forward for declared state variable under Omega bounds"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "res_rel_error_percent",
+      "residual_norm"
+    ],
+    "epsilon_fn": "3.0 + 10.0*electrode_contact_error + 10.0*topography_error + 5.0*anisotropy_unmodelled"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "ResIPy",
+        "method_sig": "I+O",
+        "expected_psnr": 6.5
+      },
+      {
+        "name": "BERT",
+        "method_sig": "I+O",
+        "expected_psnr": 6.0
+      },
+      {
+        "name": "ERT-Net",
+        "method_sig": "L+N",
+        "expected_psnr": 5.0
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 128,
+        "W": 128,
+        "Z": 32,
+        "N_electrodes": 64,
+        "N_quadrupoles": 1000,
+        "SNR_dB": 30,
+        "electrode_contact_error": 0.0,
+        "topography_error": 0.0,
+        "anisotropy_unmodelled": 0.0
+      },
+      "epsilon": 6.0
+    },
+    "tier_bounds": {
+      "H": [
+        16,
+        1024
+      ],
+      "W": [
+        16,
+        1024
+      ],
+      "Z": [
+        4,
+        256
+      ],
+      "N_electrodes": [
+        4,
+        1024
+      ],
+      "N_quadrupoles": [
+        10,
+        100000
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "electrode_contact_error": [
+        0.0,
+        0.2
+      ],
+      "topography_error": [
+        0.0,
+        0.2
+      ],
+      "anisotropy_unmodelled": [
+        0.0,
+        0.3
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.48,
+  "d_spec_notes": "Distance computed from problem_class, forward_operator, carrier, integration_axis against neighboring specs; within same principle this spec is mismatch-only canonical and sits at the Omega centroid.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions are consistent across the DAG; forward operator maps state space to measurement space at declared shapes.",
+    "S2": "kappa_eff = 25 within tolerance after regularization; RIP-like or coercivity conditions satisfied over most of Omega.",
+    "S3": "Solvers converge at rate q=1.5 in well-posed regime; mismatch parameters degrade convergence but not divergence.",
+    "S4": "epsilon_fn evaluates across 10+ random Omega samples; hardness rule verified \u2014 no baseline passes everywhere."
+  },
+  "ipfs_cid": null
+}

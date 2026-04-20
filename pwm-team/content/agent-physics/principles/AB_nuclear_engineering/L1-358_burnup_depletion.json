@@ -1,0 +1,177 @@
+{
+  "artifact_id": "L1-358",
+  "layer": "L1",
+  "principle_number": "358",
+  "title": "Burnup / Depletion \u2014 fuel nuclide evolution",
+  "domain": "Nuclear Engineering",
+  "sub_domain": "Bateman nuclide transmutation + flux coupling",
+  "source_file": "AB_nuclear_engineering/358_burnup_depletion.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Burnup / Depletion \u2014 fuel nuclide evolution forward model.",
+    "forward_model": "dN_i/dt = -lambda_i N_i - sigma_a_i phi N_i + sum_j (lambda_{j->i} + sigma_c,{j->i} phi) N_j",
+    "world_state_x": "nuclide inventories N_i(t) in fuel bundle over burnup history",
+    "observation_y": "destructive/non-destructive spent fuel assay (Cs/Nd/Pu isotopic ratios)",
+    "physical_parameters_theta": [
+      "N_nuclides",
+      "N_timesteps",
+      "burnup_GWd_per_tU",
+      "SNR_dB",
+      "xs_microscopic_error",
+      "decay_const_error",
+      "flux_history_error",
+      "fy_error"
+    ]
+  },
+  "G": {
+    "dag": "L.bateman -> L.cross_section_update -> L.flux_coupling -> int.temporal",
+    "vertices": [
+      "L.bateman",
+      "L.cross_section_update",
+      "L.flux_coupling",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.bateman -> L.cross_section_update",
+      "L.cross_section_update -> L.flux_coupling",
+      "L.flux_coupling -> int.temporal"
+    ],
+    "L_DAG": 3.3,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 400,
+    "condition_number_effective": 20,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "ORIGEN, SCALE-TRITON, Serpent-depletion",
+    "convergence_rate_q": 1.5,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "neutron",
+    "sensing_mechanism": "spent_fuel_assay",
+    "integration_axis": "temporal",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "nuclide_inventory_time",
+    "primitives": [
+      "L.bateman",
+      "L.cross_section_update",
+      "L.flux_coupling",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "xs_microscopic_error",
+    "decay_const_error",
+    "flux_history_error",
+    "fy_error"
+  ],
+  "error_metric": "isotope_rel_error_percent",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "bateman_depletion",
+      "forward_operator": "bateman_depletion_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_nuclides": 1500,
+        "N_timesteps": 50,
+        "burnup_GWd_per_tU": 40,
+        "SNR_dB": 30,
+        "xs_microscopic_error": 0.0,
+        "decay_const_error": 0.0,
+        "flux_history_error": 0.0,
+        "fy_error": 0.0
+      },
+      "epsilon_fn_center": "3.0"
+    },
+    "allowed_forward_operators": [
+      "bateman_depletion_forward"
+    ],
+    "allowed_problem_classes": [
+      "bateman_depletion"
+    ],
+    "allowed_omega_dimensions": [
+      "N_nuclides",
+      "N_timesteps",
+      "burnup_GWd_per_tU",
+      "SNR_dB",
+      "xs_microscopic_error",
+      "decay_const_error",
+      "flux_history_error",
+      "fy_error",
+      "xs_microscopic_error",
+      "decay_const_error",
+      "flux_history_error",
+      "fy_error"
+    ],
+    "omega_bounds": {
+      "N_nuclides": [
+        10,
+        3600
+      ],
+      "N_timesteps": [
+        5,
+        1000
+      ],
+      "burnup_GWd_per_tU": [
+        1,
+        120
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "xs_microscopic_error": [
+        0.0,
+        0.05
+      ],
+      "decay_const_error": [
+        0.0,
+        0.02
+      ],
+      "flux_history_error": [
+        0.0,
+        0.1
+      ],
+      "fy_error": [
+        0.0,
+        0.1
+      ]
+    },
+    "epsilon_bounds": {
+      "isotope_rel_error": [
+        0.5,
+        30.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

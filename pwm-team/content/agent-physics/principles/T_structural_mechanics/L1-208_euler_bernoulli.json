@@ -1,0 +1,161 @@
+{
+  "artifact_id": "L1-208",
+  "layer": "L1",
+  "principle_number": "208",
+  "title": "Euler-Bernoulli Beam \u2014 thin-beam bending",
+  "domain": "Structural Mechanics",
+  "sub_domain": "Classical thin-beam bending PDE",
+  "source_file": "T_structural_mechanics/208_euler_bernoulli.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Euler-Bernoulli Beam \u2014 thin-beam bending forward model.",
+    "forward_model": "EI * d^4 w/dx^4 = q(x); with BCs at x=0,L",
+    "world_state_x": "beam deflection w(x) under distributed load q(x)",
+    "observation_y": "LVDT + strain-gauge measurements along beam",
+    "physical_parameters_theta": [
+      "N_elements",
+      "N_sensors",
+      "SNR_dB",
+      "EI_error",
+      "bc_error",
+      "load_error"
+    ]
+  },
+  "G": {
+    "dag": "L.bending_stiffness -> L.4th_order_pde -> L.bc -> int.spatial",
+    "vertices": [
+      "L.bending_stiffness",
+      "L.4th_order_pde",
+      "L.bc",
+      "int.spatial"
+    ],
+    "arcs": [
+      "L.bending_stiffness -> L.4th_order_pde",
+      "L.4th_order_pde -> L.bc",
+      "L.bc -> int.spatial"
+    ],
+    "L_DAG": 2.8,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 160,
+    "condition_number_effective": 8,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "FEM-1D-beam, Green-function, Beam-NN",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "mechanical",
+    "sensing_mechanism": "strain_gauges_lvdt",
+    "integration_axis": "spatial",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "beam_deflection_1D",
+    "primitives": [
+      "L.bending_stiffness",
+      "L.4th_order_pde",
+      "L.bc",
+      "int.spatial"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "EI_error",
+    "bc_error",
+    "load_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "euler_bernoulli",
+      "forward_operator": "euler_bernoulli_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_elements": 50,
+        "N_sensors": 16,
+        "SNR_dB": 30,
+        "EI_error": 0.0,
+        "bc_error": 0.0,
+        "load_error": 0.0
+      },
+      "epsilon_fn_center": "28.0"
+    },
+    "allowed_forward_operators": [
+      "euler_bernoulli_forward"
+    ],
+    "allowed_problem_classes": [
+      "euler_bernoulli"
+    ],
+    "allowed_omega_dimensions": [
+      "N_elements",
+      "N_sensors",
+      "SNR_dB",
+      "EI_error",
+      "bc_error",
+      "load_error",
+      "EI_error",
+      "bc_error",
+      "load_error"
+    ],
+    "omega_bounds": {
+      "N_elements": [
+        5,
+        10000
+      ],
+      "N_sensors": [
+        2,
+        256
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "EI_error": [
+        0.0,
+        0.1
+      ],
+      "bc_error": [
+        0.0,
+        0.2
+      ],
+      "load_error": [
+        0.0,
+        0.1
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

@@ -1,0 +1,248 @@
+{
+  "artifact_id": "L3-186",
+  "layer": "L3",
+  "parent_l2": "L2-186",
+  "parent_l1": "L1-186",
+  "title": "SPH \u2014 smoothed particle hydrodynamics Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "canonical Fluid Dynamics dataset for this principle",
+    "secondary": "simulated forward model at declared Omega",
+    "construction_method": "parametric forward synthesis + declared noise model",
+    "num_dev_instances_per_tier": 20,
+    "holdout_instances_per_tier": 10
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "N_particles": 1000000.0,
+        "N_times": 2000,
+        "SNR_dB": 30.0,
+        "kernel_bandwidth_error": 0.0,
+        "pressure_instability": 0.0,
+        "boundary_error": 0.0
+      },
+      "epsilon": 20.0,
+      "d_ibench": 0.14,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "DualSPHysics",
+          "metric": "PSNR_dB",
+          "score": 19.0,
+          "Q": 0.88
+        },
+        {
+          "name": "LIGGGHTS-SPH",
+          "metric": "PSNR_dB",
+          "score": 19.5,
+          "Q": 0.88
+        },
+        {
+          "name": "SPH-Net",
+          "metric": "PSNR_dB",
+          "score": 20.5,
+          "Q": 0.88
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "N_particles": 1000000.0,
+        "N_times": 2000,
+        "SNR_dB": 25.0,
+        "kernel_bandwidth_error": 0.075,
+        "pressure_instability": 0.075,
+        "boundary_error": 0.075
+      },
+      "epsilon": 17.0,
+      "d_ibench": 0.28,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "DualSPHysics",
+          "metric": "PSNR_dB",
+          "score": 16.5,
+          "Q": 0.68
+        },
+        {
+          "name": "LIGGGHTS-SPH",
+          "metric": "PSNR_dB",
+          "score": 17.0,
+          "Q": 0.68
+        },
+        {
+          "name": "SPH-Net",
+          "metric": "PSNR_dB",
+          "score": 18.0,
+          "Q": 0.68
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "N_particles": 1000000.0,
+        "N_times": 2000,
+        "SNR_dB": 10.0,
+        "kernel_bandwidth_error": 0.165,
+        "pressure_instability": 0.165,
+        "boundary_error": 0.165
+      },
+      "epsilon": 14.0,
+      "d_ibench": 0.48,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "DualSPHysics",
+          "metric": "PSNR_dB",
+          "score": 14.0,
+          "Q": 0.48
+        },
+        {
+          "name": "LIGGGHTS-SPH",
+          "metric": "PSNR_dB",
+          "score": 14.5,
+          "Q": 0.48
+        },
+        {
+          "name": "SPH-Net",
+          "metric": "PSNR_dB",
+          "score": 15.5,
+          "Q": 0.48
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "N_particles": 1000000.0,
+        "N_times": 2000,
+        "SNR_dB": -10,
+        "kernel_bandwidth_error": 0.3,
+        "pressure_instability": 0.3,
+        "boundary_error": 0.3
+      },
+      "epsilon": 11.0,
+      "d_ibench": 0.72,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "DualSPHysics",
+          "metric": "PSNR_dB",
+          "score": 11.5,
+          "Q": 0.28
+        },
+        {
+          "name": "LIGGGHTS-SPH",
+          "metric": "PSNR_dB",
+          "score": 12.0,
+          "Q": 0.28
+        },
+        {
+          "name": "SPH-Net",
+          "metric": "PSNR_dB",
+          "score": 13.0,
+          "Q": 0.28
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "full parametric sweep over ['N_particles', 'N_times', 'SNR_dB', 'kernel_bandwidth_error', 'pressure_instability']",
+      "construction_method": "uniform Omega sampling within declared bounds",
+      "num_dev_instances": 200,
+      "num_holdout_instances": 100
+    },
+    "tracks": {
+      "track_A_stratified_worst_case": {
+        "samples_per_stratum": 5,
+        "pass_condition": "min_i(metric_i) beats epsilon_fn at Omega_centroid across all strata"
+      },
+      "track_B_uniform_median": {
+        "num_samples": 50,
+        "pass_condition": "median metric beats epsilon_fn at Omega_median"
+      },
+      "track_C_mismatch_degradation": {
+        "sweep_points": [
+          0.0,
+          0.25,
+          0.5,
+          0.75,
+          1.0
+        ],
+        "scenes_per_point": 10,
+        "degradation_score": "mean Q_norm across sweep"
+      }
+    },
+    "baselines": [
+      {
+        "name": "DualSPHysics",
+        "overall_Q": 0.7
+      },
+      {
+        "name": "LIGGGHTS-SPH",
+        "overall_Q": 0.6
+      },
+      {
+        "name": "SPH-Net",
+        "overall_Q": 0.5
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind Omega corner under max mismatch.",
+  "anti_overfitting_mechanisms": {
+    "M1_random_instantiation": "generator/instantiate.py uses G(SHA256(h_sub || k)) seeded per submission.",
+    "M2_convergence_scoring": "convergence/check_convergence.py verifies declared q-rate across mesh refinements.",
+    "M3_worst_case_eval": "scoring/worst_case.py returns min score over 20 fixed dev scenes per tier.",
+    "M4_community_adversarial": "adversarial submissions eligible under anti-overfitting bounty.",
+    "M5_method_sig_diversity": "baselines span classical (L+O), learned (L+N), and iterative (I+O) method signatures.",
+    "M6_gate_checks": "S1-S4 gate checks embedded with thresholds.yaml."
+  },
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

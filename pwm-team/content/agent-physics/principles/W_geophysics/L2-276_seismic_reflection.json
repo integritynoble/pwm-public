@@ -1,0 +1,169 @@
+{
+  "artifact_id": "L2-276",
+  "layer": "L2",
+  "parent_l1": "L1-276",
+  "title": "Seismic Reflection \u2014 post-stack migration and imaging Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        128,
+        8192
+      ],
+      "W": [
+        128,
+        8192
+      ],
+      "Z": [
+        64,
+        4096
+      ],
+      "N_shots": [
+        16,
+        100000
+      ],
+      "N_receivers": [
+        64,
+        100000
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "velocity_model_error": [
+        0.0,
+        0.2
+      ],
+      "source_pos_error": [
+        0.0,
+        0.05
+      ],
+      "topography_error": [
+        0.0,
+        0.1
+      ],
+      "dipole_sensitivity_error": [
+        0.0,
+        0.2
+      ]
+    },
+    "E": {
+      "forward": "image(x) = int_time S(x,t) * R(x,t) dt where S=forward, R=adjoint (RTM imaging condition)",
+      "operator": "reflection_migration_forward_mismatch",
+      "primitive_chain": "L.source_emit -> L.wave_propagate -> L.reverse_time_migrate -> int.spatial",
+      "inverse": "solve forward for declared state variable under Omega bounds"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR_dB",
+      "residual_norm"
+    ],
+    "epsilon_fn": "16.0 + 0.25*SNR_dB - 20.0*velocity_model_error - 10.0*source_pos_error - 12.0*topography_error"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Kirchhoff-mig",
+        "method_sig": "L+O",
+        "expected_psnr": 20.5
+      },
+      {
+        "name": "RTM",
+        "method_sig": "I+O",
+        "expected_psnr": 22.0
+      },
+      {
+        "name": "LSM",
+        "method_sig": "I+O",
+        "expected_psnr": 22.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 1024,
+        "W": 1024,
+        "Z": 512,
+        "N_shots": 256,
+        "N_receivers": 512,
+        "SNR_dB": 30,
+        "velocity_model_error": 0.0,
+        "source_pos_error": 0.0,
+        "topography_error": 0.0,
+        "dipole_sensitivity_error": 0.0
+      },
+      "epsilon": 22.0
+    },
+    "tier_bounds": {
+      "H": [
+        128,
+        8192
+      ],
+      "W": [
+        128,
+        8192
+      ],
+      "Z": [
+        64,
+        4096
+      ],
+      "N_shots": [
+        16,
+        100000
+      ],
+      "N_receivers": [
+        64,
+        100000
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "velocity_model_error": [
+        0.0,
+        0.2
+      ],
+      "source_pos_error": [
+        0.0,
+        0.05
+      ],
+      "topography_error": [
+        0.0,
+        0.1
+      ],
+      "dipole_sensitivity_error": [
+        0.0,
+        0.2
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.48,
+  "d_spec_notes": "Distance computed from problem_class, forward_operator, carrier, integration_axis against neighboring specs; within same principle this spec is mismatch-only canonical and sits at the Omega centroid.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions are consistent across the DAG; forward operator maps state space to measurement space at declared shapes.",
+    "S2": "kappa_eff = 35 within tolerance after regularization; RIP-like or coercivity conditions satisfied over most of Omega.",
+    "S3": "Solvers converge at rate q=1.5 in well-posed regime; mismatch parameters degrade convergence but not divergence.",
+    "S4": "epsilon_fn evaluates across 10+ random Omega samples; hardness rule verified \u2014 no baseline passes everywhere."
+  },
+  "ipfs_cid": null
+}

@@ -1,0 +1,184 @@
+{
+  "artifact_id": "L1-270",
+  "layer": "L1",
+  "principle_number": "270",
+  "title": "Aeroacoustics \u2014 Lighthill analogy (jet/airframe noise)",
+  "domain": "Acoustics",
+  "sub_domain": "Lighthill source-term aeroacoustic prediction",
+  "source_file": "V_acoustics/270_aeroacoustics_lighthill.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Aeroacoustics \u2014 Lighthill analogy (jet/airframe noise) forward model.",
+    "forward_model": "[1/c0^2 d^2/dt^2 - Laplacian] c0^2 rho' = d^2 T_ij/dx_i dx_j; T_ij = rho u_i u_j + (p' - c0^2 rho')delta_ij - tau_ij",
+    "world_state_x": "far-field pressure spectrum and SPL map from turbulent source region",
+    "observation_y": "far-field microphone array time/frequency data",
+    "physical_parameters_theta": [
+      "N_les",
+      "N_mic",
+      "M_jet",
+      "freq_Hz_max",
+      "SNR_dB",
+      "les_resolution_error",
+      "source_region_trunc_error",
+      "refraction_error",
+      "observer_pos_error"
+    ]
+  },
+  "G": {
+    "dag": "L.les_source -> L.lighthill_integral -> L.green_function -> int.temporal",
+    "vertices": [
+      "L.les_source",
+      "L.lighthill_integral",
+      "L.green_function",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.les_source -> L.lighthill_integral",
+      "L.lighthill_integral -> L.green_function",
+      "L.green_function -> int.temporal"
+    ],
+    "L_DAG": 3.8,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 1600,
+    "condition_number_effective": 80,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "LES-Lighthill, FWH, ML-aero",
+    "convergence_rate_q": 1.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "acoustic",
+    "sensing_mechanism": "far_field_mic",
+    "integration_axis": "temporal",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "far_field_spl_spectrum",
+    "primitives": [
+      "L.les_source",
+      "L.lighthill_integral",
+      "L.green_function",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 10,
+  "difficulty_tier": "hard",
+  "mismatch_parameters": [
+    "les_resolution_error",
+    "source_region_trunc_error",
+    "refraction_error",
+    "observer_pos_error"
+  ],
+  "error_metric": "SPL_error_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "lighthill_aeroacoustic",
+      "forward_operator": "lighthill_aeroacoustic_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_les": 10000000,
+        "N_mic": 32,
+        "M_jet": 0.8,
+        "freq_Hz_max": 10000,
+        "SNR_dB": 30,
+        "les_resolution_error": 0.05,
+        "source_region_trunc_error": 0.0,
+        "refraction_error": 0.0,
+        "observer_pos_error": 0.0
+      },
+      "epsilon_fn_center": "3.0"
+    },
+    "allowed_forward_operators": [
+      "lighthill_aeroacoustic_forward"
+    ],
+    "allowed_problem_classes": [
+      "lighthill_aeroacoustic"
+    ],
+    "allowed_omega_dimensions": [
+      "N_les",
+      "N_mic",
+      "M_jet",
+      "freq_Hz_max",
+      "SNR_dB",
+      "les_resolution_error",
+      "source_region_trunc_error",
+      "refraction_error",
+      "observer_pos_error",
+      "les_resolution_error",
+      "source_region_trunc_error",
+      "refraction_error",
+      "observer_pos_error"
+    ],
+    "omega_bounds": {
+      "N_les": [
+        1000000,
+        10000000000
+      ],
+      "N_mic": [
+        4,
+        256
+      ],
+      "M_jet": [
+        0.1,
+        2.0
+      ],
+      "freq_Hz_max": [
+        100,
+        50000
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "les_resolution_error": [
+        0.01,
+        0.3
+      ],
+      "source_region_trunc_error": [
+        0.0,
+        0.3
+      ],
+      "refraction_error": [
+        0.0,
+        0.2
+      ],
+      "observer_pos_error": [
+        0.0,
+        0.05
+      ]
+    },
+    "epsilon_bounds": {
+      "SPL_dB": [
+        0.5,
+        30.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

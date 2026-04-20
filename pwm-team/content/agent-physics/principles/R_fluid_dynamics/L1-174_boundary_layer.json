@@ -1,0 +1,161 @@
+{
+  "artifact_id": "L1-174",
+  "layer": "L1",
+  "principle_number": "174",
+  "title": "Boundary Layer \u2014 Prandtl / Blasius near-wall flow",
+  "domain": "Fluid Dynamics",
+  "sub_domain": "Laminar and turbulent boundary layers",
+  "source_file": "R_fluid_dynamics/174_boundary_layer.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Boundary Layer \u2014 Prandtl / Blasius near-wall flow forward model.",
+    "forward_model": "u du/dx + v du/dy = -1/rho dp/dx + nu d^2 u/dy^2; continuity; outer matching",
+    "world_state_x": "velocity profile u(y) + wall shear tau_w + thickness delta(x)",
+    "observation_y": "hot-wire + laser-Doppler + wall shear",
+    "physical_parameters_theta": [
+      "N_y",
+      "Re_x",
+      "SNR_dB",
+      "Re_x_error",
+      "pressure_gradient_error",
+      "roughness_error"
+    ]
+  },
+  "G": {
+    "dag": "L.prandtl_bl -> L.similarity -> L.transition -> int.spatial",
+    "vertices": [
+      "L.prandtl_bl",
+      "L.similarity",
+      "L.transition",
+      "int.spatial"
+    ],
+    "arcs": [
+      "L.prandtl_bl -> L.similarity",
+      "L.similarity -> L.transition",
+      "L.transition -> int.spatial"
+    ],
+    "L_DAG": 3.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 300,
+    "condition_number_effective": 15,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Blasius, Falkner-Skan, BL-NN",
+    "convergence_rate_q": 1.5,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "mechanical",
+    "sensing_mechanism": "hot_wire_piv",
+    "integration_axis": "spatial",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "velocity_profile_near_wall",
+    "primitives": [
+      "L.prandtl_bl",
+      "L.similarity",
+      "L.transition",
+      "int.spatial"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "Re_x_error",
+    "pressure_gradient_error",
+    "roughness_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "boundary_layer",
+      "forward_operator": "boundary_layer_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_y": 200,
+        "Re_x": 1000000.0,
+        "SNR_dB": 30,
+        "Re_x_error": 0.0,
+        "pressure_gradient_error": 0.0,
+        "roughness_error": 0.0
+      },
+      "epsilon_fn_center": "24.0"
+    },
+    "allowed_forward_operators": [
+      "boundary_layer_forward"
+    ],
+    "allowed_problem_classes": [
+      "boundary_layer"
+    ],
+    "allowed_omega_dimensions": [
+      "N_y",
+      "Re_x",
+      "SNR_dB",
+      "Re_x_error",
+      "pressure_gradient_error",
+      "roughness_error",
+      "Re_x_error",
+      "pressure_gradient_error",
+      "roughness_error"
+    ],
+    "omega_bounds": {
+      "N_y": [
+        32,
+        10000
+      ],
+      "Re_x": [
+        100.0,
+        10000000000.0
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "Re_x_error": [
+        0.0,
+        0.1
+      ],
+      "pressure_gradient_error": [
+        0.0,
+        0.3
+      ],
+      "roughness_error": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

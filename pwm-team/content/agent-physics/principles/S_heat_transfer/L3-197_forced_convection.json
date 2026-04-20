@@ -1,0 +1,260 @@
+{
+  "artifact_id": "L3-197",
+  "layer": "L3",
+  "parent_l2": "L2-197",
+  "parent_l1": "L1-197",
+  "title": "Forced Convection \u2014 conjugate heat transfer inversion Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "canonical Heat Transfer dataset for this principle",
+    "secondary": "simulated forward model at declared Omega",
+    "construction_method": "parametric forward synthesis + declared noise model",
+    "num_dev_instances_per_tier": 20,
+    "holdout_instances_per_tier": 10
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "H": 256,
+        "W": 256,
+        "Re": 50000,
+        "Pr": 0.7,
+        "SNR_dB": 30.0,
+        "Re_error": 0.0,
+        "Pr_error": 0.0,
+        "wall_emissivity_error": 0.0,
+        "freestream_T_error": 0.0
+      },
+      "epsilon": 22.0,
+      "d_ibench": 0.14,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "Gnielinski",
+          "metric": "PSNR_dB",
+          "score": 20.0,
+          "Q": 0.88
+        },
+        {
+          "name": "CFD-RANS",
+          "metric": "PSNR_dB",
+          "score": 22.5,
+          "Q": 0.88
+        },
+        {
+          "name": "Conv-NN",
+          "metric": "PSNR_dB",
+          "score": 23.5,
+          "Q": 0.88
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "H": 256,
+        "W": 256,
+        "Re": 50000,
+        "Pr": 0.7,
+        "SNR_dB": 25.0,
+        "Re_error": 0.025,
+        "Pr_error": 0.025,
+        "wall_emissivity_error": 0.075,
+        "freestream_T_error": 1.25
+      },
+      "epsilon": 18.7,
+      "d_ibench": 0.28,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "Gnielinski",
+          "metric": "PSNR_dB",
+          "score": 17.5,
+          "Q": 0.68
+        },
+        {
+          "name": "CFD-RANS",
+          "metric": "PSNR_dB",
+          "score": 20.0,
+          "Q": 0.68
+        },
+        {
+          "name": "Conv-NN",
+          "metric": "PSNR_dB",
+          "score": 21.0,
+          "Q": 0.68
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "H": 396,
+        "W": 396,
+        "Re": 50000,
+        "Pr": 0.7,
+        "SNR_dB": 10.0,
+        "Re_error": 0.05500000000000001,
+        "Pr_error": 0.05500000000000001,
+        "wall_emissivity_error": 0.165,
+        "freestream_T_error": 2.75
+      },
+      "epsilon": 15.4,
+      "d_ibench": 0.48,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "Gnielinski",
+          "metric": "PSNR_dB",
+          "score": 15.0,
+          "Q": 0.48
+        },
+        {
+          "name": "CFD-RANS",
+          "metric": "PSNR_dB",
+          "score": 17.5,
+          "Q": 0.48
+        },
+        {
+          "name": "Conv-NN",
+          "metric": "PSNR_dB",
+          "score": 18.5,
+          "Q": 0.48
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "Re": 50000,
+        "Pr": 0.7,
+        "SNR_dB": -10,
+        "Re_error": 0.1,
+        "Pr_error": 0.1,
+        "wall_emissivity_error": 0.3,
+        "freestream_T_error": 5.0
+      },
+      "epsilon": 12.1,
+      "d_ibench": 0.72,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "Gnielinski",
+          "metric": "PSNR_dB",
+          "score": 12.5,
+          "Q": 0.28
+        },
+        {
+          "name": "CFD-RANS",
+          "metric": "PSNR_dB",
+          "score": 15.0,
+          "Q": 0.28
+        },
+        {
+          "name": "Conv-NN",
+          "metric": "PSNR_dB",
+          "score": 16.0,
+          "Q": 0.28
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "full parametric sweep over ['H', 'W', 'Re', 'Pr', 'SNR_dB']",
+      "construction_method": "uniform Omega sampling within declared bounds",
+      "num_dev_instances": 200,
+      "num_holdout_instances": 100
+    },
+    "tracks": {
+      "track_A_stratified_worst_case": {
+        "samples_per_stratum": 5,
+        "pass_condition": "min_i(metric_i) beats epsilon_fn at Omega_centroid across all strata"
+      },
+      "track_B_uniform_median": {
+        "num_samples": 50,
+        "pass_condition": "median metric beats epsilon_fn at Omega_median"
+      },
+      "track_C_mismatch_degradation": {
+        "sweep_points": [
+          0.0,
+          0.25,
+          0.5,
+          0.75,
+          1.0
+        ],
+        "scenes_per_point": 10,
+        "degradation_score": "mean Q_norm across sweep"
+      }
+    },
+    "baselines": [
+      {
+        "name": "Gnielinski",
+        "overall_Q": 0.7
+      },
+      {
+        "name": "CFD-RANS",
+        "overall_Q": 0.6
+      },
+      {
+        "name": "Conv-NN",
+        "overall_Q": 0.5
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind Omega corner under max mismatch.",
+  "anti_overfitting_mechanisms": {
+    "M1_random_instantiation": "generator/instantiate.py uses G(SHA256(h_sub || k)) seeded per submission.",
+    "M2_convergence_scoring": "convergence/check_convergence.py verifies declared q-rate across mesh refinements.",
+    "M3_worst_case_eval": "scoring/worst_case.py returns min score over 20 fixed dev scenes per tier.",
+    "M4_community_adversarial": "adversarial submissions eligible under anti-overfitting bounty.",
+    "M5_method_sig_diversity": "baselines span classical (L+O), learned (L+N), and iterative (I+O) method signatures.",
+    "M6_gate_checks": "S1-S4 gate checks embedded with thresholds.yaml."
+  },
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

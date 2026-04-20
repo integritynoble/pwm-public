@@ -1,0 +1,168 @@
+{
+  "artifact_id": "L1-287",
+  "layer": "L1",
+  "principle_number": "287",
+  "title": "Glacial Isostatic Adjustment (GIA) \u2014 post-glacial rebound",
+  "domain": "Geophysics",
+  "sub_domain": "Viscoelastic Earth + ice-load history",
+  "source_file": "W_geophysics/287_glacial_isostatic_adjustment.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Glacial Isostatic Adjustment (GIA) \u2014 post-glacial rebound forward model.",
+    "forward_model": "response = L conv load_history; sea-level eqn gives eustatic adjustment",
+    "world_state_x": "present-day vertical uplift rate + mantle viscosity structure",
+    "observation_y": "GPS vertical velocities + tide-gauge RSL + paleo shorelines",
+    "physical_parameters_theta": [
+      "N_load_history",
+      "N_layers",
+      "N_gps",
+      "SNR_dB",
+      "ice_history_error",
+      "mantle_viscosity_error",
+      "lithosphere_thickness_error"
+    ]
+  },
+  "G": {
+    "dag": "L.load_history -> L.viscoelastic_response -> L.sea_level_eqn -> int.temporal",
+    "vertices": [
+      "L.load_history",
+      "L.viscoelastic_response",
+      "L.sea_level_eqn",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.load_history -> L.viscoelastic_response",
+      "L.viscoelastic_response -> L.sea_level_eqn",
+      "L.sea_level_eqn -> int.temporal"
+    ],
+    "L_DAG": 3.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 560,
+    "condition_number_effective": 28,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "ICE-6G, Peltier-VM7, GIA-Net",
+    "convergence_rate_q": 1.5,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "mechanical",
+    "sensing_mechanism": "gps_sea_level",
+    "integration_axis": "temporal",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "vertical_uplift_and_viscosity",
+    "primitives": [
+      "L.load_history",
+      "L.viscoelastic_response",
+      "L.sea_level_eqn",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "ice_history_error",
+    "mantle_viscosity_error",
+    "lithosphere_thickness_error"
+  ],
+  "error_metric": "uplift_rel_error_percent",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "gia",
+      "forward_operator": "gia_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_load_history": 10000,
+        "N_layers": 20,
+        "N_gps": 100,
+        "SNR_dB": 25,
+        "ice_history_error": 0.1,
+        "mantle_viscosity_error": 0.1,
+        "lithosphere_thickness_error": 0.1
+      },
+      "epsilon_fn_center": "2.0"
+    },
+    "allowed_forward_operators": [
+      "gia_forward"
+    ],
+    "allowed_problem_classes": [
+      "gia"
+    ],
+    "allowed_omega_dimensions": [
+      "N_load_history",
+      "N_layers",
+      "N_gps",
+      "SNR_dB",
+      "ice_history_error",
+      "mantle_viscosity_error",
+      "lithosphere_thickness_error",
+      "ice_history_error",
+      "mantle_viscosity_error",
+      "lithosphere_thickness_error"
+    ],
+    "omega_bounds": {
+      "N_load_history": [
+        100,
+        1000000
+      ],
+      "N_layers": [
+        5,
+        1000
+      ],
+      "N_gps": [
+        10,
+        10000
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "ice_history_error": [
+        0.0,
+        0.3
+      ],
+      "mantle_viscosity_error": [
+        0.0,
+        0.5
+      ],
+      "lithosphere_thickness_error": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "uplift_rel": [
+        0.2,
+        20.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

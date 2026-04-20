@@ -1,0 +1,160 @@
+{
+  "artifact_id": "L2-236",
+  "layer": "L2",
+  "parent_l1": "L1-236",
+  "title": "Antenna Analysis \u2014 radiation pattern inversion Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "N_elements": [
+        1,
+        4096
+      ],
+      "N_theta": [
+        36,
+        3600
+      ],
+      "N_phi": [
+        36,
+        3600
+      ],
+      "freq_GHz": [
+        0.1,
+        300
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "phase_error": [
+        0.0,
+        0.2
+      ],
+      "amplitude_error": [
+        0.0,
+        0.2
+      ],
+      "pos_error": [
+        0.0,
+        0.05
+      ],
+      "mutual_coupling_error": [
+        0.0,
+        0.3
+      ]
+    },
+    "E": {
+      "forward": "E(theta,phi) = (jk*eta/4pi/r) * exp(-jkr) * int J(r') exp(jk r.r') dV'",
+      "operator": "antenna_radiation_forward_mismatch",
+      "primitive_chain": "L.source_current -> L.array_factor -> L.radiate_farfield -> int.spatial",
+      "inverse": "solve forward for declared state variable under Omega bounds"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR_dB",
+      "residual_norm"
+    ],
+    "epsilon_fn": "20.0 + 1.0*log2(N_elements/1) + 0.25*SNR_dB - 15.0*phase_error - 10.0*amplitude_error"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Feko-MoM",
+        "method_sig": "L+O",
+        "expected_psnr": 25.0
+      },
+      {
+        "name": "HFSS-FEM",
+        "method_sig": "L+O",
+        "expected_psnr": 26.0
+      },
+      {
+        "name": "Antenna-NN",
+        "method_sig": "L+N",
+        "expected_psnr": 27.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_elements": 16,
+        "N_theta": 361,
+        "N_phi": 361,
+        "freq_GHz": 10,
+        "SNR_dB": 30,
+        "phase_error": 0.0,
+        "amplitude_error": 0.0,
+        "pos_error": 0.0,
+        "mutual_coupling_error": 0.0
+      },
+      "epsilon": 26.0
+    },
+    "tier_bounds": {
+      "N_elements": [
+        1,
+        4096
+      ],
+      "N_theta": [
+        36,
+        3600
+      ],
+      "N_phi": [
+        36,
+        3600
+      ],
+      "freq_GHz": [
+        0.1,
+        300
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "phase_error": [
+        0.0,
+        0.2
+      ],
+      "amplitude_error": [
+        0.0,
+        0.2
+      ],
+      "pos_error": [
+        0.0,
+        0.05
+      ],
+      "mutual_coupling_error": [
+        0.0,
+        0.3
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.48,
+  "d_spec_notes": "Distance computed from problem_class, forward_operator, carrier, integration_axis against neighboring specs; within same principle this spec is mismatch-only canonical and sits at the Omega centroid.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions are consistent across the DAG; forward operator maps state space to measurement space at declared shapes.",
+    "S2": "kappa_eff = 12 within tolerance after regularization; RIP-like or coercivity conditions satisfied over most of Omega.",
+    "S3": "Solvers converge at rate q=2.0 in well-posed regime; mismatch parameters degrade convergence but not divergence.",
+    "S4": "epsilon_fn evaluates across 10+ random Omega samples; hardness rule verified \u2014 no baseline passes everywhere."
+  },
+  "ipfs_cid": null
+}

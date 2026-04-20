@@ -1,0 +1,160 @@
+{
+  "artifact_id": "L2-270",
+  "layer": "L2",
+  "parent_l1": "L1-270",
+  "title": "Aeroacoustics \u2014 Lighthill analogy (jet/airframe noise) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "N_les": [
+        1000000,
+        10000000000
+      ],
+      "N_mic": [
+        4,
+        256
+      ],
+      "M_jet": [
+        0.1,
+        2.0
+      ],
+      "freq_Hz_max": [
+        100,
+        50000
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "les_resolution_error": [
+        0.01,
+        0.3
+      ],
+      "source_region_trunc_error": [
+        0.0,
+        0.3
+      ],
+      "refraction_error": [
+        0.0,
+        0.2
+      ],
+      "observer_pos_error": [
+        0.0,
+        0.05
+      ]
+    },
+    "E": {
+      "forward": "[1/c0^2 d^2/dt^2 - Laplacian] c0^2 rho' = d^2 T_ij/dx_i dx_j; T_ij = rho u_i u_j + (p' - c0^2 rho')delta_ij - tau_ij",
+      "operator": "lighthill_aeroacoustic_forward_mismatch",
+      "primitive_chain": "L.les_source -> L.lighthill_integral -> L.green_function -> int.temporal",
+      "inverse": "solve forward for declared state variable under Omega bounds"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "SPL_error_dB",
+      "residual_norm"
+    ],
+    "epsilon_fn": "1.5 + 20.0*les_resolution_error + 15.0*source_region_trunc_error + 10.0*refraction_error"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "LES-Lighthill",
+        "method_sig": "I+O",
+        "expected_psnr": 3.5
+      },
+      {
+        "name": "FWH",
+        "method_sig": "L+O",
+        "expected_psnr": 2.8
+      },
+      {
+        "name": "ML-aero",
+        "method_sig": "L+N",
+        "expected_psnr": 2.3
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_les": 10000000,
+        "N_mic": 32,
+        "M_jet": 0.8,
+        "freq_Hz_max": 10000,
+        "SNR_dB": 30,
+        "les_resolution_error": 0.05,
+        "source_region_trunc_error": 0.0,
+        "refraction_error": 0.0,
+        "observer_pos_error": 0.0
+      },
+      "epsilon": 3.0
+    },
+    "tier_bounds": {
+      "N_les": [
+        1000000,
+        10000000000
+      ],
+      "N_mic": [
+        4,
+        256
+      ],
+      "M_jet": [
+        0.1,
+        2.0
+      ],
+      "freq_Hz_max": [
+        100,
+        50000
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "les_resolution_error": [
+        0.01,
+        0.3
+      ],
+      "source_region_trunc_error": [
+        0.0,
+        0.3
+      ],
+      "refraction_error": [
+        0.0,
+        0.2
+      ],
+      "observer_pos_error": [
+        0.0,
+        0.05
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.48,
+  "d_spec_notes": "Distance computed from problem_class, forward_operator, carrier, integration_axis against neighboring specs; within same principle this spec is mismatch-only canonical and sits at the Omega centroid.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions are consistent across the DAG; forward operator maps state space to measurement space at declared shapes.",
+    "S2": "kappa_eff = 80 within tolerance after regularization; RIP-like or coercivity conditions satisfied over most of Omega.",
+    "S3": "Solvers converge at rate q=1.0 in well-posed regime; mismatch parameters degrade convergence but not divergence.",
+    "S4": "epsilon_fn evaluates across 10+ random Omega samples; hardness rule verified \u2014 no baseline passes everywhere."
+  },
+  "ipfs_cid": null
+}

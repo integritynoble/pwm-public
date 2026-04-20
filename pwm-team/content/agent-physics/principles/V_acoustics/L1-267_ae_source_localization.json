@@ -1,0 +1,177 @@
+{
+  "artifact_id": "L1-267",
+  "layer": "L1",
+  "principle_number": "267",
+  "title": "Acoustic Emission \u2014 source localization",
+  "domain": "Acoustics",
+  "sub_domain": "TDOA-based AE source localization",
+  "source_file": "V_acoustics/267_ae_source_localization.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Acoustic Emission \u2014 source localization forward model.",
+    "forward_model": "t_i = t_0 + ||x_s - x_i|| / c; solve for x_s from TDOA = t_i - t_j",
+    "world_state_x": "3D AE source locations {x_s} and origin times t_0",
+    "observation_y": "arrival-time picks at N_sensor piezo-AE sensors",
+    "physical_parameters_theta": [
+      "N_sensors",
+      "N_events",
+      "fs_MHz",
+      "SNR_dB",
+      "sensor_pos_error",
+      "wave_speed_error",
+      "pick_time_error",
+      "anisotropy"
+    ]
+  },
+  "G": {
+    "dag": "S.array_capture -> L.tdoa -> L.hyperboloid_intersect -> int.temporal",
+    "vertices": [
+      "S.array_capture",
+      "L.tdoa",
+      "L.hyperboloid_intersect",
+      "int.temporal"
+    ],
+    "arcs": [
+      "S.array_capture -> L.tdoa",
+      "L.tdoa -> L.hyperboloid_intersect",
+      "L.hyperboloid_intersect -> int.temporal"
+    ],
+    "L_DAG": 3.2,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 500,
+    "condition_number_effective": 25,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Geiger-iterative, Akaike-AIC, Deep-AE-loc",
+    "convergence_rate_q": 1.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "acoustic",
+    "sensing_mechanism": "ae_piezoelectric_sensors",
+    "integration_axis": "temporal",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "source_xyz_set",
+    "primitives": [
+      "S.array_capture",
+      "L.tdoa",
+      "L.hyperboloid_intersect",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "sensor_pos_error",
+    "wave_speed_error",
+    "pick_time_error",
+    "anisotropy"
+  ],
+  "error_metric": "localization_MAE_mm",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "ae_tdoa",
+      "forward_operator": "ae_tdoa_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_sensors": 8,
+        "N_events": 100,
+        "fs_MHz": 1,
+        "SNR_dB": 20,
+        "sensor_pos_error": 0.0,
+        "wave_speed_error": 0.0,
+        "pick_time_error": 0.0,
+        "anisotropy": 0.0
+      },
+      "epsilon_fn_center": "5.0"
+    },
+    "allowed_forward_operators": [
+      "ae_tdoa_forward"
+    ],
+    "allowed_problem_classes": [
+      "ae_tdoa"
+    ],
+    "allowed_omega_dimensions": [
+      "N_sensors",
+      "N_events",
+      "fs_MHz",
+      "SNR_dB",
+      "sensor_pos_error",
+      "wave_speed_error",
+      "pick_time_error",
+      "anisotropy",
+      "sensor_pos_error",
+      "wave_speed_error",
+      "pick_time_error",
+      "anisotropy"
+    ],
+    "omega_bounds": {
+      "N_sensors": [
+        4,
+        128
+      ],
+      "N_events": [
+        10,
+        10000
+      ],
+      "fs_MHz": [
+        0.1,
+        40
+      ],
+      "SNR_dB": [
+        -5,
+        40
+      ],
+      "sensor_pos_error": [
+        0.0,
+        0.05
+      ],
+      "wave_speed_error": [
+        0.0,
+        0.1
+      ],
+      "pick_time_error": [
+        0.0,
+        10.0
+      ],
+      "anisotropy": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "localization_mm": [
+        0.1,
+        100.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

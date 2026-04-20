@@ -1,0 +1,161 @@
+{
+  "artifact_id": "L1-186",
+  "layer": "L1",
+  "principle_number": "186",
+  "title": "SPH \u2014 smoothed particle hydrodynamics",
+  "domain": "Fluid Dynamics",
+  "sub_domain": "Lagrangian meshfree SPH",
+  "source_file": "R_fluid_dynamics/186_sph.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "SPH \u2014 smoothed particle hydrodynamics forward model.",
+    "forward_model": "rho_i = sum_j m_j W_ij; du_i/dt = -sum_j m_j (p_i/rho_i^2 + p_j/rho_j^2) grad W_ij + ...",
+    "world_state_x": "particle density, velocity, pressure in meshfree representation",
+    "observation_y": "wave tank / free-surface impact imaging",
+    "physical_parameters_theta": [
+      "N_particles",
+      "N_times",
+      "SNR_dB",
+      "kernel_bandwidth_error",
+      "pressure_instability",
+      "boundary_error"
+    ]
+  },
+  "G": {
+    "dag": "L.kernel_approx -> L.momentum -> L.density -> int.temporal",
+    "vertices": [
+      "L.kernel_approx",
+      "L.momentum",
+      "L.density",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.kernel_approx -> L.momentum",
+      "L.momentum -> L.density",
+      "L.density -> int.temporal"
+    ],
+    "L_DAG": 3.3,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 400,
+    "condition_number_effective": 20,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "DualSPHysics, LIGGGHTS-SPH, SPH-Net",
+    "convergence_rate_q": 1.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "mechanical",
+    "sensing_mechanism": "wave_tank",
+    "integration_axis": "temporal",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "particle_field_meshfree",
+    "primitives": [
+      "L.kernel_approx",
+      "L.momentum",
+      "L.density",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "kernel_bandwidth_error",
+    "pressure_instability",
+    "boundary_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "sph",
+      "forward_operator": "sph_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_particles": 1000000.0,
+        "N_times": 2000,
+        "SNR_dB": 30,
+        "kernel_bandwidth_error": 0.0,
+        "pressure_instability": 0.0,
+        "boundary_error": 0.0
+      },
+      "epsilon_fn_center": "20.0"
+    },
+    "allowed_forward_operators": [
+      "sph_forward"
+    ],
+    "allowed_problem_classes": [
+      "sph"
+    ],
+    "allowed_omega_dimensions": [
+      "N_particles",
+      "N_times",
+      "SNR_dB",
+      "kernel_bandwidth_error",
+      "pressure_instability",
+      "boundary_error",
+      "kernel_bandwidth_error",
+      "pressure_instability",
+      "boundary_error"
+    ],
+    "omega_bounds": {
+      "N_particles": [
+        1000.0,
+        10000000000.0
+      ],
+      "N_times": [
+        100,
+        1000000
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "kernel_bandwidth_error": [
+        0.0,
+        0.3
+      ],
+      "pressure_instability": [
+        0.0,
+        0.3
+      ],
+      "boundary_error": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

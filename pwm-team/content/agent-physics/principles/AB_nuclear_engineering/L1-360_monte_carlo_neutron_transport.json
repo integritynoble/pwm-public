@@ -1,0 +1,168 @@
+{
+  "artifact_id": "L1-360",
+  "layer": "L1",
+  "principle_number": "360",
+  "title": "Monte Carlo Neutron Transport \u2014 stochastic particle tracking",
+  "domain": "Nuclear Engineering",
+  "sub_domain": "MCNP / OpenMC continuous-energy MC transport",
+  "source_file": "AB_nuclear_engineering/360_monte_carlo_neutron_transport.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Monte Carlo Neutron Transport \u2014 stochastic particle tracking forward model.",
+    "forward_model": "<f> = E_source[ int f(tau) exp(-int_0^tau sigma_t ds) psi(tau) dtau ]; estimated via Monte Carlo",
+    "world_state_x": "tally expected values <f> (flux, reaction rates, dose) in region of interest",
+    "observation_y": "tally scores with statistical uncertainty sigma ~ 1/sqrt(N_hist)",
+    "physical_parameters_theta": [
+      "N_histories",
+      "N_tallies",
+      "N_cells",
+      "SNR_dB",
+      "ace_data_error",
+      "source_biasing_error",
+      "variance_reduction_error"
+    ]
+  },
+  "G": {
+    "dag": "L.sample_source -> L.track_particle -> L.score_tally -> int.stochastic",
+    "vertices": [
+      "L.sample_source",
+      "L.track_particle",
+      "L.score_tally",
+      "int.stochastic"
+    ],
+    "arcs": [
+      "L.sample_source -> L.track_particle",
+      "L.track_particle -> L.score_tally",
+      "L.score_tally -> int.stochastic"
+    ],
+    "L_DAG": 3.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 800,
+    "condition_number_effective": 40,
+    "regime": "Statistical convergence O(1/sqrt(N_histories)); bias via biased sampling; ill-posed for very deep penetration."
+  },
+  "C": {
+    "solver_class": "MCNP6, OpenMC, Serpent",
+    "convergence_rate_q": 0.5,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "neutron",
+    "sensing_mechanism": "tally_scores",
+    "integration_axis": "stochastic",
+    "problem_class": "linear_inverse",
+    "noise_model": "poisson",
+    "solution_space": "tally_expected_values_with_variance",
+    "primitives": [
+      "L.sample_source",
+      "L.track_particle",
+      "L.score_tally",
+      "int.stochastic"
+    ]
+  },
+  "difficulty_delta": 10,
+  "difficulty_tier": "hard",
+  "mismatch_parameters": [
+    "ace_data_error",
+    "source_biasing_error",
+    "variance_reduction_error"
+  ],
+  "error_metric": "tally_rel_uncertainty_percent",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "mc_neutron_transport",
+      "forward_operator": "mc_neutron_transport_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_histories": 10000000.0,
+        "N_tallies": 50,
+        "N_cells": 10000,
+        "SNR_dB": 30,
+        "ace_data_error": 0.0,
+        "source_biasing_error": 0.0,
+        "variance_reduction_error": 0.0
+      },
+      "epsilon_fn_center": "2.0"
+    },
+    "allowed_forward_operators": [
+      "mc_neutron_transport_forward"
+    ],
+    "allowed_problem_classes": [
+      "mc_neutron_transport"
+    ],
+    "allowed_omega_dimensions": [
+      "N_histories",
+      "N_tallies",
+      "N_cells",
+      "SNR_dB",
+      "ace_data_error",
+      "source_biasing_error",
+      "variance_reduction_error",
+      "ace_data_error",
+      "source_biasing_error",
+      "variance_reduction_error"
+    ],
+    "omega_bounds": {
+      "N_histories": [
+        10000.0,
+        100000000000.0
+      ],
+      "N_tallies": [
+        1,
+        10000
+      ],
+      "N_cells": [
+        10,
+        1000000
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "ace_data_error": [
+        0.0,
+        0.05
+      ],
+      "source_biasing_error": [
+        0.0,
+        0.2
+      ],
+      "variance_reduction_error": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "tally_rel": [
+        0.1,
+        30.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

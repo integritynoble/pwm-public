@@ -1,0 +1,177 @@
+{
+  "artifact_id": "L1-217",
+  "layer": "L1",
+  "principle_number": "217",
+  "title": "Crystal Plasticity \u2014 slip-system resolved plasticity",
+  "domain": "Structural Mechanics",
+  "sub_domain": "Dislocation slip-system crystal plasticity FE",
+  "source_file": "T_structural_mechanics/217_crystal_plasticity.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Crystal Plasticity \u2014 slip-system resolved plasticity forward model.",
+    "forward_model": "dot gamma_alpha = dot gamma_0 * (tau_alpha/g_alpha)^n * sign(tau_alpha); F_p = dot gamma_alpha (s x m)",
+    "world_state_x": "slip rates gamma_alpha per slip system + lattice rotation",
+    "observation_y": "EBSD orientation + HR-DIC strain field",
+    "physical_parameters_theta": [
+      "N_DOF",
+      "N_grains",
+      "N_slipsys",
+      "SNR_dB",
+      "tau_0_error",
+      "h_hardening_error",
+      "texture_error",
+      "grain_boundary_error"
+    ]
+  },
+  "G": {
+    "dag": "L.slip_systems -> L.rate_dependent -> L.grain_assembly -> int.spatial",
+    "vertices": [
+      "L.slip_systems",
+      "L.rate_dependent",
+      "L.grain_assembly",
+      "int.spatial"
+    ],
+    "arcs": [
+      "L.slip_systems -> L.rate_dependent",
+      "L.rate_dependent -> L.grain_assembly",
+      "L.grain_assembly -> int.spatial"
+    ],
+    "L_DAG": 3.8,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 1000,
+    "condition_number_effective": 50,
+    "regime": "Stiff, nonlinear; texture-dependent; expensive at sub-grain resolution."
+  },
+  "C": {
+    "solver_class": "DAMASK, Abaqus-UMAT, CP-NN",
+    "convergence_rate_q": 1.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "mechanical",
+    "sensing_mechanism": "ebsd_dic",
+    "integration_axis": "spatial",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "grain_scale_stress_strain",
+    "primitives": [
+      "L.slip_systems",
+      "L.rate_dependent",
+      "L.grain_assembly",
+      "int.spatial"
+    ]
+  },
+  "difficulty_delta": 10,
+  "difficulty_tier": "hard",
+  "mismatch_parameters": [
+    "tau_0_error",
+    "h_hardening_error",
+    "texture_error",
+    "grain_boundary_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "crystal_plasticity",
+      "forward_operator": "crystal_plasticity_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_DOF": 100000,
+        "N_grains": 100,
+        "N_slipsys": 12,
+        "SNR_dB": 25,
+        "tau_0_error": 0.0,
+        "h_hardening_error": 0.0,
+        "texture_error": 0.0,
+        "grain_boundary_error": 0.0
+      },
+      "epsilon_fn_center": "18.0"
+    },
+    "allowed_forward_operators": [
+      "crystal_plasticity_forward"
+    ],
+    "allowed_problem_classes": [
+      "crystal_plasticity"
+    ],
+    "allowed_omega_dimensions": [
+      "N_DOF",
+      "N_grains",
+      "N_slipsys",
+      "SNR_dB",
+      "tau_0_error",
+      "h_hardening_error",
+      "texture_error",
+      "grain_boundary_error",
+      "tau_0_error",
+      "h_hardening_error",
+      "texture_error",
+      "grain_boundary_error"
+    ],
+    "omega_bounds": {
+      "N_DOF": [
+        1000,
+        10000000
+      ],
+      "N_grains": [
+        1,
+        10000
+      ],
+      "N_slipsys": [
+        3,
+        48
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "tau_0_error": [
+        0.0,
+        0.1
+      ],
+      "h_hardening_error": [
+        0.0,
+        0.2
+      ],
+      "texture_error": [
+        0.0,
+        0.3
+      ],
+      "grain_boundary_error": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

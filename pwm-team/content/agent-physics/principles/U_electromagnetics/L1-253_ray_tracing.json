@@ -1,0 +1,175 @@
+{
+  "artifact_id": "L1-253",
+  "layer": "L1",
+  "principle_number": "253",
+  "title": "Ray Tracing (EM) \u2014 wireless propagation model",
+  "domain": "Electromagnetics",
+  "sub_domain": "Urban propagation ray tracing (5G/6G)",
+  "source_file": "U_electromagnetics/253_ray_tracing.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Ray Tracing (EM) \u2014 wireless propagation model forward model.",
+    "forward_model": "P_rx = |sum_paths A_path * exp(-j*k*L_path)|^2 * G_tx * G_rx * (lambda/4pi)^2",
+    "world_state_x": "received power P_rx(x,y) across urban or indoor geometry",
+    "observation_y": "measured RSSI at N_sites",
+    "physical_parameters_theta": [
+      "N_rays",
+      "N_walls",
+      "N_rx",
+      "freq_GHz",
+      "SNR_dB",
+      "material_eps_error",
+      "geometry_error",
+      "antenna_pattern_error"
+    ]
+  },
+  "G": {
+    "dag": "L.source_emit -> L.reflect_diffract -> L.gather_paths -> int.spatial",
+    "vertices": [
+      "L.source_emit",
+      "L.reflect_diffract",
+      "L.gather_paths",
+      "int.spatial"
+    ],
+    "arcs": [
+      "L.source_emit -> L.reflect_diffract",
+      "L.reflect_diffract -> L.gather_paths",
+      "L.gather_paths -> int.spatial"
+    ],
+    "L_DAG": 3.3,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 360,
+    "condition_number_effective": 18,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Image-theory-RT, SBR, RT-NN",
+    "convergence_rate_q": 1.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "em",
+    "sensing_mechanism": "rx_power_map",
+    "integration_axis": "spatial",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "signal_strength_map",
+    "primitives": [
+      "L.source_emit",
+      "L.reflect_diffract",
+      "L.gather_paths",
+      "int.spatial"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "material_eps_error",
+    "geometry_error",
+    "antenna_pattern_error"
+  ],
+  "error_metric": "RSSI_error_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "ray_tracing_em",
+      "forward_operator": "ray_tracing_em_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_rays": 100000,
+        "N_walls": 1000,
+        "N_rx": 64,
+        "freq_GHz": 3.5,
+        "SNR_dB": 30,
+        "material_eps_error": 0.0,
+        "geometry_error": 0.0,
+        "antenna_pattern_error": 0.0
+      },
+      "epsilon_fn_center": "3.0"
+    },
+    "allowed_forward_operators": [
+      "ray_tracing_em_forward"
+    ],
+    "allowed_problem_classes": [
+      "ray_tracing_em"
+    ],
+    "allowed_omega_dimensions": [
+      "N_rays",
+      "N_walls",
+      "N_rx",
+      "freq_GHz",
+      "SNR_dB",
+      "material_eps_error",
+      "geometry_error",
+      "antenna_pattern_error",
+      "material_eps_error",
+      "geometry_error",
+      "antenna_pattern_error"
+    ],
+    "omega_bounds": {
+      "N_rays": [
+        1000,
+        100000000
+      ],
+      "N_walls": [
+        1,
+        100000
+      ],
+      "N_rx": [
+        1,
+        10000
+      ],
+      "freq_GHz": [
+        0.1,
+        300
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "material_eps_error": [
+        0.0,
+        0.3
+      ],
+      "geometry_error": [
+        0.0,
+        0.1
+      ],
+      "antenna_pattern_error": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "RSSI_dB": [
+        0.5,
+        20.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

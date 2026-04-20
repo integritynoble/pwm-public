@@ -8,8 +8,11 @@ ALLOWED_NAMES = {"log2": math.log2, "log10": math.log10, "sqrt": math.sqrt,
                  "log": math.log, "exp": math.exp, "abs": abs, "min": min, "max": max}
 ALLOWED_NODES = (
     ast.Expression, ast.BinOp, ast.UnaryOp, ast.Call, ast.Constant,
-    ast.Name, ast.Add, ast.Sub, ast.Mul, ast.Div, ast.Pow, ast.USub,
-    ast.Compare, ast.Lt, ast.LtE, ast.Gt, ast.GtE, ast.IfExp,
+    ast.Name, ast.Load,
+    ast.Add, ast.Sub, ast.Mult, ast.Div, ast.FloorDiv, ast.Mod, ast.Pow,
+    ast.USub, ast.UAdd,
+    ast.Compare, ast.Lt, ast.LtE, ast.Gt, ast.GtE, ast.Eq, ast.NotEq,
+    ast.IfExp,
 )
 
 

@@ -1,0 +1,177 @@
+{
+  "artifact_id": "L1-211",
+  "layer": "L1",
+  "principle_number": "211",
+  "title": "Mindlin-Reissner Plate \u2014 thick-plate with shear",
+  "domain": "Structural Mechanics",
+  "sub_domain": "Shear-deformable plate theory",
+  "source_file": "T_structural_mechanics/211_mindlin_reissner_plate.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Mindlin-Reissner Plate \u2014 thick-plate with shear forward model.",
+    "forward_model": "div(D (grad phi + grad phi^T)/2) - kGt(grad w - phi) = 0; div(kGt(grad w - phi)) + q = 0",
+    "world_state_x": "plate deflection w(x,y) + rotations phi_x, phi_y",
+    "observation_y": "DIC surface + inclinometer",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "N_sensors",
+      "SNR_dB",
+      "k_shear_error",
+      "D_error",
+      "G_error",
+      "bc_error"
+    ]
+  },
+  "G": {
+    "dag": "L.shear_factor -> L.bending -> L.coupled_w_phi -> int.spatial",
+    "vertices": [
+      "L.shear_factor",
+      "L.bending",
+      "L.coupled_w_phi",
+      "int.spatial"
+    ],
+    "arcs": [
+      "L.shear_factor -> L.bending",
+      "L.bending -> L.coupled_w_phi",
+      "L.coupled_w_phi -> int.spatial"
+    ],
+    "L_DAG": 3.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 200,
+    "condition_number_effective": 10,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "MITC4, DSG, Mindlin-NN",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "mechanical",
+    "sensing_mechanism": "dic_strain",
+    "integration_axis": "spatial",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "plate_w_phi_2D",
+    "primitives": [
+      "L.shear_factor",
+      "L.bending",
+      "L.coupled_w_phi",
+      "int.spatial"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "k_shear_error",
+    "D_error",
+    "G_error",
+    "bc_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "mindlin",
+      "forward_operator": "mindlin_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 64,
+        "W": 64,
+        "N_sensors": 64,
+        "SNR_dB": 30,
+        "k_shear_error": 0.0,
+        "D_error": 0.0,
+        "G_error": 0.0,
+        "bc_error": 0.0
+      },
+      "epsilon_fn_center": "26.5"
+    },
+    "allowed_forward_operators": [
+      "mindlin_forward"
+    ],
+    "allowed_problem_classes": [
+      "mindlin"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "N_sensors",
+      "SNR_dB",
+      "k_shear_error",
+      "D_error",
+      "G_error",
+      "bc_error",
+      "k_shear_error",
+      "D_error",
+      "G_error",
+      "bc_error"
+    ],
+    "omega_bounds": {
+      "H": [
+        16,
+        1024
+      ],
+      "W": [
+        16,
+        1024
+      ],
+      "N_sensors": [
+        4,
+        10000
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "k_shear_error": [
+        0.0,
+        0.1
+      ],
+      "D_error": [
+        0.0,
+        0.1
+      ],
+      "G_error": [
+        0.0,
+        0.1
+      ],
+      "bc_error": [
+        0.0,
+        0.2
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

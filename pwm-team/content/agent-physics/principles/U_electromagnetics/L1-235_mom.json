@@ -1,0 +1,168 @@
+{
+  "artifact_id": "L1-235",
+  "layer": "L1",
+  "principle_number": "235",
+  "title": "Method of Moments (MoM) \u2014 integral-equation EM",
+  "domain": "Electromagnetics",
+  "sub_domain": "Surface/volume integral-equation MoM",
+  "source_file": "U_electromagnetics/235_mom.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Method of Moments (MoM) \u2014 integral-equation EM forward model.",
+    "forward_model": "Z I = V; Z_mn = <f_m, L f_n>; L = k^2 int G(r,r') f dS - grad int G(r,r') div f dS",
+    "world_state_x": "surface current density J_s(r) on scatterer/antenna",
+    "observation_y": "far-field pattern / S-parameters",
+    "physical_parameters_theta": [
+      "N_mesh",
+      "N_freqs",
+      "N_angles",
+      "SNR_dB",
+      "mesh_error",
+      "BC_error",
+      "material_error"
+    ]
+  },
+  "G": {
+    "dag": "L.efie_mfie -> L.rwg_expand -> L.linear_solve -> int.frequency",
+    "vertices": [
+      "L.efie_mfie",
+      "L.rwg_expand",
+      "L.linear_solve",
+      "int.frequency"
+    ],
+    "arcs": [
+      "L.efie_mfie -> L.rwg_expand",
+      "L.rwg_expand -> L.linear_solve",
+      "L.linear_solve -> int.frequency"
+    ],
+    "L_DAG": 3.2,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 500,
+    "condition_number_effective": 25,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "MoM-RWG, MLFMA, FEBI",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "em",
+    "sensing_mechanism": "far_field_antenna",
+    "integration_axis": "frequency",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "surface_currents_and_rcs",
+    "primitives": [
+      "L.efie_mfie",
+      "L.rwg_expand",
+      "L.linear_solve",
+      "int.frequency"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "mesh_error",
+    "BC_error",
+    "material_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "mom",
+      "forward_operator": "mom_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_mesh": 10000,
+        "N_freqs": 16,
+        "N_angles": 256,
+        "SNR_dB": 30,
+        "mesh_error": 0.0,
+        "BC_error": 0.0,
+        "material_error": 0.0
+      },
+      "epsilon_fn_center": "24.0"
+    },
+    "allowed_forward_operators": [
+      "mom_forward"
+    ],
+    "allowed_problem_classes": [
+      "mom"
+    ],
+    "allowed_omega_dimensions": [
+      "N_mesh",
+      "N_freqs",
+      "N_angles",
+      "SNR_dB",
+      "mesh_error",
+      "BC_error",
+      "material_error",
+      "mesh_error",
+      "BC_error",
+      "material_error"
+    ],
+    "omega_bounds": {
+      "N_mesh": [
+        100,
+        1000000
+      ],
+      "N_freqs": [
+        1,
+        256
+      ],
+      "N_angles": [
+        16,
+        4096
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "mesh_error": [
+        0.0,
+        0.1
+      ],
+      "BC_error": [
+        0.0,
+        0.2
+      ],
+      "material_error": [
+        0.0,
+        0.1
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

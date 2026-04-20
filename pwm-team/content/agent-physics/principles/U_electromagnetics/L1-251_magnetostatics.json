@@ -1,0 +1,175 @@
+{
+  "artifact_id": "L1-251",
+  "layer": "L1",
+  "principle_number": "251",
+  "title": "Magnetostatics \u2014 coil design and field inversion",
+  "domain": "Electromagnetics",
+  "sub_domain": "Biot-Savart / vector potential magnetostatics",
+  "source_file": "U_electromagnetics/251_magnetostatics.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Magnetostatics \u2014 coil design and field inversion forward model.",
+    "forward_model": "B = curl A; div(1/mu grad A) = -J; Biot-Savart: B = (mu/4pi) int I dl x r/r^3",
+    "world_state_x": "B(x,y,z) field from coils/magnets",
+    "observation_y": "Hall probe readings at mapped positions",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "Z",
+      "N_probes",
+      "SNR_dB",
+      "coil_pos_error",
+      "mu_r_error",
+      "current_error"
+    ]
+  },
+  "G": {
+    "dag": "L.current_source -> L.vector_potential -> L.curl_A -> int.spatial",
+    "vertices": [
+      "L.current_source",
+      "L.vector_potential",
+      "L.curl_A",
+      "int.spatial"
+    ],
+    "arcs": [
+      "L.current_source -> L.vector_potential",
+      "L.vector_potential -> L.curl_A",
+      "L.curl_A -> int.spatial"
+    ],
+    "L_DAG": 2.8,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 200,
+    "condition_number_effective": 10,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Biot-Savart, FEM-magnetostatic, Mag-Net",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "em",
+    "sensing_mechanism": "hall_probes",
+    "integration_axis": "spatial",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "3D_magnetic_field",
+    "primitives": [
+      "L.current_source",
+      "L.vector_potential",
+      "L.curl_A",
+      "int.spatial"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "coil_pos_error",
+    "mu_r_error",
+    "current_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "magnetostatic",
+      "forward_operator": "magnetostatic_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 128,
+        "W": 128,
+        "Z": 32,
+        "N_probes": 64,
+        "SNR_dB": 30,
+        "coil_pos_error": 0.0,
+        "mu_r_error": 0.0,
+        "current_error": 0.0
+      },
+      "epsilon_fn_center": "26.0"
+    },
+    "allowed_forward_operators": [
+      "magnetostatic_forward"
+    ],
+    "allowed_problem_classes": [
+      "magnetostatic"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "Z",
+      "N_probes",
+      "SNR_dB",
+      "coil_pos_error",
+      "mu_r_error",
+      "current_error",
+      "coil_pos_error",
+      "mu_r_error",
+      "current_error"
+    ],
+    "omega_bounds": {
+      "H": [
+        32,
+        1024
+      ],
+      "W": [
+        32,
+        1024
+      ],
+      "Z": [
+        8,
+        512
+      ],
+      "N_probes": [
+        4,
+        4096
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "coil_pos_error": [
+        0.0,
+        0.05
+      ],
+      "mu_r_error": [
+        0.0,
+        0.1
+      ],
+      "current_error": [
+        0.0,
+        0.02
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

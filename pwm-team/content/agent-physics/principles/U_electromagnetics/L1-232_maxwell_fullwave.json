@@ -1,0 +1,191 @@
+{
+  "artifact_id": "L1-232",
+  "layer": "L1",
+  "principle_number": "232",
+  "title": "Maxwell Full-Wave \u2014 time-domain 3D Maxwell equations",
+  "domain": "Electromagnetics",
+  "sub_domain": "3D vector Maxwell time-domain simulation",
+  "source_file": "U_electromagnetics/232_maxwell_fullwave.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Maxwell Full-Wave \u2014 time-domain 3D Maxwell equations forward model.",
+    "forward_model": "curl E = -mu*dH/dt; curl H = eps*dE/dt + sigma*E + J_src",
+    "world_state_x": "3D vector fields E(x,t), H(x,t) or material parameters eps(x), mu(x), sigma(x)",
+    "observation_y": "near-field probe / far-field antenna data",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "Z",
+      "N_samples",
+      "N_probes",
+      "SNR_dB",
+      "eps_error",
+      "mu_error",
+      "sigma_error",
+      "boundary_PML_error"
+    ]
+  },
+  "G": {
+    "dag": "L.source_injection -> L.curl_curl -> L.constitutive -> int.temporal",
+    "vertices": [
+      "L.source_injection",
+      "L.curl_curl",
+      "L.constitutive",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.source_injection -> L.curl_curl",
+      "L.curl_curl -> L.constitutive",
+      "L.constitutive -> int.temporal"
+    ],
+    "L_DAG": 3.8,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 1600,
+    "condition_number_effective": 80,
+    "regime": "CFL-stable explicit time stepping; ill-posed inverse for full 3D eps(x) reconstruction."
+  },
+  "C": {
+    "solver_class": "FDTD-Yee, FEM-time-domain, DGTD",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "em",
+    "sensing_mechanism": "near_field_probes",
+    "integration_axis": "temporal",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "3D_E_H_field_spacetime",
+    "primitives": [
+      "L.source_injection",
+      "L.curl_curl",
+      "L.constitutive",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 10,
+  "difficulty_tier": "hard",
+  "mismatch_parameters": [
+    "eps_error",
+    "mu_error",
+    "sigma_error",
+    "boundary_PML_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "maxwell_tm",
+      "forward_operator": "maxwell_tm_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 128,
+        "W": 128,
+        "Z": 128,
+        "N_samples": 512,
+        "N_probes": 16,
+        "SNR_dB": 30,
+        "eps_error": 0.0,
+        "mu_error": 0.0,
+        "sigma_error": 0.0,
+        "boundary_PML_error": 0.0
+      },
+      "epsilon_fn_center": "22.0"
+    },
+    "allowed_forward_operators": [
+      "maxwell_tm_forward"
+    ],
+    "allowed_problem_classes": [
+      "maxwell_tm"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "Z",
+      "N_samples",
+      "N_probes",
+      "SNR_dB",
+      "eps_error",
+      "mu_error",
+      "sigma_error",
+      "boundary_PML_error",
+      "eps_error",
+      "mu_error",
+      "sigma_error",
+      "boundary_PML_error"
+    ],
+    "omega_bounds": {
+      "H": [
+        32,
+        1024
+      ],
+      "W": [
+        32,
+        1024
+      ],
+      "Z": [
+        32,
+        1024
+      ],
+      "N_samples": [
+        64,
+        10000
+      ],
+      "N_probes": [
+        4,
+        1024
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "eps_error": [
+        0.0,
+        0.1
+      ],
+      "mu_error": [
+        0.0,
+        0.05
+      ],
+      "sigma_error": [
+        0.0,
+        0.1
+      ],
+      "boundary_PML_error": [
+        0.0,
+        0.2
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

@@ -1,0 +1,168 @@
+{
+  "artifact_id": "L1-277",
+  "layer": "L1",
+  "principle_number": "277",
+  "title": "Ambient-Noise Tomography \u2014 Green-function retrieval",
+  "domain": "Geophysics",
+  "sub_domain": "Cross-correlation of ambient seismic noise",
+  "source_file": "W_geophysics/277_ambient_noise_tomography.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Ambient-Noise Tomography \u2014 Green-function retrieval forward model.",
+    "forward_model": "C_AB(tau) = int u_A(t) u_B(t+tau) dt ~= d/dtau G_AB + G_BA (Green-function retrieval)",
+    "world_state_x": "2D phase-velocity map c(x,y,f) + inverted crust/upper mantle model",
+    "observation_y": "noise cross-correlations across station pairs",
+    "physical_parameters_theta": [
+      "N_stations",
+      "N_days",
+      "N_freqs",
+      "SNR_dB",
+      "source_distribution_nonuniform",
+      "station_pair_imbalance",
+      "scattering_unmodelled"
+    ]
+  },
+  "G": {
+    "dag": "L.cross_correlate -> L.green_retrieve -> L.tomographic_invert -> int.temporal",
+    "vertices": [
+      "L.cross_correlate",
+      "L.green_retrieve",
+      "L.tomographic_invert",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.cross_correlate -> L.green_retrieve",
+      "L.green_retrieve -> L.tomographic_invert",
+      "L.tomographic_invert -> int.temporal"
+    ],
+    "L_DAG": 3.3,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 500,
+    "condition_number_effective": 25,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Stack-CC, EGF-invert, ANT-NN",
+    "convergence_rate_q": 1.5,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "acoustic",
+    "sensing_mechanism": "continuous_seismometer",
+    "integration_axis": "temporal",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "2D_phase_velocity_map",
+    "primitives": [
+      "L.cross_correlate",
+      "L.green_retrieve",
+      "L.tomographic_invert",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "source_distribution_nonuniform",
+    "station_pair_imbalance",
+    "scattering_unmodelled"
+  ],
+  "error_metric": "c_rel_error_percent",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "ant",
+      "forward_operator": "ant_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_stations": 50,
+        "N_days": 365,
+        "N_freqs": 10,
+        "SNR_dB": 25,
+        "source_distribution_nonuniform": 0.1,
+        "station_pair_imbalance": 0.0,
+        "scattering_unmodelled": 0.0
+      },
+      "epsilon_fn_center": "5.0"
+    },
+    "allowed_forward_operators": [
+      "ant_forward"
+    ],
+    "allowed_problem_classes": [
+      "ant"
+    ],
+    "allowed_omega_dimensions": [
+      "N_stations",
+      "N_days",
+      "N_freqs",
+      "SNR_dB",
+      "source_distribution_nonuniform",
+      "station_pair_imbalance",
+      "scattering_unmodelled",
+      "source_distribution_nonuniform",
+      "station_pair_imbalance",
+      "scattering_unmodelled"
+    ],
+    "omega_bounds": {
+      "N_stations": [
+        5,
+        5000
+      ],
+      "N_days": [
+        7,
+        3650
+      ],
+      "N_freqs": [
+        1,
+        50
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "source_distribution_nonuniform": [
+        0.0,
+        0.5
+      ],
+      "station_pair_imbalance": [
+        0.0,
+        0.3
+      ],
+      "scattering_unmodelled": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "c_rel": [
+        0.5,
+        30.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

@@ -1,0 +1,160 @@
+{
+  "artifact_id": "L2-179",
+  "layer": "L2",
+  "parent_l1": "L1-179",
+  "title": "LES \u2014 large-eddy simulation Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        64,
+        8192
+      ],
+      "W": [
+        64,
+        8192
+      ],
+      "Z": [
+        32,
+        2048
+      ],
+      "N_times": [
+        100,
+        1000000
+      ],
+      "Re": [
+        1000,
+        1000000000.0
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "sgs_model_error": [
+        0.0,
+        0.3
+      ],
+      "grid_resolution_error": [
+        0.0,
+        0.3
+      ],
+      "filter_width_error": [
+        0.0,
+        0.3
+      ]
+    },
+    "E": {
+      "forward": "d/dt u_bar + div(u_bar u_bar) = -grad p_bar + div(2 (nu + nu_t) S_bar); nu_t from SGS model",
+      "operator": "les_forward_mismatch",
+      "primitive_chain": "L.filter -> L.sgs_model -> L.momentum -> int.temporal",
+      "inverse": "solve forward for declared state variable under Omega bounds"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR_dB",
+      "residual_norm"
+    ],
+    "epsilon_fn": "13.0 + 0.3*SNR_dB - 8.0*sgs_model_error - 15.0*grid_resolution_error - 5.0*filter_width_error"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Smagorinsky",
+        "method_sig": "I+O",
+        "expected_psnr": 17.5
+      },
+      {
+        "name": "WALE",
+        "method_sig": "I+O",
+        "expected_psnr": 18.5
+      },
+      {
+        "name": "Dynamic-SGS",
+        "method_sig": "I+O",
+        "expected_psnr": 18.0
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "Z": 128,
+        "N_times": 1000,
+        "Re": 100000,
+        "SNR_dB": 30,
+        "sgs_model_error": 0.0,
+        "grid_resolution_error": 0.0,
+        "filter_width_error": 0.0
+      },
+      "epsilon": 19.0
+    },
+    "tier_bounds": {
+      "H": [
+        64,
+        8192
+      ],
+      "W": [
+        64,
+        8192
+      ],
+      "Z": [
+        32,
+        2048
+      ],
+      "N_times": [
+        100,
+        1000000
+      ],
+      "Re": [
+        1000,
+        1000000000.0
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "sgs_model_error": [
+        0.0,
+        0.3
+      ],
+      "grid_resolution_error": [
+        0.0,
+        0.3
+      ],
+      "filter_width_error": [
+        0.0,
+        0.3
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.48,
+  "d_spec_notes": "Distance computed from problem_class, forward_operator, carrier, integration_axis against neighboring specs; within same principle this spec is mismatch-only canonical and sits at the Omega centroid.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions are consistent across the DAG; forward operator maps state space to measurement space at declared shapes.",
+    "S2": "kappa_eff = 40 within tolerance after regularization; RIP-like or coercivity conditions satisfied over most of Omega.",
+    "S3": "Solvers converge at rate q=1.0 in well-posed regime; mismatch parameters degrade convergence but not divergence.",
+    "S4": "epsilon_fn evaluates across 10+ random Omega samples; hardness rule verified \u2014 no baseline passes everywhere."
+  },
+  "ipfs_cid": null
+}

@@ -1,0 +1,207 @@
+{
+  "artifact_id": "L1-273",
+  "layer": "L1",
+  "principle_number": "273",
+  "title": "Full Waveform Inversion (FWI) \u2014 subsurface velocity imaging",
+  "domain": "Geophysics",
+  "sub_domain": "Seismic FWI (crown jewel of PDE inverse problems)",
+  "source_file": "W_geophysics/273_full_waveform_inversion.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Full Waveform Inversion (FWI) \u2014 subsurface velocity imaging forward model.",
+    "forward_model": "rho d^2u/dt^2 - div(C : eps(u)) = f(t); chi = (1/2) ||d_obs - d_cal||^2; grad_m chi via adjoint",
+    "world_state_x": "3D elastic properties (v_P, v_S, rho, anisotropy) of subsurface",
+    "observation_y": "multi-component shot-receiver gathers in time",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "Z",
+      "N_shots",
+      "N_rec",
+      "N_samples",
+      "SNR_dB",
+      "initial_model_error",
+      "cycle_skipping",
+      "source_wavelet_error",
+      "bc_error",
+      "anisotropy_unmodelled"
+    ]
+  },
+  "G": {
+    "dag": "L.wave_propagate -> L.adjoint_wave -> L.gradient_integrate -> int.temporal",
+    "vertices": [
+      "L.wave_propagate",
+      "L.adjoint_wave",
+      "L.gradient_integrate",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.wave_propagate -> L.adjoint_wave",
+      "L.adjoint_wave -> L.gradient_integrate",
+      "L.gradient_integrate -> int.temporal"
+    ],
+    "L_DAG": 4.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "unstable",
+    "condition_number_kappa": 2400,
+    "condition_number_effective": 120,
+    "regime": "Highly non-convex; cycle-skipping from poor initial model; frontier-level inverse problem."
+  },
+  "C": {
+    "solver_class": "Time-domain-FWI, Frequency-domain-FWI, FWI-Net",
+    "convergence_rate_q": 1.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "acoustic",
+    "sensing_mechanism": "geophones_hydrophones",
+    "integration_axis": "temporal",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "3D_elastic_velocity_density",
+    "primitives": [
+      "L.wave_propagate",
+      "L.adjoint_wave",
+      "L.gradient_integrate",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 50,
+  "difficulty_tier": "frontier",
+  "mismatch_parameters": [
+    "initial_model_error",
+    "cycle_skipping",
+    "source_wavelet_error",
+    "bc_error",
+    "anisotropy_unmodelled"
+  ],
+  "error_metric": "velocity_rel_error_percent",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "fwi",
+      "forward_operator": "fwi_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 256,
+        "W": 256,
+        "Z": 128,
+        "N_shots": 64,
+        "N_rec": 256,
+        "N_samples": 2000,
+        "SNR_dB": 25,
+        "initial_model_error": 0.1,
+        "cycle_skipping": 0.0,
+        "source_wavelet_error": 0.0,
+        "bc_error": 0.0,
+        "anisotropy_unmodelled": 0.0
+      },
+      "epsilon_fn_center": "10.0"
+    },
+    "allowed_forward_operators": [
+      "fwi_forward"
+    ],
+    "allowed_problem_classes": [
+      "fwi"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "Z",
+      "N_shots",
+      "N_rec",
+      "N_samples",
+      "SNR_dB",
+      "initial_model_error",
+      "cycle_skipping",
+      "source_wavelet_error",
+      "bc_error",
+      "anisotropy_unmodelled",
+      "initial_model_error",
+      "cycle_skipping",
+      "source_wavelet_error",
+      "bc_error",
+      "anisotropy_unmodelled"
+    ],
+    "omega_bounds": {
+      "H": [
+        32,
+        4096
+      ],
+      "W": [
+        32,
+        4096
+      ],
+      "Z": [
+        16,
+        2048
+      ],
+      "N_shots": [
+        4,
+        10000
+      ],
+      "N_rec": [
+        16,
+        100000
+      ],
+      "N_samples": [
+        100,
+        100000
+      ],
+      "SNR_dB": [
+        -5,
+        40
+      ],
+      "initial_model_error": [
+        0.0,
+        0.3
+      ],
+      "cycle_skipping": [
+        0.0,
+        0.5
+      ],
+      "source_wavelet_error": [
+        0.0,
+        0.3
+      ],
+      "bc_error": [
+        0.0,
+        0.3
+      ],
+      "anisotropy_unmodelled": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "velocity_rel_error": [
+        1.0,
+        60.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

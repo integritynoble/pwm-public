@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L2-191",
+  "layer": "L2",
+  "parent_l1": "L1-191",
+  "title": "Convection-Diffusion-Reaction \u2014 transport with source terms Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        32,
+        2048
+      ],
+      "W": [
+        32,
+        2048
+      ],
+      "N_times": [
+        50,
+        100000
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "rate_const_error": [
+        0.0,
+        0.3
+      ],
+      "D_error": [
+        0.0,
+        0.2
+      ],
+      "velocity_error": [
+        0.0,
+        0.1
+      ]
+    },
+    "E": {
+      "forward": "dC/dt + u.grad C = D Laplacian C + R(C, T); R from Arrhenius / mass action",
+      "operator": "cdr_forward_mismatch",
+      "primitive_chain": "L.convection -> L.diffusion -> L.reaction_kinetics -> int.temporal",
+      "inverse": "solve forward for declared state variable under Omega bounds"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR_dB",
+      "residual_norm"
+    ],
+    "epsilon_fn": "18.0 + 0.3*SNR_dB - 10.0*rate_const_error - 15.0*D_error - 30.0*velocity_error"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "FVM-Rx",
+        "method_sig": "L+O",
+        "expected_psnr": 23.0
+      },
+      {
+        "name": "DG-Rx",
+        "method_sig": "L+O",
+        "expected_psnr": 23.5
+      },
+      {
+        "name": "CDR-NN",
+        "method_sig": "L+N",
+        "expected_psnr": 24.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 256,
+        "W": 256,
+        "N_times": 500,
+        "SNR_dB": 30,
+        "rate_const_error": 0.0,
+        "D_error": 0.0,
+        "velocity_error": 0.0
+      },
+      "epsilon": 24.0
+    },
+    "tier_bounds": {
+      "H": [
+        32,
+        2048
+      ],
+      "W": [
+        32,
+        2048
+      ],
+      "N_times": [
+        50,
+        100000
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "rate_const_error": [
+        0.0,
+        0.3
+      ],
+      "D_error": [
+        0.0,
+        0.2
+      ],
+      "velocity_error": [
+        0.0,
+        0.1
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.48,
+  "d_spec_notes": "Distance computed from problem_class, forward_operator, carrier, integration_axis against neighboring specs; within same principle this spec is mismatch-only canonical and sits at the Omega centroid.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions are consistent across the DAG; forward operator maps state space to measurement space at declared shapes.",
+    "S2": "kappa_eff = 14 within tolerance after regularization; RIP-like or coercivity conditions satisfied over most of Omega.",
+    "S3": "Solvers converge at rate q=2.0 in well-posed regime; mismatch parameters degrade convergence but not divergence.",
+    "S4": "epsilon_fn evaluates across 10+ random Omega samples; hardness rule verified \u2014 no baseline passes everywhere."
+  },
+  "ipfs_cid": null
+}

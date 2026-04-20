@@ -1,0 +1,168 @@
+{
+  "artifact_id": "L1-191",
+  "layer": "L1",
+  "principle_number": "191",
+  "title": "Convection-Diffusion-Reaction \u2014 transport with source terms",
+  "domain": "Fluid Dynamics",
+  "sub_domain": "CDR equation for reactive scalar",
+  "source_file": "R_fluid_dynamics/191_convection_diffusion_reaction.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Convection-Diffusion-Reaction \u2014 transport with source terms forward model.",
+    "forward_model": "dC/dt + u.grad C = D Laplacian C + R(C, T); R from Arrhenius / mass action",
+    "world_state_x": "reactive species concentration C(x,t)",
+    "observation_y": "concentration probes + spectroscopy",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "N_times",
+      "SNR_dB",
+      "rate_const_error",
+      "D_error",
+      "velocity_error"
+    ]
+  },
+  "G": {
+    "dag": "L.convection -> L.diffusion -> L.reaction_kinetics -> int.temporal",
+    "vertices": [
+      "L.convection",
+      "L.diffusion",
+      "L.reaction_kinetics",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.convection -> L.diffusion",
+      "L.diffusion -> L.reaction_kinetics",
+      "L.reaction_kinetics -> int.temporal"
+    ],
+    "L_DAG": 3.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 280,
+    "condition_number_effective": 14,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "FVM-Rx, DG-Rx, CDR-NN",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "mechanical",
+    "sensing_mechanism": "concentration_spectroscopy",
+    "integration_axis": "temporal",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "reactive_scalar_field",
+    "primitives": [
+      "L.convection",
+      "L.diffusion",
+      "L.reaction_kinetics",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "rate_const_error",
+    "D_error",
+    "velocity_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "cdr",
+      "forward_operator": "cdr_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 256,
+        "W": 256,
+        "N_times": 500,
+        "SNR_dB": 30,
+        "rate_const_error": 0.0,
+        "D_error": 0.0,
+        "velocity_error": 0.0
+      },
+      "epsilon_fn_center": "24.0"
+    },
+    "allowed_forward_operators": [
+      "cdr_forward"
+    ],
+    "allowed_problem_classes": [
+      "cdr"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "N_times",
+      "SNR_dB",
+      "rate_const_error",
+      "D_error",
+      "velocity_error",
+      "rate_const_error",
+      "D_error",
+      "velocity_error"
+    ],
+    "omega_bounds": {
+      "H": [
+        32,
+        2048
+      ],
+      "W": [
+        32,
+        2048
+      ],
+      "N_times": [
+        50,
+        100000
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "rate_const_error": [
+        0.0,
+        0.3
+      ],
+      "D_error": [
+        0.0,
+        0.2
+      ],
+      "velocity_error": [
+        0.0,
+        0.1
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

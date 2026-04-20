@@ -1,0 +1,184 @@
+{
+  "artifact_id": "L1-266",
+  "layer": "L1",
+  "principle_number": "266",
+  "title": "Structural Vibration Analysis \u2014 modal response",
+  "domain": "Acoustics",
+  "sub_domain": "Vibration modes of linear elastic structures",
+  "source_file": "V_acoustics/266_structural_vibration.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Structural Vibration Analysis \u2014 modal response forward model.",
+    "forward_model": "M u_ddot + C u_dot + K u = f(t); eigenproblem K Phi = Lambda M Phi",
+    "world_state_x": "modal frequencies omega_k and mode shapes Phi_k of a structure",
+    "observation_y": "accelerometer frequency response H(omega) at N_sensor locations",
+    "physical_parameters_theta": [
+      "N_DOF",
+      "N_modes",
+      "N_sensors",
+      "freq_Hz_max",
+      "SNR_dB",
+      "stiffness_error",
+      "mass_error",
+      "damping_error",
+      "boundary_error"
+    ]
+  },
+  "G": {
+    "dag": "L.fem_assemble -> L.eigenvalue -> L.modal_superposition -> int.frequency",
+    "vertices": [
+      "L.fem_assemble",
+      "L.eigenvalue",
+      "L.modal_superposition",
+      "int.frequency"
+    ],
+    "arcs": [
+      "L.fem_assemble -> L.eigenvalue",
+      "L.eigenvalue -> L.modal_superposition",
+      "L.modal_superposition -> int.frequency"
+    ],
+    "L_DAG": 3.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 300,
+    "condition_number_effective": 15,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "FEM-Lanczos, Subspace-iter, Operational-Modal",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "acoustic",
+    "sensing_mechanism": "accelerometers",
+    "integration_axis": "frequency",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "modal_set_frequencies_shapes",
+    "primitives": [
+      "L.fem_assemble",
+      "L.eigenvalue",
+      "L.modal_superposition",
+      "int.frequency"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "stiffness_error",
+    "mass_error",
+    "damping_error",
+    "boundary_error"
+  ],
+  "error_metric": "freq_rel_error_percent",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "modal_vibration",
+      "forward_operator": "modal_vibration_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_DOF": 5000,
+        "N_modes": 30,
+        "N_sensors": 16,
+        "freq_Hz_max": 5000,
+        "SNR_dB": 30,
+        "stiffness_error": 0.0,
+        "mass_error": 0.0,
+        "damping_error": 0.0,
+        "boundary_error": 0.0
+      },
+      "epsilon_fn_center": "2.0"
+    },
+    "allowed_forward_operators": [
+      "modal_vibration_forward"
+    ],
+    "allowed_problem_classes": [
+      "modal_vibration"
+    ],
+    "allowed_omega_dimensions": [
+      "N_DOF",
+      "N_modes",
+      "N_sensors",
+      "freq_Hz_max",
+      "SNR_dB",
+      "stiffness_error",
+      "mass_error",
+      "damping_error",
+      "boundary_error",
+      "stiffness_error",
+      "mass_error",
+      "damping_error",
+      "boundary_error"
+    ],
+    "omega_bounds": {
+      "N_DOF": [
+        100,
+        200000
+      ],
+      "N_modes": [
+        3,
+        200
+      ],
+      "N_sensors": [
+        4,
+        256
+      ],
+      "freq_Hz_max": [
+        10,
+        50000
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "stiffness_error": [
+        0.0,
+        0.1
+      ],
+      "mass_error": [
+        0.0,
+        0.1
+      ],
+      "damping_error": [
+        0.0,
+        0.5
+      ],
+      "boundary_error": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "freq_rel_error": [
+        0.1,
+        20.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

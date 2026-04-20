@@ -1,0 +1,161 @@
+{
+  "artifact_id": "L1-256",
+  "layer": "L1",
+  "principle_number": "256",
+  "title": "THz Time-Domain Spectroscopy \u2014 material parameter extraction",
+  "domain": "Electromagnetics",
+  "sub_domain": "THz-TDS complex refractive-index extraction",
+  "source_file": "U_electromagnetics/256_thz_spectroscopy.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "THz Time-Domain Spectroscopy \u2014 material parameter extraction forward model.",
+    "forward_model": "E_sample(omega) = T(omega) * E_ref(omega); T from transfer function with n_complex(omega)",
+    "world_state_x": "complex refractive index n~(omega) = n(omega) + j*kappa(omega)",
+    "observation_y": "THz-TDS time-domain pulse before and after sample",
+    "physical_parameters_theta": [
+      "N_samples",
+      "fs_THz",
+      "SNR_dB",
+      "sample_thickness_error",
+      "beam_align_error",
+      "etaloning_error"
+    ]
+  },
+  "G": {
+    "dag": "L.thz_pulse -> L.transmit_reflect -> L.fft_extract -> int.temporal",
+    "vertices": [
+      "L.thz_pulse",
+      "L.transmit_reflect",
+      "L.fft_extract",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.thz_pulse -> L.transmit_reflect",
+      "L.transmit_reflect -> L.fft_extract",
+      "L.fft_extract -> int.temporal"
+    ],
+    "L_DAG": 3.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 300,
+    "condition_number_effective": 15,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "TD-extraction, Nelson-Rielly, Etaloning-NN",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "em",
+    "sensing_mechanism": "thz_detector",
+    "integration_axis": "temporal",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "complex_n_vs_freq",
+    "primitives": [
+      "L.thz_pulse",
+      "L.transmit_reflect",
+      "L.fft_extract",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "sample_thickness_error",
+    "beam_align_error",
+    "etaloning_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "thz_tds",
+      "forward_operator": "thz_tds_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_samples": 4096,
+        "fs_THz": 0.1,
+        "SNR_dB": 30,
+        "sample_thickness_error": 0.0,
+        "beam_align_error": 0.0,
+        "etaloning_error": 0.0
+      },
+      "epsilon_fn_center": "27.0"
+    },
+    "allowed_forward_operators": [
+      "thz_tds_forward"
+    ],
+    "allowed_problem_classes": [
+      "thz_tds"
+    ],
+    "allowed_omega_dimensions": [
+      "N_samples",
+      "fs_THz",
+      "SNR_dB",
+      "sample_thickness_error",
+      "beam_align_error",
+      "etaloning_error",
+      "sample_thickness_error",
+      "beam_align_error",
+      "etaloning_error"
+    ],
+    "omega_bounds": {
+      "N_samples": [
+        256,
+        1048576
+      ],
+      "fs_THz": [
+        0.001,
+        100
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "sample_thickness_error": [
+        0.0,
+        0.05
+      ],
+      "beam_align_error": [
+        0.0,
+        0.05
+      ],
+      "etaloning_error": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

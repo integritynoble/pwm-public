@@ -1,0 +1,147 @@
+{
+  "artifact_id": "L2-247",
+  "layer": "L2",
+  "parent_l1": "L1-247",
+  "title": "Phase Retrieval \u2014 Gerchberg-Saxton / hybrid input-output Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        64,
+        4096
+      ],
+      "W": [
+        64,
+        4096
+      ],
+      "oversampling": [
+        1.0,
+        10.0
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "support_error": [
+        0.0,
+        0.2
+      ],
+      "oversampling_error": [
+        0.0,
+        0.2
+      ],
+      "stagnation_risk": [
+        0.0,
+        0.5
+      ]
+    },
+    "E": {
+      "forward": "y = |F{x}|^2 + n; recover phase(F{x}) via alternating projection",
+      "operator": "phase_retrieval_forward_mismatch",
+      "primitive_chain": "L.fourier_transform -> L.modulus_projection -> L.support_projection -> int.spatial",
+      "inverse": "solve forward for declared state variable under Omega bounds"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR_dB",
+      "residual_norm"
+    ],
+    "epsilon_fn": "17.0 + 2.0*log2(oversampling/1.0) + 0.25*SNR_dB - 12.0*support_error - 10.0*oversampling_error"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "GS",
+        "method_sig": "I+O",
+        "expected_psnr": 21.5
+      },
+      {
+        "name": "HIO",
+        "method_sig": "I+O",
+        "expected_psnr": 23.5
+      },
+      {
+        "name": "RAAR",
+        "method_sig": "I+O",
+        "expected_psnr": 24.0
+      },
+      {
+        "name": "PhaseGAN",
+        "method_sig": "L+N",
+        "expected_psnr": 25.0
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "oversampling": 2.0,
+        "SNR_dB": 30,
+        "support_error": 0.0,
+        "oversampling_error": 0.0,
+        "stagnation_risk": 0.0
+      },
+      "epsilon": 24.0
+    },
+    "tier_bounds": {
+      "H": [
+        64,
+        4096
+      ],
+      "W": [
+        64,
+        4096
+      ],
+      "oversampling": [
+        1.0,
+        10.0
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "support_error": [
+        0.0,
+        0.2
+      ],
+      "oversampling_error": [
+        0.0,
+        0.2
+      ],
+      "stagnation_risk": [
+        0.0,
+        0.5
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.48,
+  "d_spec_notes": "Distance computed from problem_class, forward_operator, carrier, integration_axis against neighboring specs; within same principle this spec is mismatch-only canonical and sits at the Omega centroid.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions are consistent across the DAG; forward operator maps state space to measurement space at declared shapes.",
+    "S2": "kappa_eff = 30 within tolerance after regularization; RIP-like or coercivity conditions satisfied over most of Omega.",
+    "S3": "Solvers converge at rate q=1.0 in well-posed regime; mismatch parameters degrade convergence but not divergence.",
+    "S4": "epsilon_fn evaluates across 10+ random Omega samples; hardness rule verified \u2014 no baseline passes everywhere."
+  },
+  "ipfs_cid": null
+}

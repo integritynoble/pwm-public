@@ -1,0 +1,151 @@
+{
+  "artifact_id": "L2-241",
+  "layer": "L2",
+  "parent_l1": "L1-241",
+  "title": "Fresnel Diffraction \u2014 paraxial wave propagation Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        64,
+        4096
+      ],
+      "W": [
+        64,
+        4096
+      ],
+      "lambda_nm": [
+        1,
+        10000
+      ],
+      "z_m": [
+        0.001,
+        1000
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "z_dist_error": [
+        0.0,
+        0.05
+      ],
+      "aperture_error": [
+        0.0,
+        0.1
+      ],
+      "wavelength_error": [
+        0.0,
+        0.02
+      ]
+    },
+    "E": {
+      "forward": "U(x,y,z) = (exp(j*k*z)/j*lambda*z) * int U_0(x',y') * exp(j*k/(2z) * ((x-x')^2 + (y-y')^2)) dx' dy'",
+      "operator": "fresnel_forward_mismatch",
+      "primitive_chain": "L.paraxial_propagate -> L.fresnel_convolve -> L.intensity_capture -> int.spatial",
+      "inverse": "solve forward for declared state variable under Omega bounds"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR_dB",
+      "residual_norm"
+    ],
+    "epsilon_fn": "19.0 + 0.3*SNR_dB - 20.0*z_dist_error - 15.0*aperture_error - 30.0*wavelength_error"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "FFT-AS",
+        "method_sig": "L+O",
+        "expected_psnr": 25.0
+      },
+      {
+        "name": "Fresnel-transform",
+        "method_sig": "L+O",
+        "expected_psnr": 26.0
+      },
+      {
+        "name": "Wave-opt-NN",
+        "method_sig": "L+N",
+        "expected_psnr": 27.0
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "lambda_nm": 633,
+        "z_m": 1.0,
+        "SNR_dB": 30,
+        "z_dist_error": 0.0,
+        "aperture_error": 0.0,
+        "wavelength_error": 0.0
+      },
+      "epsilon": 26.0
+    },
+    "tier_bounds": {
+      "H": [
+        64,
+        4096
+      ],
+      "W": [
+        64,
+        4096
+      ],
+      "lambda_nm": [
+        1,
+        10000
+      ],
+      "z_m": [
+        0.001,
+        1000
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "z_dist_error": [
+        0.0,
+        0.05
+      ],
+      "aperture_error": [
+        0.0,
+        0.1
+      ],
+      "wavelength_error": [
+        0.0,
+        0.02
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.48,
+  "d_spec_notes": "Distance computed from problem_class, forward_operator, carrier, integration_axis against neighboring specs; within same principle this spec is mismatch-only canonical and sits at the Omega centroid.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions are consistent across the DAG; forward operator maps state space to measurement space at declared shapes.",
+    "S2": "kappa_eff = 10 within tolerance after regularization; RIP-like or coercivity conditions satisfied over most of Omega.",
+    "S3": "Solvers converge at rate q=2.0 in well-posed regime; mismatch parameters degrade convergence but not divergence.",
+    "S4": "epsilon_fn evaluates across 10+ random Omega samples; hardness rule verified \u2014 no baseline passes everywhere."
+  },
+  "ipfs_cid": null
+}

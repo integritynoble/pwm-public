@@ -1,0 +1,154 @@
+{
+  "artifact_id": "L1-224",
+  "layer": "L1",
+  "principle_number": "224",
+  "title": "Fatigue \u2014 Paris law crack growth",
+  "domain": "Structural Mechanics",
+  "sub_domain": "da/dN = C * (delta K)^m crack growth",
+  "source_file": "T_structural_mechanics/224_fatigue_paris_law.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Fatigue \u2014 Paris law crack growth forward model.",
+    "forward_model": "da/dN = C (delta K)^m; N_life = int_{a0}^{a_f} da / (C (delta K(a))^m)",
+    "world_state_x": "crack length a(N) and fatigue life N_life",
+    "observation_y": "crack length measurement + cycle count",
+    "physical_parameters_theta": [
+      "N_cycles",
+      "SNR_dB",
+      "C_error",
+      "m_error",
+      "threshold_delta_K_error"
+    ]
+  },
+  "G": {
+    "dag": "L.stress_intensity -> L.paris_growth -> L.life_integrate -> int.temporal",
+    "vertices": [
+      "L.stress_intensity",
+      "L.paris_growth",
+      "L.life_integrate",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.stress_intensity -> L.paris_growth",
+      "L.paris_growth -> L.life_integrate",
+      "L.life_integrate -> int.temporal"
+    ],
+    "L_DAG": 3.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 240,
+    "condition_number_effective": 12,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Paris-fit, NASGRO, Fatigue-NN",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "mechanical",
+    "sensing_mechanism": "crack_meter",
+    "integration_axis": "temporal",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "fatigue_life_curve",
+    "primitives": [
+      "L.stress_intensity",
+      "L.paris_growth",
+      "L.life_integrate",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "C_error",
+    "m_error",
+    "threshold_delta_K_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "fatigue",
+      "forward_operator": "fatigue_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_cycles": 1000000.0,
+        "SNR_dB": 30,
+        "C_error": 0.0,
+        "m_error": 0.0,
+        "threshold_delta_K_error": 0.0
+      },
+      "epsilon_fn_center": "24.0"
+    },
+    "allowed_forward_operators": [
+      "fatigue_forward"
+    ],
+    "allowed_problem_classes": [
+      "fatigue"
+    ],
+    "allowed_omega_dimensions": [
+      "N_cycles",
+      "SNR_dB",
+      "C_error",
+      "m_error",
+      "threshold_delta_K_error",
+      "C_error",
+      "m_error",
+      "threshold_delta_K_error"
+    ],
+    "omega_bounds": {
+      "N_cycles": [
+        1000.0,
+        10000000000.0
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "C_error": [
+        0.0,
+        0.3
+      ],
+      "m_error": [
+        0.0,
+        0.1
+      ],
+      "threshold_delta_K_error": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

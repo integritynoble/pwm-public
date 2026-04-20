@@ -1,0 +1,252 @@
+{
+  "artifact_id": "L3-240",
+  "layer": "L3",
+  "parent_l2": "L2-240",
+  "parent_l1": "L1-240",
+  "title": "Fiber Optic \u2014 nonlinear Schrodinger pulse propagation Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "canonical Electromagnetics dataset for this principle",
+    "secondary": "simulated forward model at declared Omega",
+    "construction_method": "parametric forward synthesis + declared noise model",
+    "num_dev_instances_per_tier": 20,
+    "holdout_instances_per_tier": 10
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "N_samples": 4096,
+        "L_fiber_km": 10,
+        "SNR_dB": 30.0,
+        "beta2_error": 0.0,
+        "gamma_error": 0.0,
+        "loss_error": 0.0,
+        "raman_frac_error": 0.0
+      },
+      "epsilon": 24.0,
+      "d_ibench": 0.14,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "Split-step-Fourier",
+          "metric": "PSNR_dB",
+          "score": 23.0,
+          "Q": 0.88
+        },
+        {
+          "name": "GNLSE-RK4IP",
+          "metric": "PSNR_dB",
+          "score": 24.5,
+          "Q": 0.88
+        },
+        {
+          "name": "NLSE-UNet",
+          "metric": "PSNR_dB",
+          "score": 25.5,
+          "Q": 0.88
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "N_samples": 2048,
+        "L_fiber_km": 10,
+        "SNR_dB": 25.0,
+        "beta2_error": 0.025,
+        "gamma_error": 0.025,
+        "loss_error": 0.025,
+        "raman_frac_error": 0.05
+      },
+      "epsilon": 20.4,
+      "d_ibench": 0.28,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "Split-step-Fourier",
+          "metric": "PSNR_dB",
+          "score": 20.5,
+          "Q": 0.68
+        },
+        {
+          "name": "GNLSE-RK4IP",
+          "metric": "PSNR_dB",
+          "score": 22.0,
+          "Q": 0.68
+        },
+        {
+          "name": "NLSE-UNet",
+          "metric": "PSNR_dB",
+          "score": 23.0,
+          "Q": 0.68
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "N_samples": 819,
+        "L_fiber_km": 10,
+        "SNR_dB": 10.0,
+        "beta2_error": 0.05500000000000001,
+        "gamma_error": 0.05500000000000001,
+        "loss_error": 0.05500000000000001,
+        "raman_frac_error": 0.11000000000000001
+      },
+      "epsilon": 16.8,
+      "d_ibench": 0.48,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "Split-step-Fourier",
+          "metric": "PSNR_dB",
+          "score": 18.0,
+          "Q": 0.48
+        },
+        {
+          "name": "GNLSE-RK4IP",
+          "metric": "PSNR_dB",
+          "score": 19.5,
+          "Q": 0.48
+        },
+        {
+          "name": "NLSE-UNet",
+          "metric": "PSNR_dB",
+          "score": 20.5,
+          "Q": 0.48
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "N_samples": 341,
+        "L_fiber_km": 10,
+        "SNR_dB": -10,
+        "beta2_error": 0.1,
+        "gamma_error": 0.1,
+        "loss_error": 0.1,
+        "raman_frac_error": 0.2
+      },
+      "epsilon": 13.2,
+      "d_ibench": 0.72,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "Split-step-Fourier",
+          "metric": "PSNR_dB",
+          "score": 15.5,
+          "Q": 0.28
+        },
+        {
+          "name": "GNLSE-RK4IP",
+          "metric": "PSNR_dB",
+          "score": 17.0,
+          "Q": 0.28
+        },
+        {
+          "name": "NLSE-UNet",
+          "metric": "PSNR_dB",
+          "score": 18.0,
+          "Q": 0.28
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "full parametric sweep over ['N_samples', 'L_fiber_km', 'SNR_dB', 'beta2_error', 'gamma_error']",
+      "construction_method": "uniform Omega sampling within declared bounds",
+      "num_dev_instances": 200,
+      "num_holdout_instances": 100
+    },
+    "tracks": {
+      "track_A_stratified_worst_case": {
+        "samples_per_stratum": 5,
+        "pass_condition": "min_i(metric_i) beats epsilon_fn at Omega_centroid across all strata"
+      },
+      "track_B_uniform_median": {
+        "num_samples": 50,
+        "pass_condition": "median metric beats epsilon_fn at Omega_median"
+      },
+      "track_C_mismatch_degradation": {
+        "sweep_points": [
+          0.0,
+          0.25,
+          0.5,
+          0.75,
+          1.0
+        ],
+        "scenes_per_point": 10,
+        "degradation_score": "mean Q_norm across sweep"
+      }
+    },
+    "baselines": [
+      {
+        "name": "Split-step-Fourier",
+        "overall_Q": 0.7
+      },
+      {
+        "name": "GNLSE-RK4IP",
+        "overall_Q": 0.6
+      },
+      {
+        "name": "NLSE-UNet",
+        "overall_Q": 0.5
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind Omega corner under max mismatch.",
+  "anti_overfitting_mechanisms": {
+    "M1_random_instantiation": "generator/instantiate.py uses G(SHA256(h_sub || k)) seeded per submission.",
+    "M2_convergence_scoring": "convergence/check_convergence.py verifies declared q-rate across mesh refinements.",
+    "M3_worst_case_eval": "scoring/worst_case.py returns min score over 20 fixed dev scenes per tier.",
+    "M4_community_adversarial": "adversarial submissions eligible under anti-overfitting bounty.",
+    "M5_method_sig_diversity": "baselines span classical (L+O), learned (L+N), and iterative (I+O) method signatures.",
+    "M6_gate_checks": "S1-S4 gate checks embedded with thresholds.yaml."
+  },
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

@@ -1,0 +1,187 @@
+{
+  "artifact_id": "L2-273",
+  "layer": "L2",
+  "parent_l1": "L1-273",
+  "title": "Full Waveform Inversion (FWI) \u2014 subsurface velocity imaging Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        32,
+        4096
+      ],
+      "W": [
+        32,
+        4096
+      ],
+      "Z": [
+        16,
+        2048
+      ],
+      "N_shots": [
+        4,
+        10000
+      ],
+      "N_rec": [
+        16,
+        100000
+      ],
+      "N_samples": [
+        100,
+        100000
+      ],
+      "SNR_dB": [
+        -5,
+        40
+      ],
+      "initial_model_error": [
+        0.0,
+        0.3
+      ],
+      "cycle_skipping": [
+        0.0,
+        0.5
+      ],
+      "source_wavelet_error": [
+        0.0,
+        0.3
+      ],
+      "bc_error": [
+        0.0,
+        0.3
+      ],
+      "anisotropy_unmodelled": [
+        0.0,
+        0.3
+      ]
+    },
+    "E": {
+      "forward": "rho d^2u/dt^2 - div(C : eps(u)) = f(t); chi = (1/2) ||d_obs - d_cal||^2; grad_m chi via adjoint",
+      "operator": "fwi_forward_mismatch",
+      "primitive_chain": "L.wave_propagate -> L.adjoint_wave -> L.gradient_integrate -> int.temporal",
+      "inverse": "solve forward for declared state variable under Omega bounds"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "velocity_rel_error_percent",
+      "residual_norm"
+    ],
+    "epsilon_fn": "5.0 + 30.0*initial_model_error + 50.0*cycle_skipping + 15.0*source_wavelet_error + 10.0*bc_error + 10.0*anisotropy_unmodelled"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Time-domain-FWI",
+        "method_sig": "I+O",
+        "expected_psnr": 12.0
+      },
+      {
+        "name": "Frequency-domain-FWI",
+        "method_sig": "I+O",
+        "expected_psnr": 11.0
+      },
+      {
+        "name": "FWI-Net",
+        "method_sig": "L+N",
+        "expected_psnr": 8.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 256,
+        "W": 256,
+        "Z": 128,
+        "N_shots": 64,
+        "N_rec": 256,
+        "N_samples": 2000,
+        "SNR_dB": 25,
+        "initial_model_error": 0.1,
+        "cycle_skipping": 0.0,
+        "source_wavelet_error": 0.0,
+        "bc_error": 0.0,
+        "anisotropy_unmodelled": 0.0
+      },
+      "epsilon": 10.0
+    },
+    "tier_bounds": {
+      "H": [
+        32,
+        4096
+      ],
+      "W": [
+        32,
+        4096
+      ],
+      "Z": [
+        16,
+        2048
+      ],
+      "N_shots": [
+        4,
+        10000
+      ],
+      "N_rec": [
+        16,
+        100000
+      ],
+      "N_samples": [
+        100,
+        100000
+      ],
+      "SNR_dB": [
+        -5,
+        40
+      ],
+      "initial_model_error": [
+        0.0,
+        0.3
+      ],
+      "cycle_skipping": [
+        0.0,
+        0.5
+      ],
+      "source_wavelet_error": [
+        0.0,
+        0.3
+      ],
+      "bc_error": [
+        0.0,
+        0.3
+      ],
+      "anisotropy_unmodelled": [
+        0.0,
+        0.3
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.48,
+  "d_spec_notes": "Distance computed from problem_class, forward_operator, carrier, integration_axis against neighboring specs; within same principle this spec is mismatch-only canonical and sits at the Omega centroid.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions are consistent across the DAG; forward operator maps state space to measurement space at declared shapes.",
+    "S2": "kappa_eff = 120 within tolerance after regularization; RIP-like or coercivity conditions satisfied over most of Omega.",
+    "S3": "Solvers converge at rate q=1.0 in well-posed regime; mismatch parameters degrade convergence but not divergence.",
+    "S4": "epsilon_fn evaluates across 10+ random Omega samples; hardness rule verified \u2014 no baseline passes everywhere."
+  },
+  "ipfs_cid": null
+}

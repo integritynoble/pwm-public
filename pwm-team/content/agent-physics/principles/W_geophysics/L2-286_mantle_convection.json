@@ -1,0 +1,169 @@
+{
+  "artifact_id": "L2-286",
+  "layer": "L2",
+  "parent_l1": "L1-286",
+  "title": "Mantle Convection \u2014 high-Ra thermal convection Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        32,
+        1024
+      ],
+      "W": [
+        32,
+        1024
+      ],
+      "Z": [
+        32,
+        1024
+      ],
+      "N_times": [
+        10,
+        10000
+      ],
+      "Ra": [
+        100000.0,
+        1000000000.0
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "rheology_error": [
+        0.0,
+        0.3
+      ],
+      "viscosity_contrast_error": [
+        0.0,
+        0.5
+      ],
+      "bc_error": [
+        0.0,
+        0.3
+      ],
+      "time_history_unknown": [
+        0.0,
+        0.5
+      ]
+    },
+    "E": {
+      "forward": "Stokes: -grad p + div(eta * eps_dot) = Ra*T*g; energy: dT/dt + u.grad T = Laplacian T + H",
+      "operator": "mantle_convection_forward_mismatch",
+      "primitive_chain": "L.stokes_infinite_prandtl -> L.energy -> L.rheology -> int.temporal",
+      "inverse": "solve forward for declared state variable under Omega bounds"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "flow_rel_error_percent",
+      "residual_norm"
+    ],
+    "epsilon_fn": "8.0 + 10.0*rheology_error + 8.0*viscosity_contrast_error + 5.0*bc_error + 10.0*time_history_unknown"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "CitcomS",
+        "method_sig": "I+O",
+        "expected_psnr": 16.0
+      },
+      {
+        "name": "ASPECT",
+        "method_sig": "I+O",
+        "expected_psnr": 15.5
+      },
+      {
+        "name": "StagYY",
+        "method_sig": "I+O",
+        "expected_psnr": 15.8
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 128,
+        "W": 128,
+        "Z": 128,
+        "N_times": 100,
+        "Ra": 10000000.0,
+        "SNR_dB": 25,
+        "rheology_error": 0.1,
+        "viscosity_contrast_error": 0.2,
+        "bc_error": 0.0,
+        "time_history_unknown": 0.3
+      },
+      "epsilon": 15.0
+    },
+    "tier_bounds": {
+      "H": [
+        32,
+        1024
+      ],
+      "W": [
+        32,
+        1024
+      ],
+      "Z": [
+        32,
+        1024
+      ],
+      "N_times": [
+        10,
+        10000
+      ],
+      "Ra": [
+        100000.0,
+        1000000000.0
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "rheology_error": [
+        0.0,
+        0.3
+      ],
+      "viscosity_contrast_error": [
+        0.0,
+        0.5
+      ],
+      "bc_error": [
+        0.0,
+        0.3
+      ],
+      "time_history_unknown": [
+        0.0,
+        0.5
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.48,
+  "d_spec_notes": "Distance computed from problem_class, forward_operator, carrier, integration_axis against neighboring specs; within same principle this spec is mismatch-only canonical and sits at the Omega centroid.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions are consistent across the DAG; forward operator maps state space to measurement space at declared shapes.",
+    "S2": "kappa_eff = 80 within tolerance after regularization; RIP-like or coercivity conditions satisfied over most of Omega.",
+    "S3": "Solvers converge at rate q=1.0 in well-posed regime; mismatch parameters degrade convergence but not divergence.",
+    "S4": "epsilon_fn evaluates across 10+ random Omega samples; hardness rule verified \u2014 no baseline passes everywhere."
+  },
+  "ipfs_cid": null
+}

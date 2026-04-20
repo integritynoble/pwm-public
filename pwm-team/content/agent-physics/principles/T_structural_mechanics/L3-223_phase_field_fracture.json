@@ -1,0 +1,248 @@
+{
+  "artifact_id": "L3-223",
+  "layer": "L3",
+  "parent_l2": "L2-223",
+  "parent_l1": "L1-223",
+  "title": "Phase-Field Fracture \u2014 regularized crack model Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "canonical Structural Mechanics dataset for this principle",
+    "secondary": "simulated forward model at declared Omega",
+    "construction_method": "parametric forward synthesis + declared noise model",
+    "num_dev_instances_per_tier": 20,
+    "holdout_instances_per_tier": 10
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "N_DOF": 10000,
+        "ell_mm": 0.1,
+        "SNR_dB": 30.0,
+        "ell_regularization_error": 0.0,
+        "G_c_error": 0.0,
+        "degradation_func_error": 0.0
+      },
+      "epsilon": 21.5,
+      "d_ibench": 0.14,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "AT1-staggered",
+          "metric": "PSNR_dB",
+          "score": 20.0,
+          "Q": 0.88
+        },
+        {
+          "name": "AT2-monolithic",
+          "metric": "PSNR_dB",
+          "score": 21.0,
+          "Q": 0.88
+        },
+        {
+          "name": "PhaseField-NN",
+          "metric": "PSNR_dB",
+          "score": 22.5,
+          "Q": 0.88
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "N_DOF": 10000,
+        "ell_mm": 0.1,
+        "SNR_dB": 25.0,
+        "ell_regularization_error": 0.075,
+        "G_c_error": 0.05,
+        "degradation_func_error": 0.05
+      },
+      "epsilon": 18.275,
+      "d_ibench": 0.28,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "AT1-staggered",
+          "metric": "PSNR_dB",
+          "score": 17.5,
+          "Q": 0.68
+        },
+        {
+          "name": "AT2-monolithic",
+          "metric": "PSNR_dB",
+          "score": 18.5,
+          "Q": 0.68
+        },
+        {
+          "name": "PhaseField-NN",
+          "metric": "PSNR_dB",
+          "score": 20.0,
+          "Q": 0.68
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "N_DOF": 10000,
+        "ell_mm": 0.1,
+        "SNR_dB": 10.0,
+        "ell_regularization_error": 0.165,
+        "G_c_error": 0.11000000000000001,
+        "degradation_func_error": 0.11000000000000001
+      },
+      "epsilon": 15.05,
+      "d_ibench": 0.48,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "AT1-staggered",
+          "metric": "PSNR_dB",
+          "score": 15.0,
+          "Q": 0.48
+        },
+        {
+          "name": "AT2-monolithic",
+          "metric": "PSNR_dB",
+          "score": 16.0,
+          "Q": 0.48
+        },
+        {
+          "name": "PhaseField-NN",
+          "metric": "PSNR_dB",
+          "score": 17.5,
+          "Q": 0.48
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "N_DOF": 10000,
+        "ell_mm": 0.1,
+        "SNR_dB": -10,
+        "ell_regularization_error": 0.3,
+        "G_c_error": 0.2,
+        "degradation_func_error": 0.2
+      },
+      "epsilon": 11.825,
+      "d_ibench": 0.72,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "AT1-staggered",
+          "metric": "PSNR_dB",
+          "score": 12.5,
+          "Q": 0.28
+        },
+        {
+          "name": "AT2-monolithic",
+          "metric": "PSNR_dB",
+          "score": 13.5,
+          "Q": 0.28
+        },
+        {
+          "name": "PhaseField-NN",
+          "metric": "PSNR_dB",
+          "score": 15.0,
+          "Q": 0.28
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "full parametric sweep over ['N_DOF', 'ell_mm', 'SNR_dB', 'ell_regularization_error', 'G_c_error']",
+      "construction_method": "uniform Omega sampling within declared bounds",
+      "num_dev_instances": 200,
+      "num_holdout_instances": 100
+    },
+    "tracks": {
+      "track_A_stratified_worst_case": {
+        "samples_per_stratum": 5,
+        "pass_condition": "min_i(metric_i) beats epsilon_fn at Omega_centroid across all strata"
+      },
+      "track_B_uniform_median": {
+        "num_samples": 50,
+        "pass_condition": "median metric beats epsilon_fn at Omega_median"
+      },
+      "track_C_mismatch_degradation": {
+        "sweep_points": [
+          0.0,
+          0.25,
+          0.5,
+          0.75,
+          1.0
+        ],
+        "scenes_per_point": 10,
+        "degradation_score": "mean Q_norm across sweep"
+      }
+    },
+    "baselines": [
+      {
+        "name": "AT1-staggered",
+        "overall_Q": 0.7
+      },
+      {
+        "name": "AT2-monolithic",
+        "overall_Q": 0.6
+      },
+      {
+        "name": "PhaseField-NN",
+        "overall_Q": 0.5
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind Omega corner under max mismatch.",
+  "anti_overfitting_mechanisms": {
+    "M1_random_instantiation": "generator/instantiate.py uses G(SHA256(h_sub || k)) seeded per submission.",
+    "M2_convergence_scoring": "convergence/check_convergence.py verifies declared q-rate across mesh refinements.",
+    "M3_worst_case_eval": "scoring/worst_case.py returns min score over 20 fixed dev scenes per tier.",
+    "M4_community_adversarial": "adversarial submissions eligible under anti-overfitting bounty.",
+    "M5_method_sig_diversity": "baselines span classical (L+O), learned (L+N), and iterative (I+O) method signatures.",
+    "M6_gate_checks": "S1-S4 gate checks embedded with thresholds.yaml."
+  },
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

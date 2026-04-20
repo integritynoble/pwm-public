@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L2-213",
+  "layer": "L2",
+  "parent_l1": "L1-213",
+  "title": "Modal Analysis \u2014 natural frequencies and mode shapes Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "N_DOF": [
+        100,
+        500000
+      ],
+      "N_modes": [
+        3,
+        500
+      ],
+      "N_sensors": [
+        2,
+        256
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "stiffness_error": [
+        0.0,
+        0.1
+      ],
+      "mass_error": [
+        0.0,
+        0.1
+      ],
+      "bc_error": [
+        0.0,
+        0.2
+      ]
+    },
+    "E": {
+      "forward": "K phi_k = omega_k^2 M phi_k; modal superposition u(t) = sum_k q_k(t) phi_k",
+      "operator": "modal_forward_mismatch",
+      "primitive_chain": "L.mass_stiffness -> L.eigenvalue_solve -> L.mode_sort -> int.frequency",
+      "inverse": "solve forward for declared state variable under Omega bounds"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "freq_rel_error_percent",
+      "residual_norm"
+    ],
+    "epsilon_fn": "1.0 + 50.0*stiffness_error + 50.0*mass_error + 10.0*bc_error - 0.02*SNR_dB"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Lanczos",
+        "method_sig": "L+O",
+        "expected_psnr": 1.5
+      },
+      {
+        "name": "subspace-iter",
+        "method_sig": "L+O",
+        "expected_psnr": 1.2
+      },
+      {
+        "name": "AMLS",
+        "method_sig": "L+O",
+        "expected_psnr": 1.3
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_DOF": 5000,
+        "N_modes": 30,
+        "N_sensors": 16,
+        "SNR_dB": 30,
+        "stiffness_error": 0.0,
+        "mass_error": 0.0,
+        "bc_error": 0.0
+      },
+      "epsilon": 2.0
+    },
+    "tier_bounds": {
+      "N_DOF": [
+        100,
+        500000
+      ],
+      "N_modes": [
+        3,
+        500
+      ],
+      "N_sensors": [
+        2,
+        256
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "stiffness_error": [
+        0.0,
+        0.1
+      ],
+      "mass_error": [
+        0.0,
+        0.1
+      ],
+      "bc_error": [
+        0.0,
+        0.2
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.48,
+  "d_spec_notes": "Distance computed from problem_class, forward_operator, carrier, integration_axis against neighboring specs; within same principle this spec is mismatch-only canonical and sits at the Omega centroid.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions are consistent across the DAG; forward operator maps state space to measurement space at declared shapes.",
+    "S2": "kappa_eff = 12 within tolerance after regularization; RIP-like or coercivity conditions satisfied over most of Omega.",
+    "S3": "Solvers converge at rate q=2.0 in well-posed regime; mismatch parameters degrade convergence but not divergence.",
+    "S4": "epsilon_fn evaluates across 10+ random Omega samples; hardness rule verified \u2014 no baseline passes everywhere."
+  },
+  "ipfs_cid": null
+}

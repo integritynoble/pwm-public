@@ -1,0 +1,161 @@
+{
+  "artifact_id": "L1-274",
+  "layer": "L1",
+  "principle_number": "274",
+  "title": "Surface Wave Dispersion \u2014 shallow Vs profile inversion",
+  "domain": "Geophysics",
+  "sub_domain": "Rayleigh/Love wave phase-velocity dispersion",
+  "source_file": "W_geophysics/274_surface_wave_dispersion.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Surface Wave Dispersion \u2014 shallow Vs profile inversion forward model.",
+    "forward_model": "c(omega) from eigenvalue problem for layered medium; MASW/SPAC dispersion curve",
+    "world_state_x": "1D shear-velocity profile Vs(z) under survey site",
+    "observation_y": "phase-velocity dispersion curve c(f)",
+    "physical_parameters_theta": [
+      "N_layers",
+      "N_freqs",
+      "SNR_dB",
+      "vp_prior_error",
+      "density_prior_error",
+      "higher_mode_contamination"
+    ]
+  },
+  "G": {
+    "dag": "L.mass_stiffness_1D -> L.eigenvalue -> L.dispersion_match -> int.frequency",
+    "vertices": [
+      "L.mass_stiffness_1D",
+      "L.eigenvalue",
+      "L.dispersion_match",
+      "int.frequency"
+    ],
+    "arcs": [
+      "L.mass_stiffness_1D -> L.eigenvalue",
+      "L.eigenvalue -> L.dispersion_match",
+      "L.dispersion_match -> int.frequency"
+    ],
+    "L_DAG": 3.2,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 400,
+    "condition_number_effective": 20,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Park-MASW, Wang-f-k, MASW-NN",
+    "convergence_rate_q": 1.5,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "acoustic",
+    "sensing_mechanism": "geophones",
+    "integration_axis": "frequency",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "1D_shear_velocity",
+    "primitives": [
+      "L.mass_stiffness_1D",
+      "L.eigenvalue",
+      "L.dispersion_match",
+      "int.frequency"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "vp_prior_error",
+    "density_prior_error",
+    "higher_mode_contamination"
+  ],
+  "error_metric": "Vs_rel_error_percent",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "masw",
+      "forward_operator": "masw_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_layers": 10,
+        "N_freqs": 60,
+        "SNR_dB": 25,
+        "vp_prior_error": 0.0,
+        "density_prior_error": 0.0,
+        "higher_mode_contamination": 0.0
+      },
+      "epsilon_fn_center": "4.0"
+    },
+    "allowed_forward_operators": [
+      "masw_forward"
+    ],
+    "allowed_problem_classes": [
+      "masw"
+    ],
+    "allowed_omega_dimensions": [
+      "N_layers",
+      "N_freqs",
+      "SNR_dB",
+      "vp_prior_error",
+      "density_prior_error",
+      "higher_mode_contamination",
+      "vp_prior_error",
+      "density_prior_error",
+      "higher_mode_contamination"
+    ],
+    "omega_bounds": {
+      "N_layers": [
+        2,
+        100
+      ],
+      "N_freqs": [
+        10,
+        500
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "vp_prior_error": [
+        0.0,
+        0.2
+      ],
+      "density_prior_error": [
+        0.0,
+        0.1
+      ],
+      "higher_mode_contamination": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "Vs_rel_error": [
+        0.5,
+        30.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

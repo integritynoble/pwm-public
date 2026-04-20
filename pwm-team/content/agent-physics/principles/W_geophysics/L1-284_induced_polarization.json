@@ -1,0 +1,182 @@
+{
+  "artifact_id": "L1-284",
+  "layer": "L1",
+  "principle_number": "284",
+  "title": "Induced Polarization \u2014 chargeability imaging",
+  "domain": "Geophysics",
+  "sub_domain": "Time- or frequency-domain IP inversion",
+  "source_file": "W_geophysics/284_induced_polarization.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Induced Polarization \u2014 chargeability imaging forward model.",
+    "forward_model": "eta = (V_DC - V_IP) / V_DC; Cole-Cole: m(omega) = m_0 [1 - 1/(1 + (j omega tau)^c)]",
+    "world_state_x": "chargeability m(x) and Cole-Cole relaxation tau(x)",
+    "observation_y": "time-decay or frequency-dispersion IP measurements",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "Z",
+      "N_quadrupoles",
+      "N_timesteps",
+      "SNR_dB",
+      "electromagnetic_coupling",
+      "cc_params_error",
+      "topography_error"
+    ]
+  },
+  "G": {
+    "dag": "L.current_injection -> L.relaxation_time -> L.cole_cole -> int.temporal",
+    "vertices": [
+      "L.current_injection",
+      "L.relaxation_time",
+      "L.cole_cole",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.current_injection -> L.relaxation_time",
+      "L.relaxation_time -> L.cole_cole",
+      "L.cole_cole -> int.temporal"
+    ],
+    "L_DAG": 3.3,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 560,
+    "condition_number_effective": 28,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "DCIP-3D, CCIP, IP-Net",
+    "convergence_rate_q": 1.5,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "em",
+    "sensing_mechanism": "dc_electrodes_transient",
+    "integration_axis": "temporal",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "3D_chargeability_field",
+    "primitives": [
+      "L.current_injection",
+      "L.relaxation_time",
+      "L.cole_cole",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "electromagnetic_coupling",
+    "cc_params_error",
+    "topography_error"
+  ],
+  "error_metric": "chargeability_rel_error_percent",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "ip",
+      "forward_operator": "ip_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 128,
+        "W": 128,
+        "Z": 32,
+        "N_quadrupoles": 500,
+        "N_timesteps": 20,
+        "SNR_dB": 30,
+        "electromagnetic_coupling": 0.0,
+        "cc_params_error": 0.0,
+        "topography_error": 0.0
+      },
+      "epsilon_fn_center": "8.0"
+    },
+    "allowed_forward_operators": [
+      "ip_forward"
+    ],
+    "allowed_problem_classes": [
+      "ip"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "Z",
+      "N_quadrupoles",
+      "N_timesteps",
+      "SNR_dB",
+      "electromagnetic_coupling",
+      "cc_params_error",
+      "topography_error",
+      "electromagnetic_coupling",
+      "cc_params_error",
+      "topography_error"
+    ],
+    "omega_bounds": {
+      "H": [
+        16,
+        1024
+      ],
+      "W": [
+        16,
+        1024
+      ],
+      "Z": [
+        4,
+        256
+      ],
+      "N_quadrupoles": [
+        10,
+        100000
+      ],
+      "N_timesteps": [
+        5,
+        500
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "electromagnetic_coupling": [
+        0.0,
+        0.3
+      ],
+      "cc_params_error": [
+        0.0,
+        0.3
+      ],
+      "topography_error": [
+        0.0,
+        0.2
+      ]
+    },
+    "epsilon_bounds": {
+      "charge_rel": [
+        1.0,
+        50.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

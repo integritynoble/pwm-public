@@ -1,0 +1,191 @@
+{
+  "artifact_id": "L1-238",
+  "layer": "L1",
+  "principle_number": "238",
+  "title": "Eddy Currents \u2014 conductor inversion from induced fields",
+  "domain": "Electromagnetics",
+  "sub_domain": "Quasi-static eddy-current inspection",
+  "source_file": "U_electromagnetics/238_eddy_currents.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Eddy Currents \u2014 conductor inversion from induced fields forward model.",
+    "forward_model": "curl(1/mu * curl A) + sigma dA/dt = J_ext; diffusion-like in conductor",
+    "world_state_x": "conductivity sigma(x) in a 3D test piece (defect detection)",
+    "observation_y": "coil impedance vs lift-off / position / frequency",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "Z",
+      "N_freqs",
+      "N_pos",
+      "SNR_dB",
+      "sigma_error",
+      "mu_r_error",
+      "coil_lift_off_error",
+      "coil_pos_error"
+    ]
+  },
+  "G": {
+    "dag": "L.induced_current -> L.quasi_static -> L.diffuse_through_conductor -> int.frequency",
+    "vertices": [
+      "L.induced_current",
+      "L.quasi_static",
+      "L.diffuse_through_conductor",
+      "int.frequency"
+    ],
+    "arcs": [
+      "L.induced_current -> L.quasi_static",
+      "L.quasi_static -> L.diffuse_through_conductor",
+      "L.diffuse_through_conductor -> int.frequency"
+    ],
+    "L_DAG": 3.2,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 600,
+    "condition_number_effective": 30,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "FEM-eddy, VIM, ECT-Net",
+    "convergence_rate_q": 1.5,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "em",
+    "sensing_mechanism": "induction_coil",
+    "integration_axis": "frequency",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "conductivity_3D_map",
+    "primitives": [
+      "L.induced_current",
+      "L.quasi_static",
+      "L.diffuse_through_conductor",
+      "int.frequency"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "sigma_error",
+    "mu_r_error",
+    "coil_lift_off_error",
+    "coil_pos_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "eddy_current",
+      "forward_operator": "eddy_current_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 128,
+        "W": 128,
+        "Z": 32,
+        "N_freqs": 16,
+        "N_pos": 64,
+        "SNR_dB": 30,
+        "sigma_error": 0.0,
+        "mu_r_error": 0.0,
+        "coil_lift_off_error": 0.0,
+        "coil_pos_error": 0.0
+      },
+      "epsilon_fn_center": "22.0"
+    },
+    "allowed_forward_operators": [
+      "eddy_current_forward"
+    ],
+    "allowed_problem_classes": [
+      "eddy_current"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "Z",
+      "N_freqs",
+      "N_pos",
+      "SNR_dB",
+      "sigma_error",
+      "mu_r_error",
+      "coil_lift_off_error",
+      "coil_pos_error",
+      "sigma_error",
+      "mu_r_error",
+      "coil_lift_off_error",
+      "coil_pos_error"
+    ],
+    "omega_bounds": {
+      "H": [
+        32,
+        1024
+      ],
+      "W": [
+        32,
+        1024
+      ],
+      "Z": [
+        8,
+        512
+      ],
+      "N_freqs": [
+        1,
+        256
+      ],
+      "N_pos": [
+        4,
+        1024
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "sigma_error": [
+        0.0,
+        0.1
+      ],
+      "mu_r_error": [
+        0.0,
+        0.1
+      ],
+      "coil_lift_off_error": [
+        0.0,
+        0.5
+      ],
+      "coil_pos_error": [
+        0.0,
+        0.02
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

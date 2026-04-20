@@ -1,0 +1,168 @@
+{
+  "artifact_id": "L2-259",
+  "layer": "L2",
+  "parent_l1": "L1-259",
+  "title": "Room Acoustics \u2014 ray-tracing impulse response Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "L_m": [
+        2,
+        50
+      ],
+      "W_m": [
+        2,
+        50
+      ],
+      "H_m": [
+        2,
+        20
+      ],
+      "N_rays": [
+        10000,
+        2000000
+      ],
+      "T_s": [
+        0.1,
+        5.0
+      ],
+      "fs_kHz": [
+        8,
+        96
+      ],
+      "absorption_error": [
+        0.0,
+        0.3
+      ],
+      "geometry_error": [
+        0.0,
+        0.05
+      ],
+      "src_rec_pos_error": [
+        0.0,
+        0.1
+      ],
+      "diffraction_unresolved": [
+        0.0,
+        0.2
+      ]
+    },
+    "E": {
+      "forward": "h(t) = sum_paths A_path * delta(t - L_path/c); A_path = prod_i (1 - alpha_i) * dir_gain",
+      "operator": "room_ray_tracing_forward_mismatch",
+      "primitive_chain": "L.source_emit -> S.trace.rays -> L.absorb_reflect -> int.temporal",
+      "inverse": "solve forward for declared state variable under Omega bounds"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR_dB",
+      "residual_norm"
+    ],
+    "epsilon_fn": "16.0 + 2.0*log10(N_rays/10000) - 20.0*absorption_error - 15.0*geometry_error"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Stochastic-ray",
+        "method_sig": "I+O",
+        "expected_psnr": 20.0
+      },
+      {
+        "name": "Beam-tracing",
+        "method_sig": "L+O",
+        "expected_psnr": 22.5
+      },
+      {
+        "name": "Hybrid-ODEON",
+        "method_sig": "L+O",
+        "expected_psnr": 23.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "L_m": 6,
+        "W_m": 8,
+        "H_m": 3,
+        "N_rays": 200000,
+        "T_s": 1.0,
+        "fs_kHz": 48,
+        "absorption_error": 0.0,
+        "geometry_error": 0.0,
+        "src_rec_pos_error": 0.0
+      },
+      "epsilon": 22.0
+    },
+    "tier_bounds": {
+      "L_m": [
+        2,
+        50
+      ],
+      "W_m": [
+        2,
+        50
+      ],
+      "H_m": [
+        2,
+        20
+      ],
+      "N_rays": [
+        10000,
+        2000000
+      ],
+      "T_s": [
+        0.1,
+        5.0
+      ],
+      "fs_kHz": [
+        8,
+        96
+      ],
+      "absorption_error": [
+        0.0,
+        0.3
+      ],
+      "geometry_error": [
+        0.0,
+        0.05
+      ],
+      "src_rec_pos_error": [
+        0.0,
+        0.1
+      ],
+      "diffraction_unresolved": [
+        0.0,
+        0.2
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.48,
+  "d_spec_notes": "Distance computed from problem_class, forward_operator, carrier, integration_axis against neighboring specs; within same principle this spec is mismatch-only canonical and sits at the Omega centroid.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions are consistent across the DAG; forward operator maps state space to measurement space at declared shapes.",
+    "S2": "kappa_eff = 15 within tolerance after regularization; RIP-like or coercivity conditions satisfied over most of Omega.",
+    "S3": "Solvers converge at rate q=1.0 in well-posed regime; mismatch parameters degrade convergence but not divergence.",
+    "S4": "epsilon_fn evaluates across 10+ random Omega samples; hardness rule verified \u2014 no baseline passes everywhere."
+  },
+  "ipfs_cid": null
+}

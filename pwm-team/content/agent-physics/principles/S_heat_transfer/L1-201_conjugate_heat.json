@@ -1,0 +1,170 @@
+{
+  "artifact_id": "L1-201",
+  "layer": "L1",
+  "principle_number": "201",
+  "title": "Conjugate Heat Transfer \u2014 coupled fluid-solid thermal",
+  "domain": "Heat Transfer",
+  "sub_domain": "Fluid-solid interface heat flux matching",
+  "source_file": "S_heat_transfer/201_conjugate_heat.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Conjugate Heat Transfer \u2014 coupled fluid-solid thermal forward model.",
+    "forward_model": "k_s grad T_s . n = k_f grad T_f . n at Gamma_fs; T_s = T_f at interface (perfect contact)",
+    "world_state_x": "coupled temperature in solid T_s(x) and fluid T_f(x) with interface continuity",
+    "observation_y": "IR + interior thermocouples + flow instrumentation",
+    "physical_parameters_theta": [
+      "N_solid",
+      "N_fluid",
+      "SNR_dB",
+      "interface_h_error",
+      "wall_k_error",
+      "fluid_kappa_error",
+      "contact_resistance_error"
+    ]
+  },
+  "G": {
+    "dag": "L.fluid_heat -> L.solid_conduction -> L.interface_coupling -> int.temporal",
+    "vertices": [
+      "L.fluid_heat",
+      "L.solid_conduction",
+      "L.interface_coupling",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.fluid_heat -> L.solid_conduction",
+      "L.solid_conduction -> L.interface_coupling",
+      "L.interface_coupling -> int.temporal"
+    ],
+    "L_DAG": 3.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 600,
+    "condition_number_effective": 30,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Partitioned, Monolithic, Co-FEM-NN",
+    "convergence_rate_q": 1.5,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "thermal",
+    "sensing_mechanism": "ir_pitot_thermocouples",
+    "integration_axis": "temporal",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "coupled_fluid_solid_temp",
+    "primitives": [
+      "L.fluid_heat",
+      "L.solid_conduction",
+      "L.interface_coupling",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "interface_h_error",
+    "wall_k_error",
+    "fluid_kappa_error",
+    "contact_resistance_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "conjugate_ht",
+      "forward_operator": "conjugate_ht_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_solid": 10000,
+        "N_fluid": 10000,
+        "SNR_dB": 30,
+        "interface_h_error": 0.0,
+        "wall_k_error": 0.0,
+        "fluid_kappa_error": 0.0,
+        "contact_resistance_error": 0.0
+      },
+      "epsilon_fn_center": "21.0"
+    },
+    "allowed_forward_operators": [
+      "conjugate_ht_forward"
+    ],
+    "allowed_problem_classes": [
+      "conjugate_ht"
+    ],
+    "allowed_omega_dimensions": [
+      "N_solid",
+      "N_fluid",
+      "SNR_dB",
+      "interface_h_error",
+      "wall_k_error",
+      "fluid_kappa_error",
+      "contact_resistance_error",
+      "interface_h_error",
+      "wall_k_error",
+      "fluid_kappa_error",
+      "contact_resistance_error"
+    ],
+    "omega_bounds": {
+      "N_solid": [
+        500,
+        500000
+      ],
+      "N_fluid": [
+        500,
+        1000000
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "interface_h_error": [
+        0.0,
+        0.3
+      ],
+      "wall_k_error": [
+        0.0,
+        0.1
+      ],
+      "fluid_kappa_error": [
+        0.0,
+        0.1
+      ],
+      "contact_resistance_error": [
+        0.0,
+        0.5
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

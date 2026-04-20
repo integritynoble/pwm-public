@@ -1,0 +1,252 @@
+{
+  "artifact_id": "L3-213",
+  "layer": "L3",
+  "parent_l2": "L2-213",
+  "parent_l1": "L1-213",
+  "title": "Modal Analysis \u2014 natural frequencies and mode shapes Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "canonical Structural Mechanics dataset for this principle",
+    "secondary": "simulated forward model at declared Omega",
+    "construction_method": "parametric forward synthesis + declared noise model",
+    "num_dev_instances_per_tier": 20,
+    "holdout_instances_per_tier": 10
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "N_DOF": 5000,
+        "N_modes": 30,
+        "N_sensors": 16,
+        "SNR_dB": 30.0,
+        "stiffness_error": 0.0,
+        "mass_error": 0.0,
+        "bc_error": 0.0
+      },
+      "epsilon": 2.0,
+      "d_ibench": 0.14,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "Lanczos",
+          "metric": "freq_rel_error_percent",
+          "score": 1.5,
+          "Q": 0.88
+        },
+        {
+          "name": "subspace-iter",
+          "metric": "freq_rel_error_percent",
+          "score": 1.2,
+          "Q": 0.88
+        },
+        {
+          "name": "AMLS",
+          "metric": "freq_rel_error_percent",
+          "score": 1.3,
+          "Q": 0.88
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "N_DOF": 5000,
+        "N_modes": 30,
+        "N_sensors": 8,
+        "SNR_dB": 25.0,
+        "stiffness_error": 0.025,
+        "mass_error": 0.025,
+        "bc_error": 0.05
+      },
+      "epsilon": 2.8,
+      "d_ibench": 0.28,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "Lanczos",
+          "metric": "freq_rel_error_percent",
+          "score": 2.25,
+          "Q": 0.68
+        },
+        {
+          "name": "subspace-iter",
+          "metric": "freq_rel_error_percent",
+          "score": 1.8,
+          "Q": 0.68
+        },
+        {
+          "name": "AMLS",
+          "metric": "freq_rel_error_percent",
+          "score": 1.95,
+          "Q": 0.68
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "N_DOF": 5000,
+        "N_modes": 46,
+        "N_sensors": 3,
+        "SNR_dB": 10.0,
+        "stiffness_error": 0.05500000000000001,
+        "mass_error": 0.05500000000000001,
+        "bc_error": 0.11000000000000001
+      },
+      "epsilon": 4.4,
+      "d_ibench": 0.48,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "Lanczos",
+          "metric": "freq_rel_error_percent",
+          "score": 3.15,
+          "Q": 0.48
+        },
+        {
+          "name": "subspace-iter",
+          "metric": "freq_rel_error_percent",
+          "score": 2.52,
+          "Q": 0.48
+        },
+        {
+          "name": "AMLS",
+          "metric": "freq_rel_error_percent",
+          "score": 2.73,
+          "Q": 0.48
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "N_DOF": 5000,
+        "N_modes": 60,
+        "N_sensors": 1,
+        "SNR_dB": -10,
+        "stiffness_error": 0.1,
+        "mass_error": 0.1,
+        "bc_error": 0.2
+      },
+      "epsilon": 7.0,
+      "d_ibench": 0.72,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "Lanczos",
+          "metric": "freq_rel_error_percent",
+          "score": 4.5,
+          "Q": 0.28
+        },
+        {
+          "name": "subspace-iter",
+          "metric": "freq_rel_error_percent",
+          "score": 3.6,
+          "Q": 0.28
+        },
+        {
+          "name": "AMLS",
+          "metric": "freq_rel_error_percent",
+          "score": 3.9,
+          "Q": 0.28
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "full parametric sweep over ['N_DOF', 'N_modes', 'N_sensors', 'SNR_dB', 'stiffness_error']",
+      "construction_method": "uniform Omega sampling within declared bounds",
+      "num_dev_instances": 200,
+      "num_holdout_instances": 100
+    },
+    "tracks": {
+      "track_A_stratified_worst_case": {
+        "samples_per_stratum": 5,
+        "pass_condition": "min_i(metric_i) beats epsilon_fn at Omega_centroid across all strata"
+      },
+      "track_B_uniform_median": {
+        "num_samples": 50,
+        "pass_condition": "median metric beats epsilon_fn at Omega_median"
+      },
+      "track_C_mismatch_degradation": {
+        "sweep_points": [
+          0.0,
+          0.25,
+          0.5,
+          0.75,
+          1.0
+        ],
+        "scenes_per_point": 10,
+        "degradation_score": "mean Q_norm across sweep"
+      }
+    },
+    "baselines": [
+      {
+        "name": "Lanczos",
+        "overall_Q": 0.7
+      },
+      {
+        "name": "subspace-iter",
+        "overall_Q": 0.6
+      },
+      {
+        "name": "AMLS",
+        "overall_Q": 0.5
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind Omega corner under max mismatch.",
+  "anti_overfitting_mechanisms": {
+    "M1_random_instantiation": "generator/instantiate.py uses G(SHA256(h_sub || k)) seeded per submission.",
+    "M2_convergence_scoring": "convergence/check_convergence.py verifies declared q-rate across mesh refinements.",
+    "M3_worst_case_eval": "scoring/worst_case.py returns min score over 20 fixed dev scenes per tier.",
+    "M4_community_adversarial": "adversarial submissions eligible under anti-overfitting bounty.",
+    "M5_method_sig_diversity": "baselines span classical (L+O), learned (L+N), and iterative (I+O) method signatures.",
+    "M6_gate_checks": "S1-S4 gate checks embedded with thresholds.yaml."
+  },
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

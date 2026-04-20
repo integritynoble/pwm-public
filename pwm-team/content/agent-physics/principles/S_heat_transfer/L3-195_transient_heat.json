@@ -1,0 +1,268 @@
+{
+  "artifact_id": "L3-195",
+  "layer": "L3",
+  "parent_l2": "L2-195",
+  "parent_l1": "L1-195",
+  "title": "Transient Heat Conduction \u2014 inverse heat conduction (IHCP) Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "canonical Heat Transfer dataset for this principle",
+    "secondary": "simulated forward model at declared Omega",
+    "construction_method": "parametric forward synthesis + declared noise model",
+    "num_dev_instances_per_tier": 20,
+    "holdout_instances_per_tier": 10
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "H": 64,
+        "W": 64,
+        "Z": 64,
+        "N_sensors": 16,
+        "N_samples": 200,
+        "fs_Hz": 10,
+        "SNR_dB": 30.0,
+        "k_error": 0.0,
+        "rho_cp_error": 0.0,
+        "sensor_pos_error": 0.0,
+        "bc_error": 0.0
+      },
+      "epsilon": 25.0,
+      "d_ibench": 0.14,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "Beck-FTS",
+          "metric": "PSNR_dB",
+          "score": 23.0,
+          "Q": 0.88
+        },
+        {
+          "name": "Tikhonov",
+          "metric": "PSNR_dB",
+          "score": 24.5,
+          "Q": 0.88
+        },
+        {
+          "name": "PINN-IHCP",
+          "metric": "PSNR_dB",
+          "score": 26.5,
+          "Q": 0.88
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "H": 64,
+        "W": 64,
+        "Z": 64,
+        "N_sensors": 8,
+        "N_samples": 100,
+        "fs_Hz": 10,
+        "SNR_dB": 25.0,
+        "k_error": 0.025,
+        "rho_cp_error": 0.025,
+        "sensor_pos_error": 0.005,
+        "bc_error": 0.125
+      },
+      "epsilon": 21.25,
+      "d_ibench": 0.28,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "Beck-FTS",
+          "metric": "PSNR_dB",
+          "score": 20.5,
+          "Q": 0.68
+        },
+        {
+          "name": "Tikhonov",
+          "metric": "PSNR_dB",
+          "score": 22.0,
+          "Q": 0.68
+        },
+        {
+          "name": "PINN-IHCP",
+          "metric": "PSNR_dB",
+          "score": 24.0,
+          "Q": 0.68
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "H": 99,
+        "W": 99,
+        "Z": 99,
+        "N_sensors": 3,
+        "N_samples": 40,
+        "fs_Hz": 10,
+        "SNR_dB": 10.0,
+        "k_error": 0.05500000000000001,
+        "rho_cp_error": 0.05500000000000001,
+        "sensor_pos_error": 0.011000000000000001,
+        "bc_error": 0.275
+      },
+      "epsilon": 17.5,
+      "d_ibench": 0.48,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "Beck-FTS",
+          "metric": "PSNR_dB",
+          "score": 18.0,
+          "Q": 0.48
+        },
+        {
+          "name": "Tikhonov",
+          "metric": "PSNR_dB",
+          "score": 19.5,
+          "Q": 0.48
+        },
+        {
+          "name": "PINN-IHCP",
+          "metric": "PSNR_dB",
+          "score": 21.5,
+          "Q": 0.48
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "H": 128,
+        "W": 128,
+        "Z": 128,
+        "N_sensors": 1,
+        "N_samples": 16,
+        "fs_Hz": 10,
+        "SNR_dB": -10,
+        "k_error": 0.1,
+        "rho_cp_error": 0.1,
+        "sensor_pos_error": 0.02,
+        "bc_error": 0.5
+      },
+      "epsilon": 13.75,
+      "d_ibench": 0.72,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "Beck-FTS",
+          "metric": "PSNR_dB",
+          "score": 15.5,
+          "Q": 0.28
+        },
+        {
+          "name": "Tikhonov",
+          "metric": "PSNR_dB",
+          "score": 17.0,
+          "Q": 0.28
+        },
+        {
+          "name": "PINN-IHCP",
+          "metric": "PSNR_dB",
+          "score": 19.0,
+          "Q": 0.28
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "full parametric sweep over ['H', 'W', 'Z', 'N_sensors', 'N_samples']",
+      "construction_method": "uniform Omega sampling within declared bounds",
+      "num_dev_instances": 200,
+      "num_holdout_instances": 100
+    },
+    "tracks": {
+      "track_A_stratified_worst_case": {
+        "samples_per_stratum": 5,
+        "pass_condition": "min_i(metric_i) beats epsilon_fn at Omega_centroid across all strata"
+      },
+      "track_B_uniform_median": {
+        "num_samples": 50,
+        "pass_condition": "median metric beats epsilon_fn at Omega_median"
+      },
+      "track_C_mismatch_degradation": {
+        "sweep_points": [
+          0.0,
+          0.25,
+          0.5,
+          0.75,
+          1.0
+        ],
+        "scenes_per_point": 10,
+        "degradation_score": "mean Q_norm across sweep"
+      }
+    },
+    "baselines": [
+      {
+        "name": "Beck-FTS",
+        "overall_Q": 0.7
+      },
+      {
+        "name": "Tikhonov",
+        "overall_Q": 0.6
+      },
+      {
+        "name": "PINN-IHCP",
+        "overall_Q": 0.5
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind Omega corner under max mismatch.",
+  "anti_overfitting_mechanisms": {
+    "M1_random_instantiation": "generator/instantiate.py uses G(SHA256(h_sub || k)) seeded per submission.",
+    "M2_convergence_scoring": "convergence/check_convergence.py verifies declared q-rate across mesh refinements.",
+    "M3_worst_case_eval": "scoring/worst_case.py returns min score over 20 fixed dev scenes per tier.",
+    "M4_community_adversarial": "adversarial submissions eligible under anti-overfitting bounty.",
+    "M5_method_sig_diversity": "baselines span classical (L+O), learned (L+N), and iterative (I+O) method signatures.",
+    "M6_gate_checks": "S1-S4 gate checks embedded with thresholds.yaml."
+  },
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

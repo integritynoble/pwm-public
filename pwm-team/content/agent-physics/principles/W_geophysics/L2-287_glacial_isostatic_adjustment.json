@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L2-287",
+  "layer": "L2",
+  "parent_l1": "L1-287",
+  "title": "Glacial Isostatic Adjustment (GIA) \u2014 post-glacial rebound Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "N_load_history": [
+        100,
+        1000000
+      ],
+      "N_layers": [
+        5,
+        1000
+      ],
+      "N_gps": [
+        10,
+        10000
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "ice_history_error": [
+        0.0,
+        0.3
+      ],
+      "mantle_viscosity_error": [
+        0.0,
+        0.5
+      ],
+      "lithosphere_thickness_error": [
+        0.0,
+        0.3
+      ]
+    },
+    "E": {
+      "forward": "response = L conv load_history; sea-level eqn gives eustatic adjustment",
+      "operator": "gia_forward_mismatch",
+      "primitive_chain": "L.load_history -> L.viscoelastic_response -> L.sea_level_eqn -> int.temporal",
+      "inverse": "solve forward for declared state variable under Omega bounds"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "uplift_rel_error_percent",
+      "residual_norm"
+    ],
+    "epsilon_fn": "1.0 + 5.0*ice_history_error + 5.0*mantle_viscosity_error + 3.0*lithosphere_thickness_error"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "ICE-6G",
+        "method_sig": "L+O",
+        "expected_psnr": 2.2
+      },
+      {
+        "name": "Peltier-VM7",
+        "method_sig": "L+O",
+        "expected_psnr": 2.0
+      },
+      {
+        "name": "GIA-Net",
+        "method_sig": "L+N",
+        "expected_psnr": 1.7
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_load_history": 10000,
+        "N_layers": 20,
+        "N_gps": 100,
+        "SNR_dB": 25,
+        "ice_history_error": 0.1,
+        "mantle_viscosity_error": 0.1,
+        "lithosphere_thickness_error": 0.1
+      },
+      "epsilon": 2.0
+    },
+    "tier_bounds": {
+      "N_load_history": [
+        100,
+        1000000
+      ],
+      "N_layers": [
+        5,
+        1000
+      ],
+      "N_gps": [
+        10,
+        10000
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "ice_history_error": [
+        0.0,
+        0.3
+      ],
+      "mantle_viscosity_error": [
+        0.0,
+        0.5
+      ],
+      "lithosphere_thickness_error": [
+        0.0,
+        0.3
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.48,
+  "d_spec_notes": "Distance computed from problem_class, forward_operator, carrier, integration_axis against neighboring specs; within same principle this spec is mismatch-only canonical and sits at the Omega centroid.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions are consistent across the DAG; forward operator maps state space to measurement space at declared shapes.",
+    "S2": "kappa_eff = 28 within tolerance after regularization; RIP-like or coercivity conditions satisfied over most of Omega.",
+    "S3": "Solvers converge at rate q=1.5 in well-posed regime; mismatch parameters degrade convergence but not divergence.",
+    "S4": "epsilon_fn evaluates across 10+ random Omega samples; hardness rule verified \u2014 no baseline passes everywhere."
+  },
+  "ipfs_cid": null
+}

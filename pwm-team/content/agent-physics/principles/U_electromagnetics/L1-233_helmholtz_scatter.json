@@ -1,0 +1,191 @@
+{
+  "artifact_id": "L1-233",
+  "layer": "L1",
+  "principle_number": "233",
+  "title": "Helmholtz Scattering \u2014 frequency-domain EM scattering",
+  "domain": "Electromagnetics",
+  "sub_domain": "Frequency-domain vector Helmholtz scattering",
+  "source_file": "U_electromagnetics/233_helmholtz_scatter.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Helmholtz Scattering \u2014 frequency-domain EM scattering forward model.",
+    "forward_model": "curl curl E - k^2 E = J_src; E_scat = (exp(-j*k*r)/4pi/r) f(theta,phi) at far-field",
+    "world_state_x": "scattered E-field and scatterer shape/material",
+    "observation_y": "far-field amplitude+phase at N_theta x N_phi angles",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "Z",
+      "N_freqs",
+      "N_angles",
+      "SNR_dB",
+      "k_error",
+      "surface_error",
+      "material_error",
+      "BC_error"
+    ]
+  },
+  "G": {
+    "dag": "L.incident_wave -> L.scatter_boundary -> L.green_function -> int.frequency",
+    "vertices": [
+      "L.incident_wave",
+      "L.scatter_boundary",
+      "L.green_function",
+      "int.frequency"
+    ],
+    "arcs": [
+      "L.incident_wave -> L.scatter_boundary",
+      "L.scatter_boundary -> L.green_function",
+      "L.green_function -> int.frequency"
+    ],
+    "L_DAG": 3.2,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 800,
+    "condition_number_effective": 40,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "MoM-EFIE, MLFMA, FEM-Helmholtz",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "em",
+    "sensing_mechanism": "far_field_antenna",
+    "integration_axis": "frequency",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "complex_E_field_freq",
+    "primitives": [
+      "L.incident_wave",
+      "L.scatter_boundary",
+      "L.green_function",
+      "int.frequency"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "k_error",
+    "surface_error",
+    "material_error",
+    "BC_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "helmholtz_em",
+      "forward_operator": "helmholtz_em_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 256,
+        "W": 256,
+        "Z": 64,
+        "N_freqs": 16,
+        "N_angles": 256,
+        "SNR_dB": 30,
+        "k_error": 0.0,
+        "surface_error": 0.0,
+        "material_error": 0.0,
+        "BC_error": 0.0
+      },
+      "epsilon_fn_center": "24.0"
+    },
+    "allowed_forward_operators": [
+      "helmholtz_em_forward"
+    ],
+    "allowed_problem_classes": [
+      "helmholtz_em"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "Z",
+      "N_freqs",
+      "N_angles",
+      "SNR_dB",
+      "k_error",
+      "surface_error",
+      "material_error",
+      "BC_error",
+      "k_error",
+      "surface_error",
+      "material_error",
+      "BC_error"
+    ],
+    "omega_bounds": {
+      "H": [
+        32,
+        2048
+      ],
+      "W": [
+        32,
+        2048
+      ],
+      "Z": [
+        32,
+        1024
+      ],
+      "N_freqs": [
+        1,
+        256
+      ],
+      "N_angles": [
+        16,
+        4096
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "k_error": [
+        0.0,
+        0.05
+      ],
+      "surface_error": [
+        0.0,
+        0.1
+      ],
+      "material_error": [
+        0.0,
+        0.1
+      ],
+      "BC_error": [
+        0.0,
+        0.2
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

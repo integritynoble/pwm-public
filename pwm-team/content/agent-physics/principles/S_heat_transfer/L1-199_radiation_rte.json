@@ -1,0 +1,191 @@
+{
+  "artifact_id": "L1-199",
+  "layer": "L1",
+  "principle_number": "199",
+  "title": "Radiative Transfer Equation \u2014 radiative heat exchange",
+  "domain": "Heat Transfer",
+  "sub_domain": "RTE inversion for surface emissivity / participating media",
+  "source_file": "S_heat_transfer/199_radiation_rte.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Radiative Transfer Equation \u2014 radiative heat exchange forward model.",
+    "forward_model": "dI/ds = -kappa*I - sigma_s*I + kappa*I_b(T) + (sigma_s/4pi)*int_4pi I(s') Phi(s,s') dOmega'",
+    "world_state_x": "spectral radiance I(x, s, lambda) field and temperature/emissivity fields",
+    "observation_y": "IR spectroradiometer data at N_F wavebands and N_R view directions",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "Z",
+      "N_freqs",
+      "N_dirs",
+      "SNR_dB",
+      "kappa_error",
+      "scatter_albedo_error",
+      "emissivity_error",
+      "phase_function_error"
+    ]
+  },
+  "G": {
+    "dag": "L.source_emit -> L.absorb_scatter -> L.surface_reflect -> int.spectral",
+    "vertices": [
+      "L.source_emit",
+      "L.absorb_scatter",
+      "L.surface_reflect",
+      "int.spectral"
+    ],
+    "arcs": [
+      "L.source_emit -> L.absorb_scatter",
+      "L.absorb_scatter -> L.surface_reflect",
+      "L.surface_reflect -> int.spectral"
+    ],
+    "L_DAG": 3.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 600,
+    "condition_number_effective": 30,
+    "regime": "Volume RTE becomes ill-posed for optically thick media; well-posed for optically thin."
+  },
+  "C": {
+    "solver_class": "DOM, FVM-rte, MC-RTE",
+    "convergence_rate_q": 1.5,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "thermal",
+    "sensing_mechanism": "ir_spectroradiometer",
+    "integration_axis": "spectral",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "3D_radiance_field_spectral",
+    "primitives": [
+      "L.source_emit",
+      "L.absorb_scatter",
+      "L.surface_reflect",
+      "int.spectral"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "kappa_error",
+    "scatter_albedo_error",
+    "emissivity_error",
+    "phase_function_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "rte",
+      "forward_operator": "rte_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 128,
+        "W": 128,
+        "Z": 32,
+        "N_freqs": 16,
+        "N_dirs": 16,
+        "SNR_dB": 30,
+        "kappa_error": 0.0,
+        "scatter_albedo_error": 0.0,
+        "emissivity_error": 0.0,
+        "phase_function_error": 0.0
+      },
+      "epsilon_fn_center": "22.0"
+    },
+    "allowed_forward_operators": [
+      "rte_forward"
+    ],
+    "allowed_problem_classes": [
+      "rte"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "Z",
+      "N_freqs",
+      "N_dirs",
+      "SNR_dB",
+      "kappa_error",
+      "scatter_albedo_error",
+      "emissivity_error",
+      "phase_function_error",
+      "kappa_error",
+      "scatter_albedo_error",
+      "emissivity_error",
+      "phase_function_error"
+    ],
+    "omega_bounds": {
+      "H": [
+        32,
+        1024
+      ],
+      "W": [
+        32,
+        1024
+      ],
+      "Z": [
+        8,
+        256
+      ],
+      "N_freqs": [
+        1,
+        256
+      ],
+      "N_dirs": [
+        1,
+        256
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "kappa_error": [
+        0.0,
+        0.1
+      ],
+      "scatter_albedo_error": [
+        0.0,
+        0.3
+      ],
+      "emissivity_error": [
+        0.0,
+        0.3
+      ],
+      "phase_function_error": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

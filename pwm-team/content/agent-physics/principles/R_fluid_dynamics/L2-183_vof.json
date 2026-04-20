@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L2-183",
+  "layer": "L2",
+  "parent_l1": "L1-183",
+  "title": "Volume of Fluid (VOF) \u2014 multiphase interface tracking Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        32,
+        8192
+      ],
+      "W": [
+        32,
+        8192
+      ],
+      "N_times": [
+        100,
+        1000000
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "interface_thickness_error": [
+        0.0,
+        0.3
+      ],
+      "surface_tension_error": [
+        0.0,
+        0.3
+      ],
+      "coalescence_artifact": [
+        0.0,
+        0.3
+      ]
+    },
+    "E": {
+      "forward": "d alpha/dt + u.grad alpha = 0; alpha in [0,1]; piecewise-linear interface reconstruction",
+      "operator": "vof_forward_mismatch",
+      "primitive_chain": "L.vof_advect -> L.interface_recon -> L.surface_tension -> int.temporal",
+      "inverse": "solve forward for declared state variable under Omega bounds"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR_dB",
+      "residual_norm"
+    ],
+    "epsilon_fn": "16.0 + 0.3*SNR_dB - 10.0*interface_thickness_error - 15.0*surface_tension_error - 8.0*coalescence_artifact"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "OpenFOAM-VOF",
+        "method_sig": "I+O",
+        "expected_psnr": 20.5
+      },
+      {
+        "name": "Basilisk",
+        "method_sig": "I+O",
+        "expected_psnr": 21.5
+      },
+      {
+        "name": "VOF-Net",
+        "method_sig": "L+N",
+        "expected_psnr": 23.0
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "N_times": 2000,
+        "SNR_dB": 30,
+        "interface_thickness_error": 0.0,
+        "surface_tension_error": 0.0,
+        "coalescence_artifact": 0.0
+      },
+      "epsilon": 22.0
+    },
+    "tier_bounds": {
+      "H": [
+        32,
+        8192
+      ],
+      "W": [
+        32,
+        8192
+      ],
+      "N_times": [
+        100,
+        1000000
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "interface_thickness_error": [
+        0.0,
+        0.3
+      ],
+      "surface_tension_error": [
+        0.0,
+        0.3
+      ],
+      "coalescence_artifact": [
+        0.0,
+        0.3
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.48,
+  "d_spec_notes": "Distance computed from problem_class, forward_operator, carrier, integration_axis against neighboring specs; within same principle this spec is mismatch-only canonical and sits at the Omega centroid.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions are consistent across the DAG; forward operator maps state space to measurement space at declared shapes.",
+    "S2": "kappa_eff = 25 within tolerance after regularization; RIP-like or coercivity conditions satisfied over most of Omega.",
+    "S3": "Solvers converge at rate q=1.5 in well-posed regime; mismatch parameters degrade convergence but not divergence.",
+    "S4": "epsilon_fn evaluates across 10+ random Omega samples; hardness rule verified \u2014 no baseline passes everywhere."
+  },
+  "ipfs_cid": null
+}

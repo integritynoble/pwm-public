@@ -1,0 +1,170 @@
+{
+  "artifact_id": "L1-229",
+  "layer": "L1",
+  "principle_number": "229",
+  "title": "Piezoelectricity \u2014 coupled mechanical-electrical",
+  "domain": "Structural Mechanics",
+  "sub_domain": "Linear piezoelectric direct/inverse effect",
+  "source_file": "T_structural_mechanics/229_piezoelectricity.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Piezoelectricity \u2014 coupled mechanical-electrical forward model.",
+    "forward_model": "sigma = C^E eps - e^T E; D = e eps + eps^S E",
+    "world_state_x": "mechanical displacement u + electric potential phi",
+    "observation_y": "strain + electrode voltage/charge",
+    "physical_parameters_theta": [
+      "N_DOF",
+      "N_freqs",
+      "SNR_dB",
+      "d_coeff_error",
+      "E_error",
+      "eps_r_error",
+      "electrode_error"
+    ]
+  },
+  "G": {
+    "dag": "L.piezo_stress -> L.electric_displacement -> L.coupled_solve -> int.frequency",
+    "vertices": [
+      "L.piezo_stress",
+      "L.electric_displacement",
+      "L.coupled_solve",
+      "int.frequency"
+    ],
+    "arcs": [
+      "L.piezo_stress -> L.electric_displacement",
+      "L.electric_displacement -> L.coupled_solve",
+      "L.coupled_solve -> int.frequency"
+    ],
+    "L_DAG": 3.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 240,
+    "condition_number_effective": 12,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "FEM-piezo, PiezoElectric-NN, COMSOL-piezo",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "mechanical",
+    "sensing_mechanism": "strain_electrode",
+    "integration_axis": "frequency",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "coupled_u_phi_electric_fields",
+    "primitives": [
+      "L.piezo_stress",
+      "L.electric_displacement",
+      "L.coupled_solve",
+      "int.frequency"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "d_coeff_error",
+    "E_error",
+    "eps_r_error",
+    "electrode_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "piezoelectric",
+      "forward_operator": "piezoelectric_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_DOF": 10000,
+        "N_freqs": 16,
+        "SNR_dB": 30,
+        "d_coeff_error": 0.0,
+        "E_error": 0.0,
+        "eps_r_error": 0.0,
+        "electrode_error": 0.0
+      },
+      "epsilon_fn_center": "25.0"
+    },
+    "allowed_forward_operators": [
+      "piezoelectric_forward"
+    ],
+    "allowed_problem_classes": [
+      "piezoelectric"
+    ],
+    "allowed_omega_dimensions": [
+      "N_DOF",
+      "N_freqs",
+      "SNR_dB",
+      "d_coeff_error",
+      "E_error",
+      "eps_r_error",
+      "electrode_error",
+      "d_coeff_error",
+      "E_error",
+      "eps_r_error",
+      "electrode_error"
+    ],
+    "omega_bounds": {
+      "N_DOF": [
+        100,
+        1000000
+      ],
+      "N_freqs": [
+        1,
+        256
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "d_coeff_error": [
+        0.0,
+        0.1
+      ],
+      "E_error": [
+        0.0,
+        0.1
+      ],
+      "eps_r_error": [
+        0.0,
+        0.1
+      ],
+      "electrode_error": [
+        0.0,
+        0.2
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

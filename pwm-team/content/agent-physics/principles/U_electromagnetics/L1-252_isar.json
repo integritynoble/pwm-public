@@ -1,0 +1,177 @@
+{
+  "artifact_id": "L1-252",
+  "layer": "L1",
+  "principle_number": "252",
+  "title": "Inverse Synthetic Aperture Radar (ISAR) \u2014 rotating-target imaging",
+  "domain": "Electromagnetics",
+  "sub_domain": "ISAR range-Doppler imaging of maneuvering targets",
+  "source_file": "U_electromagnetics/252_isar.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Inverse Synthetic Aperture Radar (ISAR) \u2014 rotating-target imaging forward model.",
+    "forward_model": "s(tau, f_D) = sum_k sigma_k * exp(-j*2*pi*f_D*t_k) * p(tau - 2*R_k/c)",
+    "world_state_x": "target reflectivity sigma(range, cross-range) from multi-pulse integration",
+    "observation_y": "pulse-compressed + Doppler-binned radar returns",
+    "physical_parameters_theta": [
+      "N_pulses",
+      "N_range_bins",
+      "PRF_Hz",
+      "SNR_dB",
+      "motion_error",
+      "phase_error",
+      "doppler_ambiguity_error",
+      "cross_range_aberration"
+    ]
+  },
+  "G": {
+    "dag": "L.pulse_doppler -> L.motion_compensate -> L.range_doppler_map -> int.temporal",
+    "vertices": [
+      "L.pulse_doppler",
+      "L.motion_compensate",
+      "L.range_doppler_map",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.pulse_doppler -> L.motion_compensate",
+      "L.motion_compensate -> L.range_doppler_map",
+      "L.range_doppler_map -> int.temporal"
+    ],
+    "L_DAG": 3.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 600,
+    "condition_number_effective": 30,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Keystone, PGA, CS-ISAR",
+    "convergence_rate_q": 1.5,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "em",
+    "sensing_mechanism": "radar_pulse_array",
+    "integration_axis": "temporal",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "2D_target_reflectivity",
+    "primitives": [
+      "L.pulse_doppler",
+      "L.motion_compensate",
+      "L.range_doppler_map",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "motion_error",
+    "phase_error",
+    "doppler_ambiguity_error",
+    "cross_range_aberration"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "isar",
+      "forward_operator": "isar_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_pulses": 256,
+        "N_range_bins": 256,
+        "PRF_Hz": 1000,
+        "SNR_dB": 20,
+        "motion_error": 0.0,
+        "phase_error": 0.0,
+        "doppler_ambiguity_error": 0.0,
+        "cross_range_aberration": 0.0
+      },
+      "epsilon_fn_center": "22.0"
+    },
+    "allowed_forward_operators": [
+      "isar_forward"
+    ],
+    "allowed_problem_classes": [
+      "isar"
+    ],
+    "allowed_omega_dimensions": [
+      "N_pulses",
+      "N_range_bins",
+      "PRF_Hz",
+      "SNR_dB",
+      "motion_error",
+      "phase_error",
+      "doppler_ambiguity_error",
+      "cross_range_aberration",
+      "motion_error",
+      "phase_error",
+      "doppler_ambiguity_error",
+      "cross_range_aberration"
+    ],
+    "omega_bounds": {
+      "N_pulses": [
+        32,
+        4096
+      ],
+      "N_range_bins": [
+        64,
+        4096
+      ],
+      "PRF_Hz": [
+        10,
+        100000
+      ],
+      "SNR_dB": [
+        -10,
+        40
+      ],
+      "motion_error": [
+        0.0,
+        0.3
+      ],
+      "phase_error": [
+        0.0,
+        0.2
+      ],
+      "doppler_ambiguity_error": [
+        0.0,
+        0.3
+      ],
+      "cross_range_aberration": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

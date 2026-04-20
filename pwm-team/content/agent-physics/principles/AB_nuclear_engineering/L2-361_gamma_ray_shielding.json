@@ -1,0 +1,169 @@
+{
+  "artifact_id": "L2-361",
+  "layer": "L2",
+  "parent_l1": "L1-361",
+  "title": "Gamma-Ray Shielding \u2014 deep-penetration attenuation Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        16,
+        1024
+      ],
+      "W": [
+        16,
+        1024
+      ],
+      "Z": [
+        16,
+        1024
+      ],
+      "N_energies": [
+        1,
+        200
+      ],
+      "N_detectors": [
+        1,
+        256
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "mu_error": [
+        0.0,
+        0.05
+      ],
+      "buildup_factor_error": [
+        0.0,
+        0.3
+      ],
+      "geometry_error": [
+        0.0,
+        0.05
+      ],
+      "source_spectrum_error": [
+        0.0,
+        0.2
+      ]
+    },
+    "E": {
+      "forward": "D(x) = B(mu*r, E) * S/(4*pi*r^2) * exp(-mu(E)*r); buildup B accounts for scatter",
+      "operator": "gamma_shielding_forward_mismatch",
+      "primitive_chain": "L.source_emit -> L.exp_attenuation -> L.buildup_factor -> int.energy",
+      "inverse": "solve forward for declared state variable under Omega bounds"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "dose_rate_rel_error_percent",
+      "residual_norm"
+    ],
+    "epsilon_fn": "1.5 + 30.0*mu_error + 10.0*buildup_factor_error + 15.0*geometry_error + 8.0*source_spectrum_error"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Point-kernel",
+        "method_sig": "L+O",
+        "expected_psnr": 5.0
+      },
+      {
+        "name": "ATTILA",
+        "method_sig": "I+O",
+        "expected_psnr": 3.5
+      },
+      {
+        "name": "MCNP-gamma",
+        "method_sig": "I+O",
+        "expected_psnr": 2.8
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 128,
+        "W": 128,
+        "Z": 128,
+        "N_energies": 32,
+        "N_detectors": 16,
+        "SNR_dB": 30,
+        "mu_error": 0.0,
+        "buildup_factor_error": 0.0,
+        "geometry_error": 0.0,
+        "source_spectrum_error": 0.0
+      },
+      "epsilon": 3.0
+    },
+    "tier_bounds": {
+      "H": [
+        16,
+        1024
+      ],
+      "W": [
+        16,
+        1024
+      ],
+      "Z": [
+        16,
+        1024
+      ],
+      "N_energies": [
+        1,
+        200
+      ],
+      "N_detectors": [
+        1,
+        256
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "mu_error": [
+        0.0,
+        0.05
+      ],
+      "buildup_factor_error": [
+        0.0,
+        0.3
+      ],
+      "geometry_error": [
+        0.0,
+        0.05
+      ],
+      "source_spectrum_error": [
+        0.0,
+        0.2
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.48,
+  "d_spec_notes": "Distance computed from problem_class, forward_operator, carrier, integration_axis against neighboring specs; within same principle this spec is mismatch-only canonical and sits at the Omega centroid.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions are consistent across the DAG; forward operator maps state space to measurement space at declared shapes.",
+    "S2": "kappa_eff = 20 within tolerance after regularization; RIP-like or coercivity conditions satisfied over most of Omega.",
+    "S3": "Solvers converge at rate q=1.5 in well-posed regime; mismatch parameters degrade convergence but not divergence.",
+    "S4": "epsilon_fn evaluates across 10+ random Omega samples; hardness rule verified \u2014 no baseline passes everywhere."
+  },
+  "ipfs_cid": null
+}

@@ -1,0 +1,191 @@
+{
+  "artifact_id": "L1-198",
+  "layer": "L1",
+  "principle_number": "198",
+  "title": "Natural Convection \u2014 buoyancy-driven flow heat transfer",
+  "domain": "Heat Transfer",
+  "sub_domain": "Rayleigh-Benard / cavity free convection",
+  "source_file": "S_heat_transfer/198_natural_convection.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Natural Convection \u2014 buoyancy-driven flow heat transfer forward model.",
+    "forward_model": "Nu = f(Ra, Pr); Ra = g*beta*(Th-Tc)*L^3/(nu*alpha); coupled Boussinesq with buoyancy term",
+    "world_state_x": "steady/unsteady temperature T(x) and velocity u(x) fields in enclosure",
+    "observation_y": "IR surface map + velocimetry (PIV) + thermocouples",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "Z",
+      "Ra",
+      "Pr",
+      "SNR_dB",
+      "Ra_error",
+      "beta_error",
+      "Pr_error",
+      "wall_T_error"
+    ]
+  },
+  "G": {
+    "dag": "L.boussinesq -> L.buoyancy -> L.heat_transport -> int.temporal",
+    "vertices": [
+      "L.boussinesq",
+      "L.buoyancy",
+      "L.heat_transport",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.boussinesq -> L.buoyancy",
+      "L.buoyancy -> L.heat_transport",
+      "L.heat_transport -> int.temporal"
+    ],
+    "L_DAG": 3.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 1000,
+    "condition_number_effective": 50,
+    "regime": "Unstable above Ra > 10^8 (turbulent); chaotic sensitivity to IC."
+  },
+  "C": {
+    "solver_class": "Churchill-Chu, CFD-LES, DeepFlow-NC",
+    "convergence_rate_q": 1.5,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "thermal",
+    "sensing_mechanism": "piv_shadowgraph_ir",
+    "integration_axis": "temporal",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "3D_temp_velocity_fields",
+    "primitives": [
+      "L.boussinesq",
+      "L.buoyancy",
+      "L.heat_transport",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "Ra_error",
+    "beta_error",
+    "Pr_error",
+    "wall_T_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "natural_convection",
+      "forward_operator": "natural_convection_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 256,
+        "W": 256,
+        "Z": 128,
+        "Ra": 1000000.0,
+        "Pr": 0.7,
+        "SNR_dB": 30,
+        "Ra_error": 0.0,
+        "beta_error": 0.0,
+        "Pr_error": 0.0,
+        "wall_T_error": 0.0
+      },
+      "epsilon_fn_center": "20.0"
+    },
+    "allowed_forward_operators": [
+      "natural_convection_forward"
+    ],
+    "allowed_problem_classes": [
+      "natural_convection"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "Z",
+      "Ra",
+      "Pr",
+      "SNR_dB",
+      "Ra_error",
+      "beta_error",
+      "Pr_error",
+      "wall_T_error",
+      "Ra_error",
+      "beta_error",
+      "Pr_error",
+      "wall_T_error"
+    ],
+    "omega_bounds": {
+      "H": [
+        64,
+        2048
+      ],
+      "W": [
+        64,
+        2048
+      ],
+      "Z": [
+        32,
+        1024
+      ],
+      "Ra": [
+        1000.0,
+        1000000000000.0
+      ],
+      "Pr": [
+        0.01,
+        1000
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "Ra_error": [
+        0.0,
+        0.2
+      ],
+      "beta_error": [
+        0.0,
+        0.1
+      ],
+      "Pr_error": [
+        0.0,
+        0.1
+      ],
+      "wall_T_error": [
+        0.0,
+        2.0
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

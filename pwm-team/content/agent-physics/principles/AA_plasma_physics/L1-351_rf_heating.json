@@ -1,0 +1,168 @@
+{
+  "artifact_id": "L1-351",
+  "layer": "L1",
+  "principle_number": "351",
+  "title": "RF Heating \u2014 ICRF / LH / ECH wave absorption",
+  "domain": "Plasma Physics",
+  "sub_domain": "Full-wave RF heating of magnetized plasmas",
+  "source_file": "AA_plasma_physics/351_rf_heating.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "RF Heating \u2014 ICRF / LH / ECH wave absorption forward model.",
+    "forward_model": "curl curl E - (omega^2/c^2) K . E = i mu_0 omega J_ant; cold/hot dielectric K",
+    "world_state_x": "RF power deposition profile P_rf(rho) per species",
+    "observation_y": "antenna S-parameters + fast-ion D-alpha + bolometers",
+    "physical_parameters_theta": [
+      "N_R",
+      "N_Z",
+      "N_freqs",
+      "SNR_dB",
+      "antenna_coupling_error",
+      "dielectric_error",
+      "mode_conversion_error"
+    ]
+  },
+  "G": {
+    "dag": "L.dielectric_tensor -> L.wave_propagate -> L.resonant_absorb -> int.frequency",
+    "vertices": [
+      "L.dielectric_tensor",
+      "L.wave_propagate",
+      "L.resonant_absorb",
+      "int.frequency"
+    ],
+    "arcs": [
+      "L.dielectric_tensor -> L.wave_propagate",
+      "L.wave_propagate -> L.resonant_absorb",
+      "L.resonant_absorb -> int.frequency"
+    ],
+    "L_DAG": 3.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 500,
+    "condition_number_effective": 25,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "TORIC, AORSA, RF-Net",
+    "convergence_rate_q": 1.5,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "plasma",
+    "sensing_mechanism": "rf_power_diagnostics",
+    "integration_axis": "frequency",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "rf_power_deposition_profile",
+    "primitives": [
+      "L.dielectric_tensor",
+      "L.wave_propagate",
+      "L.resonant_absorb",
+      "int.frequency"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "antenna_coupling_error",
+    "dielectric_error",
+    "mode_conversion_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "rf_heating",
+      "forward_operator": "rf_heating_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_R": 128,
+        "N_Z": 128,
+        "N_freqs": 1,
+        "SNR_dB": 25,
+        "antenna_coupling_error": 0.0,
+        "dielectric_error": 0.0,
+        "mode_conversion_error": 0.0
+      },
+      "epsilon_fn_center": "22.0"
+    },
+    "allowed_forward_operators": [
+      "rf_heating_forward"
+    ],
+    "allowed_problem_classes": [
+      "rf_heating"
+    ],
+    "allowed_omega_dimensions": [
+      "N_R",
+      "N_Z",
+      "N_freqs",
+      "SNR_dB",
+      "antenna_coupling_error",
+      "dielectric_error",
+      "mode_conversion_error",
+      "antenna_coupling_error",
+      "dielectric_error",
+      "mode_conversion_error"
+    ],
+    "omega_bounds": {
+      "N_R": [
+        32,
+        1024
+      ],
+      "N_Z": [
+        32,
+        1024
+      ],
+      "N_freqs": [
+        1,
+        50
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "antenna_coupling_error": [
+        0.0,
+        0.3
+      ],
+      "dielectric_error": [
+        0.0,
+        0.2
+      ],
+      "mode_conversion_error": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

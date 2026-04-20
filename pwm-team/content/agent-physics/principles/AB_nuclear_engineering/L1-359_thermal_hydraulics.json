@@ -1,0 +1,177 @@
+{
+  "artifact_id": "L1-359",
+  "layer": "L1",
+  "principle_number": "359",
+  "title": "Reactor Thermal-Hydraulics \u2014 coupled T/H with neutronics",
+  "domain": "Nuclear Engineering",
+  "sub_domain": "RELAP / CTF core thermal-hydraulic transient",
+  "source_file": "AB_nuclear_engineering/359_thermal_hydraulics.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Reactor Thermal-Hydraulics \u2014 coupled T/H with neutronics forward model.",
+    "forward_model": "2-phase 6-equation: mass, momentum, energy per phase; fuel rod conduction; clad-coolant HTC",
+    "world_state_x": "axial/radial fuel + coolant temperature + void fraction + pressure drops",
+    "observation_y": "in-core thermocouples, loop flowmeters, pressurizer level",
+    "physical_parameters_theta": [
+      "N_assemblies",
+      "N_axial",
+      "N_samples",
+      "SNR_dB",
+      "friction_factor_error",
+      "boiling_correlation_error",
+      "fuel_k_error",
+      "heat_transfer_coeff_error"
+    ]
+  },
+  "G": {
+    "dag": "L.two_phase_flow -> L.fuel_rod_conduction -> L.coolant_energy -> int.temporal",
+    "vertices": [
+      "L.two_phase_flow",
+      "L.fuel_rod_conduction",
+      "L.coolant_energy",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.two_phase_flow -> L.fuel_rod_conduction",
+      "L.fuel_rod_conduction -> L.coolant_energy",
+      "L.coolant_energy -> int.temporal"
+    ],
+    "L_DAG": 3.7,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 600,
+    "condition_number_effective": 30,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "RELAP5, CTF, TRACE",
+    "convergence_rate_q": 1.5,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "thermal",
+    "sensing_mechanism": "thermocouples_flowmeters",
+    "integration_axis": "temporal",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "temp_flow_reactor_core",
+    "primitives": [
+      "L.two_phase_flow",
+      "L.fuel_rod_conduction",
+      "L.coolant_energy",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "friction_factor_error",
+    "boiling_correlation_error",
+    "fuel_k_error",
+    "heat_transfer_coeff_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "thermal_hydraulics",
+      "forward_operator": "thermal_hydraulics_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_assemblies": 193,
+        "N_axial": 24,
+        "N_samples": 1000,
+        "SNR_dB": 30,
+        "friction_factor_error": 0.0,
+        "boiling_correlation_error": 0.0,
+        "fuel_k_error": 0.0,
+        "heat_transfer_coeff_error": 0.0
+      },
+      "epsilon_fn_center": "22.0"
+    },
+    "allowed_forward_operators": [
+      "thermal_hydraulics_forward"
+    ],
+    "allowed_problem_classes": [
+      "thermal_hydraulics"
+    ],
+    "allowed_omega_dimensions": [
+      "N_assemblies",
+      "N_axial",
+      "N_samples",
+      "SNR_dB",
+      "friction_factor_error",
+      "boiling_correlation_error",
+      "fuel_k_error",
+      "heat_transfer_coeff_error",
+      "friction_factor_error",
+      "boiling_correlation_error",
+      "fuel_k_error",
+      "heat_transfer_coeff_error"
+    ],
+    "omega_bounds": {
+      "N_assemblies": [
+        1,
+        1000
+      ],
+      "N_axial": [
+        1,
+        100
+      ],
+      "N_samples": [
+        100,
+        100000
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "friction_factor_error": [
+        0.0,
+        0.2
+      ],
+      "boiling_correlation_error": [
+        0.0,
+        0.3
+      ],
+      "fuel_k_error": [
+        0.0,
+        0.1
+      ],
+      "heat_transfer_coeff_error": [
+        0.0,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

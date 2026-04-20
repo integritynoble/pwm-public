@@ -1,0 +1,175 @@
+{
+  "artifact_id": "L1-260",
+  "layer": "L1",
+  "principle_number": "260",
+  "title": "Room Acoustics \u2014 image-source method (shoebox rooms)",
+  "domain": "Acoustics",
+  "sub_domain": "Image-source mirror-reflection model",
+  "source_file": "V_acoustics/260_room_acoustics_image.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Room Acoustics \u2014 image-source method (shoebox rooms) forward model.",
+    "forward_model": "h(t) = sum_{n,m,p} R_wall^order * delta(t - d_{nmp}/c) / (4*pi*d_{nmp})",
+    "world_state_x": "room impulse response h(t) in a shoebox room with parallel walls",
+    "observation_y": "microphone recording y(t) = x(t) * h(t) + n(t)",
+    "physical_parameters_theta": [
+      "L_m",
+      "W_m",
+      "H_m",
+      "max_order",
+      "fs_kHz",
+      "reflection_coeff_error",
+      "geometry_error",
+      "src_rec_pos_error"
+    ]
+  },
+  "G": {
+    "dag": "L.mirror.images -> L.delay_sum -> L.absorb -> int.temporal",
+    "vertices": [
+      "L.mirror.images",
+      "L.delay_sum",
+      "L.absorb",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.mirror.images -> L.delay_sum",
+      "L.delay_sum -> L.absorb",
+      "L.absorb -> int.temporal"
+    ],
+    "L_DAG": 2.8,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 160,
+    "condition_number_effective": 8,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "ISM-Allen-Berkley, ISM-hybrid, Neural-RIR",
+    "convergence_rate_q": 1.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "acoustic",
+    "sensing_mechanism": "pressure_mic",
+    "integration_axis": "temporal",
+    "problem_class": "forward",
+    "noise_model": "gaussian",
+    "solution_space": "room_impulse_response_1D",
+    "primitives": [
+      "L.mirror.images",
+      "L.delay_sum",
+      "L.absorb",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "reflection_coeff_error",
+    "geometry_error",
+    "src_rec_pos_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "image_source",
+      "forward_operator": "image_source_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "L_m": 6,
+        "W_m": 8,
+        "H_m": 3,
+        "max_order": 20,
+        "fs_kHz": 48,
+        "reflection_coeff_error": 0.0,
+        "geometry_error": 0.0,
+        "src_rec_pos_error": 0.0
+      },
+      "epsilon_fn_center": "25.0"
+    },
+    "allowed_forward_operators": [
+      "image_source_forward"
+    ],
+    "allowed_problem_classes": [
+      "image_source"
+    ],
+    "allowed_omega_dimensions": [
+      "L_m",
+      "W_m",
+      "H_m",
+      "max_order",
+      "fs_kHz",
+      "reflection_coeff_error",
+      "geometry_error",
+      "src_rec_pos_error",
+      "reflection_coeff_error",
+      "geometry_error",
+      "src_rec_pos_error"
+    ],
+    "omega_bounds": {
+      "L_m": [
+        2,
+        30
+      ],
+      "W_m": [
+        2,
+        30
+      ],
+      "H_m": [
+        2,
+        15
+      ],
+      "max_order": [
+        1,
+        80
+      ],
+      "fs_kHz": [
+        8,
+        96
+      ],
+      "reflection_coeff_error": [
+        0.0,
+        0.3
+      ],
+      "geometry_error": [
+        0.0,
+        0.02
+      ],
+      "src_rec_pos_error": [
+        0.0,
+        0.1
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

@@ -1,0 +1,175 @@
+{
+  "artifact_id": "L1-187",
+  "layer": "L1",
+  "principle_number": "187",
+  "title": "Lattice Boltzmann Method (LBM) \u2014 mesoscale fluid",
+  "domain": "Fluid Dynamics",
+  "sub_domain": "Lattice-Boltzmann BGK for incompressible flow",
+  "source_file": "R_fluid_dynamics/187_lbm.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Lattice Boltzmann Method (LBM) \u2014 mesoscale fluid forward model.",
+    "forward_model": "f_i(x + c_i dt, t+dt) = f_i(x,t) - (1/tau)(f_i - f_i^eq)",
+    "world_state_x": "distribution f_i at lattice nodes + recovered rho, u via moments",
+    "observation_y": "microfluidic PIV",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "Z",
+      "N_times",
+      "SNR_dB",
+      "relaxation_time_error",
+      "grid_error",
+      "compressibility_error"
+    ]
+  },
+  "G": {
+    "dag": "L.stream -> L.collide_bgk -> L.moment_extract -> int.temporal",
+    "vertices": [
+      "L.stream",
+      "L.collide_bgk",
+      "L.moment_extract",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.stream -> L.collide_bgk",
+      "L.collide_bgk -> L.moment_extract",
+      "L.moment_extract -> int.temporal"
+    ],
+    "L_DAG": 3.2,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 360,
+    "condition_number_effective": 18,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "Palabos, waLBerla, LBM-NN",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "mechanical",
+    "sensing_mechanism": "piv_microfluidic",
+    "integration_axis": "temporal",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "distribution_function_lattice",
+    "primitives": [
+      "L.stream",
+      "L.collide_bgk",
+      "L.moment_extract",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "relaxation_time_error",
+    "grid_error",
+    "compressibility_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "lbm",
+      "forward_operator": "lbm_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 256,
+        "W": 256,
+        "Z": 64,
+        "N_times": 5000,
+        "SNR_dB": 30,
+        "relaxation_time_error": 0.0,
+        "grid_error": 0.0,
+        "compressibility_error": 0.0
+      },
+      "epsilon_fn_center": "22.0"
+    },
+    "allowed_forward_operators": [
+      "lbm_forward"
+    ],
+    "allowed_problem_classes": [
+      "lbm"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "Z",
+      "N_times",
+      "SNR_dB",
+      "relaxation_time_error",
+      "grid_error",
+      "compressibility_error",
+      "relaxation_time_error",
+      "grid_error",
+      "compressibility_error"
+    ],
+    "omega_bounds": {
+      "H": [
+        32,
+        4096
+      ],
+      "W": [
+        32,
+        4096
+      ],
+      "Z": [
+        8,
+        1024
+      ],
+      "N_times": [
+        100,
+        1000000
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "relaxation_time_error": [
+        0.0,
+        0.2
+      ],
+      "grid_error": [
+        0.0,
+        0.3
+      ],
+      "compressibility_error": [
+        0.0,
+        0.2
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

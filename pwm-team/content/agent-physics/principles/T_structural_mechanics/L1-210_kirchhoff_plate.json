@@ -1,0 +1,168 @@
+{
+  "artifact_id": "L1-210",
+  "layer": "L1",
+  "principle_number": "210",
+  "title": "Kirchhoff Plate \u2014 thin-plate bending",
+  "domain": "Structural Mechanics",
+  "sub_domain": "Thin-plate (classical) plate theory",
+  "source_file": "T_structural_mechanics/210_kirchhoff_plate.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Kirchhoff Plate \u2014 thin-plate bending forward model.",
+    "forward_model": "D * Laplacian^2(w) = q(x,y); D = Et^3/(12(1-nu^2))",
+    "world_state_x": "plate deflection w(x,y)",
+    "observation_y": "DIC surface deflection map",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "N_sensors",
+      "SNR_dB",
+      "D_error",
+      "bc_error",
+      "load_error"
+    ]
+  },
+  "G": {
+    "dag": "L.bending_plate -> L.4th_order_pde -> L.bc -> int.spatial",
+    "vertices": [
+      "L.bending_plate",
+      "L.4th_order_pde",
+      "L.bc",
+      "int.spatial"
+    ],
+    "arcs": [
+      "L.bending_plate -> L.4th_order_pde",
+      "L.4th_order_pde -> L.bc",
+      "L.bc -> int.spatial"
+    ],
+    "L_DAG": 3.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 200,
+    "condition_number_effective": 10,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "FEM-MITC4, Hsieh-Clough-Tocher, Plate-NN",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "mechanical",
+    "sensing_mechanism": "dic_strain",
+    "integration_axis": "spatial",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "plate_deflection_2D",
+    "primitives": [
+      "L.bending_plate",
+      "L.4th_order_pde",
+      "L.bc",
+      "int.spatial"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "D_error",
+    "bc_error",
+    "load_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "kirchhoff_plate",
+      "forward_operator": "kirchhoff_plate_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 64,
+        "W": 64,
+        "N_sensors": 64,
+        "SNR_dB": 30,
+        "D_error": 0.0,
+        "bc_error": 0.0,
+        "load_error": 0.0
+      },
+      "epsilon_fn_center": "27.0"
+    },
+    "allowed_forward_operators": [
+      "kirchhoff_plate_forward"
+    ],
+    "allowed_problem_classes": [
+      "kirchhoff_plate"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "N_sensors",
+      "SNR_dB",
+      "D_error",
+      "bc_error",
+      "load_error",
+      "D_error",
+      "bc_error",
+      "load_error"
+    ],
+    "omega_bounds": {
+      "H": [
+        16,
+        1024
+      ],
+      "W": [
+        16,
+        1024
+      ],
+      "N_sensors": [
+        4,
+        10000
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "D_error": [
+        0.0,
+        0.1
+      ],
+      "bc_error": [
+        0.0,
+        0.2
+      ],
+      "load_error": [
+        0.0,
+        0.1
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

@@ -1,0 +1,160 @@
+{
+  "artifact_id": "L2-262",
+  "layer": "L2",
+  "parent_l1": "L1-262",
+  "title": "Underwater Acoustic Ray Tracing (Bellhop) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "N_range": [
+        64,
+        4096
+      ],
+      "N_depth": [
+        32,
+        1024
+      ],
+      "N_rays": [
+        1000,
+        1000000
+      ],
+      "freq_Hz": [
+        10,
+        100000
+      ],
+      "SNR_dB": [
+        -10,
+        40
+      ],
+      "ssp_error": [
+        0.0,
+        0.02
+      ],
+      "bathymetry_error": [
+        0.0,
+        10.0
+      ],
+      "bottom_properties_error": [
+        0.0,
+        0.3
+      ],
+      "range_error": [
+        0.0,
+        50.0
+      ]
+    },
+    "E": {
+      "forward": "dtheta/ds = -(1/c) * dc/dz * cos(theta); intensity ~ 1/(J*|r_0|); sum arrivals to form p(r,z,t)",
+      "operator": "bellhop_ray_forward_mismatch",
+      "primitive_chain": "L.source_emit -> L.refract.sspe -> L.bottom_reflect -> int.temporal",
+      "inverse": "solve forward for declared state variable under Omega bounds"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "TL_error_dB",
+      "residual_norm"
+    ],
+    "epsilon_fn": "2.0 + 20.0*ssp_error + 0.2*bathymetry_error + 8.0*bottom_properties_error - 0.03*SNR_dB"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Bellhop-Gaussian",
+        "method_sig": "L+O",
+        "expected_psnr": 2.8
+      },
+      {
+        "name": "Bellhop-eigenray",
+        "method_sig": "L+O",
+        "expected_psnr": 3.5
+      },
+      {
+        "name": "Ray-NN",
+        "method_sig": "L+N",
+        "expected_psnr": 2.4
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_range": 512,
+        "N_depth": 256,
+        "N_rays": 10000,
+        "freq_Hz": 1000,
+        "SNR_dB": 30,
+        "ssp_error": 0.0,
+        "bathymetry_error": 0.0,
+        "bottom_properties_error": 0.0,
+        "range_error": 0.0
+      },
+      "epsilon": 3.0
+    },
+    "tier_bounds": {
+      "N_range": [
+        64,
+        4096
+      ],
+      "N_depth": [
+        32,
+        1024
+      ],
+      "N_rays": [
+        1000,
+        1000000
+      ],
+      "freq_Hz": [
+        10,
+        100000
+      ],
+      "SNR_dB": [
+        -10,
+        40
+      ],
+      "ssp_error": [
+        0.0,
+        0.02
+      ],
+      "bathymetry_error": [
+        0.0,
+        10.0
+      ],
+      "bottom_properties_error": [
+        0.0,
+        0.3
+      ],
+      "range_error": [
+        0.0,
+        50.0
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.48,
+  "d_spec_notes": "Distance computed from problem_class, forward_operator, carrier, integration_axis against neighboring specs; within same principle this spec is mismatch-only canonical and sits at the Omega centroid.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions are consistent across the DAG; forward operator maps state space to measurement space at declared shapes.",
+    "S2": "kappa_eff = 30 within tolerance after regularization; RIP-like or coercivity conditions satisfied over most of Omega.",
+    "S3": "Solvers converge at rate q=1.5 in well-posed regime; mismatch parameters degrade convergence but not divergence.",
+    "S4": "epsilon_fn evaluates across 10+ random Omega samples; hardness rule verified \u2014 no baseline passes everywhere."
+  },
+  "ipfs_cid": null
+}

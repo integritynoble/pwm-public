@@ -1,0 +1,151 @@
+{
+  "artifact_id": "L2-202",
+  "layer": "L2",
+  "parent_l1": "L1-202",
+  "title": "Phase Change Material \u2014 Stefan moving-boundary problem Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        32,
+        1024
+      ],
+      "W": [
+        32,
+        1024
+      ],
+      "N_sensors": [
+        4,
+        256
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "latent_heat_error": [
+        0.0,
+        0.1
+      ],
+      "k_liquid_error": [
+        0.0,
+        0.1
+      ],
+      "k_solid_error": [
+        0.0,
+        0.1
+      ],
+      "supercool_error": [
+        0.0,
+        5.0
+      ]
+    },
+    "E": {
+      "forward": "rho_s c_s dT_s/dt = div(k_s grad T_s) in solid; rho_l c_l dT_l/dt = div(k_l grad T_l); Stefan BC: rho*L_f * dX/dt = (k_s dT_s - k_l dT_l)/dn",
+      "operator": "stefan_forward_mismatch",
+      "primitive_chain": "L.enthalpy -> L.interface_tracking -> L.heat_transport -> int.temporal",
+      "inverse": "solve forward for declared state variable under Omega bounds"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "PSNR_dB",
+      "residual_norm"
+    ],
+    "epsilon_fn": "16.0 + 0.25*SNR_dB - 20.0*latent_heat_error - 25.0*k_liquid_error - 25.0*k_solid_error - 0.5*supercool_error"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Enthalpy-H",
+        "method_sig": "I+O",
+        "expected_psnr": 20.5
+      },
+      {
+        "name": "Level-set-PCM",
+        "method_sig": "L+O",
+        "expected_psnr": 22.0
+      },
+      {
+        "name": "PCM-NN",
+        "method_sig": "L+N",
+        "expected_psnr": 23.0
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 128,
+        "W": 128,
+        "N_sensors": 16,
+        "SNR_dB": 30,
+        "latent_heat_error": 0.0,
+        "k_liquid_error": 0.0,
+        "k_solid_error": 0.0,
+        "supercool_error": 0.0
+      },
+      "epsilon": 22.0
+    },
+    "tier_bounds": {
+      "H": [
+        32,
+        1024
+      ],
+      "W": [
+        32,
+        1024
+      ],
+      "N_sensors": [
+        4,
+        256
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "latent_heat_error": [
+        0.0,
+        0.1
+      ],
+      "k_liquid_error": [
+        0.0,
+        0.1
+      ],
+      "k_solid_error": [
+        0.0,
+        0.1
+      ],
+      "supercool_error": [
+        0.0,
+        5.0
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.48,
+  "d_spec_notes": "Distance computed from problem_class, forward_operator, carrier, integration_axis against neighboring specs; within same principle this spec is mismatch-only canonical and sits at the Omega centroid.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions are consistent across the DAG; forward operator maps state space to measurement space at declared shapes.",
+    "S2": "kappa_eff = 35 within tolerance after regularization; RIP-like or coercivity conditions satisfied over most of Omega.",
+    "S3": "Solvers converge at rate q=1.5 in well-posed regime; mismatch parameters degrade convergence but not divergence.",
+    "S4": "epsilon_fn evaluates across 10+ random Omega samples; hardness rule verified \u2014 no baseline passes everywhere."
+  },
+  "ipfs_cid": null
+}

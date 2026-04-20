@@ -1,0 +1,161 @@
+{
+  "artifact_id": "L1-349",
+  "layer": "L1",
+  "principle_number": "349",
+  "title": "MHD Stability \u2014 linear eigenmode growth rates",
+  "domain": "Plasma Physics",
+  "sub_domain": "Tokamak/stellarator linear stability",
+  "source_file": "AA_plasma_physics/349_mhd_stability.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "MHD Stability \u2014 linear eigenmode growth rates forward model.",
+    "forward_model": "omega^2 xi = F(xi); symplectic operator F determines modes (ideal, kink, ballooning, ELM)",
+    "world_state_x": "growth rates gamma and mode structures xi_m,n",
+    "observation_y": "magnetic pickup spectra + SXR fluctuations",
+    "physical_parameters_theta": [
+      "N_modes",
+      "N_radial",
+      "SNR_dB",
+      "equilibrium_error",
+      "rotation_error",
+      "pressure_profile_error"
+    ]
+  },
+  "G": {
+    "dag": "L.linearize_mhd -> L.eigenvalue -> L.mode_classify -> int.frequency",
+    "vertices": [
+      "L.linearize_mhd",
+      "L.eigenvalue",
+      "L.mode_classify",
+      "int.frequency"
+    ],
+    "arcs": [
+      "L.linearize_mhd -> L.eigenvalue",
+      "L.eigenvalue -> L.mode_classify",
+      "L.mode_classify -> int.frequency"
+    ],
+    "L_DAG": 3.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 400,
+    "condition_number_effective": 20,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "ELITE, MISHKA, GATO",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "plasma",
+    "sensing_mechanism": "magnetics_fluctuations",
+    "integration_axis": "frequency",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "mode_growth_rates",
+    "primitives": [
+      "L.linearize_mhd",
+      "L.eigenvalue",
+      "L.mode_classify",
+      "int.frequency"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "equilibrium_error",
+    "rotation_error",
+    "pressure_profile_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "mhd_stability",
+      "forward_operator": "mhd_stability_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_modes": 20,
+        "N_radial": 64,
+        "SNR_dB": 25,
+        "equilibrium_error": 0.0,
+        "rotation_error": 0.0,
+        "pressure_profile_error": 0.0
+      },
+      "epsilon_fn_center": "24.0"
+    },
+    "allowed_forward_operators": [
+      "mhd_stability_forward"
+    ],
+    "allowed_problem_classes": [
+      "mhd_stability"
+    ],
+    "allowed_omega_dimensions": [
+      "N_modes",
+      "N_radial",
+      "SNR_dB",
+      "equilibrium_error",
+      "rotation_error",
+      "pressure_profile_error",
+      "equilibrium_error",
+      "rotation_error",
+      "pressure_profile_error"
+    ],
+    "omega_bounds": {
+      "N_modes": [
+        1,
+        200
+      ],
+      "N_radial": [
+        16,
+        1024
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "equilibrium_error": [
+        0.0,
+        0.1
+      ],
+      "rotation_error": [
+        0.0,
+        0.3
+      ],
+      "pressure_profile_error": [
+        0.0,
+        0.2
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

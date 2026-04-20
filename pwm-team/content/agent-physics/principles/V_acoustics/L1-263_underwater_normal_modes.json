@@ -1,0 +1,168 @@
+{
+  "artifact_id": "L1-263",
+  "layer": "L1",
+  "principle_number": "263",
+  "title": "Underwater Normal Modes \u2014 modal propagation (KRAKEN)",
+  "domain": "Acoustics",
+  "sub_domain": "Shallow-water modal expansion",
+  "source_file": "V_acoustics/263_underwater_normal_modes.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Underwater Normal Modes \u2014 modal propagation (KRAKEN) forward model.",
+    "forward_model": "p(r,z) = sum_m Psi_m(z_s) Psi_m(z) * H_0(k_rm r) / sqrt(r); (d^2/dz^2 + k^2(z) - k_rm^2) Psi_m = 0",
+    "world_state_x": "modal eigenvalues k_rm and eigenfunctions Psi_m(z) for the water column",
+    "observation_y": "complex pressure at hydrophone positions for multiple frequencies",
+    "physical_parameters_theta": [
+      "N_modes",
+      "N_depth",
+      "freq_Hz",
+      "SNR_dB",
+      "ssp_error",
+      "waveguide_depth_error",
+      "bottom_sound_speed_error"
+    ]
+  },
+  "G": {
+    "dag": "L.eigenvalue_solve -> L.mode_sum -> L.range_propagate -> int.frequency",
+    "vertices": [
+      "L.eigenvalue_solve",
+      "L.mode_sum",
+      "L.range_propagate",
+      "int.frequency"
+    ],
+    "arcs": [
+      "L.eigenvalue_solve -> L.mode_sum",
+      "L.mode_sum -> L.range_propagate",
+      "L.range_propagate -> int.frequency"
+    ],
+    "L_DAG": 3.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 400,
+    "condition_number_effective": 20,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "KRAKEN, ORCA, PE-modal",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "acoustic",
+    "sensing_mechanism": "hydrophones",
+    "integration_axis": "frequency",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "modal_eigenfunction_set",
+    "primitives": [
+      "L.eigenvalue_solve",
+      "L.mode_sum",
+      "L.range_propagate",
+      "int.frequency"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "ssp_error",
+    "waveguide_depth_error",
+    "bottom_sound_speed_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "kraken_normal_modes",
+      "forward_operator": "kraken_normal_modes_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_modes": 20,
+        "N_depth": 256,
+        "freq_Hz": 500,
+        "SNR_dB": 30,
+        "ssp_error": 0.0,
+        "waveguide_depth_error": 0.0,
+        "bottom_sound_speed_error": 0.0
+      },
+      "epsilon_fn_center": "23.0"
+    },
+    "allowed_forward_operators": [
+      "kraken_normal_modes_forward"
+    ],
+    "allowed_problem_classes": [
+      "kraken_normal_modes"
+    ],
+    "allowed_omega_dimensions": [
+      "N_modes",
+      "N_depth",
+      "freq_Hz",
+      "SNR_dB",
+      "ssp_error",
+      "waveguide_depth_error",
+      "bottom_sound_speed_error",
+      "ssp_error",
+      "waveguide_depth_error",
+      "bottom_sound_speed_error"
+    ],
+    "omega_bounds": {
+      "N_modes": [
+        3,
+        100
+      ],
+      "N_depth": [
+        32,
+        1024
+      ],
+      "freq_Hz": [
+        20,
+        5000
+      ],
+      "SNR_dB": [
+        -5,
+        40
+      ],
+      "ssp_error": [
+        0.0,
+        0.02
+      ],
+      "waveguide_depth_error": [
+        0.0,
+        5.0
+      ],
+      "bottom_sound_speed_error": [
+        0.0,
+        0.2
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

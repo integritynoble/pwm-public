@@ -1,0 +1,170 @@
+{
+  "artifact_id": "L1-227",
+  "layer": "L1",
+  "principle_number": "227",
+  "title": "Poroelasticity \u2014 Biot coupled solid/fluid",
+  "domain": "Structural Mechanics",
+  "sub_domain": "Biot consolidation theory",
+  "source_file": "T_structural_mechanics/227_poroelasticity.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
+  "E": {
+    "description": "Poroelasticity \u2014 Biot coupled solid/fluid forward model.",
+    "forward_model": "div sigma' - alpha grad p = 0; (1/M) dp/dt + alpha div(du/dt) - div(k/mu grad p) = 0",
+    "world_state_x": "displacement u(x,t) + pore pressure p(x,t)",
+    "observation_y": "piezometer + DIC",
+    "physical_parameters_theta": [
+      "N_DOF",
+      "N_times",
+      "SNR_dB",
+      "permeability_error",
+      "biot_alpha_error",
+      "M_error",
+      "E_error"
+    ]
+  },
+  "G": {
+    "dag": "L.biot_coupling -> L.darcy_flow -> L.effective_stress -> int.temporal",
+    "vertices": [
+      "L.biot_coupling",
+      "L.darcy_flow",
+      "L.effective_stress",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.biot_coupling -> L.darcy_flow",
+      "L.darcy_flow -> L.effective_stress",
+      "L.effective_stress -> int.temporal"
+    ],
+    "L_DAG": 3.3,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 440,
+    "condition_number_effective": 22,
+    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+  },
+  "C": {
+    "solver_class": "FEM-Biot, MixedFEM, Biot-NN",
+    "convergence_rate_q": 1.5,
+    "error_bound": "Bounded by sigma_noise / sqrt(N_measurements) + mismatch bias.",
+    "complexity": "O(N log N) per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "mechanical",
+    "sensing_mechanism": "piezometer_dic",
+    "integration_axis": "temporal",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "coupled_u_p_fields",
+    "primitives": [
+      "L.biot_coupling",
+      "L.darcy_flow",
+      "L.effective_stress",
+      "int.temporal"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "permeability_error",
+    "biot_alpha_error",
+    "M_error",
+    "E_error"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "SSIM",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "poroelastic",
+      "forward_operator": "poroelastic_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_DOF": 10000,
+        "N_times": 200,
+        "SNR_dB": 30,
+        "permeability_error": 0.0,
+        "biot_alpha_error": 0.0,
+        "M_error": 0.0,
+        "E_error": 0.0
+      },
+      "epsilon_fn_center": "22.0"
+    },
+    "allowed_forward_operators": [
+      "poroelastic_forward"
+    ],
+    "allowed_problem_classes": [
+      "poroelastic"
+    ],
+    "allowed_omega_dimensions": [
+      "N_DOF",
+      "N_times",
+      "SNR_dB",
+      "permeability_error",
+      "biot_alpha_error",
+      "M_error",
+      "E_error",
+      "permeability_error",
+      "biot_alpha_error",
+      "M_error",
+      "E_error"
+    ],
+    "omega_bounds": {
+      "N_DOF": [
+        100,
+        1000000
+      ],
+      "N_times": [
+        10,
+        100000
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "permeability_error": [
+        0.0,
+        0.3
+      ],
+      "biot_alpha_error": [
+        0.0,
+        0.1
+      ],
+      "M_error": [
+        0.0,
+        0.1
+      ],
+      "E_error": [
+        0.0,
+        0.1
+      ]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [
+        10.0,
+        45.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}
