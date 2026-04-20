@@ -1,0 +1,126 @@
+{
+  "artifact_id": "L2-313",
+  "layer": "L2",
+  "parent_l1": "L1-313",
+  "title": "Time-Dependent Schr\u00f6dinger Equation Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "N_grid": [
+        256,
+        1048576
+      ],
+      "T_end_fs": [
+        0.1,
+        1000000.0
+      ],
+      "I_laser_W_cm2": [
+        10000000000.0,
+        1e+20
+      ],
+      "lambda_nm": [
+        50,
+        10000
+      ],
+      "N_electrons": [
+        1,
+        1000
+      ]
+    },
+    "E": {
+      "forward": "i*hbar*dpsi/dt = (H_0 + V_laser(t))*psi(t)",
+      "operator": "TDSE_forward_mismatch",
+      "primitive_chain": "E.hamiltonian_t -> E.laser_coupling -> M.time_integrate -> O.time_resolved",
+      "inverse": "recover constitutive parameters for Time-Dependent Schr\u00f6dinger Equation"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "transition_probability_error",
+      "HHG_spectrum_L2",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.015 * (1 + 0.1 * mismatch_severity)"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Qprop",
+        "method_sig": "T+O",
+        "expected_err": 0.025
+      },
+      {
+        "name": "TDDFT-Octopus",
+        "method_sig": "T+O",
+        "expected_err": 0.03
+      },
+      {
+        "name": "TDSE-NeuralOp",
+        "method_sig": "T+N",
+        "expected_err": 0.018
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_grid": 2048,
+        "T_end_fs": 100,
+        "I_laser_W_cm2": 10000000000000.0,
+        "lambda_nm": 800,
+        "N_electrons": 1
+      },
+      "epsilon": 0.015
+    },
+    "tier_bounds": {
+      "N_grid": [
+        256,
+        1048576
+      ],
+      "T_end_fs": [
+        0.1,
+        1000000.0
+      ],
+      "I_laser_W_cm2": [
+        10000000000.0,
+        1e+20
+      ],
+      "lambda_nm": [
+        50,
+        10000
+      ],
+      "N_electrons": [
+        1,
+        1000
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.45,
+  "d_spec_notes": "Canonical mismatch-only baseline for this principle; sits at the centroid of its spec family.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions match across all DAG nodes; operator dimensions consistent.",
+    "S2": "Operator condition number controlled (kappa_eff=60) under declared Omega with regularization.",
+    "S3": "Solver class Split-operator Fourier (SOFT); Crank-Nicolson; TDDFT if many-electron provably converges at rate q=2.0; monotone residual decrease.",
+    "S4": "epsilon_fn evaluates cleanly across 50 random Omega samples; hardness rule satisfied (top baseline fails at Omega corner)."
+  },
+  "ipfs_cid": null
+}

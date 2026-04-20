@@ -1,0 +1,138 @@
+{
+  "artifact_id": "L1-295",
+  "layer": "L1",
+  "principle_number": "295",
+  "title": "Hartree-Fock Self-Consistent Field",
+  "domain": "Computational Chemistry",
+  "sub_domain": "Mean-field electron correlation baseline",
+  "source_file": "X_computational_chemistry/295_hartree_fock.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
+  "E": {
+    "description": "Hartree-Fock: Slater determinant wavefunction; orbitals satisfy F*phi_i = E_i*phi_i with Fock operator F including exchange but not correlation.",
+    "forward_model": "F * phi_i = E_i * phi_i where F = h + J - K; rho = 2*sum_i |phi_i|^2 (RHF)",
+    "world_state_x": "Hartree-Fock molecular orbitals and reference determinant",
+    "observation_y": "HF energy, orbital energies (Koopmans), geometry optimization",
+    "physical_parameters_theta": [
+      "basis set",
+      "SCF convergence threshold",
+      "symmetry constraints"
+    ]
+  },
+  "G": {
+    "dag": "E.fock_operator -> M.scf_iterate -> O.hf_wavefunction",
+    "vertices": [
+      "E.fock_operator",
+      "M.scf_iterate",
+      "O.hf_wavefunction"
+    ],
+    "arcs": [
+      "E.fock_operator -> M.scf_iterate",
+      "M.scf_iterate -> O.hf_wavefunction"
+    ],
+    "L_DAG": 3.1,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 300,
+    "condition_number_effective": 35,
+    "regime": "Well-posed; no correlation; missing ~1% of total energy."
+  },
+  "C": {
+    "solver_class": "Gaussian/ORCA/Psi4; DIIS convergence; symmetry-adapted orbitals",
+    "convergence_rate_q": 2.0,
+    "error_bound": "bounded by discretization + mismatch bias + noise floor",
+    "complexity": "principle-dependent"
+  },
+  "physics_fingerprint": {
+    "carrier": "electron",
+    "sensing_mechanism": "molecular_benchmark",
+    "integration_axis": "spatial",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "hf_mo_coefficients",
+    "primitives": [
+      "E.fock_operator",
+      "M.scf_iterate",
+      "O.hf_wavefunction"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "basis_incompleteness",
+    "symmetry_breaking",
+    "convergence_tolerance"
+  ],
+  "error_metric": "HF_energy_error_mHa",
+  "error_metric_secondary": "orbital_energy_error_eV",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "hartree_fock",
+      "forward_operator": "hf_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_electrons": 10,
+        "N_basis": 100,
+        "basis": "cc-pVDZ",
+        "symmetry": "C1"
+      },
+      "epsilon_fn_center": "HF E error <= 0.3 mHa"
+    },
+    "allowed_forward_operators": [
+      "hf_forward"
+    ],
+    "allowed_problem_classes": [
+      "hartree_fock"
+    ],
+    "allowed_omega_dimensions": [
+      "N_electrons",
+      "N_basis",
+      "basis",
+      "symmetry"
+    ],
+    "omega_bounds": {
+      "N_electrons": [
+        2,
+        1000
+      ],
+      "N_basis": [
+        20,
+        10000
+      ],
+      "basis": [
+        "STO-3G",
+        "cc-pVDZ",
+        "cc-pVTZ",
+        "aug-cc-pVQZ"
+      ]
+    },
+    "epsilon_bounds": {
+      "HF_energy_error_mHa": [
+        0.1,
+        10
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

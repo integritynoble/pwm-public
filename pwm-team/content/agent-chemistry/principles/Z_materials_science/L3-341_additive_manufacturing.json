@@ -1,0 +1,237 @@
+{
+  "artifact_id": "L3-341",
+  "layer": "L3",
+  "parent_l2": "L2-341",
+  "parent_l1": "L1-341",
+  "title": "Additive Manufacturing (Selective Laser Melting) Thermal Model Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "NIST AMB2018 additive manufacturing benchmark",
+    "secondary": "ORNL AM thermal imaging dataset",
+    "construction_method": "canonical ground truth + declared noise at tier Omega for Additive Manufacturing (Selective Laser Melting) Thermal Model",
+    "num_dev_instances_per_tier": 20,
+    "holdout_instances_per_tier": 10
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "P_W": 200,
+        "v_mm_s": 800,
+        "layer_um": 30,
+        "hatch_um": 100
+      },
+      "dataset_description": "Additive Manufacturing (Selective Laser Melting) Thermal Model at rho=1.",
+      "epsilon": 0.06,
+      "d_ibench": 0.15,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        },
+        {
+          "Q": 0.9,
+          "tier": "Excellent"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "AdditiveFOAM",
+          "score": 0.09,
+          "Q": 0.82
+        },
+        {
+          "name": "Flow3D-AM",
+          "score": 0.1,
+          "Q": 0.78
+        },
+        {
+          "name": "AM-ThermalNet",
+          "score": 0.065,
+          "Q": 0.92
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "P_W": 500,
+        "v_mm_s": 2000,
+        "layer_um": 50,
+        "hatch_um": 150
+      },
+      "dataset_description": "Additive Manufacturing (Selective Laser Melting) Thermal Model at rho=3.",
+      "epsilon": 0.069,
+      "d_ibench": 0.32,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        },
+        {
+          "Q": 0.9,
+          "tier": "Excellent"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "AdditiveFOAM",
+          "score": 0.1035,
+          "Q": 0.66
+        },
+        {
+          "name": "Flow3D-AM",
+          "score": 0.115,
+          "Q": 0.6
+        },
+        {
+          "name": "AM-ThermalNet",
+          "score": 0.0747,
+          "Q": 0.82
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "P_W": 1000,
+        "v_mm_s": 3500,
+        "layer_um": 80,
+        "hatch_um": 250
+      },
+      "dataset_description": "Additive Manufacturing (Selective Laser Melting) Thermal Model at rho=5.",
+      "epsilon": 0.084,
+      "d_ibench": 0.51,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "AdditiveFOAM",
+          "score": 0.126,
+          "Q": 0.44
+        },
+        {
+          "name": "Flow3D-AM",
+          "score": 0.14,
+          "Q": 0.38
+        },
+        {
+          "name": "AM-ThermalNet",
+          "score": 0.091,
+          "Q": 0.64
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "P_W": 2000,
+        "v_mm_s": 5000,
+        "layer_um": 100,
+        "hatch_um": 300
+      },
+      "dataset_description": "Additive Manufacturing (Selective Laser Melting) Thermal Model at rho=10.",
+      "epsilon": 0.111,
+      "d_ibench": 0.72,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "AdditiveFOAM",
+          "score": 0.1665,
+          "Q": 0.24
+        },
+        {
+          "name": "Flow3D-AM",
+          "score": 0.185,
+          "Q": 0.2
+        },
+        {
+          "name": "AM-ThermalNet",
+          "score": 0.1203,
+          "Q": 0.46
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "NIST AMB + ORNL AM thermal library",
+      "construction_method": "parametric Omega sampling over declared bounds; stratified by rho.",
+      "num_dev_instances": 200,
+      "num_holdout_instances": 100
+    },
+    "tracks": {
+      "track_A_stratified_worst_case": {
+        "pass_condition": "min score meets epsilon_fn over all strata"
+      },
+      "track_B_uniform_median": {
+        "num_samples": 50,
+        "pass_condition": "median score meets epsilon_fn at Omega_median"
+      },
+      "track_C_mismatch_degradation": {
+        "sweep_points": 5,
+        "pass_condition": "monotone degradation with mismatch"
+      }
+    },
+    "baselines": [
+      {
+        "name": "AdditiveFOAM",
+        "track_A_Q": 0.5,
+        "track_B_Q": 0.62,
+        "track_C_Q": 0.54,
+        "overall_Q": 0.55
+      },
+      {
+        "name": "Flow3D-AM",
+        "track_A_Q": 0.48,
+        "track_B_Q": 0.6,
+        "track_C_Q": 0.52,
+        "overall_Q": 0.53
+      },
+      {
+        "name": "AM-ThermalNet",
+        "track_A_Q": 0.62,
+        "track_B_Q": 0.72,
+        "track_C_Q": 0.64,
+        "overall_Q": 0.66
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails epsilon_fn at T4_blind Omega corner.",
+  "anti_overfitting_mechanisms": {
+    "M1_random_instantiation": "seeded by benchmark hash; non-repeatable holdout",
+    "M2_convergence_scoring": "verifies declared convergence rate across Omega",
+    "M3_worst_case_eval": "min-score over fixed dev instances per tier",
+    "M4_community_adversarial": "adversarial submissions eligible for T_k",
+    "M5_method_sig_diversity": "baselines span multiple method_sig families",
+    "M6_gate_checks": "S1-S4 gate checks enforced with thresholds.yaml"
+  },
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

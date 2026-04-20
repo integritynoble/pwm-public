@@ -1,0 +1,151 @@
+{
+  "artifact_id": "L1-306",
+  "layer": "L1",
+  "principle_number": "306",
+  "title": "Coarse-Grained Molecular Dynamics (MARTINI, Dry-MARTINI)",
+  "domain": "Computational Chemistry",
+  "sub_domain": "Multi-atom grouping force fields",
+  "source_file": "X_computational_chemistry/306_coarse_grained_md.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
+  "E": {
+    "description": "Coarse-graining: groups of atoms (~4 heavy atoms per bead) with effective potentials; speedup ~1000x over atomistic; enables microsecond-to-millisecond simulations.",
+    "forward_model": "m_bead * d^2 R/dt^2 = -grad U_CG(R); U_CG = sum_{bonded} + sum_{non-bonded (modified LJ)}",
+    "world_state_x": "Bead-level trajectory and bead-defined structural observables",
+    "observation_y": "Lipid bilayer properties, protein assembly, solvent-phase partitioning",
+    "physical_parameters_theta": [
+      "bead types & parameters (MARTINI v2/v3)",
+      "mapping scheme",
+      "solvent coarse-graining"
+    ]
+  },
+  "G": {
+    "dag": "E.bead_mapping -> E.CG_forcefield -> M.MD_integrate -> O.mesoscale_observable",
+    "vertices": [
+      "E.bead_mapping",
+      "E.CG_forcefield",
+      "M.MD_integrate",
+      "O.mesoscale_observable"
+    ],
+    "arcs": [
+      "E.bead_mapping -> E.CG_forcefield",
+      "E.CG_forcefield -> M.MD_integrate",
+      "M.MD_integrate -> O.mesoscale_observable"
+    ],
+    "L_DAG": 3.1,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 150,
+    "condition_number_effective": 20,
+    "regime": "Well-posed forward; transferability limited to similar chemistries."
+  },
+  "C": {
+    "solver_class": "GROMACS-MARTINI, LAMMPS-MSCG; Iterative Boltzmann Inversion (IBI) for parameterization",
+    "convergence_rate_q": 2.0,
+    "error_bound": "bounded by discretization + mismatch bias + noise floor",
+    "complexity": "principle-dependent"
+  },
+  "physics_fingerprint": {
+    "carrier": "none",
+    "sensing_mechanism": "md_observable",
+    "integration_axis": "time",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "thermal_langevin",
+    "solution_space": "coarse_grained_trajectory",
+    "primitives": [
+      "E.bead_mapping",
+      "E.CG_forcefield",
+      "M.MD_integrate",
+      "O.mesoscale_observable"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "mapping_choice",
+    "representability_problem",
+    "thermodynamic_consistency"
+  ],
+  "error_metric": "rdf_L2_CG",
+  "error_metric_secondary": "membrane_thickness_error_nm",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "coarse_grained_md",
+      "forward_operator": "cg_md_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_beads": 10000,
+        "T_K": 310,
+        "N_steps": 10000000.0,
+        "dt_fs": 20,
+        "ff": "MARTINI_v3"
+      },
+      "epsilon_fn_center": "g(r) L2 <= 0.03"
+    },
+    "allowed_forward_operators": [
+      "cg_md_forward"
+    ],
+    "allowed_problem_classes": [
+      "coarse_grained_md"
+    ],
+    "allowed_omega_dimensions": [
+      "N_beads",
+      "T_K",
+      "N_steps",
+      "dt_fs",
+      "ff"
+    ],
+    "omega_bounds": {
+      "N_beads": [
+        100,
+        100000000.0
+      ],
+      "T_K": [
+        200,
+        400
+      ],
+      "N_steps": [
+        10000,
+        10000000000.0
+      ],
+      "dt_fs": [
+        5,
+        50
+      ],
+      "ff": [
+        "MARTINI_v2",
+        "MARTINI_v3",
+        "MSCG",
+        "PRIME20"
+      ]
+    },
+    "epsilon_bounds": {
+      "rdf_L2_CG": [
+        0.01,
+        0.3
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

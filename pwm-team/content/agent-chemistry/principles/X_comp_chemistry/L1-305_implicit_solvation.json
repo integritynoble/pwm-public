@@ -1,0 +1,144 @@
+{
+  "artifact_id": "L1-305",
+  "layer": "L1",
+  "principle_number": "305",
+  "title": "Implicit Solvation Models (PCM, COSMO, SMD)",
+  "domain": "Computational Chemistry",
+  "sub_domain": "Continuum dielectric solvent models",
+  "source_file": "X_computational_chemistry/305_implicit_solvation.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
+  "E": {
+    "description": "Implicit solvation: solvent as continuum with dielectric eps; reaction field V_s polarized by solute charge density; PCM/COSMO tessellate molecular cavity.",
+    "forward_model": "(H_solute + V_reaction_field[rho_solute]) phi = E phi;  V_reaction_field from surface charge sigma on cavity surface",
+    "world_state_x": "Solvation free energy DG_solv; solute polarization",
+    "observation_y": "Solvation free energies, pKa shifts, conformational equilibria in solution, solvatochromic shifts",
+    "physical_parameters_theta": [
+      "dielectric epsilon_solvent",
+      "cavity radii (Bondi/UFF)",
+      "non-electrostatic terms (cavity + dispersion + repulsion)"
+    ]
+  },
+  "G": {
+    "dag": "E.cavity_tessellate -> E.reaction_field -> M.scf_solvent -> O.DG_solv",
+    "vertices": [
+      "E.cavity_tessellate",
+      "E.reaction_field",
+      "M.scf_solvent",
+      "O.DG_solv"
+    ],
+    "arcs": [
+      "E.cavity_tessellate -> E.reaction_field",
+      "E.reaction_field -> M.scf_solvent",
+      "M.scf_solvent -> O.DG_solv"
+    ],
+    "L_DAG": 3.2,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 150,
+    "condition_number_effective": 20,
+    "regime": "Well-posed; model error dominates over numerical error."
+  },
+  "C": {
+    "solver_class": "Gaussian-PCM, ORCA-CPCM, ADF-COSMO-RS; SMD continuum",
+    "convergence_rate_q": 2.0,
+    "error_bound": "bounded by discretization + mismatch bias + noise floor",
+    "complexity": "principle-dependent"
+  },
+  "physics_fingerprint": {
+    "carrier": "electron",
+    "sensing_mechanism": "solvation_free_energy",
+    "integration_axis": "spatial",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "solvation_free_energy",
+    "primitives": [
+      "E.cavity_tessellate",
+      "E.reaction_field",
+      "M.scf_solvent",
+      "O.DG_solv"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "cavity_radius_error",
+    "dielectric_frequency_dep",
+    "non_electrostatic_term"
+  ],
+  "error_metric": "DG_solv_error_kcal_mol",
+  "error_metric_secondary": "pKa_shift_error",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "implicit_solvation",
+      "forward_operator": "implicit_solvation_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_atoms": 20,
+        "solvent": "water",
+        "method": "SMD/B3LYP",
+        "cavity_type": "UFF"
+      },
+      "epsilon_fn_center": "DG_solv <= 0.5 kcal/mol"
+    },
+    "allowed_forward_operators": [
+      "implicit_solvation_forward"
+    ],
+    "allowed_problem_classes": [
+      "implicit_solvation"
+    ],
+    "allowed_omega_dimensions": [
+      "N_atoms",
+      "solvent",
+      "method",
+      "cavity_type"
+    ],
+    "omega_bounds": {
+      "N_atoms": [
+        2,
+        1000
+      ],
+      "solvent": [
+        "water",
+        "ethanol",
+        "DMSO",
+        "toluene",
+        "hexane"
+      ],
+      "method": [
+        "PCM",
+        "CPCM",
+        "COSMO",
+        "SMD"
+      ]
+    },
+    "epsilon_bounds": {
+      "DG_solv_error_kcal_mol": [
+        0.2,
+        10
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

@@ -1,0 +1,153 @@
+{
+  "artifact_id": "L1-489",
+  "layer": "L1",
+  "principle_number": "489",
+  "title": "Hydrodynamic Semiconductor Transport",
+  "domain": "Semiconductor Physics",
+  "sub_domain": "Energy-balance transport",
+  "source_file": "AN_semiconductor/489_hydrodynamic_semiconductor.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
+  "E": {
+    "description": "Blotekjaer-Stratton hydrodynamic equations: continuity + momentum + energy, derived from Boltzmann moments with closure at second order; captures hot-carrier and velocity-overshoot effects missed by drift-diffusion.",
+    "forward_model": "dn/dt + div(n*v) = -R;  m*(dv/dt + (v.grad)v) = -qE - grad(n*k_B*T_e)/n - m*v/tau_p(T_e);  d(n*U)/dt + div(n*U*v + J_S) = J.E - n*(U-U_0)/tau_E",
+    "world_state_x": "Density n(r), velocity v(r), electron temperature T_e(r) fields",
+    "observation_y": "Device I-V at high E-field; impact ionization coefficients; noise spectra; velocity overshoot signatures",
+    "physical_parameters_theta": [
+      "tau_p(T_e) (momentum relaxation)",
+      "tau_E(T_e) (energy relaxation)",
+      "m* (effective mass)",
+      "alpha_n/alpha_p (ionization)"
+    ]
+  },
+  "G": {
+    "dag": "E.continuity -> E.momentum_balance -> E.energy_balance -> M.coupled_solve -> O.hot_carrier_IV",
+    "vertices": [
+      "E.continuity",
+      "E.momentum_balance",
+      "E.energy_balance",
+      "M.coupled_solve",
+      "O.hot_carrier_IV"
+    ],
+    "arcs": [
+      "E.continuity -> M.coupled_solve",
+      "E.momentum_balance -> M.coupled_solve",
+      "E.energy_balance -> M.coupled_solve",
+      "M.coupled_solve -> O.hot_carrier_IV"
+    ],
+    "L_DAG": 4.2,
+    "n_c": 1
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 1500,
+    "condition_number_effective": 100,
+    "regime": "Stiff hyperbolic-parabolic system; shocks at hot-carrier fronts; closure model breaks down in ballistic regime."
+  },
+  "C": {
+    "solver_class": "Implicit Gummel + ENO/WENO for convection; adjoint inversion for closure parameters",
+    "convergence_rate_q": 2.0,
+    "error_bound": "|T_e - T_e_exact|_{L2} <= C*h^k + closure_model_bias",
+    "complexity": "O(N_mesh^{1.5}) per step with CFL constraint"
+  },
+  "physics_fingerprint": {
+    "carrier": "electron",
+    "sensing_mechanism": "hot_carrier_transport",
+    "integration_axis": "spatial",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "n_v_Te_hydrodynamic_fields",
+    "primitives": [
+      "E.continuity",
+      "E.momentum_balance",
+      "E.energy_balance",
+      "M.coupled_solve",
+      "O.hot_carrier_IV"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "tau_E_error",
+    "closure_model_drift",
+    "effective_mass_band_model"
+  ],
+  "error_metric": "IV_log_relative_error_high_field",
+  "error_metric_secondary": "Te_RMSE_K",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "hydrodynamic_parameter_inversion",
+      "forward_operator": "hydrodynamic_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "L_channel_nm": 50,
+        "Vds": 1.0,
+        "N_D_cm3": 1e+18,
+        "T_K": 300,
+        "mesh_N": 128
+      },
+      "epsilon_fn_center": "log10(I) error <= 0.04"
+    },
+    "allowed_forward_operators": [
+      "hydrodynamic_forward"
+    ],
+    "allowed_problem_classes": [
+      "hydrodynamic_parameter_inversion"
+    ],
+    "allowed_omega_dimensions": [
+      "L_channel_nm",
+      "Vds",
+      "N_D_cm3",
+      "T_K",
+      "mesh_N"
+    ],
+    "omega_bounds": {
+      "L_channel_nm": [
+        5,
+        500
+      ],
+      "Vds": [
+        0.1,
+        5.0
+      ],
+      "N_D_cm3": [
+        1000000000000000.0,
+        1e+20
+      ],
+      "T_K": [
+        77,
+        500
+      ],
+      "mesh_N": [
+        64,
+        1024
+      ]
+    },
+    "epsilon_bounds": {
+      "IV_log_relative_error_high_field": [
+        0.005,
+        0.4
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

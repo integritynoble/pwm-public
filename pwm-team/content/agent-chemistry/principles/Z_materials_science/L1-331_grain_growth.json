@@ -1,0 +1,146 @@
+{
+  "artifact_id": "L1-331",
+  "layer": "L1",
+  "principle_number": "331",
+  "title": "Grain Growth and Recrystallization",
+  "domain": "Materials Science",
+  "sub_domain": "Microstructure evolution",
+  "source_file": "Z_materials_science/331_grain_growth.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
+  "E": {
+    "description": "Grain boundary motion driven by curvature: v_n = M_GB * sigma_GB * kappa_curvature; grains coarsen statistically following <r>^n ~ t.",
+    "forward_model": "v_n(r) = M_GB * (sigma_GB * kappa + P_driving); grain topology evolves by T1/T2 switches",
+    "world_state_x": "Polycrystalline grain map g(r,t); orientation distribution",
+    "observation_y": "Mean grain size <r>(t); grain-size distribution; orientation texture",
+    "physical_parameters_theta": [
+      "M_GB (mobility)",
+      "sigma_GB (energy)",
+      "P_driving (stored energy)"
+    ]
+  },
+  "G": {
+    "dag": "E.curvature_flow -> M.topology_update -> O.grain_statistics",
+    "vertices": [
+      "E.curvature_flow",
+      "M.topology_update",
+      "O.grain_statistics"
+    ],
+    "arcs": [
+      "E.curvature_flow -> M.topology_update",
+      "M.topology_update -> O.grain_statistics"
+    ],
+    "L_DAG": 3.1,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 150,
+    "condition_number_effective": 20,
+    "regime": "Well-posed; parabolic in mean-field; statistical fluctuations bounded."
+  },
+  "C": {
+    "solver_class": "Monte Carlo Potts; front-tracking; phase-field",
+    "convergence_rate_q": 2.0,
+    "error_bound": "bounded by discretization + mismatch bias + noise floor",
+    "complexity": "principle-dependent"
+  },
+  "physics_fingerprint": {
+    "carrier": "none",
+    "sensing_mechanism": "ebsd_micrograph",
+    "integration_axis": "time",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "grain_orientation_map",
+    "primitives": [
+      "E.curvature_flow",
+      "M.topology_update",
+      "O.grain_statistics"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "mobility_anisotropy",
+    "pinning_drift",
+    "second_phase_particles"
+  ],
+  "error_metric": "grain_size_relative_error",
+  "error_metric_secondary": "texture_KL_divergence",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "grain_growth",
+      "forward_operator": "grain_growth_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "grid_N": 256,
+        "initial_grains": 10000,
+        "T_K": 1000,
+        "t_anneal_s": 100,
+        "f_pinning": 0.0
+      },
+      "epsilon_fn_center": "<r> rel error <= 0.04"
+    },
+    "allowed_forward_operators": [
+      "grain_growth_forward"
+    ],
+    "allowed_problem_classes": [
+      "grain_growth"
+    ],
+    "allowed_omega_dimensions": [
+      "grid_N",
+      "initial_grains",
+      "T_K",
+      "t_anneal_s",
+      "f_pinning"
+    ],
+    "omega_bounds": {
+      "grid_N": [
+        64,
+        2048
+      ],
+      "initial_grains": [
+        100,
+        1000000
+      ],
+      "T_K": [
+        300,
+        2000
+      ],
+      "t_anneal_s": [
+        1,
+        100000
+      ],
+      "f_pinning": [
+        0,
+        0.2
+      ]
+    },
+    "epsilon_bounds": {
+      "grain_size_relative_error": [
+        0.01,
+        0.4
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

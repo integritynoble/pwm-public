@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-308",
+  "layer": "L2",
+  "parent_l1": "L1-308",
+  "title": "Free Energy Perturbation (FEP + TI + BAR) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "N_lambdas": [
+        5,
+        200
+      ],
+      "N_steps_per_lambda": [
+        10000,
+        1000000000.0
+      ],
+      "softcore_alpha": [
+        0.1,
+        1.0
+      ],
+      "T_K": [
+        200,
+        400
+      ]
+    },
+    "E": {
+      "forward": "DG = -(1/beta)*ln<exp(-beta*(U_B - U_A))>_A;  TI: DG = integral_0^1 <dU/dl>_l dl",
+      "operator": "fep_forward_mismatch",
+      "primitive_chain": "E.alchemical_hamiltonian -> M.sample_per_lambda -> M.combine_estimator -> O.DG",
+      "inverse": "recover constitutive parameters for Free Energy Perturbation (FEP + TI + BAR)"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "DG_bind_error_kcal_mol",
+      "DG_solv_error_kcal_mol",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.5 * (1 + 0.1 * mismatch_severity)"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "GROMACS-FEP",
+        "method_sig": "T+O",
+        "expected_err": 0.8
+      },
+      {
+        "name": "FEP+",
+        "method_sig": "T+O",
+        "expected_err": 0.7
+      },
+      {
+        "name": "DeepFEP",
+        "method_sig": "T+N",
+        "expected_err": 0.55
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_lambdas": 20,
+        "N_steps_per_lambda": 1000000.0,
+        "softcore_alpha": 0.5,
+        "T_K": 298
+      },
+      "epsilon": 0.5
+    },
+    "tier_bounds": {
+      "N_lambdas": [
+        5,
+        200
+      ],
+      "N_steps_per_lambda": [
+        10000,
+        1000000000.0
+      ],
+      "softcore_alpha": [
+        0.1,
+        1.0
+      ],
+      "T_K": [
+        200,
+        400
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.45,
+  "d_spec_notes": "Canonical mismatch-only baseline for this principle; sits at the centroid of its spec family.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions match across all DAG nodes; operator dimensions consistent.",
+    "S2": "Operator condition number controlled (kappa_eff=50) under declared Omega with regularization.",
+    "S3": "Solver class pmx, FEP+/Schrodinger, GROMACS-FEP; MBAR / PyMBAR estimator provably converges at rate q=2.0; monotone residual decrease.",
+    "S4": "epsilon_fn evaluates cleanly across 50 random Omega samples; hardness rule satisfied (top baseline fails at Omega corner)."
+  },
+  "ipfs_cid": null
+}

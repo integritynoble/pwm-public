@@ -1,0 +1,161 @@
+{
+  "artifact_id": "L1-488",
+  "layer": "L1",
+  "principle_number": "488",
+  "title": "Drift-Diffusion Semiconductor Transport (TCAD)",
+  "domain": "Semiconductor Physics",
+  "sub_domain": "Device transport",
+  "source_file": "AN_semiconductor/488_drift_diffusion_tcad.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
+  "E": {
+    "description": "Van Roosbroeck system: Poisson + electron/hole continuity, with drift-diffusion currents; solved self-consistently across a 2D/3D device mesh.",
+    "forward_model": "grad.(eps*grad(phi)) = -q*(p - n + N_D - N_A);  J_n = q*mu_n*n*E + q*D_n*grad(n);  dn/dt = (1/q)*div(J_n) - R(n,p);  analogous for holes",
+    "world_state_x": "Electrostatic potential phi(r), electron density n(r), hole density p(r) across device mesh",
+    "observation_y": "Terminal I-V curves, capacitance C-V, transfer characteristics; device-level metrics (threshold voltage, on-current, off-current, SS, DIBL)",
+    "physical_parameters_theta": [
+      "mu_n, mu_p (mobilities, Caughey-Thomas model)",
+      "N_D, N_A (doping profiles)",
+      "tau_n, tau_p (SRH lifetimes)",
+      "alpha_n, alpha_p (impact ionization)",
+      "T (lattice temperature)"
+    ]
+  },
+  "G": {
+    "dag": "E.poisson -> E.continuity_n -> E.continuity_p -> M.gummel_coupled -> O.terminal_IV",
+    "vertices": [
+      "E.poisson",
+      "E.continuity_n",
+      "E.continuity_p",
+      "M.gummel_coupled",
+      "O.terminal_IV"
+    ],
+    "arcs": [
+      "E.poisson -> M.gummel_coupled",
+      "E.continuity_n -> M.gummel_coupled",
+      "E.continuity_p -> M.gummel_coupled",
+      "M.gummel_coupled -> O.terminal_IV"
+    ],
+    "L_DAG": 4.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 800,
+    "condition_number_effective": 50,
+    "regime": "Well-posed elliptic-parabolic system with Dirichlet/mixed BC at contacts; inversion for (mu, tau) from I-V is moderately ill-conditioned (mobility-lifetime trade-off)."
+  },
+  "C": {
+    "solver_class": "Scharfetter-Gummel FV + Gummel or full Newton; inversion via BFGS/adjoint-TCAD",
+    "convergence_rate_q": 2.0,
+    "error_bound": "|I_hat - I|/|I| <= C*(h + noise_level); Gummel converges linearly, Newton quadratically near the solution",
+    "complexity": "O(N_mesh^{1.5}) per Newton step"
+  },
+  "physics_fingerprint": {
+    "carrier": "electron",
+    "sensing_mechanism": "terminal_IV_CV",
+    "integration_axis": "spatial",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "device_IV_curves_and_field_profiles",
+    "primitives": [
+      "E.poisson",
+      "E.continuity_n",
+      "E.continuity_p",
+      "M.gummel_coupled",
+      "O.terminal_IV"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "mu_n_error",
+    "tau_SRH_error",
+    "doping_profile_bias",
+    "contact_resistance"
+  ],
+  "error_metric": "IV_log_relative_error",
+  "error_metric_secondary": "Vth_error_mV",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "device_parameter_inversion",
+      "forward_operator": "drift_diffusion_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "L_channel_nm": 50,
+        "T_ox_nm": 2.0,
+        "N_D_cm3": 1e+18,
+        "N_A_cm3": 1e+17,
+        "T_K": 300,
+        "mesh_N": 64
+      },
+      "epsilon_fn_center": "log10(I_D) error <= 0.03"
+    },
+    "allowed_forward_operators": [
+      "drift_diffusion_forward"
+    ],
+    "allowed_problem_classes": [
+      "device_parameter_inversion"
+    ],
+    "allowed_omega_dimensions": [
+      "L_channel_nm",
+      "T_ox_nm",
+      "N_D_cm3",
+      "N_A_cm3",
+      "T_K",
+      "mesh_N"
+    ],
+    "omega_bounds": {
+      "L_channel_nm": [
+        5,
+        1000
+      ],
+      "T_ox_nm": [
+        0.5,
+        20
+      ],
+      "N_D_cm3": [
+        1000000000000000.0,
+        1e+20
+      ],
+      "N_A_cm3": [
+        1000000000000000.0,
+        1e+20
+      ],
+      "T_K": [
+        200,
+        500
+      ],
+      "mesh_N": [
+        32,
+        512
+      ]
+    },
+    "epsilon_bounds": {
+      "IV_log_relative_error": [
+        0.005,
+        0.3
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

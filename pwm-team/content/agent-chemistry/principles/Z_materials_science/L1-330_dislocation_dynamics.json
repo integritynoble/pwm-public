@@ -1,0 +1,150 @@
+{
+  "artifact_id": "L1-330",
+  "layer": "L1",
+  "principle_number": "330",
+  "title": "Discrete Dislocation Dynamics",
+  "domain": "Materials Science",
+  "sub_domain": "Mesoscale plasticity",
+  "source_file": "Z_materials_science/330_dislocation_dynamics.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
+  "E": {
+    "description": "Discrete dislocation dynamics (DDD): dislocations are 3D curves interacting via elastic fields; each node evolves by a mobility law v = M * f_PK where f_PK is Peach-Koehler force.",
+    "forward_model": "dr_node/dt = M_glide * f_PK(r, sigma_ext, sigma_internal); topology updates for junctions",
+    "world_state_x": "Dislocation line geometries {gamma_k(t)}; stress-strain curves",
+    "observation_y": "Macroscopic stress-strain curve; dislocation density rho(t); slip system activity",
+    "physical_parameters_theta": [
+      "M_glide, M_climb (mobilities)",
+      "core energy",
+      "junction interaction rules",
+      "temperature"
+    ]
+  },
+  "G": {
+    "dag": "E.elastic_field -> E.peach_koehler -> M.node_integrate -> O.stress_strain",
+    "vertices": [
+      "E.elastic_field",
+      "E.peach_koehler",
+      "M.node_integrate",
+      "O.stress_strain"
+    ],
+    "arcs": [
+      "E.elastic_field -> E.peach_koehler",
+      "E.peach_koehler -> M.node_integrate",
+      "M.node_integrate -> O.stress_strain"
+    ],
+    "L_DAG": 3.8,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 700,
+    "condition_number_effective": 60,
+    "regime": "Well-posed locally; chaotic dynamics in bulk; inversion poorly conditioned due to dense dislocation interactions."
+  },
+  "C": {
+    "solver_class": "ParaDiS / MODEL / discovered; adjoint inversion via graph state",
+    "convergence_rate_q": 2.0,
+    "error_bound": "bounded by discretization + mismatch bias + noise floor",
+    "complexity": "principle-dependent"
+  },
+  "physics_fingerprint": {
+    "carrier": "none",
+    "sensing_mechanism": "bulk_mechanical_test",
+    "integration_axis": "time",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "dislocation_line_configurations",
+    "primitives": [
+      "E.elastic_field",
+      "E.peach_koehler",
+      "M.node_integrate",
+      "O.stress_strain"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "mobility_ratio_error",
+    "junction_energy",
+    "strain_rate_effect"
+  ],
+  "error_metric": "stress_strain_L2_error_MPa",
+  "error_metric_secondary": "dislocation_density_error",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "dislocation_dynamics",
+      "forward_operator": "ddd_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "volume_um3": 1.0,
+        "rho_0_m2": 1000000000000.0,
+        "strain_rate": 0.001,
+        "T_K": 300,
+        "N_nodes": 10000
+      },
+      "epsilon_fn_center": "stress-strain L2 <= 5 MPa"
+    },
+    "allowed_forward_operators": [
+      "ddd_forward"
+    ],
+    "allowed_problem_classes": [
+      "dislocation_dynamics"
+    ],
+    "allowed_omega_dimensions": [
+      "volume_um3",
+      "rho_0_m2",
+      "strain_rate",
+      "T_K",
+      "N_nodes"
+    ],
+    "omega_bounds": {
+      "volume_um3": [
+        0.001,
+        1000
+      ],
+      "rho_0_m2": [
+        1000000000.0,
+        1000000000000000.0
+      ],
+      "strain_rate": [
+        1e-06,
+        1000.0
+      ],
+      "T_K": [
+        4,
+        2000
+      ],
+      "N_nodes": [
+        1000,
+        1000000
+      ]
+    },
+    "epsilon_bounds": {
+      "stress_strain_L2_error_MPa": [
+        1.0,
+        100.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

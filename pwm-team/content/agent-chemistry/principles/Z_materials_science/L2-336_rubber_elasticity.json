@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-336",
+  "layer": "L2",
+  "parent_l1": "L1-336",
+  "title": "Rubber Elasticity Theory Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "lambda_max": [
+        1.1,
+        10
+      ],
+      "n_c_mol_m3": [
+        10,
+        10000
+      ],
+      "T_K": [
+        200,
+        400
+      ],
+      "N_data_points": [
+        20,
+        5000
+      ]
+    },
+    "E": {
+      "forward": "sigma_i = (n_c*k_B*T)*(lambda_i^2 - 1/(lambda_1*lambda_2*lambda_3)) + C_2*correction",
+      "operator": "rubber_elasticity_forward_mismatch",
+      "primitive_chain": "E.network_entropy -> E.affine_deformation -> O.stress_strain",
+      "inverse": "recover constitutive parameters for Rubber Elasticity Theory"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "stress_strain_L2_error_MPa",
+      "n_c_relative_error",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.08 * (1 + 0.1 * mismatch_severity)"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Mooney-Rivlin-Fit",
+        "method_sig": "L+O",
+        "expected_err": 0.12
+      },
+      {
+        "name": "Ogden-Fit",
+        "method_sig": "L+O",
+        "expected_err": 0.1
+      },
+      {
+        "name": "HyperNet",
+        "method_sig": "L+N",
+        "expected_err": 0.09
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "lambda_max": 4,
+        "n_c_mol_m3": 100,
+        "T_K": 298,
+        "N_data_points": 100
+      },
+      "epsilon": 0.08
+    },
+    "tier_bounds": {
+      "lambda_max": [
+        1.1,
+        10
+      ],
+      "n_c_mol_m3": [
+        10,
+        10000
+      ],
+      "T_K": [
+        200,
+        400
+      ],
+      "N_data_points": [
+        20,
+        5000
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.45,
+  "d_spec_notes": "Canonical mismatch-only baseline for this principle; sits at the centroid of its spec family.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions match across all DAG nodes; operator dimensions consistent.",
+    "S2": "Operator condition number controlled (kappa_eff=10) under declared Omega with regularization.",
+    "S3": "Solver class Nonlinear least squares LM; Bayesian hyperelastic fit provably converges at rate q=2.0; monotone residual decrease.",
+    "S4": "epsilon_fn evaluates cleanly across 50 random Omega samples; hardness rule satisfied (top baseline fails at Omega corner)."
+  },
+  "ipfs_cid": null
+}

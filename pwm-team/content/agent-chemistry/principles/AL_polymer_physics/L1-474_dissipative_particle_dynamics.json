@@ -1,0 +1,182 @@
+{
+  "artifact_id": "L1-474",
+  "layer": "L1",
+  "principle_number": "474",
+  "title": "Dissipative Particle Dynamics (DPD)",
+  "domain": "Polymer Physics",
+  "sub_domain": "Mesoscale soft-matter dynamics",
+  "source_file": "AL_polymer_physics/474_dissipative_particle_dynamics.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
+  "E": {
+    "description": "Groot-Warren DPD: coarse-grained beads evolve under conservative (soft-repulsive), dissipative, and random pairwise forces; fluctuation-dissipation links gamma and sigma to k_B T.",
+    "forward_model": "dr_i/dt = v_i;  m*dv_i/dt = sum_{j != i} [F_C(r_ij) + F_D(r_ij, v_ij) + F_R(r_ij)];  sigma^2 = 2*gamma*k_B*T",
+    "world_state_x": "Bead positions/velocities {r_i(t), v_i(t)}_{i=1..N} and target mesostructure (segregated domains, interfaces, chain conformations)",
+    "observation_y": "Structural/rheological observables: radial distribution g(r), structure factor S(q), stress tensor sigma(t), end-to-end distance <R^2>",
+    "physical_parameters_theta": [
+      "a_ij (conservative amplitude, k_B*T)",
+      "gamma (dissipative coeff)",
+      "sigma (random amplitude)",
+      "r_c (cutoff radius)",
+      "rho_bead (bead number density)",
+      "N_beads_per_chain",
+      "dt (integration timestep)"
+    ]
+  },
+  "G": {
+    "dag": "F.conservative -> F.dissipative -> F.random -> integrate.verlet -> O.structural",
+    "vertices": [
+      "F.conservative",
+      "F.dissipative",
+      "F.random",
+      "integrate.verlet",
+      "O.structural"
+    ],
+    "arcs": [
+      "F.conservative -> integrate.verlet",
+      "F.dissipative -> integrate.verlet",
+      "F.random -> integrate.verlet",
+      "integrate.verlet -> O.structural"
+    ],
+    "L_DAG": 4.2,
+    "n_c": 1
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 400,
+    "condition_number_effective": 40,
+    "regime": "Well-posed forward; inverse (parameter recovery from g(r) / S(q)) is ill-conditioned due to near-degenerate parameter combinations (a_ij vs rho_bead trade-off)."
+  },
+  "C": {
+    "solver_class": "Velocity-Verlet + Lowe-Andersen thermostat; parameter inversion via Bayesian optimization or ensemble-averaged gradient-matching",
+    "convergence_rate_q": 2.0,
+    "error_bound": "||S(q)_hat - S(q)||_2 bounded by sqrt(N_steps^{-1}) statistical error + systematic truncation from r_c",
+    "complexity": "O(N_beads * N_steps) per sweep with linked-cell neighbor lists"
+  },
+  "physics_fingerprint": {
+    "carrier": "none",
+    "sensing_mechanism": "mesoscale_coarse_grained_dynamics",
+    "integration_axis": "time",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "thermal_langevin",
+    "solution_space": "3D_coarse_grained_trajectory",
+    "primitives": [
+      "F.conservative",
+      "F.dissipative",
+      "F.random",
+      "integrate.verlet",
+      "O.structural"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "a_ij_error",
+    "gamma_error",
+    "r_c_error",
+    "thermostat_bias",
+    "finite_size_effect"
+  ],
+  "error_metric": "structure_factor_RMSE",
+  "error_metric_secondary": "g_r_integrated_L1",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "dpd_parameter_inversion",
+      "forward_operator": "dpd_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_beads": 10000,
+        "rho_bead": 3.0,
+        "r_c": 1.0,
+        "a_ij_AB": 25.0,
+        "a_ij_AA": 15.0,
+        "gamma": 4.5,
+        "dt": 0.04,
+        "T_reduced": 1.0,
+        "N_steps": 200000
+      },
+      "epsilon_fn_center": "S(q) RMSE <= 0.02"
+    },
+    "allowed_forward_operators": [
+      "dpd_forward"
+    ],
+    "allowed_problem_classes": [
+      "dpd_parameter_inversion"
+    ],
+    "allowed_omega_dimensions": [
+      "N_beads",
+      "rho_bead",
+      "r_c",
+      "a_ij_AB",
+      "a_ij_AA",
+      "gamma",
+      "dt",
+      "T_reduced",
+      "N_steps"
+    ],
+    "omega_bounds": {
+      "N_beads": [
+        1000,
+        200000
+      ],
+      "rho_bead": [
+        1.0,
+        6.0
+      ],
+      "r_c": [
+        0.8,
+        1.5
+      ],
+      "a_ij_AB": [
+        15.0,
+        60.0
+      ],
+      "a_ij_AA": [
+        10.0,
+        30.0
+      ],
+      "gamma": [
+        1.0,
+        10.0
+      ],
+      "dt": [
+        0.01,
+        0.05
+      ],
+      "T_reduced": [
+        0.5,
+        1.5
+      ],
+      "N_steps": [
+        20000,
+        500000
+      ]
+    },
+    "epsilon_bounds": {
+      "structure_factor_RMSE": [
+        0.005,
+        0.15
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

@@ -1,0 +1,150 @@
+{
+  "artifact_id": "L1-299",
+  "layer": "L1",
+  "principle_number": "299",
+  "title": "Classical Molecular Dynamics",
+  "domain": "Computational Chemistry",
+  "sub_domain": "Empirical force-field dynamics",
+  "source_file": "X_computational_chemistry/299_classical_md.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
+  "E": {
+    "description": "Classical MD: Newtonian dynamics of atoms under empirical force field U(R) = sum bonded + non-bonded (LJ + Coulomb) + many-body (AMBER, CHARMM, OPLS, ReaxFF).",
+    "forward_model": "m_i * d^2 r_i / dt^2 = -grad_i U(r); integrate with velocity-Verlet",
+    "world_state_x": "Atomic trajectory {r_i(t), v_i(t)} of N-particle system",
+    "observation_y": "Thermodynamic averages (g(r), C_v, viscosity, diffusion); structural observables (RMSD, Rg)",
+    "physical_parameters_theta": [
+      "force field parameters",
+      "temperature",
+      "pressure",
+      "thermostat/barostat settings"
+    ]
+  },
+  "G": {
+    "dag": "E.force_field -> M.verlet_integrate -> O.trajectory",
+    "vertices": [
+      "E.force_field",
+      "M.verlet_integrate",
+      "O.trajectory"
+    ],
+    "arcs": [
+      "E.force_field -> M.verlet_integrate",
+      "M.verlet_integrate -> O.trajectory"
+    ],
+    "L_DAG": 3.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 200,
+    "condition_number_effective": 30,
+    "regime": "Well-posed forward; force field validity limits accuracy."
+  },
+  "C": {
+    "solver_class": "LAMMPS, GROMACS, AMBER, NAMD; OpenMM",
+    "convergence_rate_q": 2.0,
+    "error_bound": "bounded by discretization + mismatch bias + noise floor",
+    "complexity": "principle-dependent"
+  },
+  "physics_fingerprint": {
+    "carrier": "none",
+    "sensing_mechanism": "md_observable",
+    "integration_axis": "time",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "thermal_langevin",
+    "solution_space": "atomic_trajectory",
+    "primitives": [
+      "E.force_field",
+      "M.verlet_integrate",
+      "O.trajectory"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "force_field_transferability",
+    "cutoff_treatment",
+    "PME_parameters"
+  ],
+  "error_metric": "diffusion_coeff_relative_error",
+  "error_metric_secondary": "rdf_L2",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "classical_md",
+      "forward_operator": "classical_md_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_atoms": 1000,
+        "T_K": 300,
+        "N_steps": 1000000.0,
+        "dt_fs": 2,
+        "ff": "AMBER"
+      },
+      "epsilon_fn_center": "D rel error <= 0.04"
+    },
+    "allowed_forward_operators": [
+      "classical_md_forward"
+    ],
+    "allowed_problem_classes": [
+      "classical_md"
+    ],
+    "allowed_omega_dimensions": [
+      "N_atoms",
+      "T_K",
+      "N_steps",
+      "dt_fs",
+      "ff"
+    ],
+    "omega_bounds": {
+      "N_atoms": [
+        100,
+        10000000.0
+      ],
+      "T_K": [
+        4,
+        5000
+      ],
+      "N_steps": [
+        1000,
+        10000000000.0
+      ],
+      "dt_fs": [
+        0.1,
+        10
+      ],
+      "ff": [
+        "AMBER",
+        "CHARMM",
+        "OPLS",
+        "GROMOS",
+        "ReaxFF"
+      ]
+    },
+    "epsilon_bounds": {
+      "diffusion_coeff_relative_error": [
+        0.01,
+        0.4
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

@@ -1,0 +1,127 @@
+{
+  "artifact_id": "L2-496",
+  "layer": "L2",
+  "parent_l1": "L1-496",
+  "title": "Quantum Well and Quantum Dot Electronic Structure Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "size_nm": [
+        2,
+        100
+      ],
+      "composition_In": [
+        0.05,
+        1.0
+      ],
+      "strain_pct": [
+        0,
+        10
+      ],
+      "T_K": [
+        4,
+        300
+      ],
+      "basis_N": [
+        4,
+        20
+      ]
+    },
+    "E": {
+      "forward": "H_{k.p} phi_n = E_n phi_n with strain-corrected Hamiltonian;  (H_{k.p} + V_H + V_xc) phi_n = E_n phi_n (SCF)",
+      "operator": "kp_schrodinger_forward_mismatch",
+      "primitive_chain": "E.strain -> E.kp_Hamiltonian -> M.scf_Schrodinger_Poisson -> O.states_transitions",
+      "inverse": "recover composition, strain, size from PL transitions"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "energy_err_meV",
+      "osc_str_err",
+      "gs_transition_err_nm",
+      "binding_energy_err"
+    ],
+    "epsilon_fn": "1.5 + 0.2*size_nm + 5.0*strain_pct/10 + 0.005*T_K"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "nextnano++",
+        "method_sig": "T+O",
+        "expected_err_meV": 3.5
+      },
+      {
+        "name": "QW-FEM",
+        "method_sig": "T+O",
+        "expected_err_meV": 4.0
+      },
+      {
+        "name": "kp-NeuralOp",
+        "method_sig": "T+N",
+        "expected_err_meV": 2.2
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "geometry": "InGaAs_QD_on_GaAs",
+        "size_nm": 20,
+        "composition_In": 0.5,
+        "strain_pct": 7,
+        "T_K": 4,
+        "basis_N": 8
+      },
+      "epsilon": 2.0
+    },
+    "tier_bounds": {
+      "size_nm": [
+        2,
+        100
+      ],
+      "composition_In": [
+        0.05,
+        1.0
+      ],
+      "strain_pct": [
+        0,
+        10
+      ],
+      "T_K": [
+        4,
+        300
+      ],
+      "basis_N": [
+        4,
+        20
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.45,
+  "d_spec_notes": "Canonical mismatch-only baseline for this principle; sits at the centroid of its spec family.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions match across all DAG nodes; operator dimensions consistent.",
+    "S2": "Operator condition number controlled (kappa_eff=40) under declared Omega with regularization.",
+    "S3": "Solver class Finite element k.p + BiCGSTAB; self-consistent SCF with Broyden mixing; inversion by Bayesian MCMC provably converges at rate q=2.0; monotone residual decrease.",
+    "S4": "epsilon_fn evaluates cleanly across 50 random Omega samples; hardness rule satisfied (top baseline fails at Omega corner)."
+  },
+  "ipfs_cid": null
+}

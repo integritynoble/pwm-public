@@ -1,0 +1,241 @@
+{
+  "artifact_id": "L3-339",
+  "layer": "L3",
+  "parent_l2": "L2-339",
+  "parent_l1": "L1-339",
+  "title": "Electrochemical Corrosion Kinetics Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "NACE corrosion data sheets + ORNL accelerated corrosion library",
+    "secondary": "Pourbaix-curated experimental Tafel database",
+    "construction_method": "canonical ground truth + declared noise at tier Omega for Electrochemical Corrosion Kinetics",
+    "num_dev_instances_per_tier": 20,
+    "holdout_instances_per_tier": 10
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "T_K": 298,
+        "Cl_mM": 100,
+        "pH": 7,
+        "dissolved_O2_ppm": 8,
+        "N_data": 200
+      },
+      "dataset_description": "Electrochemical Corrosion Kinetics at rho=1.",
+      "epsilon": 0.1,
+      "d_ibench": 0.15,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        },
+        {
+          "Q": 0.9,
+          "tier": "Excellent"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "CorrosionMaster",
+          "score": 0.18,
+          "Q": 0.82
+        },
+        {
+          "name": "Tafel-LM-fit",
+          "score": 0.2,
+          "Q": 0.78
+        },
+        {
+          "name": "Corrosion-Bayes",
+          "score": 0.12,
+          "Q": 0.92
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "T_K": 323,
+        "Cl_mM": 1000,
+        "pH": 5,
+        "dissolved_O2_ppm": 15,
+        "N_data": 500
+      },
+      "dataset_description": "Electrochemical Corrosion Kinetics at rho=3.",
+      "epsilon": 0.115,
+      "d_ibench": 0.32,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        },
+        {
+          "Q": 0.9,
+          "tier": "Excellent"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "CorrosionMaster",
+          "score": 0.207,
+          "Q": 0.66
+        },
+        {
+          "name": "Tafel-LM-fit",
+          "score": 0.23,
+          "Q": 0.6
+        },
+        {
+          "name": "Corrosion-Bayes",
+          "score": 0.138,
+          "Q": 0.82
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "T_K": 353,
+        "Cl_mM": 5000,
+        "pH": 2,
+        "dissolved_O2_ppm": 30,
+        "N_data": 2000
+      },
+      "dataset_description": "Electrochemical Corrosion Kinetics at rho=5.",
+      "epsilon": 0.14,
+      "d_ibench": 0.51,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "CorrosionMaster",
+          "score": 0.252,
+          "Q": 0.44
+        },
+        {
+          "name": "Tafel-LM-fit",
+          "score": 0.28,
+          "Q": 0.38
+        },
+        {
+          "name": "Corrosion-Bayes",
+          "score": 0.168,
+          "Q": 0.64
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "T_K": 373,
+        "Cl_mM": 10000,
+        "pH": 0,
+        "dissolved_O2_ppm": 50,
+        "N_data": 5000
+      },
+      "dataset_description": "Electrochemical Corrosion Kinetics at rho=10.",
+      "epsilon": 0.185,
+      "d_ibench": 0.72,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "CorrosionMaster",
+          "score": 0.333,
+          "Q": 0.24
+        },
+        {
+          "name": "Tafel-LM-fit",
+          "score": 0.37,
+          "Q": 0.2
+        },
+        {
+          "name": "Corrosion-Bayes",
+          "score": 0.222,
+          "Q": 0.46
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "NACE + ORNL corrosion dataset",
+      "construction_method": "parametric Omega sampling over declared bounds; stratified by rho.",
+      "num_dev_instances": 200,
+      "num_holdout_instances": 100
+    },
+    "tracks": {
+      "track_A_stratified_worst_case": {
+        "pass_condition": "min score meets epsilon_fn over all strata"
+      },
+      "track_B_uniform_median": {
+        "num_samples": 50,
+        "pass_condition": "median score meets epsilon_fn at Omega_median"
+      },
+      "track_C_mismatch_degradation": {
+        "sweep_points": 5,
+        "pass_condition": "monotone degradation with mismatch"
+      }
+    },
+    "baselines": [
+      {
+        "name": "CorrosionMaster",
+        "track_A_Q": 0.54,
+        "track_B_Q": 0.66,
+        "track_C_Q": 0.58,
+        "overall_Q": 0.59
+      },
+      {
+        "name": "Tafel-LM",
+        "track_A_Q": 0.5,
+        "track_B_Q": 0.62,
+        "track_C_Q": 0.54,
+        "overall_Q": 0.55
+      },
+      {
+        "name": "Corrosion-Bayes",
+        "track_A_Q": 0.62,
+        "track_B_Q": 0.72,
+        "track_C_Q": 0.64,
+        "overall_Q": 0.66
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails epsilon_fn at T4_blind Omega corner.",
+  "anti_overfitting_mechanisms": {
+    "M1_random_instantiation": "seeded by benchmark hash; non-repeatable holdout",
+    "M2_convergence_scoring": "verifies declared convergence rate across Omega",
+    "M3_worst_case_eval": "min-score over fixed dev instances per tier",
+    "M4_community_adversarial": "adversarial submissions eligible for T_k",
+    "M5_method_sig_diversity": "baselines span multiple method_sig families",
+    "M6_gate_checks": "S1-S4 gate checks enforced with thresholds.yaml"
+  },
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

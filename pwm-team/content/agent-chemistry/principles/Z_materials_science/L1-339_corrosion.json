@@ -1,0 +1,151 @@
+{
+  "artifact_id": "L1-339",
+  "layer": "L1",
+  "principle_number": "339",
+  "title": "Electrochemical Corrosion Kinetics",
+  "domain": "Materials Science",
+  "sub_domain": "Mixed-potential corrosion",
+  "source_file": "Z_materials_science/339_corrosion.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
+  "E": {
+    "description": "Butler-Volmer + Nernst: corrosion current from half-cell exchange currents at mixed potential E_corr; Tafel slopes give activation-limited kinetics.",
+    "forward_model": "i = i_0*(exp(alpha_a*F*eta/RT) - exp(-alpha_c*F*eta/RT)); E_corr where i_anodic = i_cathodic",
+    "world_state_x": "Corrosion rate i_corr(t), potential E_corr(t), pit/repassivation dynamics",
+    "observation_y": "Tafel plots; electrochemical impedance spectroscopy (EIS); open-circuit potential drift; mass loss",
+    "physical_parameters_theta": [
+      "i_0 (exchange current)",
+      "alpha_a, alpha_c",
+      "passivation dynamics",
+      "O2/H+ concentrations",
+      "chloride activity"
+    ]
+  },
+  "G": {
+    "dag": "E.butler_volmer -> E.mass_transport -> M.mixed_potential -> O.corrosion_rate",
+    "vertices": [
+      "E.butler_volmer",
+      "E.mass_transport",
+      "M.mixed_potential",
+      "O.corrosion_rate"
+    ],
+    "arcs": [
+      "E.butler_volmer -> E.mass_transport",
+      "E.mass_transport -> M.mixed_potential",
+      "M.mixed_potential -> O.corrosion_rate"
+    ],
+    "L_DAG": 3.3,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 200,
+    "condition_number_effective": 20,
+    "regime": "Well-posed for simple cells; multi-metal galvanic and pitting are non-linear/multi-stable."
+  },
+  "C": {
+    "solver_class": "COMSOL-ECS; Bayesian Tafel fit; EIS equivalent-circuit",
+    "convergence_rate_q": 2.0,
+    "error_bound": "bounded by discretization + mismatch bias + noise floor",
+    "complexity": "principle-dependent"
+  },
+  "physics_fingerprint": {
+    "carrier": "ion",
+    "sensing_mechanism": "tafel_eis_electrochemical",
+    "integration_axis": "potential_time",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "i_E_corrosion_curves",
+    "primitives": [
+      "E.butler_volmer",
+      "E.mass_transport",
+      "M.mixed_potential",
+      "O.corrosion_rate"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "Tafel_slope_drift",
+    "oxide_film_evolution",
+    "chloride_concentration"
+  ],
+  "error_metric": "i_corr_log_error",
+  "error_metric_secondary": "Tafel_slope_error",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "corrosion",
+      "forward_operator": "corrosion_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "T_K": 298,
+        "Cl_mM": 100,
+        "pH": 7,
+        "dissolved_O2_ppm": 8,
+        "N_data": 200
+      },
+      "epsilon_fn_center": "log10(i_corr) error <= 0.1"
+    },
+    "allowed_forward_operators": [
+      "corrosion_forward"
+    ],
+    "allowed_problem_classes": [
+      "corrosion"
+    ],
+    "allowed_omega_dimensions": [
+      "T_K",
+      "Cl_mM",
+      "pH",
+      "dissolved_O2_ppm",
+      "N_data"
+    ],
+    "omega_bounds": {
+      "T_K": [
+        273,
+        373
+      ],
+      "Cl_mM": [
+        0,
+        10000
+      ],
+      "pH": [
+        0,
+        14
+      ],
+      "dissolved_O2_ppm": [
+        0,
+        50
+      ],
+      "N_data": [
+        50,
+        5000
+      ]
+    },
+    "epsilon_bounds": {
+      "i_corr_log_error": [
+        0.02,
+        1.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

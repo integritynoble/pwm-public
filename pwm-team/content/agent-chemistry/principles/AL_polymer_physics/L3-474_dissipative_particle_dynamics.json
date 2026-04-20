@@ -1,0 +1,250 @@
+{
+  "artifact_id": "L3-474",
+  "layer": "L3",
+  "parent_l2": "L2-474",
+  "parent_l1": "L1-474",
+  "title": "Dissipative Particle Dynamics (DPD) Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "SasView benchmark suite (SANS scattering of PS-PMMA blends)",
+    "secondary": "Groot-Warren 1997 reference S(q) tables",
+    "tertiary": "Polymer Simulation Archive (University of Illinois)",
+    "construction_method": "reference S(q) + forward DPD run at declared Omega; holdout uses distinct rho_bead/a_ij combinations",
+    "num_dev_instances_per_tier": 20,
+    "holdout_instances_per_tier": 10
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "N_beads": 10000,
+        "rho_bead": 3.0,
+        "r_c": 1.0,
+        "a_ij_AB": 25.0,
+        "gamma": 4.5,
+        "dt": 0.04,
+        "N_steps": 200000
+      },
+      "dataset_description": "Dissipative Particle Dynamics (DPD) at rho=1.",
+      "epsilon": 0.02,
+      "d_ibench": 0.15,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        },
+        {
+          "Q": 0.9,
+          "tier": "Excellent"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "LAMMPS-DPD",
+          "score": 0.022,
+          "Q": 0.82
+        },
+        {
+          "name": "HOOMD-DPD",
+          "score": 0.02,
+          "Q": 0.85
+        },
+        {
+          "name": "BayesOpt-DPD",
+          "score": 0.016,
+          "Q": 0.92
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "N_beads": 20000,
+        "rho_bead": 3.5,
+        "r_c": 1.1,
+        "a_ij_AB": 30.0,
+        "gamma": 5.0,
+        "dt": 0.04,
+        "N_steps": 300000
+      },
+      "dataset_description": "Dissipative Particle Dynamics (DPD) at rho=3.",
+      "epsilon": 0.023,
+      "d_ibench": 0.32,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        },
+        {
+          "Q": 0.9,
+          "tier": "Excellent"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "LAMMPS-DPD",
+          "score": 0.028,
+          "Q": 0.66
+        },
+        {
+          "name": "HOOMD-DPD",
+          "score": 0.025,
+          "Q": 0.72
+        },
+        {
+          "name": "BayesOpt-DPD",
+          "score": 0.02,
+          "Q": 0.82
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "N_beads": 50000,
+        "rho_bead": 4.5,
+        "r_c": 1.2,
+        "a_ij_AB": 40.0,
+        "gamma": 6.5,
+        "dt": 0.03,
+        "N_steps": 400000
+      },
+      "dataset_description": "Dissipative Particle Dynamics (DPD) at rho=5.",
+      "epsilon": 0.028,
+      "d_ibench": 0.51,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "LAMMPS-DPD",
+          "score": 0.038,
+          "Q": 0.45
+        },
+        {
+          "name": "HOOMD-DPD",
+          "score": 0.033,
+          "Q": 0.55
+        },
+        {
+          "name": "BayesOpt-DPD",
+          "score": 0.027,
+          "Q": 0.68
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "N_beads": 200000,
+        "rho_bead": 6.0,
+        "r_c": 1.5,
+        "a_ij_AB": 60.0,
+        "gamma": 10.0,
+        "dt": 0.02,
+        "N_steps": 500000
+      },
+      "dataset_description": "Dissipative Particle Dynamics (DPD) at rho=10.",
+      "epsilon": 0.037,
+      "d_ibench": 0.72,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "LAMMPS-DPD",
+          "score": 0.058,
+          "Q": 0.28
+        },
+        {
+          "name": "HOOMD-DPD",
+          "score": 0.05,
+          "Q": 0.35
+        },
+        {
+          "name": "BayesOpt-DPD",
+          "score": 0.041,
+          "Q": 0.48
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "SasView + Groot-Warren parametric scattering union",
+      "construction_method": "parametric Omega sampling over declared bounds; stratified by rho.",
+      "num_dev_instances": 200,
+      "num_holdout_instances": 100
+    },
+    "tracks": {
+      "track_A_stratified_worst_case": {
+        "pass_condition": "min score meets epsilon_fn over all strata"
+      },
+      "track_B_uniform_median": {
+        "num_samples": 50,
+        "pass_condition": "median score meets epsilon_fn at Omega_median"
+      },
+      "track_C_mismatch_degradation": {
+        "sweep_points": 5,
+        "pass_condition": "monotone degradation with mismatch"
+      }
+    },
+    "baselines": [
+      {
+        "name": "LAMMPS-DPD",
+        "track_A_Q": 0.48,
+        "track_B_Q": 0.6,
+        "track_C_Q": 0.55,
+        "overall_Q": 0.54
+      },
+      {
+        "name": "HOOMD-blue DPD",
+        "track_A_Q": 0.52,
+        "track_B_Q": 0.64,
+        "track_C_Q": 0.58,
+        "overall_Q": 0.58
+      },
+      {
+        "name": "BayesOpt-DPD",
+        "track_A_Q": 0.62,
+        "track_B_Q": 0.74,
+        "track_C_Q": 0.68,
+        "overall_Q": 0.68
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails epsilon_fn at T4_blind Omega corner.",
+  "anti_overfitting_mechanisms": {
+    "M1_random_instantiation": "seeded by benchmark hash; non-repeatable holdout",
+    "M2_convergence_scoring": "verifies declared convergence rate across Omega",
+    "M3_worst_case_eval": "min-score over fixed dev instances per tier",
+    "M4_community_adversarial": "adversarial submissions eligible for T_k",
+    "M5_method_sig_diversity": "baselines span multiple method_sig families",
+    "M6_gate_checks": "S1-S4 gate checks enforced with thresholds.yaml"
+  },
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

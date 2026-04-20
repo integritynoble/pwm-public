@@ -1,0 +1,128 @@
+{
+  "artifact_id": "L2-307",
+  "layer": "L2",
+  "parent_l1": "L1-307",
+  "title": "Reactive Molecular Dynamics (ReaxFF + Bond Order) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "N_atoms": [
+        10,
+        1000000.0
+      ],
+      "T_K": [
+        300,
+        5000
+      ],
+      "N_steps": [
+        10000,
+        1000000000.0
+      ],
+      "dt_fs": [
+        0.05,
+        0.5
+      ],
+      "ff": [
+        "ReaxFF_2008",
+        "ReaxFF_CHO",
+        "ReaxFF_metal"
+      ]
+    },
+    "E": {
+      "forward": "U_ReaxFF = sum_bonded(BO) + sum_vdw + sum_Coul + BO-dependent overcoordination;  BO_ij from distance",
+      "operator": "reactive_md_forward_mismatch",
+      "primitive_chain": "E.bond_order -> E.reaxff -> M.integrate_reactive -> O.reaction_trace",
+      "inverse": "recover constitutive parameters for Reactive Molecular Dynamics (ReaxFF + Bond Order)"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "reaction_rate_log_error",
+      "product_yield_error",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.1 * (1 + 0.1 * mismatch_severity)"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "LAMMPS-ReaxFF",
+        "method_sig": "T+O",
+        "expected_err": 0.18
+      },
+      {
+        "name": "ADF-ReaxFF",
+        "method_sig": "T+O",
+        "expected_err": 0.2
+      },
+      {
+        "name": "ReactiveNet",
+        "method_sig": "T+N",
+        "expected_err": 0.12
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_atoms": 1000,
+        "T_K": 2000,
+        "N_steps": 1000000.0,
+        "dt_fs": 0.1,
+        "ff": "ReaxFF_2008"
+      },
+      "epsilon": 0.1
+    },
+    "tier_bounds": {
+      "N_atoms": [
+        10,
+        1000000.0
+      ],
+      "T_K": [
+        300,
+        5000
+      ],
+      "N_steps": [
+        10000,
+        1000000000.0
+      ],
+      "dt_fs": [
+        0.05,
+        0.5
+      ],
+      "ff": [
+        "ReaxFF_2008",
+        "ReaxFF_CHO",
+        "ReaxFF_metal"
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.45,
+  "d_spec_notes": "Canonical mismatch-only baseline for this principle; sits at the centroid of its spec family.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions match across all DAG nodes; operator dimensions consistent.",
+    "S2": "Operator condition number controlled (kappa_eff=40) under declared Omega with regularization.",
+    "S3": "Solver class LAMMPS-ReaxFF, ADF-ReaxFF, SCM-AMS provably converges at rate q=2.0; monotone residual decrease.",
+    "S4": "epsilon_fn evaluates cleanly across 50 random Omega samples; hardness rule satisfied (top baseline fails at Omega corner)."
+  },
+  "ipfs_cid": null
+}

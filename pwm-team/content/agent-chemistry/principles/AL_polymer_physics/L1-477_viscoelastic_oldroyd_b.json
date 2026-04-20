@@ -1,0 +1,149 @@
+{
+  "artifact_id": "L1-477",
+  "layer": "L1",
+  "principle_number": "477",
+  "title": "Oldroyd-B Viscoelastic Constitutive Model",
+  "domain": "Polymer Physics",
+  "sub_domain": "Viscoelastic flow",
+  "source_file": "AL_polymer_physics/477_viscoelastic_oldroyd_b.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
+  "E": {
+    "description": "Oldroyd-B: Newtonian solvent + elastic dumbbell polymer stress tensor; upper-convected Maxwell evolution with relaxation time lambda_1 and retardation time lambda_2.",
+    "forward_model": "rho * Dv/Dt = -grad(p) + div(tau); tau = tau_s + tau_p; tau_p + lambda_1 * stress_UCM = 2*eta_p*D; stress_UCM = dtau/dt + v.grad(tau) - (grad(v))^T tau - tau grad(v)",
+    "world_state_x": "Velocity field v(r,t), pressure p(r,t), polymer stress tensor tau_p(r,t) in 2D/3D flow geometries",
+    "observation_y": "Shear stress tau_{12}(gamma_dot); first and second normal stress differences N1, N2; velocimetry profiles; birefringence patterns",
+    "physical_parameters_theta": [
+      "lambda_1 (Maxwell relaxation)",
+      "lambda_2 (retardation)",
+      "eta_p (polymer viscosity)",
+      "eta_s (solvent viscosity)",
+      "Wi (Weissenberg number)",
+      "Re (Reynolds)"
+    ]
+  },
+  "G": {
+    "dag": "E.momentum -> E.UCM_stress -> M.coupled_solve -> O.stress_field",
+    "vertices": [
+      "E.momentum",
+      "E.UCM_stress",
+      "M.coupled_solve",
+      "O.stress_field"
+    ],
+    "arcs": [
+      "E.momentum -> M.coupled_solve",
+      "E.UCM_stress -> M.coupled_solve",
+      "M.coupled_solve -> O.stress_field"
+    ],
+    "L_DAG": 3.6,
+    "n_c": 1
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 500,
+    "condition_number_effective": 30,
+    "regime": "High-Weissenberg number problem (HWNP); stress singularities near geometric corners; log-conformation reformulation needed for Wi>10."
+  },
+  "C": {
+    "solver_class": "DEVSS-G finite element with log-conformation; parameter inversion by adjoint-PDE optimization",
+    "convergence_rate_q": 2.0,
+    "error_bound": "|tau_hat - tau|_{L2} <= C*h^{k+1} + mismatch bias",
+    "complexity": "O(N_mesh^{1.5}) per Newton step with preconditioned Krylov"
+  },
+  "physics_fingerprint": {
+    "carrier": "none",
+    "sensing_mechanism": "rheometry_plus_velocimetry",
+    "integration_axis": "time",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "stress_tensor_field",
+    "primitives": [
+      "E.momentum",
+      "E.UCM_stress",
+      "M.coupled_solve",
+      "O.stress_field"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "lambda_1_error",
+    "eta_p_drift",
+    "solvent_ratio_error",
+    "Wi_drift"
+  ],
+  "error_metric": "N1_N2_relative_error",
+  "error_metric_secondary": "velocity_profile_RMSE",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "viscoelastic_parameter_inversion",
+      "forward_operator": "oldroyd_b_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "Wi": 1.0,
+        "Re": 0.1,
+        "beta_eta_s_over_eta_total": 0.5,
+        "geometry": "4to1_contraction",
+        "mesh_N": 32
+      },
+      "epsilon_fn_center": "N1 relative error <= 0.05"
+    },
+    "allowed_forward_operators": [
+      "oldroyd_b_forward"
+    ],
+    "allowed_problem_classes": [
+      "viscoelastic_parameter_inversion"
+    ],
+    "allowed_omega_dimensions": [
+      "Wi",
+      "Re",
+      "beta_eta_s_over_eta_total",
+      "geometry",
+      "mesh_N"
+    ],
+    "omega_bounds": {
+      "Wi": [
+        0.1,
+        20.0
+      ],
+      "Re": [
+        0.0,
+        100.0
+      ],
+      "beta_eta_s_over_eta_total": [
+        0.05,
+        0.95
+      ],
+      "mesh_N": [
+        16,
+        256
+      ]
+    },
+    "epsilon_bounds": {
+      "N1_N2_relative_error": [
+        0.02,
+        0.4
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

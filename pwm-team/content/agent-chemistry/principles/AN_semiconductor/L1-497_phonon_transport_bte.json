@@ -1,0 +1,146 @@
+{
+  "artifact_id": "L1-497",
+  "layer": "L1",
+  "principle_number": "497",
+  "title": "Phonon Boltzmann Transport Equation",
+  "domain": "Semiconductor Physics",
+  "sub_domain": "Thermal phonon transport",
+  "source_file": "AN_semiconductor/497_phonon_transport_bte.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
+  "E": {
+    "description": "BTE for phonon distribution n_{q,s}(r,t): drift with group velocity v_g + scattering (three-phonon, boundary, isotope); Callaway or full iterative treatment for thermal conductivity.",
+    "forward_model": "dn/dt + v_g.grad(n) = -(n - n_BE(T))/tau_{q,s}; kappa = sum_{q,s} C_{q,s} * v_g,x^2 * tau_{q,s}",
+    "world_state_x": "Phonon distribution n_{q,s}(r,t) and local temperature T(r,t)",
+    "observation_y": "Thermal conductivity kappa(T); thermal boundary resistance; pump-probe thermal relaxation",
+    "physical_parameters_theta": [
+      "dispersion omega(q,s)",
+      "three-phonon scattering tau_3ph",
+      "boundary scattering tau_b",
+      "isotope scattering"
+    ]
+  },
+  "G": {
+    "dag": "E.phonon_dispersion -> E.scattering_rates -> M.BTE_iterative -> O.kappa",
+    "vertices": [
+      "E.phonon_dispersion",
+      "E.scattering_rates",
+      "M.BTE_iterative",
+      "O.kappa"
+    ],
+    "arcs": [
+      "E.phonon_dispersion -> E.scattering_rates",
+      "E.scattering_rates -> M.BTE_iterative",
+      "M.BTE_iterative -> O.kappa"
+    ],
+    "L_DAG": 3.6,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 500,
+    "condition_number_effective": 40,
+    "regime": "Well-posed; inversion for branch-resolved tau is ill-conditioned (only integrated kappa measured)."
+  },
+  "C": {
+    "solver_class": "ShengBTE iterative solver; RTA approximation; ML-mediated dispersion fit",
+    "convergence_rate_q": 2.0,
+    "error_bound": "|kappa - kappa_ref|/kappa_ref <= C*(discretization + scattering_rate_error)",
+    "complexity": "O(N_q^6 * N_branch)"
+  },
+  "physics_fingerprint": {
+    "carrier": "phonon",
+    "sensing_mechanism": "thermal_conductivity_measurement",
+    "integration_axis": "wavevector",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "phonon_distribution_n_q_s",
+    "primitives": [
+      "E.phonon_dispersion",
+      "E.scattering_rates",
+      "M.BTE_iterative",
+      "O.kappa"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "force_constant_drift",
+    "grain_boundary_scattering",
+    "isotope_composition"
+  ],
+  "error_metric": "kappa_relative_error",
+  "error_metric_secondary": "kappa_T_curve_RMSE",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "phonon_bte_inversion",
+      "forward_operator": "phonon_bte_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "material": "Si",
+        "T_K": 300,
+        "grain_size_um": 10,
+        "N_q_grid": 16,
+        "isotope_naturality": 1.0
+      },
+      "epsilon_fn_center": "kappa rel error <= 0.03"
+    },
+    "allowed_forward_operators": [
+      "phonon_bte_forward"
+    ],
+    "allowed_problem_classes": [
+      "phonon_bte_inversion"
+    ],
+    "allowed_omega_dimensions": [
+      "material",
+      "T_K",
+      "grain_size_um",
+      "N_q_grid",
+      "isotope_naturality"
+    ],
+    "omega_bounds": {
+      "T_K": [
+        10,
+        1500
+      ],
+      "grain_size_um": [
+        0.001,
+        1000
+      ],
+      "N_q_grid": [
+        8,
+        64
+      ],
+      "isotope_naturality": [
+        0.0,
+        1.0
+      ]
+    },
+    "epsilon_bounds": {
+      "kappa_relative_error": [
+        0.01,
+        0.4
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

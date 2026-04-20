@@ -1,0 +1,241 @@
+{
+  "artifact_id": "L3-491",
+  "layer": "L3",
+  "parent_l2": "L2-491",
+  "parent_l1": "L1-491",
+  "title": "Non-Equilibrium Green's Function (NEGF) Quantum Transport Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "NEMO5 validation suite (nanowire, UTBB, FinFET, CNT)",
+    "secondary": "QuantumATK reference devices",
+    "construction_method": "atomistic device specifications + computed I-V with SCBA phonon scattering",
+    "num_dev_instances_per_tier": 20,
+    "holdout_instances_per_tier": 10
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "N_sites": 200,
+        "N_energy": 500,
+        "V_bias": 0.5,
+        "T_K": 300,
+        "SCBA_tol": 0.0001
+      },
+      "dataset_description": "Non-Equilibrium Green's Function (NEGF) Quantum Transport at rho=1.",
+      "epsilon": 0.04,
+      "d_ibench": 0.15,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        },
+        {
+          "Q": 0.9,
+          "tier": "Excellent"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "NEMO5",
+          "score": 0.055,
+          "Q": 0.8
+        },
+        {
+          "name": "TB-NEGF-Siesta",
+          "score": 0.068,
+          "Q": 0.74
+        },
+        {
+          "name": "NEGF-NeuralSE",
+          "score": 0.038,
+          "Q": 0.94
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "N_sites": 600,
+        "N_energy": 1000,
+        "V_bias": 1.0,
+        "T_K": 200,
+        "SCBA_tol": 0.0001
+      },
+      "dataset_description": "Non-Equilibrium Green's Function (NEGF) Quantum Transport at rho=3.",
+      "epsilon": 0.046,
+      "d_ibench": 0.32,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        },
+        {
+          "Q": 0.9,
+          "tier": "Excellent"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "NEMO5",
+          "score": 0.075,
+          "Q": 0.64
+        },
+        {
+          "name": "TB-NEGF-Siesta",
+          "score": 0.09,
+          "Q": 0.58
+        },
+        {
+          "name": "NEGF-NeuralSE",
+          "score": 0.052,
+          "Q": 0.8
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "N_sites": 2000,
+        "N_energy": 2000,
+        "V_bias": 1.5,
+        "T_K": 77,
+        "SCBA_tol": 1e-05
+      },
+      "dataset_description": "Non-Equilibrium Green's Function (NEGF) Quantum Transport at rho=5.",
+      "epsilon": 0.056,
+      "d_ibench": 0.51,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "NEMO5",
+          "score": 0.11,
+          "Q": 0.42
+        },
+        {
+          "name": "TB-NEGF-Siesta",
+          "score": 0.14,
+          "Q": 0.36
+        },
+        {
+          "name": "NEGF-NeuralSE",
+          "score": 0.075,
+          "Q": 0.62
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "N_sites": 5000,
+        "N_energy": 5000,
+        "V_bias": 2.0,
+        "T_K": 4,
+        "SCBA_tol": 1e-06
+      },
+      "dataset_description": "Non-Equilibrium Green's Function (NEGF) Quantum Transport at rho=10.",
+      "epsilon": 0.074,
+      "d_ibench": 0.72,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "NEMO5",
+          "score": 0.2,
+          "Q": 0.22
+        },
+        {
+          "name": "TB-NEGF-Siesta",
+          "score": 0.26,
+          "Q": 0.18
+        },
+        {
+          "name": "NEGF-NeuralSE",
+          "score": 0.12,
+          "Q": 0.42
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "NEMO5 + QuantumATK NEGF library",
+      "construction_method": "parametric Omega sampling over declared bounds; stratified by rho.",
+      "num_dev_instances": 200,
+      "num_holdout_instances": 100
+    },
+    "tracks": {
+      "track_A_stratified_worst_case": {
+        "pass_condition": "min score meets epsilon_fn over all strata"
+      },
+      "track_B_uniform_median": {
+        "num_samples": 50,
+        "pass_condition": "median score meets epsilon_fn at Omega_median"
+      },
+      "track_C_mismatch_degradation": {
+        "sweep_points": 5,
+        "pass_condition": "monotone degradation with mismatch"
+      }
+    },
+    "baselines": [
+      {
+        "name": "NEMO5",
+        "track_A_Q": 0.52,
+        "track_B_Q": 0.64,
+        "track_C_Q": 0.55,
+        "overall_Q": 0.57
+      },
+      {
+        "name": "TB-NEGF-Siesta",
+        "track_A_Q": 0.46,
+        "track_B_Q": 0.58,
+        "track_C_Q": 0.5,
+        "overall_Q": 0.51
+      },
+      {
+        "name": "NEGF-NeuralSE",
+        "track_A_Q": 0.62,
+        "track_B_Q": 0.74,
+        "track_C_Q": 0.64,
+        "overall_Q": 0.67
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails epsilon_fn at T4_blind Omega corner.",
+  "anti_overfitting_mechanisms": {
+    "M1_random_instantiation": "seeded by benchmark hash; non-repeatable holdout",
+    "M2_convergence_scoring": "verifies declared convergence rate across Omega",
+    "M3_worst_case_eval": "min-score over fixed dev instances per tier",
+    "M4_community_adversarial": "adversarial submissions eligible for T_k",
+    "M5_method_sig_diversity": "baselines span multiple method_sig families",
+    "M6_gate_checks": "S1-S4 gate checks enforced with thresholds.yaml"
+  },
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

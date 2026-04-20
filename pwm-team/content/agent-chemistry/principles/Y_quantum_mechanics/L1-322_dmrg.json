@@ -1,0 +1,137 @@
+{
+  "artifact_id": "L1-322",
+  "layer": "L1",
+  "principle_number": "322",
+  "title": "Density Matrix Renormalization Group (DMRG)",
+  "domain": "Quantum Mechanics",
+  "sub_domain": "Matrix-product-state ground states",
+  "source_file": "Y_quantum_mechanics/322_dmrg.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
+  "E": {
+    "description": "DMRG: sweep-based variational optimization of matrix product states (MPS); exact for 1D, powerful for quasi-1D.",
+    "forward_model": "|Psi> = sum Tr[M^{s_1}..M^{s_L}] |s_1..s_L>; minimize <Psi|H|Psi> iteratively",
+    "world_state_x": "MPS representation of many-body ground state",
+    "observation_y": "Ground-state energy, entanglement entropy, local observables",
+    "physical_parameters_theta": [
+      "bond dimension M",
+      "H (Hamiltonian MPO)",
+      "sweep count",
+      "Krylov size"
+    ]
+  },
+  "G": {
+    "dag": "E.MPO_hamiltonian -> M.sweep_optimize -> O.gs_energy",
+    "vertices": [
+      "E.MPO_hamiltonian",
+      "M.sweep_optimize",
+      "O.gs_energy"
+    ],
+    "arcs": [
+      "E.MPO_hamiltonian -> M.sweep_optimize",
+      "M.sweep_optimize -> O.gs_energy"
+    ],
+    "L_DAG": 3.8,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 2000,
+    "condition_number_effective": 150,
+    "regime": "Exponential precision with bond dimension M in 1D; 2D DMRG limited by transverse correlation length."
+  },
+  "C": {
+    "solver_class": "ITensor, Block2, SyTen; DMRG with QN symmetries",
+    "convergence_rate_q": 2.0,
+    "error_bound": "bounded by discretization + mismatch bias + noise floor",
+    "complexity": "principle-dependent"
+  },
+  "physics_fingerprint": {
+    "carrier": "electron",
+    "sensing_mechanism": "energy_correlation_benchmark",
+    "integration_axis": "site_index",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "matrix_product_state",
+    "primitives": [
+      "E.MPO_hamiltonian",
+      "M.sweep_optimize",
+      "O.gs_energy"
+    ]
+  },
+  "difficulty_delta": 10,
+  "difficulty_tier": "hard",
+  "mismatch_parameters": [
+    "bond_dim_truncation",
+    "sweep_convergence",
+    "single_site_vs_two_site"
+  ],
+  "error_metric": "gs_energy_error_mHa_per_site",
+  "error_metric_secondary": "entanglement_entropy_error",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "dmrg",
+      "forward_operator": "dmrg_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "L_sites": 100,
+        "bond_dim_M": 200,
+        "N_sweeps": 20,
+        "model": "Heisenberg_spin_half"
+      },
+      "epsilon_fn_center": "E/site error <= 0.1 mHa"
+    },
+    "allowed_forward_operators": [
+      "dmrg_forward"
+    ],
+    "allowed_problem_classes": [
+      "dmrg"
+    ],
+    "allowed_omega_dimensions": [
+      "L_sites",
+      "bond_dim_M",
+      "N_sweeps",
+      "model"
+    ],
+    "omega_bounds": {
+      "L_sites": [
+        10,
+        10000
+      ],
+      "bond_dim_M": [
+        20,
+        10000
+      ],
+      "N_sweeps": [
+        5,
+        200
+      ]
+    },
+    "epsilon_bounds": {
+      "gs_energy_error_mHa_per_site": [
+        0.01,
+        10
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

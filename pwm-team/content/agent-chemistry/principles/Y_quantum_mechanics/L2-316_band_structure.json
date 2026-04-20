@@ -1,0 +1,120 @@
+{
+  "artifact_id": "L2-316",
+  "layer": "L2",
+  "parent_l1": "L1-316",
+  "title": "Electronic Band Structure Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "N_atoms": [
+        1,
+        100
+      ],
+      "N_kpoints": [
+        10,
+        10000
+      ],
+      "Ecut_eV": [
+        100,
+        2000
+      ],
+      "xc": [
+        "LDA",
+        "PBE",
+        "HSE06"
+      ]
+    },
+    "E": {
+      "forward": "(-hbar^2/2m * (grad + ik)^2 + V_cryst(r)) u_{n,k}(r) = E_n(k) u_{n,k}(r)",
+      "operator": "dft_band_structure_forward_mismatch",
+      "primitive_chain": "E.crystal_potential -> M.bloch_eigensolve -> O.band_structure",
+      "inverse": "recover constitutive parameters for Electronic Band Structure"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "band_gap_error_eV",
+      "effective_mass_error",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.1 * (1 + 0.1 * mismatch_severity)"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "VASP-PBE",
+        "method_sig": "T+O",
+        "expected_err": 0.3
+      },
+      {
+        "name": "QuantumESPRESSO",
+        "method_sig": "T+O",
+        "expected_err": 0.28
+      },
+      {
+        "name": "SchNet-Bands",
+        "method_sig": "T+N",
+        "expected_err": 0.09
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_atoms": 2,
+        "N_kpoints": 100,
+        "Ecut_eV": 400,
+        "xc": "PBE",
+        "species": "Si"
+      },
+      "epsilon": 0.1
+    },
+    "tier_bounds": {
+      "N_atoms": [
+        1,
+        100
+      ],
+      "N_kpoints": [
+        10,
+        10000
+      ],
+      "Ecut_eV": [
+        100,
+        2000
+      ],
+      "xc": [
+        "LDA",
+        "PBE",
+        "HSE06"
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.45,
+  "d_spec_notes": "Canonical mismatch-only baseline for this principle; sits at the centroid of its spec family.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions match across all DAG nodes; operator dimensions consistent.",
+    "S2": "Operator condition number controlled (kappa_eff=50) under declared Omega with regularization.",
+    "S3": "Solver class DFT-LDA/GGA (VASP, Quantum ESPRESSO); tight-binding; GW (separate) provably converges at rate q=2.0; monotone residual decrease.",
+    "S4": "epsilon_fn evaluates cleanly across 50 random Omega samples; hardness rule satisfied (top baseline fails at Omega corner)."
+  },
+  "ipfs_cid": null
+}

@@ -1,0 +1,145 @@
+{
+  "artifact_id": "L1-325",
+  "layer": "L1",
+  "principle_number": "325",
+  "title": "Electron-Phonon Coupling and Eliashberg Theory",
+  "domain": "Quantum Mechanics",
+  "sub_domain": "Phonon-mediated superconductivity",
+  "source_file": "Y_quantum_mechanics/325_electron_phonon_coupling.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
+  "E": {
+    "description": "Electron-phonon coupling g_{k,k'}(q,s); Eliashberg alpha^2 F(omega); BCS-like T_c from McMillan formula.",
+    "forward_model": "Sigma_{eph}(k,omega) = integral g^2 * F(omega') G(k, omega - omega') domega';  T_c = (omega_ln/1.2)*exp(-1.04*(1+lambda)/(lambda - mu* - 0.62*mu*lambda))",
+    "world_state_x": "Coupling matrix g_{k,k'}(q,s); Eliashberg spectral function alpha^2 F(omega); T_c",
+    "observation_y": "Superconducting T_c; phonon linewidths; inelastic-X-ray scattering (IXS); ARPES kinks",
+    "physical_parameters_theta": [
+      "deformation potential DV_xc/dR",
+      "phonon dispersion",
+      "Fermi surface"
+    ]
+  },
+  "G": {
+    "dag": "E.phonon_dispersion -> E.electron_phonon -> M.Eliashberg -> O.Tc",
+    "vertices": [
+      "E.phonon_dispersion",
+      "E.electron_phonon",
+      "M.Eliashberg",
+      "O.Tc"
+    ],
+    "arcs": [
+      "E.phonon_dispersion -> E.electron_phonon",
+      "E.electron_phonon -> M.Eliashberg",
+      "M.Eliashberg -> O.Tc"
+    ],
+    "L_DAG": 3.9,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 1500,
+    "condition_number_effective": 120,
+    "regime": "Non-linear; T_c sensitive to spectral function shape; inversion ill-conditioned."
+  },
+  "C": {
+    "solver_class": "EPW (Wannier-EPW interpolation); abinit + E-ph",
+    "convergence_rate_q": 2.0,
+    "error_bound": "bounded by discretization + mismatch bias + noise floor",
+    "complexity": "principle-dependent"
+  },
+  "physics_fingerprint": {
+    "carrier": "electron",
+    "sensing_mechanism": "Tc_measurement_IXS",
+    "integration_axis": "energy",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "eliashberg_spectral_function",
+    "primitives": [
+      "E.phonon_dispersion",
+      "E.electron_phonon",
+      "M.Eliashberg",
+      "O.Tc"
+    ]
+  },
+  "difficulty_delta": 10,
+  "difficulty_tier": "hard",
+  "mismatch_parameters": [
+    "Wannier_interpolation_error",
+    "anharmonic_phonon",
+    "Coulomb_mu_star_uncertainty"
+  ],
+  "error_metric": "Tc_relative_error",
+  "error_metric_secondary": "alpha2F_L2_error",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "electron_phonon_coupling",
+      "forward_operator": "eliashberg_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_kpoints": 32,
+        "N_qpoints": 16,
+        "N_bands": 20,
+        "mu_star": 0.1,
+        "species": "Pb"
+      },
+      "epsilon_fn_center": "T_c rel error <= 0.05"
+    },
+    "allowed_forward_operators": [
+      "eliashberg_forward"
+    ],
+    "allowed_problem_classes": [
+      "electron_phonon_coupling"
+    ],
+    "allowed_omega_dimensions": [
+      "N_kpoints",
+      "N_qpoints",
+      "N_bands",
+      "mu_star",
+      "species"
+    ],
+    "omega_bounds": {
+      "N_kpoints": [
+        8,
+        1000
+      ],
+      "N_qpoints": [
+        4,
+        256
+      ],
+      "N_bands": [
+        5,
+        200
+      ],
+      "mu_star": [
+        0.05,
+        0.3
+      ]
+    },
+    "epsilon_bounds": {
+      "Tc_relative_error": [
+        0.01,
+        0.5
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

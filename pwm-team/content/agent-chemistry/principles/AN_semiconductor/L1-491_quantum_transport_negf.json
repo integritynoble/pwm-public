@@ -1,0 +1,150 @@
+{
+  "artifact_id": "L1-491",
+  "layer": "L1",
+  "principle_number": "491",
+  "title": "Non-Equilibrium Green's Function (NEGF) Quantum Transport",
+  "domain": "Semiconductor Physics",
+  "sub_domain": "Nanoscale quantum transport",
+  "source_file": "AN_semiconductor/491_quantum_transport_negf.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
+  "E": {
+    "description": "Keldysh-Kadanoff-Baym NEGF: retarded G^R, advanced G^A, lesser G^< Green's functions; self-energies Sigma^R, Sigma^< for contacts and scattering; Landauer current.",
+    "forward_model": "G^R(E) = [E*I - H - Sigma^R(E)]^{-1};  G^< = G^R * Sigma^< * G^A;  I = (2e/h) * integral Tr[Sigma^<_L * G^R * Gamma_R * G^A - Gamma_L * G^< ... ] dE",
+    "world_state_x": "Non-equilibrium Green's function G^R(E), G^<(E) across device active region",
+    "observation_y": "Device I-V; local density of states (LDOS); tunneling spectra; shot noise",
+    "physical_parameters_theta": [
+      "H (tight-binding or k.p Hamiltonian)",
+      "Sigma^R_contacts",
+      "Sigma^<_scattering (SCBA for e-ph)",
+      "E_F_L, E_F_R"
+    ]
+  },
+  "G": {
+    "dag": "E.hamiltonian_build -> E.self_energy -> M.dyson_solve -> O.current_LDOS",
+    "vertices": [
+      "E.hamiltonian_build",
+      "E.self_energy",
+      "M.dyson_solve",
+      "O.current_LDOS"
+    ],
+    "arcs": [
+      "E.hamiltonian_build -> M.dyson_solve",
+      "E.self_energy -> M.dyson_solve",
+      "M.dyson_solve -> O.current_LDOS"
+    ],
+    "L_DAG": 4.0,
+    "n_c": 2
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 5000,
+    "condition_number_effective": 200,
+    "regime": "Dyson equation is numerically well-posed in principle but conditioning deteriorates with device size; self-consistent Born (SCBA) loops add non-linear coupling."
+  },
+  "C": {
+    "solver_class": "Recursive Green's Function (RGF); contact block reduction (CBR); adjoint-NEGF for inversion",
+    "convergence_rate_q": 2.0,
+    "error_bound": "|G - G_ref|_F <= C * (mesh + energy_grid + SCBA_tol)",
+    "complexity": "O(N_orbital^3 * N_energy)"
+  },
+  "physics_fingerprint": {
+    "carrier": "electron",
+    "sensing_mechanism": "quantum_tunneling_spectroscopy",
+    "integration_axis": "energy",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "green_functions_complex_matrix",
+    "primitives": [
+      "E.hamiltonian_build",
+      "E.self_energy",
+      "M.dyson_solve",
+      "O.current_LDOS"
+    ]
+  },
+  "difficulty_delta": 10,
+  "difficulty_tier": "hard",
+  "mismatch_parameters": [
+    "contact_self_energy_error",
+    "phonon_coupling_SCBA",
+    "atomistic_disorder"
+  ],
+  "error_metric": "IV_log_relative_error",
+  "error_metric_secondary": "LDOS_KL_divergence",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "negf_inversion",
+      "forward_operator": "negf_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_sites": 200,
+        "N_energy": 500,
+        "V_bias": 0.5,
+        "T_K": 300,
+        "SCBA_tol": 0.0001
+      },
+      "epsilon_fn_center": "log10(I) error <= 0.04"
+    },
+    "allowed_forward_operators": [
+      "negf_forward"
+    ],
+    "allowed_problem_classes": [
+      "negf_inversion"
+    ],
+    "allowed_omega_dimensions": [
+      "N_sites",
+      "N_energy",
+      "V_bias",
+      "T_K",
+      "SCBA_tol"
+    ],
+    "omega_bounds": {
+      "N_sites": [
+        20,
+        5000
+      ],
+      "N_energy": [
+        50,
+        5000
+      ],
+      "V_bias": [
+        0.001,
+        2.0
+      ],
+      "T_K": [
+        4,
+        400
+      ],
+      "SCBA_tol": [
+        1e-06,
+        0.01
+      ]
+    },
+    "epsilon_bounds": {
+      "IV_log_relative_error": [
+        0.005,
+        0.4
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

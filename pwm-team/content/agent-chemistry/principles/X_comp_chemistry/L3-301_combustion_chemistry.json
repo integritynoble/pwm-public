@@ -1,0 +1,241 @@
+{
+  "artifact_id": "L3-301",
+  "layer": "L3",
+  "parent_l2": "L2-301",
+  "parent_l1": "L1-301",
+  "title": "Combustion Chemistry and Ignition Kinetics Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "GRI-Mech 3.0 natural gas combustion",
+    "secondary": "AramcoMech 3.0 / LLNL n-heptane",
+    "construction_method": "canonical ground truth + declared noise at tier Omega for Combustion Chemistry and Ignition Kinetics",
+    "num_dev_instances_per_tier": 20,
+    "holdout_instances_per_tier": 10
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "N_species": 50,
+        "N_reactions": 300,
+        "T_K": 1200,
+        "P_atm": 1,
+        "phi_equiv": 1.0
+      },
+      "dataset_description": "Combustion Chemistry and Ignition Kinetics at rho=1.",
+      "epsilon": 0.1,
+      "d_ibench": 0.15,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        },
+        {
+          "Q": 0.9,
+          "tier": "Excellent"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "Cantera",
+          "score": 0.18,
+          "Q": 0.82
+        },
+        {
+          "name": "CHEMKIN",
+          "score": 0.15,
+          "Q": 0.78
+        },
+        {
+          "name": "Combust-NeuralODE",
+          "score": 0.11,
+          "Q": 0.92
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "N_species": 200,
+        "N_reactions": 2000,
+        "T_K": 1500,
+        "P_atm": 10,
+        "phi_equiv": 0.6
+      },
+      "dataset_description": "Combustion Chemistry and Ignition Kinetics at rho=3.",
+      "epsilon": 0.115,
+      "d_ibench": 0.32,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        },
+        {
+          "Q": 0.9,
+          "tier": "Excellent"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "Cantera",
+          "score": 0.207,
+          "Q": 0.66
+        },
+        {
+          "name": "CHEMKIN",
+          "score": 0.1725,
+          "Q": 0.6
+        },
+        {
+          "name": "Combust-NeuralODE",
+          "score": 0.1265,
+          "Q": 0.82
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "N_species": 1000,
+        "N_reactions": 10000,
+        "T_K": 2000,
+        "P_atm": 50,
+        "phi_equiv": 2.0
+      },
+      "dataset_description": "Combustion Chemistry and Ignition Kinetics at rho=5.",
+      "epsilon": 0.14,
+      "d_ibench": 0.51,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "Cantera",
+          "score": 0.252,
+          "Q": 0.44
+        },
+        {
+          "name": "CHEMKIN",
+          "score": 0.21,
+          "Q": 0.38
+        },
+        {
+          "name": "Combust-NeuralODE",
+          "score": 0.154,
+          "Q": 0.64
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "N_species": 3000,
+        "N_reactions": 30000,
+        "T_K": 3000,
+        "P_atm": 100,
+        "phi_equiv": 3.0
+      },
+      "dataset_description": "Combustion Chemistry and Ignition Kinetics at rho=10.",
+      "epsilon": 0.185,
+      "d_ibench": 0.72,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "Cantera",
+          "score": 0.333,
+          "Q": 0.24
+        },
+        {
+          "name": "CHEMKIN",
+          "score": 0.2775,
+          "Q": 0.2
+        },
+        {
+          "name": "Combust-NeuralODE",
+          "score": 0.2035,
+          "Q": 0.46
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "GRI-Mech + AramcoMech combustion library",
+      "construction_method": "parametric Omega sampling over declared bounds; stratified by rho.",
+      "num_dev_instances": 200,
+      "num_holdout_instances": 100
+    },
+    "tracks": {
+      "track_A_stratified_worst_case": {
+        "pass_condition": "min score meets epsilon_fn over all strata"
+      },
+      "track_B_uniform_median": {
+        "num_samples": 50,
+        "pass_condition": "median score meets epsilon_fn at Omega_median"
+      },
+      "track_C_mismatch_degradation": {
+        "sweep_points": 5,
+        "pass_condition": "monotone degradation with mismatch"
+      }
+    },
+    "baselines": [
+      {
+        "name": "Cantera",
+        "track_A_Q": 0.52,
+        "track_B_Q": 0.64,
+        "track_C_Q": 0.56,
+        "overall_Q": 0.57
+      },
+      {
+        "name": "CHEMKIN",
+        "track_A_Q": 0.54,
+        "track_B_Q": 0.66,
+        "track_C_Q": 0.58,
+        "overall_Q": 0.59
+      },
+      {
+        "name": "Combust-NeuralODE",
+        "track_A_Q": 0.62,
+        "track_B_Q": 0.72,
+        "track_C_Q": 0.64,
+        "overall_Q": 0.66
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails epsilon_fn at T4_blind Omega corner.",
+  "anti_overfitting_mechanisms": {
+    "M1_random_instantiation": "seeded by benchmark hash; non-repeatable holdout",
+    "M2_convergence_scoring": "verifies declared convergence rate across Omega",
+    "M3_worst_case_eval": "min-score over fixed dev instances per tier",
+    "M4_community_adversarial": "adversarial submissions eligible for T_k",
+    "M5_method_sig_diversity": "baselines span multiple method_sig families",
+    "M6_gate_checks": "S1-S4 gate checks enforced with thresholds.yaml"
+  },
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

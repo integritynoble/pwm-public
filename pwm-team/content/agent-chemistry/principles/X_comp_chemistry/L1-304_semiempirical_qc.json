@@ -1,0 +1,139 @@
+{
+  "artifact_id": "L1-304",
+  "layer": "L1",
+  "principle_number": "304",
+  "title": "Semi-Empirical Quantum Chemistry (AM1, PM6, DFTB, xTB)",
+  "domain": "Computational Chemistry",
+  "sub_domain": "Parameterized approximate QM",
+  "source_file": "X_computational_chemistry/304_semiempirical_qc.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
+  "E": {
+    "description": "Semi-empirical methods: HF/DFT approximations with parameterized integrals (NDDO, DFTB, GFN-xTB); ~1000x faster than DFT.",
+    "forward_model": "parameterized Fock/Hamiltonian with element-specific constants; SCF as usual",
+    "world_state_x": "Parameterized electronic structure",
+    "observation_y": "Energies, geometries, spectra (calibrated to training set)",
+    "physical_parameters_theta": [
+      "element-specific parameters (alpha, beta, U)",
+      "parameter set version (AM1/PM6/PM7/GFN1/GFN2)"
+    ]
+  },
+  "G": {
+    "dag": "E.parameterized_fock -> M.scf -> O.observables",
+    "vertices": [
+      "E.parameterized_fock",
+      "M.scf",
+      "O.observables"
+    ],
+    "arcs": [
+      "E.parameterized_fock -> M.scf",
+      "M.scf -> O.observables"
+    ],
+    "L_DAG": 3.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 200,
+    "condition_number_effective": 25,
+    "regime": "Well-posed once parameterized; out-of-domain systems fail silently."
+  },
+  "C": {
+    "solver_class": "MOPAC, AMBER-QM, xTB, DFTB+; with D3/D4 dispersion",
+    "convergence_rate_q": 2.0,
+    "error_bound": "bounded by discretization + mismatch bias + noise floor",
+    "complexity": "principle-dependent"
+  },
+  "physics_fingerprint": {
+    "carrier": "electron",
+    "sensing_mechanism": "property_benchmark",
+    "integration_axis": "spatial",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "semi_empirical_wavefunction",
+    "primitives": [
+      "E.parameterized_fock",
+      "M.scf",
+      "O.observables"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "parameterization_scope",
+    "missing_elements",
+    "dispersion_correction"
+  ],
+  "error_metric": "energy_error_mHa",
+  "error_metric_secondary": "geometry_RMSD_A",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "semiempirical_qc",
+      "forward_operator": "semiempirical_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_atoms": 100,
+        "method": "GFN2-xTB",
+        "N_basis": 500,
+        "dispersion": "D4"
+      },
+      "epsilon_fn_center": "E error <= 3 mHa (~2 kcal/mol)"
+    },
+    "allowed_forward_operators": [
+      "semiempirical_forward"
+    ],
+    "allowed_problem_classes": [
+      "semiempirical_qc"
+    ],
+    "allowed_omega_dimensions": [
+      "N_atoms",
+      "method",
+      "N_basis",
+      "dispersion"
+    ],
+    "omega_bounds": {
+      "N_atoms": [
+        2,
+        100000
+      ],
+      "method": [
+        "AM1",
+        "PM6",
+        "PM7",
+        "DFTB3",
+        "GFN1-xTB",
+        "GFN2-xTB"
+      ],
+      "N_basis": [
+        10,
+        500000
+      ]
+    },
+    "epsilon_bounds": {
+      "energy_error_mHa": [
+        1.0,
+        50
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

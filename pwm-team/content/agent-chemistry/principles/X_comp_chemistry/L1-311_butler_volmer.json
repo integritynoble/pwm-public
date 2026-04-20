@@ -1,0 +1,145 @@
+{
+  "artifact_id": "L1-311",
+  "layer": "L1",
+  "principle_number": "311",
+  "title": "Butler-Volmer Electrochemical Kinetics",
+  "domain": "Computational Chemistry",
+  "sub_domain": "Electrode charge-transfer kinetics",
+  "source_file": "X_computational_chemistry/311_butler_volmer.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
+  "E": {
+    "description": "Butler-Volmer current-overpotential: i = i_0 * (exp(alpha_a*F*eta/RT) - exp(-alpha_c*F*eta/RT)); describes electron-transfer rate at electrode.",
+    "forward_model": "i = i_0 * (exp(alpha_a*F*eta/RT) - exp(-alpha_c*F*eta/RT))",
+    "world_state_x": "Current-overpotential curve i(eta)",
+    "observation_y": "Tafel plots, RDE / RRDE measurements, impedance spectroscopy",
+    "physical_parameters_theta": [
+      "i_0 (exchange current)",
+      "alpha_a, alpha_c (symmetry)",
+      "mass-transport limiting current i_lim"
+    ]
+  },
+  "G": {
+    "dag": "E.butler_volmer -> E.mass_transport -> O.i_eta",
+    "vertices": [
+      "E.butler_volmer",
+      "E.mass_transport",
+      "O.i_eta"
+    ],
+    "arcs": [
+      "E.butler_volmer -> E.mass_transport",
+      "E.mass_transport -> O.i_eta"
+    ],
+    "L_DAG": 2.8,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 80,
+    "condition_number_effective": 12,
+    "regime": "Well-posed; inversion clean in Tafel regime."
+  },
+  "C": {
+    "solver_class": "Nonlinear LM; Bayesian inference for BV parameters",
+    "convergence_rate_q": 2.0,
+    "error_bound": "bounded by discretization + mismatch bias + noise floor",
+    "complexity": "principle-dependent"
+  },
+  "physics_fingerprint": {
+    "carrier": "ion",
+    "sensing_mechanism": "electrochemical_IV",
+    "integration_axis": "potential",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "BV_parameter_triplet",
+    "primitives": [
+      "E.butler_volmer",
+      "E.mass_transport",
+      "O.i_eta"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "symmetry_assumption",
+    "mass_transport_correction",
+    "surface_coverage_drift"
+  ],
+  "error_metric": "log_i_0_error",
+  "error_metric_secondary": "alpha_error",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "butler_volmer",
+      "forward_operator": "butler_volmer_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "T_K": 298,
+        "eta_range_V": [
+          -0.5,
+          0.5
+        ],
+        "N_data": 200,
+        "electrolyte": "aqueous"
+      },
+      "epsilon_fn_center": "log10(i_0) <= 0.05"
+    },
+    "allowed_forward_operators": [
+      "butler_volmer_forward"
+    ],
+    "allowed_problem_classes": [
+      "butler_volmer"
+    ],
+    "allowed_omega_dimensions": [
+      "T_K",
+      "eta_range_V",
+      "N_data",
+      "electrolyte"
+    ],
+    "omega_bounds": {
+      "T_K": [
+        253,
+        373
+      ],
+      "eta_range_V_max": [
+        0.1,
+        2.0
+      ],
+      "N_data": [
+        20,
+        5000
+      ],
+      "electrolyte": [
+        "aqueous",
+        "organic",
+        "ionic_liquid",
+        "molten_salt"
+      ]
+    },
+    "epsilon_bounds": {
+      "log_i_0_error": [
+        0.02,
+        1.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

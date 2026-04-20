@@ -1,0 +1,118 @@
+{
+  "artifact_id": "L2-319",
+  "layer": "L2",
+  "parent_l1": "L1-319",
+  "title": "GW Approximation for Quasiparticle Energies Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "N_bands_gw": [
+        20,
+        1000
+      ],
+      "N_kpoints": [
+        1,
+        1000
+      ],
+      "N_omega": [
+        10,
+        200
+      ],
+      "cutoff_eV": [
+        200,
+        2000
+      ]
+    },
+    "E": {
+      "forward": "Sigma(r,r';w) = (i/2pi)*integral dw' G(r,r';w-w')*W(r,r';w');  E_QP = E_KS + <psi|Sigma(E_QP) - V_xc|psi>",
+      "operator": "GW_forward_mismatch",
+      "primitive_chain": "E.G_function -> E.W_screening -> M.self_energy -> O.quasiparticle",
+      "inverse": "recover constitutive parameters for GW Approximation for Quasiparticle Energies"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "band_gap_error_eV",
+      "energy_dispersion_L2_eV",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.07 * (1 + 0.1 * mismatch_severity)"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "BerkeleyGW G0W0",
+        "method_sig": "T+O",
+        "expected_err": 0.15
+      },
+      {
+        "name": "YAMBO-GW",
+        "method_sig": "T+O",
+        "expected_err": 0.18
+      },
+      {
+        "name": "GW-EquivNet",
+        "method_sig": "T+N",
+        "expected_err": 0.09
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_bands_gw": 100,
+        "N_kpoints": 8,
+        "N_omega": 20,
+        "cutoff_eV": 400,
+        "species": "Si"
+      },
+      "epsilon": 0.07
+    },
+    "tier_bounds": {
+      "N_bands_gw": [
+        20,
+        1000
+      ],
+      "N_kpoints": [
+        1,
+        1000
+      ],
+      "N_omega": [
+        10,
+        200
+      ],
+      "cutoff_eV": [
+        200,
+        2000
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.45,
+  "d_spec_notes": "Canonical mismatch-only baseline for this principle; sits at the centroid of its spec family.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions match across all DAG nodes; operator dimensions consistent.",
+    "S2": "Operator condition number controlled (kappa_eff=200) under declared Omega with regularization.",
+    "S3": "Solver class BerkeleyGW, ABINIT, YAMBO; contour-deformation for self-energy provably converges at rate q=2.0; monotone residual decrease.",
+    "S4": "epsilon_fn evaluates cleanly across 50 random Omega samples; hardness rule satisfied (top baseline fails at Omega corner)."
+  },
+  "ipfs_cid": null
+}

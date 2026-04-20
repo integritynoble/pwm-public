@@ -1,0 +1,146 @@
+{
+  "artifact_id": "L1-319",
+  "layer": "L1",
+  "principle_number": "319",
+  "title": "GW Approximation for Quasiparticle Energies",
+  "domain": "Quantum Mechanics",
+  "sub_domain": "Many-body perturbation theory",
+  "source_file": "Y_quantum_mechanics/319_gw_approximation.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
+  "E": {
+    "description": "GW: electron self-energy Sigma = i*G*W, with G the Green's function and W the screened Coulomb; corrects DFT eigenvalues to quasiparticle energies.",
+    "forward_model": "Sigma(r,r';w) = (i/2pi)*integral dw' G(r,r';w-w')*W(r,r';w');  E_QP = E_KS + <psi|Sigma(E_QP) - V_xc|psi>",
+    "world_state_x": "Quasiparticle energies E_QP and spectral function A(w)",
+    "observation_y": "ARPES band positions (accurate gaps), photoemission spectra",
+    "physical_parameters_theta": [
+      "Green function G_0",
+      "screened Coulomb W(omega)",
+      "dielectric screening",
+      "core-valence partitioning"
+    ]
+  },
+  "G": {
+    "dag": "E.G_function -> E.W_screening -> M.self_energy -> O.quasiparticle",
+    "vertices": [
+      "E.G_function",
+      "E.W_screening",
+      "M.self_energy",
+      "O.quasiparticle"
+    ],
+    "arcs": [
+      "E.G_function -> E.W_screening",
+      "E.W_screening -> M.self_energy",
+      "M.self_energy -> O.quasiparticle"
+    ],
+    "L_DAG": 4.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 2500,
+    "condition_number_effective": 200,
+    "regime": "Moderately ill-posed; self-consistent GW (scGW) partially removes G_0W_0 starting-point dependence."
+  },
+  "C": {
+    "solver_class": "BerkeleyGW, ABINIT, YAMBO; contour-deformation for self-energy",
+    "convergence_rate_q": 2.0,
+    "error_bound": "bounded by discretization + mismatch bias + noise floor",
+    "complexity": "principle-dependent"
+  },
+  "physics_fingerprint": {
+    "carrier": "electron",
+    "sensing_mechanism": "photoemission",
+    "integration_axis": "energy",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "quasiparticle_energies",
+    "primitives": [
+      "E.G_function",
+      "E.W_screening",
+      "M.self_energy",
+      "O.quasiparticle"
+    ]
+  },
+  "difficulty_delta": 10,
+  "difficulty_tier": "hard",
+  "mismatch_parameters": [
+    "starting_point_bias",
+    "plasmon_pole_model",
+    "core_valence_partition"
+  ],
+  "error_metric": "band_gap_error_eV",
+  "error_metric_secondary": "energy_dispersion_L2_eV",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "gw_approximation",
+      "forward_operator": "GW_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_bands_gw": 100,
+        "N_kpoints": 8,
+        "N_omega": 20,
+        "cutoff_eV": 400,
+        "species": "Si"
+      },
+      "epsilon_fn_center": "gap error <= 0.07 eV"
+    },
+    "allowed_forward_operators": [
+      "GW_forward"
+    ],
+    "allowed_problem_classes": [
+      "gw_approximation"
+    ],
+    "allowed_omega_dimensions": [
+      "N_bands_gw",
+      "N_kpoints",
+      "N_omega",
+      "cutoff_eV",
+      "species"
+    ],
+    "omega_bounds": {
+      "N_bands_gw": [
+        20,
+        1000
+      ],
+      "N_kpoints": [
+        1,
+        1000
+      ],
+      "N_omega": [
+        10,
+        200
+      ],
+      "cutoff_eV": [
+        200,
+        2000
+      ]
+    },
+    "epsilon_bounds": {
+      "band_gap_error_eV": [
+        0.02,
+        1.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

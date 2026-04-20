@@ -1,0 +1,237 @@
+{
+  "artifact_id": "L3-296",
+  "layer": "L3",
+  "parent_l2": "L2-296",
+  "parent_l1": "L1-296",
+  "title": "Post-Hartree-Fock Correlated Methods (MP2, CCSD, CI) Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "W4-17 thermochemistry benchmark (Karton)",
+    "secondary": "DBH24 barrier height database",
+    "construction_method": "canonical ground truth + declared noise at tier Omega for Post-Hartree-Fock Correlated Methods (MP2, CCSD, CI)",
+    "num_dev_instances_per_tier": 20,
+    "holdout_instances_per_tier": 10
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "N_electrons": 10,
+        "N_basis": 200,
+        "method": "CCSD(T)",
+        "basis": "cc-pVTZ"
+      },
+      "dataset_description": "Post-Hartree-Fock Correlated Methods (MP2, CCSD, CI) at rho=1.",
+      "epsilon": 1.0,
+      "d_ibench": 0.15,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        },
+        {
+          "Q": 0.9,
+          "tier": "Excellent"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "CCSD(T)/cc-pVTZ",
+          "score": 1.5,
+          "Q": 0.82
+        },
+        {
+          "name": "DLPNO-CCSD(T)",
+          "score": 1.8,
+          "Q": 0.78
+        },
+        {
+          "name": "DeepCCSD",
+          "score": 1.1,
+          "Q": 0.92
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "N_electrons": 30,
+        "N_basis": 500,
+        "method": "CCSD(T)",
+        "basis": "cc-pVQZ"
+      },
+      "dataset_description": "Post-Hartree-Fock Correlated Methods (MP2, CCSD, CI) at rho=3.",
+      "epsilon": 1.15,
+      "d_ibench": 0.32,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        },
+        {
+          "Q": 0.9,
+          "tier": "Excellent"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "CCSD(T)/cc-pVTZ",
+          "score": 1.725,
+          "Q": 0.66
+        },
+        {
+          "name": "DLPNO-CCSD(T)",
+          "score": 2.07,
+          "Q": 0.6
+        },
+        {
+          "name": "DeepCCSD",
+          "score": 1.265,
+          "Q": 0.82
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "N_electrons": 100,
+        "N_basis": 1500,
+        "method": "CCSDT",
+        "basis": "cc-pVQZ"
+      },
+      "dataset_description": "Post-Hartree-Fock Correlated Methods (MP2, CCSD, CI) at rho=5.",
+      "epsilon": 1.4,
+      "d_ibench": 0.51,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "CCSD(T)/cc-pVTZ",
+          "score": 2.1,
+          "Q": 0.44
+        },
+        {
+          "name": "DLPNO-CCSD(T)",
+          "score": 2.52,
+          "Q": 0.38
+        },
+        {
+          "name": "DeepCCSD",
+          "score": 1.54,
+          "Q": 0.64
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "N_electrons": 300,
+        "N_basis": 5000,
+        "method": "CCSDT",
+        "basis": "aug-cc-pV5Z"
+      },
+      "dataset_description": "Post-Hartree-Fock Correlated Methods (MP2, CCSD, CI) at rho=10.",
+      "epsilon": 1.85,
+      "d_ibench": 0.72,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "CCSD(T)/cc-pVTZ",
+          "score": 2.775,
+          "Q": 0.24
+        },
+        {
+          "name": "DLPNO-CCSD(T)",
+          "score": 3.33,
+          "Q": 0.2
+        },
+        {
+          "name": "DeepCCSD",
+          "score": 2.035,
+          "Q": 0.46
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "W4-17 + DBH24 high-accuracy library",
+      "construction_method": "parametric Omega sampling over declared bounds; stratified by rho.",
+      "num_dev_instances": 200,
+      "num_holdout_instances": 100
+    },
+    "tracks": {
+      "track_A_stratified_worst_case": {
+        "pass_condition": "min score meets epsilon_fn over all strata"
+      },
+      "track_B_uniform_median": {
+        "num_samples": 50,
+        "pass_condition": "median score meets epsilon_fn at Omega_median"
+      },
+      "track_C_mismatch_degradation": {
+        "sweep_points": 5,
+        "pass_condition": "monotone degradation with mismatch"
+      }
+    },
+    "baselines": [
+      {
+        "name": "CCSD(T)/cc-pVTZ",
+        "track_A_Q": 0.62,
+        "track_B_Q": 0.72,
+        "track_C_Q": 0.64,
+        "overall_Q": 0.65
+      },
+      {
+        "name": "DLPNO-CCSD(T)",
+        "track_A_Q": 0.58,
+        "track_B_Q": 0.7,
+        "track_C_Q": 0.62,
+        "overall_Q": 0.63
+      },
+      {
+        "name": "DeepCCSD",
+        "track_A_Q": 0.66,
+        "track_B_Q": 0.76,
+        "track_C_Q": 0.68,
+        "overall_Q": 0.7
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails epsilon_fn at T4_blind Omega corner.",
+  "anti_overfitting_mechanisms": {
+    "M1_random_instantiation": "seeded by benchmark hash; non-repeatable holdout",
+    "M2_convergence_scoring": "verifies declared convergence rate across Omega",
+    "M3_worst_case_eval": "min-score over fixed dev instances per tier",
+    "M4_community_adversarial": "adversarial submissions eligible for T_k",
+    "M5_method_sig_diversity": "baselines span multiple method_sig families",
+    "M6_gate_checks": "S1-S4 gate checks enforced with thresholds.yaml"
+  },
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

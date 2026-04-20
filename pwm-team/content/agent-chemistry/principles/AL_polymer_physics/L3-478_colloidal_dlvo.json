@@ -1,0 +1,241 @@
+{
+  "artifact_id": "L3-478",
+  "layer": "L3",
+  "parent_l2": "L2-478",
+  "parent_l1": "L1-478",
+  "title": "DLVO Colloidal Force Theory Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "Israelachvili SFA force curves (Intermolecular and Surface Forces, 3rd ed. supplementary)",
+    "secondary": "Borkovec colloidal-probe AFM dataset (ETH Zurich, 2012)",
+    "construction_method": "measured F(h) across colloid/substrate pairs; electrolyte titration series",
+    "num_dev_instances_per_tier": 20,
+    "holdout_instances_per_tier": 10
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "A_Hamaker_zJ": 5.0,
+        "psi_0_mV": -40,
+        "I_mM": 10,
+        "R_nm": 100,
+        "T_K": 298
+      },
+      "dataset_description": "DLVO Colloidal Force Theory at rho=1.",
+      "epsilon": 0.3,
+      "d_ibench": 0.15,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        },
+        {
+          "Q": 0.9,
+          "tier": "Excellent"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "SurfaceForce-Fit",
+          "score": 0.38,
+          "Q": 0.82
+        },
+        {
+          "name": "DLVO-MCMC",
+          "score": 0.28,
+          "Q": 0.9
+        },
+        {
+          "name": "Deep-DLVO",
+          "score": 0.2,
+          "Q": 0.95
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "A_Hamaker_zJ": 8.0,
+        "psi_0_mV": -60,
+        "I_mM": 50,
+        "R_nm": 300,
+        "T_K": 310
+      },
+      "dataset_description": "DLVO Colloidal Force Theory at rho=3.",
+      "epsilon": 0.345,
+      "d_ibench": 0.32,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        },
+        {
+          "Q": 0.9,
+          "tier": "Excellent"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "SurfaceForce-Fit",
+          "score": 0.5,
+          "Q": 0.66
+        },
+        {
+          "name": "DLVO-MCMC",
+          "score": 0.38,
+          "Q": 0.78
+        },
+        {
+          "name": "Deep-DLVO",
+          "score": 0.28,
+          "Q": 0.86
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "A_Hamaker_zJ": 12.0,
+        "psi_0_mV": -80,
+        "I_mM": 200,
+        "R_nm": 1000,
+        "T_K": 350
+      },
+      "dataset_description": "DLVO Colloidal Force Theory at rho=5.",
+      "epsilon": 0.42,
+      "d_ibench": 0.51,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "SurfaceForce-Fit",
+          "score": 0.75,
+          "Q": 0.44
+        },
+        {
+          "name": "DLVO-MCMC",
+          "score": 0.56,
+          "Q": 0.58
+        },
+        {
+          "name": "Deep-DLVO",
+          "score": 0.4,
+          "Q": 0.7
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "A_Hamaker_zJ": 20.0,
+        "psi_0_mV": -120,
+        "I_mM": 1000,
+        "R_nm": 5000,
+        "T_K": 373
+      },
+      "dataset_description": "DLVO Colloidal Force Theory at rho=10.",
+      "epsilon": 0.555,
+      "d_ibench": 0.72,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "SurfaceForce-Fit",
+          "score": 1.3,
+          "Q": 0.24
+        },
+        {
+          "name": "DLVO-MCMC",
+          "score": 0.92,
+          "Q": 0.36
+        },
+        {
+          "name": "Deep-DLVO",
+          "score": 0.7,
+          "Q": 0.5
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "Israelachvili + Borkovec force-distance union",
+      "construction_method": "parametric Omega sampling over declared bounds; stratified by rho.",
+      "num_dev_instances": 200,
+      "num_holdout_instances": 100
+    },
+    "tracks": {
+      "track_A_stratified_worst_case": {
+        "pass_condition": "min score meets epsilon_fn over all strata"
+      },
+      "track_B_uniform_median": {
+        "num_samples": 50,
+        "pass_condition": "median score meets epsilon_fn at Omega_median"
+      },
+      "track_C_mismatch_degradation": {
+        "sweep_points": 5,
+        "pass_condition": "monotone degradation with mismatch"
+      }
+    },
+    "baselines": [
+      {
+        "name": "SurfaceForce-Fit",
+        "track_A_Q": 0.5,
+        "track_B_Q": 0.6,
+        "track_C_Q": 0.55,
+        "overall_Q": 0.55
+      },
+      {
+        "name": "DLVO-MCMC",
+        "track_A_Q": 0.6,
+        "track_B_Q": 0.7,
+        "track_C_Q": 0.64,
+        "overall_Q": 0.65
+      },
+      {
+        "name": "Deep-DLVO",
+        "track_A_Q": 0.7,
+        "track_B_Q": 0.8,
+        "track_C_Q": 0.72,
+        "overall_Q": 0.74
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails epsilon_fn at T4_blind Omega corner.",
+  "anti_overfitting_mechanisms": {
+    "M1_random_instantiation": "seeded by benchmark hash; non-repeatable holdout",
+    "M2_convergence_scoring": "verifies declared convergence rate across Omega",
+    "M3_worst_case_eval": "min-score over fixed dev instances per tier",
+    "M4_community_adversarial": "adversarial submissions eligible for T_k",
+    "M5_method_sig_diversity": "baselines span multiple method_sig families",
+    "M6_gate_checks": "S1-S4 gate checks enforced with thresholds.yaml"
+  },
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

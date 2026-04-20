@@ -1,0 +1,146 @@
+{
+  "artifact_id": "L1-338",
+  "layer": "L1",
+  "principle_number": "338",
+  "title": "Radiation Damage Cascade Dynamics",
+  "domain": "Materials Science",
+  "sub_domain": "Atomic-scale defect production",
+  "source_file": "Z_materials_science/338_radiation_damage.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
+  "E": {
+    "description": "Primary knock-on atom (PKA) cascade: MD simulation of collision cascades produces Frenkel pairs and clusters; cluster evolution handled by cluster dynamics (CD) or rate theory.",
+    "forward_model": "N_Frenkel = epsilon_NRT * PKA_energy/(2*E_d); CD: dN_i/dt = G_i + k_nucl * N_1^i - k_dis * N_i; swelling = sum V_defect",
+    "world_state_x": "Defect cluster populations {n_i(t)} by size, type, location",
+    "observation_y": "Displacement per atom (dpa); swelling %; TEM void/loop distributions; resistivity increase",
+    "physical_parameters_theta": [
+      "E_d (displacement energy)",
+      "cluster biases B_i",
+      "recombination radius",
+      "grain boundary sink density"
+    ]
+  },
+  "G": {
+    "dag": "E.NRT_cascade -> E.cluster_dynamics -> M.rate_theory -> O.defect_distribution",
+    "vertices": [
+      "E.NRT_cascade",
+      "E.cluster_dynamics",
+      "M.rate_theory",
+      "O.defect_distribution"
+    ],
+    "arcs": [
+      "E.NRT_cascade -> E.cluster_dynamics",
+      "E.cluster_dynamics -> M.rate_theory",
+      "M.rate_theory -> O.defect_distribution"
+    ],
+    "L_DAG": 4.2,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 2000,
+    "condition_number_effective": 150,
+    "regime": "Severe: multi-scale, multi-temperature; inversion is under-constrained from single-observable dpa measurements."
+  },
+  "C": {
+    "solver_class": "SRIM/SPECTER for PKA; HEROD / OKMC for CD; multi-scale stiff ODE integrator",
+    "convergence_rate_q": 2.0,
+    "error_bound": "bounded by discretization + mismatch bias + noise floor",
+    "complexity": "principle-dependent"
+  },
+  "physics_fingerprint": {
+    "carrier": "ion",
+    "sensing_mechanism": "TEM_void_defect_imaging",
+    "integration_axis": "time",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "poisson",
+    "solution_space": "defect_cluster_distribution",
+    "primitives": [
+      "E.NRT_cascade",
+      "E.cluster_dynamics",
+      "M.rate_theory",
+      "O.defect_distribution"
+    ]
+  },
+  "difficulty_delta": 10,
+  "difficulty_tier": "hard",
+  "mismatch_parameters": [
+    "E_d_anisotropy",
+    "bias_factor_drift",
+    "heterogeneous_sinks"
+  ],
+  "error_metric": "swelling_relative_error",
+  "error_metric_secondary": "void_density_relative_error",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "radiation_damage",
+      "forward_operator": "radiation_damage_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "PKA_keV": 10,
+        "dpa": 1.0,
+        "T_K": 600,
+        "material": "Fe",
+        "flux_dpa_s": 1e-07
+      },
+      "epsilon_fn_center": "swelling rel error <= 0.06"
+    },
+    "allowed_forward_operators": [
+      "radiation_damage_forward"
+    ],
+    "allowed_problem_classes": [
+      "radiation_damage"
+    ],
+    "allowed_omega_dimensions": [
+      "PKA_keV",
+      "dpa",
+      "T_K",
+      "material",
+      "flux_dpa_s"
+    ],
+    "omega_bounds": {
+      "PKA_keV": [
+        0.1,
+        1000
+      ],
+      "dpa": [
+        0.0001,
+        100
+      ],
+      "T_K": [
+        4,
+        1200
+      ],
+      "flux_dpa_s": [
+        1e-10,
+        0.0001
+      ]
+    },
+    "epsilon_bounds": {
+      "swelling_relative_error": [
+        0.02,
+        0.6
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

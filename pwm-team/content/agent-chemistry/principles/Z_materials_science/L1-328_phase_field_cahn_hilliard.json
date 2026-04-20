@@ -1,0 +1,156 @@
+{
+  "artifact_id": "L1-328",
+  "layer": "L1",
+  "principle_number": "328",
+  "title": "Cahn-Hilliard Phase Separation",
+  "domain": "Materials Science",
+  "sub_domain": "Conserved order parameter dynamics",
+  "source_file": "Z_materials_science/328_phase_field_cahn_hilliard.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
+  "E": {
+    "description": "Cahn-Hilliard: gradient flow with conserved composition phi; dphi/dt = div(M * grad(mu)) where mu = -kappa*Laplacian(phi) + df/dphi.",
+    "forward_model": "dphi/dt = Laplacian(M * (df/dphi - kappa * Laplacian(phi)))",
+    "world_state_x": "Conserved composition field phi(r,t)",
+    "observation_y": "Spinodal decomposition morphology; S(q,t) time-series from SAXS/SANS",
+    "physical_parameters_theta": [
+      "M (mobility)",
+      "kappa (gradient energy)",
+      "chi_AB",
+      "initial composition phi_0"
+    ]
+  },
+  "G": {
+    "dag": "E.chemical_potential -> E.conservative_flux -> M.time_integrate -> O.morphology",
+    "vertices": [
+      "E.chemical_potential",
+      "E.conservative_flux",
+      "M.time_integrate",
+      "O.morphology"
+    ],
+    "arcs": [
+      "E.chemical_potential -> E.conservative_flux",
+      "E.conservative_flux -> M.time_integrate",
+      "M.time_integrate -> O.morphology"
+    ],
+    "L_DAG": 3.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 350,
+    "condition_number_effective": 35,
+    "regime": "Fourth-order PDE; well-posed; inversion ill-conditioned (M-chi degeneracy)."
+  },
+  "C": {
+    "solver_class": "Semi-implicit spectral (IMEX); SPH for free-surface; adjoint inversion",
+    "convergence_rate_q": 2.0,
+    "error_bound": "bounded by discretization + mismatch bias + noise floor",
+    "complexity": "principle-dependent"
+  },
+  "physics_fingerprint": {
+    "carrier": "none",
+    "sensing_mechanism": "scattering_morphology",
+    "integration_axis": "time",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "composition_field_phi",
+    "primitives": [
+      "E.chemical_potential",
+      "E.conservative_flux",
+      "M.time_integrate",
+      "O.morphology"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "M_error",
+    "chi_error",
+    "boundary_noise"
+  ],
+  "error_metric": "S_q_time_L2_error",
+  "error_metric_secondary": "domain_size_error_nm",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "phase_field_cahn_hilliard",
+      "forward_operator": "cahn_hilliard_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "grid_N": 256,
+        "dx_nm": 5,
+        "chi_AB": 3.0,
+        "phi_0": 0.5,
+        "M": 1.0,
+        "T_K": 300
+      },
+      "epsilon_fn_center": "S(q,t) L2 <= 0.04"
+    },
+    "allowed_forward_operators": [
+      "cahn_hilliard_forward"
+    ],
+    "allowed_problem_classes": [
+      "phase_field_cahn_hilliard"
+    ],
+    "allowed_omega_dimensions": [
+      "grid_N",
+      "dx_nm",
+      "chi_AB",
+      "phi_0",
+      "M",
+      "T_K"
+    ],
+    "omega_bounds": {
+      "grid_N": [
+        64,
+        2048
+      ],
+      "dx_nm": [
+        0.5,
+        100
+      ],
+      "chi_AB": [
+        1.5,
+        20
+      ],
+      "phi_0": [
+        0.1,
+        0.9
+      ],
+      "M": [
+        0.01,
+        100
+      ],
+      "T_K": [
+        77,
+        1500
+      ]
+    },
+    "epsilon_bounds": {
+      "S_q_time_L2_error": [
+        0.01,
+        0.5
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

@@ -1,0 +1,140 @@
+{
+  "artifact_id": "L1-309",
+  "layer": "L1",
+  "principle_number": "309",
+  "title": "Kinetic Monte Carlo (KMC)",
+  "domain": "Computational Chemistry",
+  "sub_domain": "Rare-event stochastic dynamics",
+  "source_file": "X_computational_chemistry/309_kinetic_monte_carlo.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
+  "E": {
+    "description": "Kinetic Monte Carlo: discrete state space; transition rates k_ij from TST; Gillespie/residence-time algorithm samples trajectories with correct stochastic timing.",
+    "forward_model": "P(i -> j | stay in i) = k_ij / sum_k k_ik; dt = -ln(u) / sum_k k_ik",
+    "world_state_x": "State trajectory {x(t)} on discrete lattice or reaction network",
+    "observation_y": "Statistical averages of rare events, aging dynamics, plasticity on exponentially long times",
+    "physical_parameters_theta": [
+      "rate catalog {k_ij}",
+      "state space topology",
+      "bias potential (if accelerated)"
+    ]
+  },
+  "G": {
+    "dag": "E.rate_catalog -> M.gillespie_sample -> O.trajectory_distribution",
+    "vertices": [
+      "E.rate_catalog",
+      "M.gillespie_sample",
+      "O.trajectory_distribution"
+    ],
+    "arcs": [
+      "E.rate_catalog -> M.gillespie_sample",
+      "M.gillespie_sample -> O.trajectory_distribution"
+    ],
+    "L_DAG": 3.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 100,
+    "condition_number_effective": 20,
+    "regime": "Well-posed; Markov chain analysis gives eigenvalues of rate matrix."
+  },
+  "C": {
+    "solver_class": "KMCLib, SPPARKS; adaptive KMC with Bell saddle-search",
+    "convergence_rate_q": 2.0,
+    "error_bound": "bounded by discretization + mismatch bias + noise floor",
+    "complexity": "principle-dependent"
+  },
+  "physics_fingerprint": {
+    "carrier": "none",
+    "sensing_mechanism": "event_sequence_observable",
+    "integration_axis": "time",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "poisson",
+    "solution_space": "kmc_trajectory_ensemble",
+    "primitives": [
+      "E.rate_catalog",
+      "M.gillespie_sample",
+      "O.trajectory_distribution"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "rate_catalog_completeness",
+    "time_scale_separation",
+    "rare_event_sampling"
+  ],
+  "error_metric": "rate_distribution_KL",
+  "error_metric_secondary": "first_passage_time_error",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "kinetic_monte_carlo",
+      "forward_operator": "kmc_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_states": 1000,
+        "N_events": 1000000.0,
+        "T_K": 600,
+        "N_rates_per_state": 10
+      },
+      "epsilon_fn_center": "KL <= 0.03"
+    },
+    "allowed_forward_operators": [
+      "kmc_forward"
+    ],
+    "allowed_problem_classes": [
+      "kinetic_monte_carlo"
+    ],
+    "allowed_omega_dimensions": [
+      "N_states",
+      "N_events",
+      "T_K",
+      "N_rates_per_state"
+    ],
+    "omega_bounds": {
+      "N_states": [
+        10,
+        1000000000.0
+      ],
+      "N_events": [
+        1000,
+        1000000000000.0
+      ],
+      "T_K": [
+        100,
+        3000
+      ],
+      "N_rates_per_state": [
+        2,
+        1000
+      ]
+    },
+    "epsilon_bounds": {
+      "rate_distribution_KL": [
+        0.01,
+        0.5
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

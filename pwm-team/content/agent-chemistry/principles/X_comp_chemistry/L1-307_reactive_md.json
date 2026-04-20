@@ -1,0 +1,149 @@
+{
+  "artifact_id": "L1-307",
+  "layer": "L1",
+  "principle_number": "307",
+  "title": "Reactive Molecular Dynamics (ReaxFF + Bond Order)",
+  "domain": "Computational Chemistry",
+  "sub_domain": "Bond-breaking / forming in MD",
+  "source_file": "X_computational_chemistry/307_reactive_md.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
+  "E": {
+    "description": "Reactive force fields: bond orders from interatomic distances; continuous transition through reactions; includes charge equilibration (EEM/QEq).",
+    "forward_model": "U_ReaxFF = sum_bonded(BO) + sum_vdw + sum_Coul + BO-dependent overcoordination;  BO_ij from distance",
+    "world_state_x": "Trajectory with bond-making/breaking events",
+    "observation_y": "Reaction rates, product distributions, thermal decomposition, combustion at atomistic level",
+    "physical_parameters_theta": [
+      "ReaxFF parameter set (per element pair)",
+      "charge-equilibration scheme"
+    ]
+  },
+  "G": {
+    "dag": "E.bond_order -> E.reaxff -> M.integrate_reactive -> O.reaction_trace",
+    "vertices": [
+      "E.bond_order",
+      "E.reaxff",
+      "M.integrate_reactive",
+      "O.reaction_trace"
+    ],
+    "arcs": [
+      "E.bond_order -> E.reaxff",
+      "E.reaxff -> M.integrate_reactive",
+      "M.integrate_reactive -> O.reaction_trace"
+    ],
+    "L_DAG": 3.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 400,
+    "condition_number_effective": 40,
+    "regime": "Well-posed forward; parameterization transfer limited."
+  },
+  "C": {
+    "solver_class": "LAMMPS-ReaxFF, ADF-ReaxFF, SCM-AMS",
+    "convergence_rate_q": 2.0,
+    "error_bound": "bounded by discretization + mismatch bias + noise floor",
+    "complexity": "principle-dependent"
+  },
+  "physics_fingerprint": {
+    "carrier": "none",
+    "sensing_mechanism": "bond_forming_events",
+    "integration_axis": "time",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "thermal_langevin",
+    "solution_space": "reactive_trajectory",
+    "primitives": [
+      "E.bond_order",
+      "E.reaxff",
+      "M.integrate_reactive",
+      "O.reaction_trace"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "parameter_set_scope",
+    "QEq_charge_drift",
+    "BO_numerical_issues"
+  ],
+  "error_metric": "reaction_rate_log_error",
+  "error_metric_secondary": "product_yield_error",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "reactive_md",
+      "forward_operator": "reactive_md_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_atoms": 1000,
+        "T_K": 2000,
+        "N_steps": 1000000.0,
+        "dt_fs": 0.1,
+        "ff": "ReaxFF_2008"
+      },
+      "epsilon_fn_center": "log10(k_rxn) <= 0.1"
+    },
+    "allowed_forward_operators": [
+      "reactive_md_forward"
+    ],
+    "allowed_problem_classes": [
+      "reactive_md"
+    ],
+    "allowed_omega_dimensions": [
+      "N_atoms",
+      "T_K",
+      "N_steps",
+      "dt_fs",
+      "ff"
+    ],
+    "omega_bounds": {
+      "N_atoms": [
+        10,
+        1000000.0
+      ],
+      "T_K": [
+        300,
+        5000
+      ],
+      "N_steps": [
+        10000,
+        1000000000.0
+      ],
+      "dt_fs": [
+        0.05,
+        0.5
+      ],
+      "ff": [
+        "ReaxFF_2008",
+        "ReaxFF_CHO",
+        "ReaxFF_metal"
+      ]
+    },
+    "epsilon_bounds": {
+      "reaction_rate_log_error": [
+        0.05,
+        1.5
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

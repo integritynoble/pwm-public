@@ -1,0 +1,158 @@
+{
+  "artifact_id": "L1-475",
+  "layer": "L1",
+  "principle_number": "475",
+  "title": "Self-Consistent Field Theory (SCFT)",
+  "domain": "Polymer Physics",
+  "sub_domain": "Block copolymer microphase separation",
+  "source_file": "AL_polymer_physics/475_scft.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
+  "E": {
+    "description": "SCFT maps polymer chains to modified diffusion equations for propagators q(r,s); mean-field free energy F[w, phi] is minimized self-consistently; morphology emerges from competition between chi_AB * N and entropy.",
+    "forward_model": "dq/ds = (b^2/6) Laplacian(q) - w(r) q;  phi_A(r) = integral_0^f q(r,s) q*(r,1-s) ds;  w_A(r) = chi_AB * N * phi_B(r); F = -Q + (1/V) integral [chi_AB*N*phi_A*phi_B - w_A*phi_A - w_B*phi_B] dr",
+    "world_state_x": "3D composition fields phi_A(r), phi_B(r) representing block copolymer morphology (lamellae, cylinders, gyroid, BCC spheres)",
+    "observation_y": "Scattering: structure factor S(q) with peaks at q*, q*sqrt(3), q*sqrt(4) for lamellae/gyroid; TEM images; small-angle neutron/X-ray scattering",
+    "physical_parameters_theta": [
+      "chi_AB (Flory-Huggins)",
+      "N (degree of polymerization)",
+      "f (A-block fraction)",
+      "L_box (simulation cell)",
+      "grid_resolution"
+    ]
+  },
+  "G": {
+    "dag": "E.propagator_diffusion -> M.self_consistent_iterate -> O.density_field -> O.scattering",
+    "vertices": [
+      "E.propagator_diffusion",
+      "M.self_consistent_iterate",
+      "O.density_field",
+      "O.scattering"
+    ],
+    "arcs": [
+      "E.propagator_diffusion -> M.self_consistent_iterate",
+      "M.self_consistent_iterate -> O.density_field",
+      "O.density_field -> O.scattering"
+    ],
+    "L_DAG": 3.8,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 1200,
+    "condition_number_effective": 80,
+    "regime": "Multiple local minima (lamellae, gyroid, hexagonal) \u2192 non-unique inversion; phase diagram navigation requires morphology seeding."
+  },
+  "C": {
+    "solver_class": "Anderson-mixing SCFT on Fourier grid; morphology-conditioned Monte Carlo",
+    "convergence_rate_q": 2.0,
+    "error_bound": "|F_hat - F|_2 bounded by grid discretization error (h^4 for 4th-order diffusion) + mixing convergence tolerance",
+    "complexity": "O(N_s * N_grid * log(N_grid)) per SCFT iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "none",
+    "sensing_mechanism": "scattering_forward",
+    "integration_axis": "chain_contour",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "3D_composition_field",
+    "primitives": [
+      "E.propagator_diffusion",
+      "M.self_consistent_iterate",
+      "O.density_field",
+      "O.scattering"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "chi_AB_error",
+    "f_drift",
+    "grid_discretization",
+    "polydispersity"
+  ],
+  "error_metric": "field_RMSE",
+  "error_metric_secondary": "S_q_peak_position_error",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "scft_morphology_inversion",
+      "forward_operator": "scft_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "chi_N": 15,
+        "f": 0.5,
+        "L_box_R_g": 4.0,
+        "grid_N": 64,
+        "N_ds": 100,
+        "mixing_alpha": 0.05
+      },
+      "epsilon_fn_center": "phi_A RMSE <= 0.025"
+    },
+    "allowed_forward_operators": [
+      "scft_forward"
+    ],
+    "allowed_problem_classes": [
+      "scft_morphology_inversion"
+    ],
+    "allowed_omega_dimensions": [
+      "chi_N",
+      "f",
+      "L_box_R_g",
+      "grid_N",
+      "N_ds",
+      "mixing_alpha"
+    ],
+    "omega_bounds": {
+      "chi_N": [
+        10,
+        40
+      ],
+      "f": [
+        0.2,
+        0.8
+      ],
+      "L_box_R_g": [
+        2.0,
+        10.0
+      ],
+      "grid_N": [
+        32,
+        128
+      ],
+      "N_ds": [
+        50,
+        400
+      ],
+      "mixing_alpha": [
+        0.01,
+        0.2
+      ]
+    },
+    "epsilon_bounds": {
+      "field_RMSE": [
+        0.01,
+        0.2
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

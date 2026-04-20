@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-304",
+  "layer": "L2",
+  "parent_l1": "L1-304",
+  "title": "Semi-Empirical Quantum Chemistry (AM1, PM6, DFTB, xTB) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "N_atoms": [
+        2,
+        100000
+      ],
+      "method": [
+        "AM1",
+        "PM6",
+        "PM7",
+        "DFTB3",
+        "GFN1-xTB",
+        "GFN2-xTB"
+      ],
+      "N_basis": [
+        10,
+        500000
+      ]
+    },
+    "E": {
+      "forward": "parameterized Fock/Hamiltonian with element-specific constants; SCF as usual",
+      "operator": "semiempirical_forward_mismatch",
+      "primitive_chain": "E.parameterized_fock -> M.scf -> O.observables",
+      "inverse": "recover constitutive parameters for Semi-Empirical Quantum Chemistry (AM1, PM6, DFTB, xTB)"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "energy_error_mHa",
+      "geometry_RMSD_A",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "3.0 * (1 + 0.1 * mismatch_severity)"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "MOPAC-PM7",
+        "method_sig": "T+O",
+        "expected_err": 5.0
+      },
+      {
+        "name": "xTB-GFN2",
+        "method_sig": "T+O",
+        "expected_err": 4.2
+      },
+      {
+        "name": "DFTB3-ML",
+        "method_sig": "T+N",
+        "expected_err": 3.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_atoms": 100,
+        "method": "GFN2-xTB",
+        "N_basis": 500,
+        "dispersion": "D4"
+      },
+      "epsilon": 3.0
+    },
+    "tier_bounds": {
+      "N_atoms": [
+        2,
+        100000
+      ],
+      "method": [
+        "AM1",
+        "PM6",
+        "PM7",
+        "DFTB3",
+        "GFN1-xTB",
+        "GFN2-xTB"
+      ],
+      "N_basis": [
+        10,
+        500000
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.45,
+  "d_spec_notes": "Canonical mismatch-only baseline for this principle; sits at the centroid of its spec family.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions match across all DAG nodes; operator dimensions consistent.",
+    "S2": "Operator condition number controlled (kappa_eff=25) under declared Omega with regularization.",
+    "S3": "Solver class MOPAC, AMBER-QM, xTB, DFTB+; with D3/D4 dispersion provably converges at rate q=2.0; monotone residual decrease.",
+    "S4": "epsilon_fn evaluates cleanly across 50 random Omega samples; hardness rule satisfied (top baseline fails at Omega corner)."
+  },
+  "ipfs_cid": null
+}

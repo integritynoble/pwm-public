@@ -1,0 +1,149 @@
+{
+  "artifact_id": "L1-313",
+  "layer": "L1",
+  "principle_number": "313",
+  "title": "Time-Dependent Schr\u00f6dinger Equation",
+  "domain": "Quantum Mechanics",
+  "sub_domain": "Quantum dynamics",
+  "source_file": "Y_quantum_mechanics/313_time_dependent_schrodinger.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
+  "E": {
+    "description": "i*hbar*dpsi/dt = H(t)*psi; includes laser-driven dynamics, wave-packet propagation.",
+    "forward_model": "i*hbar*dpsi/dt = (H_0 + V_laser(t))*psi(t)",
+    "world_state_x": "Time-dependent wavefunction psi(r,t)",
+    "observation_y": "Time-resolved spectra, pump-probe signals, high-harmonic generation (HHG), attosecond streak camera",
+    "physical_parameters_theta": [
+      "H_0 (time-independent)",
+      "V_laser(t) amplitude/phase",
+      "polarization"
+    ]
+  },
+  "G": {
+    "dag": "E.hamiltonian_t -> E.laser_coupling -> M.time_integrate -> O.time_resolved",
+    "vertices": [
+      "E.hamiltonian_t",
+      "E.laser_coupling",
+      "M.time_integrate",
+      "O.time_resolved"
+    ],
+    "arcs": [
+      "E.hamiltonian_t -> E.laser_coupling",
+      "E.laser_coupling -> M.time_integrate",
+      "M.time_integrate -> O.time_resolved"
+    ],
+    "L_DAG": 3.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 700,
+    "condition_number_effective": 60,
+    "regime": "Unitary evolution bounded; inversion ill-conditioned due to phase ambiguity."
+  },
+  "C": {
+    "solver_class": "Split-operator Fourier (SOFT); Crank-Nicolson; TDDFT if many-electron",
+    "convergence_rate_q": 2.0,
+    "error_bound": "bounded by discretization + mismatch bias + noise floor",
+    "complexity": "principle-dependent"
+  },
+  "physics_fingerprint": {
+    "carrier": "electron",
+    "sensing_mechanism": "pump_probe_spectroscopy",
+    "integration_axis": "time",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "time_dependent_wavefunction",
+    "primitives": [
+      "E.hamiltonian_t",
+      "E.laser_coupling",
+      "M.time_integrate",
+      "O.time_resolved"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "laser_phase_noise",
+    "depletion",
+    "field_gradient_drift"
+  ],
+  "error_metric": "transition_probability_error",
+  "error_metric_secondary": "HHG_spectrum_L2",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "time_dependent_schrodinger",
+      "forward_operator": "TDSE_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_grid": 2048,
+        "T_end_fs": 100,
+        "I_laser_W_cm2": 10000000000000.0,
+        "lambda_nm": 800,
+        "N_electrons": 1
+      },
+      "epsilon_fn_center": "P_trans error <= 0.015"
+    },
+    "allowed_forward_operators": [
+      "TDSE_forward"
+    ],
+    "allowed_problem_classes": [
+      "time_dependent_schrodinger"
+    ],
+    "allowed_omega_dimensions": [
+      "N_grid",
+      "T_end_fs",
+      "I_laser_W_cm2",
+      "lambda_nm",
+      "N_electrons"
+    ],
+    "omega_bounds": {
+      "N_grid": [
+        256,
+        1048576
+      ],
+      "T_end_fs": [
+        0.1,
+        1000000.0
+      ],
+      "I_laser_W_cm2": [
+        10000000000.0,
+        1e+20
+      ],
+      "lambda_nm": [
+        50,
+        10000
+      ],
+      "N_electrons": [
+        1,
+        1000
+      ]
+    },
+    "epsilon_bounds": {
+      "transition_probability_error": [
+        0.001,
+        0.5
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

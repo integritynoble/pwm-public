@@ -1,0 +1,143 @@
+{
+  "artifact_id": "L1-324",
+  "layer": "L1",
+  "principle_number": "324",
+  "title": "Lindblad Master Equation (Open Quantum Systems)",
+  "domain": "Quantum Mechanics",
+  "sub_domain": "Markovian open-system dynamics",
+  "source_file": "Y_quantum_mechanics/324_lindblad.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
+  "E": {
+    "description": "Lindblad equation for density matrix rho(t): drho/dt = -i/hbar*[H,rho] + sum_k (L_k rho L_k^dag - (1/2){L_k^dag L_k, rho}).",
+    "forward_model": "drho/dt = -i/hbar*[H, rho] + sum_k L_k rho L_k^dag - (1/2){L_k^dag L_k, rho}",
+    "world_state_x": "Reduced density matrix rho(t) evolving under non-unitary dynamics",
+    "observation_y": "Time-resolved observables, decoherence rates T1/T2, steady-state populations",
+    "physical_parameters_theta": [
+      "H (system Hamiltonian)",
+      "Lindblad operators L_k",
+      "dissipation rates gamma_k"
+    ]
+  },
+  "G": {
+    "dag": "E.hamiltonian -> E.dissipators -> M.time_evolve -> O.observables",
+    "vertices": [
+      "E.hamiltonian",
+      "E.dissipators",
+      "M.time_evolve",
+      "O.observables"
+    ],
+    "arcs": [
+      "E.hamiltonian -> E.dissipators",
+      "E.dissipators -> M.time_evolve",
+      "M.time_evolve -> O.observables"
+    ],
+    "L_DAG": 3.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 400,
+    "condition_number_effective": 40,
+    "regime": "Trace-preserving; completely positive; well-posed for finite-dim Hilbert space."
+  },
+  "C": {
+    "solver_class": "QuTiP mesolve; Runge-Kutta; super-operator Liouvillian diagonalization",
+    "convergence_rate_q": 2.0,
+    "error_bound": "bounded by discretization + mismatch bias + noise floor",
+    "complexity": "principle-dependent"
+  },
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "time_resolved_observable",
+    "integration_axis": "time",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "density_matrix_trajectory",
+    "primitives": [
+      "E.hamiltonian",
+      "E.dissipators",
+      "M.time_evolve",
+      "O.observables"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "Markov_approximation",
+    "rotating_wave_approx",
+    "thermal_bath_spectral"
+  ],
+  "error_metric": "T2_relative_error",
+  "error_metric_secondary": "fidelity_error",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "lindblad",
+      "forward_operator": "lindblad_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_dim": 8,
+        "T_end_ns": 100,
+        "gamma_MHz": 1.0,
+        "N_dissipators": 2
+      },
+      "epsilon_fn_center": "T2 rel error <= 0.03"
+    },
+    "allowed_forward_operators": [
+      "lindblad_forward"
+    ],
+    "allowed_problem_classes": [
+      "lindblad"
+    ],
+    "allowed_omega_dimensions": [
+      "N_dim",
+      "T_end_ns",
+      "gamma_MHz",
+      "N_dissipators"
+    ],
+    "omega_bounds": {
+      "N_dim": [
+        2,
+        1000
+      ],
+      "T_end_ns": [
+        0.1,
+        1000000.0
+      ],
+      "gamma_MHz": [
+        0.0001,
+        10000.0
+      ],
+      "N_dissipators": [
+        1,
+        50
+      ]
+    },
+    "epsilon_bounds": {
+      "T2_relative_error": [
+        0.005,
+        0.3
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

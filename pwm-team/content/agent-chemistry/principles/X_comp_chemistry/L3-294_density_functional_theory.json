@@ -1,0 +1,241 @@
+{
+  "artifact_id": "L3-294",
+  "layer": "L3",
+  "parent_l2": "L2-294",
+  "parent_l1": "L1-294",
+  "title": "Kohn-Sham Density Functional Theory Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "QM9 small molecule reference dataset",
+    "secondary": "GMTKN55 main-group thermochemistry benchmark",
+    "construction_method": "canonical ground truth + declared noise at tier Omega for Kohn-Sham Density Functional Theory",
+    "num_dev_instances_per_tier": 20,
+    "holdout_instances_per_tier": 10
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "N_electrons": 20,
+        "N_basis": 1000,
+        "Ecut_eV": 400,
+        "xc": "PBE",
+        "N_kpoints": 100
+      },
+      "dataset_description": "Kohn-Sham Density Functional Theory at rho=1.",
+      "epsilon": 1.5,
+      "d_ibench": 0.15,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        },
+        {
+          "Q": 0.9,
+          "tier": "Excellent"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "VASP-PBE",
+          "score": 2.5,
+          "Q": 0.82
+        },
+        {
+          "name": "ORCA-B3LYP",
+          "score": 2.2,
+          "Q": 0.78
+        },
+        {
+          "name": "SchNet-DFT",
+          "score": 1.6,
+          "Q": 0.92
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "N_electrons": 100,
+        "N_basis": 10000,
+        "Ecut_eV": 600,
+        "xc": "PBE",
+        "N_kpoints": 500
+      },
+      "dataset_description": "Kohn-Sham Density Functional Theory at rho=3.",
+      "epsilon": 1.725,
+      "d_ibench": 0.32,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        },
+        {
+          "Q": 0.9,
+          "tier": "Excellent"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "VASP-PBE",
+          "score": 2.875,
+          "Q": 0.66
+        },
+        {
+          "name": "ORCA-B3LYP",
+          "score": 2.53,
+          "Q": 0.6
+        },
+        {
+          "name": "SchNet-DFT",
+          "score": 1.84,
+          "Q": 0.82
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "N_electrons": 1000,
+        "N_basis": 100000,
+        "Ecut_eV": 1000,
+        "xc": "B3LYP",
+        "N_kpoints": 5000
+      },
+      "dataset_description": "Kohn-Sham Density Functional Theory at rho=5.",
+      "epsilon": 2.1,
+      "d_ibench": 0.51,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "VASP-PBE",
+          "score": 3.5,
+          "Q": 0.44
+        },
+        {
+          "name": "ORCA-B3LYP",
+          "score": 3.08,
+          "Q": 0.38
+        },
+        {
+          "name": "SchNet-DFT",
+          "score": 2.24,
+          "Q": 0.64
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "N_electrons": 10000,
+        "N_basis": 1000000,
+        "Ecut_eV": 2000,
+        "xc": "HSE06",
+        "N_kpoints": 100000
+      },
+      "dataset_description": "Kohn-Sham Density Functional Theory at rho=10.",
+      "epsilon": 2.775,
+      "d_ibench": 0.72,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "VASP-PBE",
+          "score": 4.625,
+          "Q": 0.24
+        },
+        {
+          "name": "ORCA-B3LYP",
+          "score": 4.07,
+          "Q": 0.2
+        },
+        {
+          "name": "SchNet-DFT",
+          "score": 2.96,
+          "Q": 0.46
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "QM9 + GMTKN55 thermochemistry union",
+      "construction_method": "parametric Omega sampling over declared bounds; stratified by rho.",
+      "num_dev_instances": 200,
+      "num_holdout_instances": 100
+    },
+    "tracks": {
+      "track_A_stratified_worst_case": {
+        "pass_condition": "min score meets epsilon_fn over all strata"
+      },
+      "track_B_uniform_median": {
+        "num_samples": 50,
+        "pass_condition": "median score meets epsilon_fn at Omega_median"
+      },
+      "track_C_mismatch_degradation": {
+        "sweep_points": 5,
+        "pass_condition": "monotone degradation with mismatch"
+      }
+    },
+    "baselines": [
+      {
+        "name": "VASP-PBE",
+        "track_A_Q": 0.6,
+        "track_B_Q": 0.72,
+        "track_C_Q": 0.64,
+        "overall_Q": 0.65
+      },
+      {
+        "name": "ORCA-B3LYP",
+        "track_A_Q": 0.58,
+        "track_B_Q": 0.7,
+        "track_C_Q": 0.62,
+        "overall_Q": 0.63
+      },
+      {
+        "name": "SchNet-DFT",
+        "track_A_Q": 0.66,
+        "track_B_Q": 0.76,
+        "track_C_Q": 0.68,
+        "overall_Q": 0.7
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails epsilon_fn at T4_blind Omega corner.",
+  "anti_overfitting_mechanisms": {
+    "M1_random_instantiation": "seeded by benchmark hash; non-repeatable holdout",
+    "M2_convergence_scoring": "verifies declared convergence rate across Omega",
+    "M3_worst_case_eval": "min-score over fixed dev instances per tier",
+    "M4_community_adversarial": "adversarial submissions eligible for T_k",
+    "M5_method_sig_diversity": "baselines span multiple method_sig families",
+    "M6_gate_checks": "S1-S4 gate checks enforced with thresholds.yaml"
+  },
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

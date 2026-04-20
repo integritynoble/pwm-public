@@ -1,0 +1,163 @@
+{
+  "artifact_id": "L2-474",
+  "layer": "L2",
+  "parent_l1": "L1-474",
+  "title": "Dissipative Particle Dynamics (DPD) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "N_beads": [
+        1000,
+        200000
+      ],
+      "rho_bead": [
+        1.0,
+        6.0
+      ],
+      "r_c": [
+        0.8,
+        1.5
+      ],
+      "a_ij_AB": [
+        15.0,
+        60.0
+      ],
+      "a_ij_AA": [
+        10.0,
+        30.0
+      ],
+      "gamma": [
+        1.0,
+        10.0
+      ],
+      "dt": [
+        0.01,
+        0.05
+      ],
+      "T_reduced": [
+        0.5,
+        1.5
+      ],
+      "N_steps": [
+        20000,
+        500000
+      ]
+    },
+    "E": {
+      "forward": "dr_i/dt = v_i;  m*dv_i/dt = sum_{j != i} [F_C(r_ij) + F_D(r_ij, v_ij) + F_R(r_ij)];  sigma^2 = 2*gamma*k_B*T",
+      "operator": "dpd_forward_mismatch",
+      "primitive_chain": "F.conservative -> F.dissipative -> F.random -> integrate.verlet -> O.structural",
+      "inverse": "recover (a_ij, gamma) from measured S(q), g(r), stress"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "S(q)_RMSE",
+      "g_r_L1",
+      "rheology_MAE",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.010 + 0.02*(rho_bead-3.0) + 0.005*abs(a_ij_AB-25.0) + 0.03*r_c_error"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "LAMMPS-DPD (default)",
+        "method_sig": "T+O",
+        "expected_rmse": 0.025
+      },
+      {
+        "name": "HOOMD-blue DPD",
+        "method_sig": "T+O",
+        "expected_rmse": 0.022
+      },
+      {
+        "name": "BayesOpt-DPD",
+        "method_sig": "T+N",
+        "expected_rmse": 0.016
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_beads": 10000,
+        "rho_bead": 3.0,
+        "r_c": 1.0,
+        "a_ij_AB": 25.0,
+        "a_ij_AA": 15.0,
+        "gamma": 4.5,
+        "dt": 0.04,
+        "T_reduced": 1.0,
+        "N_steps": 200000
+      },
+      "epsilon": 0.02
+    },
+    "tier_bounds": {
+      "N_beads": [
+        1000,
+        200000
+      ],
+      "rho_bead": [
+        1.0,
+        6.0
+      ],
+      "r_c": [
+        0.8,
+        1.5
+      ],
+      "a_ij_AB": [
+        15.0,
+        60.0
+      ],
+      "a_ij_AA": [
+        10.0,
+        30.0
+      ],
+      "gamma": [
+        1.0,
+        10.0
+      ],
+      "dt": [
+        0.01,
+        0.05
+      ],
+      "T_reduced": [
+        0.5,
+        1.5
+      ],
+      "N_steps": [
+        20000,
+        500000
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.45,
+  "d_spec_notes": "Canonical mismatch-only baseline for this principle; sits at the centroid of its spec family.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions match across all DAG nodes; operator dimensions consistent.",
+    "S2": "Operator condition number controlled (kappa_eff=40) under declared Omega with regularization.",
+    "S3": "Solver class Velocity-Verlet + Lowe-Andersen thermostat; parameter inversion via Bayesian optimization or ensemble-averaged gradient-matching provably converges at rate q=2.0; monotone residual decrease.",
+    "S4": "epsilon_fn evaluates cleanly across 50 random Omega samples; hardness rule satisfied (top baseline fails at Omega corner)."
+  },
+  "ipfs_cid": null
+}

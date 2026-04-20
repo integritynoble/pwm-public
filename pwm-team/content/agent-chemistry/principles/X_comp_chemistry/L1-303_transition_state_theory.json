@@ -1,0 +1,150 @@
+{
+  "artifact_id": "L1-303",
+  "layer": "L1",
+  "principle_number": "303",
+  "title": "Eyring Transition State Theory",
+  "domain": "Computational Chemistry",
+  "sub_domain": "Reaction rate prediction from QM",
+  "source_file": "X_computational_chemistry/303_transition_state_theory.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
+  "E": {
+    "description": "Transition State Theory: k(T) = (k_B*T/h)*exp(-DG*/k_B*T); partition functions Q_TS/Q_reactants; tunneling corrections for H-transfer.",
+    "forward_model": "k(T) = (k_B*T/h) * (Q_TS/Q_R) * exp(-DG*/RT) * kappa_tunnel",
+    "world_state_x": "Transition-state structure, vibrations, and free-energy barriers",
+    "observation_y": "Temperature-dependent rate constants, kinetic isotope effects, branching ratios",
+    "physical_parameters_theta": [
+      "TS geometry",
+      "barrier DG*",
+      "imaginary frequency",
+      "isotope masses",
+      "tunneling model"
+    ]
+  },
+  "G": {
+    "dag": "E.quantum_chemistry -> E.TS_structure -> M.partition_functions -> O.rate_k_T",
+    "vertices": [
+      "E.quantum_chemistry",
+      "E.TS_structure",
+      "M.partition_functions",
+      "O.rate_k_T"
+    ],
+    "arcs": [
+      "E.quantum_chemistry -> E.TS_structure",
+      "E.TS_structure -> M.partition_functions",
+      "M.partition_functions -> O.rate_k_T"
+    ],
+    "L_DAG": 3.4,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 300,
+    "condition_number_effective": 40,
+    "regime": "Well-posed from QM; inversion for barrier + frequencies requires wide T-range."
+  },
+  "C": {
+    "solver_class": "Gaussian IRC / NEB; Polyrate for canonical variational TST + tunneling (Wigner, Eckart, SCT)",
+    "convergence_rate_q": 2.0,
+    "error_bound": "bounded by discretization + mismatch bias + noise floor",
+    "complexity": "principle-dependent"
+  },
+  "physics_fingerprint": {
+    "carrier": "none",
+    "sensing_mechanism": "rate_vs_T_measurement",
+    "integration_axis": "temperature",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "TS_barrier_frequency",
+    "primitives": [
+      "E.quantum_chemistry",
+      "E.TS_structure",
+      "M.partition_functions",
+      "O.rate_k_T"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "TS_location_error",
+    "recrossing",
+    "tunneling_model_choice"
+  ],
+  "error_metric": "log_k_error",
+  "error_metric_secondary": "Ea_error_kcal_mol",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "transition_state_theory",
+      "forward_operator": "tst_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_atoms": 10,
+        "N_temperatures": 15,
+        "T_K_range": [
+          200,
+          500
+        ],
+        "tunneling": "SCT"
+      },
+      "epsilon_fn_center": "log10(k) <= 0.1"
+    },
+    "allowed_forward_operators": [
+      "tst_forward"
+    ],
+    "allowed_problem_classes": [
+      "transition_state_theory"
+    ],
+    "allowed_omega_dimensions": [
+      "N_atoms",
+      "N_temperatures",
+      "T_K_range",
+      "tunneling"
+    ],
+    "omega_bounds": {
+      "N_atoms": [
+        3,
+        1000
+      ],
+      "N_temperatures": [
+        3,
+        200
+      ],
+      "T_K_range_max": [
+        500,
+        3000
+      ],
+      "tunneling": [
+        "none",
+        "Wigner",
+        "Eckart",
+        "SCT"
+      ]
+    },
+    "epsilon_bounds": {
+      "log_k_error": [
+        0.05,
+        2.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

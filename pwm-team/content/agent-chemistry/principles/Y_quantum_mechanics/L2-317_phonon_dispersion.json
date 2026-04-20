@@ -1,0 +1,109 @@
+{
+  "artifact_id": "L2-317",
+  "layer": "L2",
+  "parent_l1": "L1-317",
+  "title": "Phonon Dispersion Relations Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "N_atoms": [
+        1,
+        100
+      ],
+      "q_grid": [
+        8,
+        256
+      ],
+      "N_neighbor_shells": [
+        1,
+        20
+      ]
+    },
+    "E": {
+      "forward": "D_{ij,ab}(q) = sum_n Phi_{ij,ab}(R_n) exp(-iq.R_n); det|D - omega^2*I| = 0",
+      "operator": "phonon_dispersion_forward_mismatch",
+      "primitive_chain": "E.force_constants -> E.dynamical_matrix -> M.eigensolve -> O.phonon_dispersion",
+      "inverse": "recover constitutive parameters for Phonon Dispersion Relations"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "dispersion_L2_error_meV",
+      "gamma_mode_frequency_error",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "1.5 * (1 + 0.1 * mismatch_severity)"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Phonopy",
+        "method_sig": "T+O",
+        "expected_err": 2.5
+      },
+      {
+        "name": "DFPT-QE",
+        "method_sig": "T+O",
+        "expected_err": 2.2
+      },
+      {
+        "name": "PhononGNN",
+        "method_sig": "T+N",
+        "expected_err": 1.6
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_atoms": 2,
+        "q_grid": 32,
+        "N_neighbor_shells": 5,
+        "species": "Si"
+      },
+      "epsilon": 1.5
+    },
+    "tier_bounds": {
+      "N_atoms": [
+        1,
+        100
+      ],
+      "q_grid": [
+        8,
+        256
+      ],
+      "N_neighbor_shells": [
+        1,
+        20
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.45,
+  "d_spec_notes": "Canonical mismatch-only baseline for this principle; sits at the centroid of its spec family.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions match across all DAG nodes; operator dimensions consistent.",
+    "S2": "Operator condition number controlled (kappa_eff=20) under declared Omega with regularization.",
+    "S3": "Solver class Quasi-harmonic approximation; frozen-phonon; DFPT (density functional perturbation) provably converges at rate q=2.0; monotone residual decrease.",
+    "S4": "epsilon_fn evaluates cleanly across 50 random Omega samples; hardness rule satisfied (top baseline fails at Omega corner)."
+  },
+  "ipfs_cid": null
+}

@@ -1,0 +1,118 @@
+{
+  "artifact_id": "L2-477",
+  "layer": "L2",
+  "parent_l1": "L1-477",
+  "title": "Oldroyd-B Viscoelastic Constitutive Model Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "Wi": [
+        0.1,
+        20.0
+      ],
+      "Re": [
+        0.0,
+        100.0
+      ],
+      "beta_eta_s_over_eta_total": [
+        0.05,
+        0.95
+      ],
+      "mesh_N": [
+        16,
+        256
+      ]
+    },
+    "E": {
+      "forward": "rho * Dv/Dt = -grad(p) + div(tau); tau = tau_s + tau_p; tau_p + lambda_1 * stress_UCM = 2*eta_p*D; stress_UCM = dtau/dt + v.grad(tau) - (grad(v))^T tau - tau grad(v)",
+      "operator": "oldroyd_b_forward_mismatch",
+      "primitive_chain": "E.momentum -> E.UCM_stress -> M.coupled_solve -> O.stress_field",
+      "inverse": "recover (lambda_1, eta_p, beta) from measured N1(gamma_dot), velocimetry"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "N1_rel_err",
+      "velocity_RMSE",
+      "stress_singularity_resolution",
+      "time_to_steady"
+    ],
+    "epsilon_fn": "0.04 + 0.01*Wi + 0.005*mesh_error"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "OpenFOAM-RheoTool",
+        "method_sig": "T+O",
+        "expected_err": 0.07
+      },
+      {
+        "name": "FEniCS-DEVSS-G",
+        "method_sig": "T+O",
+        "expected_err": 0.06
+      },
+      {
+        "name": "PINN-Oldroyd",
+        "method_sig": "T+N",
+        "expected_err": 0.04
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "Wi": 1.0,
+        "Re": 0.1,
+        "beta_eta_s_over_eta_total": 0.5,
+        "geometry": "4to1_contraction",
+        "mesh_N": 32
+      },
+      "epsilon": 0.05
+    },
+    "tier_bounds": {
+      "Wi": [
+        0.1,
+        20.0
+      ],
+      "Re": [
+        0.0,
+        100.0
+      ],
+      "beta_eta_s_over_eta_total": [
+        0.05,
+        0.95
+      ],
+      "mesh_N": [
+        16,
+        256
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.45,
+  "d_spec_notes": "Canonical mismatch-only baseline for this principle; sits at the centroid of its spec family.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions match across all DAG nodes; operator dimensions consistent.",
+    "S2": "Operator condition number controlled (kappa_eff=30) under declared Omega with regularization.",
+    "S3": "Solver class DEVSS-G finite element with log-conformation; parameter inversion by adjoint-PDE optimization provably converges at rate q=2.0; monotone residual decrease.",
+    "S4": "epsilon_fn evaluates cleanly across 50 random Omega samples; hardness rule satisfied (top baseline fails at Omega corner)."
+  },
+  "ipfs_cid": null
+}

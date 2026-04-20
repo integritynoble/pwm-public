@@ -1,0 +1,124 @@
+{
+  "artifact_id": "L2-311",
+  "layer": "L2",
+  "parent_l1": "L1-311",
+  "title": "Butler-Volmer Electrochemical Kinetics Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "T_K": [
+        253,
+        373
+      ],
+      "eta_range_V_max": [
+        0.1,
+        2.0
+      ],
+      "N_data": [
+        20,
+        5000
+      ],
+      "electrolyte": [
+        "aqueous",
+        "organic",
+        "ionic_liquid",
+        "molten_salt"
+      ]
+    },
+    "E": {
+      "forward": "i = i_0 * (exp(alpha_a*F*eta/RT) - exp(-alpha_c*F*eta/RT))",
+      "operator": "butler_volmer_forward_mismatch",
+      "primitive_chain": "E.butler_volmer -> E.mass_transport -> O.i_eta",
+      "inverse": "recover constitutive parameters for Butler-Volmer Electrochemical Kinetics"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "log_i_0_error",
+      "alpha_error",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.05 * (1 + 0.1 * mismatch_severity)"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "BV-LM",
+        "method_sig": "L+O",
+        "expected_err": 0.08
+      },
+      {
+        "name": "EC-Lab-Fit",
+        "method_sig": "L+O",
+        "expected_err": 0.07
+      },
+      {
+        "name": "BV-BayesNet",
+        "method_sig": "L+N",
+        "expected_err": 0.055
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "T_K": 298,
+        "eta_range_V": [
+          -0.5,
+          0.5
+        ],
+        "N_data": 200,
+        "electrolyte": "aqueous"
+      },
+      "epsilon": 0.05
+    },
+    "tier_bounds": {
+      "T_K": [
+        253,
+        373
+      ],
+      "eta_range_V_max": [
+        0.1,
+        2.0
+      ],
+      "N_data": [
+        20,
+        5000
+      ],
+      "electrolyte": [
+        "aqueous",
+        "organic",
+        "ionic_liquid",
+        "molten_salt"
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.45,
+  "d_spec_notes": "Canonical mismatch-only baseline for this principle; sits at the centroid of its spec family.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions match across all DAG nodes; operator dimensions consistent.",
+    "S2": "Operator condition number controlled (kappa_eff=12) under declared Omega with regularization.",
+    "S3": "Solver class Nonlinear LM; Bayesian inference for BV parameters provably converges at rate q=2.0; monotone residual decrease.",
+    "S4": "epsilon_fn evaluates cleanly across 50 random Omega samples; hardness rule satisfied (top baseline fails at Omega corner)."
+  },
+  "ipfs_cid": null
+}

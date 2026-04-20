@@ -1,0 +1,151 @@
+{
+  "artifact_id": "L1-334",
+  "layer": "L1",
+  "principle_number": "334",
+  "title": "Dendritic Solidification",
+  "domain": "Materials Science",
+  "sub_domain": "Phase-field solidification",
+  "source_file": "Z_materials_science/334_solidification.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
+  "E": {
+    "description": "Phase-field model of solidification with thermal coupling: dphi/dt from Karma-Rappel anti-trapping; temperature T evolves via diffusion + latent heat release.",
+    "forward_model": "dphi/dt + dendrite_anti_trapping = (1-phi^2) * (phi - lambda*u*(1-phi^2));  dT/dt = D_T*Laplacian(T) + (1/2)*dphi/dt",
+    "world_state_x": "Phase field phi(r,t) and temperature T(r,t); evolving dendrite morphology",
+    "observation_y": "Dendrite tip velocity, primary arm spacing lambda_1, secondary arm spacing, solute partitioning",
+    "physical_parameters_theta": [
+      "D_T (thermal diffusivity)",
+      "k (partition coefficient)",
+      "m_L (liquidus slope)",
+      "sigma_anisotropy (surface energy)",
+      "pulling velocity"
+    ]
+  },
+  "G": {
+    "dag": "E.phi_evolution -> E.thermal_diffusion -> M.coupled -> O.dendrite_morphology",
+    "vertices": [
+      "E.phi_evolution",
+      "E.thermal_diffusion",
+      "M.coupled",
+      "O.dendrite_morphology"
+    ],
+    "arcs": [
+      "E.phi_evolution -> E.thermal_diffusion",
+      "E.thermal_diffusion -> M.coupled",
+      "M.coupled -> O.dendrite_morphology"
+    ],
+    "L_DAG": 3.8,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 600,
+    "condition_number_effective": 55,
+    "regime": "Stiff reaction-diffusion; well-posed under Karma-Rappel anti-trapping; inversion from morphology is moderate-ill-conditioned."
+  },
+  "C": {
+    "solver_class": "Adaptive mesh FEM; level-set + thermal; adjoint inversion for anisotropy",
+    "convergence_rate_q": 2.0,
+    "error_bound": "bounded by discretization + mismatch bias + noise floor",
+    "complexity": "principle-dependent"
+  },
+  "physics_fingerprint": {
+    "carrier": "none",
+    "sensing_mechanism": "insitu_imaging_X_ray_synchrotron",
+    "integration_axis": "time",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "dendrite_morphology_and_temperature",
+    "primitives": [
+      "E.phi_evolution",
+      "E.thermal_diffusion",
+      "M.coupled",
+      "O.dendrite_morphology"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "anisotropy_error",
+    "pulling_velocity_drift",
+    "solute_partition_bias"
+  ],
+  "error_metric": "dendrite_tip_velocity_relative_error",
+  "error_metric_secondary": "arm_spacing_error_um",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "solidification",
+      "forward_operator": "solidification_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "grid_N": 512,
+        "lambda_1_um": 20,
+        "V_pull_um_s": 100,
+        "dT_K": 5,
+        "k_partition": 0.15
+      },
+      "epsilon_fn_center": "tip velocity rel error <= 0.05"
+    },
+    "allowed_forward_operators": [
+      "solidification_forward"
+    ],
+    "allowed_problem_classes": [
+      "solidification"
+    ],
+    "allowed_omega_dimensions": [
+      "grid_N",
+      "lambda_1_um",
+      "V_pull_um_s",
+      "dT_K",
+      "k_partition"
+    ],
+    "omega_bounds": {
+      "grid_N": [
+        128,
+        4096
+      ],
+      "lambda_1_um": [
+        1,
+        500
+      ],
+      "V_pull_um_s": [
+        1,
+        10000
+      ],
+      "dT_K": [
+        0.1,
+        100
+      ],
+      "k_partition": [
+        0.01,
+        0.99
+      ]
+    },
+    "epsilon_bounds": {
+      "dendrite_tip_velocity_relative_error": [
+        0.01,
+        0.5
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

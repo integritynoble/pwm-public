@@ -1,0 +1,141 @@
+{
+  "artifact_id": "L1-318",
+  "layer": "L1",
+  "principle_number": "318",
+  "title": "Tight-Binding Electronic Structure",
+  "domain": "Quantum Mechanics",
+  "sub_domain": "Minimal-basis electronic models",
+  "source_file": "Y_quantum_mechanics/318_tight_binding.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
+  "E": {
+    "description": "Tight-binding: H = sum_i epsilon_i |i><i| + sum_<ij> t_ij |i><j|; localized basis; parameters from Slater-Koster or DFT-fit.",
+    "forward_model": "(H - E*S) c = 0; H_ij = Slater-Koster hopping, S_ij overlap",
+    "world_state_x": "Band structure and density of states from tight-binding parameters",
+    "observation_y": "ARPES, STM dI/dV, optical conductivity",
+    "physical_parameters_theta": [
+      "on-site energies epsilon_i",
+      "hopping t_ij",
+      "orbital basis",
+      "SOC coupling"
+    ]
+  },
+  "G": {
+    "dag": "E.SK_parameters -> M.eigensolve -> O.DOS_band",
+    "vertices": [
+      "E.SK_parameters",
+      "M.eigensolve",
+      "O.DOS_band"
+    ],
+    "arcs": [
+      "E.SK_parameters -> M.eigensolve",
+      "M.eigensolve -> O.DOS_band"
+    ],
+    "L_DAG": 3.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 150,
+    "condition_number_effective": 20,
+    "regime": "Well-posed; TB parameter fit from DFT is regularized."
+  },
+  "C": {
+    "solver_class": "Slater-Koster matrix element; DFTB or NRL-TB parameterization",
+    "convergence_rate_q": 2.0,
+    "error_bound": "bounded by discretization + mismatch bias + noise floor",
+    "complexity": "principle-dependent"
+  },
+  "physics_fingerprint": {
+    "carrier": "electron",
+    "sensing_mechanism": "arpes_stm",
+    "integration_axis": "k_space",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "tb_parameter_vector",
+    "primitives": [
+      "E.SK_parameters",
+      "M.eigensolve",
+      "O.DOS_band"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "SK_parameter_drift",
+    "missing_orbitals",
+    "disorder"
+  ],
+  "error_metric": "band_L2_error_eV",
+  "error_metric_secondary": "DOS_L1_error",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "tight_binding",
+      "forward_operator": "tb_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_orbitals": 18,
+        "N_atoms": 2,
+        "N_kpoints": 100,
+        "N_neighbor_shells": 2
+      },
+      "epsilon_fn_center": "band L2 <= 0.05 eV"
+    },
+    "allowed_forward_operators": [
+      "tb_forward"
+    ],
+    "allowed_problem_classes": [
+      "tight_binding"
+    ],
+    "allowed_omega_dimensions": [
+      "N_orbitals",
+      "N_atoms",
+      "N_kpoints",
+      "N_neighbor_shells"
+    ],
+    "omega_bounds": {
+      "N_orbitals": [
+        4,
+        200
+      ],
+      "N_atoms": [
+        1,
+        1000
+      ],
+      "N_kpoints": [
+        10,
+        10000
+      ],
+      "N_neighbor_shells": [
+        1,
+        10
+      ]
+    },
+    "epsilon_bounds": {
+      "band_L2_error_eV": [
+        0.01,
+        2.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

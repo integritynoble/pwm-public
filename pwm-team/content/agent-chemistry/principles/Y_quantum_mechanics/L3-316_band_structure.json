@@ -1,0 +1,237 @@
+{
+  "artifact_id": "L3-316",
+  "layer": "L3",
+  "parent_l2": "L2-316",
+  "parent_l1": "L1-316",
+  "title": "Electronic Band Structure Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "Materials Project band-gap database",
+    "secondary": "NIST Landolt-B\u00f6rnstein semiconductor gap reference",
+    "construction_method": "canonical ground truth + declared noise at tier Omega for Electronic Band Structure",
+    "num_dev_instances_per_tier": 20,
+    "holdout_instances_per_tier": 10
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "N_atoms": 2,
+        "N_kpoints": 100,
+        "Ecut_eV": 400,
+        "xc": "PBE"
+      },
+      "dataset_description": "Electronic Band Structure at rho=1.",
+      "epsilon": 0.1,
+      "d_ibench": 0.15,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        },
+        {
+          "Q": 0.9,
+          "tier": "Excellent"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "VASP-PBE",
+          "score": 0.3,
+          "Q": 0.82
+        },
+        {
+          "name": "QuantumESPRESSO",
+          "score": 0.28,
+          "Q": 0.78
+        },
+        {
+          "name": "SchNet-Bands",
+          "score": 0.09,
+          "Q": 0.92
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "N_atoms": 10,
+        "N_kpoints": 500,
+        "Ecut_eV": 600,
+        "xc": "PBE"
+      },
+      "dataset_description": "Electronic Band Structure at rho=3.",
+      "epsilon": 0.115,
+      "d_ibench": 0.32,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        },
+        {
+          "Q": 0.9,
+          "tier": "Excellent"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "VASP-PBE",
+          "score": 0.345,
+          "Q": 0.66
+        },
+        {
+          "name": "QuantumESPRESSO",
+          "score": 0.322,
+          "Q": 0.6
+        },
+        {
+          "name": "SchNet-Bands",
+          "score": 0.1035,
+          "Q": 0.82
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "N_atoms": 50,
+        "N_kpoints": 2000,
+        "Ecut_eV": 1000,
+        "xc": "HSE06"
+      },
+      "dataset_description": "Electronic Band Structure at rho=5.",
+      "epsilon": 0.14,
+      "d_ibench": 0.51,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "VASP-PBE",
+          "score": 0.42,
+          "Q": 0.44
+        },
+        {
+          "name": "QuantumESPRESSO",
+          "score": 0.392,
+          "Q": 0.38
+        },
+        {
+          "name": "SchNet-Bands",
+          "score": 0.126,
+          "Q": 0.64
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "N_atoms": 100,
+        "N_kpoints": 10000,
+        "Ecut_eV": 2000,
+        "xc": "HSE06"
+      },
+      "dataset_description": "Electronic Band Structure at rho=10.",
+      "epsilon": 0.185,
+      "d_ibench": 0.72,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "VASP-PBE",
+          "score": 0.555,
+          "Q": 0.24
+        },
+        {
+          "name": "QuantumESPRESSO",
+          "score": 0.518,
+          "Q": 0.2
+        },
+        {
+          "name": "SchNet-Bands",
+          "score": 0.1665,
+          "Q": 0.46
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "Materials Project + Landolt-B\u00f6rnstein band-gap union",
+      "construction_method": "parametric Omega sampling over declared bounds; stratified by rho.",
+      "num_dev_instances": 200,
+      "num_holdout_instances": 100
+    },
+    "tracks": {
+      "track_A_stratified_worst_case": {
+        "pass_condition": "min score meets epsilon_fn over all strata"
+      },
+      "track_B_uniform_median": {
+        "num_samples": 50,
+        "pass_condition": "median score meets epsilon_fn at Omega_median"
+      },
+      "track_C_mismatch_degradation": {
+        "sweep_points": 5,
+        "pass_condition": "monotone degradation with mismatch"
+      }
+    },
+    "baselines": [
+      {
+        "name": "VASP-PBE",
+        "track_A_Q": 0.46,
+        "track_B_Q": 0.58,
+        "track_C_Q": 0.5,
+        "overall_Q": 0.51
+      },
+      {
+        "name": "QuantumESPRESSO",
+        "track_A_Q": 0.48,
+        "track_B_Q": 0.6,
+        "track_C_Q": 0.52,
+        "overall_Q": 0.53
+      },
+      {
+        "name": "SchNet-Bands",
+        "track_A_Q": 0.66,
+        "track_B_Q": 0.76,
+        "track_C_Q": 0.68,
+        "overall_Q": 0.7
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails epsilon_fn at T4_blind Omega corner.",
+  "anti_overfitting_mechanisms": {
+    "M1_random_instantiation": "seeded by benchmark hash; non-repeatable holdout",
+    "M2_convergence_scoring": "verifies declared convergence rate across Omega",
+    "M3_worst_case_eval": "min-score over fixed dev instances per tier",
+    "M4_community_adversarial": "adversarial submissions eligible for T_k",
+    "M5_method_sig_diversity": "baselines span multiple method_sig families",
+    "M6_gate_checks": "S1-S4 gate checks enforced with thresholds.yaml"
+  },
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

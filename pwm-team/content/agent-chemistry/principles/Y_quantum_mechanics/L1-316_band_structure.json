@@ -1,0 +1,144 @@
+{
+  "artifact_id": "L1-316",
+  "layer": "L1",
+  "principle_number": "316",
+  "title": "Electronic Band Structure",
+  "domain": "Quantum Mechanics",
+  "sub_domain": "Crystal momentum eigenproblem",
+  "source_file": "Y_quantum_mechanics/316_band_structure.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
+  "E": {
+    "description": "Bloch theorem: psi_{n,k}(r) = e^{ik.r}*u_{n,k}(r); eigenvalues E_n(k) form bands; gap structure determines metal/insulator character.",
+    "forward_model": "(-hbar^2/2m * (grad + ik)^2 + V_cryst(r)) u_{n,k}(r) = E_n(k) u_{n,k}(r)",
+    "world_state_x": "Band structure E_n(k) and Bloch functions u_{n,k}(r)",
+    "observation_y": "Angle-resolved photoemission (ARPES); optical absorption edge; de Haas-van Alphen Fermi surface",
+    "physical_parameters_theta": [
+      "V_crystal(r)",
+      "exchange-correlation functional",
+      "lattice parameters",
+      "basis/pseudopotentials"
+    ]
+  },
+  "G": {
+    "dag": "E.crystal_potential -> M.bloch_eigensolve -> O.band_structure",
+    "vertices": [
+      "E.crystal_potential",
+      "M.bloch_eigensolve",
+      "O.band_structure"
+    ],
+    "arcs": [
+      "E.crystal_potential -> M.bloch_eigensolve",
+      "M.bloch_eigensolve -> O.band_structure"
+    ],
+    "L_DAG": 3.2,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 600,
+    "condition_number_effective": 50,
+    "regime": "Well-posed; DFT gap underestimate (Kohn-Sham gap problem); inverse structure\u2192band mapping requires phase info."
+  },
+  "C": {
+    "solver_class": "DFT-LDA/GGA (VASP, Quantum ESPRESSO); tight-binding; GW (separate)",
+    "convergence_rate_q": 2.0,
+    "error_bound": "bounded by discretization + mismatch bias + noise floor",
+    "complexity": "principle-dependent"
+  },
+  "physics_fingerprint": {
+    "carrier": "electron",
+    "sensing_mechanism": "arpes_optical_absorption",
+    "integration_axis": "k_space",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "band_structure_E_n_k",
+    "primitives": [
+      "E.crystal_potential",
+      "M.bloch_eigensolve",
+      "O.band_structure"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "xc_functional_bias",
+    "basis_incompleteness",
+    "spin_orbit_coupling"
+  ],
+  "error_metric": "band_gap_error_eV",
+  "error_metric_secondary": "effective_mass_error",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "band_structure",
+      "forward_operator": "dft_band_structure_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_atoms": 2,
+        "N_kpoints": 100,
+        "Ecut_eV": 400,
+        "xc": "PBE",
+        "species": "Si"
+      },
+      "epsilon_fn_center": "band gap error <= 0.1 eV"
+    },
+    "allowed_forward_operators": [
+      "dft_band_structure_forward"
+    ],
+    "allowed_problem_classes": [
+      "band_structure"
+    ],
+    "allowed_omega_dimensions": [
+      "N_atoms",
+      "N_kpoints",
+      "Ecut_eV",
+      "xc",
+      "species"
+    ],
+    "omega_bounds": {
+      "N_atoms": [
+        1,
+        100
+      ],
+      "N_kpoints": [
+        10,
+        10000
+      ],
+      "Ecut_eV": [
+        100,
+        2000
+      ],
+      "xc": [
+        "LDA",
+        "PBE",
+        "HSE06"
+      ]
+    },
+    "epsilon_bounds": {
+      "band_gap_error_eV": [
+        0.02,
+        2.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

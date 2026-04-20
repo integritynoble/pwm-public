@@ -1,0 +1,126 @@
+{
+  "artifact_id": "L2-491",
+  "layer": "L2",
+  "parent_l1": "L1-491",
+  "title": "Non-Equilibrium Green's Function (NEGF) Quantum Transport Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "N_sites": [
+        20,
+        5000
+      ],
+      "N_energy": [
+        50,
+        5000
+      ],
+      "V_bias": [
+        0.001,
+        2.0
+      ],
+      "T_K": [
+        4,
+        400
+      ],
+      "SCBA_tol": [
+        1e-06,
+        0.01
+      ]
+    },
+    "E": {
+      "forward": "G^R(E) = [E*I - H - Sigma^R(E)]^{-1};  G^< = G^R * Sigma^< * G^A;  I = (2e/h) * integral Tr[Sigma^<_L * G^R * Gamma_R * G^A - Gamma_L * G^< ... ] dE",
+      "operator": "negf_forward_mismatch",
+      "primitive_chain": "E.hamiltonian_build -> E.self_energy -> M.dyson_solve -> O.current_LDOS",
+      "inverse": "recover Hamiltonian parameters or self-energies from I-V and dI/dV spectra"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "IV_log_err",
+      "LDOS_KL",
+      "tunneling_gap_err",
+      "SCBA_converged"
+    ],
+    "epsilon_fn": "0.03 + 0.01*V_bias + 0.005*log10(N_sites/200)"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "NEMO5 (recursive)",
+        "method_sig": "T+O",
+        "expected_err": 0.07
+      },
+      {
+        "name": "TB-NEGF-Siesta",
+        "method_sig": "T+O",
+        "expected_err": 0.09
+      },
+      {
+        "name": "NEGF-NeuralSE",
+        "method_sig": "T+N",
+        "expected_err": 0.05
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_sites": 200,
+        "N_energy": 500,
+        "V_bias": 0.5,
+        "T_K": 300,
+        "SCBA_tol": 0.0001
+      },
+      "epsilon": 0.04
+    },
+    "tier_bounds": {
+      "N_sites": [
+        20,
+        5000
+      ],
+      "N_energy": [
+        50,
+        5000
+      ],
+      "V_bias": [
+        0.001,
+        2.0
+      ],
+      "T_K": [
+        4,
+        400
+      ],
+      "SCBA_tol": [
+        1e-06,
+        0.01
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.45,
+  "d_spec_notes": "Canonical mismatch-only baseline for this principle; sits at the centroid of its spec family.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions match across all DAG nodes; operator dimensions consistent.",
+    "S2": "Operator condition number controlled (kappa_eff=200) under declared Omega with regularization.",
+    "S3": "Solver class Recursive Green's Function (RGF); contact block reduction (CBR); adjoint-NEGF for inversion provably converges at rate q=2.0; monotone residual decrease.",
+    "S4": "epsilon_fn evaluates cleanly across 50 random Omega samples; hardness rule satisfied (top baseline fails at Omega corner)."
+  },
+  "ipfs_cid": null
+}

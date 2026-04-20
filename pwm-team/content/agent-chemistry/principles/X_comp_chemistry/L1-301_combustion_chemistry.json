@@ -1,0 +1,149 @@
+{
+  "artifact_id": "L1-301",
+  "layer": "L1",
+  "principle_number": "301",
+  "title": "Combustion Chemistry and Ignition Kinetics",
+  "domain": "Computational Chemistry",
+  "sub_domain": "Detailed reaction mechanism",
+  "source_file": "X_computational_chemistry/301_combustion_chemistry.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
+  "E": {
+    "description": "Combustion: detailed chemical kinetic mechanism (~100-2000 species, ~10000 reactions) coupled with fluid flow; stiff ODEs with thermal-feedback.",
+    "forward_model": "dc_i/dt = sum_r ..., dT/dt = -(1/(rho*cp)) * sum_r delta_H_r * omega_r; ignition at thermal runaway",
+    "world_state_x": "Species concentrations + temperature in reactor",
+    "observation_y": "Ignition delay, laminar flame speed, species profiles in premixed/non-premixed flames",
+    "physical_parameters_theta": [
+      "pre-exponential factors A_r",
+      "activation energies E_a",
+      "enthalpies of formation"
+    ]
+  },
+  "G": {
+    "dag": "E.detailed_mechanism -> E.energy_balance -> M.stiff_ODE -> O.ignition_delay",
+    "vertices": [
+      "E.detailed_mechanism",
+      "E.energy_balance",
+      "M.stiff_ODE",
+      "O.ignition_delay"
+    ],
+    "arcs": [
+      "E.detailed_mechanism -> E.energy_balance",
+      "E.energy_balance -> M.stiff_ODE",
+      "M.stiff_ODE -> O.ignition_delay"
+    ],
+    "L_DAG": 3.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 400,
+    "condition_number_effective": 40,
+    "regime": "Well-posed; inversion of rate constants from ignition-delay + flame-speed is under-constrained."
+  },
+  "C": {
+    "solver_class": "Cantera, CHEMKIN; sensitivity-analysis uncertainty-quantified optimization",
+    "convergence_rate_q": 2.0,
+    "error_bound": "bounded by discretization + mismatch bias + noise floor",
+    "complexity": "principle-dependent"
+  },
+  "physics_fingerprint": {
+    "carrier": "none",
+    "sensing_mechanism": "flame_diagnostics",
+    "integration_axis": "time",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "species_temperature_trajectory",
+    "primitives": [
+      "E.detailed_mechanism",
+      "E.energy_balance",
+      "M.stiff_ODE",
+      "O.ignition_delay"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "Ea_uncertainty",
+    "third_body_efficiencies",
+    "pressure_dependence_fall_off"
+  ],
+  "error_metric": "ignition_delay_log_error",
+  "error_metric_secondary": "flame_speed_cm_s_error",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "combustion_chemistry",
+      "forward_operator": "combustion_mech_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_species": 50,
+        "N_reactions": 300,
+        "T_K": 1200,
+        "P_atm": 1,
+        "phi_equiv": 1.0
+      },
+      "epsilon_fn_center": "log10(tau_ign) <= 0.1"
+    },
+    "allowed_forward_operators": [
+      "combustion_mech_forward"
+    ],
+    "allowed_problem_classes": [
+      "combustion_chemistry"
+    ],
+    "allowed_omega_dimensions": [
+      "N_species",
+      "N_reactions",
+      "T_K",
+      "P_atm",
+      "phi_equiv"
+    ],
+    "omega_bounds": {
+      "N_species": [
+        10,
+        3000
+      ],
+      "N_reactions": [
+        30,
+        30000
+      ],
+      "T_K": [
+        500,
+        3000
+      ],
+      "P_atm": [
+        0.1,
+        100
+      ],
+      "phi_equiv": [
+        0.3,
+        3.0
+      ]
+    },
+    "epsilon_bounds": {
+      "ignition_delay_log_error": [
+        0.05,
+        1.5
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

@@ -1,0 +1,112 @@
+{
+  "artifact_id": "L2-315",
+  "layer": "L2",
+  "parent_l1": "L1-315",
+  "title": "Quantum Tunneling Through Barriers Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "V0_eV": [
+        0.01,
+        10
+      ],
+      "width_nm": [
+        0.5,
+        100
+      ],
+      "N_layers": [
+        1,
+        100
+      ]
+    },
+    "E": {
+      "forward": "T(E) = |t(E)|^2 from piecewise transfer matrix product; WKB: T ~ exp(-2*integral kappa dx)",
+      "operator": "tunneling_forward_mismatch",
+      "primitive_chain": "E.barrier_profile -> M.transfer_matrix -> O.T_E",
+      "inverse": "recover constitutive parameters for Quantum Tunneling Through Barriers"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "log_T_error",
+      "barrier_height_error_meV",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.05 * (1 + 0.1 * mismatch_severity)"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Transfer-Matrix",
+        "method_sig": "L+O",
+        "expected_err": 0.08
+      },
+      {
+        "name": "WKB-approx",
+        "method_sig": "L+O",
+        "expected_err": 0.1
+      },
+      {
+        "name": "Tunnel-Net",
+        "method_sig": "L+N",
+        "expected_err": 0.055
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "V0_eV": 1.0,
+        "width_nm": 5,
+        "N_layers": 3,
+        "E_range_eV": [
+          0.01,
+          2
+        ]
+      },
+      "epsilon": 0.05
+    },
+    "tier_bounds": {
+      "V0_eV": [
+        0.01,
+        10
+      ],
+      "width_nm": [
+        0.5,
+        100
+      ],
+      "N_layers": [
+        1,
+        100
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.45,
+  "d_spec_notes": "Canonical mismatch-only baseline for this principle; sits at the centroid of its spec family.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions match across all DAG nodes; operator dimensions consistent.",
+    "S2": "Operator condition number controlled (kappa_eff=15) under declared Omega with regularization.",
+    "S3": "Solver class Piecewise transfer matrix; WKB for smooth barriers provably converges at rate q=2.0; monotone residual decrease.",
+    "S4": "epsilon_fn evaluates cleanly across 50 random Omega samples; hardness rule satisfied (top baseline fails at Omega corner)."
+  },
+  "ipfs_cid": null
+}

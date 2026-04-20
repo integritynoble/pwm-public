@@ -1,0 +1,144 @@
+{
+  "artifact_id": "L1-308",
+  "layer": "L1",
+  "principle_number": "308",
+  "title": "Free Energy Perturbation (FEP + TI + BAR)",
+  "domain": "Computational Chemistry",
+  "sub_domain": "Alchemical free-energy methods",
+  "source_file": "X_computational_chemistry/308_free_energy_perturbation.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
+  "E": {
+    "description": "Free energy via alchemical transformation: FEP <exp(-beta*dU)>, TI integral of <dU/dl>, BAR maximum likelihood; binding free energies from double-decoupling.",
+    "forward_model": "DG = -(1/beta)*ln<exp(-beta*(U_B - U_A))>_A;  TI: DG = integral_0^1 <dU/dl>_l dl",
+    "world_state_x": "Free energy profile DG(l) along alchemical/conformational coordinate",
+    "observation_y": "Binding affinities, solvation free energies, pKa shifts",
+    "physical_parameters_theta": [
+      "lambda schedule",
+      "windows",
+      "decorrelation time",
+      "bias potentials"
+    ]
+  },
+  "G": {
+    "dag": "E.alchemical_hamiltonian -> M.sample_per_lambda -> M.combine_estimator -> O.DG",
+    "vertices": [
+      "E.alchemical_hamiltonian",
+      "M.sample_per_lambda",
+      "M.combine_estimator",
+      "O.DG"
+    ],
+    "arcs": [
+      "E.alchemical_hamiltonian -> M.sample_per_lambda",
+      "M.sample_per_lambda -> M.combine_estimator",
+      "M.combine_estimator -> O.DG"
+    ],
+    "L_DAG": 3.7,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 500,
+    "condition_number_effective": 50,
+    "regime": "Well-posed in principle; sampling convergence is practical bottleneck."
+  },
+  "C": {
+    "solver_class": "pmx, FEP+/Schrodinger, GROMACS-FEP; MBAR / PyMBAR estimator",
+    "convergence_rate_q": 2.0,
+    "error_bound": "bounded by discretization + mismatch bias + noise floor",
+    "complexity": "principle-dependent"
+  },
+  "physics_fingerprint": {
+    "carrier": "none",
+    "sensing_mechanism": "alchemical_free_energy",
+    "integration_axis": "lambda",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "thermal_langevin",
+    "solution_space": "DG_curve_lambda",
+    "primitives": [
+      "E.alchemical_hamiltonian",
+      "M.sample_per_lambda",
+      "M.combine_estimator",
+      "O.DG"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "sampling_convergence",
+    "endpoint_singularities",
+    "soft_core_potentials"
+  ],
+  "error_metric": "DG_bind_error_kcal_mol",
+  "error_metric_secondary": "DG_solv_error_kcal_mol",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "free_energy_perturbation",
+      "forward_operator": "fep_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_lambdas": 20,
+        "N_steps_per_lambda": 1000000.0,
+        "softcore_alpha": 0.5,
+        "T_K": 298
+      },
+      "epsilon_fn_center": "DG_bind <= 0.5 kcal/mol"
+    },
+    "allowed_forward_operators": [
+      "fep_forward"
+    ],
+    "allowed_problem_classes": [
+      "free_energy_perturbation"
+    ],
+    "allowed_omega_dimensions": [
+      "N_lambdas",
+      "N_steps_per_lambda",
+      "softcore_alpha",
+      "T_K"
+    ],
+    "omega_bounds": {
+      "N_lambdas": [
+        5,
+        200
+      ],
+      "N_steps_per_lambda": [
+        10000,
+        1000000000.0
+      ],
+      "softcore_alpha": [
+        0.1,
+        1.0
+      ],
+      "T_K": [
+        200,
+        400
+      ]
+    },
+    "epsilon_bounds": {
+      "DG_bind_error_kcal_mol": [
+        0.1,
+        10
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

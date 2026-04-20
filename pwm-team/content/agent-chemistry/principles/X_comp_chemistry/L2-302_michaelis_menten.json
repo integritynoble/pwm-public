@@ -1,0 +1,128 @@
+{
+  "artifact_id": "L2-302",
+  "layer": "L2",
+  "parent_l1": "L1-302",
+  "title": "Michaelis-Menten Enzyme Kinetics Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "S_range_mM_min": [
+        0.001,
+        1
+      ],
+      "S_range_mM_max": [
+        1,
+        10000
+      ],
+      "N_data_points": [
+        5,
+        10000
+      ],
+      "T_K": [
+        273,
+        373
+      ],
+      "pH": [
+        1,
+        14
+      ]
+    },
+    "E": {
+      "forward": "v = V_max * S / (K_M + S); Lineweaver-Burk linearizes for fitting",
+      "operator": "michaelis_menten_forward_mismatch",
+      "primitive_chain": "E.enzyme_substrate -> M.steady_state -> O.rate_v",
+      "inverse": "recover constitutive parameters for Michaelis-Menten Enzyme Kinetics"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "Km_relative_error",
+      "Vmax_relative_error",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.05 * (1 + 0.1 * mismatch_severity)"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "MM-LM-fit",
+        "method_sig": "L+O",
+        "expected_err": 0.08
+      },
+      {
+        "name": "GraphPad-Prism",
+        "method_sig": "L+O",
+        "expected_err": 0.07
+      },
+      {
+        "name": "Enz-Bayes",
+        "method_sig": "L+N",
+        "expected_err": 0.055
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "S_range_mM": [
+          0.01,
+          100
+        ],
+        "N_data_points": 20,
+        "T_K": 298,
+        "pH": 7.4
+      },
+      "epsilon": 0.05
+    },
+    "tier_bounds": {
+      "S_range_mM_min": [
+        0.001,
+        1
+      ],
+      "S_range_mM_max": [
+        1,
+        10000
+      ],
+      "N_data_points": [
+        5,
+        10000
+      ],
+      "T_K": [
+        273,
+        373
+      ],
+      "pH": [
+        1,
+        14
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.45,
+  "d_spec_notes": "Canonical mismatch-only baseline for this principle; sits at the centroid of its spec family.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions match across all DAG nodes; operator dimensions consistent.",
+    "S2": "Operator condition number controlled (kappa_eff=8) under declared Omega with regularization.",
+    "S3": "Solver class Nonlinear least squares; Bayesian enzyme kinetics provably converges at rate q=2.0; monotone residual decrease.",
+    "S4": "epsilon_fn evaluates cleanly across 50 random Omega samples; hardness rule satisfied (top baseline fails at Omega corner)."
+  },
+  "ipfs_cid": null
+}

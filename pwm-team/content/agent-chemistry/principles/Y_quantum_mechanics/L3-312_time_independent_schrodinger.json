@@ -1,0 +1,237 @@
+{
+  "artifact_id": "L3-312",
+  "layer": "L3",
+  "parent_l2": "L2-312",
+  "parent_l1": "L1-312",
+  "title": "Time-Independent Schr\u00f6dinger Equation Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "NIST atomic spectra database",
+    "secondary": "NIST Levels and Lines database",
+    "construction_method": "canonical ground truth + declared noise at tier Omega for Time-Independent Schr\u00f6dinger Equation",
+    "num_dev_instances_per_tier": 20,
+    "holdout_instances_per_tier": 10
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "N_basis": 1000,
+        "N_eigen": 20,
+        "box_size_A": 10,
+        "potential_type": "harmonic"
+      },
+      "dataset_description": "Time-Independent Schr\u00f6dinger Equation at rho=1.",
+      "epsilon": 0.01,
+      "d_ibench": 0.15,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        },
+        {
+          "Q": 0.9,
+          "tier": "Excellent"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "ARPACK-Lanczos",
+          "score": 0.015,
+          "Q": 0.82
+        },
+        {
+          "name": "FEAST",
+          "score": 0.018,
+          "Q": 0.78
+        },
+        {
+          "name": "SchroNet",
+          "score": 0.009,
+          "Q": 0.92
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "N_basis": 10000,
+        "N_eigen": 100,
+        "box_size_A": 50,
+        "potential_type": "coulomb"
+      },
+      "dataset_description": "Time-Independent Schr\u00f6dinger Equation at rho=3.",
+      "epsilon": 0.0115,
+      "d_ibench": 0.32,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        },
+        {
+          "Q": 0.9,
+          "tier": "Excellent"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "ARPACK-Lanczos",
+          "score": 0.0172,
+          "Q": 0.66
+        },
+        {
+          "name": "FEAST",
+          "score": 0.0207,
+          "Q": 0.6
+        },
+        {
+          "name": "SchroNet",
+          "score": 0.0103,
+          "Q": 0.82
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "N_basis": 50000,
+        "N_eigen": 500,
+        "box_size_A": 200,
+        "potential_type": "square_well"
+      },
+      "dataset_description": "Time-Independent Schr\u00f6dinger Equation at rho=5.",
+      "epsilon": 0.014,
+      "d_ibench": 0.51,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "ARPACK-Lanczos",
+          "score": 0.021,
+          "Q": 0.44
+        },
+        {
+          "name": "FEAST",
+          "score": 0.0252,
+          "Q": 0.38
+        },
+        {
+          "name": "SchroNet",
+          "score": 0.0126,
+          "Q": 0.64
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "N_basis": 100000,
+        "N_eigen": 1000,
+        "box_size_A": 1000,
+        "potential_type": "double_well"
+      },
+      "dataset_description": "Time-Independent Schr\u00f6dinger Equation at rho=10.",
+      "epsilon": 0.0185,
+      "d_ibench": 0.72,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "ARPACK-Lanczos",
+          "score": 0.0278,
+          "Q": 0.24
+        },
+        {
+          "name": "FEAST",
+          "score": 0.0333,
+          "Q": 0.2
+        },
+        {
+          "name": "SchroNet",
+          "score": 0.0166,
+          "Q": 0.46
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "NIST atomic spectra library",
+      "construction_method": "parametric Omega sampling over declared bounds; stratified by rho.",
+      "num_dev_instances": 200,
+      "num_holdout_instances": 100
+    },
+    "tracks": {
+      "track_A_stratified_worst_case": {
+        "pass_condition": "min score meets epsilon_fn over all strata"
+      },
+      "track_B_uniform_median": {
+        "num_samples": 50,
+        "pass_condition": "median score meets epsilon_fn at Omega_median"
+      },
+      "track_C_mismatch_degradation": {
+        "sweep_points": 5,
+        "pass_condition": "monotone degradation with mismatch"
+      }
+    },
+    "baselines": [
+      {
+        "name": "ARPACK-Lanczos",
+        "track_A_Q": 0.6,
+        "track_B_Q": 0.72,
+        "track_C_Q": 0.64,
+        "overall_Q": 0.65
+      },
+      {
+        "name": "FEAST",
+        "track_A_Q": 0.56,
+        "track_B_Q": 0.68,
+        "track_C_Q": 0.6,
+        "overall_Q": 0.61
+      },
+      {
+        "name": "SchroNet",
+        "track_A_Q": 0.68,
+        "track_B_Q": 0.78,
+        "track_C_Q": 0.7,
+        "overall_Q": 0.72
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails epsilon_fn at T4_blind Omega corner.",
+  "anti_overfitting_mechanisms": {
+    "M1_random_instantiation": "seeded by benchmark hash; non-repeatable holdout",
+    "M2_convergence_scoring": "verifies declared convergence rate across Omega",
+    "M3_worst_case_eval": "min-score over fixed dev instances per tier",
+    "M4_community_adversarial": "adversarial submissions eligible for T_k",
+    "M5_method_sig_diversity": "baselines span multiple method_sig families",
+    "M6_gate_checks": "S1-S4 gate checks enforced with thresholds.yaml"
+  },
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

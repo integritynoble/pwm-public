@@ -1,0 +1,129 @@
+{
+  "artifact_id": "L2-495",
+  "layer": "L2",
+  "parent_l1": "L1-495",
+  "title": "Thermionic Emission at Metal-Semiconductor Interfaces Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "T_K_min": [
+        77,
+        300
+      ],
+      "T_K_max": [
+        300,
+        600
+      ],
+      "V_max_V": [
+        0.1,
+        5.0
+      ],
+      "A_cm2": [
+        1e-08,
+        1
+      ],
+      "N_points": [
+        20,
+        5000
+      ]
+    },
+    "E": {
+      "forward": "J = A* * T^2 * exp(-q*phi_B_eff/(k_B*T)) * (exp(q*V/(n*k_B*T)) - 1);  phi_B_eff = phi_B0 - Delta_phi(E_surface)",
+      "operator": "thermionic_forward_mismatch",
+      "primitive_chain": "E.richardson_emission -> E.barrier_lowering -> M.IV_integrate -> O.IV_vs_T",
+      "inverse": "recover phi_B and A* from I-V(T)"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "phi_B_err_meV",
+      "IV_log_err",
+      "R_s_err_ohm",
+      "n_ideality_err"
+    ],
+    "epsilon_fn": "8.0 + 2.0*log10(V_max_V/0.5) + 0.5*(T_K_max-400)/50"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "Richardson-Plot-LM",
+        "method_sig": "L+O",
+        "expected_err_meV": 18
+      },
+      {
+        "name": "TE-TLM-Fit",
+        "method_sig": "L+O",
+        "expected_err_meV": 20
+      },
+      {
+        "name": "Schottky-BayesNet",
+        "method_sig": "L+N",
+        "expected_err_meV": 12
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "T_K_range": [
+          200,
+          400
+        ],
+        "V_max_V": 0.5,
+        "A_cm2": 0.0001,
+        "material": "Au_on_Si",
+        "N_points": 100
+      },
+      "epsilon": 10.0
+    },
+    "tier_bounds": {
+      "T_K_min": [
+        77,
+        300
+      ],
+      "T_K_max": [
+        300,
+        600
+      ],
+      "V_max_V": [
+        0.1,
+        5.0
+      ],
+      "A_cm2": [
+        1e-08,
+        1
+      ],
+      "N_points": [
+        20,
+        5000
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.45,
+  "d_spec_notes": "Canonical mismatch-only baseline for this principle; sits at the centroid of its spec family.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions match across all DAG nodes; operator dimensions consistent.",
+    "S2": "Operator condition number controlled (kappa_eff=12) under declared Omega with regularization.",
+    "S3": "Solver class Richardson plot (log(J_s/T^2) vs 1/T); Bayesian joint fit across T provably converges at rate q=2.0; monotone residual decrease.",
+    "S4": "epsilon_fn evaluates cleanly across 50 random Omega samples; hardness rule satisfied (top baseline fails at Omega corner)."
+  },
+  "ipfs_cid": null
+}

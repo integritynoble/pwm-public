@@ -1,0 +1,237 @@
+{
+  "artifact_id": "L3-304",
+  "layer": "L3",
+  "parent_l2": "L2-304",
+  "parent_l1": "L1-304",
+  "title": "Semi-Empirical Quantum Chemistry (AM1, PM6, DFTB, xTB) Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "PubChem small-molecule geometries",
+    "secondary": "MOBH35 organometallic benchmark",
+    "construction_method": "canonical ground truth + declared noise at tier Omega for Semi-Empirical Quantum Chemistry (AM1, PM6, DFTB, xTB)",
+    "num_dev_instances_per_tier": 20,
+    "holdout_instances_per_tier": 10
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "N_atoms": 100,
+        "method": "GFN2-xTB",
+        "N_basis": 500,
+        "dispersion": "D4"
+      },
+      "dataset_description": "Semi-Empirical Quantum Chemistry (AM1, PM6, DFTB, xTB) at rho=1.",
+      "epsilon": 3.0,
+      "d_ibench": 0.15,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        },
+        {
+          "Q": 0.9,
+          "tier": "Excellent"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "MOPAC-PM7",
+          "score": 5.0,
+          "Q": 0.82
+        },
+        {
+          "name": "xTB-GFN2",
+          "score": 4.2,
+          "Q": 0.78
+        },
+        {
+          "name": "DFTB3-ML",
+          "score": 3.5,
+          "Q": 0.92
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "N_atoms": 1000,
+        "method": "GFN2-xTB",
+        "N_basis": 5000,
+        "dispersion": "D4"
+      },
+      "dataset_description": "Semi-Empirical Quantum Chemistry (AM1, PM6, DFTB, xTB) at rho=3.",
+      "epsilon": 3.45,
+      "d_ibench": 0.32,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        },
+        {
+          "Q": 0.9,
+          "tier": "Excellent"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "MOPAC-PM7",
+          "score": 5.75,
+          "Q": 0.66
+        },
+        {
+          "name": "xTB-GFN2",
+          "score": 4.83,
+          "Q": 0.6
+        },
+        {
+          "name": "DFTB3-ML",
+          "score": 4.025,
+          "Q": 0.82
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "N_atoms": 10000,
+        "method": "DFTB3",
+        "N_basis": 50000,
+        "dispersion": "D3"
+      },
+      "dataset_description": "Semi-Empirical Quantum Chemistry (AM1, PM6, DFTB, xTB) at rho=5.",
+      "epsilon": 4.2,
+      "d_ibench": 0.51,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "MOPAC-PM7",
+          "score": 7.0,
+          "Q": 0.44
+        },
+        {
+          "name": "xTB-GFN2",
+          "score": 5.88,
+          "Q": 0.38
+        },
+        {
+          "name": "DFTB3-ML",
+          "score": 4.9,
+          "Q": 0.64
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "N_atoms": 100000,
+        "method": "AM1",
+        "N_basis": 500000,
+        "dispersion": "none"
+      },
+      "dataset_description": "Semi-Empirical Quantum Chemistry (AM1, PM6, DFTB, xTB) at rho=10.",
+      "epsilon": 5.55,
+      "d_ibench": 0.72,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "MOPAC-PM7",
+          "score": 9.25,
+          "Q": 0.24
+        },
+        {
+          "name": "xTB-GFN2",
+          "score": 7.77,
+          "Q": 0.2
+        },
+        {
+          "name": "DFTB3-ML",
+          "score": 6.475,
+          "Q": 0.46
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "PubChem + MOBH35 semiempirical library",
+      "construction_method": "parametric Omega sampling over declared bounds; stratified by rho.",
+      "num_dev_instances": 200,
+      "num_holdout_instances": 100
+    },
+    "tracks": {
+      "track_A_stratified_worst_case": {
+        "pass_condition": "min score meets epsilon_fn over all strata"
+      },
+      "track_B_uniform_median": {
+        "num_samples": 50,
+        "pass_condition": "median score meets epsilon_fn at Omega_median"
+      },
+      "track_C_mismatch_degradation": {
+        "sweep_points": 5,
+        "pass_condition": "monotone degradation with mismatch"
+      }
+    },
+    "baselines": [
+      {
+        "name": "MOPAC-PM7",
+        "track_A_Q": 0.58,
+        "track_B_Q": 0.7,
+        "track_C_Q": 0.62,
+        "overall_Q": 0.63
+      },
+      {
+        "name": "xTB-GFN2",
+        "track_A_Q": 0.62,
+        "track_B_Q": 0.72,
+        "track_C_Q": 0.64,
+        "overall_Q": 0.66
+      },
+      {
+        "name": "DFTB3-ML",
+        "track_A_Q": 0.66,
+        "track_B_Q": 0.76,
+        "track_C_Q": 0.68,
+        "overall_Q": 0.7
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails epsilon_fn at T4_blind Omega corner.",
+  "anti_overfitting_mechanisms": {
+    "M1_random_instantiation": "seeded by benchmark hash; non-repeatable holdout",
+    "M2_convergence_scoring": "verifies declared convergence rate across Omega",
+    "M3_worst_case_eval": "min-score over fixed dev instances per tier",
+    "M4_community_adversarial": "adversarial submissions eligible for T_k",
+    "M5_method_sig_diversity": "baselines span multiple method_sig families",
+    "M6_gate_checks": "S1-S4 gate checks enforced with thresholds.yaml"
+  },
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

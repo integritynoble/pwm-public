@@ -1,0 +1,237 @@
+{
+  "artifact_id": "L3-300",
+  "layer": "L3",
+  "parent_l2": "L2-300",
+  "parent_l1": "L1-300",
+  "title": "Chemical Kinetics via Stiff ODEs Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "NIST Kinetics Database (gas-phase)",
+    "secondary": "IUPAC atmospheric chemistry evaluations",
+    "construction_method": "canonical ground truth + declared noise at tier Omega for Chemical Kinetics via Stiff ODEs",
+    "num_dev_instances_per_tier": 20,
+    "holdout_instances_per_tier": 10
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "N_species": 10,
+        "N_reactions": 20,
+        "T_K": 298,
+        "t_end_s": 100
+      },
+      "dataset_description": "Chemical Kinetics via Stiff ODEs at rho=1.",
+      "epsilon": 0.01,
+      "d_ibench": 0.15,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        },
+        {
+          "Q": 0.9,
+          "tier": "Excellent"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "CVODE-LSODA",
+          "score": 0.015,
+          "Q": 0.82
+        },
+        {
+          "name": "Cantera",
+          "score": 0.02,
+          "Q": 0.78
+        },
+        {
+          "name": "Kinetic-NeuralODE",
+          "score": 0.012,
+          "Q": 0.92
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "N_species": 50,
+        "N_reactions": 200,
+        "T_K": 500,
+        "t_end_s": 1000
+      },
+      "dataset_description": "Chemical Kinetics via Stiff ODEs at rho=3.",
+      "epsilon": 0.0115,
+      "d_ibench": 0.32,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        },
+        {
+          "Q": 0.9,
+          "tier": "Excellent"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "CVODE-LSODA",
+          "score": 0.0172,
+          "Q": 0.66
+        },
+        {
+          "name": "Cantera",
+          "score": 0.023,
+          "Q": 0.6
+        },
+        {
+          "name": "Kinetic-NeuralODE",
+          "score": 0.0138,
+          "Q": 0.82
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "N_species": 200,
+        "N_reactions": 2000,
+        "T_K": 1000,
+        "t_end_s": 100000.0
+      },
+      "dataset_description": "Chemical Kinetics via Stiff ODEs at rho=5.",
+      "epsilon": 0.014,
+      "d_ibench": 0.51,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "CVODE-LSODA",
+          "score": 0.021,
+          "Q": 0.44
+        },
+        {
+          "name": "Cantera",
+          "score": 0.028,
+          "Q": 0.38
+        },
+        {
+          "name": "Kinetic-NeuralODE",
+          "score": 0.0168,
+          "Q": 0.64
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "N_species": 1000,
+        "N_reactions": 10000,
+        "T_K": 2000,
+        "t_end_s": 1000000.0
+      },
+      "dataset_description": "Chemical Kinetics via Stiff ODEs at rho=10.",
+      "epsilon": 0.0185,
+      "d_ibench": 0.72,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "CVODE-LSODA",
+          "score": 0.0278,
+          "Q": 0.24
+        },
+        {
+          "name": "Cantera",
+          "score": 0.037,
+          "Q": 0.2
+        },
+        {
+          "name": "Kinetic-NeuralODE",
+          "score": 0.0222,
+          "Q": 0.46
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "NIST Kinetics + IUPAC atmospheric library",
+      "construction_method": "parametric Omega sampling over declared bounds; stratified by rho.",
+      "num_dev_instances": 200,
+      "num_holdout_instances": 100
+    },
+    "tracks": {
+      "track_A_stratified_worst_case": {
+        "pass_condition": "min score meets epsilon_fn over all strata"
+      },
+      "track_B_uniform_median": {
+        "num_samples": 50,
+        "pass_condition": "median score meets epsilon_fn at Omega_median"
+      },
+      "track_C_mismatch_degradation": {
+        "sweep_points": 5,
+        "pass_condition": "monotone degradation with mismatch"
+      }
+    },
+    "baselines": [
+      {
+        "name": "CVODE-LSODA",
+        "track_A_Q": 0.62,
+        "track_B_Q": 0.72,
+        "track_C_Q": 0.64,
+        "overall_Q": 0.66
+      },
+      {
+        "name": "Cantera",
+        "track_A_Q": 0.58,
+        "track_B_Q": 0.7,
+        "track_C_Q": 0.62,
+        "overall_Q": 0.63
+      },
+      {
+        "name": "Kinetic-NeuralODE",
+        "track_A_Q": 0.66,
+        "track_B_Q": 0.76,
+        "track_C_Q": 0.68,
+        "overall_Q": 0.7
+      }
+    ]
+  },
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails epsilon_fn at T4_blind Omega corner.",
+  "anti_overfitting_mechanisms": {
+    "M1_random_instantiation": "seeded by benchmark hash; non-repeatable holdout",
+    "M2_convergence_scoring": "verifies declared convergence rate across Omega",
+    "M3_worst_case_eval": "min-score over fixed dev instances per tier",
+    "M4_community_adversarial": "adversarial submissions eligible for T_k",
+    "M5_method_sig_diversity": "baselines span multiple method_sig families",
+    "M6_gate_checks": "S1-S4 gate checks enforced with thresholds.yaml"
+  },
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

@@ -1,0 +1,121 @@
+{
+  "artifact_id": "L2-310",
+  "layer": "L2",
+  "parent_l1": "L1-310",
+  "title": "Metropolis Monte Carlo Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "N_particles": [
+        10,
+        10000000.0
+      ],
+      "N_sweeps": [
+        10000,
+        10000000000.0
+      ],
+      "T_K": [
+        1,
+        10000
+      ],
+      "ensemble": [
+        "NVT",
+        "NPT",
+        "GCMC",
+        "Gibbs"
+      ]
+    },
+    "E": {
+      "forward": "P(x -> x') = T(x -> x') * min(1, exp(-beta*(U(x') - U(x))))",
+      "operator": "metropolis_mc_forward_mismatch",
+      "primitive_chain": "E.potential_U -> M.metropolis -> O.ensemble_average",
+      "inverse": "recover constitutive parameters for Metropolis Monte Carlo"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "observable_relative_error",
+      "autocorrelation_time",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.02 * (1 + 0.1 * mismatch_severity)"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "LAMMPS-MC",
+        "method_sig": "T+O",
+        "expected_err": 0.03
+      },
+      {
+        "name": "Cassandra",
+        "method_sig": "T+O",
+        "expected_err": 0.035
+      },
+      {
+        "name": "MC-FlowMatching",
+        "method_sig": "T+N",
+        "expected_err": 0.022
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_particles": 1000,
+        "N_sweeps": 1000000.0,
+        "T_K": 300,
+        "ensemble": "NVT"
+      },
+      "epsilon": 0.02
+    },
+    "tier_bounds": {
+      "N_particles": [
+        10,
+        10000000.0
+      ],
+      "N_sweeps": [
+        10000,
+        10000000000.0
+      ],
+      "T_K": [
+        1,
+        10000
+      ],
+      "ensemble": [
+        "NVT",
+        "NPT",
+        "GCMC",
+        "Gibbs"
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.45,
+  "d_spec_notes": "Canonical mismatch-only baseline for this principle; sits at the centroid of its spec family.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions match across all DAG nodes; operator dimensions consistent.",
+    "S2": "Operator condition number controlled (kappa_eff=18) under declared Omega with regularization.",
+    "S3": "Solver class LAMMPS-MC, Cassandra, Towhee; Gibbs-ensemble for phase equilibria provably converges at rate q=2.0; monotone residual decrease.",
+    "S4": "epsilon_fn evaluates cleanly across 50 random Omega samples; hardness rule satisfied (top baseline fails at Omega corner)."
+  },
+  "ipfs_cid": null
+}

@@ -1,0 +1,157 @@
+{
+  "artifact_id": "L1-340",
+  "layer": "L1",
+  "principle_number": "340",
+  "title": "Battery Electrode Electrochemistry (Newman-Doyle-Fuller)",
+  "domain": "Materials Science",
+  "sub_domain": "Porous-electrode Li-ion transport",
+  "source_file": "Z_materials_science/340_battery_electrode.md",
+  "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
+  "E": {
+    "description": "Pseudo-2D Newman-Doyle-Fuller model: porous-electrode transport + solid-diffusion in particles + Butler-Volmer intercalation; cell voltage V_cell(t, I).",
+    "forward_model": "eps*dc/dt + div(N_i) = R_intercalation; N_i = -D_eff*grad(c) + t_plus*I/F; particle: dc_s/dt = (1/r^2)*d/dr(r^2*D_s*dc_s/dr)",
+    "world_state_x": "Electrolyte concentration c(x,t), solid-particle Li fraction c_s(r,x,t), voltages V(t)",
+    "observation_y": "Voltage-capacity curves V(t,I); rate performance; GITT/PITT diffusivity; EIS",
+    "physical_parameters_theta": [
+      "D_eff (effective electrolyte diffusivity)",
+      "D_s (solid diffusivity)",
+      "i_0 (exchange current)",
+      "kappa_eff (ionic conductivity)",
+      "thickness, porosity"
+    ]
+  },
+  "G": {
+    "dag": "E.electrolyte_transport -> E.solid_diffusion -> E.butler_volmer -> M.P2D_couple -> O.V_cell",
+    "vertices": [
+      "E.electrolyte_transport",
+      "E.solid_diffusion",
+      "E.butler_volmer",
+      "M.P2D_couple",
+      "O.V_cell"
+    ],
+    "arcs": [
+      "E.electrolyte_transport -> E.solid_diffusion",
+      "E.solid_diffusion -> E.butler_volmer",
+      "E.butler_volmer -> M.P2D_couple",
+      "M.P2D_couple -> O.V_cell"
+    ],
+    "L_DAG": 4.1,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 800,
+    "condition_number_effective": 70,
+    "regime": "Stiff coupled PDE; well-posed in forward; inversion of (D_s, i_0) from V(t,I) is moderately ill-conditioned."
+  },
+  "C": {
+    "solver_class": "PyBaMM or LIONSIMBA; adjoint-parameter fit; Bayesian inference",
+    "convergence_rate_q": 2.0,
+    "error_bound": "bounded by discretization + mismatch bias + noise floor",
+    "complexity": "principle-dependent"
+  },
+  "physics_fingerprint": {
+    "carrier": "ion",
+    "sensing_mechanism": "battery_cycling_impedance",
+    "integration_axis": "time_state_of_charge",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "p2d_battery_state",
+    "primitives": [
+      "E.electrolyte_transport",
+      "E.solid_diffusion",
+      "E.butler_volmer",
+      "M.P2D_couple",
+      "O.V_cell"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "SEI_resistance_drift",
+    "active_material_loss",
+    "temperature_gradient"
+  ],
+  "error_metric": "V_cell_L2_mV",
+  "error_metric_secondary": "capacity_fade_error",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "battery_electrode",
+      "forward_operator": "p2d_battery_forward",
+      "input_format": "measurement_only",
+      "omega": {
+        "thickness_um": 100,
+        "C_rate": 1.0,
+        "T_K": 298,
+        "N_mesh": 100,
+        "DOD_range": [
+          0,
+          1
+        ]
+      },
+      "epsilon_fn_center": "V_cell L2 <= 10 mV"
+    },
+    "allowed_forward_operators": [
+      "p2d_battery_forward"
+    ],
+    "allowed_problem_classes": [
+      "battery_electrode"
+    ],
+    "allowed_omega_dimensions": [
+      "thickness_um",
+      "C_rate",
+      "T_K",
+      "N_mesh",
+      "DOD_range"
+    ],
+    "omega_bounds": {
+      "thickness_um": [
+        10,
+        1000
+      ],
+      "C_rate": [
+        0.01,
+        100
+      ],
+      "T_K": [
+        253,
+        353
+      ],
+      "N_mesh": [
+        20,
+        1000
+      ],
+      "cycles": [
+        1,
+        10000
+      ]
+    },
+    "epsilon_bounds": {
+      "V_cell_L2_mV": [
+        2.0,
+        200.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

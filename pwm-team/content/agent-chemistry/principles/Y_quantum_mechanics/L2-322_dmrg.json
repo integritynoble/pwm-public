@@ -1,0 +1,109 @@
+{
+  "artifact_id": "L2-322",
+  "layer": "L2",
+  "parent_l1": "L1-322",
+  "title": "Density Matrix Renormalization Group (DMRG) Mismatch-Only Spec",
+  "spec_type": "mismatch_only",
+  "six_tuple": {
+    "omega": {
+      "L_sites": [
+        10,
+        10000
+      ],
+      "bond_dim_M": [
+        20,
+        10000
+      ],
+      "N_sweeps": [
+        5,
+        200
+      ]
+    },
+    "E": {
+      "forward": "|Psi> = sum Tr[M^{s_1}..M^{s_L}] |s_1..s_L>; minimize <Psi|H|Psi> iteratively",
+      "operator": "dmrg_forward_mismatch",
+      "primitive_chain": "E.MPO_hamiltonian -> M.sweep_optimize -> O.gs_energy",
+      "inverse": "recover constitutive parameters for Density Matrix Renormalization Group (DMRG)"
+    },
+    "B": {
+      "domain_specific_priors": true
+    },
+    "I": {
+      "strategy": "principle_appropriate_init"
+    },
+    "O": [
+      "gs_energy_error_mHa_per_site",
+      "entanglement_entropy_error",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.1 * (1 + 0.1 * mismatch_severity)"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32"
+    },
+    "output_format": {
+      "state": "float32"
+    },
+    "baselines": [
+      {
+        "name": "ITensor",
+        "method_sig": "T+O",
+        "expected_err": 0.2
+      },
+      {
+        "name": "Block2",
+        "method_sig": "T+O",
+        "expected_err": 0.18
+      },
+      {
+        "name": "DMRG-Transformer",
+        "method_sig": "T+N",
+        "expected_err": 0.12
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "L_sites": 100,
+        "bond_dim_M": 200,
+        "N_sweeps": 20,
+        "model": "Heisenberg_spin_half"
+      },
+      "epsilon": 0.1
+    },
+    "tier_bounds": {
+      "L_sites": [
+        10,
+        10000
+      ],
+      "bond_dim_M": [
+        20,
+        10000
+      ],
+      "N_sweeps": [
+        5,
+        200
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.45,
+  "d_spec_notes": "Canonical mismatch-only baseline for this principle; sits at the centroid of its spec family.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensions match across all DAG nodes; operator dimensions consistent.",
+    "S2": "Operator condition number controlled (kappa_eff=150) under declared Omega with regularization.",
+    "S3": "Solver class ITensor, Block2, SyTen; DMRG with QN symmetries provably converges at rate q=2.0; monotone residual decrease.",
+    "S4": "epsilon_fn evaluates cleanly across 50 random Omega samples; hardness rule satisfied (top baseline fails at Omega corner)."
+  },
+  "ipfs_cid": null
+}
