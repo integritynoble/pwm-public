@@ -5,64 +5,154 @@
   "parent_l1": "L1-141",
   "title": "LIBS Imaging Benchmark Suite (geology + alloy + biological)",
   "benchmark_type": "combined_P_and_I",
-
   "dataset_registry": {
     "primary": "ChemCam-Mars LIBS (MSL rover) + SuperCam (Perseverance)",
     "secondary": "NIST standard reference materials (SRMs) for matrix-matched calibration; ELSIS Fe-ore database",
     "tertiary": "Motto-Ros leaf/biomedical LIBS imaging dataset",
     "construction_method": "Raster scan samples with known c_k; inject plasma-temp drift and shot-to-shot variability",
-    "num_dev_instances_per_tier": 20, "holdout_instances_per_tier": 10
+    "num_dev_instances_per_tier": 20,
+    "holdout_instances_per_tier": 10
   },
-
   "ibenchmarks": [
     {
-      "tier": "T1_matrix_matched", "rho": 1,
-      "omega_tier": {"H": 256, "W": 256, "N_lambda": 2048, "E_p_mJ": 50, "K": 5, "self_absorption": 0.0, "matrix_effects": 0.0},
-      "epsilon": 0.03, "d_ibench": 0.14,
+      "tier": "T1_matrix_matched",
+      "rho": 1,
+      "omega_tier": {
+        "H": 256,
+        "W": 256,
+        "N_lambda": 2048,
+        "E_p_mJ": 50,
+        "K": 5,
+        "self_absorption": 0.0,
+        "matrix_effects": 0.0
+      },
+      "epsilon": 0.03,
+      "d_ibench": 0.14,
       "baselines": [
-        {"name": "PLS",     "nmse": 0.04, "Q": 0.78},
-        {"name": "CF-LIBS", "nmse": 0.05, "Q": 0.72},
-        {"name": "LIBSNet", "nmse": 0.02, "Q": 0.90}
+        {
+          "name": "PLS",
+          "nmse": 0.04,
+          "Q": 0.78
+        },
+        {
+          "name": "CF-LIBS",
+          "nmse": 0.05,
+          "Q": 0.72
+        },
+        {
+          "name": "LIBSNet",
+          "nmse": 0.02,
+          "Q": 0.9
+        }
       ]
     },
     {
-      "tier": "T2_mild_mismatch", "rho": 3,
-      "omega_tier": {"H": 256, "W": 256, "N_lambda": 2048, "K": 8, "self_absorption": 0.1, "matrix_effects": 0.1, "plasma_temp_drift": 0.1},
-      "epsilon": 0.07, "d_ibench": 0.28,
+      "tier": "T2_mild_mismatch",
+      "rho": 3,
+      "omega_tier": {
+        "H": 256,
+        "W": 256,
+        "N_lambda": 2048,
+        "K": 8,
+        "self_absorption": 0.1,
+        "matrix_effects": 0.1,
+        "plasma_temp_drift": 0.1
+      },
+      "epsilon": 0.07,
+      "d_ibench": 0.28,
       "baselines": [
-        {"name": "PLS",     "nmse": 0.10, "Q": 0.52},
-        {"name": "LIBSNet", "nmse": 0.06, "Q": 0.72}
+        {
+          "name": "PLS",
+          "nmse": 0.1,
+          "Q": 0.52
+        },
+        {
+          "name": "LIBSNet",
+          "nmse": 0.06,
+          "Q": 0.72
+        }
       ]
     },
     {
-      "tier": "T3_mars", "rho": 5,
-      "omega_tier": {"H": 512, "W": 512, "N_lambda": 4096, "K": 15, "self_absorption": 0.3, "matrix_effects": 0.2, "plasma_temp_drift": 0.2, "shot_to_shot_variability": 0.2},
-      "epsilon": 0.15, "d_ibench": 0.52,
+      "tier": "T3_mars",
+      "rho": 5,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "N_lambda": 4096,
+        "K": 15,
+        "self_absorption": 0.3,
+        "matrix_effects": 0.2,
+        "plasma_temp_drift": 0.2,
+        "shot_to_shot_variability": 0.2
+      },
+      "epsilon": 0.15,
+      "d_ibench": 0.52,
       "baselines": [
-        {"name": "LIBSNet",   "nmse": 0.18, "Q": 0.42},
-        {"name": "CF-LIBS",   "nmse": 0.22, "Q": 0.35}
+        {
+          "name": "LIBSNet",
+          "nmse": 0.18,
+          "Q": 0.42
+        },
+        {
+          "name": "CF-LIBS",
+          "nmse": 0.22,
+          "Q": 0.35
+        }
       ]
     },
     {
-      "tier": "T4_extreme", "rho": 10,
-      "omega_tier": {"H": 1024, "W": 1024, "N_lambda": 16384, "K": 30, "self_absorption": 0.5, "matrix_effects": 0.3, "plasma_temp_drift": 0.3, "shot_to_shot_variability": 0.3},
-      "epsilon": 0.3, "d_ibench": 0.75,
+      "tier": "T4_extreme",
+      "rho": 10,
+      "omega_tier": {
+        "H": 1024,
+        "W": 1024,
+        "N_lambda": 16384,
+        "K": 30,
+        "self_absorption": 0.5,
+        "matrix_effects": 0.3,
+        "plasma_temp_drift": 0.3,
+        "shot_to_shot_variability": 0.3
+      },
+      "epsilon": 0.3,
+      "d_ibench": 0.75,
       "baselines": [
-        {"name": "LIBSNet", "nmse": 0.35, "Q": 0.28}
+        {
+          "name": "CF-LIBS",
+          "nmse": 0.42,
+          "Q": 0.13
+        },
+        {
+          "name": "LIBSNet",
+          "nmse": 0.35,
+          "Q": 0.28
+        }
       ]
     }
   ],
-
   "p_benchmark": {
     "rho": 50,
-    "dataset_p_benchmark": {"name": "ChemCam + NIST-SRM + ELSIS + Motto-Ros union", "num_dev_instances": 200, "num_holdout_instances": 100},
+    "dataset_p_benchmark": {
+      "name": "ChemCam + NIST-SRM + ELSIS + Motto-Ros union",
+      "num_dev_instances": 200,
+      "num_holdout_instances": 100
+    },
     "baselines": [
-      {"name": "PLS",     "overall_Q": 0.48},
-      {"name": "CF-LIBS", "overall_Q": 0.55},
-      {"name": "LIBSNet", "overall_Q": 0.68}
+      {
+        "name": "PLS",
+        "overall_Q": 0.48
+      },
+      {
+        "name": "CF-LIBS",
+        "overall_Q": 0.55
+      },
+      {
+        "name": "LIBSNet",
+        "overall_Q": 0.68
+      }
     ]
   },
-
-  "hardness_rule_check": "SATISFIED — LIBSNet fails at T4_extreme (self_abs=0.5, matrix=0.3): 0.35 > epsilon_fn ~ 0.25.",
-  "ipfs_cid": null, "ground_truth_cid": null
+  "hardness_rule_check": "SATISFIED \u2014 LIBSNet fails at T4_extreme (self_abs=0.5, matrix=0.3): 0.35 > epsilon_fn ~ 0.25.",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
 }

@@ -5,63 +5,150 @@
   "parent_l1": "L1-131",
   "title": "pCT Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
-
   "dataset_registry": {
     "primary": "Northern-Illinois proton CT collaboration pCT test dataset",
     "secondary": "Preclinical pCT at LLNL and CERN biomedical hub",
     "tertiary": "Synthetic GATE simulations of anthropomorphic phantoms",
     "construction_method": "Use measured/simulated proton event lists; inject MLP errors & nuclear scatter",
-    "num_dev_instances_per_tier": 15, "holdout_instances_per_tier": 10
+    "num_dev_instances_per_tier": 15,
+    "holdout_instances_per_tier": 10
   },
-
   "ibenchmarks": [
     {
-      "tier": "T1_clean_phantom", "rho": 1,
-      "omega_tier": {"E_beam_MeV": 200, "N_proton_per_view": 1e8, "N_view": 360, "pixel_mm": 1.0, "mls_path_model_error": 0.0},
-      "epsilon": 8e-4, "d_ibench": 0.14,
+      "tier": "T1_clean_phantom",
+      "rho": 1,
+      "omega_tier": {
+        "E_beam_MeV": 200,
+        "N_proton_per_view": 100000000.0,
+        "N_view": 360,
+        "pixel_mm": 1.0,
+        "mls_path_model_error": 0.0
+      },
+      "epsilon": 0.0008,
+      "d_ibench": 0.14,
       "baselines": [
-        {"name": "FBP-MLP", "nmse": 1.5e-3, "Q": 0.70},
-        {"name": "SART-TV", "nmse": 1e-3,   "Q": 0.88},
-        {"name": "pCT-Net", "nmse": 8e-4,   "Q": 0.94}
+        {
+          "name": "FBP-MLP",
+          "nmse": 0.0015,
+          "Q": 0.7
+        },
+        {
+          "name": "SART-TV",
+          "nmse": 0.001,
+          "Q": 0.88
+        },
+        {
+          "name": "pCT-Net",
+          "nmse": 0.0008,
+          "Q": 0.94
+        }
       ]
     },
     {
-      "tier": "T2_clinical_head", "rho": 3,
-      "omega_tier": {"E_beam_MeV": 200, "N_proton_per_view": 1e7, "N_view": 180, "pixel_mm": 1.0, "mls_path_model_error": 0.05, "nuclear_interaction_fraction": 0.05},
-      "epsilon": 2e-3, "d_ibench": 0.28,
+      "tier": "T2_clinical_head",
+      "rho": 3,
+      "omega_tier": {
+        "E_beam_MeV": 200,
+        "N_proton_per_view": 10000000.0,
+        "N_view": 180,
+        "pixel_mm": 1.0,
+        "mls_path_model_error": 0.05,
+        "nuclear_interaction_fraction": 0.05
+      },
+      "epsilon": 0.002,
+      "d_ibench": 0.28,
       "baselines": [
-        {"name": "SART-TV", "nmse": 2.5e-3, "Q": 0.55},
-        {"name": "pCT-Net", "nmse": 1.8e-3, "Q": 0.72}
+        {
+          "name": "SART-TV",
+          "nmse": 0.0025,
+          "Q": 0.55
+        },
+        {
+          "name": "pCT-Net",
+          "nmse": 0.0018,
+          "Q": 0.72
+        }
       ]
     },
     {
-      "tier": "T3_low_dose", "rho": 5,
-      "omega_tier": {"E_beam_MeV": 150, "N_proton_per_view": 1e6, "N_view": 90, "pixel_mm": 2.0, "mls_path_model_error": 0.1, "nuclear_interaction_fraction": 0.1, "motion_blur": 1.0},
-      "epsilon": 8e-3, "d_ibench": 0.50,
+      "tier": "T3_low_dose",
+      "rho": 5,
+      "omega_tier": {
+        "E_beam_MeV": 150,
+        "N_proton_per_view": 1000000.0,
+        "N_view": 90,
+        "pixel_mm": 2.0,
+        "mls_path_model_error": 0.1,
+        "nuclear_interaction_fraction": 0.1,
+        "motion_blur": 1.0
+      },
+      "epsilon": 0.008,
+      "d_ibench": 0.5,
       "baselines": [
-        {"name": "pCT-Net", "nmse": 1e-2, "Q": 0.42}
+        {
+          "name": "SART-TV",
+          "nmse": 0.08,
+          "Q": 0.27
+        },
+        {
+          "name": "pCT-Net",
+          "nmse": 0.01,
+          "Q": 0.42
+        }
       ]
     },
     {
-      "tier": "T4_extreme", "rho": 10,
-      "omega_tier": {"E_beam_MeV": 70, "N_proton_per_view": 1e5, "N_view": 10, "pixel_mm": 5.0, "mls_path_model_error": 0.3, "nuclear_interaction_fraction": 0.2, "motion_blur": 5, "dose_limited_snr": 0.5},
-      "epsilon": 5e-2, "d_ibench": 0.74,
+      "tier": "T4_extreme",
+      "rho": 10,
+      "omega_tier": {
+        "E_beam_MeV": 70,
+        "N_proton_per_view": 100000.0,
+        "N_view": 10,
+        "pixel_mm": 5.0,
+        "mls_path_model_error": 0.3,
+        "nuclear_interaction_fraction": 0.2,
+        "motion_blur": 5,
+        "dose_limited_snr": 0.5
+      },
+      "epsilon": 0.05,
+      "d_ibench": 0.74,
       "baselines": [
-        {"name": "pCT-Net", "nmse": 7e-2, "Q": 0.25}
+        {
+          "name": "SART-TV",
+          "nmse": 0.08,
+          "Q": 0.1
+        },
+        {
+          "name": "pCT-Net",
+          "nmse": 0.07,
+          "Q": 0.25
+        }
       ]
     }
   ],
-
   "p_benchmark": {
     "rho": 50,
-    "dataset_p_benchmark": {"name": "NIU pCT + LLNL + GATE synthetic union", "num_dev_instances": 100, "num_holdout_instances": 50},
+    "dataset_p_benchmark": {
+      "name": "NIU pCT + LLNL + GATE synthetic union",
+      "num_dev_instances": 100,
+      "num_holdout_instances": 50
+    },
     "baselines": [
-      {"name": "FBP-MLP",  "overall_Q": 0.55},
-      {"name": "SART-TV",  "overall_Q": 0.65},
-      {"name": "pCT-Net",  "overall_Q": 0.72}
+      {
+        "name": "FBP-MLP",
+        "overall_Q": 0.55
+      },
+      {
+        "name": "SART-TV",
+        "overall_Q": 0.65
+      },
+      {
+        "name": "pCT-Net",
+        "overall_Q": 0.72
+      }
     ]
   },
-
-  "hardness_rule_check": "SATISFIED — pCT-Net fails at T4_extreme (N_view=10, SNR=0.5): 0.07 > epsilon_fn ~ 0.05.",
-  "ipfs_cid": null, "ground_truth_cid": null
+  "hardness_rule_check": "SATISFIED \u2014 pCT-Net fails at T4_extreme (N_view=10, SNR=0.5): 0.07 > epsilon_fn ~ 0.05.",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
 }

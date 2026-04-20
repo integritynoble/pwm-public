@@ -5,63 +5,146 @@
   "parent_l1": "L1-133",
   "title": "WAXS Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
-
   "dataset_registry": {
     "primary": "Argonne APS polymer WAXS + DESY PETRA-III GIWAXS",
     "secondary": "ESRF ID02 WAXS polymer catalog",
     "tertiary": "Synthetic WAXS curves from FEFF/DISCUS liquid and polymer models",
     "construction_method": "Acquire/simulate WAXS; inject background and truncation",
-    "num_dev_instances_per_tier": 15, "holdout_instances_per_tier": 10
+    "num_dev_instances_per_tier": 15,
+    "holdout_instances_per_tier": 10
   },
-
   "ibenchmarks": [
     {
-      "tier": "T1_crystalline_polymer", "rho": 1,
-      "omega_tier": {"N_q": 800, "q_min": 5, "q_max": 30, "sample_thickness_um": 100, "background_subtraction": 0.0},
-      "epsilon": 3e-3, "d_ibench": 0.14,
+      "tier": "T1_crystalline_polymer",
+      "rho": 1,
+      "omega_tier": {
+        "N_q": 800,
+        "q_min": 5,
+        "q_max": 30,
+        "sample_thickness_um": 100,
+        "background_subtraction": 0.0
+      },
+      "epsilon": 0.003,
+      "d_ibench": 0.14,
       "baselines": [
-        {"name": "Rietveld",    "rwp": 0.06, "Q": 0.85},
-        {"name": "MaxEnt-g(r)", "nmse": 4e-3,"Q": 0.82},
-        {"name": "WAXS-Net",    "nmse": 2.5e-3,"Q": 0.94}
+        {
+          "name": "Rietveld",
+          "rwp": 0.06,
+          "Q": 0.85
+        },
+        {
+          "name": "MaxEnt-g(r)",
+          "nmse": 0.004,
+          "Q": 0.82
+        },
+        {
+          "name": "WAXS-Net",
+          "nmse": 0.0025,
+          "Q": 0.94
+        }
       ]
     },
     {
-      "tier": "T2_amorphous", "rho": 3,
-      "omega_tier": {"N_q": 800, "q_min": 5, "q_max": 30, "background_subtraction": 0.1, "termination_ripples": 0.05},
-      "epsilon": 1e-2, "d_ibench": 0.28,
+      "tier": "T2_amorphous",
+      "rho": 3,
+      "omega_tier": {
+        "N_q": 800,
+        "q_min": 5,
+        "q_max": 30,
+        "background_subtraction": 0.1,
+        "termination_ripples": 0.05
+      },
+      "epsilon": 0.01,
+      "d_ibench": 0.28,
       "baselines": [
-        {"name": "MaxEnt-g(r)","nmse": 1.2e-2, "Q": 0.58},
-        {"name": "WAXS-Net",   "nmse": 8e-3,   "Q": 0.75}
+        {
+          "name": "MaxEnt-g(r)",
+          "nmse": 0.012,
+          "Q": 0.58
+        },
+        {
+          "name": "WAXS-Net",
+          "nmse": 0.008,
+          "Q": 0.75
+        }
       ]
     },
     {
-      "tier": "T3_oriented", "rho": 5,
-      "omega_tier": {"N_q": 800, "q_min": 3, "q_max": 25, "background_subtraction": 0.15, "preferred_orientation": 0.3},
-      "epsilon": 3e-2, "d_ibench": 0.50,
+      "tier": "T3_oriented",
+      "rho": 5,
+      "omega_tier": {
+        "N_q": 800,
+        "q_min": 3,
+        "q_max": 25,
+        "background_subtraction": 0.15,
+        "preferred_orientation": 0.3
+      },
+      "epsilon": 0.03,
+      "d_ibench": 0.5,
       "baselines": [
-        {"name": "WAXS-Net", "nmse": 4e-2, "Q": 0.45}
+        {
+          "name": "MaxEnt-g(r)",
+          "nmse": 0.045,
+          "Q": 0.3
+        },
+        {
+          "name": "WAXS-Net",
+          "nmse": 0.04,
+          "Q": 0.45
+        }
       ]
     },
     {
-      "tier": "T4_truncated", "rho": 10,
-      "omega_tier": {"N_q": 100, "q_min": 10, "q_max": 20, "background_subtraction": 0.3, "q_truncation": 0.5, "termination_ripples": 0.3, "preferred_orientation": 0.5},
-      "epsilon": 1.5e-1, "d_ibench": 0.74,
+      "tier": "T4_truncated",
+      "rho": 10,
+      "omega_tier": {
+        "N_q": 100,
+        "q_min": 10,
+        "q_max": 20,
+        "background_subtraction": 0.3,
+        "q_truncation": 0.5,
+        "termination_ripples": 0.3,
+        "preferred_orientation": 0.5
+      },
+      "epsilon": 0.15,
+      "d_ibench": 0.74,
       "baselines": [
-        {"name": "WAXS-Net", "nmse": 2e-1, "Q": 0.28}
+        {
+          "name": "MaxEnt-g(r)",
+          "nmse": 0.25,
+          "Q": 0.13
+        },
+        {
+          "name": "WAXS-Net",
+          "nmse": 0.2,
+          "Q": 0.28
+        }
       ]
     }
   ],
-
   "p_benchmark": {
     "rho": 50,
-    "dataset_p_benchmark": {"name": "APS-polymer + ESRF-ID02 + synthetic union", "num_dev_instances": 100, "num_holdout_instances": 50},
+    "dataset_p_benchmark": {
+      "name": "APS-polymer + ESRF-ID02 + synthetic union",
+      "num_dev_instances": 100,
+      "num_holdout_instances": 50
+    },
     "baselines": [
-      {"name": "Rietveld",    "overall_Q": 0.62},
-      {"name": "MaxEnt-g(r)", "overall_Q": 0.60},
-      {"name": "WAXS-Net",    "overall_Q": 0.72}
+      {
+        "name": "Rietveld",
+        "overall_Q": 0.62
+      },
+      {
+        "name": "MaxEnt-g(r)",
+        "overall_Q": 0.6
+      },
+      {
+        "name": "WAXS-Net",
+        "overall_Q": 0.72
+      }
     ]
   },
-
-  "hardness_rule_check": "SATISFIED — WAXS-Net fails at T4_truncated (q_truncation=0.5, preferred_orient=0.5): 0.2 > epsilon_fn ~ 0.17.",
-  "ipfs_cid": null, "ground_truth_cid": null
+  "hardness_rule_check": "SATISFIED \u2014 WAXS-Net fails at T4_truncated (q_truncation=0.5, preferred_orient=0.5): 0.2 > epsilon_fn ~ 0.17.",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
 }

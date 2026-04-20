@@ -5,66 +5,163 @@
   "parent_l1": "L1-134",
   "title": "XRF Tomography Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
-
   "dataset_registry": {
     "primary": "APS 2-ID-D XRF-CT biomedical datasets (Paunesku, Vogt)",
     "secondary": "DESY P06 synchrotron XRF-CT material samples",
     "tertiary": "Synthetic XRF-CT via GEANT4 or CONRAD simulations",
     "construction_method": "Raster tomographic XRF; inject self-absorption and scatter",
-    "num_dev_instances_per_tier": 15, "holdout_instances_per_tier": 10
+    "num_dev_instances_per_tier": 15,
+    "holdout_instances_per_tier": 10
   },
-
   "ibenchmarks": [
     {
-      "tier": "T1_thin_sample", "rho": 1,
-      "omega_tier": {"H": 500, "W": 500, "N_view": 360, "pixel_um": 1, "K": 5, "self_absorption": 0.0},
-      "epsilon": 0.015, "d_ibench": 0.14,
+      "tier": "T1_thin_sample",
+      "rho": 1,
+      "omega_tier": {
+        "H": 500,
+        "W": 500,
+        "N_view": 360,
+        "pixel_um": 1,
+        "K": 5,
+        "self_absorption": 0.0
+      },
+      "epsilon": 0.015,
+      "d_ibench": 0.14,
       "baselines": [
-        {"name": "FBP",     "nmse": 0.025, "Q": 0.70},
-        {"name": "SART-SAC","nmse": 0.015, "Q": 0.88},
-        {"name": "XRF-Net", "nmse": 0.012, "Q": 0.94}
+        {
+          "name": "FBP",
+          "nmse": 0.025,
+          "Q": 0.7
+        },
+        {
+          "name": "SART-SAC",
+          "nmse": 0.015,
+          "Q": 0.88
+        },
+        {
+          "name": "XRF-Net",
+          "nmse": 0.012,
+          "Q": 0.94
+        }
       ]
     },
     {
-      "tier": "T2_moderate", "rho": 3,
-      "omega_tier": {"H": 500, "W": 500, "N_view": 180, "pixel_um": 2, "K": 10, "self_absorption": 0.2, "scatter_background": 0.1},
-      "epsilon": 0.04, "d_ibench": 0.28,
+      "tier": "T2_moderate",
+      "rho": 3,
+      "omega_tier": {
+        "H": 500,
+        "W": 500,
+        "N_view": 180,
+        "pixel_um": 2,
+        "K": 10,
+        "self_absorption": 0.2,
+        "scatter_background": 0.1
+      },
+      "epsilon": 0.04,
+      "d_ibench": 0.28,
       "baselines": [
-        {"name": "SART-SAC","nmse": 0.05, "Q": 0.50},
-        {"name": "ML-EM",   "nmse": 0.04, "Q": 0.70},
-        {"name": "XRF-Net", "nmse": 0.03, "Q": 0.80}
+        {
+          "name": "SART-SAC",
+          "nmse": 0.05,
+          "Q": 0.5
+        },
+        {
+          "name": "ML-EM",
+          "nmse": 0.04,
+          "Q": 0.7
+        },
+        {
+          "name": "XRF-Net",
+          "nmse": 0.03,
+          "Q": 0.8
+        }
       ]
     },
     {
-      "tier": "T3_thick", "rho": 5,
-      "omega_tier": {"H": 1024, "W": 1024, "N_view": 60, "pixel_um": 5, "K": 20, "self_absorption": 0.5, "scatter_background": 0.2, "pileup_correction": 0.1},
-      "epsilon": 0.1, "d_ibench": 0.50,
+      "tier": "T3_thick",
+      "rho": 5,
+      "omega_tier": {
+        "H": 1024,
+        "W": 1024,
+        "N_view": 60,
+        "pixel_um": 5,
+        "K": 20,
+        "self_absorption": 0.5,
+        "scatter_background": 0.2,
+        "pileup_correction": 0.1
+      },
+      "epsilon": 0.1,
+      "d_ibench": 0.5,
       "baselines": [
-        {"name": "ML-EM",   "nmse": 0.15, "Q": 0.42},
-        {"name": "XRF-Net", "nmse": 0.08, "Q": 0.60}
+        {
+          "name": "ML-EM",
+          "nmse": 0.15,
+          "Q": 0.42
+        },
+        {
+          "name": "XRF-Net",
+          "nmse": 0.08,
+          "Q": 0.6
+        }
       ]
     },
     {
-      "tier": "T4_severe", "rho": 10,
-      "omega_tier": {"H": 2048, "W": 2048, "N_view": 10, "pixel_um": 10, "K": 30, "self_absorption": 0.8, "scatter_background": 0.3, "pileup_correction": 0.2, "detector_live_time": 0.1},
-      "epsilon": 0.3, "d_ibench": 0.74,
+      "tier": "T4_severe",
+      "rho": 10,
+      "omega_tier": {
+        "H": 2048,
+        "W": 2048,
+        "N_view": 10,
+        "pixel_um": 10,
+        "K": 30,
+        "self_absorption": 0.8,
+        "scatter_background": 0.3,
+        "pileup_correction": 0.2,
+        "detector_live_time": 0.1
+      },
+      "epsilon": 0.3,
+      "d_ibench": 0.74,
       "baselines": [
-        {"name": "XRF-Net", "nmse": 0.4, "Q": 0.25}
+        {
+          "name": "ML-EM",
+          "nmse": 0.5,
+          "Q": 0.1
+        },
+        {
+          "name": "XRF-Net",
+          "nmse": 0.4,
+          "Q": 0.25
+        }
       ]
     }
   ],
-
   "p_benchmark": {
     "rho": 50,
-    "dataset_p_benchmark": {"name": "APS 2-ID-D + DESY-P06 + synthetic union", "num_dev_instances": 100, "num_holdout_instances": 50},
+    "dataset_p_benchmark": {
+      "name": "APS 2-ID-D + DESY-P06 + synthetic union",
+      "num_dev_instances": 100,
+      "num_holdout_instances": 50
+    },
     "baselines": [
-      {"name": "FBP",     "overall_Q": 0.48},
-      {"name": "SART-SAC","overall_Q": 0.64},
-      {"name": "ML-EM",   "overall_Q": 0.66},
-      {"name": "XRF-Net", "overall_Q": 0.70}
+      {
+        "name": "FBP",
+        "overall_Q": 0.48
+      },
+      {
+        "name": "SART-SAC",
+        "overall_Q": 0.64
+      },
+      {
+        "name": "ML-EM",
+        "overall_Q": 0.66
+      },
+      {
+        "name": "XRF-Net",
+        "overall_Q": 0.7
+      }
     ]
   },
-
-  "hardness_rule_check": "SATISFIED — XRF-Net fails at T4_severe (self_abs=0.8, live_time=0.1): 0.4 > epsilon_fn ~ 0.25.",
-  "ipfs_cid": null, "ground_truth_cid": null
+  "hardness_rule_check": "SATISFIED \u2014 XRF-Net fails at T4_severe (self_abs=0.8, live_time=0.1): 0.4 > epsilon_fn ~ 0.25.",
+  "ipfs_cid": null,
+  "ground_truth_cid": null
 }
