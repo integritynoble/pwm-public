@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-434",
+  "layer": "L1",
+  "principle_number": "434",
+  "title": "PID Controller Tuning",
+  "domain": "Control Theory",
+  "sub_domain": "Classical control",
+  "source_file": "AG_control_theory/434_pid_controller_tuning.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "PID tuning: find Kp, Ki, Kd to minimize IAE/ISE for a given plant while satisfying stability margins.",
+    "forward_model": "C(s) = Kp*(1 + 1/(Ti*s) + Td*s); closed-loop T(s) = C(s)*G(s)/(1+C(s)*G(s))",
+    "world_state_x": "PID parameters (Kp, Ti, Td) for plant G(s)",
+    "observation_y": "step response y(t) and control effort u(t)",
+    "physical_parameters_theta": [
+      "plant_gain_K",
+      "plant_time_constant_tau",
+      "plant_delay_L",
+      "desired_PM_deg"
+    ]
+  },
+  "G": {
+    "dag": "M.pid.transfer_function -> S.zn.tuning_rule -> O.iae.integral_criterion",
+    "vertices": [
+      "M.pid.transfer_function",
+      "S.zn.tuning_rule",
+      "O.iae.integral_criterion"
+    ],
+    "arcs": [
+      "M.pid.transfer_function -> S.zn.tuning_rule",
+      "S.zn.tuning_rule -> O.iae.integral_criterion"
+    ],
+    "L_DAG": 2.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 200,
+    "condition_number_effective": 10,
+    "condition_number_mismatched": 50,
+    "regime": "Well-suited for FOPDT plants; Ziegler-Nichols often produces poor margins; SIMC provides robustness-performance balance."
+  },
+  "C": {
+    "solver_class": "Ziegler_Nichols or SIMC_rule or optimization_based",
+    "convergence_rate_q": 2.0,
+    "error_bound": "IAE < 0.5 * IAE_untuned; PM > 30 deg; overshoot < 15%",
+    "complexity": "O(1) for rule-based; O(N_iter * N_sim) for optimization-based"
+  },
+  "physics_fingerprint": {
+    "carrier": "N/A",
+    "sensing_mechanism": "closed_loop_step_response",
+    "integration_axis": "time",
+    "problem_class": "parameter_estimation",
+    "noise_model": "gaussian",
+    "solution_space": "PID_parameter_vector",
+    "primitives": [
+      "M.pid.transfer_function",
+      "S.zn.tuning_rule",
+      "O.iae.integral_criterion"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "plant_gain_variation",
+    "time_constant_change",
+    "delay_variation"
+  ],
+  "error_metric": "IAE_integral_absolute_error",
+  "error_metric_secondary": "overshoot_percent",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "parameter_estimation",
+      "forward_operator": "closed_loop_step_response",
+      "input_format": "measurement_only",
+      "omega": {
+        "plant_K": 1.0,
+        "plant_tau": 1.0,
+        "plant_L": 0.1,
+        "desired_PM_deg": 45
+      },
+      "epsilon_fn_center": "0.3 IAE_integral_absolute_error"
+    },
+    "allowed_forward_operators": [
+      "closed_loop_step_response"
+    ],
+    "allowed_problem_classes": [
+      "parameter_estimation"
+    ],
+    "allowed_omega_dimensions": [
+      "plant_K",
+      "plant_tau",
+      "plant_L",
+      "desired_PM_deg"
+    ],
+    "omega_bounds": {
+      "plant_K": [
+        0.1,
+        10.0
+      ],
+      "plant_tau": [
+        0.01,
+        100.0
+      ],
+      "plant_L": [
+        0.001,
+        10.0
+      ],
+      "desired_PM_deg": [
+        30,
+        70
+      ]
+    },
+    "epsilon_bounds": {
+      "IAE_integral_absolute_error": [
+        0.05,
+        2.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

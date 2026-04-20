@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-457",
+  "layer": "L2",
+  "parent_l1": "L1-457",
+  "principle_ref": "sha256:<L1-457_principle_hash>",
+  "title": "Hydrodynamic Lubrication (Reynolds Equation) \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "N_grid_x": [
+        10,
+        200
+      ],
+      "eccentricity_ratio_e": [
+        0.0,
+        0.9
+      ],
+      "speed_RPM": [
+        100,
+        100000
+      ],
+      "viscosity_Pa_s": [
+        0.001,
+        1.0
+      ]
+    },
+    "E": {
+      "forward": "d/dx(h^3/eta * dp/dx) + d/dz(h^3/eta * dp/dz) = 6*U*dh/dx (Reynolds equation); p >= 0",
+      "operator": "pressure_film_measurement",
+      "primitive_chain": "M.reynolds.thin_film -> S.fdm.cavitation_constraint -> O.least_squares.bearing",
+      "inverse": "recover film pressure field p(x from pressure measurements p_i at N_sensors sensor locations in bearing"
+    },
+    "B": {
+      "pressure_positivity": "p >= 0 (cavitation)",
+      "flow_continuity": "Reynolds equation satisfied"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "pressure_field_RMSE_MPa",
+      "load_capacity_RMSE_N",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.3 + 0.2 * (eccentricity_ratio_e / 0.5)^0.5"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 pressure_film_field"
+    },
+    "baselines": [
+      {
+        "name": "FDM_Reynolds_solver",
+        "method_sig": "L+O",
+        "expected_score": 0.6
+      },
+      {
+        "name": "FEM_lubrication",
+        "method_sig": "L+O",
+        "expected_score": 0.4
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_grid_x": 50,
+        "eccentricity_ratio_e": 0.5,
+        "speed_RPM": 3000,
+        "viscosity_Pa_s": 0.05,
+        "viscosity_temperature_dependence": 0.0,
+        "surface_roughness_effect": 0.0,
+        "cavitation_extent_uncertainty": 0.0
+      },
+      "epsilon": 0.5
+    },
+    "tier_bounds": {
+      "N_grid_x": [
+        10,
+        200
+      ],
+      "eccentricity_ratio_e": [
+        0.0,
+        0.9
+      ],
+      "speed_RPM": [
+        100,
+        100000
+      ],
+      "viscosity_Pa_s": [
+        0.001,
+        1.0
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.25,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.25 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

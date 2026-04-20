@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-417",
+  "layer": "L2",
+  "parent_l1": "L1-417",
+  "principle_ref": "sha256:<L1-417_principle_hash>",
+  "title": "General Circulation Model (GCM) Inversion \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "N_ensemble_members": [
+        20,
+        1000
+      ],
+      "simulation_years": [
+        10,
+        1000
+      ],
+      "aerosol_forcing_Wm2": [
+        -3.0,
+        0.0
+      ],
+      "ECS_K": [
+        1.5,
+        6.0
+      ]
+    },
+    "E": {
+      "forward": "d/dt [T, u, v, q, ps] = F(T, u, v, q, ps; theta_param) using primitive equations on spectral grid",
+      "operator": "climate_model_data_assimilation",
+      "primitive_chain": "M.primitive.equations -> S.spectral.dynamical_core -> O.chi2.reanalysis_comparison",
+      "inverse": "recover ECS (equilibrium climate sensitivity) from global temperature trends"
+    },
+    "B": {
+      "energy_conservation": "TOA energy imbalance < 0.5 W/m2",
+      "mass_conservation": "global mean pressure conserved"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "temperature_trend_RMSE_K_decade",
+      "precipitation_bias_mm_day",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.05 + 0.05 * (aerosol_forcing_Wm2 / -1.0)^2"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 climate_forcing_parameter_vector"
+    },
+    "baselines": [
+      {
+        "name": "CMIP6_multi_model_mean",
+        "method_sig": "L+O",
+        "expected_score": 0.12
+      },
+      {
+        "name": "ClimateBench_emulator",
+        "method_sig": "L+O",
+        "expected_score": 0.08
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_ensemble_members": 100,
+        "simulation_years": 100,
+        "aerosol_forcing_Wm2": -1.0,
+        "ECS_K": 3.0,
+        "internal_variability_noise": 0.0,
+        "aerosol_forcing_uncertainty": 0.0,
+        "land_surface_uncertainty": 0.0
+      },
+      "epsilon": 0.1
+    },
+    "tier_bounds": {
+      "N_ensemble_members": [
+        20,
+        1000
+      ],
+      "simulation_years": [
+        10,
+        1000
+      ],
+      "aerosol_forcing_Wm2": [
+        -3.0,
+        0.0
+      ],
+      "ECS_K": [
+        1.5,
+        6.0
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.52,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.52 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

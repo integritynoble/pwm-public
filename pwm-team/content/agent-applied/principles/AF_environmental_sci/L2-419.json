@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-419",
+  "layer": "L2",
+  "parent_l1": "L1-419",
+  "principle_ref": "sha256:<L1-419_principle_hash>",
+  "title": "Ocean Circulation Inverse Modeling \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "N_vertical_levels": [
+        20,
+        100
+      ],
+      "horizontal_resolution_deg": [
+        0.1,
+        2.0
+      ],
+      "assimilation_years": [
+        1,
+        50
+      ],
+      "N_Argo_profiles": [
+        100,
+        30000
+      ]
+    },
+    "E": {
+      "forward": "OGCM (MITgcm): primitive equations for T, S, u, v, w, eta; forcing from ERA5 winds and fluxes",
+      "operator": "ocean_state_estimation",
+      "primitive_chain": "M.primitive.boussinesq_ocean -> S.adjoint.ocean_4dvar -> O.cost.ECCO_objective",
+      "inverse": "recover global ocean T(x from Argo float T/S profiles"
+    },
+    "B": {
+      "incompressibility": "div(u) = 0 (Boussinesq)",
+      "EOS": "rho = rho(T, S, p)"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "temperature_RMSE_K",
+      "salinity_RMSE_psu",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.2 + 0.1 * (1.0 / N_Argo_profiles * 3000)^0.3"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 3D_ocean_state"
+    },
+    "baselines": [
+      {
+        "name": "ECCO_v4r4",
+        "method_sig": "L+O",
+        "expected_score": 0.35
+      },
+      {
+        "name": "EN4_climatology",
+        "method_sig": "L+O",
+        "expected_score": 0.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_vertical_levels": 50,
+        "horizontal_resolution_deg": 1.0,
+        "assimilation_years": 26,
+        "N_Argo_profiles": 3000,
+        "forcing_uncertainty": 0.0,
+        "mixing_parameterization_error": 0.0,
+        "observational_coverage_gaps": 0.0
+      },
+      "epsilon": 0.3
+    },
+    "tier_bounds": {
+      "N_vertical_levels": [
+        20,
+        100
+      ],
+      "horizontal_resolution_deg": [
+        0.1,
+        2.0
+      ],
+      "assimilation_years": [
+        1,
+        50
+      ],
+      "N_Argo_profiles": [
+        100,
+        30000
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.45,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.45 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

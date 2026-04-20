@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-414",
+  "layer": "L2",
+  "parent_l1": "L1-414",
+  "principle_ref": "sha256:<L1-414_principle_hash>",
+  "title": "Gaussian Plume Atmospheric Dispersion \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "N_sensors": [
+        3,
+        100
+      ],
+      "distance_km": [
+        0.1,
+        50.0
+      ],
+      "wind_speed_m_s": [
+        0.5,
+        10.0
+      ],
+      "stability_class_int": [
+        1,
+        6
+      ]
+    },
+    "E": {
+      "forward": "C(x,y,z) = Q/(2*pi*sigma_y*sigma_z*u) * exp(-y^2/(2*sigma_y^2)) * [exp(-(z-H)^2/(2*sigma_z^2)) + exp(-(z+H)^2/(2*sigma_z^2))]",
+      "operator": "atmospheric_dispersion_gaussian",
+      "primitive_chain": "M.gaussian.plume_model -> O.least_squares.source_inversion -> S.stability.pasquill_gifford",
+      "inverse": "recover source emission rate Q (g/s) from ambient concentration measurements C_i (ug/m3) at N_sensors downwind"
+    },
+    "B": {
+      "Q_positivity": "Q >= 0",
+      "stability": "sigma_y, sigma_z > 0"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "source_strength_RMSE_percent",
+      "concentration_RMSE_ug_m3",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "15 + 10 * (6 / N_sensors)^0.5"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 source_strength_location"
+    },
+    "baselines": [
+      {
+        "name": "OLS_gaussian_plume",
+        "method_sig": "L+O",
+        "expected_score": 30
+      },
+      {
+        "name": "Bayesian_MCMC_source",
+        "method_sig": "L+O",
+        "expected_score": 20
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_sensors": 20,
+        "distance_km": 1.0,
+        "wind_speed_m_s": 3.0,
+        "stability_class_int": 4,
+        "wind_direction_uncertainty_deg": 0.0,
+        "stability_class_error": 0.0,
+        "building_wake_effects": 0.0
+      },
+      "epsilon": 25.0
+    },
+    "tier_bounds": {
+      "N_sensors": [
+        3,
+        100
+      ],
+      "distance_km": [
+        0.1,
+        50.0
+      ],
+      "wind_speed_m_s": [
+        0.5,
+        10.0
+      ],
+      "stability_class_int": [
+        1,
+        6
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.25,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.25 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

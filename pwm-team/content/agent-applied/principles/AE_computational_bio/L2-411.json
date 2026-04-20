@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-411",
+  "layer": "L2",
+  "parent_l1": "L1-411",
+  "principle_ref": "sha256:<L1-411_principle_hash>",
+  "title": "Oxygen Transport (Krogh Cylinder) \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "capillary_radius_um": [
+        2,
+        20
+      ],
+      "R_t_tissue_um": [
+        10,
+        200
+      ],
+      "Q_max_mlO2_ml_s": [
+        0.0001,
+        0.005
+      ],
+      "arterial_pO2_mmHg": [
+        50,
+        150
+      ]
+    },
+    "E": {
+      "forward": "D * nabla^2 C - Q(C) = 0 (steady state); Q = Q_max*C/(C+K_m) (Michaelis-Menten)",
+      "operator": "po2_measurement_fiber_optic",
+      "primitive_chain": "M.pde.krogh_cylinder -> S.fdm.oxygen_diffusion -> O.chi2.po2_profile",
+      "inverse": "recover oxygen diffusivity D_O2 and maximum consumption rate Q_max in tissue from pO2 profile C(r) measured by fiber-optic oxygen probe at radial positions"
+    },
+    "B": {
+      "pO2_positivity": "pO2 >= 0",
+      "diffusivity_positivity": "D > 0"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "pO2_profile_RMSE_mmHg",
+      "anoxic_fraction_error",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "3 + 2 * (Q_max_mlO2_ml_s / 0.0005)^0.3"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 oxygen_distribution_field"
+    },
+    "baselines": [
+      {
+        "name": "analytical_Krogh",
+        "method_sig": "L+O",
+        "expected_score": 6
+      },
+      {
+        "name": "FDM_Krogh_numerical",
+        "method_sig": "L+O",
+        "expected_score": 4
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "capillary_radius_um": 5,
+        "R_t_tissue_um": 50,
+        "Q_max_mlO2_ml_s": 0.0005,
+        "arterial_pO2_mmHg": 100,
+        "non_uniform_capillary_spacing": 0.0,
+        "convection_neglect": 0.0,
+        "tissue_heterogeneity": 0.0
+      },
+      "epsilon": 5.0
+    },
+    "tier_bounds": {
+      "capillary_radius_um": [
+        2,
+        20
+      ],
+      "R_t_tissue_um": [
+        10,
+        200
+      ],
+      "Q_max_mlO2_ml_s": [
+        0.0001,
+        0.005
+      ],
+      "arterial_pO2_mmHg": [
+        50,
+        150
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.25,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.25 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

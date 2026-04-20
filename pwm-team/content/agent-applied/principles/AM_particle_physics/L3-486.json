@@ -1,0 +1,259 @@
+{
+  "artifact_id": "L3-486",
+  "layer": "L3",
+  "parent_l2": "L2-486",
+  "parent_l1": "L1-486",
+  "title": "Dark Matter Direct Detection Inversion \u2014 Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "XENON1T_public_data",
+    "secondary": "LZ_first_science_run",
+    "tertiary": "held_out_real",
+    "construction_method": "Sample Omega uniformly; apply forward model; add domain-realistic noise.",
+    "num_dev_instances_per_tier": 20,
+    "holdout_instances_per_tier": 10
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "exposure_ton_yr": 1.0,
+        "E_threshold_keV": 1.0,
+        "background_rate_evt_keV_ton_yr": 0.1,
+        "m_DM_GeV": 100,
+        "halo_model_uncertainty": 0.0,
+        "nuclear_form_factor_uncertainty": 0.0,
+        "background_model_error": 0.0
+      },
+      "dataset_description": "Standard Particle Physics conditions, clean data, calibrated model.",
+      "epsilon": 0.5,
+      "d_ibench": 0.15,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        },
+        {
+          "Q": 0.9,
+          "tier": "Excellent"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "xenon_XENON1T",
+          "metric": "sigma_SI_upper_limit_log10",
+          "score": -46.0,
+          "Q": -73.6
+        },
+        {
+          "name": "LZ_profile_likelihood",
+          "metric": "sigma_SI_upper_limit_log10",
+          "score": -47.5,
+          "Q": -76.0
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "exposure_ton_yr": 1.0,
+        "E_threshold_keV": 1.0,
+        "background_rate_evt_keV_ton_yr": 0.1,
+        "m_DM_GeV": 100,
+        "halo_model_uncertainty": 0.0,
+        "nuclear_form_factor_uncertainty": 0.0,
+        "background_model_error": 0.1
+      },
+      "dataset_description": "Mild noise/mismatch, representative of good hardware.",
+      "epsilon": 0.45,
+      "d_ibench": 0.3,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "xenon_XENON1T",
+          "metric": "sigma_SI_upper_limit_log10",
+          "score": -41.4,
+          "Q": -73.6
+        },
+        {
+          "name": "LZ_profile_likelihood",
+          "metric": "sigma_SI_upper_limit_log10",
+          "score": -42.75,
+          "Q": -76.0
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "exposure_ton_yr": 1.0,
+        "E_threshold_keV": 1.0,
+        "background_rate_evt_keV_ton_yr": 0.1,
+        "m_DM_GeV": 100,
+        "halo_model_uncertainty": 0.1,
+        "nuclear_form_factor_uncertainty": 0.0,
+        "background_model_error": 0.3
+      },
+      "dataset_description": "Moderate noise and model mismatch, real-world conditions.",
+      "epsilon": 0.41,
+      "d_ibench": 0.52,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "xenon_XENON1T",
+          "metric": "sigma_SI_upper_limit_log10",
+          "score": -36.8,
+          "Q": -71.8
+        },
+        {
+          "name": "LZ_profile_likelihood",
+          "metric": "sigma_SI_upper_limit_log10",
+          "score": -38.0,
+          "Q": -74.15
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "exposure_ton_yr": 1.0,
+        "E_threshold_keV": 1.0,
+        "background_rate_evt_keV_ton_yr": 0.1,
+        "m_DM_GeV": 100,
+        "halo_model_uncertainty": 0.3,
+        "nuclear_form_factor_uncertainty": 0.1,
+        "background_model_error": 0.5
+      },
+      "dataset_description": "Severe noise, large mismatch, no oracle access to calibration.",
+      "epsilon": 0.375,
+      "d_ibench": 0.72,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "xenon_XENON1T",
+          "metric": "sigma_SI_upper_limit_log10",
+          "score": -32.2,
+          "Q": -68.69
+        },
+        {
+          "name": "LZ_profile_likelihood",
+          "metric": "sigma_SI_upper_limit_log10",
+          "score": -33.25,
+          "Q": -70.93
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "XENON1T_public_data + parametric Omega sampling",
+      "construction_method": "Sample Omega uniformly over declared bounds; apply forward model with injected mismatch; ground truth stored separately.",
+      "num_dev_instances": 200,
+      "num_holdout_instances": 100
+    },
+    "tracks": {
+      "track_A_stratified_worst_case": {
+        "strata": [
+          {
+            "name": "S1_easy",
+            "rep_difficulty": "easy"
+          },
+          {
+            "name": "S2_standard",
+            "rep_difficulty": "standard"
+          },
+          {
+            "name": "S3_hard",
+            "rep_difficulty": "hard"
+          },
+          {
+            "name": "S4_frontier",
+            "rep_difficulty": "very_hard"
+          }
+        ],
+        "samples_per_stratum": 5,
+        "pass_condition": "min_i(score_i) / epsilon_fn(Omega_centroid_s) >= 1.0 for all 4 strata"
+      },
+      "track_B_uniform_median": {
+        "num_samples": 50,
+        "pass_condition": "median_i(score_i) / epsilon_fn(Omega_median) >= 1.0"
+      },
+      "track_C_mismatch_degradation": {
+        "sweep_points": [
+          {
+            "phi": 0.0
+          },
+          {
+            "phi": 0.25
+          },
+          {
+            "phi": 0.5
+          },
+          {
+            "phi": 0.75
+          },
+          {
+            "phi": 1.0
+          }
+        ],
+        "scenes_per_point": 10,
+        "degradation_score": "(1/4) * sum_{i=1..4} [(Q_norm(phi_i) + Q_norm(phi_{i+1}))/2]"
+      }
+    },
+    "baselines": [
+      {
+        "name": "xenon_XENON1T",
+        "track_A_Q": -59.8,
+        "track_B_Q": -69.0,
+        "track_C_Q": -64.4,
+        "overall_Q": -64.4
+      },
+      {
+        "name": "LZ_profile_likelihood",
+        "track_A_Q": -61.75,
+        "track_B_Q": -71.25,
+        "track_C_Q": -66.5,
+        "overall_Q": -66.5
+      }
+    ]
+  },
+  "hardness_rule_check": "No baseline passes epsilon_fn over entire Omega. Hardest baseline fails at T4_blind (score < epsilon at severe-mismatch corner). Hardness rule: SATISFIED.",
+  "anti_overfitting_mechanisms": {
+    "M1_random_instantiation": "generator/instantiate.py uses G(SHA256(h_sub || k)) seeded by benchmark hash.",
+    "M2_convergence_scoring": "convergence/check_convergence.py verifies convergence rate across problem sizes.",
+    "M3_worst_case_eval": "scoring/worst_case.py returns min score over 20 fixed dev scenes per tier.",
+    "M4_community_adversarial": "adversarial/submit_adversarial.py; adversarial submissions eligible for T_k.",
+    "M5_method_sig_diversity": "Baselines span multiple method signatures; novelty bonus for approaches beyond L+O.",
+    "M6_gate_checks": "gates/check_s{1,2,3,4}.py embedded with thresholds.yaml."
+  },
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-457",
+  "layer": "L1",
+  "principle_number": "457",
+  "title": "Hydrodynamic Lubrication (Reynolds Equation)",
+  "domain": "Robotics",
+  "sub_domain": "Tribology",
+  "source_file": "AI_robotics/457_hydrodynamic_lubrication.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "Reynolds equation inversion: recover bearing geometry, clearance, and lubricant properties from pressure measurements.",
+    "forward_model": "d/dx(h^3/eta * dp/dx) + d/dz(h^3/eta * dp/dz) = 6*U*dh/dx (Reynolds equation); p >= 0",
+    "world_state_x": "film pressure field p(x,z) and bearing load capacity W",
+    "observation_y": "pressure measurements p_i at N_sensors sensor locations in bearing",
+    "physical_parameters_theta": [
+      "bearing_clearance_C_um",
+      "eccentricity_ratio_e",
+      "viscosity_eta_Pa_s",
+      "rotation_speed_RPM"
+    ]
+  },
+  "G": {
+    "dag": "M.reynolds.thin_film -> S.fdm.cavitation_constraint -> O.least_squares.bearing",
+    "vertices": [
+      "M.reynolds.thin_film",
+      "S.fdm.cavitation_constraint",
+      "O.least_squares.bearing"
+    ],
+    "arcs": [
+      "M.reynolds.thin_film -> S.fdm.cavitation_constraint",
+      "S.fdm.cavitation_constraint -> O.least_squares.bearing"
+    ],
+    "L_DAG": 2.8,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 3000,
+    "condition_number_effective": 100,
+    "condition_number_mismatched": 500,
+    "regime": "Elliptic PDE; cavitation introduces inequality constraint (p >= 0); temperature-viscosity coupling important for high-speed bearings."
+  },
+  "C": {
+    "solver_class": "FDM_Reynolds or FEM_lubrication",
+    "convergence_rate_q": 2.0,
+    "error_bound": "pressure field within 5% of exact for smooth surface",
+    "complexity": "O(N_grid_x * N_grid_z) per Reynolds solve"
+  },
+  "physics_fingerprint": {
+    "carrier": "N/A",
+    "sensing_mechanism": "pressure_film_measurement",
+    "integration_axis": "thin_film_domain",
+    "problem_class": "parameter_estimation",
+    "noise_model": "measurement_gaussian",
+    "solution_space": "pressure_film_field",
+    "primitives": [
+      "M.reynolds.thin_film",
+      "S.fdm.cavitation_constraint",
+      "O.least_squares.bearing"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "viscosity_temperature_dependence",
+    "surface_roughness_effect",
+    "cavitation_extent_uncertainty"
+  ],
+  "error_metric": "pressure_field_RMSE_MPa",
+  "error_metric_secondary": "load_capacity_RMSE_N",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "parameter_estimation",
+      "forward_operator": "pressure_film_measurement",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_grid_x": 50,
+        "eccentricity_ratio_e": 0.5,
+        "speed_RPM": 3000,
+        "viscosity_Pa_s": 0.05
+      },
+      "epsilon_fn_center": "0.5 pressure_field_RMSE_MPa"
+    },
+    "allowed_forward_operators": [
+      "pressure_film_measurement"
+    ],
+    "allowed_problem_classes": [
+      "parameter_estimation"
+    ],
+    "allowed_omega_dimensions": [
+      "N_grid_x",
+      "eccentricity_ratio_e",
+      "speed_RPM",
+      "viscosity_Pa_s"
+    ],
+    "omega_bounds": {
+      "N_grid_x": [
+        10,
+        200
+      ],
+      "eccentricity_ratio_e": [
+        0.0,
+        0.9
+      ],
+      "speed_RPM": [
+        100,
+        100000
+      ],
+      "viscosity_Pa_s": [
+        0.001,
+        1.0
+      ]
+    },
+    "epsilon_bounds": {
+      "pressure_field_RMSE_MPa": [
+        0.05,
+        5.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

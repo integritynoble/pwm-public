@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-416",
+  "layer": "L1",
+  "principle_number": "416",
+  "title": "Atmospheric Radiative Transfer Inversion",
+  "domain": "Environmental Science",
+  "sub_domain": "Atmospheric optics",
+  "source_file": "AF_environmental_sci/416_atmospheric_radiative_transfer.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "Atmospheric RT inversion: retrieve temperature, ozone, and trace gas profiles from hyperspectral satellite radiances.",
+    "forward_model": "I(nu) = integral B(nu, T(z)) * d_tau/dz * exp(-tau(nu,z)/mu) dz (Schwarzschild equation)",
+    "world_state_x": "atmospheric temperature T(z) and trace gas concentration profiles q_i(z)",
+    "observation_y": "top-of-atmosphere radiance spectra I(nu) from hyperspectral IR sounder",
+    "physical_parameters_theta": [
+      "N_layers",
+      "surface_temperature_K",
+      "surface_emissivity",
+      "cloud_fraction"
+    ]
+  },
+  "G": {
+    "dag": "S.rt.disort_solver -> M.mol.absorption_xsection -> O.optimal_estimation.rodgers",
+    "vertices": [
+      "S.rt.disort_solver",
+      "M.mol.absorption_xsection",
+      "O.optimal_estimation.rodgers"
+    ],
+    "arcs": [
+      "S.rt.disort_solver -> M.mol.absorption_xsection",
+      "M.mol.absorption_xsection -> O.optimal_estimation.rodgers"
+    ],
+    "L_DAG": 4.0,
+    "n_c": 1
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 10000.0,
+    "condition_number_effective": 500,
+    "condition_number_mismatched": 2000,
+    "regime": "Ill-posed; vertical resolution limited by weighting function width (5-10 km); Tikhonov/OE regularization from a priori."
+  },
+  "C": {
+    "solver_class": "optimal_estimation_Rodgers or NLLS_Marquardt",
+    "convergence_rate_q": 2.0,
+    "error_bound": "temperature retrieval < 1 K RMS for clear sky",
+    "complexity": "O(N_layers^2 * N_nu) per Jacobian calculation"
+  },
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "satellite_radiance_inversion",
+    "integration_axis": "atmospheric_vertical",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "thermal_gaussian",
+    "solution_space": "1D_atmospheric_profile",
+    "primitives": [
+      "S.rt.disort_solver",
+      "M.mol.absorption_xsection",
+      "O.optimal_estimation.rodgers"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "cloud_contamination",
+    "nonLTE_effect",
+    "spectroscopic_line_parameter_uncertainty"
+  ],
+  "error_metric": "temperature_profile_RMSE_K",
+  "error_metric_secondary": "ozone_column_RMSE_DU",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "nonlinear_inverse",
+      "forward_operator": "satellite_radiance_inversion",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_layers": 40,
+        "N_channels": 2000,
+        "noise_NEdT_K": 0.1,
+        "cloud_fraction": 0.0
+      },
+      "epsilon_fn_center": "1.0 temperature_profile_RMSE_K"
+    },
+    "allowed_forward_operators": [
+      "satellite_radiance_inversion"
+    ],
+    "allowed_problem_classes": [
+      "nonlinear_inverse"
+    ],
+    "allowed_omega_dimensions": [
+      "N_layers",
+      "N_channels",
+      "noise_NEdT_K",
+      "cloud_fraction"
+    ],
+    "omega_bounds": {
+      "N_layers": [
+        10,
+        100
+      ],
+      "N_channels": [
+        100,
+        10000
+      ],
+      "noise_NEdT_K": [
+        0.01,
+        1.0
+      ],
+      "cloud_fraction": [
+        0.0,
+        1.0
+      ]
+    },
+    "epsilon_bounds": {
+      "temperature_profile_RMSE_K": [
+        0.2,
+        5.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

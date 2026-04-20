@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-426",
+  "layer": "L2",
+  "parent_l1": "L1-426",
+  "principle_ref": "sha256:<L1-426_principle_hash>",
+  "title": "Linear State-Space System Analysis \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "system_order_n": [
+        2,
+        50
+      ],
+      "condition_number_kappa": [
+        10,
+        1000000.0
+      ],
+      "noise_SNR_dB": [
+        0,
+        60
+      ],
+      "sampling_rate_Hz": [
+        10,
+        100000.0
+      ]
+    },
+    "E": {
+      "forward": "y(t) = C*exp(A*t)*x0 + integral_0^t C*exp(A*(t-s))*B*u(s) ds + D*u(t) + n(t)",
+      "operator": "state_space_output_measurement",
+      "primitive_chain": "M.ss.matrices_ABCD -> S.observability.gramian -> O.lyapunov.stability",
+      "inverse": "recover state vector x(t) in R^n from output y(t) in R^p for p <= n observables"
+    },
+    "B": {
+      "observability": "observability matrix full rank",
+      "stability": "Re(eigenvalues(A)) < 0 for stable system"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "state_RMSE_normalized",
+      "output_prediction_RMSE",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.02 + 0.03 * (100 / condition_number_kappa)^0.3"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 state_vector"
+    },
+    "baselines": [
+      {
+        "name": "Luenberger_observer",
+        "method_sig": "L+O",
+        "expected_score": 0.06
+      },
+      {
+        "name": "Kalman_filter_optimal",
+        "method_sig": "L+O",
+        "expected_score": 0.03
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "system_order_n": 5,
+        "condition_number_kappa": 100,
+        "noise_SNR_dB": 30,
+        "sampling_rate_Hz": 1000,
+        "model_order_mismatch": 0.0,
+        "parameter_perturbation": 0.0,
+        "noise_covariance_mismatch": 0.0
+      },
+      "epsilon": 0.05
+    },
+    "tier_bounds": {
+      "system_order_n": [
+        2,
+        50
+      ],
+      "condition_number_kappa": [
+        10,
+        1000000.0
+      ],
+      "noise_SNR_dB": [
+        0,
+        60
+      ],
+      "sampling_rate_Hz": [
+        10,
+        100000.0
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.25,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.25 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

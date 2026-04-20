@@ -1,0 +1,116 @@
+{
+  "artifact_id": "L2-410",
+  "layer": "L2",
+  "parent_l1": "L1-410",
+  "principle_ref": "sha256:<L1-410_principle_hash>",
+  "title": "Tumor Growth Model Inversion \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "N_imaging_timepoints": [
+        3,
+        50
+      ],
+      "tumor_volume_mm3": [
+        10,
+        100000
+      ],
+      "growth_rate_lambda_day": [
+        0.001,
+        0.5
+      ],
+      "imaging_noise_percent": [
+        2,
+        50
+      ]
+    },
+    "E": {
+      "forward": "Gompertz: dV/dt = lambda * V * ln(K/V); Logistic: dV/dt = r*V*(1-V/K); Exponential-Linear for early growth",
+      "operator": "tumor_volume_imaging",
+      "primitive_chain": "M.ode.gompertz_logistic -> O.nls.tumor_fit -> S.bootstrap.uncertainty_tumor",
+      "inverse": "recover tumor growth parameters (lambda/r from tumor volume V(t_i) from CT/MRI imaging at N_timepoints"
+    },
+    "B": {
+      "V_positivity": "V >= 0",
+      "growth_rate_positivity": "lambda > 0"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "volume_prediction_RMSE_percent",
+      "time_to_progression_error_days",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "10 + 5 * (imaging_noise_percent / 10)^0.5"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 tumor_growth_parameter_vector"
+    },
+    "baselines": [
+      {
+        "name": "Gompertz_NLS",
+        "method_sig": "L+O",
+        "expected_score": 18
+      },
+      {
+        "name": "Bayesian_tumor_MCMC",
+        "method_sig": "L+O",
+        "expected_score": 12
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_imaging_timepoints": 8,
+        "tumor_volume_mm3": 1000,
+        "growth_rate_lambda_day": 0.05,
+        "imaging_noise_percent": 10,
+        "resistant_subclone_emergence": 0.0,
+        "vascularization_effect": 0.0
+      },
+      "epsilon": 15.0
+    },
+    "tier_bounds": {
+      "N_imaging_timepoints": [
+        3,
+        50
+      ],
+      "tumor_volume_mm3": [
+        10,
+        100000
+      ],
+      "growth_rate_lambda_day": [
+        0.001,
+        0.5
+      ],
+      "imaging_noise_percent": [
+        2,
+        50
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.25,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.25 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

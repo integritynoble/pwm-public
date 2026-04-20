@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-468",
+  "layer": "L2",
+  "parent_l1": "L1-468",
+  "principle_ref": "sha256:<L1-468_principle_hash>",
+  "title": "Satellite Radar Altimetry \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "N_gates": [
+        64,
+        512
+      ],
+      "SWH_m": [
+        0.0,
+        10.0
+      ],
+      "mispointing_deg": [
+        0.0,
+        1.0
+      ],
+      "noise_sigma_percent": [
+        1.0,
+        20.0
+      ]
+    },
+    "E": {
+      "forward": "P(tau) = sigma_0 * integral W(t) * G^2(theta) * sinc^2(...) dt; Brown ocean model",
+      "operator": "radar_altimetry_nadir",
+      "primitive_chain": "S.altimeter.retracker_brown -> M.waveform.ocean_reflection -> O.least_squares.retrack",
+      "inverse": "recover SSH from radar return waveform P(tau) with N_gates gates at 20 Hz sampling"
+    },
+    "B": {
+      "SWH_positivity": "SWH >= 0",
+      "epoch_range": "epoch in valid waveform range"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "SSH_RMSE_cm",
+      "SWH_bias_cm",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "2.0 + 1.0 * (SWH_m / 2.0)^0.3"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 1D_sea_surface_height"
+    },
+    "baselines": [
+      {
+        "name": "OCOG_retracker",
+        "method_sig": "L+O",
+        "expected_score": 5.0
+      },
+      {
+        "name": "Brown_MLE4",
+        "method_sig": "L+O",
+        "expected_score": 2.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_gates": 128,
+        "SWH_m": 2.0,
+        "mispointing_deg": 0.1,
+        "noise_sigma_percent": 5.0,
+        "rain_contamination": 0.0,
+        "inland_water_reflection": 0.0,
+        "sea_ice_surface": 0.0
+      },
+      "epsilon": 3.0
+    },
+    "tier_bounds": {
+      "N_gates": [
+        64,
+        512
+      ],
+      "SWH_m": [
+        0.0,
+        10.0
+      ],
+      "mispointing_deg": [
+        0.0,
+        1.0
+      ],
+      "noise_sigma_percent": [
+        1.0,
+        20.0
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.28,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.28 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

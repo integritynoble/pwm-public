@@ -1,0 +1,108 @@
+{
+  "artifact_id": "L2-499",
+  "layer": "L2",
+  "parent_l1": "L1-499",
+  "principle_ref": "sha256:<L1-499_principle_hash>",
+  "title": "Shape Optimization \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "N_control_pts": [
+        10,
+        200
+      ],
+      "regularization_alpha": [
+        0.001,
+        0.1
+      ],
+      "step_size_dt": [
+        0.01,
+        1.0
+      ]
+    },
+    "E": {
+      "forward": "J(Omega) = integral_Omega j(u) dV, where u solves PDE on Omega; dJ/dOmega via shape derivative",
+      "operator": "shape_sensitivity_analysis",
+      "primitive_chain": "S.shape.derivative -> M.fem.adjoint -> O.gradient.descent",
+      "inverse": "recover boundary shape Gamma parameterized by control points or level set phi from objective J (scalar)"
+    },
+    "B": {
+      "smoothness": "boundary_curvature bounded",
+      "volume_constraint": "optional volume preservation"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "objective_reduction_ratio",
+      "constraint_violation",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.25 + 0.05 * log10(N_control_pts / 50)"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 2D_boundary_curve"
+    },
+    "baselines": [
+      {
+        "name": "steepest_descent",
+        "method_sig": "L+O",
+        "expected_score": 0.28
+      },
+      {
+        "name": "conjugate_gradient",
+        "method_sig": "L+O",
+        "expected_score": 0.35
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_control_pts": 50,
+        "regularization_alpha": 0.01,
+        "step_size_dt": 0.1,
+        "mesh_quality_degradation": 0.0,
+        "adjoint_discretization_error": 0.0,
+        "boundary_parameterization_error": 0.0
+      },
+      "epsilon": 0.3
+    },
+    "tier_bounds": {
+      "N_control_pts": [
+        10,
+        200
+      ],
+      "regularization_alpha": [
+        0.001,
+        0.1
+      ],
+      "step_size_dt": [
+        0.01,
+        1.0
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.3,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.3 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

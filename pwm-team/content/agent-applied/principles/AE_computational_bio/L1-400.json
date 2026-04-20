@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-400",
+  "layer": "L1",
+  "principle_number": "400",
+  "title": "Hemodynamics (Navier-Stokes Cardiovascular)",
+  "domain": "Computational Biology",
+  "sub_domain": "Cardiovascular modeling",
+  "source_file": "AE_computational_bio/400_hemodynamics.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "Cardiovascular hemodynamics: infer blood flow, pressure, and wall shear stress from 4D flow MRI data.",
+    "forward_model": "rho*(du/dt + u*nabla u) = -nabla p + mu*nabla^2 u; nabla*u = 0 (incompressible NS)",
+    "world_state_x": "3D velocity field u(x,t) and pressure p(x,t) throughout vascular geometry",
+    "observation_y": "4D phase-contrast MRI velocity measurements v_MRI(x,t) at ~2mm resolution",
+    "physical_parameters_theta": [
+      "blood_viscosity_mPa_s",
+      "vessel_compliance_mm_Hg",
+      "inlet_boundary_condition",
+      "wall_shear_stress_Pa"
+    ]
+  },
+  "G": {
+    "dag": "M.ns.incompressible -> S.fsi.fluid_structure -> O.chi2.4dflow_mri",
+    "vertices": [
+      "M.ns.incompressible",
+      "S.fsi.fluid_structure",
+      "O.chi2.4dflow_mri"
+    ],
+    "arcs": [
+      "M.ns.incompressible -> S.fsi.fluid_structure",
+      "S.fsi.fluid_structure -> O.chi2.4dflow_mri"
+    ],
+    "L_DAG": 4.5,
+    "n_c": 2
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 100000.0,
+    "condition_number_effective": 2000,
+    "condition_number_mismatched": 10000.0,
+    "regime": "Reynolds number ~ 500-4000 in aorta (laminar to transitional); FSI important for compliant vessels; 4D flow MRI has limited resolution."
+  },
+  "C": {
+    "solver_class": "OpenFOAM_CFD or SimVascular or ANSYS_Fluent",
+    "convergence_rate_q": 2.0,
+    "error_bound": "WSS within 20% of ground truth for resolved geometry",
+    "complexity": "O(N_mesh * N_timesteps * N_Newton_iter) for CFD"
+  },
+  "physics_fingerprint": {
+    "carrier": "N/A",
+    "sensing_mechanism": "blood_flow_velocity_measurement",
+    "integration_axis": "3d_vascular",
+    "problem_class": "parameter_estimation",
+    "noise_model": "measurement_gaussian",
+    "solution_space": "3D_velocity_pressure_field",
+    "primitives": [
+      "M.ns.incompressible",
+      "S.fsi.fluid_structure",
+      "O.chi2.4dflow_mri"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "MRI_velocity_noise",
+    "vessel_wall_motion",
+    "non_Newtonian_viscosity"
+  ],
+  "error_metric": "WSS_RMSE_Pa",
+  "error_metric_secondary": "pressure_drop_RMSE_mmHg",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "parameter_estimation",
+      "forward_operator": "blood_flow_velocity_measurement",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_mesh_elements": 500000,
+        "Re_Reynolds": 2000,
+        "cardiac_cycle_s": 1.0,
+        "MRI_voxel_mm": 2.0
+      },
+      "epsilon_fn_center": "0.5 WSS_RMSE_Pa"
+    },
+    "allowed_forward_operators": [
+      "blood_flow_velocity_measurement"
+    ],
+    "allowed_problem_classes": [
+      "parameter_estimation"
+    ],
+    "allowed_omega_dimensions": [
+      "N_mesh_elements",
+      "Re_Reynolds",
+      "cardiac_cycle_s",
+      "MRI_voxel_mm"
+    ],
+    "omega_bounds": {
+      "N_mesh_elements": [
+        10000,
+        5000000
+      ],
+      "Re_Reynolds": [
+        100,
+        5000
+      ],
+      "cardiac_cycle_s": [
+        0.5,
+        2.0
+      ],
+      "MRI_voxel_mm": [
+        0.5,
+        5.0
+      ]
+    },
+    "epsilon_bounds": {
+      "WSS_RMSE_Pa": [
+        0.05,
+        3.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

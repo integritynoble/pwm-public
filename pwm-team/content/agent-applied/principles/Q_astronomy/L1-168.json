@@ -1,0 +1,151 @@
+{
+  "artifact_id": "L1-168",
+  "layer": "L1",
+  "principle_number": "168",
+  "title": "Event Horizon Telescope (VLBI) Imaging",
+  "domain": "Astronomy",
+  "sub_domain": "Radio interferometry",
+  "source_file": "Q_astronomy/168_eht_imaging.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "VLBI imaging: recover brightness distribution from sparse Fourier samples (visibilities) with closure-phase constraints.",
+    "forward_model": "V(u,v) = FT[I(l,m)](u,v) + noise; closure phases C_ijk = arg(V_ij * V_jk * V_ki*) noise-robust",
+    "world_state_x": "brightness temperature image I(l,m) in R^{H x W}, total flux conserved",
+    "observation_y": "complex visibilities V(u,v) at N_baselines sparse (u,v) locations; closure phases",
+    "physical_parameters_theta": [
+      "uv_coverage_fraction",
+      "thermal_noise_SEFD_Jy",
+      "source_total_flux_Jy",
+      "N_antennas"
+    ]
+  },
+  "G": {
+    "dag": "F.fourier.nufft -> S.closure.phase -> M.sparse.regularization -> O.chi2.visibility",
+    "vertices": [
+      "F.fourier.nufft",
+      "S.closure.phase",
+      "M.sparse.regularization",
+      "O.chi2.visibility"
+    ],
+    "arcs": [
+      "F.fourier.nufft -> S.closure.phase",
+      "S.closure.phase -> M.sparse.regularization",
+      "M.sparse.regularization -> O.chi2.visibility"
+    ],
+    "L_DAG": 4.5,
+    "n_c": 1
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 1000000.0,
+    "condition_number_effective": 1000,
+    "condition_number_mismatched": 5000,
+    "regime": "Severely underdetermined; closure phases are baseline-based; regularization (total variation, maximum entropy) required for unique solution."
+  },
+  "C": {
+    "solver_class": "CLEAN variants (DIFMAP) or regularized_maximum_likelihood (eht-imaging, SMILI)",
+    "convergence_rate_q": 2.0,
+    "error_bound": "chi2_reduced ~ 1.0 at convergence; dynamic range >= 100:1",
+    "complexity": "O(N_baselines * N_pixels * N_iter) for gradient-based imager"
+  },
+  "physics_fingerprint": {
+    "carrier": "radio_wave",
+    "sensing_mechanism": "vlbi_sparse_aperture",
+    "integration_axis": "uv_plane",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "thermal_gaussian",
+    "solution_space": "2D_brightness_temperature",
+    "primitives": [
+      "F.fourier.nufft",
+      "S.closure.phase",
+      "M.sparse.regularization",
+      "O.chi2.visibility"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "station_gain_error",
+    "atmospheric_delay_error",
+    "bandwidth_smearing"
+  ],
+  "error_metric": "chi2_reduced",
+  "error_metric_secondary": "image_fidelity_score",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "nonlinear_inverse",
+      "forward_operator": "vlbi_sparse_aperture",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 64,
+        "W": 64,
+        "N_baselines": 15,
+        "uv_fraction": 0.001,
+        "noise_sigma_Jy": 0.1
+      },
+      "epsilon_fn_center": "1.2 chi2_reduced"
+    },
+    "allowed_forward_operators": [
+      "vlbi_sparse_aperture"
+    ],
+    "allowed_problem_classes": [
+      "nonlinear_inverse"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "N_baselines",
+      "uv_fraction",
+      "noise_sigma_Jy"
+    ],
+    "omega_bounds": {
+      "H": [
+        32,
+        512
+      ],
+      "W": [
+        32,
+        512
+      ],
+      "N_baselines": [
+        6,
+        50
+      ],
+      "uv_fraction": [
+        0.0001,
+        0.01
+      ],
+      "noise_sigma_Jy": [
+        0.01,
+        1.0
+      ]
+    },
+    "epsilon_bounds": {
+      "chi2_reduced": [
+        0.8,
+        3.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

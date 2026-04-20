@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-446",
+  "layer": "L2",
+  "parent_l1": "L1-446",
+  "principle_ref": "sha256:<L1-446_principle_hash>",
+  "title": "Forward Kinematics \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "N_joints": [
+        2,
+        10
+      ],
+      "calibration_error_mm": [
+        0.0,
+        5.0
+      ],
+      "encoder_noise_deg": [
+        0.001,
+        0.1
+      ],
+      "load_kg": [
+        0,
+        100
+      ]
+    },
+    "E": {
+      "forward": "T_0_n = prod_{i=1}^{n} T_{i-1}^i(q_i); T = Rot * Trans using DH convention",
+      "operator": "joint_encoder_to_cartesian",
+      "primitive_chain": "M.dh.transformation_matrix -> S.chain.product -> O.pose.cartesian",
+      "inverse": "recover end-effector pose (position + orientation) in task space from joint angles {q_i} from encoders"
+    },
+    "B": {
+      "joint_limits": "q_i in [q_min_i, q_max_i]",
+      "rigid_body": "link lengths constant"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "end_effector_position_RMSE_mm",
+      "orientation_error_deg",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.5 + 0.5 * calibration_error_mm"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 cartesian_pose_vector"
+    },
+    "baselines": [
+      {
+        "name": "DH_forward_kinematics",
+        "method_sig": "L+O",
+        "expected_score": 1.2
+      },
+      {
+        "name": "MDH_modified_DH",
+        "method_sig": "L+O",
+        "expected_score": 0.8
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_joints": 6,
+        "calibration_error_mm": 0.5,
+        "encoder_noise_deg": 0.01,
+        "load_kg": 5,
+        "DH_calibration_error": 0.0,
+        "joint_flexibility": 0.0,
+        "base_frame_uncertainty": 0.0
+      },
+      "epsilon": 1.0
+    },
+    "tier_bounds": {
+      "N_joints": [
+        2,
+        10
+      ],
+      "calibration_error_mm": [
+        0.0,
+        5.0
+      ],
+      "encoder_noise_deg": [
+        0.001,
+        0.1
+      ],
+      "load_kg": [
+        0,
+        100
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.2,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.2 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

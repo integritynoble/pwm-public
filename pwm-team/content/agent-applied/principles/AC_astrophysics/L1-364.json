@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-364",
+  "layer": "L1",
+  "principle_number": "364",
+  "title": "N-body Gravitational Simulation",
+  "domain": "Astrophysics",
+  "sub_domain": "Orbital dynamics",
+  "source_file": "AC_astrophysics/364_nbody_gravitational.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "N-body gravitational dynamics: integrate orbits of N point masses under mutual gravitational attraction.",
+    "forward_model": "m_i * r_i'' = sum_{j!=i} G m_i m_j (r_j - r_i) / |r_j - r_i|^3",
+    "world_state_x": "phase-space coordinates {r_i, v_i} for i=1..N",
+    "observation_y": "sky-projected positions and radial velocities (astrometry + spectroscopy)",
+    "physical_parameters_theta": [
+      "masses m_i",
+      "initial_conditions {r_i0, v_i0}",
+      "softening_length epsilon",
+      "G"
+    ]
+  },
+  "G": {
+    "dag": "F.gravity.nbody -> S.tree.barnes_hut -> O.leapfrog.integrator",
+    "vertices": [
+      "F.gravity.nbody",
+      "S.tree.barnes_hut",
+      "O.leapfrog.integrator"
+    ],
+    "arcs": [
+      "F.gravity.nbody -> S.tree.barnes_hut",
+      "S.tree.barnes_hut -> O.leapfrog.integrator"
+    ],
+    "L_DAG": 3.0,
+    "n_c": 1
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 100000.0,
+    "condition_number_effective": 500,
+    "condition_number_mismatched": 2000,
+    "regime": "Hamiltonian system; long-term chaos for N>2; symplectic integrators conserve energy to machine precision."
+  },
+  "C": {
+    "solver_class": "leapfrog or Hermite_integrator or tree_code",
+    "convergence_rate_q": 2.0,
+    "error_bound": "energy error dE/E0 <= epsilon_step^2 per orbit",
+    "complexity": "O(N^2) direct, O(N log N) Barnes-Hut per timestep"
+  },
+  "physics_fingerprint": {
+    "carrier": "N/A",
+    "sensing_mechanism": "gravitational_force_summation",
+    "integration_axis": "time",
+    "problem_class": "parameter_estimation",
+    "noise_model": "observation_gaussian",
+    "solution_space": "6N_phase_space",
+    "primitives": [
+      "F.gravity.nbody",
+      "S.tree.barnes_hut",
+      "O.leapfrog.integrator"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "initial_condition_uncertainty",
+    "missing_body_perturbation",
+    "relativistic_correction"
+  ],
+  "error_metric": "orbital_energy_conservation_relative",
+  "error_metric_secondary": "position_RMSE_AU",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "parameter_estimation",
+      "forward_operator": "gravitational_force_summation",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_bodies": 100,
+        "dt_yr": 0.01,
+        "softening_AU": 0.1,
+        "t_end_yr": 100.0
+      },
+      "epsilon_fn_center": "1e-6 orbital_energy_conservation_relative"
+    },
+    "allowed_forward_operators": [
+      "gravitational_force_summation"
+    ],
+    "allowed_problem_classes": [
+      "parameter_estimation"
+    ],
+    "allowed_omega_dimensions": [
+      "N_bodies",
+      "dt_yr",
+      "softening_AU",
+      "t_end_yr"
+    ],
+    "omega_bounds": {
+      "N_bodies": [
+        10,
+        10000
+      ],
+      "dt_yr": [
+        0.001,
+        0.1
+      ],
+      "softening_AU": [
+        0.01,
+        1.0
+      ],
+      "t_end_yr": [
+        10,
+        10000
+      ]
+    },
+    "epsilon_bounds": {
+      "orbital_energy_conservation_relative": [
+        1e-10,
+        0.001
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

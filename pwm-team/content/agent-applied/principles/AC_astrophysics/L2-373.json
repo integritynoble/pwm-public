@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-373",
+  "layer": "L2",
+  "parent_l1": "L1-373",
+  "principle_ref": "sha256:<L1-373_principle_hash>",
+  "title": "Pulsar Timing Array GW Background \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "N_psr": [
+        10,
+        100
+      ],
+      "T_obs_yr": [
+        5,
+        25
+      ],
+      "cadence_yr": [
+        0.01,
+        0.1
+      ],
+      "noise_rms_ns": [
+        10,
+        1000
+      ]
+    },
+    "E": {
+      "forward": "R_a(t) = integral h_ab(t) * F^ab_a(t) dt + n_a(t); HD_curve = 3/2*(1-x)/2*ln((1-x)/2) - (1-x)/4 + 1/2",
+      "operator": "pulsar_timing_residuals",
+      "primitive_chain": "S.pulsar.timing_residuals -> F.fourier.spectral_density -> O.entropy.bayesian",
+      "inverse": "recover GW background strain spectrum h_c(f) = A*(f/f_yr)^alpha from timing residuals R_a(t) for N_psr pulsars over T_obs years"
+    },
+    "B": {
+      "positivity": "h_c(f) >= 0",
+      "prior": "log-uniform on A_15 in [-18,-13]"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "GWB_Bayes_factor_log10",
+      "A_15_constraint_sigma",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "2.0 + 1.0 * (N_psr / 25)^0.5"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 GW_background_spectrum"
+    },
+    "baselines": [
+      {
+        "name": "enterprise_MCMC",
+        "method_sig": "L+O",
+        "expected_score": 3.5
+      },
+      {
+        "name": "HD_correlation_matched_filter",
+        "method_sig": "L+O",
+        "expected_score": 2.8
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_psr": 25,
+        "T_obs_yr": 15,
+        "cadence_yr": 0.04,
+        "noise_rms_ns": 100,
+        "solar_system_ephemeris_error": 0.0,
+        "DM_variation_uncertainty": 0.0,
+        "pulsar_mass_uncertainty": 0.0
+      },
+      "epsilon": 3.0
+    },
+    "tier_bounds": {
+      "N_psr": [
+        10,
+        100
+      ],
+      "T_obs_yr": [
+        5,
+        25
+      ],
+      "cadence_yr": [
+        0.01,
+        0.1
+      ],
+      "noise_rms_ns": [
+        10,
+        1000
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.4,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.4 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

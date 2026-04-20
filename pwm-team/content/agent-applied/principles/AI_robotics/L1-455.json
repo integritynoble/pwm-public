@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-455",
+  "layer": "L1",
+  "principle_number": "455",
+  "title": "Orbital Mechanics Inversion (Lambert)",
+  "domain": "Robotics",
+  "sub_domain": "Astrodynamics",
+  "source_file": "AI_robotics/455_orbital_mechanics.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "Lambert problem: find velocity vectors that connect two position vectors in a fixed time-of-flight (orbital transfer).",
+    "forward_model": "r1, r2 given, TOF = T; find v1 such that propagating from (r1,v1) reaches r2 in time T",
+    "world_state_x": "initial and final velocity vectors v1, v2 defining the transfer orbit",
+    "observation_y": "two position vectors r1, r2 and transfer time TOF",
+    "physical_parameters_theta": [
+      "TOF_seconds",
+      "number_of_revolutions_N",
+      "gravitational_mu",
+      "orbit_direction_prograde"
+    ]
+  },
+  "G": {
+    "dag": "M.lambert.problem_solver -> S.gooding.algorithm -> O.chi2.residuals_orbit",
+    "vertices": [
+      "M.lambert.problem_solver",
+      "S.gooding.algorithm",
+      "O.chi2.residuals_orbit"
+    ],
+    "arcs": [
+      "M.lambert.problem_solver -> S.gooding.algorithm",
+      "S.gooding.algorithm -> O.chi2.residuals_orbit"
+    ],
+    "L_DAG": 2.8,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 5000,
+    "condition_number_effective": 200,
+    "condition_number_mismatched": 1000,
+    "regime": "Unique solution for single-rev; multi-rev has multiple branches; near-singular for 180 deg transfer."
+  },
+  "C": {
+    "solver_class": "Izzo_Lancaster_Blanchard or Gooding_algorithm",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Lambert solution accurate to < 1 m/s for 2-body problem",
+    "complexity": "O(N_iter) per Lambert solution (typically < 20 iterations)"
+  },
+  "physics_fingerprint": {
+    "carrier": "N/A",
+    "sensing_mechanism": "two_position_vector_orbit_determination",
+    "integration_axis": "orbital_arc",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "observation_gaussian",
+    "solution_space": "orbital_elements_vector",
+    "primitives": [
+      "M.lambert.problem_solver",
+      "S.gooding.algorithm",
+      "O.chi2.residuals_orbit"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "position_observation_error_km",
+    "perturbation_from_central_body",
+    "timing_uncertainty_s"
+  ],
+  "error_metric": "delta_v_accuracy_m_s",
+  "error_metric_secondary": "orbit_determination_RMSE_km",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "nonlinear_inverse",
+      "forward_operator": "two_position_vector_orbit_determination",
+      "input_format": "measurement_only",
+      "omega": {
+        "transfer_time_days": 1.0,
+        "orbit_radius_km": 7000,
+        "transfer_angle_deg": 90,
+        "N_revolutions": 0
+      },
+      "epsilon_fn_center": "1.0 delta_v_accuracy_m_s"
+    },
+    "allowed_forward_operators": [
+      "two_position_vector_orbit_determination"
+    ],
+    "allowed_problem_classes": [
+      "nonlinear_inverse"
+    ],
+    "allowed_omega_dimensions": [
+      "transfer_time_days",
+      "orbit_radius_km",
+      "transfer_angle_deg",
+      "N_revolutions"
+    ],
+    "omega_bounds": {
+      "transfer_time_days": [
+        0.01,
+        365
+      ],
+      "orbit_radius_km": [
+        200,
+        60000
+      ],
+      "transfer_angle_deg": [
+        10,
+        170
+      ],
+      "N_revolutions": [
+        0,
+        10
+      ]
+    },
+    "epsilon_bounds": {
+      "delta_v_accuracy_m_s": [
+        0.01,
+        100.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

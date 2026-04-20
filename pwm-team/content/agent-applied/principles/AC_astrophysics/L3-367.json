@@ -1,0 +1,259 @@
+{
+  "artifact_id": "L3-367",
+  "layer": "L3",
+  "parent_l2": "L2-367",
+  "parent_l1": "L1-367",
+  "title": "CMB Gravitational Lensing Reconstruction \u2014 Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "Planck_2018_lensing_map",
+    "secondary": "SPT_3G_lensing",
+    "tertiary": "held_out_real",
+    "construction_method": "Sample Omega uniformly; apply forward model; add domain-realistic noise.",
+    "num_dev_instances_per_tier": 20,
+    "holdout_instances_per_tier": 10
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "N_pix_side": 2048,
+        "noise_uK_arcmin": 5.0,
+        "beam_FWHM_arcmin": 1.5,
+        "survey_area_deg2": 10000,
+        "foreground_bias": 0.0,
+        "point_source_contamination": 0.0,
+        "beam_anisotropy": 0.0
+      },
+      "dataset_description": "Standard Astrophysics conditions, clean data, calibrated model.",
+      "epsilon": 1.05,
+      "d_ibench": 0.15,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        },
+        {
+          "Q": 0.9,
+          "tier": "Excellent"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "QE_hu_okamoto",
+          "metric": "lensing_power_spectrum_C_kk_chi2",
+          "score": 1.08,
+          "Q": 0.82
+        },
+        {
+          "name": "iterative_lensing",
+          "metric": "lensing_power_spectrum_C_kk_chi2",
+          "score": 1.02,
+          "Q": 0.78
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "N_pix_side": 2048,
+        "noise_uK_arcmin": 5.0,
+        "beam_FWHM_arcmin": 1.5,
+        "survey_area_deg2": 10000,
+        "foreground_bias": 0.01,
+        "point_source_contamination": 0.0,
+        "beam_anisotropy": 0.0
+      },
+      "dataset_description": "Mild noise/mismatch, representative of good hardware.",
+      "epsilon": 0.945,
+      "d_ibench": 0.3,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "QE_hu_okamoto",
+          "metric": "lensing_power_spectrum_C_kk_chi2",
+          "score": 0.972,
+          "Q": 0.82
+        },
+        {
+          "name": "iterative_lensing",
+          "metric": "lensing_power_spectrum_C_kk_chi2",
+          "score": 0.918,
+          "Q": 0.78
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "N_pix_side": 2048,
+        "noise_uK_arcmin": 5.0,
+        "beam_FWHM_arcmin": 1.5,
+        "survey_area_deg2": 10000,
+        "foreground_bias": 0.03,
+        "point_source_contamination": 0.02,
+        "beam_anisotropy": 0.0
+      },
+      "dataset_description": "Moderate noise and model mismatch, real-world conditions.",
+      "epsilon": 0.861,
+      "d_ibench": 0.52,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "QE_hu_okamoto",
+          "metric": "lensing_power_spectrum_C_kk_chi2",
+          "score": 0.864,
+          "Q": 0.8
+        },
+        {
+          "name": "iterative_lensing",
+          "metric": "lensing_power_spectrum_C_kk_chi2",
+          "score": 0.816,
+          "Q": 0.76
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "N_pix_side": 2048,
+        "noise_uK_arcmin": 5.0,
+        "beam_FWHM_arcmin": 1.5,
+        "survey_area_deg2": 10000,
+        "foreground_bias": 0.08,
+        "point_source_contamination": 0.05,
+        "beam_anisotropy": 0.02
+      },
+      "dataset_description": "Severe noise, large mismatch, no oracle access to calibration.",
+      "epsilon": 0.788,
+      "d_ibench": 0.72,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "QE_hu_okamoto",
+          "metric": "lensing_power_spectrum_C_kk_chi2",
+          "score": 0.756,
+          "Q": 0.77
+        },
+        {
+          "name": "iterative_lensing",
+          "metric": "lensing_power_spectrum_C_kk_chi2",
+          "score": 0.714,
+          "Q": 0.73
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "Planck_2018_lensing_map + parametric Omega sampling",
+      "construction_method": "Sample Omega uniformly over declared bounds; apply forward model with injected mismatch; ground truth stored separately.",
+      "num_dev_instances": 200,
+      "num_holdout_instances": 100
+    },
+    "tracks": {
+      "track_A_stratified_worst_case": {
+        "strata": [
+          {
+            "name": "S1_easy",
+            "rep_difficulty": "easy"
+          },
+          {
+            "name": "S2_standard",
+            "rep_difficulty": "standard"
+          },
+          {
+            "name": "S3_hard",
+            "rep_difficulty": "hard"
+          },
+          {
+            "name": "S4_frontier",
+            "rep_difficulty": "very_hard"
+          }
+        ],
+        "samples_per_stratum": 5,
+        "pass_condition": "min_i(score_i) / epsilon_fn(Omega_centroid_s) >= 1.0 for all 4 strata"
+      },
+      "track_B_uniform_median": {
+        "num_samples": 50,
+        "pass_condition": "median_i(score_i) / epsilon_fn(Omega_median) >= 1.0"
+      },
+      "track_C_mismatch_degradation": {
+        "sweep_points": [
+          {
+            "phi": 0.0
+          },
+          {
+            "phi": 0.25
+          },
+          {
+            "phi": 0.5
+          },
+          {
+            "phi": 0.75
+          },
+          {
+            "phi": 1.0
+          }
+        ],
+        "scenes_per_point": 10,
+        "degradation_score": "(1/4) * sum_{i=1..4} [(Q_norm(phi_i) + Q_norm(phi_{i+1}))/2]"
+      }
+    },
+    "baselines": [
+      {
+        "name": "QE_hu_okamoto",
+        "track_A_Q": 0.67,
+        "track_B_Q": 0.77,
+        "track_C_Q": 0.72,
+        "overall_Q": 0.72
+      },
+      {
+        "name": "iterative_lensing",
+        "track_A_Q": 0.63,
+        "track_B_Q": 0.73,
+        "track_C_Q": 0.68,
+        "overall_Q": 0.68
+      }
+    ]
+  },
+  "hardness_rule_check": "No baseline passes epsilon_fn over entire Omega. Hardest baseline fails at T4_blind (score < epsilon at severe-mismatch corner). Hardness rule: SATISFIED.",
+  "anti_overfitting_mechanisms": {
+    "M1_random_instantiation": "generator/instantiate.py uses G(SHA256(h_sub || k)) seeded by benchmark hash.",
+    "M2_convergence_scoring": "convergence/check_convergence.py verifies convergence rate across problem sizes.",
+    "M3_worst_case_eval": "scoring/worst_case.py returns min score over 20 fixed dev scenes per tier.",
+    "M4_community_adversarial": "adversarial/submit_adversarial.py; adversarial submissions eligible for T_k.",
+    "M5_method_sig_diversity": "Baselines span multiple method signatures; novelty bonus for approaches beyond L+O.",
+    "M6_gate_checks": "gates/check_s{1,2,3,4}.py embedded with thresholds.yaml."
+  },
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

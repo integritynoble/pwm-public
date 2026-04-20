@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-410",
+  "layer": "L1",
+  "principle_number": "410",
+  "title": "Tumor Growth Model Inversion",
+  "domain": "Computational Biology",
+  "sub_domain": "Cancer modeling",
+  "source_file": "AE_computational_bio/410_tumor_growth.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "Tumor growth inversion: estimate tumor growth rate lambda and carrying capacity K from longitudinal imaging data.",
+    "forward_model": "Gompertz: dV/dt = lambda * V * ln(K/V); Logistic: dV/dt = r*V*(1-V/K); Exponential-Linear for early growth",
+    "world_state_x": "tumor growth parameters (lambda/r, K, V0) and treatment effect delta_kill",
+    "observation_y": "tumor volume V(t_i) from CT/MRI imaging at N_timepoints",
+    "physical_parameters_theta": [
+      "growth_rate_lambda_per_day",
+      "carrying_capacity_K_mm3",
+      "V0_initial_volume_mm3",
+      "treatment_kill_rate"
+    ]
+  },
+  "G": {
+    "dag": "M.ode.gompertz_logistic -> O.nls.tumor_fit -> S.bootstrap.uncertainty_tumor",
+    "vertices": [
+      "M.ode.gompertz_logistic",
+      "O.nls.tumor_fit",
+      "S.bootstrap.uncertainty_tumor"
+    ],
+    "arcs": [
+      "M.ode.gompertz_logistic -> O.nls.tumor_fit",
+      "O.nls.tumor_fit -> S.bootstrap.uncertainty_tumor"
+    ],
+    "L_DAG": 2.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 500,
+    "condition_number_effective": 20,
+    "condition_number_mismatched": 100,
+    "regime": "Exponential phase: r easily estimated; plateau phase: K estimated; treatment response requires drug PK/PD coupling."
+  },
+  "C": {
+    "solver_class": "NLS_Gompertz_fit or Bayesian_tumor_model",
+    "convergence_rate_q": 2.0,
+    "error_bound": "volume prediction within 20% for calibrated model",
+    "complexity": "O(N_timepoints * N_params) per ODE fit"
+  },
+  "physics_fingerprint": {
+    "carrier": "N/A",
+    "sensing_mechanism": "tumor_volume_imaging",
+    "integration_axis": "time",
+    "problem_class": "parameter_estimation",
+    "noise_model": "lognormal",
+    "solution_space": "tumor_growth_parameter_vector",
+    "primitives": [
+      "M.ode.gompertz_logistic",
+      "O.nls.tumor_fit",
+      "S.bootstrap.uncertainty_tumor"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "imaging_noise_percent",
+    "resistant_subclone_emergence",
+    "vascularization_effect"
+  ],
+  "error_metric": "volume_prediction_RMSE_percent",
+  "error_metric_secondary": "time_to_progression_error_days",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "parameter_estimation",
+      "forward_operator": "tumor_volume_imaging",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_imaging_timepoints": 8,
+        "tumor_volume_mm3": 1000,
+        "growth_rate_lambda_day": 0.05,
+        "imaging_noise_percent": 10
+      },
+      "epsilon_fn_center": "15 volume_prediction_RMSE_percent"
+    },
+    "allowed_forward_operators": [
+      "tumor_volume_imaging"
+    ],
+    "allowed_problem_classes": [
+      "parameter_estimation"
+    ],
+    "allowed_omega_dimensions": [
+      "N_imaging_timepoints",
+      "tumor_volume_mm3",
+      "growth_rate_lambda_day",
+      "imaging_noise_percent"
+    ],
+    "omega_bounds": {
+      "N_imaging_timepoints": [
+        3,
+        50
+      ],
+      "tumor_volume_mm3": [
+        10,
+        100000
+      ],
+      "growth_rate_lambda_day": [
+        0.001,
+        0.5
+      ],
+      "imaging_noise_percent": [
+        2,
+        50
+      ]
+    },
+    "epsilon_bounds": {
+      "volume_prediction_RMSE_percent": [
+        2,
+        50
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

@@ -1,0 +1,145 @@
+{
+  "artifact_id": "L1-498",
+  "layer": "L1",
+  "principle_number": "498",
+  "title": "Topology Optimization (SIMP)",
+  "domain": "Optimization",
+  "sub_domain": "Structural topology",
+  "source_file": "AO_optimization/498_topology_optimization_simp.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "SIMP topology optimization: minimize structural compliance subject to volume fraction constraint using density-based penalization.",
+    "forward_model": "K(rho)*u = f, C = f^T u, rho_e in [rho_min, 1], penalty p=3",
+    "world_state_x": "density field rho in [0,1]^N_e, N_e finite elements",
+    "observation_y": "compliance C = f^T K(rho)^{-1} f (scalar objective)",
+    "physical_parameters_theta": [
+      "volume_fraction V_f in [0.3,0.7]",
+      "penalty p in [1,5]",
+      "filter_radius r in [1.5,5.0]",
+      "mesh_resolution N_e"
+    ]
+  },
+  "G": {
+    "dag": "F.filter.density -> S.simp.penalty -> M.fem.stiffness -> O.compliance.gradient",
+    "vertices": [
+      "F.filter.density",
+      "S.simp.penalty",
+      "M.fem.stiffness",
+      "O.compliance.gradient"
+    ],
+    "arcs": [
+      "F.filter.density -> S.simp.penalty",
+      "S.simp.penalty -> M.fem.stiffness",
+      "M.fem.stiffness -> O.compliance.gradient"
+    ],
+    "L_DAG": 3.5,
+    "n_c": 1
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 10000.0,
+    "condition_number_effective": 200,
+    "condition_number_mismatched": 500,
+    "regime": "Nonlinear due to SIMP penalization; unique local minima; convergence to KKT point guaranteed under mild regularity."
+  },
+  "C": {
+    "solver_class": "optimality_criteria or MMA (Method of Moving Asymptotes)",
+    "convergence_rate_q": 1.5,
+    "error_bound": "C_opt / C_init <= epsilon after N_iter iterations",
+    "complexity": "O(N_e * N_dof) per iteration (FEM solve + sensitivity)"
+  },
+  "physics_fingerprint": {
+    "carrier": "N/A",
+    "sensing_mechanism": "compliance_minimization",
+    "integration_axis": "spatial_domain",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "deterministic",
+    "solution_space": "2D_density_field",
+    "primitives": [
+      "F.filter.density",
+      "S.simp.penalty",
+      "M.fem.stiffness",
+      "O.compliance.gradient"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "load_direction_error",
+    "boundary_condition_uncertainty",
+    "material_property_variation"
+  ],
+  "error_metric": "compliance_ratio",
+  "error_metric_secondary": "volume_fraction_error",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "nonlinear_inverse",
+      "forward_operator": "compliance_minimization",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_e": 2500,
+        "V_f": 0.5,
+        "penalty_p": 3.0,
+        "filter_r": 2.0
+      },
+      "epsilon_fn_center": "0.45 compliance_ratio"
+    },
+    "allowed_forward_operators": [
+      "compliance_minimization"
+    ],
+    "allowed_problem_classes": [
+      "nonlinear_inverse"
+    ],
+    "allowed_omega_dimensions": [
+      "N_e",
+      "V_f",
+      "penalty_p",
+      "filter_r"
+    ],
+    "omega_bounds": {
+      "N_e": [
+        100,
+        10000
+      ],
+      "V_f": [
+        0.3,
+        0.7
+      ],
+      "penalty_p": [
+        1,
+        5
+      ],
+      "filter_r": [
+        1.5,
+        5.0
+      ]
+    },
+    "epsilon_bounds": {
+      "compliance_ratio": [
+        0.2,
+        0.8
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

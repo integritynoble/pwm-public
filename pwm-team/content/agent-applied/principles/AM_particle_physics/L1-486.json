@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-486",
+  "layer": "L1",
+  "principle_number": "486",
+  "title": "Dark Matter Direct Detection Inversion",
+  "domain": "Particle Physics",
+  "sub_domain": "Dark matter search",
+  "source_file": "AM_particle_physics/486_dark_matter_direct.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "Dark matter direct detection: set limits on WIMP-nucleus cross section from observed recoil spectrum.",
+    "forward_model": "dR/dE_R = N_T * rho_DM / (m_DM * m_T) * integral_{v_min}^{inf} v*f(v) * d_sigma/d_E_R dv",
+    "world_state_x": "WIMP mass m_DM and spin-independent cross section sigma_SI",
+    "observation_y": "observed recoil event spectrum N_obs(E_R) in energy bins above threshold",
+    "physical_parameters_theta": [
+      "m_DM_GeV",
+      "sigma_SI_cm2",
+      "E_threshold_keV",
+      "exposure_ton_yr"
+    ]
+  },
+  "G": {
+    "dag": "M.recoil.wimp_nucleus -> S.background.rejection_signal_region -> O.likelihood.profile",
+    "vertices": [
+      "M.recoil.wimp_nucleus",
+      "S.background.rejection_signal_region",
+      "O.likelihood.profile"
+    ],
+    "arcs": [
+      "M.recoil.wimp_nucleus -> S.background.rejection_signal_region",
+      "S.background.rejection_signal_region -> O.likelihood.profile"
+    ],
+    "L_DAG": 3.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 100000.0,
+    "condition_number_effective": 1000,
+    "condition_number_mismatched": 5000,
+    "regime": "Signal is subdominant to background; profile likelihood on nuisance parameters; solar neutrino floor at low cross sections."
+  },
+  "C": {
+    "solver_class": "profile_likelihood_CLs or Bayesian_p_value_xenon",
+    "convergence_rate_q": 2.0,
+    "error_bound": "sigma_SI limit scales as 1/exposure; background limited at low mass",
+    "complexity": "O(N_bins * N_mass_points * N_sigma_points) for exclusion plane"
+  },
+  "physics_fingerprint": {
+    "carrier": "particle",
+    "sensing_mechanism": "nuclear_recoil_detection",
+    "integration_axis": "recoil_energy",
+    "problem_class": "parameter_estimation",
+    "noise_model": "poisson",
+    "solution_space": "WIMP_cross_section_mass",
+    "primitives": [
+      "M.recoil.wimp_nucleus",
+      "S.background.rejection_signal_region",
+      "O.likelihood.profile"
+    ]
+  },
+  "difficulty_delta": 10,
+  "difficulty_tier": "hard",
+  "mismatch_parameters": [
+    "halo_model_uncertainty",
+    "nuclear_form_factor_uncertainty",
+    "background_model_error"
+  ],
+  "error_metric": "sigma_SI_upper_limit_log10",
+  "error_metric_secondary": "m_DM_exclusion_reach",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "parameter_estimation",
+      "forward_operator": "nuclear_recoil_detection",
+      "input_format": "measurement_only",
+      "omega": {
+        "exposure_ton_yr": 1.0,
+        "E_threshold_keV": 1.0,
+        "background_rate_evt_keV_ton_yr": 0.1,
+        "m_DM_GeV": 100
+      },
+      "epsilon_fn_center": "-47 sigma_SI_upper_limit_log10"
+    },
+    "allowed_forward_operators": [
+      "nuclear_recoil_detection"
+    ],
+    "allowed_problem_classes": [
+      "parameter_estimation"
+    ],
+    "allowed_omega_dimensions": [
+      "exposure_ton_yr",
+      "E_threshold_keV",
+      "background_rate_evt_keV_ton_yr",
+      "m_DM_GeV"
+    ],
+    "omega_bounds": {
+      "exposure_ton_yr": [
+        0.01,
+        10.0
+      ],
+      "E_threshold_keV": [
+        0.1,
+        10.0
+      ],
+      "background_rate_evt_keV_ton_yr": [
+        0.001,
+        10.0
+      ],
+      "m_DM_GeV": [
+        1,
+        10000
+      ]
+    },
+    "epsilon_bounds": {
+      "sigma_SI_upper_limit_log10": [
+        -52,
+        -40
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

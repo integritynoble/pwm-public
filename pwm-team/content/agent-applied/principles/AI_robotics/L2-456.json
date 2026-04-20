@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-456",
+  "layer": "L2",
+  "parent_l1": "L1-456",
+  "principle_ref": "sha256:<L1-456_principle_hash>",
+  "title": "Rotor Dynamics Aeroelastic Inversion \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "rotor_RPM": [
+        500,
+        10000
+      ],
+      "advance_ratio_mu": [
+        0.0,
+        0.4
+      ],
+      "collective_pitch_deg": [
+        0,
+        20.0
+      ],
+      "altitude_m": [
+        0,
+        5000
+      ]
+    },
+    "E": {
+      "forward": "T = 0.5*rho*A*(Omega*R)^2 * C_T(lambda_i, theta, a, e); blade element with flapping equation",
+      "operator": "rotor_thrust_torque_model",
+      "primitive_chain": "M.blade.element_momentum -> S.bvp.flapping_equation -> O.chi2.thrust_torque",
+      "inverse": "recover blade parameters: twist theta_0 from thrust T (N)"
+    },
+    "B": {
+      "thrust_positivity": "T >= 0",
+      "power_limit": "P = Q*Omega <= P_max"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "thrust_prediction_RMSE_N",
+      "vibration_mode_error_Hz",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "3 + 2 * (advance_ratio_mu / 0.1 + 1)^0.3"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 rotor_parameter_vector"
+    },
+    "baselines": [
+      {
+        "name": "BEM_BEMT",
+        "method_sig": "L+O",
+        "expected_score": 6
+      },
+      {
+        "name": "actuator_disk_model",
+        "method_sig": "L+O",
+        "expected_score": 8
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "rotor_RPM": 3000,
+        "advance_ratio_mu": 0.0,
+        "collective_pitch_deg": 8.0,
+        "altitude_m": 0,
+        "dynamic_stall_effect": 0.0,
+        "tip_loss_factor_uncertainty": 0.0,
+        "blade_structural_damping": 0.0
+      },
+      "epsilon": 5.0
+    },
+    "tier_bounds": {
+      "rotor_RPM": [
+        500,
+        10000
+      ],
+      "advance_ratio_mu": [
+        0.0,
+        0.4
+      ],
+      "collective_pitch_deg": [
+        0,
+        20.0
+      ],
+      "altitude_m": [
+        0,
+        5000
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.35,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.35 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

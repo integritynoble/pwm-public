@@ -1,0 +1,144 @@
+{
+  "artifact_id": "L1-365",
+  "layer": "L1",
+  "principle_number": "365",
+  "title": "Cosmological N-body (Large-Scale Structure)",
+  "domain": "Astrophysics",
+  "sub_domain": "Cosmological simulation",
+  "source_file": "AC_astrophysics/365_cosmological_nbody.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "Cosmological N-body: evolve dark matter particles in expanding universe under gravity to form large-scale structure.",
+    "forward_model": "x'' + 2H x' = -nabla phi/a^2, nabla^2 phi = 4*pi*G*a^2*(rho - rho_bar)",
+    "world_state_x": "dark matter density field delta(x) and velocity field v(x) in comoving coordinates",
+    "observation_y": "galaxy catalog (angular positions, redshifts), weak lensing convergence maps",
+    "physical_parameters_theta": [
+      "Omega_m",
+      "Omega_Lambda",
+      "sigma_8",
+      "n_s",
+      "h",
+      "N_particles"
+    ]
+  },
+  "G": {
+    "dag": "F.fourier.pm_gravity -> S.tree.force_softening -> O.leapfrog.comoving",
+    "vertices": [
+      "F.fourier.pm_gravity",
+      "S.tree.force_softening",
+      "O.leapfrog.comoving"
+    ],
+    "arcs": [
+      "F.fourier.pm_gravity -> S.tree.force_softening",
+      "S.tree.force_softening -> O.leapfrog.comoving"
+    ],
+    "L_DAG": 3.5,
+    "n_c": 1
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 100000000.0,
+    "condition_number_effective": 10000.0,
+    "condition_number_mismatched": 100000.0,
+    "regime": "Fluid limit for large scales; highly nonlinear at small scales (halos); cosmic variance limits on large scales."
+  },
+  "C": {
+    "solver_class": "TreePM (Gadget) or PM (PMFAST) or AMR (RAMSES)",
+    "convergence_rate_q": 2.0,
+    "error_bound": "P(k) agreement to 1% for k < 0.3 h/Mpc",
+    "complexity": "O(N_particles * log N_particles) per timestep (TreePM)"
+  },
+  "physics_fingerprint": {
+    "carrier": "N/A",
+    "sensing_mechanism": "pm_tree_gravity",
+    "integration_axis": "comoving_time",
+    "problem_class": "parameter_estimation",
+    "noise_model": "cosmic_variance",
+    "solution_space": "3D_dark_matter_density",
+    "primitives": [
+      "F.fourier.pm_gravity",
+      "S.tree.force_softening",
+      "O.leapfrog.comoving"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "cosmological_parameter_uncertainty",
+    "baryonic_feedback_neglect",
+    "neutrino_mass_uncertainty"
+  ],
+  "error_metric": "matter_power_spectrum_P_k_chi2",
+  "error_metric_secondary": "halo_mass_function_error",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "parameter_estimation",
+      "forward_operator": "pm_tree_gravity",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_particles": 134217728,
+        "box_size_Mpc_h": 250.0,
+        "Omega_m": 0.3,
+        "sigma_8": 0.8
+      },
+      "epsilon_fn_center": "1.02 matter_power_spectrum_P_k_chi2"
+    },
+    "allowed_forward_operators": [
+      "pm_tree_gravity"
+    ],
+    "allowed_problem_classes": [
+      "parameter_estimation"
+    ],
+    "allowed_omega_dimensions": [
+      "N_particles",
+      "box_size_Mpc_h",
+      "Omega_m",
+      "sigma_8"
+    ],
+    "omega_bounds": {
+      "N_particles": [
+        262144,
+        8589934592
+      ],
+      "box_size_Mpc_h": [
+        50,
+        2000
+      ],
+      "Omega_m": [
+        0.2,
+        0.5
+      ],
+      "sigma_8": [
+        0.6,
+        1.0
+      ]
+    },
+    "epsilon_bounds": {
+      "matter_power_spectrum_P_k_chi2": [
+        0.9,
+        1.5
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

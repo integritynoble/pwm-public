@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-473",
+  "layer": "L2",
+  "parent_l1": "L1-473",
+  "principle_ref": "sha256:<L1-473_principle_hash>",
+  "title": "Radiometric Sensor Calibration \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "N_bands": [
+        1,
+        100
+      ],
+      "N_cal_sites": [
+        5,
+        100
+      ],
+      "degradation_percent_yr": [
+        0.0,
+        2.0
+      ],
+      "aerosol_uncertainty_AOD": [
+        0.005,
+        0.1
+      ]
+    },
+    "E": {
+      "forward": "TOA_reflectance = gain * DN + offset; atmospheric correction: rho_surface = (rho_TOA - rho_path) / T_atm",
+      "operator": "absolute_radiometric_calibration",
+      "primitive_chain": "S.calibration.vicarious -> M.toa.reflectance_model -> O.least_squares.calibration",
+      "inverse": "recover calibration coefficients (gain from DN values for calibration targets (pseudo-invariant sites"
+    },
+    "B": {
+      "gain_positivity": "gain > 0",
+      "stability": "gain drift < 2%/yr"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "radiometric_calibration_uncertainty_percent",
+      "reflectance_RMSE",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "1.5 + 0.5 * (degradation_percent_yr / 0.5)^0.3"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 calibration_coefficient_vector"
+    },
+    "baselines": [
+      {
+        "name": "vicarious_calibration",
+        "method_sig": "L+O",
+        "expected_score": 2.5
+      },
+      {
+        "name": "cross_calibration_MODIS",
+        "method_sig": "L+O",
+        "expected_score": 1.8
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_bands": 10,
+        "N_cal_sites": 20,
+        "degradation_percent_yr": 0.5,
+        "aerosol_uncertainty_AOD": 0.02,
+        "sensor_degradation_drift_percent_yr": 0.0,
+        "BRDF_angular_effect": 0.0,
+        "aerosol_optical_depth_uncertainty": 0.0
+      },
+      "epsilon": 2.0
+    },
+    "tier_bounds": {
+      "N_bands": [
+        1,
+        100
+      ],
+      "N_cal_sites": [
+        5,
+        100
+      ],
+      "degradation_percent_yr": [
+        0.0,
+        2.0
+      ],
+      "aerosol_uncertainty_AOD": [
+        0.005,
+        0.1
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.25,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.25 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

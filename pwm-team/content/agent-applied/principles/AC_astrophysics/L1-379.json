@@ -1,0 +1,143 @@
+{
+  "artifact_id": "L1-379",
+  "layer": "L1",
+  "principle_number": "379",
+  "title": "Baryon Acoustic Oscillation (BAO) Fitting",
+  "domain": "Astrophysics",
+  "sub_domain": "Large-scale structure",
+  "source_file": "AC_astrophysics/379_bao.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "BAO analysis: measure acoustic scale in galaxy clustering to constrain Hubble parameter and angular diameter distance.",
+    "forward_model": "xi(s) = integral P(k) * sinc(k*s) k^2 dk / (2*pi^2); BAO peak at s ~ 150 Mpc/h",
+    "world_state_x": "distance ratios D_V/r_d and D_H/r_d at survey redshift z_eff",
+    "observation_y": "galaxy 2-point correlation function xi(s) or power spectrum P(k) from spectroscopic survey",
+    "physical_parameters_theta": [
+      "n_s_spectral_index",
+      "Omega_m",
+      "b_galaxy_bias",
+      "sigma_v_FoG_kms",
+      "n_eff_gal_h3_Mpc3"
+    ]
+  },
+  "G": {
+    "dag": "F.fourier.power_spectrum -> S.bao.peak_fitting -> O.chi2.dv_rd",
+    "vertices": [
+      "F.fourier.power_spectrum",
+      "S.bao.peak_fitting",
+      "O.chi2.dv_rd"
+    ],
+    "arcs": [
+      "F.fourier.power_spectrum -> S.bao.peak_fitting",
+      "S.bao.peak_fitting -> O.chi2.dv_rd"
+    ],
+    "L_DAG": 3.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 500,
+    "condition_number_effective": 30,
+    "condition_number_mismatched": 150,
+    "regime": "BAO peak robustly detected in linear regime; reconstruction sharpens peak; non-linear broadening is systematic."
+  },
+  "C": {
+    "solver_class": "standard_BAO_fitting_template or BAOfit or EFTofLSS",
+    "convergence_rate_q": 2.0,
+    "error_bound": "sigma(D_V/r_d) < 1% for Stage-IV survey",
+    "complexity": "O(N_gal^2) for pair counting or O(N_gal * log N_gal) with FFT"
+  },
+  "physics_fingerprint": {
+    "carrier": "N/A",
+    "sensing_mechanism": "two_point_correlation_function",
+    "integration_axis": "comoving_separation",
+    "problem_class": "parameter_estimation",
+    "noise_model": "cosmic_variance_gaussian",
+    "solution_space": "cosmological_distance_ratios",
+    "primitives": [
+      "F.fourier.power_spectrum",
+      "S.bao.peak_fitting",
+      "O.chi2.dv_rd"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "galaxy_bias_nonlinearity",
+    "RSD_model_error",
+    "reconstruction_incompleteness"
+  ],
+  "error_metric": "D_V_rd_sigma_percent",
+  "error_metric_secondary": "chi2_reduced_BAO",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "parameter_estimation",
+      "forward_operator": "two_point_correlation_function",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_gal_million": 1.0,
+        "survey_volume_Gpc3_h": 5.0,
+        "z_eff": 0.5,
+        "sigma_v_FoG_kms": 400
+      },
+      "epsilon_fn_center": "1.0 D_V_rd_sigma_percent"
+    },
+    "allowed_forward_operators": [
+      "two_point_correlation_function"
+    ],
+    "allowed_problem_classes": [
+      "parameter_estimation"
+    ],
+    "allowed_omega_dimensions": [
+      "N_gal_million",
+      "survey_volume_Gpc3_h",
+      "z_eff",
+      "sigma_v_FoG_kms"
+    ],
+    "omega_bounds": {
+      "N_gal_million": [
+        0.1,
+        50.0
+      ],
+      "survey_volume_Gpc3_h": [
+        0.5,
+        50.0
+      ],
+      "z_eff": [
+        0.1,
+        2.0
+      ],
+      "sigma_v_FoG_kms": [
+        100,
+        1000
+      ]
+    },
+    "epsilon_bounds": {
+      "D_V_rd_sigma_percent": [
+        0.2,
+        5.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

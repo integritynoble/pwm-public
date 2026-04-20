@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-470",
+  "layer": "L1",
+  "principle_number": "470",
+  "title": "Photogrammetry Structure-from-Motion",
+  "domain": "Geodesy",
+  "sub_domain": "Photogrammetry",
+  "source_file": "AK_geodesy/470_photogrammetry_sfm.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "SfM photogrammetry: recover 3D scene structure and camera poses from unordered image set via bundle adjustment.",
+    "forward_model": "x_ij = P_i * X_j / lambda_ij; P_i = K * [R_i | t_i]; minimize sum ||x_ij - x_ij^obs||^2",
+    "world_state_x": "3D point positions X_j and camera pose parameters (R_i, t_i, K_i)",
+    "observation_y": "2D keypoint observations x_ij for N_images images, M_points 3D points",
+    "physical_parameters_theta": [
+      "focal_length_px",
+      "principal_point_cx_cy",
+      "radial_distortion_k1_k2",
+      "N_GCPs"
+    ]
+  },
+  "G": {
+    "dag": "S.sfm.feature_matching -> M.bundle.adjustment -> O.reprojection.error",
+    "vertices": [
+      "S.sfm.feature_matching",
+      "M.bundle.adjustment",
+      "O.reprojection.error"
+    ],
+    "arcs": [
+      "S.sfm.feature_matching -> M.bundle.adjustment",
+      "M.bundle.adjustment -> O.reprojection.error"
+    ],
+    "L_DAG": 3.5,
+    "n_c": 1
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 10000.0,
+    "condition_number_effective": 200,
+    "condition_number_mismatched": 1000,
+    "regime": "Gauge freedom (7-DOF similarity); GCPs fix absolute scale/orientation; degenerate configurations from planar scenes."
+  },
+  "C": {
+    "solver_class": "bundle_adjustment_Ceres or COLMAP or OpenSfM",
+    "convergence_rate_q": 2.0,
+    "error_bound": "GCP RMSE < 5 cm UAV, < 1 cm aerial with GCPs",
+    "complexity": "O(N_images * N_points * N_iter) for sparse bundle adjustment"
+  },
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "bundle_adjustment_sfm",
+    "integration_axis": "image_network",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "3D_point_cloud_camera_poses",
+    "primitives": [
+      "S.sfm.feature_matching",
+      "M.bundle.adjustment",
+      "O.reprojection.error"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "GPS_geotag_accuracy_m",
+    "feature_matching_outlier_rate",
+    "illumination_variation"
+  ],
+  "error_metric": "GCP_RMSE_cm",
+  "error_metric_secondary": "reprojection_error_px",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "nonlinear_inverse",
+      "forward_operator": "bundle_adjustment_sfm",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_images": 200,
+        "N_GCPs": 5,
+        "overlap_percent": 80,
+        "flight_altitude_m": 120
+      },
+      "epsilon_fn_center": "3.0 GCP_RMSE_cm"
+    },
+    "allowed_forward_operators": [
+      "bundle_adjustment_sfm"
+    ],
+    "allowed_problem_classes": [
+      "nonlinear_inverse"
+    ],
+    "allowed_omega_dimensions": [
+      "N_images",
+      "N_GCPs",
+      "overlap_percent",
+      "flight_altitude_m"
+    ],
+    "omega_bounds": {
+      "N_images": [
+        10,
+        10000
+      ],
+      "N_GCPs": [
+        0,
+        50
+      ],
+      "overlap_percent": [
+        50,
+        95
+      ],
+      "flight_altitude_m": [
+        30,
+        2000
+      ]
+    },
+    "epsilon_bounds": {
+      "GCP_RMSE_cm": [
+        0.5,
+        20.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

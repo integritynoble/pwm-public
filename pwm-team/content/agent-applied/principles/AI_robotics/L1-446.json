@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-446",
+  "layer": "L1",
+  "principle_number": "446",
+  "title": "Forward Kinematics",
+  "domain": "Robotics",
+  "sub_domain": "Robot kinematics",
+  "source_file": "AI_robotics/446_forward_kinematics.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "Forward kinematics: compute end-effector pose from joint angles using DH parameter chain.",
+    "forward_model": "T_0_n = prod_{i=1}^{n} T_{i-1}^i(q_i); T = Rot * Trans using DH convention",
+    "world_state_x": "end-effector pose (position + orientation) in task space",
+    "observation_y": "joint angles {q_i} from encoders",
+    "physical_parameters_theta": [
+      "DH_params_a_d_alpha",
+      "N_joints",
+      "encoder_resolution_deg",
+      "joint_range_deg"
+    ]
+  },
+  "G": {
+    "dag": "M.dh.transformation_matrix -> S.chain.product -> O.pose.cartesian",
+    "vertices": [
+      "M.dh.transformation_matrix",
+      "S.chain.product",
+      "O.pose.cartesian"
+    ],
+    "arcs": [
+      "M.dh.transformation_matrix -> S.chain.product",
+      "S.chain.product -> O.pose.cartesian"
+    ],
+    "L_DAG": 2.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 500,
+    "condition_number_effective": 20,
+    "condition_number_mismatched": 100,
+    "regime": "Exact solution for rigid body; calibration errors dominate; flexible joints require elastic models."
+  },
+  "C": {
+    "solver_class": "direct_DH_computation (analytical)",
+    "convergence_rate_q": 2.0,
+    "error_bound": "position accuracy < 1 mm for well-calibrated robot",
+    "complexity": "O(n) matrix multiplications"
+  },
+  "physics_fingerprint": {
+    "carrier": "N/A",
+    "sensing_mechanism": "joint_encoder_to_cartesian",
+    "integration_axis": "kinematic_chain",
+    "problem_class": "parameter_estimation",
+    "noise_model": "gaussian",
+    "solution_space": "cartesian_pose_vector",
+    "primitives": [
+      "M.dh.transformation_matrix",
+      "S.chain.product",
+      "O.pose.cartesian"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "DH_calibration_error",
+    "joint_flexibility",
+    "base_frame_uncertainty"
+  ],
+  "error_metric": "end_effector_position_RMSE_mm",
+  "error_metric_secondary": "orientation_error_deg",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "parameter_estimation",
+      "forward_operator": "joint_encoder_to_cartesian",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_joints": 6,
+        "calibration_error_mm": 0.5,
+        "encoder_noise_deg": 0.01,
+        "load_kg": 5
+      },
+      "epsilon_fn_center": "1.0 end_effector_position_RMSE_mm"
+    },
+    "allowed_forward_operators": [
+      "joint_encoder_to_cartesian"
+    ],
+    "allowed_problem_classes": [
+      "parameter_estimation"
+    ],
+    "allowed_omega_dimensions": [
+      "N_joints",
+      "calibration_error_mm",
+      "encoder_noise_deg",
+      "load_kg"
+    ],
+    "omega_bounds": {
+      "N_joints": [
+        2,
+        10
+      ],
+      "calibration_error_mm": [
+        0.0,
+        5.0
+      ],
+      "encoder_noise_deg": [
+        0.001,
+        0.1
+      ],
+      "load_kg": [
+        0,
+        100
+      ]
+    },
+    "epsilon_bounds": {
+      "end_effector_position_RMSE_mm": [
+        0.1,
+        20.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

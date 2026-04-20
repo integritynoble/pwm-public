@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-459",
+  "layer": "L2",
+  "parent_l1": "L1-459",
+  "principle_ref": "sha256:<L1-459_principle_hash>",
+  "title": "Compositional Reservoir Simulation \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "N_cells": [
+        100,
+        100000
+      ],
+      "N_components": [
+        2,
+        20
+      ],
+      "reservoir_pressure_psi": [
+        500,
+        15000
+      ],
+      "GOR_scf_stb": [
+        100,
+        100000
+      ]
+    },
+    "E": {
+      "forward": "phi*(d(rho*z_i)/dt) = -nabla*(rho_o*x_i*u_o + rho_g*y_i*u_g) + q_i; K_i = y_i/x_i from EOS",
+      "operator": "compositional_eos_flow",
+      "primitive_chain": "M.eos.peng_robinson -> S.flash.rachford_rice -> O.material_balance.compositional",
+      "inverse": "recover component mole fractions z_i(x from wellhead compositional analysis"
+    },
+    "B": {
+      "mole_fraction_sum": "sum z_i = 1",
+      "positivity": "z_i >= 0"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "GOR_prediction_RMSE_percent",
+      "dew_point_pressure_error_psi",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "7 + 3 * (N_components / 6)^0.3"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 3D_composition_pressure"
+    },
+    "baselines": [
+      {
+        "name": "CMG_GEM_compositional",
+        "method_sig": "L+O",
+        "expected_score": 12
+      },
+      {
+        "name": "ECLIPSE300_EOS",
+        "method_sig": "L+O",
+        "expected_score": 10
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_cells": 5000,
+        "N_components": 6,
+        "reservoir_pressure_psi": 5000,
+        "GOR_scf_stb": 1000,
+        "EOS_tuning_uncertainty": 0.0,
+        "compositional_gradient_uncertainty": 0.0,
+        "nonequilibrium_effects": 0.0
+      },
+      "epsilon": 10.0
+    },
+    "tier_bounds": {
+      "N_cells": [
+        100,
+        100000
+      ],
+      "N_components": [
+        2,
+        20
+      ],
+      "reservoir_pressure_psi": [
+        500,
+        15000
+      ],
+      "GOR_scf_stb": [
+        100,
+        100000
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.42,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.42 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

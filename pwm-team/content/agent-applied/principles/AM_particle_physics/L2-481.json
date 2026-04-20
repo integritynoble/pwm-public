@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-481",
+  "layer": "L2",
+  "parent_l1": "L1-481",
+  "principle_ref": "sha256:<L1-481_principle_hash>",
+  "title": "Parton Distribution Functions (DGLAP) \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "N_data_points": [
+        100,
+        10000
+      ],
+      "x_min_bjorken": [
+        1e-06,
+        0.01
+      ],
+      "Q_range_GeV": [
+        10,
+        10000
+      ],
+      "alpha_s_value": [
+        0.11,
+        0.125
+      ]
+    },
+    "E": {
+      "forward": "d/d(ln Q^2) f_i(x, Q^2) = sum_j integral_{x}^{1} (dz/z) P_{ij}(z) f_j(x/z, Q^2)",
+      "operator": "deep_inelastic_scattering",
+      "primitive_chain": "M.dglap.splitting_functions -> F.mellin.transform -> O.chi2.cross_section_data",
+      "inverse": "recover parton distribution functions f_i(x from measured cross sections sigma_exp for DIS (HERA)"
+    },
+    "B": {
+      "momentum_sum": "sum_i integral x*f_i dx = 1",
+      "positivity": "f_i(x,Q^2) >= 0 for x > 0.1"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "chi2_per_dof_global_fit",
+      "PDF_uncertainty_band_percent",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "1.0 + 0.05 * (3000 / N_data_points)^0.3"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 PDF_function_space"
+    },
+    "baselines": [
+      {
+        "name": "CT18_PDF_fit",
+        "method_sig": "L+O",
+        "expected_score": 1.1
+      },
+      {
+        "name": "NNPDF40_NN",
+        "method_sig": "L+O",
+        "expected_score": 1.03
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_data_points": 3000,
+        "x_min_bjorken": 1e-05,
+        "Q_range_GeV": 1000,
+        "alpha_s_value": 0.118,
+        "nuclear_correction_uncertainty": 0.0,
+        "higher_twist_uncertainty": 0.0,
+        "heavy_quark_scheme_error": 0.0
+      },
+      "epsilon": 1.05
+    },
+    "tier_bounds": {
+      "N_data_points": [
+        100,
+        10000
+      ],
+      "x_min_bjorken": [
+        1e-06,
+        0.01
+      ],
+      "Q_range_GeV": [
+        10,
+        10000
+      ],
+      "alpha_s_value": [
+        0.11,
+        0.125
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.5,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.5 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-444",
+  "layer": "L1",
+  "principle_number": "444",
+  "title": "Markowitz Mean-Variance Portfolio Optimization",
+  "domain": "Computational Finance",
+  "sub_domain": "Portfolio optimization",
+  "source_file": "AH_comp_finance/444_portfolio_markowitz.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "Markowitz portfolio: find minimum variance portfolio for target return using covariance matrix from historical data.",
+    "forward_model": "min_w w^T Sigma w s.t. mu^T w = mu_target, 1^T w = 1, w >= 0",
+    "world_state_x": "optimal portfolio weights w in R^N satisfying constraints",
+    "observation_y": "historical return matrix R in R^{T x N} for N assets over T periods",
+    "physical_parameters_theta": [
+      "N_assets",
+      "T_lookback_days",
+      "target_return_percent",
+      "risk_aversion_lambda"
+    ]
+  },
+  "G": {
+    "dag": "M.covariance.sample_shrinkage -> O.qp.quadratic_programming -> S.efficient_frontier.trace",
+    "vertices": [
+      "M.covariance.sample_shrinkage",
+      "O.qp.quadratic_programming",
+      "S.efficient_frontier.trace"
+    ],
+    "arcs": [
+      "M.covariance.sample_shrinkage -> O.qp.quadratic_programming",
+      "O.qp.quadratic_programming -> S.efficient_frontier.trace"
+    ],
+    "L_DAG": 2.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 1000.0,
+    "condition_number_effective": 50,
+    "condition_number_mismatched": 300,
+    "regime": "Convex QP; highly sensitive to expected return estimates; Ledoit-Wolf shrinkage stabilizes covariance; robust MV needed."
+  },
+  "C": {
+    "solver_class": "quadratic_programming_CVXPY or analytical_frontier",
+    "convergence_rate_q": 2.0,
+    "error_bound": "out-of-sample Sharpe > 0.5 for 1-year lookback",
+    "complexity": "O(N^2 * T) for covariance estimation + O(N^3) for QP"
+  },
+  "physics_fingerprint": {
+    "carrier": "N/A",
+    "sensing_mechanism": "expected_return_covariance_estimation",
+    "integration_axis": "asset_universe",
+    "problem_class": "parameter_estimation",
+    "noise_model": "estimation_gaussian",
+    "solution_space": "portfolio_weight_vector",
+    "primitives": [
+      "M.covariance.sample_shrinkage",
+      "O.qp.quadratic_programming",
+      "S.efficient_frontier.trace"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "estimation_error_expected_returns",
+    "covariance_matrix_instability",
+    "transaction_cost_turnover"
+  ],
+  "error_metric": "out_of_sample_Sharpe_ratio",
+  "error_metric_secondary": "portfolio_turnover",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "parameter_estimation",
+      "forward_operator": "expected_return_covariance_estimation",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_assets": 50,
+        "T_lookback_days": 252,
+        "estimation_error_sigma_mu": 0.01,
+        "risk_aversion_lambda": 1.0
+      },
+      "epsilon_fn_center": "0.6 out_of_sample_Sharpe_ratio"
+    },
+    "allowed_forward_operators": [
+      "expected_return_covariance_estimation"
+    ],
+    "allowed_problem_classes": [
+      "parameter_estimation"
+    ],
+    "allowed_omega_dimensions": [
+      "N_assets",
+      "T_lookback_days",
+      "estimation_error_sigma_mu",
+      "risk_aversion_lambda"
+    ],
+    "omega_bounds": {
+      "N_assets": [
+        5,
+        500
+      ],
+      "T_lookback_days": [
+        63,
+        2520
+      ],
+      "estimation_error_sigma_mu": [
+        0.001,
+        0.05
+      ],
+      "risk_aversion_lambda": [
+        0.1,
+        10.0
+      ]
+    },
+    "epsilon_bounds": {
+      "out_of_sample_Sharpe_ratio": [
+        0.0,
+        2.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

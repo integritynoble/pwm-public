@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-366",
+  "layer": "L2",
+  "parent_l1": "L1-366",
+  "principle_ref": "sha256:<L1-366_principle_hash>",
+  "title": "CMB Power Spectrum Parameter Estimation \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "l_max": [
+        100,
+        5000
+      ],
+      "noise_uK_arcmin": [
+        1.0,
+        100.0
+      ],
+      "beam_FWHM_arcmin": [
+        1.0,
+        30.0
+      ],
+      "N_ell_bins": [
+        10,
+        100
+      ]
+    },
+    "E": {
+      "forward": "C_l^{TT,EE,TE}(theta) from CAMB/CLASS Boltzmann solver; chi2 = sum_l (2l+1)/2 [C_l^obs/C_l^th - 1 - ln(C_l^obs/C_l^th)]",
+      "operator": "boltzmann_cmb_transfer",
+      "primitive_chain": "S.boltzmann.transfer -> M.fisher.fisher_matrix -> O.mcmc.sampler",
+      "inverse": "recover cosmological parameter vector theta = (Omega_b from CMB angular power spectra C_l^{TT"
+    },
+    "B": {
+      "positivity": "C_l^{TT,EE} >= 0",
+      "prior_cosmological": "flat priors on theta"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "parameter_constraint_sigma_Omega",
+      "chi2_reduced",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.005 + 0.005 * (noise_uK_arcmin / 10.0)^0.5"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 cosmological_parameter_vector"
+    },
+    "baselines": [
+      {
+        "name": "CAMB_MCMC",
+        "method_sig": "L+O",
+        "expected_score": 0.012
+      },
+      {
+        "name": "CLASS_nested",
+        "method_sig": "L+O",
+        "expected_score": 0.01
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "l_max": 2500,
+        "noise_uK_arcmin": 10.0,
+        "beam_FWHM_arcmin": 5.0,
+        "N_ell_bins": 40,
+        "foreground_contamination": 0.0,
+        "beam_uncertainty_percent": 0.0,
+        "calibration_uncertainty_percent": 0.0
+      },
+      "epsilon": 0.01
+    },
+    "tier_bounds": {
+      "l_max": [
+        100,
+        5000
+      ],
+      "noise_uK_arcmin": [
+        1.0,
+        100.0
+      ],
+      "beam_FWHM_arcmin": [
+        1.0,
+        30.0
+      ],
+      "N_ell_bins": [
+        10,
+        100
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.4,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.4 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

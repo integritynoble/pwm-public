@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-376",
+  "layer": "L1",
+  "principle_number": "376",
+  "title": "Cosmic Ray Propagation Inversion",
+  "domain": "Astrophysics",
+  "sub_domain": "Cosmic rays",
+  "source_file": "AC_astrophysics/376_cosmic_ray_propagation.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "CR propagation inversion: infer diffusion coefficient D, convection velocity, and source distribution from CR flux ratios (B/C, positron fraction).",
+    "forward_model": "partial_t N = nabla(D nabla N) - nabla(v_c N) - N/tau + Q(r,E); B/C ratio from propagated spectra",
+    "world_state_x": "diffusion coefficient D_0 and spatial/energy dependence, source spectral index gamma_src",
+    "observation_y": "B/C, p-bar/p, positron fraction, CR fluxes from AMS-02/PAMELA",
+    "physical_parameters_theta": [
+      "D_0_cm2_s",
+      "delta_diffusion",
+      "v_alfven_kms",
+      "z_halo_kpc"
+    ]
+  },
+  "G": {
+    "dag": "S.diffusion.galactic -> M.loss.ionization_synchrotron -> O.chi2.cr_ratios",
+    "vertices": [
+      "S.diffusion.galactic",
+      "M.loss.ionization_synchrotron",
+      "O.chi2.cr_ratios"
+    ],
+    "arcs": [
+      "S.diffusion.galactic -> M.loss.ionization_synchrotron",
+      "M.loss.ionization_synchrotron -> O.chi2.cr_ratios"
+    ],
+    "L_DAG": 3.2,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 1000,
+    "condition_number_effective": 50,
+    "condition_number_mismatched": 200,
+    "regime": "Linear transport equation; degeneracy between D and v_c; probed by secondary/primary ratios."
+  },
+  "C": {
+    "solver_class": "GALPROP or DRAGON2 with MCMC parameter scan",
+    "convergence_rate_q": 2.0,
+    "error_bound": "chi2/dof < 1.5 for AMS-02 data at standard solution",
+    "complexity": "O(N_energy * N_spatial * N_species) per GALPROP call"
+  },
+  "physics_fingerprint": {
+    "carrier": "particle",
+    "sensing_mechanism": "diffusion_loss_transport",
+    "integration_axis": "galactic_volume",
+    "problem_class": "parameter_estimation",
+    "noise_model": "observation_gaussian",
+    "solution_space": "CR_spectral_source_distribution",
+    "primitives": [
+      "S.diffusion.galactic",
+      "M.loss.ionization_synchrotron",
+      "O.chi2.cr_ratios"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "solar_modulation_uncertainty",
+    "cross_section_uncertainty",
+    "gas_density_model_error"
+  ],
+  "error_metric": "B_over_C_chi2",
+  "error_metric_secondary": "positron_fraction_chi2",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "parameter_estimation",
+      "forward_operator": "diffusion_loss_transport",
+      "input_format": "measurement_only",
+      "omega": {
+        "D_0_cm2_s": 3e+28,
+        "delta_diffusion": 0.35,
+        "z_halo_kpc": 4.0,
+        "solar_phi_GV": 0.5
+      },
+      "epsilon_fn_center": "1.3 B_over_C_chi2"
+    },
+    "allowed_forward_operators": [
+      "diffusion_loss_transport"
+    ],
+    "allowed_problem_classes": [
+      "parameter_estimation"
+    ],
+    "allowed_omega_dimensions": [
+      "D_0_cm2_s",
+      "delta_diffusion",
+      "z_halo_kpc",
+      "solar_phi_GV"
+    ],
+    "omega_bounds": {
+      "D_0_cm2_s": [
+        1e+28,
+        1e+29
+      ],
+      "delta_diffusion": [
+        0.2,
+        0.6
+      ],
+      "z_halo_kpc": [
+        2.0,
+        8.0
+      ],
+      "solar_phi_GV": [
+        0.3,
+        1.5
+      ]
+    },
+    "epsilon_bounds": {
+      "B_over_C_chi2": [
+        0.8,
+        3.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

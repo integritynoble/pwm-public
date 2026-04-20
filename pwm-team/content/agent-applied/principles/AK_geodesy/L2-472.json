@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-472",
+  "layer": "L2",
+  "parent_l1": "L1-472",
+  "principle_ref": "sha256:<L1-472_principle_hash>",
+  "title": "Hyperspectral Spectral Unmixing \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        20,
+        500
+      ],
+      "W": [
+        20,
+        500
+      ],
+      "K_endmembers": [
+        2,
+        20
+      ],
+      "SNR_dB": [
+        10,
+        60
+      ]
+    },
+    "E": {
+      "forward": "y = M * a + n; M is endmember matrix [L x K], a is abundance vector [K x 1], sum(a) = 1, a >= 0",
+      "operator": "hyperspectral_reflectance_unmixing",
+      "primitive_chain": "M.mixing.linear_model -> O.nonneg_ls.fcls -> S.endmember.extraction",
+      "inverse": "recover abundance fractions a_k(x from hyperspectral image Y in R^{H x W x L} at L spectral bands"
+    },
+    "B": {
+      "sum_to_one": "sum_k a_k = 1",
+      "nonnegativity": "a_k >= 0"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "abundance_RMSE",
+      "endmember_SAM_deg",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.03 + 0.02 * (30 / SNR_dB)^0.5"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 abundance_map"
+    },
+    "baselines": [
+      {
+        "name": "FCLS",
+        "method_sig": "L+O",
+        "expected_score": 0.06
+      },
+      {
+        "name": "SUnSAL-TV",
+        "method_sig": "L+O",
+        "expected_score": 0.04
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 100,
+        "W": 100,
+        "K_endmembers": 5,
+        "SNR_dB": 30,
+        "endmember_variability": 0.0,
+        "nonlinear_mixing_fraction": 0.0,
+        "atmospheric_correction_error": 0.0
+      },
+      "epsilon": 0.05
+    },
+    "tier_bounds": {
+      "H": [
+        20,
+        500
+      ],
+      "W": [
+        20,
+        500
+      ],
+      "K_endmembers": [
+        2,
+        20
+      ],
+      "SNR_dB": [
+        10,
+        60
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.28,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.28 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

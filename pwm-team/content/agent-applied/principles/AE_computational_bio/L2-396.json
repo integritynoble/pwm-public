@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-396",
+  "layer": "L2",
+  "parent_l1": "L1-396",
+  "principle_ref": "sha256:<L1-396_principle_hash>",
+  "title": "Hodgkin-Huxley Neuron Model Parameter Estimation \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "g_Na_ratio": [
+        50,
+        500
+      ],
+      "temperature_C": [
+        0,
+        37
+      ],
+      "I_ext_uA_cm2": [
+        0,
+        50
+      ],
+      "N_voltage_samples": [
+        1000,
+        100000
+      ]
+    },
+    "E": {
+      "forward": "C_m * dV/dt = -g_Na*m^3*h*(V-E_Na) - g_K*n^4*(V-E_K) - g_L*(V-E_L) + I_ext",
+      "operator": "patch_clamp_voltage_measurement",
+      "primitive_chain": "M.ode.hodgkin_huxley -> O.chi2.voltage_trace -> S.mcmc.bayesian_parameter",
+      "inverse": "recover HH parameters {g_Na from membrane voltage V(t) and ionic currents I(t) from voltage-clamp experiments"
+    },
+    "B": {
+      "gating_variables": "m,h,n in [0,1]",
+      "conductances_positivity": "g > 0"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "voltage_trace_RMSE_mV",
+      "spike_timing_error_ms",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "1.0 + 1.0 * (10 / N_voltage_samples * 1000)^0.3"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 HH_parameter_vector"
+    },
+    "baselines": [
+      {
+        "name": "genetic_algorithm_HH",
+        "method_sig": "L+O",
+        "expected_score": 2.5
+      },
+      {
+        "name": "SNPE_neural_posterior",
+        "method_sig": "L+O",
+        "expected_score": 1.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "g_Na_ratio": 120,
+        "temperature_C": 6.3,
+        "I_ext_uA_cm2": 10,
+        "N_voltage_samples": 10000,
+        "channel_noise_stochastic": 0.0,
+        "dendritic_morphology_neglect": 0.0,
+        "temperature_Q10_uncertainty": 0.0
+      },
+      "epsilon": 2.0
+    },
+    "tier_bounds": {
+      "g_Na_ratio": [
+        50,
+        500
+      ],
+      "temperature_C": [
+        0,
+        37
+      ],
+      "I_ext_uA_cm2": [
+        0,
+        50
+      ],
+      "N_voltage_samples": [
+        1000,
+        100000
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.38,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.38 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

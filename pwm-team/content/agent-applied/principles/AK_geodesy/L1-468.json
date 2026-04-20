@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-468",
+  "layer": "L1",
+  "principle_number": "468",
+  "title": "Satellite Radar Altimetry",
+  "domain": "Geodesy",
+  "sub_domain": "Sea surface height",
+  "source_file": "AK_geodesy/468_satellite_altimetry.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "Radar altimetry: estimate sea surface height from radar echo waveform retracking (Brown model).",
+    "forward_model": "P(tau) = sigma_0 * integral W(t) * G^2(theta) * sinc^2(...) dt; Brown ocean model",
+    "world_state_x": "SSH, SWH (significant wave height), backscatter coefficient sigma_0",
+    "observation_y": "radar return waveform P(tau) with N_gates gates at 20 Hz sampling",
+    "physical_parameters_theta": [
+      "epoch_t_hat",
+      "SWH_m",
+      "sigma_0_dB",
+      "antenna_mispointing_deg"
+    ]
+  },
+  "G": {
+    "dag": "S.altimeter.retracker_brown -> M.waveform.ocean_reflection -> O.least_squares.retrack",
+    "vertices": [
+      "S.altimeter.retracker_brown",
+      "M.waveform.ocean_reflection",
+      "O.least_squares.retrack"
+    ],
+    "arcs": [
+      "S.altimeter.retracker_brown -> M.waveform.ocean_reflection",
+      "M.waveform.ocean_reflection -> O.least_squares.retrack"
+    ],
+    "L_DAG": 2.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 500,
+    "condition_number_effective": 30,
+    "condition_number_mismatched": 150,
+    "regime": "Nonlinear waveform fitting; inland waters require sub-waveform retrackers; sea ice has specular reflection."
+  },
+  "C": {
+    "solver_class": "OCOG_retracker or Brown_MLE4 or SAMOSA",
+    "convergence_rate_q": 2.0,
+    "error_bound": "SSH precision < 3 cm (1-Hz), < 1 cm (20-Hz with MLE4)",
+    "complexity": "O(N_gates * N_waveforms) per track"
+  },
+  "physics_fingerprint": {
+    "carrier": "RF",
+    "sensing_mechanism": "radar_altimetry_nadir",
+    "integration_axis": "range_surface",
+    "problem_class": "parameter_estimation",
+    "noise_model": "thermal_gaussian",
+    "solution_space": "1D_sea_surface_height",
+    "primitives": [
+      "S.altimeter.retracker_brown",
+      "M.waveform.ocean_reflection",
+      "O.least_squares.retrack"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "rain_contamination",
+    "inland_water_reflection",
+    "sea_ice_surface"
+  ],
+  "error_metric": "SSH_RMSE_cm",
+  "error_metric_secondary": "SWH_bias_cm",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "parameter_estimation",
+      "forward_operator": "radar_altimetry_nadir",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_gates": 128,
+        "SWH_m": 2.0,
+        "mispointing_deg": 0.1,
+        "noise_sigma_percent": 5.0
+      },
+      "epsilon_fn_center": "3.0 SSH_RMSE_cm"
+    },
+    "allowed_forward_operators": [
+      "radar_altimetry_nadir"
+    ],
+    "allowed_problem_classes": [
+      "parameter_estimation"
+    ],
+    "allowed_omega_dimensions": [
+      "N_gates",
+      "SWH_m",
+      "mispointing_deg",
+      "noise_sigma_percent"
+    ],
+    "omega_bounds": {
+      "N_gates": [
+        64,
+        512
+      ],
+      "SWH_m": [
+        0.0,
+        10.0
+      ],
+      "mispointing_deg": [
+        0.0,
+        1.0
+      ],
+      "noise_sigma_percent": [
+        1.0,
+        20.0
+      ]
+    },
+    "epsilon_bounds": {
+      "SSH_RMSE_cm": [
+        0.5,
+        20.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

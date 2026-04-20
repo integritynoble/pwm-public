@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-467",
+  "layer": "L1",
+  "principle_number": "467",
+  "title": "Satellite Orbit Determination",
+  "domain": "Geodesy",
+  "sub_domain": "Orbital mechanics",
+  "source_file": "AK_geodesy/467_satellite_orbit_determination.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "Satellite orbit determination: estimate initial state vector from tracking data (range, range-rate, angles) using batch or sequential processing.",
+    "forward_model": "rho(t) = |X_sat(t; x0) - X_gs|; X_sat integrated from EOM with SRP, drag, gravity harmonics",
+    "world_state_x": "initial state vector x0 = (r0, v0) in ECI coordinates at epoch t0",
+    "observation_y": "ground station range rho(t), range-rate rho_dot(t), angular observations for N_passes",
+    "physical_parameters_theta": [
+      "drag_coefficient_Cd",
+      "SRP_reflectivity_Cr",
+      "gravity_model_degree_order",
+      "number_ground_stations"
+    ]
+  },
+  "G": {
+    "dag": "M.ode.equations_of_motion -> S.kalman.orbit_filter -> O.least_squares.batch",
+    "vertices": [
+      "M.ode.equations_of_motion",
+      "S.kalman.orbit_filter",
+      "O.least_squares.batch"
+    ],
+    "arcs": [
+      "M.ode.equations_of_motion -> S.kalman.orbit_filter",
+      "S.kalman.orbit_filter -> O.least_squares.batch"
+    ],
+    "L_DAG": 3.2,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 5000,
+    "condition_number_effective": 200,
+    "condition_number_mismatched": 1000,
+    "regime": "Nonlinear dynamics; linearization around reference orbit; drag uncertainty dominates for LEO."
+  },
+  "C": {
+    "solver_class": "batch_least_squares or extended_Kalman_filter (SGP4 for TLE)",
+    "convergence_rate_q": 2.0,
+    "error_bound": "position prediction error < 100 m at 24h for LEO with SRP+drag",
+    "complexity": "O(N_obs * N_state^2) for batch normal equations"
+  },
+  "physics_fingerprint": {
+    "carrier": "RF",
+    "sensing_mechanism": "range_range_rate_tracking",
+    "integration_axis": "orbital_arc",
+    "problem_class": "parameter_estimation",
+    "noise_model": "gaussian",
+    "solution_space": "6D_orbital_state_vector",
+    "primitives": [
+      "M.ode.equations_of_motion",
+      "S.kalman.orbit_filter",
+      "O.least_squares.batch"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "atmospheric_drag_uncertainty",
+    "SRP_modeling_error",
+    "maneuver_detection_delay"
+  ],
+  "error_metric": "position_prediction_error_km",
+  "error_metric_secondary": "velocity_error_m_s",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "parameter_estimation",
+      "forward_operator": "range_range_rate_tracking",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_observations": 1000,
+        "arc_length_days": 3.0,
+        "drag_Cd_uncertainty": 0.1,
+        "altitude_km": 500
+      },
+      "epsilon_fn_center": "0.1 position_prediction_error_km"
+    },
+    "allowed_forward_operators": [
+      "range_range_rate_tracking"
+    ],
+    "allowed_problem_classes": [
+      "parameter_estimation"
+    ],
+    "allowed_omega_dimensions": [
+      "N_observations",
+      "arc_length_days",
+      "drag_Cd_uncertainty",
+      "altitude_km"
+    ],
+    "omega_bounds": {
+      "N_observations": [
+        50,
+        10000
+      ],
+      "arc_length_days": [
+        0.5,
+        10.0
+      ],
+      "drag_Cd_uncertainty": [
+        0.01,
+        0.5
+      ],
+      "altitude_km": [
+        200,
+        36000
+      ]
+    },
+    "epsilon_bounds": {
+      "position_prediction_error_km": [
+        0.01,
+        5.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

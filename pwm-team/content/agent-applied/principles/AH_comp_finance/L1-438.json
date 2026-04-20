@@ -1,0 +1,143 @@
+{
+  "artifact_id": "L1-438",
+  "layer": "L1",
+  "principle_number": "438",
+  "title": "Black-Scholes Option Pricing Calibration",
+  "domain": "Computational Finance",
+  "sub_domain": "Option pricing",
+  "source_file": "AH_comp_finance/438_black_scholes.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "Black-Scholes calibration: infer implied volatility sigma_impl from observed market option prices.",
+    "forward_model": "C_BS(S, K, T, r, sigma) = S*N(d1) - K*e^{-rT}*N(d2); solve sigma = implied_vol(C_market)",
+    "world_state_x": "implied volatility surface sigma_impl(K, T) across strikes and maturities",
+    "observation_y": "market option prices C_market(K_i, T_j) from exchange data",
+    "physical_parameters_theta": [
+      "spot_S",
+      "risk_free_rate_r",
+      "dividend_yield_q",
+      "N_strikes",
+      "N_maturities"
+    ]
+  },
+  "G": {
+    "dag": "M.bs.formula -> O.chi2.market_price -> S.newton.root_finding",
+    "vertices": [
+      "M.bs.formula",
+      "O.chi2.market_price",
+      "S.newton.root_finding"
+    ],
+    "arcs": [
+      "M.bs.formula -> O.chi2.market_price",
+      "O.chi2.market_price -> S.newton.root_finding"
+    ],
+    "L_DAG": 2.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 200,
+    "condition_number_effective": 10,
+    "condition_number_mismatched": 50,
+    "regime": "Black-Scholes is flat vol surface; smile/skew indicates model failure; Newton converges in 5-10 iterations."
+  },
+  "C": {
+    "solver_class": "Brent_root_finding or Newton_Raphson per option",
+    "convergence_rate_q": 2.0,
+    "error_bound": "implied vol error < 1 bp for liquid options",
+    "complexity": "O(N_strikes * N_maturities) per calibration"
+  },
+  "physics_fingerprint": {
+    "carrier": "N/A",
+    "sensing_mechanism": "option_price_calibration",
+    "integration_axis": "parameter_space",
+    "problem_class": "parameter_estimation",
+    "noise_model": "market_bid_ask_gaussian",
+    "solution_space": "implied_vol_surface",
+    "primitives": [
+      "M.bs.formula",
+      "O.chi2.market_price",
+      "S.newton.root_finding"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "bid_ask_spread_percent",
+    "liquidity_premium",
+    "discrete_dividend_uncertainty"
+  ],
+  "error_metric": "implied_vol_RMSE_bp",
+  "error_metric_secondary": "price_RMSE_percent",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "parameter_estimation",
+      "forward_operator": "option_price_calibration",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_strikes": 10,
+        "N_maturities": 5,
+        "bid_ask_spread_bp": 50,
+        "moneyness_range": 0.2
+      },
+      "epsilon_fn_center": "50 implied_vol_RMSE_bp"
+    },
+    "allowed_forward_operators": [
+      "option_price_calibration"
+    ],
+    "allowed_problem_classes": [
+      "parameter_estimation"
+    ],
+    "allowed_omega_dimensions": [
+      "N_strikes",
+      "N_maturities",
+      "bid_ask_spread_bp",
+      "moneyness_range"
+    ],
+    "omega_bounds": {
+      "N_strikes": [
+        3,
+        50
+      ],
+      "N_maturities": [
+        1,
+        20
+      ],
+      "bid_ask_spread_bp": [
+        5,
+        500
+      ],
+      "moneyness_range": [
+        0.05,
+        0.5
+      ]
+    },
+    "epsilon_bounds": {
+      "implied_vol_RMSE_bp": [
+        5,
+        300
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

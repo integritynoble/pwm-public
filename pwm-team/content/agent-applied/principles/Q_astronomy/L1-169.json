@@ -1,0 +1,148 @@
+{
+  "artifact_id": "L1-169",
+  "layer": "L1",
+  "principle_number": "169",
+  "title": "Solar EUV/X-ray Image Reconstruction",
+  "domain": "Astronomy",
+  "sub_domain": "Solar physics",
+  "source_file": "Q_astronomy/169_solar_euv_xray.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "Solar EUV/X-ray DEM inversion: recover differential emission measure DEM(T) from multi-channel EUV images.",
+    "forward_model": "I_c = integral K_c(T) * DEM(T) dT + noise_c, for each channel c",
+    "world_state_x": "DEM(T) in R^{N_T x H x W}: emission measure per temperature bin per pixel",
+    "observation_y": "multi-channel EUV/X-ray images I_c in R^{H x W}, c=1..N_channels",
+    "physical_parameters_theta": [
+      "temperature_response_K_c(T)",
+      "N_channels",
+      "pixel_scale_arcsec",
+      "exposure_time_s"
+    ]
+  },
+  "G": {
+    "dag": "K.psf.coded_aperture -> int.spectral -> S.dem.inversion",
+    "vertices": [
+      "K.psf.coded_aperture",
+      "int.spectral",
+      "S.dem.inversion"
+    ],
+    "arcs": [
+      "K.psf.coded_aperture -> int.spectral",
+      "int.spectral -> S.dem.inversion"
+    ],
+    "L_DAG": 3.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 2000,
+    "condition_number_effective": 80,
+    "condition_number_mismatched": 400,
+    "regime": "Severely ill-posed due to limited temperature channels; DEM is non-negative; regularization constrains smoothness."
+  },
+  "C": {
+    "solver_class": "regularized_inversion (Hannah-Kontar, MCMC-DEM)",
+    "convergence_rate_q": 2.0,
+    "error_bound": "chi2 <= 1.5 for well-calibrated channels; DEM uncertainty factor <= 3",
+    "complexity": "O(N_T * N_channels * H * W) per inversion"
+  },
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "coded_aperture_euv",
+    "integration_axis": "spectral_line_of_sight",
+    "problem_class": "linear_inverse",
+    "noise_model": "shot_poisson",
+    "solution_space": "2D_emission_measure",
+    "primitives": [
+      "K.psf.coded_aperture",
+      "int.spectral",
+      "S.dem.inversion"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "calibration_uncertainty_percent",
+    "temperature_response_error",
+    "line_of_sight_integration_depth"
+  ],
+  "error_metric": "DEM_reconstruction_chi2",
+  "error_metric_secondary": "temperature_peak_error_K",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "linear_inverse",
+      "forward_operator": "coded_aperture_euv",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 512,
+        "W": 512,
+        "N_channels": 6,
+        "N_T_bins": 20,
+        "noise_sigma_percent": 5.0
+      },
+      "epsilon_fn_center": "1.3 DEM_reconstruction_chi2"
+    },
+    "allowed_forward_operators": [
+      "coded_aperture_euv"
+    ],
+    "allowed_problem_classes": [
+      "linear_inverse"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "N_channels",
+      "N_T_bins",
+      "noise_sigma_percent"
+    ],
+    "omega_bounds": {
+      "H": [
+        128,
+        4096
+      ],
+      "W": [
+        128,
+        4096
+      ],
+      "N_channels": [
+        3,
+        12
+      ],
+      "N_T_bins": [
+        10,
+        50
+      ],
+      "noise_sigma_percent": [
+        1.0,
+        20.0
+      ]
+    },
+    "epsilon_bounds": {
+      "DEM_reconstruction_chi2": [
+        0.5,
+        5.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

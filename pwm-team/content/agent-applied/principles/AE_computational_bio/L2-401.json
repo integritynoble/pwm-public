@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-401",
+  "layer": "L2",
+  "parent_l1": "L1-401",
+  "principle_ref": "sha256:<L1-401_principle_hash>",
+  "title": "Windkessel Cardiac Afterload Model \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "heart_rate_bpm": [
+        40,
+        120
+      ],
+      "systolic_pressure_mmHg": [
+        80,
+        200
+      ],
+      "diastolic_pressure_mmHg": [
+        50,
+        100
+      ],
+      "N_cardiac_cycles": [
+        3,
+        100
+      ]
+    },
+    "E": {
+      "forward": "C*dP/dt + P/R = Q - Zc*dQ/dt; 3-element Windkessel (Westkessel model)",
+      "operator": "aortic_pressure_flow_measurement",
+      "primitive_chain": "M.ode.windkessel_3element -> O.least_squares.pressure_fit -> S.gradient.ode_params",
+      "inverse": "recover arterial parameters (R_peripheral from aortic pressure P(t) and flow Q(t) over one or more cardiac cycles"
+    },
+    "B": {
+      "R_C_positivity": "R, C, Zc > 0",
+      "pressure_positivity": "P > 0"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "pressure_waveform_RMSE_mmHg",
+      "parameter_identifiability_index",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "1.0 + 1.0 * (systolic_pressure_mmHg / 120)^0.3"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 windkessel_parameter_vector"
+    },
+    "baselines": [
+      {
+        "name": "NLS_WK3_fit",
+        "method_sig": "L+O",
+        "expected_score": 2.5
+      },
+      {
+        "name": "Bayesian_WK_MCMC",
+        "method_sig": "L+O",
+        "expected_score": 1.8
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "heart_rate_bpm": 70,
+        "systolic_pressure_mmHg": 120,
+        "diastolic_pressure_mmHg": 80,
+        "N_cardiac_cycles": 10,
+        "nonlinearity_pressure_compliance": 0.0,
+        "wave_reflection_neglect": 0.0,
+        "peripheral_bed_heterogeneity": 0.0
+      },
+      "epsilon": 2.0
+    },
+    "tier_bounds": {
+      "heart_rate_bpm": [
+        40,
+        120
+      ],
+      "systolic_pressure_mmHg": [
+        80,
+        200
+      ],
+      "diastolic_pressure_mmHg": [
+        50,
+        100
+      ],
+      "N_cardiac_cycles": [
+        3,
+        100
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.25,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.25 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

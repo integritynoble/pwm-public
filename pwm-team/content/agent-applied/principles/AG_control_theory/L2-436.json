@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-436",
+  "layer": "L2",
+  "parent_l1": "L1-436",
+  "principle_ref": "sha256:<L1-436_principle_hash>",
+  "title": "Ensemble Kalman Filter (EnKF) \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "N_e_ensemble": [
+        10,
+        1000
+      ],
+      "n_state_million": [
+        0.001,
+        100
+      ],
+      "obs_density_per_gridpt": [
+        0.01,
+        10.0
+      ],
+      "localization_km": [
+        50,
+        5000
+      ]
+    },
+    "E": {
+      "forward": "K = P_f H^T (H P_f H^T + R)^{-1}; P_f estimated from ensemble; analysis: x_a^i = x_f^i + K(y^i - Hx_f^i)",
+      "operator": "ensemble_state_estimation",
+      "primitive_chain": "S.enkf.ensemble_update -> M.localization.covariance -> O.inflation.ensemble_spread",
+      "inverse": "recover ensemble of state estimates {x_a^i} representing posterior distribution from observations {y_t} at each assimilation cycle"
+    },
+    "B": {
+      "ensemble_spread": "spread > 0",
+      "localization": "covariance localization prevents spurious correlations"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "spread_skill_ratio",
+      "RMSE_analysis_normalized",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.03 + 0.02 * (50 / N_e_ensemble)^0.5"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 ensemble_state_distribution"
+    },
+    "baselines": [
+      {
+        "name": "LETKF",
+        "method_sig": "L+O",
+        "expected_score": 0.06
+      },
+      {
+        "name": "serial_EnSRF",
+        "method_sig": "L+O",
+        "expected_score": 0.05
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_e_ensemble": 50,
+        "n_state_million": 1,
+        "obs_density_per_gridpt": 0.1,
+        "localization_km": 500,
+        "sampling_error_finite_ensemble": 0.0,
+        "localization_radius_choice": 0.0,
+        "ensemble_collapse": 0.0
+      },
+      "epsilon": 0.05
+    },
+    "tier_bounds": {
+      "N_e_ensemble": [
+        10,
+        1000
+      ],
+      "n_state_million": [
+        0.001,
+        100
+      ],
+      "obs_density_per_gridpt": [
+        0.01,
+        10.0
+      ],
+      "localization_km": [
+        50,
+        5000
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.38,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.38 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

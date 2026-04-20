@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-435",
+  "layer": "L1",
+  "principle_number": "435",
+  "title": "4D-Var Data Assimilation",
+  "domain": "Control Theory",
+  "sub_domain": "Variational data assimilation",
+  "source_file": "AG_control_theory/435_data_assimilation_4dvar.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "4D-Var: find initial state minimizing misfit to observations over time window via adjoint-based gradient.",
+    "forward_model": "J(x0) = ||x0-xb||^2_{B^{-1}} + sum_t ||H_t M_t(x0) - y_t||^2_{R_t^{-1}}; grad J via adjoint",
+    "world_state_x": "optimal initial state x0 at analysis time t0",
+    "observation_y": "observations {y_t} distributed in time window [t0, t0+T]",
+    "physical_parameters_theta": [
+      "background_error_B",
+      "obs_error_R",
+      "window_length_T",
+      "inner_outer_iterations"
+    ]
+  },
+  "G": {
+    "dag": "M.nwp.nonlinear_forecast -> S.adjoint.gradient_4dvar -> O.cost_function.4dvar",
+    "vertices": [
+      "M.nwp.nonlinear_forecast",
+      "S.adjoint.gradient_4dvar",
+      "O.cost_function.4dvar"
+    ],
+    "arcs": [
+      "M.nwp.nonlinear_forecast -> S.adjoint.gradient_4dvar",
+      "S.adjoint.gradient_4dvar -> O.cost_function.4dvar"
+    ],
+    "L_DAG": 4.5,
+    "n_c": 1
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 1000000.0,
+    "condition_number_effective": 10000.0,
+    "condition_number_mismatched": 100000.0,
+    "regime": "Exact gradient via adjoint; large state dimension; nonlinearity requires outer loop; balance constraints improve analysis quality."
+  },
+  "C": {
+    "solver_class": "L-BFGS_4DVar or conjugate_gradient_inner_loop",
+    "convergence_rate_q": 1.5,
+    "error_bound": "analysis RMSE < sigma_b; cost reduction > 50% from background",
+    "complexity": "O(N_outer * N_inner * N_model_calls)"
+  },
+  "physics_fingerprint": {
+    "carrier": "N/A",
+    "sensing_mechanism": "variational_state_estimation",
+    "integration_axis": "assimilation_window",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "initial_condition_vector",
+    "primitives": [
+      "M.nwp.nonlinear_forecast",
+      "S.adjoint.gradient_4dvar",
+      "O.cost_function.4dvar"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "model_error_within_window",
+    "linearization_error",
+    "B_matrix_misspecification"
+  ],
+  "error_metric": "analysis_RMSE_vs_background",
+  "error_metric_secondary": "cost_function_reduction",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "nonlinear_inverse",
+      "forward_operator": "variational_state_estimation",
+      "input_format": "measurement_only",
+      "omega": {
+        "state_dimension_n": 10000,
+        "N_observations": 5000,
+        "window_hours": 6,
+        "observation_density": 1.0
+      },
+      "epsilon_fn_center": "0.5 analysis_RMSE_vs_background"
+    },
+    "allowed_forward_operators": [
+      "variational_state_estimation"
+    ],
+    "allowed_problem_classes": [
+      "nonlinear_inverse"
+    ],
+    "allowed_omega_dimensions": [
+      "state_dimension_n",
+      "N_observations",
+      "window_hours",
+      "observation_density"
+    ],
+    "omega_bounds": {
+      "state_dimension_n": [
+        100,
+        1000000
+      ],
+      "N_observations": [
+        100,
+        10000000
+      ],
+      "window_hours": [
+        1,
+        24
+      ],
+      "observation_density": [
+        0.1,
+        10.0
+      ]
+    },
+    "epsilon_bounds": {
+      "analysis_RMSE_vs_background": [
+        0.1,
+        1.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

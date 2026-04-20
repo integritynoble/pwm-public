@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-461",
+  "layer": "L1",
+  "principle_number": "461",
+  "title": "Hydraulic Fracture Propagation Modeling",
+  "domain": "Petroleum Engineering",
+  "sub_domain": "Well stimulation",
+  "source_file": "AJ_petroleum/461_hydraulic_fracture.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "Hydraulic fracture modeling: infer fracture geometry (length, height, width) from treatment pressure and microseismic data.",
+    "forward_model": "dp/dt = q/(V_f + C_L*A_f); w = (K_Ic/(E'*sqrt(L))) for PKN/KGD model",
+    "world_state_x": "fracture half-length L_f, height H_f, average width w_bar, fracture conductivity",
+    "observation_y": "surface treating pressure p(t), microseismic event locations {x_m, y_m, z_m}",
+    "physical_parameters_theta": [
+      "Young_modulus_GPa",
+      "Poisson_ratio",
+      "fracture_toughness_K_Ic",
+      "fluid_leakoff_coefficient"
+    ]
+  },
+  "G": {
+    "dag": "M.pkn.fracture_model -> S.pressure_decline.analysis -> O.microseismic.inversion",
+    "vertices": [
+      "M.pkn.fracture_model",
+      "S.pressure_decline.analysis",
+      "O.microseismic.inversion"
+    ],
+    "arcs": [
+      "M.pkn.fracture_model -> S.pressure_decline.analysis",
+      "S.pressure_decline.analysis -> O.microseismic.inversion"
+    ],
+    "L_DAG": 4.0,
+    "n_c": 1
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 10000.0,
+    "condition_number_effective": 500,
+    "condition_number_mismatched": 2000,
+    "regime": "Nonlinear coupled fluid-solid mechanics; fracture toughness vs. viscosity dominated regimes; stress shadow in multi-stage."
+  },
+  "C": {
+    "solver_class": "PKN_KGD_analytical or UFM_complex_fracture or GEOS_3D",
+    "convergence_rate_q": 2.0,
+    "error_bound": "fracture length uncertainty < 20% with microseismic",
+    "complexity": "O(N_timesteps * N_elements) for numerical fracture propagation"
+  },
+  "physics_fingerprint": {
+    "carrier": "acoustic",
+    "sensing_mechanism": "fracture_geometry_inversion",
+    "integration_axis": "fracture_surface",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "microseismic_gaussian",
+    "solution_space": "fracture_geometry_vector",
+    "primitives": [
+      "M.pkn.fracture_model",
+      "S.pressure_decline.analysis",
+      "O.microseismic.inversion"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "stress_shadow_complexity",
+    "natural_fracture_interaction",
+    "fluid_viscosity_temperature_effect"
+  ],
+  "error_metric": "fracture_half_length_RMSE_m",
+  "error_metric_secondary": "pressure_match_RMSE_psi",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "nonlinear_inverse",
+      "forward_operator": "fracture_geometry_inversion",
+      "input_format": "measurement_only",
+      "omega": {
+        "Young_modulus_GPa": 30,
+        "fluid_viscosity_cP": 50,
+        "injection_rate_bbl_min": 15,
+        "stage_spacing_ft": 200
+      },
+      "epsilon_fn_center": "30 fracture_half_length_RMSE_m"
+    },
+    "allowed_forward_operators": [
+      "fracture_geometry_inversion"
+    ],
+    "allowed_problem_classes": [
+      "nonlinear_inverse"
+    ],
+    "allowed_omega_dimensions": [
+      "Young_modulus_GPa",
+      "fluid_viscosity_cP",
+      "injection_rate_bbl_min",
+      "stage_spacing_ft"
+    ],
+    "omega_bounds": {
+      "Young_modulus_GPa": [
+        5,
+        80
+      ],
+      "fluid_viscosity_cP": [
+        5,
+        5000
+      ],
+      "injection_rate_bbl_min": [
+        2,
+        50
+      ],
+      "stage_spacing_ft": [
+        50,
+        500
+      ]
+    },
+    "epsilon_bounds": {
+      "fracture_half_length_RMSE_m": [
+        5,
+        200
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

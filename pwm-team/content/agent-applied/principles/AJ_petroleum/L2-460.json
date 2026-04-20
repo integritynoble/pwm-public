@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-460",
+  "layer": "L2",
+  "parent_l1": "L1-460",
+  "principle_ref": "sha256:<L1-460_principle_hash>",
+  "title": "Reservoir History Matching \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "N_cells": [
+        1000,
+        500000
+      ],
+      "N_wells": [
+        5,
+        100
+      ],
+      "N_ensemble": [
+        50,
+        1000
+      ],
+      "production_years": [
+        5,
+        60
+      ]
+    },
+    "E": {
+      "forward": "d_obs = G(m) + epsilon; m = {log(K), phi} per cell; G = reservoir simulator",
+      "operator": "reservoir_production_data_matching",
+      "primitive_chain": "S.ensemble.kalman_filter_reservoir -> M.adjoint.gradient_simulator -> O.misfit.production",
+      "inverse": "recover 3D permeability K(x from historical production rates {q_o"
+    },
+    "B": {
+      "permeability_positivity": "K > 0",
+      "porosity_range": "phi in (0.01, 0.40)"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "production_NRMS_match",
+      "permeability_uncertainty_reduction",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.08 + 0.02 * (50000 / N_cells)^0.2"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 3D_permeability_field"
+    },
+    "baselines": [
+      {
+        "name": "ES-MDA",
+        "method_sig": "L+O",
+        "expected_score": 0.12
+      },
+      {
+        "name": "adjoint_gradient_3DVar",
+        "method_sig": "L+O",
+        "expected_score": 0.09
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_cells": 50000,
+        "N_wells": 20,
+        "N_ensemble": 100,
+        "production_years": 30,
+        "structural_uncertainty": 0.0,
+        "rel_perm_uncertainty": 0.0,
+        "aquifer_influx_uncertainty": 0.0
+      },
+      "epsilon": 0.1
+    },
+    "tier_bounds": {
+      "N_cells": [
+        1000,
+        500000
+      ],
+      "N_wells": [
+        5,
+        100
+      ],
+      "N_ensemble": [
+        50,
+        1000
+      ],
+      "production_years": [
+        5,
+        60
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.5,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.5 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

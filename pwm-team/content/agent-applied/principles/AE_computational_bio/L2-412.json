@@ -1,0 +1,118 @@
+{
+  "artifact_id": "L2-412",
+  "layer": "L2",
+  "parent_l1": "L1-412",
+  "principle_ref": "sha256:<L1-412_principle_hash>",
+  "title": "Protein Folding Energy Landscape Inversion \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "N_residues": [
+        10,
+        10000
+      ],
+      "resolution_Angstrom": [
+        1.5,
+        10.0
+      ],
+      "map_SNR_dB": [
+        5,
+        30
+      ],
+      "N_conformations": [
+        1,
+        100
+      ]
+    },
+    "E": {
+      "forward": "rho_exp(r) = sum_i w_i * exp(-|r - r_i|^2 / (2*sigma^2)) (cryo-EM density); NOE distances r_ij ~ |r_i - r_j|",
+      "operator": "cryo_em_nmr_structure_determination",
+      "primitive_chain": "M.energy.force_field -> S.md.molecular_dynamics -> O.rmsd.structure_comparison",
+      "inverse": "recover 3D protein structure: atomic coordinates {r_i} for all N_atoms atoms from cryo-EM density map rho_exp or NMR NOE distance restraints {d_ij_obs}"
+    },
+    "B": {
+      "bond_lengths": "deviations < 0.02 A",
+      "Ramachandran": "phi-psi in allowed regions",
+      "chirality": "L-amino acids only"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "TM_score",
+      "RMSD_Angstrom",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.50 + 0.20 * (3.0 / resolution_Angstrom)^0.5"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 3D_protein_structure"
+    },
+    "baselines": [
+      {
+        "name": "PHENIX_real_space_refinement",
+        "method_sig": "L+O",
+        "expected_score": 0.65
+      },
+      {
+        "name": "AlphaFold2_prediction",
+        "method_sig": "L+O",
+        "expected_score": 0.85
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_residues": 200,
+        "resolution_Angstrom": 3.0,
+        "map_SNR_dB": 10,
+        "N_conformations": 1,
+        "conformational_heterogeneity": 0.0,
+        "solvent_contribution_neglect": 0.0,
+        "model_bias": 0.0
+      },
+      "epsilon": 0.7
+    },
+    "tier_bounds": {
+      "N_residues": [
+        10,
+        10000
+      ],
+      "resolution_Angstrom": [
+        1.5,
+        10.0
+      ],
+      "map_SNR_dB": [
+        5,
+        30
+      ],
+      "N_conformations": [
+        1,
+        100
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.65,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.65 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

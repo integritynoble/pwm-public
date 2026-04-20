@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-459",
+  "layer": "L1",
+  "principle_number": "459",
+  "title": "Compositional Reservoir Simulation",
+  "domain": "Petroleum Engineering",
+  "sub_domain": "EOS-based simulation",
+  "source_file": "AJ_petroleum/459_compositional_reservoir.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "Compositional simulation: track N_c component flow with EOS phase equilibrium calculations for gas condensate and miscible floods.",
+    "forward_model": "phi*(d(rho*z_i)/dt) = -nabla*(rho_o*x_i*u_o + rho_g*y_i*u_g) + q_i; K_i = y_i/x_i from EOS",
+    "world_state_x": "component mole fractions z_i(x,t) and pressure P(x,t) across 3D grid",
+    "observation_y": "wellhead compositional analysis, GOR, condensate-gas ratio, BHP",
+    "physical_parameters_theta": [
+      "EOS_Omega_a_b",
+      "binary_interaction_parameters_k_ij",
+      "N_components",
+      "viscosity_correlation"
+    ]
+  },
+  "G": {
+    "dag": "M.eos.peng_robinson -> S.flash.rachford_rice -> O.material_balance.compositional",
+    "vertices": [
+      "M.eos.peng_robinson",
+      "S.flash.rachford_rice",
+      "O.material_balance.compositional"
+    ],
+    "arcs": [
+      "M.eos.peng_robinson -> S.flash.rachford_rice",
+      "S.flash.rachford_rice -> O.material_balance.compositional"
+    ],
+    "L_DAG": 4.5,
+    "n_c": 2
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 1000000.0,
+    "condition_number_effective": 5000,
+    "condition_number_mismatched": 20000.0,
+    "regime": "Highly nonlinear EOS phase equilibrium per cell; phase appearance/disappearance; N_c+2 unknowns per cell."
+  },
+  "C": {
+    "solver_class": "fully_implicit_compositional (CMG-GEM, ECLIPSE300)",
+    "convergence_rate_q": 2.0,
+    "error_bound": "GOR prediction < 10% error for tuned EOS",
+    "complexity": "O(N_cells * N_c^2 * N_Newton * N_timesteps) for flash calculations"
+  },
+  "physics_fingerprint": {
+    "carrier": "acoustic",
+    "sensing_mechanism": "compositional_eos_flow",
+    "integration_axis": "3d_compositional",
+    "problem_class": "parameter_estimation",
+    "noise_model": "measurement_gaussian",
+    "solution_space": "3D_composition_pressure",
+    "primitives": [
+      "M.eos.peng_robinson",
+      "S.flash.rachford_rice",
+      "O.material_balance.compositional"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "EOS_tuning_uncertainty",
+    "compositional_gradient_uncertainty",
+    "nonequilibrium_effects"
+  ],
+  "error_metric": "GOR_prediction_RMSE_percent",
+  "error_metric_secondary": "dew_point_pressure_error_psi",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "parameter_estimation",
+      "forward_operator": "compositional_eos_flow",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_cells": 5000,
+        "N_components": 6,
+        "reservoir_pressure_psi": 5000,
+        "GOR_scf_stb": 1000
+      },
+      "epsilon_fn_center": "10 GOR_prediction_RMSE_percent"
+    },
+    "allowed_forward_operators": [
+      "compositional_eos_flow"
+    ],
+    "allowed_problem_classes": [
+      "parameter_estimation"
+    ],
+    "allowed_omega_dimensions": [
+      "N_cells",
+      "N_components",
+      "reservoir_pressure_psi",
+      "GOR_scf_stb"
+    ],
+    "omega_bounds": {
+      "N_cells": [
+        100,
+        100000
+      ],
+      "N_components": [
+        2,
+        20
+      ],
+      "reservoir_pressure_psi": [
+        500,
+        15000
+      ],
+      "GOR_scf_stb": [
+        100,
+        100000
+      ]
+    },
+    "epsilon_bounds": {
+      "GOR_prediction_RMSE_percent": [
+        2,
+        50
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

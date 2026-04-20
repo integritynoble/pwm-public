@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-402",
+  "layer": "L1",
+  "principle_number": "402",
+  "title": "Pharmacokinetics Compartment Model",
+  "domain": "Computational Biology",
+  "sub_domain": "Drug modeling",
+  "source_file": "AE_computational_bio/402_pharmacokinetics.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "PK model fitting: estimate clearance CL, volume V, and absorption k_a from plasma concentration-time data.",
+    "forward_model": "dA_1/dt = -k_10*A_1 - k_12*A_1 + k_21*A_2 + F*Dose*k_a*e^{-k_a*t}; C(t) = A_1/V_1",
+    "world_state_x": "PK parameters (CL, V_1, k_12, k_21, k_a, F) in 2-compartment model",
+    "observation_y": "plasma concentration C(t_i) at N_samples sampling time points",
+    "physical_parameters_theta": [
+      "clearance_CL_L_hr",
+      "volume_V_1_L",
+      "k_12_k_21_hr",
+      "absorption_k_a_hr"
+    ]
+  },
+  "G": {
+    "dag": "M.ode.pk_compartments -> O.nls.pk_fit -> S.bootstrap.uncertainty_PK",
+    "vertices": [
+      "M.ode.pk_compartments",
+      "O.nls.pk_fit",
+      "S.bootstrap.uncertainty_PK"
+    ],
+    "arcs": [
+      "M.ode.pk_compartments -> O.nls.pk_fit",
+      "O.nls.pk_fit -> S.bootstrap.uncertainty_PK"
+    ],
+    "L_DAG": 2.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 1000,
+    "condition_number_effective": 50,
+    "condition_number_mismatched": 200,
+    "regime": "Linear PK: dose-proportional; nonlinear: Michaelis-Menten saturation; population PK (NLME) accounts for inter-subject variability."
+  },
+  "C": {
+    "solver_class": "NONMEM_FOCE or Monolix_SAEM or nlmixr",
+    "convergence_rate_q": 2.0,
+    "error_bound": "AUC within 15% for well-designed PK study",
+    "complexity": "O(N_subjects * N_samples * N_params) per NLME fit"
+  },
+  "physics_fingerprint": {
+    "carrier": "N/A",
+    "sensing_mechanism": "blood_concentration_sampling",
+    "integration_axis": "time",
+    "problem_class": "parameter_estimation",
+    "noise_model": "lognormal",
+    "solution_space": "PK_parameter_vector",
+    "primitives": [
+      "M.ode.pk_compartments",
+      "O.nls.pk_fit",
+      "S.bootstrap.uncertainty_PK"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "inter_individual_variability",
+    "protein_binding_uncertainty",
+    "assay_lower_LOQ"
+  ],
+  "error_metric": "AUC_RMSE_percent",
+  "error_metric_secondary": "C_max_prediction_RMSE_ng_mL",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "parameter_estimation",
+      "forward_operator": "blood_concentration_sampling",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_subjects": 20,
+        "N_samples_per_subject": 8,
+        "CL_L_hr": 5.0,
+        "bioavailability_F": 0.8
+      },
+      "epsilon_fn_center": "15 AUC_RMSE_percent"
+    },
+    "allowed_forward_operators": [
+      "blood_concentration_sampling"
+    ],
+    "allowed_problem_classes": [
+      "parameter_estimation"
+    ],
+    "allowed_omega_dimensions": [
+      "N_subjects",
+      "N_samples_per_subject",
+      "CL_L_hr",
+      "bioavailability_F"
+    ],
+    "omega_bounds": {
+      "N_subjects": [
+        5,
+        200
+      ],
+      "N_samples_per_subject": [
+        3,
+        20
+      ],
+      "CL_L_hr": [
+        0.1,
+        100
+      ],
+      "bioavailability_F": [
+        0.1,
+        1.0
+      ]
+    },
+    "epsilon_bounds": {
+      "AUC_RMSE_percent": [
+        2,
+        50
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

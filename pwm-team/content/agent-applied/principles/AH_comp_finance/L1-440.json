@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-440",
+  "layer": "L1",
+  "principle_number": "440",
+  "title": "Hull-White Interest Rate Model Calibration",
+  "domain": "Computational Finance",
+  "sub_domain": "Interest rate modeling",
+  "source_file": "AH_comp_finance/440_hull_white.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "Hull-White calibration: fit mean reversion and volatility to swaption market data while fitting current yield curve exactly.",
+    "forward_model": "dr = [theta(t) - a*r] dt + sigma dW; theta(t) chosen to fit initial term structure; swaption via trinomial tree",
+    "world_state_x": "HW parameters (a_mean_reversion, sigma_vol_rate) and theta(t) time-dependent drift",
+    "observation_y": "ATM swaption implied volatilities across tenor and expiry grid",
+    "physical_parameters_theta": [
+      "a_mean_reversion_rate",
+      "sigma_short_rate_vol",
+      "theta_t_grid",
+      "swaption_N_expiries"
+    ]
+  },
+  "G": {
+    "dag": "M.hw.short_rate_model -> S.trinomial.tree -> O.chi2.swaption_prices",
+    "vertices": [
+      "M.hw.short_rate_model",
+      "S.trinomial.tree",
+      "O.chi2.swaption_prices"
+    ],
+    "arcs": [
+      "M.hw.short_rate_model -> S.trinomial.tree",
+      "S.trinomial.tree -> O.chi2.swaption_prices"
+    ],
+    "L_DAG": 3.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 2000,
+    "condition_number_effective": 100,
+    "condition_number_mismatched": 500,
+    "regime": "Linear in theta(t) for exact yield curve fit; a and sigma calibrated to swaptions (nonlinear); negative rates require shifted HW1F."
+  },
+  "C": {
+    "solver_class": "analytical_calibration or trinomial_tree_optimization",
+    "convergence_rate_q": 2.0,
+    "error_bound": "swaption vol RMSE < 10 bp for ATM swaptions",
+    "complexity": "O(N_swaptions * N_tree_steps) per calibration"
+  },
+  "physics_fingerprint": {
+    "carrier": "N/A",
+    "sensing_mechanism": "yield_curve_calibration",
+    "integration_axis": "term_structure",
+    "problem_class": "parameter_estimation",
+    "noise_model": "market_gaussian",
+    "solution_space": "short_rate_parameter_vector",
+    "primitives": [
+      "M.hw.short_rate_model",
+      "S.trinomial.tree",
+      "O.chi2.swaption_prices"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "yield_curve_inversion_error_bp",
+    "swaption_liquidity_premium",
+    "negative_rate_floor_effect"
+  ],
+  "error_metric": "swaption_vol_RMSE_bp",
+  "error_metric_secondary": "bond_price_RMSE_bp",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "parameter_estimation",
+      "forward_operator": "yield_curve_calibration",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_swaption_expiries": 6,
+        "N_tenors": 8,
+        "a_mean_reversion": 0.1,
+        "vol_noise_bp": 5
+      },
+      "epsilon_fn_center": "8 swaption_vol_RMSE_bp"
+    },
+    "allowed_forward_operators": [
+      "yield_curve_calibration"
+    ],
+    "allowed_problem_classes": [
+      "parameter_estimation"
+    ],
+    "allowed_omega_dimensions": [
+      "N_swaption_expiries",
+      "N_tenors",
+      "a_mean_reversion",
+      "vol_noise_bp"
+    ],
+    "omega_bounds": {
+      "N_swaption_expiries": [
+        3,
+        20
+      ],
+      "N_tenors": [
+        3,
+        30
+      ],
+      "a_mean_reversion": [
+        0.01,
+        0.5
+      ],
+      "vol_noise_bp": [
+        1,
+        50
+      ]
+    },
+    "epsilon_bounds": {
+      "swaption_vol_RMSE_bp": [
+        1,
+        100
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

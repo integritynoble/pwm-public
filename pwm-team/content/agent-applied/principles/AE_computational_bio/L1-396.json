@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-396",
+  "layer": "L1",
+  "principle_number": "396",
+  "title": "Hodgkin-Huxley Neuron Model Parameter Estimation",
+  "domain": "Computational Biology",
+  "sub_domain": "Computational neuroscience",
+  "source_file": "AE_computational_bio/396_hodgkin_huxley.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "Hodgkin-Huxley parameter estimation: infer ion channel conductances and gating kinetics from patch-clamp recordings.",
+    "forward_model": "C_m * dV/dt = -g_Na*m^3*h*(V-E_Na) - g_K*n^4*(V-E_K) - g_L*(V-E_L) + I_ext",
+    "world_state_x": "HH parameters {g_Na, g_K, g_L, E_Na, E_K, E_L, C_m, tau kinetics}",
+    "observation_y": "membrane voltage V(t) and ionic currents I(t) from voltage-clamp experiments",
+    "physical_parameters_theta": [
+      "g_Na_max_mS_cm2",
+      "g_K_max_mS_cm2",
+      "C_m_uF_cm2",
+      "temperature_C"
+    ]
+  },
+  "G": {
+    "dag": "M.ode.hodgkin_huxley -> O.chi2.voltage_trace -> S.mcmc.bayesian_parameter",
+    "vertices": [
+      "M.ode.hodgkin_huxley",
+      "O.chi2.voltage_trace",
+      "S.mcmc.bayesian_parameter"
+    ],
+    "arcs": [
+      "M.ode.hodgkin_huxley -> O.chi2.voltage_trace",
+      "O.chi2.voltage_trace -> S.mcmc.bayesian_parameter"
+    ],
+    "L_DAG": 3.5,
+    "n_c": 1
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 50000.0,
+    "condition_number_effective": 1000,
+    "condition_number_mismatched": 5000,
+    "regime": "Nonlinear ODE; bifurcation at spiking threshold; gating variables m,h,n are coupled; stochastic channel noise needs Langevin or Markov chain."
+  },
+  "C": {
+    "solver_class": "MCMC_Bayesian or genetic_algorithm or gradient_SNPE",
+    "convergence_rate_q": 2.0,
+    "error_bound": "voltage RMSE < 2 mV for calibrated HH model",
+    "complexity": "O(N_timesteps * N_channels) per ODE integration"
+  },
+  "physics_fingerprint": {
+    "carrier": "N/A",
+    "sensing_mechanism": "patch_clamp_voltage_measurement",
+    "integration_axis": "time",
+    "problem_class": "parameter_estimation",
+    "noise_model": "gaussian",
+    "solution_space": "HH_parameter_vector",
+    "primitives": [
+      "M.ode.hodgkin_huxley",
+      "O.chi2.voltage_trace",
+      "S.mcmc.bayesian_parameter"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "channel_noise_stochastic",
+    "dendritic_morphology_neglect",
+    "temperature_Q10_uncertainty"
+  ],
+  "error_metric": "voltage_trace_RMSE_mV",
+  "error_metric_secondary": "spike_timing_error_ms",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "parameter_estimation",
+      "forward_operator": "patch_clamp_voltage_measurement",
+      "input_format": "measurement_only",
+      "omega": {
+        "g_Na_ratio": 120,
+        "temperature_C": 6.3,
+        "I_ext_uA_cm2": 10,
+        "N_voltage_samples": 10000
+      },
+      "epsilon_fn_center": "2.0 voltage_trace_RMSE_mV"
+    },
+    "allowed_forward_operators": [
+      "patch_clamp_voltage_measurement"
+    ],
+    "allowed_problem_classes": [
+      "parameter_estimation"
+    ],
+    "allowed_omega_dimensions": [
+      "g_Na_ratio",
+      "temperature_C",
+      "I_ext_uA_cm2",
+      "N_voltage_samples"
+    ],
+    "omega_bounds": {
+      "g_Na_ratio": [
+        50,
+        500
+      ],
+      "temperature_C": [
+        0,
+        37
+      ],
+      "I_ext_uA_cm2": [
+        0,
+        50
+      ],
+      "N_voltage_samples": [
+        1000,
+        100000
+      ]
+    },
+    "epsilon_bounds": {
+      "voltage_trace_RMSE_mV": [
+        0.2,
+        20.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-440",
+  "layer": "L2",
+  "parent_l1": "L1-440",
+  "principle_ref": "sha256:<L1-440_principle_hash>",
+  "title": "Hull-White Interest Rate Model Calibration \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "N_swaption_expiries": [
+        3,
+        20
+      ],
+      "N_tenors": [
+        3,
+        30
+      ],
+      "a_mean_reversion": [
+        0.01,
+        0.5
+      ],
+      "vol_noise_bp": [
+        1,
+        50
+      ]
+    },
+    "E": {
+      "forward": "dr = [theta(t) - a*r] dt + sigma dW; theta(t) chosen to fit initial term structure; swaption via trinomial tree",
+      "operator": "yield_curve_calibration",
+      "primitive_chain": "M.hw.short_rate_model -> S.trinomial.tree -> O.chi2.swaption_prices",
+      "inverse": "recover HW parameters (a_mean_reversion from ATM swaption implied volatilities across tenor and expiry grid"
+    },
+    "B": {
+      "positivity": "a, sigma > 0",
+      "yield_curve_fit": "exact fit to initial term structure"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "swaption_vol_RMSE_bp",
+      "bond_price_RMSE_bp",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "5 + 3 * (vol_noise_bp / 5)^0.5"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 short_rate_parameter_vector"
+    },
+    "baselines": [
+      {
+        "name": "analytical_HW_calibration",
+        "method_sig": "L+O",
+        "expected_score": 10
+      },
+      {
+        "name": "trinomial_tree_fit",
+        "method_sig": "L+O",
+        "expected_score": 7
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_swaption_expiries": 6,
+        "N_tenors": 8,
+        "a_mean_reversion": 0.1,
+        "vol_noise_bp": 5,
+        "yield_curve_inversion_error_bp": 0.0,
+        "swaption_liquidity_premium": 0.0,
+        "negative_rate_floor_effect": 0.0
+      },
+      "epsilon": 8.0
+    },
+    "tier_bounds": {
+      "N_swaption_expiries": [
+        3,
+        20
+      ],
+      "N_tenors": [
+        3,
+        30
+      ],
+      "a_mean_reversion": [
+        0.01,
+        0.5
+      ],
+      "vol_noise_bp": [
+        1,
+        50
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.38,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.38 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

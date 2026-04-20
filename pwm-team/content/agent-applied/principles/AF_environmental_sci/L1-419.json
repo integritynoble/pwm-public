@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-419",
+  "layer": "L1",
+  "principle_number": "419",
+  "title": "Ocean Circulation Inverse Modeling",
+  "domain": "Environmental Science",
+  "sub_domain": "Physical oceanography",
+  "source_file": "AF_environmental_sci/419_ocean_circulation.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "Ocean state estimation: infer 3D temperature, salinity, and velocity fields consistent with all observations (ECCO approach).",
+    "forward_model": "OGCM (MITgcm): primitive equations for T, S, u, v, w, eta; forcing from ERA5 winds and fluxes",
+    "world_state_x": "global ocean T(x,y,z,t), S(x,y,z,t), u,v,w fields and surface forcing corrections",
+    "observation_y": "Argo float T/S profiles, altimetry SSH, SST from satellites, hydrographic sections",
+    "physical_parameters_theta": [
+      "wind_stress_tau",
+      "freshwater_flux_E_P",
+      "mixing_kappa_v",
+      "initial_T_S_fields"
+    ]
+  },
+  "G": {
+    "dag": "M.primitive.boussinesq_ocean -> S.adjoint.ocean_4dvar -> O.cost.ECCO_objective",
+    "vertices": [
+      "M.primitive.boussinesq_ocean",
+      "S.adjoint.ocean_4dvar",
+      "O.cost.ECCO_objective"
+    ],
+    "arcs": [
+      "M.primitive.boussinesq_ocean -> S.adjoint.ocean_4dvar",
+      "S.adjoint.ocean_4dvar -> O.cost.ECCO_objective"
+    ],
+    "L_DAG": 5.5,
+    "n_c": 2
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 10000000.0,
+    "condition_number_effective": 10000.0,
+    "condition_number_mismatched": 100000.0,
+    "regime": "Rotating, stratified ocean; thermohaline circulation timescale decades; adjoint provides exact gradient for unconstrained optimization."
+  },
+  "C": {
+    "solver_class": "adjoint_4DVar_ECCO or EnKF_ocean",
+    "convergence_rate_q": 1.5,
+    "error_bound": "temperature RMSE < 0.3 K globally in ECCO v4",
+    "complexity": "O(N_iter * N_OGCM_calls) per optimization with N_OGCM = 20-year forward+adjoint"
+  },
+  "physics_fingerprint": {
+    "carrier": "N/A",
+    "sensing_mechanism": "ocean_state_estimation",
+    "integration_axis": "ocean_volume",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "observation_gaussian",
+    "solution_space": "3D_ocean_state",
+    "primitives": [
+      "M.primitive.boussinesq_ocean",
+      "S.adjoint.ocean_4dvar",
+      "O.cost.ECCO_objective"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "forcing_uncertainty",
+    "mixing_parameterization_error",
+    "observational_coverage_gaps"
+  ],
+  "error_metric": "temperature_RMSE_K",
+  "error_metric_secondary": "salinity_RMSE_psu",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "nonlinear_inverse",
+      "forward_operator": "ocean_state_estimation",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_vertical_levels": 50,
+        "horizontal_resolution_deg": 1.0,
+        "assimilation_years": 26,
+        "N_Argo_profiles": 3000
+      },
+      "epsilon_fn_center": "0.3 temperature_RMSE_K"
+    },
+    "allowed_forward_operators": [
+      "ocean_state_estimation"
+    ],
+    "allowed_problem_classes": [
+      "nonlinear_inverse"
+    ],
+    "allowed_omega_dimensions": [
+      "N_vertical_levels",
+      "horizontal_resolution_deg",
+      "assimilation_years",
+      "N_Argo_profiles"
+    ],
+    "omega_bounds": {
+      "N_vertical_levels": [
+        20,
+        100
+      ],
+      "horizontal_resolution_deg": [
+        0.1,
+        2.0
+      ],
+      "assimilation_years": [
+        1,
+        50
+      ],
+      "N_Argo_profiles": [
+        100,
+        30000
+      ]
+    },
+    "epsilon_bounds": {
+      "temperature_RMSE_K": [
+        0.05,
+        1.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

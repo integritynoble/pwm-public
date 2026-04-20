@@ -1,0 +1,118 @@
+{
+  "artifact_id": "L2-432",
+  "layer": "L2",
+  "parent_l1": "L1-432",
+  "principle_ref": "sha256:<L1-432_principle_hash>",
+  "title": "Optimal Control (LQR) \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "system_order_n": [
+        1,
+        50
+      ],
+      "Q_R_ratio": [
+        0.01,
+        100
+      ],
+      "spectral_radius_A": [
+        0.0,
+        0.999
+      ],
+      "n_inputs_m": [
+        1,
+        10
+      ]
+    },
+    "E": {
+      "forward": "u = -K*x; K = R^{-1} B^T P; P solves algebraic Riccati: A^T P + P A - P B R^{-1} B^T P + Q = 0",
+      "operator": "full_state_feedback_lqr",
+      "primitive_chain": "M.riccati.algebraic -> S.lqr.gain_computation -> O.lyapunov.closed_loop",
+      "inverse": "recover optimal control gain matrix K in R^{m x n} from system matrices (A"
+    },
+    "B": {
+      "stabilizability": "(A,B) stabilizable",
+      "detectability": "(A,sqrt(Q)) detectable",
+      "R_positivity": "R > 0"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "closed_loop_performance_index",
+      "stability_margin_dB",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "1.0 + 0.05 * abs(spectral_radius_A - 0.9)"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 control_gain_matrix"
+    },
+    "baselines": [
+      {
+        "name": "LQR_Riccati_analytic",
+        "method_sig": "L+O",
+        "expected_score": 1.0
+      },
+      {
+        "name": "LQR_value_iteration",
+        "method_sig": "L+O",
+        "expected_score": 1.02
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "system_order_n": 4,
+        "Q_R_ratio": 1.0,
+        "spectral_radius_A": 0.9,
+        "n_inputs_m": 1,
+        "model_uncertainty_A_B": 0.0,
+        "Q_R_mistuning": 0.0,
+        "actuator_saturation": 0.0
+      },
+      "epsilon": 1.05
+    },
+    "tier_bounds": {
+      "system_order_n": [
+        1,
+        50
+      ],
+      "Q_R_ratio": [
+        0.01,
+        100
+      ],
+      "spectral_radius_A": [
+        0.0,
+        0.999
+      ],
+      "n_inputs_m": [
+        1,
+        10
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.25,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.25 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

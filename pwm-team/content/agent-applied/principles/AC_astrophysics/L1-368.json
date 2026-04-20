@@ -1,0 +1,149 @@
+{
+  "artifact_id": "L1-368",
+  "layer": "L1",
+  "principle_number": "368",
+  "title": "Strong Gravitational Lensing Inversion",
+  "domain": "Astrophysics",
+  "sub_domain": "Gravitational lensing",
+  "source_file": "AC_astrophysics/368_strong_lensing.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "Strong lensing inversion: reconstruct lens mass distribution and source surface brightness from multiply-imaged arcs.",
+    "forward_model": "I_obs(theta) = integral PSF(theta-theta') * I_src(beta(theta', kappa)) dtheta' + noise",
+    "world_state_x": "convergence kappa(theta) (lens) and source surface brightness I_src(beta)",
+    "observation_y": "lensed image I_obs(theta) in R^{H x W} (HST/JWST quality)",
+    "physical_parameters_theta": [
+      "Einstein_radius_theta_E",
+      "ellipticity_e",
+      "position_angle_PA",
+      "external_shear_gamma",
+      "external_shear_PA"
+    ]
+  },
+  "G": {
+    "dag": "M.lens.deflection -> S.source.pixelization -> O.chi2.image_plane",
+    "vertices": [
+      "M.lens.deflection",
+      "S.source.pixelization",
+      "O.chi2.image_plane"
+    ],
+    "arcs": [
+      "M.lens.deflection -> S.source.pixelization",
+      "S.source.pixelization -> O.chi2.image_plane"
+    ],
+    "L_DAG": 4.2,
+    "n_c": 2
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 1000000.0,
+    "condition_number_effective": 5000,
+    "condition_number_mismatched": 20000.0,
+    "regime": "Mass-sheet degeneracy; source-position degeneracy; pixelized approaches break degeneracies with regularization."
+  },
+  "C": {
+    "solver_class": "pixelized_source_inversion (Warren_Dye) or semi_linear_inversion (Vegetti_Koopmans)",
+    "convergence_rate_q": 2.0,
+    "error_bound": "chi2_red ~ 1.0 at convergence; residual < 3-sigma per pixel",
+    "complexity": "O(N_src_pix * N_img_pix^2) for linear inversion"
+  },
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "gravitational_deflection_mapping",
+    "integration_axis": "lens_plane",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "shot_poisson",
+    "solution_space": "2D_lens_mass_distribution",
+    "primitives": [
+      "M.lens.deflection",
+      "S.source.pixelization",
+      "O.chi2.image_plane"
+    ]
+  },
+  "difficulty_delta": 10,
+  "difficulty_tier": "hard",
+  "mismatch_parameters": [
+    "PSF_mismatch",
+    "line_of_sight_contamination",
+    "lens_light_residual"
+  ],
+  "error_metric": "image_chi2_reduced",
+  "error_metric_secondary": "source_plane_regularization",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "nonlinear_inverse",
+      "forward_operator": "gravitational_deflection_mapping",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 100,
+        "W": 100,
+        "theta_E_arcsec": 1.0,
+        "e_ellipticity": 0.2,
+        "gamma_shear": 0.05
+      },
+      "epsilon_fn_center": "1.1 image_chi2_reduced"
+    },
+    "allowed_forward_operators": [
+      "gravitational_deflection_mapping"
+    ],
+    "allowed_problem_classes": [
+      "nonlinear_inverse"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "theta_E_arcsec",
+      "e_ellipticity",
+      "gamma_shear"
+    ],
+    "omega_bounds": {
+      "H": [
+        50,
+        500
+      ],
+      "W": [
+        50,
+        500
+      ],
+      "theta_E_arcsec": [
+        0.2,
+        3.0
+      ],
+      "e_ellipticity": [
+        0.0,
+        0.5
+      ],
+      "gamma_shear": [
+        0.0,
+        0.2
+      ]
+    },
+    "epsilon_bounds": {
+      "image_chi2_reduced": [
+        0.9,
+        3.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

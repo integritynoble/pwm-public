@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-438",
+  "layer": "L2",
+  "parent_l1": "L1-438",
+  "principle_ref": "sha256:<L1-438_principle_hash>",
+  "title": "Black-Scholes Option Pricing Calibration \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "N_strikes": [
+        3,
+        50
+      ],
+      "N_maturities": [
+        1,
+        20
+      ],
+      "bid_ask_spread_bp": [
+        5,
+        500
+      ],
+      "moneyness_range": [
+        0.05,
+        0.5
+      ]
+    },
+    "E": {
+      "forward": "C_BS(S, K, T, r, sigma) = S*N(d1) - K*e^{-rT}*N(d2); solve sigma = implied_vol(C_market)",
+      "operator": "option_price_calibration",
+      "primitive_chain": "M.bs.formula -> O.chi2.market_price -> S.newton.root_finding",
+      "inverse": "recover implied volatility surface sigma_impl(K from market option prices C_market(K_i"
+    },
+    "B": {
+      "vol_positivity": "sigma > 0",
+      "no_arbitrage": "C monotone in T, convex in K"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "implied_vol_RMSE_bp",
+      "price_RMSE_percent",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "30 + 20 * (bid_ask_spread_bp / 50)^0.5"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 implied_vol_surface"
+    },
+    "baselines": [
+      {
+        "name": "Newton_BS_inversion",
+        "method_sig": "L+O",
+        "expected_score": 60
+      },
+      {
+        "name": "Brent_root_finder",
+        "method_sig": "L+O",
+        "expected_score": 45
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_strikes": 10,
+        "N_maturities": 5,
+        "bid_ask_spread_bp": 50,
+        "moneyness_range": 0.2,
+        "bid_ask_spread_percent": 0.0,
+        "liquidity_premium": 0.0,
+        "discrete_dividend_uncertainty": 0.0
+      },
+      "epsilon": 50.0
+    },
+    "tier_bounds": {
+      "N_strikes": [
+        3,
+        50
+      ],
+      "N_maturities": [
+        1,
+        20
+      ],
+      "bid_ask_spread_bp": [
+        5,
+        500
+      ],
+      "moneyness_range": [
+        0.05,
+        0.5
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.25,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.25 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

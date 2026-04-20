@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-485",
+  "layer": "L1",
+  "principle_number": "485",
+  "title": "Neutrino Oscillation Parameter Extraction",
+  "domain": "Particle Physics",
+  "sub_domain": "Neutrino physics",
+  "source_file": "AM_particle_physics/485_neutrino_oscillation.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "Neutrino oscillation fitting: extract PMNS mixing angles and mass-squared differences from appearance/disappearance spectra.",
+    "forward_model": "P(nu_alpha -> nu_beta) = |sum_i U_{alpha_i} e^{-i m_i^2 L/(2E)} U*_{beta_i}|^2",
+    "world_state_x": "PMNS parameters (theta_12, theta_13, theta_23, delta_CP, Delta_m21^2, Delta_m31^2)",
+    "observation_y": "measured neutrino event rates N_obs(E, L) in bins of neutrino energy E",
+    "physical_parameters_theta": [
+      "sin2_theta_13",
+      "sin2_theta_23",
+      "delta_CP_rad",
+      "Delta_m31_eV2"
+    ]
+  },
+  "G": {
+    "dag": "M.pmns.mixing_matrix -> S.matter.msw_effect -> O.chi2.event_rates",
+    "vertices": [
+      "M.pmns.mixing_matrix",
+      "S.matter.msw_effect",
+      "O.chi2.event_rates"
+    ],
+    "arcs": [
+      "M.pmns.mixing_matrix -> S.matter.msw_effect",
+      "S.matter.msw_effect -> O.chi2.event_rates"
+    ],
+    "L_DAG": 3.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 10000.0,
+    "condition_number_effective": 500,
+    "condition_number_mismatched": 2000,
+    "regime": "3-flavor mixing with matter effects; CP violation measurable at NOvA/T2K; degeneracies (theta_23 octant, mass hierarchy) broken by appearance channel."
+  },
+  "C": {
+    "solver_class": "chi2_minimization_GLoBES or Bayesian_NOvA or MCMC_T2K",
+    "convergence_rate_q": 2.0,
+    "error_bound": "sigma(delta_CP) < 20 deg with 3*10^21 POT exposure",
+    "complexity": "O(N_bins * N_params) per chi2 evaluation + oscillation probability"
+  },
+  "physics_fingerprint": {
+    "carrier": "particle",
+    "sensing_mechanism": "neutrino_disappearance_appearance",
+    "integration_axis": "neutrino_baseline",
+    "problem_class": "parameter_estimation",
+    "noise_model": "poisson",
+    "solution_space": "PMNS_parameter_vector",
+    "primitives": [
+      "M.pmns.mixing_matrix",
+      "S.matter.msw_effect",
+      "O.chi2.event_rates"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "flux_normalization_uncertainty_percent",
+    "cross_section_model_error",
+    "matter_density_uncertainty"
+  ],
+  "error_metric": "delta_CP_constraint_sigma_deg",
+  "error_metric_secondary": "theta_23_octant_significance",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "parameter_estimation",
+      "forward_operator": "neutrino_disappearance_appearance",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_event_bins": 100,
+        "POT_1e21": 3.0,
+        "baseline_km": 810,
+        "flux_uncertainty_percent": 5.0
+      },
+      "epsilon_fn_center": "20 delta_CP_constraint_sigma_deg"
+    },
+    "allowed_forward_operators": [
+      "neutrino_disappearance_appearance"
+    ],
+    "allowed_problem_classes": [
+      "parameter_estimation"
+    ],
+    "allowed_omega_dimensions": [
+      "N_event_bins",
+      "POT_1e21",
+      "baseline_km",
+      "flux_uncertainty_percent"
+    ],
+    "omega_bounds": {
+      "N_event_bins": [
+        10,
+        1000
+      ],
+      "POT_1e21": [
+        0.1,
+        30.0
+      ],
+      "baseline_km": [
+        200,
+        2000
+      ],
+      "flux_uncertainty_percent": [
+        1.0,
+        20.0
+      ]
+    },
+    "epsilon_bounds": {
+      "delta_CP_constraint_sigma_deg": [
+        5,
+        90
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

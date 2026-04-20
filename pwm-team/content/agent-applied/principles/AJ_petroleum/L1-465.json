@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-465",
+  "layer": "L1",
+  "principle_number": "465",
+  "title": "Well Productivity Index Inversion",
+  "domain": "Petroleum Engineering",
+  "sub_domain": "Well performance",
+  "source_file": "AJ_petroleum/465_well_productivity_index.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "Pressure transient analysis: infer permeability, skin factor, and reservoir boundaries from buildup/drawdown tests.",
+    "forward_model": "p_ws(dt) = p* - (162.6*q*mu*B / (k*h)) * log10(dt + tp) - log10(tp) (Horner plot)",
+    "world_state_x": "reservoir permeability k (mD), skin factor S, boundary distances",
+    "observation_y": "wellbore pressure p_ws(dt) during buildup/drawdown for N_points data points",
+    "physical_parameters_theta": [
+      "flow_rate_q_bopd",
+      "net_pay_h_ft",
+      "formation_volume_factor_B",
+      "viscosity_mu_cP"
+    ]
+  },
+  "G": {
+    "dag": "M.darcy.radial_flow -> S.pta.derivative_analysis -> O.semi_log.straight_line",
+    "vertices": [
+      "M.darcy.radial_flow",
+      "S.pta.derivative_analysis",
+      "O.semi_log.straight_line"
+    ],
+    "arcs": [
+      "M.darcy.radial_flow -> S.pta.derivative_analysis",
+      "S.pta.derivative_analysis -> O.semi_log.straight_line"
+    ],
+    "L_DAG": 2.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 500,
+    "condition_number_effective": 25,
+    "condition_number_mismatched": 100,
+    "regime": "Linear in Horner plot for infinite-acting radial flow; storage masks early time; boundaries affect late time."
+  },
+  "C": {
+    "solver_class": "Horner_semilog_analysis or derivative_log_log (Bourdet_derivative)",
+    "convergence_rate_q": 2.0,
+    "error_bound": "k estimate within 20% for clean buildup; skin within \u00b11 unit",
+    "complexity": "O(N_points) for derivative calculation"
+  },
+  "physics_fingerprint": {
+    "carrier": "acoustic",
+    "sensing_mechanism": "pressure_transient_analysis",
+    "integration_axis": "radial_wellbore",
+    "problem_class": "parameter_estimation",
+    "noise_model": "measurement_gaussian",
+    "solution_space": "reservoir_property_vector",
+    "primitives": [
+      "M.darcy.radial_flow",
+      "S.pta.derivative_analysis",
+      "O.semi_log.straight_line"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "wellbore_storage_distortion",
+    "variable_rate_history",
+    "superposition_error"
+  ],
+  "error_metric": "permeability_estimation_error_percent",
+  "error_metric_secondary": "skin_factor_error",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "parameter_estimation",
+      "forward_operator": "pressure_transient_analysis",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_pressure_points": 500,
+        "k_mD": 50,
+        "skin_factor": 5,
+        "wellbore_storage_C_bbl_psi": 0.01
+      },
+      "epsilon_fn_center": "15 permeability_estimation_error_percent"
+    },
+    "allowed_forward_operators": [
+      "pressure_transient_analysis"
+    ],
+    "allowed_problem_classes": [
+      "parameter_estimation"
+    ],
+    "allowed_omega_dimensions": [
+      "N_pressure_points",
+      "k_mD",
+      "skin_factor",
+      "wellbore_storage_C_bbl_psi"
+    ],
+    "omega_bounds": {
+      "N_pressure_points": [
+        50,
+        5000
+      ],
+      "k_mD": [
+        0.1,
+        10000
+      ],
+      "skin_factor": [
+        -5,
+        50
+      ],
+      "wellbore_storage_C_bbl_psi": [
+        0.001,
+        1.0
+      ]
+    },
+    "epsilon_bounds": {
+      "permeability_estimation_error_percent": [
+        2,
+        50
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

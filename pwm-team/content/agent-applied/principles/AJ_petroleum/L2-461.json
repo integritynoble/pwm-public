@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-461",
+  "layer": "L2",
+  "parent_l1": "L1-461",
+  "principle_ref": "sha256:<L1-461_principle_hash>",
+  "title": "Hydraulic Fracture Propagation Modeling \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "Young_modulus_GPa": [
+        5,
+        80
+      ],
+      "fluid_viscosity_cP": [
+        5,
+        5000
+      ],
+      "injection_rate_bbl_min": [
+        2,
+        50
+      ],
+      "stage_spacing_ft": [
+        50,
+        500
+      ]
+    },
+    "E": {
+      "forward": "dp/dt = q/(V_f + C_L*A_f); w = (K_Ic/(E'*sqrt(L))) for PKN/KGD model",
+      "operator": "fracture_geometry_inversion",
+      "primitive_chain": "M.pkn.fracture_model -> S.pressure_decline.analysis -> O.microseismic.inversion",
+      "inverse": "recover fracture half-length L_f from surface treating pressure p(t)"
+    },
+    "B": {
+      "fracture_length_positivity": "L_f > 0",
+      "KI_KIc": "stress intensity factor <= K_Ic"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "fracture_half_length_RMSE_m",
+      "pressure_match_RMSE_psi",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "20 + 10 * (fluid_viscosity_cP / 50)^0.3"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 fracture_geometry_vector"
+    },
+    "baselines": [
+      {
+        "name": "PKN_analytical",
+        "method_sig": "L+O",
+        "expected_score": 40
+      },
+      {
+        "name": "UFM_unconventional",
+        "method_sig": "L+O",
+        "expected_score": 25
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "Young_modulus_GPa": 30,
+        "fluid_viscosity_cP": 50,
+        "injection_rate_bbl_min": 15,
+        "stage_spacing_ft": 200,
+        "stress_shadow_complexity": 0.0,
+        "natural_fracture_interaction": 0.0,
+        "fluid_viscosity_temperature_effect": 0.0
+      },
+      "epsilon": 30.0
+    },
+    "tier_bounds": {
+      "Young_modulus_GPa": [
+        5,
+        80
+      ],
+      "fluid_viscosity_cP": [
+        5,
+        5000
+      ],
+      "injection_rate_bbl_min": [
+        2,
+        50
+      ],
+      "stage_spacing_ft": [
+        50,
+        500
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.4,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.4 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-447",
+  "layer": "L1",
+  "principle_number": "447",
+  "title": "Inverse Kinematics",
+  "domain": "Robotics",
+  "sub_domain": "Robot kinematics",
+  "source_file": "AI_robotics/447_inverse_kinematics.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "Inverse kinematics: find joint angles q that achieve desired end-effector pose T_desired.",
+    "forward_model": "FK(q) = T_desired; solved iteratively via Jacobian J: dq = J^+ * de",
+    "world_state_x": "joint angle vector q in R^n satisfying FK(q) = T_desired",
+    "observation_y": "desired end-effector pose (position + orientation) as input",
+    "physical_parameters_theta": [
+      "N_joints",
+      "target_pose_T",
+      "damping_factor_lambda",
+      "convergence_tolerance_mm"
+    ]
+  },
+  "G": {
+    "dag": "S.ik.jacobian_pseudo_inverse -> M.dls.damped_least_squares -> O.gradient.task_space",
+    "vertices": [
+      "S.ik.jacobian_pseudo_inverse",
+      "M.dls.damped_least_squares",
+      "O.gradient.task_space"
+    ],
+    "arcs": [
+      "S.ik.jacobian_pseudo_inverse -> M.dls.damped_least_squares",
+      "M.dls.damped_least_squares -> O.gradient.task_space"
+    ],
+    "L_DAG": 3.0,
+    "n_c": 1
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 5000,
+    "condition_number_effective": 200,
+    "condition_number_mismatched": 1000,
+    "regime": "Multiple solutions for redundant robots; singularities cause rank deficiency; DLS provides robustness near singularities."
+  },
+  "C": {
+    "solver_class": "Jacobian_pseudo_inverse or DLS or FABRIK or analytical_closed_form",
+    "convergence_rate_q": 2.0,
+    "error_bound": "position error < 0.1 mm in 50 iterations for non-singular config",
+    "complexity": "O(n^3 * N_iter) per IK solution"
+  },
+  "physics_fingerprint": {
+    "carrier": "N/A",
+    "sensing_mechanism": "cartesian_to_joint_space_inversion",
+    "integration_axis": "configuration_space",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "deterministic",
+    "solution_space": "joint_angle_vector",
+    "primitives": [
+      "S.ik.jacobian_pseudo_inverse",
+      "M.dls.damped_least_squares",
+      "O.gradient.task_space"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "singularity_proximity",
+    "joint_limit_approach",
+    "multiple_solutions_ambiguity"
+  ],
+  "error_metric": "position_error_mm",
+  "error_metric_secondary": "orientation_error_deg",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "nonlinear_inverse",
+      "forward_operator": "cartesian_to_joint_space_inversion",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_joints": 6,
+        "singularity_distance_cm": 10,
+        "damping_factor_lambda": 0.01,
+        "target_reach_fraction": 0.8
+      },
+      "epsilon_fn_center": "1.0 position_error_mm"
+    },
+    "allowed_forward_operators": [
+      "cartesian_to_joint_space_inversion"
+    ],
+    "allowed_problem_classes": [
+      "nonlinear_inverse"
+    ],
+    "allowed_omega_dimensions": [
+      "N_joints",
+      "singularity_distance_cm",
+      "damping_factor_lambda",
+      "target_reach_fraction"
+    ],
+    "omega_bounds": {
+      "N_joints": [
+        2,
+        10
+      ],
+      "singularity_distance_cm": [
+        0.0,
+        50.0
+      ],
+      "damping_factor_lambda": [
+        0.001,
+        0.1
+      ],
+      "target_reach_fraction": [
+        0.5,
+        1.0
+      ]
+    },
+    "epsilon_bounds": {
+      "position_error_mm": [
+        0.01,
+        20.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

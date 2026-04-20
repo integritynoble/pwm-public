@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-423",
+  "layer": "L2",
+  "parent_l1": "L1-423",
+  "principle_ref": "sha256:<L1-423_principle_hash>",
+  "title": "Contaminant Source Identification \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "N_sensors": [
+        3,
+        100
+      ],
+      "domain_radius_km": [
+        0.1,
+        100.0
+      ],
+      "transport_uncertainty_percent": [
+        5,
+        100
+      ],
+      "N_time_observations": [
+        5,
+        500
+      ]
+    },
+    "E": {
+      "forward": "c(x,t) = integral G(x,t; x_s, t_s) * Q(x_s, t_s) dV dt_s (Green's function convolution)",
+      "operator": "environmental_concentration_inversion",
+      "primitive_chain": "M.transport.adjoint_source -> O.bayesian.mcmc_source -> S.green_function.transport",
+      "inverse": "recover source location (x_s from contaminant concentration measurements c_i(x_i"
+    },
+    "B": {
+      "Q_positivity": "Q(t) >= 0",
+      "causality": "Q(t) = 0 for t < t_release"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "source_location_error_m",
+      "emission_rate_RMSE_percent",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "50 + 50 * (20 / N_sensors)^0.5"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 source_location_strength_time"
+    },
+    "baselines": [
+      {
+        "name": "least_squares_Green",
+        "method_sig": "L+O",
+        "expected_score": 150
+      },
+      {
+        "name": "MCMC_Bayesian_source",
+        "method_sig": "L+O",
+        "expected_score": 80
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_sensors": 15,
+        "domain_radius_km": 5.0,
+        "transport_uncertainty_percent": 20,
+        "N_time_observations": 50,
+        "transport_model_uncertainty": 0.0,
+        "background_contamination": 0.0,
+        "missing_secondary_sources": 0.0
+      },
+      "epsilon": 100.0
+    },
+    "tier_bounds": {
+      "N_sensors": [
+        3,
+        100
+      ],
+      "domain_radius_km": [
+        0.1,
+        100.0
+      ],
+      "transport_uncertainty_percent": [
+        5,
+        100
+      ],
+      "N_time_observations": [
+        5,
+        500
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.4,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.4 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

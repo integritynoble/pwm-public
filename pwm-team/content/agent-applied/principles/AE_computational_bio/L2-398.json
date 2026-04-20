@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-398",
+  "layer": "L2",
+  "parent_l1": "L1-398",
+  "principle_ref": "sha256:<L1-398_principle_hash>",
+  "title": "Cable Equation (Dendrite Propagation) \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "N_recording_sites": [
+        1,
+        20
+      ],
+      "cable_length_um": [
+        50,
+        5000
+      ],
+      "lambda_space_constant_um": [
+        50,
+        1000
+      ],
+      "noise_sigma_mV": [
+        0.01,
+        2.0
+      ]
+    },
+    "E": {
+      "forward": "C_m * dV/dt = (1/r_i) * d^2V/dx^2 - g_L*(V-E_L) - g_syn(x,t)*(V-E_syn)",
+      "operator": "intracellular_voltage_recording",
+      "primitive_chain": "M.pde.cable_equation -> S.green_function.cable -> O.tikhonov.cable_inversion",
+      "inverse": "recover synaptic conductance distribution g_syn(x from voltage V(t) recorded at soma or branch point from synaptic inputs"
+    },
+    "B": {
+      "positivity": "g_syn >= 0",
+      "boundary": "sealed-end boundary conditions"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "conductance_distribution_RMSE",
+      "voltage_reconstruction_RMSE_mV",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.10 + 0.05 * (3 / N_recording_sites)^0.5"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 dendritic_conductance_distribution"
+    },
+    "baselines": [
+      {
+        "name": "Green_function_cable",
+        "method_sig": "L+O",
+        "expected_score": 0.18
+      },
+      {
+        "name": "Tikhonov_cable_inversion",
+        "method_sig": "L+O",
+        "expected_score": 0.12
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_recording_sites": 3,
+        "cable_length_um": 500,
+        "lambda_space_constant_um": 200,
+        "noise_sigma_mV": 0.1,
+        "dendritic_branching_approximation": 0.0,
+        "nonlinear_membrane_conductances": 0.0,
+        "cable_parameter_uncertainty": 0.0
+      },
+      "epsilon": 0.15
+    },
+    "tier_bounds": {
+      "N_recording_sites": [
+        1,
+        20
+      ],
+      "cable_length_um": [
+        50,
+        5000
+      ],
+      "lambda_space_constant_um": [
+        50,
+        1000
+      ],
+      "noise_sigma_mV": [
+        0.01,
+        2.0
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.28,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.28 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

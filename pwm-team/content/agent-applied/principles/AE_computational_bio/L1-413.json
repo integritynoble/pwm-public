@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-413",
+  "layer": "L1",
+  "principle_number": "413",
+  "title": "HMM Sequence Alignment and Profile Inference",
+  "domain": "Computational Biology",
+  "sub_domain": "Computational genomics",
+  "source_file": "AE_computational_bio/413_hmm_alignment.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "Profile HMM: learn emission and transition probabilities from multiple sequence alignment; find optimal alignment via Viterbi.",
+    "forward_model": "P(seq | HMM) = prod_t P(obs_t | state_t) * P(state_t | state_{t-1}); Viterbi decodes optimal path",
+    "world_state_x": "HMM parameters: emission matrix E (20 amino acids x M_match states), transition matrix T",
+    "observation_y": "multiple sequence alignment (N_seq sequences, L_length positions) for training",
+    "physical_parameters_theta": [
+      "M_model_length",
+      "pseudocount_Dirichlet",
+      "gap_open_penalty",
+      "gap_extend_penalty"
+    ]
+  },
+  "G": {
+    "dag": "M.hmm.profile_model -> S.viterbi.alignment -> O.baum_welch.em_training",
+    "vertices": [
+      "M.hmm.profile_model",
+      "S.viterbi.alignment",
+      "O.baum_welch.em_training"
+    ],
+    "arcs": [
+      "M.hmm.profile_model -> S.viterbi.alignment",
+      "S.viterbi.alignment -> O.baum_welch.em_training"
+    ],
+    "L_DAG": 3.5,
+    "n_c": 1
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 10000.0,
+    "condition_number_effective": 500,
+    "condition_number_mismatched": 2000,
+    "regime": "Profile HMM captures evolutionary variation; Viterbi gives ML alignment; posterior alignment (forward-backward) gives uncertainty; homology detectable at < 10% identity."
+  },
+  "C": {
+    "solver_class": "HMMER4_Baum_Welch or ViterbiEM",
+    "convergence_rate_q": 2.0,
+    "error_bound": "alignment sensitivity > 80% at 25% sequence identity",
+    "complexity": "O(N_seq * L^2 * M) for Viterbi + Baum-Welch"
+  },
+  "physics_fingerprint": {
+    "carrier": "N/A",
+    "sensing_mechanism": "sequence_emission_probability",
+    "integration_axis": "sequence_positions",
+    "problem_class": "statistical_inverse",
+    "noise_model": "multinomial",
+    "solution_space": "HMM_profile_parameter_matrix",
+    "primitives": [
+      "M.hmm.profile_model",
+      "S.viterbi.alignment",
+      "O.baum_welch.em_training"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "sequence_divergence_too_high",
+    "domain_boundaries_unknown",
+    "repeat_regions"
+  ],
+  "error_metric": "alignment_sensitivity_percent",
+  "error_metric_secondary": "specificity_percent",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "statistical_inverse",
+      "forward_operator": "sequence_emission_probability",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_sequences": 100,
+        "L_alignment_length": 200,
+        "sequence_identity_percent": 40,
+        "M_model_states": 200
+      },
+      "epsilon_fn_center": "80 alignment_sensitivity_percent"
+    },
+    "allowed_forward_operators": [
+      "sequence_emission_probability"
+    ],
+    "allowed_problem_classes": [
+      "statistical_inverse"
+    ],
+    "allowed_omega_dimensions": [
+      "N_sequences",
+      "L_alignment_length",
+      "sequence_identity_percent",
+      "M_model_states"
+    ],
+    "omega_bounds": {
+      "N_sequences": [
+        5,
+        10000
+      ],
+      "L_alignment_length": [
+        20,
+        5000
+      ],
+      "sequence_identity_percent": [
+        5,
+        100
+      ],
+      "M_model_states": [
+        10,
+        2000
+      ]
+    },
+    "epsilon_bounds": {
+      "alignment_sensitivity_percent": [
+        30,
+        100
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

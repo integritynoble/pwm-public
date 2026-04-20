@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-437",
+  "layer": "L1",
+  "principle_number": "437",
+  "title": "Nonlinear Observer Design",
+  "domain": "Control Theory",
+  "sub_domain": "Nonlinear control",
+  "source_file": "AG_control_theory/437_nonlinear_observer.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "Nonlinear observer: estimate state of nonlinear system dx/dt = f(x, u), y = h(x) using high-gain or Luenberger design.",
+    "forward_model": "dx_hat/dt = f(x_hat, u) + L(y - h(x_hat)); gain L chosen for exponential error decay",
+    "world_state_x": "nonlinear state estimate x_hat(t) with exponential convergence to x(t)",
+    "observation_y": "output y(t) = h(x(t)) + noise from output map h",
+    "physical_parameters_theta": [
+      "observer_gain_L",
+      "nonlinearity_Lipschitz_constant",
+      "observer_bandwidth_rad_s",
+      "peaking_parameter_epsilon"
+    ]
+  },
+  "G": {
+    "dag": "S.hgo.high_gain_observer -> M.lyapunov.convergence_proof -> O.iss.input_to_state",
+    "vertices": [
+      "S.hgo.high_gain_observer",
+      "M.lyapunov.convergence_proof",
+      "O.iss.input_to_state"
+    ],
+    "arcs": [
+      "S.hgo.high_gain_observer -> M.lyapunov.convergence_proof",
+      "M.lyapunov.convergence_proof -> O.iss.input_to_state"
+    ],
+    "L_DAG": 3.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 5000,
+    "condition_number_effective": 200,
+    "condition_number_mismatched": 1000,
+    "regime": "High-gain observers have peaking phenomenon; input saturation may help; ISS-based observers more robust; applicable when output observability holds."
+  },
+  "C": {
+    "solver_class": "high_gain_observer or ISS_Lyapunov_based",
+    "convergence_rate_q": 2.0,
+    "error_bound": "||x_hat - x|| <= C * exp(-lambda*t) * ||x_hat_0 - x_0|| + O(noise) for Lipschitz f",
+    "complexity": "O(n_x * n_y) per time step for observer update"
+  },
+  "physics_fingerprint": {
+    "carrier": "N/A",
+    "sensing_mechanism": "high_gain_observer_estimation",
+    "integration_axis": "time",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "nonlinear_state_estimate",
+    "primitives": [
+      "S.hgo.high_gain_observer",
+      "M.lyapunov.convergence_proof",
+      "O.iss.input_to_state"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "Lipschitz_constant_violation",
+    "output_noise_amplification",
+    "algebraic_loop"
+  ],
+  "error_metric": "observer_error_RMSE",
+  "error_metric_secondary": "convergence_time_s",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "nonlinear_inverse",
+      "forward_operator": "high_gain_observer_estimation",
+      "input_format": "measurement_only",
+      "omega": {
+        "n_state": 4,
+        "Lipschitz_constant_gamma": 1.0,
+        "observer_gain_epsilon": 0.1,
+        "noise_SNR_dB": 30
+      },
+      "epsilon_fn_center": "0.10 observer_error_RMSE"
+    },
+    "allowed_forward_operators": [
+      "high_gain_observer_estimation"
+    ],
+    "allowed_problem_classes": [
+      "nonlinear_inverse"
+    ],
+    "allowed_omega_dimensions": [
+      "n_state",
+      "Lipschitz_constant_gamma",
+      "observer_gain_epsilon",
+      "noise_SNR_dB"
+    ],
+    "omega_bounds": {
+      "n_state": [
+        1,
+        15
+      ],
+      "Lipschitz_constant_gamma": [
+        0.1,
+        10.0
+      ],
+      "observer_gain_epsilon": [
+        0.01,
+        1.0
+      ],
+      "noise_SNR_dB": [
+        10,
+        60
+      ]
+    },
+    "epsilon_bounds": {
+      "observer_error_RMSE": [
+        0.01,
+        0.5
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

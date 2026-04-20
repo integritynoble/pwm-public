@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-405",
+  "layer": "L1",
+  "principle_number": "405",
+  "title": "SIR Epidemic Parameter Estimation",
+  "domain": "Computational Biology",
+  "sub_domain": "Epidemiology",
+  "source_file": "AE_computational_bio/405_sir_epidemic.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "SIR model fitting: estimate transmission rate beta and recovery rate gamma from epidemic incidence data.",
+    "forward_model": "dS/dt = -beta*S*I/N; dI/dt = beta*S*I/N - gamma*I; dR/dt = gamma*I; R0 = beta/gamma",
+    "world_state_x": "SIR parameters (beta_transmission, gamma_recovery) and R0 basic reproduction number",
+    "observation_y": "daily/weekly incidence data I_new(t) = beta*S*I/N for epidemic period",
+    "physical_parameters_theta": [
+      "beta_transmission_per_day",
+      "gamma_recovery_per_day",
+      "N_population",
+      "I0_initial_infected"
+    ]
+  },
+  "G": {
+    "dag": "M.ode.sir_model -> O.likelihood.incidence_nb -> S.mcmc.epidemic_posterior",
+    "vertices": [
+      "M.ode.sir_model",
+      "O.likelihood.incidence_nb",
+      "S.mcmc.epidemic_posterior"
+    ],
+    "arcs": [
+      "M.ode.sir_model -> O.likelihood.incidence_nb",
+      "O.likelihood.incidence_nb -> S.mcmc.epidemic_posterior"
+    ],
+    "L_DAG": 2.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 1000,
+    "condition_number_effective": 50,
+    "condition_number_mismatched": 200,
+    "regime": "Well-identified for growing epidemic (R0>1); identifiability lost for small I_0; reporting heterogeneity is dominant uncertainty."
+  },
+  "C": {
+    "solver_class": "MCMC_Bayesian_SIR or maximum_likelihood_EpiEstim",
+    "convergence_rate_q": 2.0,
+    "error_bound": "R0 uncertainty < 0.2 for well-detected epidemic",
+    "complexity": "O(N_days * N_MCMC) per epidemic fit"
+  },
+  "physics_fingerprint": {
+    "carrier": "N/A",
+    "sensing_mechanism": "incidence_case_surveillance",
+    "integration_axis": "time",
+    "problem_class": "parameter_estimation",
+    "noise_model": "negative_binomial",
+    "solution_space": "SIR_parameter_vector",
+    "primitives": [
+      "M.ode.sir_model",
+      "O.likelihood.incidence_nb",
+      "S.mcmc.epidemic_posterior"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "under_reporting_factor",
+    "heterogeneous_mixing",
+    "waning_immunity"
+  ],
+  "error_metric": "R0_estimation_RMSE",
+  "error_metric_secondary": "incidence_prediction_RMSE",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "parameter_estimation",
+      "forward_operator": "incidence_case_surveillance",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_incidence_days": 100,
+        "R0_true": 2.5,
+        "detection_rate": 0.5,
+        "overdispersion_k": 10
+      },
+      "epsilon_fn_center": "0.2 R0_estimation_RMSE"
+    },
+    "allowed_forward_operators": [
+      "incidence_case_surveillance"
+    ],
+    "allowed_problem_classes": [
+      "parameter_estimation"
+    ],
+    "allowed_omega_dimensions": [
+      "N_incidence_days",
+      "R0_true",
+      "detection_rate",
+      "overdispersion_k"
+    ],
+    "omega_bounds": {
+      "N_incidence_days": [
+        10,
+        500
+      ],
+      "R0_true": [
+        1.0,
+        10.0
+      ],
+      "detection_rate": [
+        0.05,
+        1.0
+      ],
+      "overdispersion_k": [
+        1,
+        100
+      ]
+    },
+    "epsilon_bounds": {
+      "R0_estimation_RMSE": [
+        0.05,
+        1.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

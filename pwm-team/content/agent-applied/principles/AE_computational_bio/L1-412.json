@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-412",
+  "layer": "L1",
+  "principle_number": "412",
+  "title": "Protein Folding Energy Landscape Inversion",
+  "domain": "Computational Biology",
+  "sub_domain": "Structural biology",
+  "source_file": "AE_computational_bio/412_protein_folding_energy.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "Protein structure determination: recover 3D atomic coordinates from cryo-EM density map or experimental NMR restraints.",
+    "forward_model": "rho_exp(r) = sum_i w_i * exp(-|r - r_i|^2 / (2*sigma^2)) (cryo-EM density); NOE distances r_ij ~ |r_i - r_j|",
+    "world_state_x": "3D protein structure: atomic coordinates {r_i} for all N_atoms atoms",
+    "observation_y": "cryo-EM density map rho_exp or NMR NOE distance restraints {d_ij_obs}",
+    "physical_parameters_theta": [
+      "resolution_Angstrom",
+      "N_atoms",
+      "map_threshold_sigma",
+      "B_factor"
+    ]
+  },
+  "G": {
+    "dag": "M.energy.force_field -> S.md.molecular_dynamics -> O.rmsd.structure_comparison",
+    "vertices": [
+      "M.energy.force_field",
+      "S.md.molecular_dynamics",
+      "O.rmsd.structure_comparison"
+    ],
+    "arcs": [
+      "M.energy.force_field -> S.md.molecular_dynamics",
+      "S.md.molecular_dynamics -> O.rmsd.structure_comparison"
+    ],
+    "L_DAG": 6.5,
+    "n_c": 4
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 10000000000.0,
+    "condition_number_effective": 10000000.0,
+    "condition_number_mismatched": 1000000000.0,
+    "regime": "Energy landscape rugged with many local minima; MCMC/SA exploration needed; deep learning (AlphaFold2) transforms ab initio prediction; cryo-EM enables near-atomic resolution."
+  },
+  "C": {
+    "solver_class": "PHENIX_real_space_refinement or HADDOCK or AlphaFold2_structure_prediction",
+    "convergence_rate_q": 2.0,
+    "error_bound": "TM-score > 0.5 for remotely homologous proteins; RMSD < 2 A for high-res cryo-EM",
+    "complexity": "O(N_atoms * N_iterations) for MD refinement; O(N_atoms^2) for energy evaluation"
+  },
+  "physics_fingerprint": {
+    "carrier": "N/A",
+    "sensing_mechanism": "cryo_em_nmr_structure_determination",
+    "integration_axis": "conformation_space",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "shot_poisson",
+    "solution_space": "3D_protein_structure",
+    "primitives": [
+      "M.energy.force_field",
+      "S.md.molecular_dynamics",
+      "O.rmsd.structure_comparison"
+    ]
+  },
+  "difficulty_delta": 50,
+  "difficulty_tier": "frontier",
+  "mismatch_parameters": [
+    "conformational_heterogeneity",
+    "solvent_contribution_neglect",
+    "model_bias"
+  ],
+  "error_metric": "TM_score",
+  "error_metric_secondary": "RMSD_Angstrom",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "nonlinear_inverse",
+      "forward_operator": "cryo_em_nmr_structure_determination",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_residues": 200,
+        "resolution_Angstrom": 3.0,
+        "map_SNR_dB": 10,
+        "N_conformations": 1
+      },
+      "epsilon_fn_center": "0.70 TM_score"
+    },
+    "allowed_forward_operators": [
+      "cryo_em_nmr_structure_determination"
+    ],
+    "allowed_problem_classes": [
+      "nonlinear_inverse"
+    ],
+    "allowed_omega_dimensions": [
+      "N_residues",
+      "resolution_Angstrom",
+      "map_SNR_dB",
+      "N_conformations"
+    ],
+    "omega_bounds": {
+      "N_residues": [
+        10,
+        10000
+      ],
+      "resolution_Angstrom": [
+        1.5,
+        10.0
+      ],
+      "map_SNR_dB": [
+        5,
+        30
+      ],
+      "N_conformations": [
+        1,
+        100
+      ]
+    },
+    "epsilon_bounds": {
+      "TM_score": [
+        0.1,
+        1.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

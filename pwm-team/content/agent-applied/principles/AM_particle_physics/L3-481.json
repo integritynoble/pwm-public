@@ -1,0 +1,259 @@
+{
+  "artifact_id": "L3-481",
+  "layer": "L3",
+  "parent_l2": "L2-481",
+  "parent_l1": "L1-481",
+  "title": "Parton Distribution Functions (DGLAP) \u2014 Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "HERA_combined_DIS_dataset",
+    "secondary": "LHC_Run2_cross_sections",
+    "tertiary": "held_out_real",
+    "construction_method": "Sample Omega uniformly; apply forward model; add domain-realistic noise.",
+    "num_dev_instances_per_tier": 20,
+    "holdout_instances_per_tier": 10
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "N_data_points": 3000,
+        "x_min_bjorken": 1e-05,
+        "Q_range_GeV": 1000,
+        "alpha_s_value": 0.118,
+        "nuclear_correction_uncertainty": 0.0,
+        "higher_twist_uncertainty": 0.0,
+        "heavy_quark_scheme_error": 0.0
+      },
+      "dataset_description": "Standard Particle Physics conditions, clean data, calibrated model.",
+      "epsilon": 1.05,
+      "d_ibench": 0.15,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        },
+        {
+          "Q": 0.9,
+          "tier": "Excellent"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "CT18_PDF_fit",
+          "metric": "chi2_per_dof_global_fit",
+          "score": 1.1,
+          "Q": 0.84
+        },
+        {
+          "name": "NNPDF40_NN",
+          "metric": "chi2_per_dof_global_fit",
+          "score": 1.03,
+          "Q": 0.78
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "N_data_points": 3000,
+        "x_min_bjorken": 1e-05,
+        "Q_range_GeV": 1000,
+        "alpha_s_value": 0.118,
+        "nuclear_correction_uncertainty": 0.01,
+        "higher_twist_uncertainty": 0.0,
+        "heavy_quark_scheme_error": 0.0
+      },
+      "dataset_description": "Mild noise/mismatch, representative of good hardware.",
+      "epsilon": 0.945,
+      "d_ibench": 0.3,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "CT18_PDF_fit",
+          "metric": "chi2_per_dof_global_fit",
+          "score": 0.99,
+          "Q": 0.84
+        },
+        {
+          "name": "NNPDF40_NN",
+          "metric": "chi2_per_dof_global_fit",
+          "score": 0.927,
+          "Q": 0.78
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "N_data_points": 3000,
+        "x_min_bjorken": 1e-05,
+        "Q_range_GeV": 1000,
+        "alpha_s_value": 0.118,
+        "nuclear_correction_uncertainty": 0.03,
+        "higher_twist_uncertainty": 0.02,
+        "heavy_quark_scheme_error": 0.0
+      },
+      "dataset_description": "Moderate noise and model mismatch, real-world conditions.",
+      "epsilon": 0.861,
+      "d_ibench": 0.52,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "CT18_PDF_fit",
+          "metric": "chi2_per_dof_global_fit",
+          "score": 0.88,
+          "Q": 0.82
+        },
+        {
+          "name": "NNPDF40_NN",
+          "metric": "chi2_per_dof_global_fit",
+          "score": 0.824,
+          "Q": 0.77
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "N_data_points": 3000,
+        "x_min_bjorken": 1e-05,
+        "Q_range_GeV": 1000,
+        "alpha_s_value": 0.118,
+        "nuclear_correction_uncertainty": 0.06,
+        "higher_twist_uncertainty": 0.05,
+        "heavy_quark_scheme_error": 0.02
+      },
+      "dataset_description": "Severe noise, large mismatch, no oracle access to calibration.",
+      "epsilon": 0.788,
+      "d_ibench": 0.72,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "CT18_PDF_fit",
+          "metric": "chi2_per_dof_global_fit",
+          "score": 0.77,
+          "Q": 0.78
+        },
+        {
+          "name": "NNPDF40_NN",
+          "metric": "chi2_per_dof_global_fit",
+          "score": 0.721,
+          "Q": 0.73
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "HERA_combined_DIS_dataset + parametric Omega sampling",
+      "construction_method": "Sample Omega uniformly over declared bounds; apply forward model with injected mismatch; ground truth stored separately.",
+      "num_dev_instances": 200,
+      "num_holdout_instances": 100
+    },
+    "tracks": {
+      "track_A_stratified_worst_case": {
+        "strata": [
+          {
+            "name": "S1_easy",
+            "rep_difficulty": "easy"
+          },
+          {
+            "name": "S2_standard",
+            "rep_difficulty": "standard"
+          },
+          {
+            "name": "S3_hard",
+            "rep_difficulty": "hard"
+          },
+          {
+            "name": "S4_frontier",
+            "rep_difficulty": "very_hard"
+          }
+        ],
+        "samples_per_stratum": 5,
+        "pass_condition": "min_i(score_i) / epsilon_fn(Omega_centroid_s) >= 1.0 for all 4 strata"
+      },
+      "track_B_uniform_median": {
+        "num_samples": 50,
+        "pass_condition": "median_i(score_i) / epsilon_fn(Omega_median) >= 1.0"
+      },
+      "track_C_mismatch_degradation": {
+        "sweep_points": [
+          {
+            "phi": 0.0
+          },
+          {
+            "phi": 0.25
+          },
+          {
+            "phi": 0.5
+          },
+          {
+            "phi": 0.75
+          },
+          {
+            "phi": 1.0
+          }
+        ],
+        "scenes_per_point": 10,
+        "degradation_score": "(1/4) * sum_{i=1..4} [(Q_norm(phi_i) + Q_norm(phi_{i+1}))/2]"
+      }
+    },
+    "baselines": [
+      {
+        "name": "CT18_PDF_fit",
+        "track_A_Q": 0.68,
+        "track_B_Q": 0.79,
+        "track_C_Q": 0.73,
+        "overall_Q": 0.73
+      },
+      {
+        "name": "NNPDF40_NN",
+        "track_A_Q": 0.64,
+        "track_B_Q": 0.74,
+        "track_C_Q": 0.69,
+        "overall_Q": 0.69
+      }
+    ]
+  },
+  "hardness_rule_check": "No baseline passes epsilon_fn over entire Omega. Hardest baseline fails at T4_blind (score < epsilon at severe-mismatch corner). Hardness rule: SATISFIED.",
+  "anti_overfitting_mechanisms": {
+    "M1_random_instantiation": "generator/instantiate.py uses G(SHA256(h_sub || k)) seeded by benchmark hash.",
+    "M2_convergence_scoring": "convergence/check_convergence.py verifies convergence rate across problem sizes.",
+    "M3_worst_case_eval": "scoring/worst_case.py returns min score over 20 fixed dev scenes per tier.",
+    "M4_community_adversarial": "adversarial/submit_adversarial.py; adversarial submissions eligible for T_k.",
+    "M5_method_sig_diversity": "Baselines span multiple method signatures; novelty bonus for approaches beyond L+O.",
+    "M6_gate_checks": "gates/check_s{1,2,3,4}.py embedded with thresholds.yaml."
+  },
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

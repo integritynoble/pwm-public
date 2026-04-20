@@ -1,0 +1,143 @@
+{
+  "artifact_id": "L1-374",
+  "layer": "L1",
+  "principle_number": "374",
+  "title": "Gravitational Wave Parameter Estimation",
+  "domain": "Astrophysics",
+  "sub_domain": "GW astronomy",
+  "source_file": "AC_astrophysics/374_gravitational_wave.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "GW parameter estimation: infer binary merger parameters (masses, spins, sky position) from LIGO/Virgo strain data via Bayesian inference.",
+    "forward_model": "h(t; theta) = F_+(psi) h_+(t; m1,m2,chi1,chi2,iota,d_L) + F_x(psi) h_x(t); likelihood L propto exp(-chi2/2)",
+    "world_state_x": "compact binary parameters theta = (m1, m2, chi1, chi2, d_L, iota, psi, ra, dec, tc, phi_c)",
+    "observation_y": "detector strain s(t) = h(t; theta) + n(t) for LIGO Hanford + Livingston + Virgo",
+    "physical_parameters_theta": [
+      "chirp_mass_Msun",
+      "mass_ratio_q",
+      "chi_eff",
+      "luminosity_distance_Mpc",
+      "inclination_iota"
+    ]
+  },
+  "G": {
+    "dag": "S.waveform.IMRPhenomD -> F.fourier.whitening -> O.mcmc.nested_sampling",
+    "vertices": [
+      "S.waveform.IMRPhenomD",
+      "F.fourier.whitening",
+      "O.mcmc.nested_sampling"
+    ],
+    "arcs": [
+      "S.waveform.IMRPhenomD -> F.fourier.whitening",
+      "F.fourier.whitening -> O.mcmc.nested_sampling"
+    ],
+    "L_DAG": 5.0,
+    "n_c": 2
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 100000000.0,
+    "condition_number_effective": 10000.0,
+    "condition_number_mismatched": 100000.0,
+    "regime": "High-dimensional (15 parameters); multimodal posteriors for aligned-spin systems; computing limited by waveform cost."
+  },
+  "C": {
+    "solver_class": "Bilby_dynesty or RIFT_PE or LALInference_MCMC",
+    "convergence_rate_q": 2.0,
+    "error_bound": "90% CI volume in parameter space; sky area < 100 deg2",
+    "complexity": "O(N_waveform * N_sample) with N_waveform ~ 1s per evaluation"
+  },
+  "physics_fingerprint": {
+    "carrier": "N/A",
+    "sensing_mechanism": "matched_filtering_gw",
+    "integration_axis": "temporal_strain",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "detector_noise_gaussian",
+    "solution_space": "CBC_parameter_vector",
+    "primitives": [
+      "S.waveform.IMRPhenomD",
+      "F.fourier.whitening",
+      "O.mcmc.nested_sampling"
+    ]
+  },
+  "difficulty_delta": 10,
+  "difficulty_tier": "hard",
+  "mismatch_parameters": [
+    "waveform_model_systematic",
+    "non_gaussian_noise_artifact",
+    "PSD_uncertainty"
+  ],
+  "error_metric": "posterior_volume_dimensionless",
+  "error_metric_secondary": "distance_sigma_Mpc",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "nonlinear_inverse",
+      "forward_operator": "matched_filtering_gw",
+      "input_format": "measurement_only",
+      "omega": {
+        "chirp_mass_Msun": 30.0,
+        "SNR_network": 15.0,
+        "mass_ratio_q": 0.8,
+        "distance_Mpc": 500
+      },
+      "epsilon_fn_center": "0.50 posterior_volume_dimensionless"
+    },
+    "allowed_forward_operators": [
+      "matched_filtering_gw"
+    ],
+    "allowed_problem_classes": [
+      "nonlinear_inverse"
+    ],
+    "allowed_omega_dimensions": [
+      "chirp_mass_Msun",
+      "SNR_network",
+      "mass_ratio_q",
+      "distance_Mpc"
+    ],
+    "omega_bounds": {
+      "chirp_mass_Msun": [
+        1.0,
+        200.0
+      ],
+      "SNR_network": [
+        8.0,
+        100.0
+      ],
+      "mass_ratio_q": [
+        0.05,
+        1.0
+      ],
+      "distance_Mpc": [
+        10,
+        5000
+      ]
+    },
+    "epsilon_bounds": {
+      "posterior_volume_dimensionless": [
+        0.01,
+        1.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

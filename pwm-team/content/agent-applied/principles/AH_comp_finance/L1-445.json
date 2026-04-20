@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-445",
+  "layer": "L1",
+  "principle_number": "445",
+  "title": "GARCH Volatility Estimation",
+  "domain": "Computational Finance",
+  "sub_domain": "Time series volatility",
+  "source_file": "AH_comp_finance/445_garch.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "GARCH(1,1) model: estimate conditional volatility and model parameters from return series via maximum likelihood.",
+    "forward_model": "r_t = sigma_t * z_t, sigma_t^2 = omega + alpha*r_{t-1}^2 + beta*sigma_{t-1}^2",
+    "world_state_x": "conditional variance sigma_t^2 series and GARCH parameters (omega, alpha, beta)",
+    "observation_y": "financial return series {r_t} for t=1..T",
+    "physical_parameters_theta": [
+      "omega_intercept",
+      "alpha_ARCH_effect",
+      "beta_GARCH_effect",
+      "T_estimation_window"
+    ]
+  },
+  "G": {
+    "dag": "M.garch.conditional_variance -> O.mle.log_likelihood -> S.recursion.garch_update",
+    "vertices": [
+      "M.garch.conditional_variance",
+      "O.mle.log_likelihood",
+      "S.recursion.garch_update"
+    ],
+    "arcs": [
+      "M.garch.conditional_variance -> O.mle.log_likelihood",
+      "O.mle.log_likelihood -> S.recursion.garch_update"
+    ],
+    "L_DAG": 2.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 500,
+    "condition_number_effective": 20,
+    "condition_number_mismatched": 100,
+    "regime": "Stationarity: alpha+beta < 1; heavy tails common in practice; EGARCH/GJR-GARCH for leverage effect; rolling estimation for non-stationarity."
+  },
+  "C": {
+    "solver_class": "BFGS_MLE or QMLE_robust",
+    "convergence_rate_q": 2.0,
+    "error_bound": "QLIKE < 0.1 for well-specified GARCH model",
+    "complexity": "O(T) for log-likelihood recursion per evaluation"
+  },
+  "physics_fingerprint": {
+    "carrier": "N/A",
+    "sensing_mechanism": "mle_garch_estimation",
+    "integration_axis": "temporal_financial",
+    "problem_class": "parameter_estimation",
+    "noise_model": "gaussian_student_t",
+    "solution_space": "conditional_vol_series",
+    "primitives": [
+      "M.garch.conditional_variance",
+      "O.mle.log_likelihood",
+      "S.recursion.garch_update"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "structural_break_in_vol_regime",
+    "fat_tail_misspecification",
+    "leverage_effect_omission"
+  ],
+  "error_metric": "volatility_forecast_QLIKE",
+  "error_metric_secondary": "log_likelihood_per_obs",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "parameter_estimation",
+      "forward_operator": "mle_garch_estimation",
+      "input_format": "measurement_only",
+      "omega": {
+        "T_observations": 2000,
+        "alpha_true": 0.1,
+        "beta_true": 0.85,
+        "structural_break_prob": 0.0
+      },
+      "epsilon_fn_center": "0.08 volatility_forecast_QLIKE"
+    },
+    "allowed_forward_operators": [
+      "mle_garch_estimation"
+    ],
+    "allowed_problem_classes": [
+      "parameter_estimation"
+    ],
+    "allowed_omega_dimensions": [
+      "T_observations",
+      "alpha_true",
+      "beta_true",
+      "structural_break_prob"
+    ],
+    "omega_bounds": {
+      "T_observations": [
+        100,
+        10000
+      ],
+      "alpha_true": [
+        0.01,
+        0.3
+      ],
+      "beta_true": [
+        0.5,
+        0.99
+      ],
+      "structural_break_prob": [
+        0.0,
+        0.2
+      ]
+    },
+    "epsilon_bounds": {
+      "volatility_forecast_QLIKE": [
+        0.01,
+        0.5
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

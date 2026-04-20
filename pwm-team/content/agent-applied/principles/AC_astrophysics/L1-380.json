@@ -1,0 +1,143 @@
+{
+  "artifact_id": "L1-380",
+  "layer": "L1",
+  "principle_number": "380",
+  "title": "Exoplanet Transit Photometry Inversion",
+  "domain": "Astrophysics",
+  "sub_domain": "Exoplanet characterization",
+  "source_file": "AC_astrophysics/380_exoplanet_transit.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "Exoplanet transit fitting: recover planet radius, orbital parameters, and limb darkening from transit light curves.",
+    "forward_model": "F(t) = F_0 * (1 - lambda(p, b, z(t), u1, u2)); p = R_p/R_star, b = a*cos(i)/R_star",
+    "world_state_x": "transit parameters (R_p/R_star, a/R_star, i, t_c, e, omega) + stellar limb darkening (u1, u2)",
+    "observation_y": "normalized flux time series F(t) during transit (N_points epochs)",
+    "physical_parameters_theta": [
+      "R_p_R_star_ratio",
+      "a_R_star",
+      "impact_parameter_b",
+      "u1_u2_limb_darkening",
+      "period_P_days"
+    ]
+  },
+  "G": {
+    "dag": "M.transit.mandel_agol -> O.chi2.lightcurve_transit -> S.limb.darkening",
+    "vertices": [
+      "M.transit.mandel_agol",
+      "O.chi2.lightcurve_transit",
+      "S.limb.darkening"
+    ],
+    "arcs": [
+      "M.transit.mandel_agol -> O.chi2.lightcurve_transit",
+      "O.chi2.lightcurve_transit -> S.limb.darkening"
+    ],
+    "L_DAG": 2.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 1000,
+    "condition_number_effective": 40,
+    "condition_number_mismatched": 200,
+    "regime": "Well-posed for single isolated transits; TTVs require multi-transit modeling; stellar activity is dominant systematic."
+  },
+  "C": {
+    "solver_class": "MCMC_batman or emcee or dynesty_juliet",
+    "convergence_rate_q": 2.0,
+    "error_bound": "sigma(R_p/R_star) < 100 ppm for SNR > 50",
+    "complexity": "O(N_points * N_params) per likelihood call"
+  },
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "transit_photometry",
+    "integration_axis": "temporal_photometric",
+    "problem_class": "parameter_estimation",
+    "noise_model": "shot_poisson",
+    "solution_space": "transit_parameter_vector",
+    "primitives": [
+      "M.transit.mandel_agol",
+      "O.chi2.lightcurve_transit",
+      "S.limb.darkening"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "stellar_activity_spots",
+    "systematics_instrumental",
+    "TTVs_TDVs"
+  ],
+  "error_metric": "R_p_R_star_sigma_ppm",
+  "error_metric_secondary": "chi2_reduced",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "parameter_estimation",
+      "forward_operator": "transit_photometry",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_transit_points": 500,
+        "SNR_per_point_ppm": 100,
+        "R_p_R_star_percent": 1.0,
+        "cadence_min": 2.0
+      },
+      "epsilon_fn_center": "50 R_p_R_star_sigma_ppm"
+    },
+    "allowed_forward_operators": [
+      "transit_photometry"
+    ],
+    "allowed_problem_classes": [
+      "parameter_estimation"
+    ],
+    "allowed_omega_dimensions": [
+      "N_transit_points",
+      "SNR_per_point_ppm",
+      "R_p_R_star_percent",
+      "cadence_min"
+    ],
+    "omega_bounds": {
+      "N_transit_points": [
+        50,
+        10000
+      ],
+      "SNR_per_point_ppm": [
+        10,
+        1000
+      ],
+      "R_p_R_star_percent": [
+        0.1,
+        20.0
+      ],
+      "cadence_min": [
+        0.5,
+        30.0
+      ]
+    },
+    "epsilon_bounds": {
+      "R_p_R_star_sigma_ppm": [
+        10,
+        500
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

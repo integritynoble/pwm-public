@@ -1,0 +1,131 @@
+{
+  "artifact_id": "L2-166",
+  "layer": "L2",
+  "parent_l1": "L1-166",
+  "principle_ref": "sha256:<L1-166_principle_hash>",
+  "title": "Stellar Coronagraphy PSF Subtraction \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        128,
+        2048
+      ],
+      "W": [
+        128,
+        2048
+      ],
+      "N_frames": [
+        10,
+        200
+      ],
+      "contrast_ratio": [
+        1e-08,
+        0.0001
+      ],
+      "speckle_lifetime_s": [
+        10,
+        300
+      ]
+    },
+    "E": {
+      "forward": "I(r,theta) = PSF_star(r,theta) * alpha + companion_signal + speckle_noise(r,theta)",
+      "operator": "coronagraphic_psf_subtraction",
+      "primitive_chain": "K.psf.coronagraph -> S.speckle.reference -> int.temporal",
+      "inverse": "recover companion flux map f(r from focal plane intensity image I in R^{H x W} (speckle + shot noise dominated)"
+    },
+    "B": {
+      "nonnegativity": "companion flux >= 0",
+      "throughput": "coronagraph throughput T in [0,1]"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "contrast_5sigma_dB",
+      "companion_SNR",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "-4.0 - 1.0 * log10(N_frames / 30)"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 2D_companion_flux"
+    },
+    "baselines": [
+      {
+        "name": "cADI",
+        "method_sig": "L+O",
+        "expected_score": -4.5
+      },
+      {
+        "name": "KLIP",
+        "method_sig": "L+O",
+        "expected_score": -5.5
+      },
+      {
+        "name": "LOCI",
+        "method_sig": "L+O",
+        "expected_score": -5.2
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "N_frames": 30,
+        "contrast_ratio": 1e-05,
+        "speckle_lifetime_s": 60.0,
+        "speckle_evolution_rate": 0.0,
+        "wavefront_error_drift": 0.0,
+        "reference_star_spectral_mismatch": 0.0
+      },
+      "epsilon": 0.5
+    },
+    "tier_bounds": {
+      "H": [
+        128,
+        2048
+      ],
+      "W": [
+        128,
+        2048
+      ],
+      "N_frames": [
+        10,
+        200
+      ],
+      "contrast_ratio": [
+        1e-08,
+        0.0001
+      ],
+      "speckle_lifetime_s": [
+        10,
+        300
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.35,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.35 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

@@ -1,0 +1,143 @@
+{
+  "artifact_id": "L1-372",
+  "layer": "L1",
+  "principle_number": "372",
+  "title": "Supernova Light Curve Fitting",
+  "domain": "Astrophysics",
+  "sub_domain": "Transient photometry",
+  "source_file": "AC_astrophysics/372_supernova_light_curve.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "Type Ia supernova light curve fitting: extract distance modulus and nuisance parameters from multi-band photometry.",
+    "forward_model": "m_x = M_x + mu + alpha*x1 - beta*c + delta_M*step(M_stellar); SALT2/SNooPy template",
+    "world_state_x": "distance modulus mu = 5*log10(d_L/10pc), stretch x1, color c",
+    "observation_y": "multi-band photometry {m_B, m_V, m_R} vs. time for N_epochs epochs",
+    "physical_parameters_theta": [
+      "t0_peak_day",
+      "x1_stretch",
+      "c_color",
+      "mu_distance_modulus",
+      "MB_absolute"
+    ]
+  },
+  "G": {
+    "dag": "M.sed.supernova_template -> O.chi2.lightcurve -> S.k_correction.photometric",
+    "vertices": [
+      "M.sed.supernova_template",
+      "O.chi2.lightcurve",
+      "S.k_correction.photometric"
+    ],
+    "arcs": [
+      "M.sed.supernova_template -> O.chi2.lightcurve",
+      "O.chi2.lightcurve -> S.k_correction.photometric"
+    ],
+    "L_DAG": 2.8,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 500,
+    "condition_number_effective": 20,
+    "condition_number_mismatched": 100,
+    "regime": "Gaussian likelihood in magnitude space; stretch-color correction well-calibrated; host dust is dominant systematic."
+  },
+  "C": {
+    "solver_class": "SALT2_fitter or BayeSN_MCMC or SUGAR",
+    "convergence_rate_q": 2.0,
+    "error_bound": "sigma(mu) < 0.15 mag per SN for well-sampled LC",
+    "complexity": "O(N_epochs * N_bands * N_params) for template chi2"
+  },
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "photometric_lc_sampling",
+    "integration_axis": "temporal_photometric",
+    "problem_class": "parameter_estimation",
+    "noise_model": "observation_gaussian",
+    "solution_space": "lc_parameter_vector",
+    "primitives": [
+      "M.sed.supernova_template",
+      "O.chi2.lightcurve",
+      "S.k_correction.photometric"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "host_galaxy_dust_uncertainty",
+    "peculiar_velocity_km_s",
+    "photometric_calibration_error_mmag"
+  ],
+  "error_metric": "distance_modulus_RMSE_mag",
+  "error_metric_secondary": "Hubble_residual_sigma",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "parameter_estimation",
+      "forward_operator": "photometric_lc_sampling",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_epochs": 20,
+        "N_bands": 4,
+        "photometric_noise_mmag": 5.0,
+        "redshift_z": 0.5
+      },
+      "epsilon_fn_center": "0.12 distance_modulus_RMSE_mag"
+    },
+    "allowed_forward_operators": [
+      "photometric_lc_sampling"
+    ],
+    "allowed_problem_classes": [
+      "parameter_estimation"
+    ],
+    "allowed_omega_dimensions": [
+      "N_epochs",
+      "N_bands",
+      "photometric_noise_mmag",
+      "redshift_z"
+    ],
+    "omega_bounds": {
+      "N_epochs": [
+        5,
+        100
+      ],
+      "N_bands": [
+        3,
+        6
+      ],
+      "photometric_noise_mmag": [
+        1.0,
+        50.0
+      ],
+      "redshift_z": [
+        0.01,
+        2.0
+      ]
+    },
+    "epsilon_bounds": {
+      "distance_modulus_RMSE_mag": [
+        0.05,
+        0.3
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

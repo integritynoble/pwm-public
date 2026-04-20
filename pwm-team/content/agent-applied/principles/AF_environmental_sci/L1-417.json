@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-417",
+  "layer": "L1",
+  "principle_number": "417",
+  "title": "General Circulation Model (GCM) Inversion",
+  "domain": "Environmental Science",
+  "sub_domain": "Climate modeling",
+  "source_file": "AF_environmental_sci/417_general_circulation_model.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "GCM parameter estimation: infer climate sensitivity and parameterization coefficients from observed climate data.",
+    "forward_model": "d/dt [T, u, v, q, ps] = F(T, u, v, q, ps; theta_param) using primitive equations on spectral grid",
+    "world_state_x": "ECS (equilibrium climate sensitivity), parameterization parameters theta for convection, clouds, boundary layer",
+    "observation_y": "global temperature trends, precipitation patterns, TOA radiation fluxes from reanalysis (ERA5)",
+    "physical_parameters_theta": [
+      "ECS_K_per_CO2_doubling",
+      "cloud_feedback_Wm2_K",
+      "convection_entrainment_rate",
+      "boundary_layer_height_m"
+    ]
+  },
+  "G": {
+    "dag": "M.primitive.equations -> S.spectral.dynamical_core -> O.chi2.reanalysis_comparison",
+    "vertices": [
+      "M.primitive.equations",
+      "S.spectral.dynamical_core",
+      "O.chi2.reanalysis_comparison"
+    ],
+    "arcs": [
+      "M.primitive.equations -> S.spectral.dynamical_core",
+      "S.spectral.dynamical_core -> O.chi2.reanalysis_comparison"
+    ],
+    "L_DAG": 6.0,
+    "n_c": 3
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 1000000000.0,
+    "condition_number_effective": 1000000.0,
+    "condition_number_mismatched": 10000000.0,
+    "regime": "Chaotic dynamics; ensemble averaging needed; butterfly effect limits deterministic predictability beyond ~2 weeks; ensemble spread constrains uncertainty."
+  },
+  "C": {
+    "solver_class": "ensemble_MCMC_climate or emulator_based_calibration (ClimateBench)",
+    "convergence_rate_q": 1.5,
+    "error_bound": "ECS uncertainty \u00b10.5 K at 1-sigma from perturbed physics ensembles",
+    "complexity": "O(N_ensemble * N_year_simulation) with N_year ~ 100 years"
+  },
+  "physics_fingerprint": {
+    "carrier": "N/A",
+    "sensing_mechanism": "climate_model_data_assimilation",
+    "integration_axis": "global_atmosphere",
+    "problem_class": "parameter_estimation",
+    "noise_model": "observation_gaussian",
+    "solution_space": "climate_forcing_parameter_vector",
+    "primitives": [
+      "M.primitive.equations",
+      "S.spectral.dynamical_core",
+      "O.chi2.reanalysis_comparison"
+    ]
+  },
+  "difficulty_delta": 10,
+  "difficulty_tier": "hard",
+  "mismatch_parameters": [
+    "internal_variability_noise",
+    "aerosol_forcing_uncertainty",
+    "land_surface_uncertainty"
+  ],
+  "error_metric": "temperature_trend_RMSE_K_decade",
+  "error_metric_secondary": "precipitation_bias_mm_day",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "parameter_estimation",
+      "forward_operator": "climate_model_data_assimilation",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_ensemble_members": 100,
+        "simulation_years": 100,
+        "aerosol_forcing_Wm2": -1.0,
+        "ECS_K": 3.0
+      },
+      "epsilon_fn_center": "0.1 temperature_trend_RMSE_K_decade"
+    },
+    "allowed_forward_operators": [
+      "climate_model_data_assimilation"
+    ],
+    "allowed_problem_classes": [
+      "parameter_estimation"
+    ],
+    "allowed_omega_dimensions": [
+      "N_ensemble_members",
+      "simulation_years",
+      "aerosol_forcing_Wm2",
+      "ECS_K"
+    ],
+    "omega_bounds": {
+      "N_ensemble_members": [
+        20,
+        1000
+      ],
+      "simulation_years": [
+        10,
+        1000
+      ],
+      "aerosol_forcing_Wm2": [
+        -3.0,
+        0.0
+      ],
+      "ECS_K": [
+        1.5,
+        6.0
+      ]
+    },
+    "epsilon_bounds": {
+      "temperature_trend_RMSE_K_decade": [
+        0.02,
+        0.5
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

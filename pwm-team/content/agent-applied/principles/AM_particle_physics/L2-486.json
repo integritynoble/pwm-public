@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-486",
+  "layer": "L2",
+  "parent_l1": "L1-486",
+  "principle_ref": "sha256:<L1-486_principle_hash>",
+  "title": "Dark Matter Direct Detection Inversion \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "exposure_ton_yr": [
+        0.01,
+        10.0
+      ],
+      "E_threshold_keV": [
+        0.1,
+        10.0
+      ],
+      "background_rate_evt_keV_ton_yr": [
+        0.001,
+        10.0
+      ],
+      "m_DM_GeV": [
+        1,
+        10000
+      ]
+    },
+    "E": {
+      "forward": "dR/dE_R = N_T * rho_DM / (m_DM * m_T) * integral_{v_min}^{inf} v*f(v) * d_sigma/d_E_R dv",
+      "operator": "nuclear_recoil_detection",
+      "primitive_chain": "M.recoil.wimp_nucleus -> S.background.rejection_signal_region -> O.likelihood.profile",
+      "inverse": "recover WIMP mass m_DM and spin-independent cross section sigma_SI from observed recoil event spectrum N_obs(E_R) in energy bins above threshold"
+    },
+    "B": {
+      "cross_section_positivity": "sigma > 0",
+      "mass_positivity": "m_DM > 0"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "sigma_SI_upper_limit_log10",
+      "m_DM_exclusion_reach",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "-46 - 1 * log10(exposure_ton_yr / 1.0)"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 WIMP_cross_section_mass"
+    },
+    "baselines": [
+      {
+        "name": "xenon_XENON1T",
+        "method_sig": "L+O",
+        "expected_score": -46
+      },
+      {
+        "name": "LZ_profile_likelihood",
+        "method_sig": "L+O",
+        "expected_score": -47.5
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "exposure_ton_yr": 1.0,
+        "E_threshold_keV": 1.0,
+        "background_rate_evt_keV_ton_yr": 0.1,
+        "m_DM_GeV": 100,
+        "halo_model_uncertainty": 0.0,
+        "nuclear_form_factor_uncertainty": 0.0,
+        "background_model_error": 0.0
+      },
+      "epsilon": 0.5
+    },
+    "tier_bounds": {
+      "exposure_ton_yr": [
+        0.01,
+        10.0
+      ],
+      "E_threshold_keV": [
+        0.1,
+        10.0
+      ],
+      "background_rate_evt_keV_ton_yr": [
+        0.001,
+        10.0
+      ],
+      "m_DM_GeV": [
+        1,
+        10000
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.48,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.48 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

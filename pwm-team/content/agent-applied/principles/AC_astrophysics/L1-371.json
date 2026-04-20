@@ -1,0 +1,143 @@
+{
+  "artifact_id": "L1-371",
+  "layer": "L1",
+  "principle_number": "371",
+  "title": "Stellar Atmosphere Spectral Inversion",
+  "domain": "Astrophysics",
+  "sub_domain": "Stellar spectroscopy",
+  "source_file": "AC_astrophysics/371_stellar_atmosphere.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "Stellar spectral inversion: recover T_eff, log g, [Fe/H] from high-resolution spectra via atmosphere model fitting.",
+    "forward_model": "F_lambda(T_eff, log_g, [M/H]) from MARCS/KURUCZ model atmosphere + spectral synthesis",
+    "world_state_x": "stellar parameters (T_eff, log_g, [Fe/H], v_micro, v_macro) and abundance ratios",
+    "observation_y": "observed stellar spectrum F_lambda at resolution R=lambda/delta_lambda",
+    "physical_parameters_theta": [
+      "T_eff_K",
+      "log_g_cgs",
+      "Fe_H_dex",
+      "v_micro_kms",
+      "SNR"
+    ]
+  },
+  "G": {
+    "dag": "S.radiative.transfer_lte -> M.spectrum.synthesis -> O.chi2.spectral_lines",
+    "vertices": [
+      "S.radiative.transfer_lte",
+      "M.spectrum.synthesis",
+      "O.chi2.spectral_lines"
+    ],
+    "arcs": [
+      "S.radiative.transfer_lte -> M.spectrum.synthesis",
+      "M.spectrum.synthesis -> O.chi2.spectral_lines"
+    ],
+    "L_DAG": 3.5,
+    "n_c": 1
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 50000.0,
+    "condition_number_effective": 500,
+    "condition_number_mismatched": 2000,
+    "regime": "LTE models accurate for FGK stars; NLTE corrections needed for A stars and metal-poor giants; T_eff-log_g degeneracy broken by surface gravity indicators."
+  },
+  "C": {
+    "solver_class": "MCMC_SED_fitting or chi2_grid_search (FERRE) or NN_emulator",
+    "convergence_rate_q": 2.0,
+    "error_bound": "sigma(T_eff) < 100 K, sigma(log_g) < 0.1 dex at SNR > 50",
+    "complexity": "O(N_lambda * N_grid) for chi2 grid search"
+  },
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "radiative_transfer_spectral",
+    "integration_axis": "optical_depth",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "shot_poisson",
+    "solution_space": "1D_atmospheric_profile",
+    "primitives": [
+      "S.radiative.transfer_lte",
+      "M.spectrum.synthesis",
+      "O.chi2.spectral_lines"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "continuum_normalization_error",
+    "wavelength_calibration_error_kms",
+    "LTE_assumption_NLTE_correction"
+  ],
+  "error_metric": "spectral_chi2_reduced",
+  "error_metric_secondary": "T_eff_RMSE_K",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "nonlinear_inverse",
+      "forward_operator": "radiative_transfer_spectral",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_lambda": 5000,
+        "T_eff_K": 5500,
+        "log_g_cgs": 4.0,
+        "SNR": 100
+      },
+      "epsilon_fn_center": "1.15 spectral_chi2_reduced"
+    },
+    "allowed_forward_operators": [
+      "radiative_transfer_spectral"
+    ],
+    "allowed_problem_classes": [
+      "nonlinear_inverse"
+    ],
+    "allowed_omega_dimensions": [
+      "N_lambda",
+      "T_eff_K",
+      "log_g_cgs",
+      "SNR"
+    ],
+    "omega_bounds": {
+      "N_lambda": [
+        1000,
+        50000
+      ],
+      "T_eff_K": [
+        3500,
+        7500
+      ],
+      "log_g_cgs": [
+        1.0,
+        5.0
+      ],
+      "SNR": [
+        10,
+        500
+      ]
+    },
+    "epsilon_bounds": {
+      "spectral_chi2_reduced": [
+        0.8,
+        5.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

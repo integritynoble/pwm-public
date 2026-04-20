@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-485",
+  "layer": "L2",
+  "parent_l1": "L1-485",
+  "principle_ref": "sha256:<L1-485_principle_hash>",
+  "title": "Neutrino Oscillation Parameter Extraction \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "N_event_bins": [
+        10,
+        1000
+      ],
+      "POT_1e21": [
+        0.1,
+        30.0
+      ],
+      "baseline_km": [
+        200,
+        2000
+      ],
+      "flux_uncertainty_percent": [
+        1.0,
+        20.0
+      ]
+    },
+    "E": {
+      "forward": "P(nu_alpha -> nu_beta) = |sum_i U_{alpha_i} e^{-i m_i^2 L/(2E)} U*_{beta_i}|^2",
+      "operator": "neutrino_disappearance_appearance",
+      "primitive_chain": "M.pmns.mixing_matrix -> S.matter.msw_effect -> O.chi2.event_rates",
+      "inverse": "recover PMNS parameters (theta_12 from measured neutrino event rates N_obs(E"
+    },
+    "B": {
+      "unitarity": "PMNS matrix unitary",
+      "angle_range": "theta_ij in [0, pi/2], delta_CP in [-pi, pi]"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "delta_CP_constraint_sigma_deg",
+      "theta_23_octant_significance",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "10 + 10 * (5.0 / POT_1e21)^0.5"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 PMNS_parameter_vector"
+    },
+    "baselines": [
+      {
+        "name": "GLoBES_chi2_scan",
+        "method_sig": "L+O",
+        "expected_score": 22
+      },
+      {
+        "name": "T2K_Bayesian_MCMC",
+        "method_sig": "L+O",
+        "expected_score": 18
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_event_bins": 100,
+        "POT_1e21": 3.0,
+        "baseline_km": 810,
+        "flux_uncertainty_percent": 5.0,
+        "flux_normalization_uncertainty_percent": 0.0,
+        "cross_section_model_error": 0.0,
+        "matter_density_uncertainty": 0.0
+      },
+      "epsilon": 20.0
+    },
+    "tier_bounds": {
+      "N_event_bins": [
+        10,
+        1000
+      ],
+      "POT_1e21": [
+        0.1,
+        30.0
+      ],
+      "baseline_km": [
+        200,
+        2000
+      ],
+      "flux_uncertainty_percent": [
+        1.0,
+        20.0
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.42,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.42 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

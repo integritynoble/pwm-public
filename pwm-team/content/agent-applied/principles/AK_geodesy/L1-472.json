@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-472",
+  "layer": "L1",
+  "principle_number": "472",
+  "title": "Hyperspectral Spectral Unmixing",
+  "domain": "Geodesy",
+  "sub_domain": "Remote sensing spectroscopy",
+  "source_file": "AK_geodesy/472_spectral_unmixing.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "Hyperspectral unmixing: estimate per-pixel endmember abundances from mixed pixel spectra assuming linear mixing model.",
+    "forward_model": "y = M * a + n; M is endmember matrix [L x K], a is abundance vector [K x 1], sum(a) = 1, a >= 0",
+    "world_state_x": "abundance fractions a_k(x,y) for K endmembers across H x W image",
+    "observation_y": "hyperspectral image Y in R^{H x W x L} at L spectral bands",
+    "physical_parameters_theta": [
+      "K_endmembers",
+      "N_bands_L",
+      "SNR_dB",
+      "endmember_variability_sigma"
+    ]
+  },
+  "G": {
+    "dag": "M.mixing.linear_model -> O.nonneg_ls.fcls -> S.endmember.extraction",
+    "vertices": [
+      "M.mixing.linear_model",
+      "O.nonneg_ls.fcls",
+      "S.endmember.extraction"
+    ],
+    "arcs": [
+      "M.mixing.linear_model -> O.nonneg_ls.fcls",
+      "O.nonneg_ls.fcls -> S.endmember.extraction"
+    ],
+    "L_DAG": 2.8,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 1000.0,
+    "condition_number_effective": 50,
+    "condition_number_mismatched": 200,
+    "regime": "Constrained least squares (sum-to-one + nonnegativity); endmember extraction (VCA, N-FINDR) required first."
+  },
+  "C": {
+    "solver_class": "FCLS or SUNSAL or SUnSAL-TV",
+    "convergence_rate_q": 2.0,
+    "error_bound": "abundance RMSE < 0.05 for SNR > 30 dB",
+    "complexity": "O(H * W * K * L) per unmixing iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "hyperspectral_reflectance_unmixing",
+    "integration_axis": "spectral",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "abundance_map",
+    "primitives": [
+      "M.mixing.linear_model",
+      "O.nonneg_ls.fcls",
+      "S.endmember.extraction"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "endmember_variability",
+    "nonlinear_mixing_fraction",
+    "atmospheric_correction_error"
+  ],
+  "error_metric": "abundance_RMSE",
+  "error_metric_secondary": "endmember_SAM_deg",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "linear_inverse",
+      "forward_operator": "hyperspectral_reflectance_unmixing",
+      "input_format": "measurement_only",
+      "omega": {
+        "H": 100,
+        "W": 100,
+        "K_endmembers": 5,
+        "SNR_dB": 30
+      },
+      "epsilon_fn_center": "0.05 abundance_RMSE"
+    },
+    "allowed_forward_operators": [
+      "hyperspectral_reflectance_unmixing"
+    ],
+    "allowed_problem_classes": [
+      "linear_inverse"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "K_endmembers",
+      "SNR_dB"
+    ],
+    "omega_bounds": {
+      "H": [
+        20,
+        500
+      ],
+      "W": [
+        20,
+        500
+      ],
+      "K_endmembers": [
+        2,
+        20
+      ],
+      "SNR_dB": [
+        10,
+        60
+      ]
+    },
+    "epsilon_bounds": {
+      "abundance_RMSE": [
+        0.01,
+        0.2
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-422",
+  "layer": "L2",
+  "parent_l1": "L1-422",
+  "principle_ref": "sha256:<L1-422_principle_hash>",
+  "title": "Sediment Transport Inversion \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "N_measurements": [
+        10,
+        1000
+      ],
+      "d50_mm": [
+        0.1,
+        100.0
+      ],
+      "critical_shields_tau*c": [
+        0.02,
+        0.1
+      ],
+      "discharge_m3_s": [
+        1,
+        100000
+      ]
+    },
+    "E": {
+      "forward": "q_b = 8*(tau* - tau*_c)^1.5 * sqrt((s-1)*g*d^3) (MPM); q_s = c_a * u * h (van Rijn suspended)",
+      "operator": "bedload_suspended_measurement",
+      "primitive_chain": "M.mpm.bedload_formula -> S.vanrijn.suspended_load -> O.chi2.bedload_flux",
+      "inverse": "recover d50 bed material grain size (mm) from bedload flux q_b (kg/m/s)"
+    },
+    "B": {
+      "flux_positivity": "q_b >= 0",
+      "grain_size": "d50 > 0"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "bedload_flux_RMSE_log",
+      "sediment_rating_curve_RMSE",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.3 + 0.2 * log10(d50_mm / 2.0 + 1)"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 sediment_flux_parameter_vector"
+    },
+    "baselines": [
+      {
+        "name": "MPM_formula",
+        "method_sig": "L+O",
+        "expected_score": 0.6
+      },
+      {
+        "name": "van_Rijn_transport",
+        "method_sig": "L+O",
+        "expected_score": 0.45
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_measurements": 100,
+        "d50_mm": 2.0,
+        "critical_shields_tau*c": 0.047,
+        "discharge_m3_s": 500,
+        "armoring_effect": 0.0,
+        "wash_load_contamination": 0.0,
+        "non_uniform_grain_size_distribution": 0.0
+      },
+      "epsilon": 0.5
+    },
+    "tier_bounds": {
+      "N_measurements": [
+        10,
+        1000
+      ],
+      "d50_mm": [
+        0.1,
+        100.0
+      ],
+      "critical_shields_tau*c": [
+        0.02,
+        0.1
+      ],
+      "discharge_m3_s": [
+        1,
+        100000
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.25,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.25 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

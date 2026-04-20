@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-466",
+  "layer": "L2",
+  "parent_l1": "L1-466",
+  "principle_ref": "sha256:<L1-466_principle_hash>",
+  "title": "GNSS Positioning and Navigation \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "N_sat": [
+        4,
+        30
+      ],
+      "elevation_cutoff_deg": [
+        5,
+        30
+      ],
+      "ionospheric_TECU": [
+        0.5,
+        50
+      ],
+      "multipath_sigma_m": [
+        0.1,
+        5.0
+      ]
+    },
+    "E": {
+      "forward": "rho_i = |X - X_i| + c*dt_rcvr - c*dt_sat_i + I_i + T_i + epsilon_i",
+      "operator": "pseudorange_doppler_measurement",
+      "primitive_chain": "M.pseudorange.geometry -> S.kalman.navigation -> O.least_squares.weighted",
+      "inverse": "recover receiver position (X from pseudoranges rho_i and carrier phases phi_i from N_sat >= 4 satellites"
+    },
+    "B": {
+      "overdetermination": "N_sat >= 4",
+      "geometry": "PDOP < 10"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "position_RMSE_m",
+      "PDOP",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.5 + 1.0 * (ionospheric_TECU / 5.0)^0.3"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 3D_position_velocity"
+    },
+    "baselines": [
+      {
+        "name": "WLS_single_epoch",
+        "method_sig": "L+O",
+        "expected_score": 2.0
+      },
+      {
+        "name": "Kalman_nav_filter",
+        "method_sig": "L+O",
+        "expected_score": 1.2
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_sat": 8,
+        "elevation_cutoff_deg": 15.0,
+        "ionospheric_TECU": 5.0,
+        "multipath_sigma_m": 0.5,
+        "ionospheric_model_error_m": 0.0,
+        "tropospheric_model_error_m": 0.0,
+        "multipath_bias_m": 0.0
+      },
+      "epsilon": 1.5
+    },
+    "tier_bounds": {
+      "N_sat": [
+        4,
+        30
+      ],
+      "elevation_cutoff_deg": [
+        5,
+        30
+      ],
+      "ionospheric_TECU": [
+        0.5,
+        50
+      ],
+      "multipath_sigma_m": [
+        0.1,
+        5.0
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.28,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.28 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

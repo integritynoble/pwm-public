@@ -1,0 +1,143 @@
+{
+  "artifact_id": "L1-480",
+  "layer": "L1",
+  "principle_number": "480",
+  "title": "Lattice QCD Path Integral",
+  "domain": "Particle Physics",
+  "sub_domain": "Lattice field theory",
+  "source_file": "AM_particle_physics/480_lattice_qcd.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "Lattice QCD: compute hadron masses and matrix elements from first principles via Monte Carlo path integral on discrete spacetime lattice.",
+    "forward_model": "Z = integral D[U] D[psi] D[psi_bar] exp(-S_gauge[U] - S_fermion[U,psi,psi_bar]); hadron mass from 2pt correlator decay",
+    "world_state_x": "quark mass spectrum {m_u, m_d, m_s, m_c, m_b} and QCD coupling alpha_s",
+    "observation_y": "Euclidean two-point correlators C(tau) = <O(tau) O_dag(0)> for various hadron interpolators O",
+    "physical_parameters_theta": [
+      "lattice_spacing_a_fm",
+      "N_L_spatial",
+      "N_T_temporal",
+      "bare_quark_masses_m_q",
+      "beta_gauge_coupling"
+    ]
+  },
+  "G": {
+    "dag": "S.hmc.hybrid_monte_carlo -> M.dirac.wilson_fermion -> O.correlator.hadron_spectrum",
+    "vertices": [
+      "S.hmc.hybrid_monte_carlo",
+      "M.dirac.wilson_fermion",
+      "O.correlator.hadron_spectrum"
+    ],
+    "arcs": [
+      "S.hmc.hybrid_monte_carlo -> M.dirac.wilson_fermion",
+      "M.dirac.wilson_fermion -> O.correlator.hadron_spectrum"
+    ],
+    "L_DAG": 6.0,
+    "n_c": 3
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 10000000000.0,
+    "condition_number_effective": 1000000.0,
+    "condition_number_mismatched": 100000000.0,
+    "regime": "Exponential signal-to-noise problem for baryons; HMC convergence governed by integration step; critical slowing for small a."
+  },
+  "C": {
+    "solver_class": "HMC_gauge_generation + multi_mass_CG_inversion",
+    "convergence_rate_q": 2.0,
+    "error_bound": "hadron mass uncertainty < 1 MeV for lattice spacing a < 0.1 fm with sufficient statistics",
+    "complexity": "O(N_L^3 * N_T * V_gamma^4 * N_CG_iter) per config; dominated by fermion matrix inversion"
+  },
+  "physics_fingerprint": {
+    "carrier": "particle",
+    "sensing_mechanism": "lattice_gauge_mc_sampling",
+    "integration_axis": "spacetime_lattice",
+    "problem_class": "statistical_inverse",
+    "noise_model": "monte_carlo_statistical",
+    "solution_space": "QCD_observable_spectrum",
+    "primitives": [
+      "S.hmc.hybrid_monte_carlo",
+      "M.dirac.wilson_fermion",
+      "O.correlator.hadron_spectrum"
+    ]
+  },
+  "difficulty_delta": 50,
+  "difficulty_tier": "frontier",
+  "mismatch_parameters": [
+    "discretization_error_O_a2",
+    "finite_volume_error",
+    "quenching_error_Nf"
+  ],
+  "error_metric": "hadron_mass_RMSE_MeV",
+  "error_metric_secondary": "continuum_extrapolation_chi2",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "statistical_inverse",
+      "forward_operator": "lattice_gauge_mc_sampling",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_L_spatial": 32,
+        "N_T_temporal": 64,
+        "beta_coupling": 6.2,
+        "N_configs": 500
+      },
+      "epsilon_fn_center": "5 hadron_mass_RMSE_MeV"
+    },
+    "allowed_forward_operators": [
+      "lattice_gauge_mc_sampling"
+    ],
+    "allowed_problem_classes": [
+      "statistical_inverse"
+    ],
+    "allowed_omega_dimensions": [
+      "N_L_spatial",
+      "N_T_temporal",
+      "beta_coupling",
+      "N_configs"
+    ],
+    "omega_bounds": {
+      "N_L_spatial": [
+        8,
+        64
+      ],
+      "N_T_temporal": [
+        16,
+        128
+      ],
+      "beta_coupling": [
+        5.5,
+        7.0
+      ],
+      "N_configs": [
+        100,
+        10000
+      ]
+    },
+    "epsilon_bounds": {
+      "hadron_mass_RMSE_MeV": [
+        0.5,
+        50
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

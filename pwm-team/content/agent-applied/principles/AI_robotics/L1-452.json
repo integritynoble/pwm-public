@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-452",
+  "layer": "L1",
+  "principle_number": "452",
+  "title": "Multibody Dynamics with Constraints",
+  "domain": "Robotics",
+  "sub_domain": "Constrained dynamics",
+  "source_file": "AI_robotics/452_multibody_dynamics.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "Multibody dynamics with holonomic constraints: simulate articulated mechanism using Lagrange multipliers.",
+    "forward_model": "[M, -J^T; J, 0] [q_ddot; lambda] = [Q; b]; constraint stabilization: Baumgarte method",
+    "world_state_x": "generalized accelerations q_ddot and constraint forces lambda",
+    "observation_y": "generalized forces Q(t) and current state {q, q_dot}",
+    "physical_parameters_theta": [
+      "N_bodies",
+      "N_constraints",
+      "Baumgarte_alpha_beta",
+      "mass_inertia_params"
+    ]
+  },
+  "G": {
+    "dag": "M.lagrange.multiplier_dynamics -> S.baumgarte.stabilization -> O.constraint.violation_check",
+    "vertices": [
+      "M.lagrange.multiplier_dynamics",
+      "S.baumgarte.stabilization",
+      "O.constraint.violation_check"
+    ],
+    "arcs": [
+      "M.lagrange.multiplier_dynamics -> S.baumgarte.stabilization",
+      "S.baumgarte.stabilization -> O.constraint.violation_check"
+    ],
+    "L_DAG": 3.5,
+    "n_c": 1
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 10000.0,
+    "condition_number_effective": 500,
+    "condition_number_mismatched": 2000,
+    "regime": "DAE index-3 problem; constraint drift in naive integration; Baumgarte adds artificial damping; SHAKE/RATTLE are symplectic."
+  },
+  "C": {
+    "solver_class": "DAE_index_reduction or Baumgarte_stabilization or SHAKE_RATTLE",
+    "convergence_rate_q": 2.0,
+    "error_bound": "constraint violation < 1e-6 m with Baumgarte stabilization",
+    "complexity": "O((n+m)^3) for KKT system inversion, n generalized coords, m constraints"
+  },
+  "physics_fingerprint": {
+    "carrier": "N/A",
+    "sensing_mechanism": "lagrange_multiplier_constraint",
+    "integration_axis": "generalized_coordinates",
+    "problem_class": "parameter_estimation",
+    "noise_model": "deterministic",
+    "solution_space": "generalized_acceleration_vector",
+    "primitives": [
+      "M.lagrange.multiplier_dynamics",
+      "S.baumgarte.stabilization",
+      "O.constraint.violation_check"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "constraint_drift_accumulation",
+    "index_reduction_error",
+    "contact_model_uncertainty"
+  ],
+  "error_metric": "constraint_violation_norm",
+  "error_metric_secondary": "energy_drift_percent",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "parameter_estimation",
+      "forward_operator": "lagrange_multiplier_constraint",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_bodies": 5,
+        "N_constraints": 3,
+        "simulation_steps": 1000,
+        "Baumgarte_alpha": 20
+      },
+      "epsilon_fn_center": "1e-4 constraint_violation_norm"
+    },
+    "allowed_forward_operators": [
+      "lagrange_multiplier_constraint"
+    ],
+    "allowed_problem_classes": [
+      "parameter_estimation"
+    ],
+    "allowed_omega_dimensions": [
+      "N_bodies",
+      "N_constraints",
+      "simulation_steps",
+      "Baumgarte_alpha"
+    ],
+    "omega_bounds": {
+      "N_bodies": [
+        2,
+        50
+      ],
+      "N_constraints": [
+        1,
+        30
+      ],
+      "simulation_steps": [
+        100,
+        100000
+      ],
+      "Baumgarte_alpha": [
+        5,
+        100
+      ]
+    },
+    "epsilon_bounds": {
+      "constraint_violation_norm": [
+        1e-08,
+        0.01
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

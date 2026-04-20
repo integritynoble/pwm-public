@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-430",
+  "layer": "L1",
+  "principle_number": "430",
+  "title": "Particle Filter (Sequential Monte Carlo)",
+  "domain": "Control Theory",
+  "sub_domain": "Particle filtering",
+  "source_file": "AG_control_theory/430_particle_filter.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "Particle filter: SMC approximation of arbitrary posterior distribution for nonlinear non-Gaussian state estimation.",
+    "forward_model": "p(x_k | y_{1:k}) prop p(y_k | x_k) * p(x_k | x_{k-1}); approximated by N_p particles {x_k^i, w_k^i}",
+    "world_state_x": "posterior distribution p(x_k | y_{1:k}) represented by weighted particles",
+    "observation_y": "sequential observations {y_k} for nonlinear/non-Gaussian system",
+    "physical_parameters_theta": [
+      "N_particles",
+      "resampling_threshold_ESS",
+      "proposal_distribution_type",
+      "roughening_sigma"
+    ]
+  },
+  "G": {
+    "dag": "S.pf.importance_sampling -> M.pf.systematic_resampling -> O.ess.effective_sample_size",
+    "vertices": [
+      "S.pf.importance_sampling",
+      "M.pf.systematic_resampling",
+      "O.ess.effective_sample_size"
+    ],
+    "arcs": [
+      "S.pf.importance_sampling -> M.pf.systematic_resampling",
+      "M.pf.systematic_resampling -> O.ess.effective_sample_size"
+    ],
+    "L_DAG": 3.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 5000,
+    "condition_number_effective": 200,
+    "condition_number_mismatched": 1000,
+    "regime": "Curse of dimensionality: N_p needs to grow exponentially with n for accuracy; APF/SMC2 mitigate; multimodal posteriors handled naturally."
+  },
+  "C": {
+    "solver_class": "SIR_particle_filter or APF_auxiliary or SMC2",
+    "convergence_rate_q": 1.5,
+    "error_bound": "RMSE ~ O(1/sqrt(N_particles)) for well-designed PF",
+    "complexity": "O(N_particles * n_state) per time step"
+  },
+  "physics_fingerprint": {
+    "carrier": "N/A",
+    "sensing_mechanism": "sequential_monte_carlo_estimation",
+    "integration_axis": "discrete_time",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "non_gaussian",
+    "solution_space": "particle_distribution",
+    "primitives": [
+      "S.pf.importance_sampling",
+      "M.pf.systematic_resampling",
+      "O.ess.effective_sample_size"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "particle_impoverishment",
+    "weight_degeneracy_high_dim",
+    "mode_collapse"
+  ],
+  "error_metric": "RMSE_state_particle_filter",
+  "error_metric_secondary": "effective_sample_size_ESS",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "nonlinear_inverse",
+      "forward_operator": "sequential_monte_carlo_estimation",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_particles": 1000,
+        "n_state_dim": 4,
+        "nonlinearity_degree": 1.5,
+        "N_time_steps": 100
+      },
+      "epsilon_fn_center": "0.15 RMSE_state_particle_filter"
+    },
+    "allowed_forward_operators": [
+      "sequential_monte_carlo_estimation"
+    ],
+    "allowed_problem_classes": [
+      "nonlinear_inverse"
+    ],
+    "allowed_omega_dimensions": [
+      "N_particles",
+      "n_state_dim",
+      "nonlinearity_degree",
+      "N_time_steps"
+    ],
+    "omega_bounds": {
+      "N_particles": [
+        100,
+        100000
+      ],
+      "n_state_dim": [
+        1,
+        20
+      ],
+      "nonlinearity_degree": [
+        0.5,
+        5.0
+      ],
+      "N_time_steps": [
+        10,
+        1000
+      ]
+    },
+    "epsilon_bounds": {
+      "RMSE_state_particle_filter": [
+        0.02,
+        0.5
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

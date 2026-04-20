@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-452",
+  "layer": "L2",
+  "parent_l1": "L1-452",
+  "principle_ref": "sha256:<L1-452_principle_hash>",
+  "title": "Multibody Dynamics with Constraints \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "N_bodies": [
+        2,
+        50
+      ],
+      "N_constraints": [
+        1,
+        30
+      ],
+      "simulation_steps": [
+        100,
+        100000
+      ],
+      "Baumgarte_alpha": [
+        5,
+        100
+      ]
+    },
+    "E": {
+      "forward": "[M, -J^T; J, 0] [q_ddot; lambda] = [Q; b]; constraint stabilization: Baumgarte method",
+      "operator": "lagrange_multiplier_constraint",
+      "primitive_chain": "M.lagrange.multiplier_dynamics -> S.baumgarte.stabilization -> O.constraint.violation_check",
+      "inverse": "recover generalized accelerations q_ddot and constraint forces lambda from generalized forces Q(t) and current state {q"
+    },
+    "B": {
+      "constraint_holonomic": "g(q) = 0",
+      "KKT_consistency": "KKT conditions satisfied"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "constraint_violation_norm",
+      "energy_drift_percent",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "1e-5 * (Baumgarte_alpha / 20)^(-0.5)"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 generalized_acceleration_vector"
+    },
+    "baselines": [
+      {
+        "name": "Baumgarte_stabilization",
+        "method_sig": "L+O",
+        "expected_score": 0.0001
+      },
+      {
+        "name": "RATTLE_symplectic",
+        "method_sig": "L+O",
+        "expected_score": 1e-06
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_bodies": 5,
+        "N_constraints": 3,
+        "simulation_steps": 1000,
+        "Baumgarte_alpha": 20,
+        "constraint_drift_accumulation": 0.0,
+        "index_reduction_error": 0.0,
+        "contact_model_uncertainty": 0.0
+      },
+      "epsilon": 0.0001
+    },
+    "tier_bounds": {
+      "N_bodies": [
+        2,
+        50
+      ],
+      "N_constraints": [
+        1,
+        30
+      ],
+      "simulation_steps": [
+        100,
+        100000
+      ],
+      "Baumgarte_alpha": [
+        5,
+        100
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.3,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.3 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

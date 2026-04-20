@@ -1,0 +1,118 @@
+{
+  "artifact_id": "L2-439",
+  "layer": "L2",
+  "parent_l1": "L1-439",
+  "principle_ref": "sha256:<L1-439_principle_hash>",
+  "title": "Heston Stochastic Volatility Calibration \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "N_strikes": [
+        5,
+        50
+      ],
+      "N_maturities": [
+        3,
+        30
+      ],
+      "max_maturity_yr": [
+        0.5,
+        5.0
+      ],
+      "data_noise_bp": [
+        10,
+        200
+      ]
+    },
+    "E": {
+      "forward": "dS = rS dt + sqrt(v) S dW_S; dv = kappa(theta-v)dt + xi*sqrt(v)*dW_v; option price via Fourier inversion",
+      "operator": "vol_surface_calibration_heston",
+      "primitive_chain": "M.heston.characteristic_function -> F.fourier.carr_madan -> O.chi2.vol_surface",
+      "inverse": "recover Heston parameters (v0 from implied vol surface sigma_impl(K"
+    },
+    "B": {
+      "Feller_condition": "2*kappa*theta > xi^2",
+      "correlation": "rho in (-1,1)",
+      "positivity": "v0,kappa,theta,xi > 0"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "vol_surface_RMSE_bp",
+      "Heston_price_RMSE_percent",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "40 + 20 * (data_noise_bp / 30)^0.5"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 stochastic_vol_parameter_vector"
+    },
+    "baselines": [
+      {
+        "name": "Levenberg_Marquardt",
+        "method_sig": "L+O",
+        "expected_score": 80
+      },
+      {
+        "name": "CMA-ES_global",
+        "method_sig": "L+O",
+        "expected_score": 55
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_strikes": 15,
+        "N_maturities": 8,
+        "max_maturity_yr": 2.0,
+        "data_noise_bp": 30,
+        "data_sparsity_OTM_options": 0.0,
+        "term_structure_inversion_error": 0.0,
+        "market_microstructure_noise": 0.0
+      },
+      "epsilon": 60.0
+    },
+    "tier_bounds": {
+      "N_strikes": [
+        5,
+        50
+      ],
+      "N_maturities": [
+        3,
+        30
+      ],
+      "max_maturity_yr": [
+        0.5,
+        5.0
+      ],
+      "data_noise_bp": [
+        10,
+        200
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.4,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.4 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

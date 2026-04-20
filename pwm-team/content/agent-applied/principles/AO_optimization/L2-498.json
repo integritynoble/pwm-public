@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-498",
+  "layer": "L2",
+  "parent_l1": "L1-498",
+  "principle_ref": "sha256:<L1-498_principle_hash>",
+  "title": "Topology Optimization (SIMP) \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "N_e": [
+        100,
+        10000
+      ],
+      "V_f": [
+        0.3,
+        0.7
+      ],
+      "penalty_p": [
+        1,
+        5
+      ],
+      "filter_r": [
+        1.5,
+        5.0
+      ]
+    },
+    "E": {
+      "forward": "K(rho)*u = f, C = f^T u, rho_e in [rho_min, 1], penalty p=3",
+      "operator": "compliance_minimization",
+      "primitive_chain": "F.filter.density -> S.simp.penalty -> M.fem.stiffness -> O.compliance.gradient",
+      "inverse": "recover density field rho in [0 from compliance C = f^T K(rho)^{-1} f (scalar objective)"
+    },
+    "B": {
+      "density_nonnegativity": "rho_e >= rho_min=0.001",
+      "volume_constraint": "sum(rho_e)*v_e <= V_f * V_total"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "compliance_ratio",
+      "volume_fraction_error",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.40 + 0.05 * (V_f - 0.5) / 0.2"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 2D_density_field"
+    },
+    "baselines": [
+      {
+        "name": "OC_SIMP",
+        "method_sig": "L+O",
+        "expected_score": 0.42
+      },
+      {
+        "name": "MMA",
+        "method_sig": "L+O",
+        "expected_score": 0.38
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_e": 2500,
+        "V_f": 0.5,
+        "penalty_p": 3.0,
+        "filter_r": 2.0,
+        "load_direction_error": 0.0,
+        "boundary_condition_uncertainty": 0.0,
+        "material_property_variation": 0.0
+      },
+      "epsilon": 0.45
+    },
+    "tier_bounds": {
+      "N_e": [
+        100,
+        10000
+      ],
+      "V_f": [
+        0.3,
+        0.7
+      ],
+      "penalty_p": [
+        1,
+        5
+      ],
+      "filter_r": [
+        1.5,
+        5.0
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.35,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.35 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Density field rho: N_e-dimensional; stiffness K: N_dof x N_dof; compliance C: scalar. Dimensional chain consistent.",
+    "S2": "SIMP penalization ensures discrete 0/1 solutions in limit; volume constraint makes problem bounded; regularization via filter ensures existence.",
+    "S3": "OC method converges to KKT under convexity of relaxed problem; MMA provides globally convergent sequence.",
+    "S4": "compliance_ratio evaluated for 10 random Omega samples without error; OC baseline fails to reach epsilon at T4_blind."
+  },
+  "ipfs_cid": null
+}

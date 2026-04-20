@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-458",
+  "layer": "L1",
+  "principle_number": "458",
+  "title": "Black-Oil Reservoir Simulation",
+  "domain": "Petroleum Engineering",
+  "sub_domain": "Reservoir simulation",
+  "source_file": "AJ_petroleum/458_black_oil_reservoir.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "Black-oil reservoir simulation: model two/three-phase (oil/water/gas) flow in porous media under Darcy's law.",
+    "forward_model": "phi*(d(rho_a*S_a)/dt) = -nabla*(rho_a*k_ra/mu_a*K*nabla(P_a - rho_a*g*z)) + q_a",
+    "world_state_x": "pressure P(x,t) and saturation S_w(x,t) fields across 3D grid",
+    "observation_y": "production rates q_o, q_w, q_g and BHP at well locations over time",
+    "physical_parameters_theta": [
+      "permeability_K_mD",
+      "porosity_phi",
+      "relative_permeability_endpoints",
+      "compressibility_1_psi"
+    ]
+  },
+  "G": {
+    "dag": "M.darcy.multiphase_flow -> S.fdm.implicit_pressure -> O.material_balance.residual",
+    "vertices": [
+      "M.darcy.multiphase_flow",
+      "S.fdm.implicit_pressure",
+      "O.material_balance.residual"
+    ],
+    "arcs": [
+      "M.darcy.multiphase_flow -> S.fdm.implicit_pressure",
+      "S.fdm.implicit_pressure -> O.material_balance.residual"
+    ],
+    "L_DAG": 3.5,
+    "n_c": 1
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 100000.0,
+    "condition_number_effective": 1000,
+    "condition_number_mismatched": 5000,
+    "regime": "Nonlinear due to rel perm and capillary pressure; fully implicit for stability; large systems require iterative linear solvers."
+  },
+  "C": {
+    "solver_class": "IMPES or fully_implicit_reservoir_simulator (CMG, Eclipse)",
+    "convergence_rate_q": 2.0,
+    "error_bound": "NRMS < 0.10 for history match quality",
+    "complexity": "O(N_cells * N_timesteps * N_Newton_iter) per simulation"
+  },
+  "physics_fingerprint": {
+    "carrier": "acoustic",
+    "sensing_mechanism": "multiphase_flow_darcy",
+    "integration_axis": "3d_pore_volume",
+    "problem_class": "parameter_estimation",
+    "noise_model": "measurement_gaussian",
+    "solution_space": "3D_pressure_saturation_field",
+    "primitives": [
+      "M.darcy.multiphase_flow",
+      "S.fdm.implicit_pressure",
+      "O.material_balance.residual"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "permeability_heterogeneity_uncertainty",
+    "rel_perm_uncertainty",
+    "fault_transmissibility_error"
+  ],
+  "error_metric": "production_history_match_NRMS",
+  "error_metric_secondary": "pressure_match_psi_RMSE",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "parameter_estimation",
+      "forward_operator": "multiphase_flow_darcy",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_cells": 10000,
+        "permeability_K_mD": 100,
+        "porosity_phi": 0.2,
+        "production_years": 20
+      },
+      "epsilon_fn_center": "0.10 production_history_match_NRMS"
+    },
+    "allowed_forward_operators": [
+      "multiphase_flow_darcy"
+    ],
+    "allowed_problem_classes": [
+      "parameter_estimation"
+    ],
+    "allowed_omega_dimensions": [
+      "N_cells",
+      "permeability_K_mD",
+      "porosity_phi",
+      "production_years"
+    ],
+    "omega_bounds": {
+      "N_cells": [
+        100,
+        1000000
+      ],
+      "permeability_K_mD": [
+        0.1,
+        10000
+      ],
+      "porosity_phi": [
+        0.05,
+        0.4
+      ],
+      "production_years": [
+        1,
+        50
+      ]
+    },
+    "epsilon_bounds": {
+      "production_history_match_NRMS": [
+        0.01,
+        0.5
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-425",
+  "layer": "L2",
+  "parent_l1": "L1-425",
+  "principle_ref": "sha256:<L1-425_principle_hash>",
+  "title": "Groundwater Contaminant Transport Inversion \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "N_wells": [
+        5,
+        200
+      ],
+      "domain_area_km2": [
+        0.01,
+        100
+      ],
+      "log_K_variance": [
+        0.5,
+        6.0
+      ],
+      "contamination_years": [
+        1,
+        100
+      ]
+    },
+    "E": {
+      "forward": "nabla*(K*nabla h) = S_s*(dh/dt) + q (Darcy); dC/dt + v*nabla C = nabla*(D*nabla C) - lambda*C",
+      "operator": "groundwater_monitoring_network",
+      "primitive_chain": "M.darcy.groundwater_flow -> S.ade.solute_transport -> O.bayesian.heterogeneous_K",
+      "inverse": "recover hydraulic conductivity field K(x from hydraulic head h(t) at N_wells observation wells"
+    },
+    "B": {
+      "K_positivity": "K > 0",
+      "head_continuity": "head continuous across domain"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "hydraulic_head_RMSE_m",
+      "concentration_RMSE_mg_L",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.05 + 0.05 * (log_K_variance / 2.0)^0.5"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 3D_hydraulic_conductivity"
+    },
+    "baselines": [
+      {
+        "name": "PEST_pilot_points",
+        "method_sig": "L+O",
+        "expected_score": 0.12
+      },
+      {
+        "name": "EnKS_ensemble_smoother",
+        "method_sig": "L+O",
+        "expected_score": 0.08
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_wells": 20,
+        "domain_area_km2": 1.0,
+        "log_K_variance": 2.0,
+        "contamination_years": 20,
+        "density_dependent_flow_effects": 0.0,
+        "preferential_flow_paths": 0.0,
+        "geochemical_reactions": 0.0
+      },
+      "epsilon": 0.1
+    },
+    "tier_bounds": {
+      "N_wells": [
+        5,
+        200
+      ],
+      "domain_area_km2": [
+        0.01,
+        100
+      ],
+      "log_K_variance": [
+        0.5,
+        6.0
+      ],
+      "contamination_years": [
+        1,
+        100
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.45,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.45 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

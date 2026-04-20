@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-484",
+  "layer": "L1",
+  "principle_number": "484",
+  "title": "Charged Particle Track Reconstruction",
+  "domain": "Particle Physics",
+  "sub_domain": "Tracking detectors",
+  "source_file": "AM_particle_physics/484_charged_particle_tracking.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "Charged particle tracking: reconstruct helical track parameters from silicon detector hits using Kalman filter.",
+    "forward_model": "x_pred_k = F_k * x_{k-1} + noise; H_k * x_k = m_k (measurement); helix in B-field",
+    "world_state_x": "track state vector (d0, phi0, pt, dz0, tan_lambda) at perigee",
+    "observation_y": "silicon strip/pixel hit positions {u_k, v_k} at N_layers layers",
+    "physical_parameters_theta": [
+      "B_field_T",
+      "material_budget_X0",
+      "strip_pitch_um",
+      "N_layers"
+    ]
+  },
+  "G": {
+    "dag": "S.kalman.track_filter -> M.helix.propagation -> O.chi2.hit_residuals",
+    "vertices": [
+      "S.kalman.track_filter",
+      "M.helix.propagation",
+      "O.chi2.hit_residuals"
+    ],
+    "arcs": [
+      "S.kalman.track_filter -> M.helix.propagation",
+      "M.helix.propagation -> O.chi2.hit_residuals"
+    ],
+    "L_DAG": 4.0,
+    "n_c": 1
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 10000.0,
+    "condition_number_effective": 200,
+    "condition_number_mismatched": 1000,
+    "regime": "Kalman filter is optimal for linear Gaussian; nonlinear helix requires EKF; combinatorial background in high-pileup."
+  },
+  "C": {
+    "solver_class": "Kalman_filter_Billoir or global_chi2_DELPHI",
+    "convergence_rate_q": 2.0,
+    "error_bound": "sigma(pt)/pt < 0.01% * pt/GeV for ATLAS-like detector",
+    "complexity": "O(N_layers * N_tracks * N_iter) per event"
+  },
+  "physics_fingerprint": {
+    "carrier": "particle",
+    "sensing_mechanism": "silicon_tracker_hit_pattern",
+    "integration_axis": "track_helix",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "track_parameter_vector",
+    "primitives": [
+      "S.kalman.track_filter",
+      "M.helix.propagation",
+      "O.chi2.hit_residuals"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "challenging",
+  "mismatch_parameters": [
+    "alignment_uncertainty_um",
+    "B_field_map_error_T",
+    "hit_efficiency_loss"
+  ],
+  "error_metric": "track_parameter_resolution_sigma_pt_over_pt",
+  "error_metric_secondary": "tracking_efficiency_percent",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "nonlinear_inverse",
+      "forward_operator": "silicon_tracker_hit_pattern",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_layers": 10,
+        "B_field_T": 2.0,
+        "material_X0_percent": 0.5,
+        "pileup_mu": 50
+      },
+      "epsilon_fn_center": "0.001 track_parameter_resolution_sigma_pt_over_pt"
+    },
+    "allowed_forward_operators": [
+      "silicon_tracker_hit_pattern"
+    ],
+    "allowed_problem_classes": [
+      "nonlinear_inverse"
+    ],
+    "allowed_omega_dimensions": [
+      "N_layers",
+      "B_field_T",
+      "material_X0_percent",
+      "pileup_mu"
+    ],
+    "omega_bounds": {
+      "N_layers": [
+        4,
+        20
+      ],
+      "B_field_T": [
+        0.5,
+        4.0
+      ],
+      "material_X0_percent": [
+        0.1,
+        3.0
+      ],
+      "pileup_mu": [
+        0,
+        200
+      ]
+    },
+    "epsilon_bounds": {
+      "track_parameter_resolution_sigma_pt_over_pt": [
+        0.0001,
+        0.01
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

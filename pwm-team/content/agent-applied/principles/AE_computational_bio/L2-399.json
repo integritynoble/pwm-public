@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-399",
+  "layer": "L2",
+  "parent_l1": "L1-399",
+  "principle_ref": "sha256:<L1-399_principle_hash>",
+  "title": "Cardiac Electrophysiology (Monodomain) \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "N_electrodes_BSP": [
+        32,
+        512
+      ],
+      "N_mesh_nodes": [
+        1000,
+        100000
+      ],
+      "noise_SNR_dB": [
+        10,
+        60
+      ],
+      "heart_torso_distance_mm": [
+        20,
+        100
+      ]
+    },
+    "E": {
+      "forward": "J_e = sigma_e * nabla phi_e; phi_body_surface = T * phi_e; T is body-heart transfer matrix",
+      "operator": "ecg_body_surface_potential",
+      "primitive_chain": "M.pde.monodomain_bidomain -> S.eikonal.fast_marching -> O.ecg.inverse_body_surface",
+      "inverse": "recover 3D transmembrane potential V_m(x from body surface potentials phi_BSP(t) at N_electrodes ECG/ECGI electrodes"
+    },
+    "B": {
+      "current_conservation": "nabla*J = 0 in torso",
+      "V_m_range": "V_m in [-90, 20] mV"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "activation_time_error_ms",
+      "body_surface_potential_RMSE_mV",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "3 + 2 * (30 / noise_SNR_dB)^0.5"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 3D_transmembrane_potential"
+    },
+    "baselines": [
+      {
+        "name": "Tikhonov_ECGI",
+        "method_sig": "L+O",
+        "expected_score": 6
+      },
+      {
+        "name": "Bayesian_ECGI",
+        "method_sig": "L+O",
+        "expected_score": 4
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_electrodes_BSP": 128,
+        "N_mesh_nodes": 10000,
+        "noise_SNR_dB": 30,
+        "heart_torso_distance_mm": 50,
+        "torso_conductivity_uncertainty": 0.0,
+        "electrode_placement_error_mm": 0.0,
+        "geometric_model_uncertainty": 0.0
+      },
+      "epsilon": 5.0
+    },
+    "tier_bounds": {
+      "N_electrodes_BSP": [
+        32,
+        512
+      ],
+      "N_mesh_nodes": [
+        1000,
+        100000
+      ],
+      "noise_SNR_dB": [
+        10,
+        60
+      ],
+      "heart_torso_distance_mm": [
+        20,
+        100
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.42,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.42 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

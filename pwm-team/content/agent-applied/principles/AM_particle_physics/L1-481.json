@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-481",
+  "layer": "L1",
+  "principle_number": "481",
+  "title": "Parton Distribution Functions (DGLAP)",
+  "domain": "Particle Physics",
+  "sub_domain": "QCD phenomenology",
+  "source_file": "AM_particle_physics/481_parton_dglap.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "PDF extraction: determine parton distribution functions from global fit to DIS, Drell-Yan, and jet cross-section data via DGLAP evolution.",
+    "forward_model": "d/d(ln Q^2) f_i(x, Q^2) = sum_j integral_{x}^{1} (dz/z) P_{ij}(z) f_j(x/z, Q^2)",
+    "world_state_x": "parton distribution functions f_i(x, Q^2) for i=gluon,u,d,s,c,b quarks",
+    "observation_y": "measured cross sections sigma_exp for DIS (HERA), pp (LHC), DY experiments",
+    "physical_parameters_theta": [
+      "PDF_parameterization_at_Q0",
+      "alpha_s_value",
+      "Q0_starting_scale_GeV",
+      "N_flavors"
+    ]
+  },
+  "G": {
+    "dag": "M.dglap.splitting_functions -> F.mellin.transform -> O.chi2.cross_section_data",
+    "vertices": [
+      "M.dglap.splitting_functions",
+      "F.mellin.transform",
+      "O.chi2.cross_section_data"
+    ],
+    "arcs": [
+      "M.dglap.splitting_functions -> F.mellin.transform",
+      "F.mellin.transform -> O.chi2.cross_section_data"
+    ],
+    "L_DAG": 5.0,
+    "n_c": 2
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 1000000.0,
+    "condition_number_effective": 10000.0,
+    "condition_number_mismatched": 100000.0,
+    "regime": "DGLAP is integro-differential evolution; functional-form bias in traditional fits; NNPDF uses neural networks for flexibility."
+  },
+  "C": {
+    "solver_class": "APFEL_evolution + Hessian_or_MC_uncertainty or neural_net_PDF (NNPDF)",
+    "convergence_rate_q": 2.0,
+    "error_bound": "chi2/dof ~ 1.0 for well-constrained PDF set",
+    "complexity": "O(N_data * N_PDF_grid_points * N_DGLAP_iterations)"
+  },
+  "physics_fingerprint": {
+    "carrier": "particle",
+    "sensing_mechanism": "deep_inelastic_scattering",
+    "integration_axis": "bjorken_x",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "experimental_gaussian",
+    "solution_space": "PDF_function_space",
+    "primitives": [
+      "M.dglap.splitting_functions",
+      "F.mellin.transform",
+      "O.chi2.cross_section_data"
+    ]
+  },
+  "difficulty_delta": 10,
+  "difficulty_tier": "hard",
+  "mismatch_parameters": [
+    "nuclear_correction_uncertainty",
+    "higher_twist_uncertainty",
+    "heavy_quark_scheme_error"
+  ],
+  "error_metric": "chi2_per_dof_global_fit",
+  "error_metric_secondary": "PDF_uncertainty_band_percent",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "nonlinear_inverse",
+      "forward_operator": "deep_inelastic_scattering",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_data_points": 3000,
+        "x_min_bjorken": 1e-05,
+        "Q_range_GeV": 1000,
+        "alpha_s_value": 0.118
+      },
+      "epsilon_fn_center": "1.05 chi2_per_dof_global_fit"
+    },
+    "allowed_forward_operators": [
+      "deep_inelastic_scattering"
+    ],
+    "allowed_problem_classes": [
+      "nonlinear_inverse"
+    ],
+    "allowed_omega_dimensions": [
+      "N_data_points",
+      "x_min_bjorken",
+      "Q_range_GeV",
+      "alpha_s_value"
+    ],
+    "omega_bounds": {
+      "N_data_points": [
+        100,
+        10000
+      ],
+      "x_min_bjorken": [
+        1e-06,
+        0.01
+      ],
+      "Q_range_GeV": [
+        10,
+        10000
+      ],
+      "alpha_s_value": [
+        0.11,
+        0.125
+      ]
+    },
+    "epsilon_bounds": {
+      "chi2_per_dof_global_fit": [
+        0.8,
+        2.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

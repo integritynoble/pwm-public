@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-374",
+  "layer": "L2",
+  "parent_l1": "L1-374",
+  "principle_ref": "sha256:<L1-374_principle_hash>",
+  "title": "Gravitational Wave Parameter Estimation \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "chirp_mass_Msun": [
+        1.0,
+        200.0
+      ],
+      "SNR_network": [
+        8.0,
+        100.0
+      ],
+      "mass_ratio_q": [
+        0.05,
+        1.0
+      ],
+      "distance_Mpc": [
+        10,
+        5000
+      ]
+    },
+    "E": {
+      "forward": "h(t; theta) = F_+(psi) h_+(t; m1,m2,chi1,chi2,iota,d_L) + F_x(psi) h_x(t); likelihood L propto exp(-chi2/2)",
+      "operator": "matched_filtering_gw",
+      "primitive_chain": "S.waveform.IMRPhenomD -> F.fourier.whitening -> O.mcmc.nested_sampling",
+      "inverse": "recover compact binary parameters theta = (m1 from detector strain s(t) = h(t; theta) + n(t) for LIGO Hanford + Livingston + Virgo"
+    },
+    "B": {
+      "mass_positivity": "m1, m2 > 0",
+      "spin_magnitude": "|chi| <= 1"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "posterior_volume_dimensionless",
+      "distance_sigma_Mpc",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.30 + 0.20 * (15.0 / SNR_network)^2"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 CBC_parameter_vector"
+    },
+    "baselines": [
+      {
+        "name": "LALInference_nested",
+        "method_sig": "L+O",
+        "expected_score": 0.6
+      },
+      {
+        "name": "Bilby_dynesty",
+        "method_sig": "L+O",
+        "expected_score": 0.45
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "chirp_mass_Msun": 30.0,
+        "SNR_network": 15.0,
+        "mass_ratio_q": 0.8,
+        "distance_Mpc": 500,
+        "waveform_model_systematic": 0.0,
+        "non_gaussian_noise_artifact": 0.0,
+        "PSD_uncertainty": 0.0
+      },
+      "epsilon": 0.5
+    },
+    "tier_bounds": {
+      "chirp_mass_Msun": [
+        1.0,
+        200.0
+      ],
+      "SNR_network": [
+        8.0,
+        100.0
+      ],
+      "mass_ratio_q": [
+        0.05,
+        1.0
+      ],
+      "distance_Mpc": [
+        10,
+        5000
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.5,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.5 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

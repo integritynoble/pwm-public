@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-500",
+  "layer": "L2",
+  "parent_l1": "L1-500",
+  "principle_ref": "sha256:<L1-500_principle_hash>",
+  "title": "Optimal Experimental Design \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "N_experiments": [
+        5,
+        100
+      ],
+      "p_parameters": [
+        2,
+        20
+      ],
+      "sigma2_noise": [
+        0.01,
+        1.0
+      ],
+      "nonlinearity_level": [
+        0.1,
+        2.0
+      ]
+    },
+    "E": {
+      "forward": "y = f(xi, theta) + epsilon, I(xi, theta) = E[(d log p / d theta)^2], maximize det(I) or trace(I^{-1})",
+      "operator": "fisher_information_optimization",
+      "primitive_chain": "M.fisher.information -> O.d_optimality.criterion -> S.gradient.update",
+      "inverse": "recover model parameters theta in R^p (unknown physical or biological parameters) from measurements y at design points xi (scalar or vector per experiment)"
+    },
+    "B": {
+      "budget": "sum(w_i) = 1, w_i >= 0 (design weights)",
+      "support_size": "support size <= N_experiments"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "D_optimality_criterion",
+      "parameter_estimation_RMSE",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.70 + 0.10 * (N_experiments / 20)^0.3"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 experiment_design_vector"
+    },
+    "baselines": [
+      {
+        "name": "random_design",
+        "method_sig": "L+O",
+        "expected_score": 0.55
+      },
+      {
+        "name": "D_optimal_SDP",
+        "method_sig": "L+O",
+        "expected_score": 0.82
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_experiments": 20,
+        "p_parameters": 5,
+        "sigma2_noise": 0.1,
+        "nonlinearity_level": 0.5,
+        "prior_parameter_uncertainty": 0.0,
+        "model_misspecification_level": 0.0,
+        "noise_heteroscedasticity": 0.0
+      },
+      "epsilon": 0.8
+    },
+    "tier_bounds": {
+      "N_experiments": [
+        5,
+        100
+      ],
+      "p_parameters": [
+        2,
+        20
+      ],
+      "sigma2_noise": [
+        0.01,
+        1.0
+      ],
+      "nonlinearity_level": [
+        0.1,
+        2.0
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.4,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.4 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

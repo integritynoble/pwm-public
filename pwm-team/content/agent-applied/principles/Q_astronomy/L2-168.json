@@ -1,0 +1,131 @@
+{
+  "artifact_id": "L2-168",
+  "layer": "L2",
+  "parent_l1": "L1-168",
+  "principle_ref": "sha256:<L1-168_principle_hash>",
+  "title": "Event Horizon Telescope (VLBI) Imaging \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "H": [
+        32,
+        512
+      ],
+      "W": [
+        32,
+        512
+      ],
+      "N_baselines": [
+        6,
+        50
+      ],
+      "uv_fraction": [
+        0.0001,
+        0.01
+      ],
+      "noise_sigma_Jy": [
+        0.01,
+        1.0
+      ]
+    },
+    "E": {
+      "forward": "V(u,v) = FT[I(l,m)](u,v) + noise; closure phases C_ijk = arg(V_ij * V_jk * V_ki*) noise-robust",
+      "operator": "vlbi_sparse_aperture",
+      "primitive_chain": "F.fourier.nufft -> S.closure.phase -> M.sparse.regularization -> O.chi2.visibility",
+      "inverse": "recover brightness temperature image I(l from complex visibilities V(u"
+    },
+    "B": {
+      "nonnegativity": "I(l,m) >= 0",
+      "total_flux": "sum I * pixel_area = S_total"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "chi2_reduced",
+      "image_fidelity_score",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "1.0 + 0.2 * (N_baselines / 15)^(-0.5)"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 2D_brightness_temperature"
+    },
+    "baselines": [
+      {
+        "name": "CLEAN_DIFMAP",
+        "method_sig": "L+O",
+        "expected_score": 1.8
+      },
+      {
+        "name": "eht_imaging_MEM",
+        "method_sig": "L+O",
+        "expected_score": 1.1
+      },
+      {
+        "name": "SMILI",
+        "method_sig": "L+O",
+        "expected_score": 1.15
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "H": 64,
+        "W": 64,
+        "N_baselines": 15,
+        "uv_fraction": 0.001,
+        "noise_sigma_Jy": 0.1,
+        "station_gain_error": 0.0,
+        "atmospheric_delay_error": 0.0,
+        "bandwidth_smearing": 0.0
+      },
+      "epsilon": 1.2
+    },
+    "tier_bounds": {
+      "H": [
+        32,
+        512
+      ],
+      "W": [
+        32,
+        512
+      ],
+      "N_baselines": [
+        6,
+        50
+      ],
+      "uv_fraction": [
+        0.0001,
+        0.01
+      ],
+      "noise_sigma_Jy": [
+        0.01,
+        1.0
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.45,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.45 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

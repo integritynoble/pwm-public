@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-369",
+  "layer": "L2",
+  "parent_l1": "L1-369",
+  "principle_ref": "sha256:<L1-369_principle_hash>",
+  "title": "Weak Gravitational Lensing Shear Estimation \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "N_gal_million": [
+        1,
+        3000
+      ],
+      "survey_area_deg2": [
+        100,
+        20000
+      ],
+      "n_gal_arcmin2": [
+        5,
+        100
+      ],
+      "A_IA": [
+        0.0,
+        2.0
+      ]
+    },
+    "E": {
+      "forward": "gamma_obs = gamma_true + e_intrinsic + noise; xi_pm(theta) = <gamma*_t gamma_t>(theta)",
+      "operator": "ellipticity_shear_correlation",
+      "primitive_chain": "S.shear.ellipticity -> F.fourier.e_mode -> O.correlation.2pcf",
+      "inverse": "recover matter power spectrum P(k) and cosmological parameters (sigma_8 from galaxy ellipticities e_obs for N_gal galaxies across survey area"
+    },
+    "B": {
+      "unbiasedness": "|m| < 0.02",
+      "PSF_correction": "ellipticity corrected to PSF"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "sigma_8_Omega_m_constraint_area",
+      "shear_calibration_bias",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.010 + 0.005 * sqrt(survey_area_deg2 / 1000)"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 2D_convergence_map"
+    },
+    "baselines": [
+      {
+        "name": "KSB_classic",
+        "method_sig": "L+O",
+        "expected_score": 0.02
+      },
+      {
+        "name": "metacalibration",
+        "method_sig": "L+O",
+        "expected_score": 0.012
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_gal_million": 100,
+        "survey_area_deg2": 1000,
+        "n_gal_arcmin2": 10.0,
+        "A_IA": 0.5,
+        "PSF_leakage": 0.0,
+        "multiplicative_shear_bias_m": 0.0,
+        "additive_shear_bias_c": 0.0
+      },
+      "epsilon": 0.015
+    },
+    "tier_bounds": {
+      "N_gal_million": [
+        1,
+        3000
+      ],
+      "survey_area_deg2": [
+        100,
+        20000
+      ],
+      "n_gal_arcmin2": [
+        5,
+        100
+      ],
+      "A_IA": [
+        0.0,
+        2.0
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.37,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.37 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

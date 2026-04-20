@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-413",
+  "layer": "L2",
+  "parent_l1": "L1-413",
+  "principle_ref": "sha256:<L1-413_principle_hash>",
+  "title": "HMM Sequence Alignment and Profile Inference \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "N_sequences": [
+        5,
+        10000
+      ],
+      "L_alignment_length": [
+        20,
+        5000
+      ],
+      "sequence_identity_percent": [
+        5,
+        100
+      ],
+      "M_model_states": [
+        10,
+        2000
+      ]
+    },
+    "E": {
+      "forward": "P(seq | HMM) = prod_t P(obs_t | state_t) * P(state_t | state_{t-1}); Viterbi decodes optimal path",
+      "operator": "sequence_emission_probability",
+      "primitive_chain": "M.hmm.profile_model -> S.viterbi.alignment -> O.baum_welch.em_training",
+      "inverse": "recover HMM parameters: emission matrix E (20 amino acids x M_match states) from multiple sequence alignment (N_seq sequences"
+    },
+    "B": {
+      "probability_normalization": "emission rows sum to 1",
+      "transition_normalization": "transition rows sum to 1"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "alignment_sensitivity_percent",
+      "specificity_percent",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "70 + 10 * (sequence_identity_percent / 40)^0.5"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 HMM_profile_parameter_matrix"
+    },
+    "baselines": [
+      {
+        "name": "HMMER4_jackhmmer",
+        "method_sig": "L+O",
+        "expected_score": 82
+      },
+      {
+        "name": "BLAST_global_alignment",
+        "method_sig": "L+O",
+        "expected_score": 70
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_sequences": 100,
+        "L_alignment_length": 200,
+        "sequence_identity_percent": 40,
+        "M_model_states": 200,
+        "sequence_divergence_too_high": 0.0,
+        "domain_boundaries_unknown": 0.0,
+        "repeat_regions": 0.0
+      },
+      "epsilon": 80.0
+    },
+    "tier_bounds": {
+      "N_sequences": [
+        5,
+        10000
+      ],
+      "L_alignment_length": [
+        20,
+        5000
+      ],
+      "sequence_identity_percent": [
+        5,
+        100
+      ],
+      "M_model_states": [
+        10,
+        2000
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.4,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.4 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

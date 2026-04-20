@@ -1,0 +1,143 @@
+{
+  "artifact_id": "L1-442",
+  "layer": "L1",
+  "principle_number": "442",
+  "title": "Implied Volatility Surface Construction",
+  "domain": "Computational Finance",
+  "sub_domain": "Volatility modeling",
+  "source_file": "AH_comp_finance/442_implied_volatility.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "Implied vol surface construction: build smooth, arbitrage-free implied volatility surface from sparse market quotes.",
+    "forward_model": "sigma_impl(k, T) modeled by SVI parameterization: w(k) = a + b*(rho*(k-m) + sqrt((k-m)^2 + sigma^2))",
+    "world_state_x": "continuous implied vol surface sigma(K/F, T) satisfying calendar and butterfly arbitrage constraints",
+    "observation_y": "sparse market implied vols sigma_i at (K_i, T_j) grid points",
+    "physical_parameters_theta": [
+      "SVI_a",
+      "SVI_b",
+      "SVI_rho",
+      "SVI_m",
+      "SVI_sigma"
+    ]
+  },
+  "G": {
+    "dag": "S.interpolation.cubic_spline -> M.arbitrage.butterfly_spread -> O.svi.calibration",
+    "vertices": [
+      "S.interpolation.cubic_spline",
+      "M.arbitrage.butterfly_spread",
+      "O.svi.calibration"
+    ],
+    "arcs": [
+      "S.interpolation.cubic_spline -> M.arbitrage.butterfly_spread",
+      "M.arbitrage.butterfly_spread -> O.svi.calibration"
+    ],
+    "L_DAG": 3.0,
+    "n_c": 1
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 500,
+    "condition_number_effective": 30,
+    "condition_number_mismatched": 200,
+    "regime": "SVI is convex per slice; joint calendar arbitrage is linear constraint; thin tails poorly constrained without extrapolation model."
+  },
+  "C": {
+    "solver_class": "SVI_SSVI_calibration or parametric_surface_fit",
+    "convergence_rate_q": 2.0,
+    "error_bound": "interpolation RMSE < 20 bp with SVI fit",
+    "complexity": "O(N_slices * N_params_SVI) per calibration"
+  },
+  "physics_fingerprint": {
+    "carrier": "N/A",
+    "sensing_mechanism": "vol_surface_interpolation",
+    "integration_axis": "strike_maturity",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "market_bid_ask_gaussian",
+    "solution_space": "implied_vol_surface",
+    "primitives": [
+      "S.interpolation.cubic_spline",
+      "M.arbitrage.butterfly_spread",
+      "O.svi.calibration"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "sparse_data_interpolation_error",
+    "butterfly_arbitrage_violation",
+    "calendar_spread_arbitrage"
+  ],
+  "error_metric": "vol_surface_interpolation_RMSE_bp",
+  "error_metric_secondary": "arbitrage_violation_count",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "nonlinear_inverse",
+      "forward_operator": "vol_surface_interpolation",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_strikes_per_slice": 10,
+        "N_maturities": 8,
+        "data_noise_bp": 20,
+        "max_maturity_yr": 2.0
+      },
+      "epsilon_fn_center": "20 vol_surface_interpolation_RMSE_bp"
+    },
+    "allowed_forward_operators": [
+      "vol_surface_interpolation"
+    ],
+    "allowed_problem_classes": [
+      "nonlinear_inverse"
+    ],
+    "allowed_omega_dimensions": [
+      "N_strikes_per_slice",
+      "N_maturities",
+      "data_noise_bp",
+      "max_maturity_yr"
+    ],
+    "omega_bounds": {
+      "N_strikes_per_slice": [
+        3,
+        50
+      ],
+      "N_maturities": [
+        2,
+        30
+      ],
+      "data_noise_bp": [
+        5,
+        200
+      ],
+      "max_maturity_yr": [
+        0.1,
+        10.0
+      ]
+    },
+    "epsilon_bounds": {
+      "vol_surface_interpolation_RMSE_bp": [
+        2,
+        200
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

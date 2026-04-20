@@ -1,0 +1,141 @@
+{
+  "artifact_id": "L1-449",
+  "layer": "L1",
+  "principle_number": "449",
+  "title": "Inverse Dynamics",
+  "domain": "Robotics",
+  "sub_domain": "Robot dynamics",
+  "source_file": "AI_robotics/449_inverse_dynamics.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "Inverse dynamics: compute joint torques required to achieve desired trajectory; used for computed torque control and parameter identification.",
+    "forward_model": "tau = M(q)*q_ddot + C(q,q_dot)*q_dot + g(q) = Y(q,q_dot,q_ddot) * theta_dyn (linear in inertial params)",
+    "world_state_x": "joint torques tau(t) and/or inertial parameters theta_dyn",
+    "observation_y": "trajectory {q(t), q_dot(t), q_ddot(t)} and measured torques tau_meas",
+    "physical_parameters_theta": [
+      "inertial_parameter_vector_theta",
+      "N_joints",
+      "trajectory_excitation_quality"
+    ]
+  },
+  "G": {
+    "dag": "M.rnea.recursive_newton_euler -> S.regressor.inertia_parameters -> O.least_squares.param_id",
+    "vertices": [
+      "M.rnea.recursive_newton_euler",
+      "S.regressor.inertia_parameters",
+      "O.least_squares.param_id"
+    ],
+    "arcs": [
+      "M.rnea.recursive_newton_euler -> S.regressor.inertia_parameters",
+      "S.regressor.inertia_parameters -> O.least_squares.param_id"
+    ],
+    "L_DAG": 2.8,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 1000,
+    "condition_number_effective": 50,
+    "condition_number_mismatched": 200,
+    "regime": "Linear in inertial parameters; excitation trajectory must be sufficiently rich; condition number of regressor governs identification accuracy."
+  },
+  "C": {
+    "solver_class": "RNEA_closed_form or LS_parameter_identification (Gautier)",
+    "convergence_rate_q": 2.0,
+    "error_bound": "torque prediction < 5% error for identified parameters",
+    "complexity": "O(n) for RNEA; O(N_traj * n_theta^2) for parameter ID"
+  },
+  "physics_fingerprint": {
+    "carrier": "N/A",
+    "sensing_mechanism": "trajectory_to_torque_computation",
+    "integration_axis": "kinematic_chain",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "joint_torque_vector",
+    "primitives": [
+      "M.rnea.recursive_newton_euler",
+      "S.regressor.inertia_parameters",
+      "O.least_squares.param_id"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "acceleration_estimation_noise",
+    "friction_unmodeled_dynamics",
+    "joint_flexibility"
+  ],
+  "error_metric": "torque_prediction_RMSE_Nm",
+  "error_metric_secondary": "parameter_identification_RMSE",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "linear_inverse",
+      "forward_operator": "trajectory_to_torque_computation",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_joints": 6,
+        "excitation_bandwidth_Hz": 2.0,
+        "acceleration_noise_dB": -20,
+        "N_trajectory_samples": 1000
+      },
+      "epsilon_fn_center": "2.0 torque_prediction_RMSE_Nm"
+    },
+    "allowed_forward_operators": [
+      "trajectory_to_torque_computation"
+    ],
+    "allowed_problem_classes": [
+      "linear_inverse"
+    ],
+    "allowed_omega_dimensions": [
+      "N_joints",
+      "excitation_bandwidth_Hz",
+      "acceleration_noise_dB",
+      "N_trajectory_samples"
+    ],
+    "omega_bounds": {
+      "N_joints": [
+        2,
+        10
+      ],
+      "excitation_bandwidth_Hz": [
+        0.5,
+        10.0
+      ],
+      "acceleration_noise_dB": [
+        -40,
+        -10
+      ],
+      "N_trajectory_samples": [
+        100,
+        10000
+      ]
+    },
+    "epsilon_bounds": {
+      "torque_prediction_RMSE_Nm": [
+        0.1,
+        20.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

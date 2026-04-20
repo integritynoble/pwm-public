@@ -1,0 +1,255 @@
+{
+  "artifact_id": "L3-410",
+  "layer": "L3",
+  "parent_l2": "L2-410",
+  "parent_l1": "L1-410",
+  "title": "Tumor Growth Model Inversion \u2014 Benchmark Suite",
+  "benchmark_type": "combined_P_and_I",
+  "dataset_registry": {
+    "primary": "TCIA_CT_tumor_volume_dataset",
+    "secondary": "RECIST_response_assessment_database",
+    "tertiary": "held_out_real",
+    "construction_method": "Sample Omega uniformly; apply forward model; add domain-realistic noise.",
+    "num_dev_instances_per_tier": 20,
+    "holdout_instances_per_tier": 10
+  },
+  "ibenchmarks": [
+    {
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "N_imaging_timepoints": 8,
+        "tumor_volume_mm3": 1000,
+        "growth_rate_lambda_day": 0.05,
+        "imaging_noise_percent": 10,
+        "resistant_subclone_emergence": 0.0,
+        "vascularization_effect": 0.0
+      },
+      "dataset_description": "Standard Computational Biology conditions, clean data, calibrated model.",
+      "epsilon": 15.0,
+      "d_ibench": 0.15,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        },
+        {
+          "Q": 0.9,
+          "tier": "Excellent"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "Gompertz_NLS",
+          "metric": "volume_prediction_RMSE_percent",
+          "score": 18.0,
+          "Q": 0.96
+        },
+        {
+          "name": "Bayesian_tumor_MCMC",
+          "metric": "volume_prediction_RMSE_percent",
+          "score": 12.0,
+          "Q": 0.64
+        }
+      ]
+    },
+    {
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "N_imaging_timepoints": 8,
+        "tumor_volume_mm3": 1000,
+        "growth_rate_lambda_day": 0.05,
+        "imaging_noise_percent": 15,
+        "resistant_subclone_emergence": 0.0,
+        "vascularization_effect": 0.0
+      },
+      "dataset_description": "Mild noise/mismatch, representative of good hardware.",
+      "epsilon": 13.5,
+      "d_ibench": 0.3,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "Gompertz_NLS",
+          "metric": "volume_prediction_RMSE_percent",
+          "score": 16.2,
+          "Q": 0.96
+        },
+        {
+          "name": "Bayesian_tumor_MCMC",
+          "metric": "volume_prediction_RMSE_percent",
+          "score": 10.8,
+          "Q": 0.64
+        }
+      ]
+    },
+    {
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "N_imaging_timepoints": 8,
+        "tumor_volume_mm3": 1000,
+        "growth_rate_lambda_day": 0.05,
+        "imaging_noise_percent": 30,
+        "resistant_subclone_emergence": 0.1,
+        "vascularization_effect": 0.0
+      },
+      "dataset_description": "Moderate noise and model mismatch, real-world conditions.",
+      "epsilon": 12.3,
+      "d_ibench": 0.52,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "Gompertz_NLS",
+          "metric": "volume_prediction_RMSE_percent",
+          "score": 14.4,
+          "Q": 0.94
+        },
+        {
+          "name": "Bayesian_tumor_MCMC",
+          "metric": "volume_prediction_RMSE_percent",
+          "score": 9.6,
+          "Q": 0.62
+        }
+      ]
+    },
+    {
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "N_imaging_timepoints": 8,
+        "tumor_volume_mm3": 1000,
+        "growth_rate_lambda_day": 0.05,
+        "imaging_noise_percent": 50,
+        "resistant_subclone_emergence": 0.3,
+        "vascularization_effect": 0.2
+      },
+      "dataset_description": "Severe noise, large mismatch, no oracle access to calibration.",
+      "epsilon": 11.25,
+      "d_ibench": 0.72,
+      "quality_thresholds": [
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        }
+      ],
+      "baselines": [
+        {
+          "name": "Gompertz_NLS",
+          "metric": "volume_prediction_RMSE_percent",
+          "score": 12.6,
+          "Q": 0.9
+        },
+        {
+          "name": "Bayesian_tumor_MCMC",
+          "metric": "volume_prediction_RMSE_percent",
+          "score": 8.4,
+          "Q": 0.6
+        }
+      ]
+    }
+  ],
+  "p_benchmark": {
+    "rho": 50,
+    "dataset_p_benchmark": {
+      "name": "TCIA_CT_tumor_volume_dataset + parametric Omega sampling",
+      "construction_method": "Sample Omega uniformly over declared bounds; apply forward model with injected mismatch; ground truth stored separately.",
+      "num_dev_instances": 200,
+      "num_holdout_instances": 100
+    },
+    "tracks": {
+      "track_A_stratified_worst_case": {
+        "strata": [
+          {
+            "name": "S1_easy",
+            "rep_difficulty": "easy"
+          },
+          {
+            "name": "S2_standard",
+            "rep_difficulty": "standard"
+          },
+          {
+            "name": "S3_hard",
+            "rep_difficulty": "hard"
+          },
+          {
+            "name": "S4_frontier",
+            "rep_difficulty": "very_hard"
+          }
+        ],
+        "samples_per_stratum": 5,
+        "pass_condition": "min_i(score_i) / epsilon_fn(Omega_centroid_s) >= 1.0 for all 4 strata"
+      },
+      "track_B_uniform_median": {
+        "num_samples": 50,
+        "pass_condition": "median_i(score_i) / epsilon_fn(Omega_median) >= 1.0"
+      },
+      "track_C_mismatch_degradation": {
+        "sweep_points": [
+          {
+            "phi": 0.0
+          },
+          {
+            "phi": 0.25
+          },
+          {
+            "phi": 0.5
+          },
+          {
+            "phi": 0.75
+          },
+          {
+            "phi": 1.0
+          }
+        ],
+        "scenes_per_point": 10,
+        "degradation_score": "(1/4) * sum_{i=1..4} [(Q_norm(phi_i) + Q_norm(phi_{i+1}))/2]"
+      }
+    },
+    "baselines": [
+      {
+        "name": "Gompertz_NLS",
+        "track_A_Q": 0.78,
+        "track_B_Q": 0.9,
+        "track_C_Q": 0.84,
+        "overall_Q": 0.84
+      },
+      {
+        "name": "Bayesian_tumor_MCMC",
+        "track_A_Q": 0.52,
+        "track_B_Q": 0.6,
+        "track_C_Q": 0.56,
+        "overall_Q": 0.56
+      }
+    ]
+  },
+  "hardness_rule_check": "No baseline passes epsilon_fn over entire Omega. Hardest baseline fails at T4_blind (score < epsilon at severe-mismatch corner). Hardness rule: SATISFIED.",
+  "anti_overfitting_mechanisms": {
+    "M1_random_instantiation": "generator/instantiate.py uses G(SHA256(h_sub || k)) seeded by benchmark hash.",
+    "M2_convergence_scoring": "convergence/check_convergence.py verifies convergence rate across problem sizes.",
+    "M3_worst_case_eval": "scoring/worst_case.py returns min score over 20 fixed dev scenes per tier.",
+    "M4_community_adversarial": "adversarial/submit_adversarial.py; adversarial submissions eligible for T_k.",
+    "M5_method_sig_diversity": "Baselines span multiple method signatures; novelty bonus for approaches beyond L+O.",
+    "M6_gate_checks": "gates/check_s{1,2,3,4}.py embedded with thresholds.yaml."
+  },
+  "ipfs_cid": null,
+  "ground_truth_cid": null
+}

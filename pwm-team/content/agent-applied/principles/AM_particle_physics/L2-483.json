@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-483",
+  "layer": "L2",
+  "parent_l1": "L1-483",
+  "principle_ref": "sha256:<L1-483_principle_hash>",
+  "title": "Calorimeter Energy Response Inversion \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "N_cells": [
+        1000,
+        1000000
+      ],
+      "E_range_GeV": [
+        1,
+        14000
+      ],
+      "eta_range": [
+        0.0,
+        5.0
+      ],
+      "noise_GeV": [
+        0.1,
+        5.0
+      ]
+    },
+    "E": {
+      "forward": "E_meas = a * E_true + b + sigma_E * noise; EM linearity + hadronic e/h ratio",
+      "operator": "electromagnetic_hadronic_calorimetry",
+      "primitive_chain": "M.shower.em_hadronic -> S.clustering.topo_clustering -> O.chi2.energy_response",
+      "inverse": "recover calibration coefficients a(eta from measured cluster energies E_meas for single particles (test beam) or in-situ (Z->ee"
+    },
+    "B": {
+      "linearity": "response linear to 1% over E range",
+      "eta_uniformity": "inter-calibration < 1%"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "energy_resolution_sigma_E_over_E",
+      "linearity_error_percent",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.03 + 0.02 * sqrt(noise_GeV / 0.5)"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 energy_calibration_coefficients"
+    },
+    "baselines": [
+      {
+        "name": "test_beam_calibration",
+        "method_sig": "L+O",
+        "expected_score": 0.06
+      },
+      {
+        "name": "in_situ_Z_intercal",
+        "method_sig": "L+O",
+        "expected_score": 0.04
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_cells": 200000,
+        "E_range_GeV": 1000,
+        "eta_range": 5.0,
+        "noise_GeV": 0.5,
+        "aging_degradation_percent": 0.0,
+        "temperature_variation_effect": 0.0,
+        "inter_calibration_error": 0.0
+      },
+      "epsilon": 0.05
+    },
+    "tier_bounds": {
+      "N_cells": [
+        1000,
+        1000000
+      ],
+      "E_range_GeV": [
+        1,
+        14000
+      ],
+      "eta_range": [
+        0.0,
+        5.0
+      ],
+      "noise_GeV": [
+        0.1,
+        5.0
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.4,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.4 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

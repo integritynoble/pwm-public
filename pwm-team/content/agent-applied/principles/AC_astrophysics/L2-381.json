@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-381",
+  "layer": "L2",
+  "parent_l1": "L1-381",
+  "principle_ref": "sha256:<L1-381_principle_hash>",
+  "title": "Type Ia Supernova Distance Standardization \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "N_SN_hubble_flow": [
+        50,
+        2000
+      ],
+      "median_z": [
+        0.02,
+        2.0
+      ],
+      "photometric_noise_mmag": [
+        1.0,
+        50.0
+      ],
+      "peculiar_v_kms": [
+        100,
+        600
+      ]
+    },
+    "E": {
+      "forward": "mu = m_B - M + alpha*x1 - beta*c + delta_M; H0 from slope of mu vs. log10(z)",
+      "operator": "photometric_sn_standardization",
+      "primitive_chain": "M.sed.salt2_template -> S.calibration.standardization -> O.chi2.hubble_residual",
+      "inverse": "recover Hubble constant H0 and dark energy equation of state w from Hubble diagram {mu_i vs. z_i} for N_SN type Ia supernovae"
+    },
+    "B": {
+      "H0_positivity": "H0 > 0",
+      "sigma_int_positivity": "sigma_int >= 0"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "H0_sigma_km_s_Mpc",
+      "sigma_int_mag",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "0.5 + 0.3 * (200 / N_SN_hubble_flow)^0.5"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 distance_modulus_H0"
+    },
+    "baselines": [
+      {
+        "name": "SALT2_BEAMS",
+        "method_sig": "L+O",
+        "expected_score": 0.9
+      },
+      {
+        "name": "BHM_UNITY",
+        "method_sig": "L+O",
+        "expected_score": 0.75
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_SN_hubble_flow": 500,
+        "median_z": 0.3,
+        "photometric_noise_mmag": 5.0,
+        "peculiar_v_kms": 200,
+        "Malmquist_bias": 0.0,
+        "peculiar_velocity_field_km_s": 0.0,
+        "host_galaxy_metallicity_gradient": 0.0
+      },
+      "epsilon": 0.8
+    },
+    "tier_bounds": {
+      "N_SN_hubble_flow": [
+        50,
+        2000
+      ],
+      "median_z": [
+        0.02,
+        2.0
+      ],
+      "photometric_noise_mmag": [
+        1.0,
+        50.0
+      ],
+      "peculiar_v_kms": [
+        100,
+        600
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.28,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.28 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

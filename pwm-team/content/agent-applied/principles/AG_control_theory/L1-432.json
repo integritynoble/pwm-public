@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-432",
+  "layer": "L1",
+  "principle_number": "432",
+  "title": "Optimal Control (LQR)",
+  "domain": "Control Theory",
+  "sub_domain": "Linear quadratic control",
+  "source_file": "AG_control_theory/432_optimal_control_lqr.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "LQR optimal control: find state feedback gain K minimizing infinite-horizon quadratic cost J = integral(x^T Q x + u^T R u) dt.",
+    "forward_model": "u = -K*x; K = R^{-1} B^T P; P solves algebraic Riccati: A^T P + P A - P B R^{-1} B^T P + Q = 0",
+    "world_state_x": "optimal control gain matrix K in R^{m x n}",
+    "observation_y": "system matrices (A, B) and cost weights (Q, R) as inputs",
+    "physical_parameters_theta": [
+      "Q_state_weight_matrix",
+      "R_input_weight_matrix",
+      "A_B_system_matrices",
+      "horizon_type"
+    ]
+  },
+  "G": {
+    "dag": "M.riccati.algebraic -> S.lqr.gain_computation -> O.lyapunov.closed_loop",
+    "vertices": [
+      "M.riccati.algebraic",
+      "S.lqr.gain_computation",
+      "O.lyapunov.closed_loop"
+    ],
+    "arcs": [
+      "M.riccati.algebraic -> S.lqr.gain_computation",
+      "S.lqr.gain_computation -> O.lyapunov.closed_loop"
+    ],
+    "L_DAG": 2.5,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 500,
+    "condition_number_effective": 20,
+    "condition_number_mismatched": 100,
+    "regime": "Globally optimal for linear quadratic; guaranteed stability margins; extensions to LQG (with Kalman filter) and H2/Hinf for robust control."
+  },
+  "C": {
+    "solver_class": "DARE_Riccati_solver (MATLAB lqr or scipy.signal.lqr)",
+    "convergence_rate_q": 2.0,
+    "error_bound": "optimal cost J* = x0^T P x0; guaranteed stability margins: PM >= 60 deg, GM >= 6 dB",
+    "complexity": "O(n^3) for Riccati equation solution"
+  },
+  "physics_fingerprint": {
+    "carrier": "N/A",
+    "sensing_mechanism": "full_state_feedback_lqr",
+    "integration_axis": "time_horizon",
+    "problem_class": "parameter_estimation",
+    "noise_model": "deterministic",
+    "solution_space": "control_gain_matrix",
+    "primitives": [
+      "M.riccati.algebraic",
+      "S.lqr.gain_computation",
+      "O.lyapunov.closed_loop"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "model_uncertainty_A_B",
+    "Q_R_mistuning",
+    "actuator_saturation"
+  ],
+  "error_metric": "closed_loop_performance_index",
+  "error_metric_secondary": "stability_margin_dB",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "parameter_estimation",
+      "forward_operator": "full_state_feedback_lqr",
+      "input_format": "measurement_only",
+      "omega": {
+        "system_order_n": 4,
+        "Q_R_ratio": 1.0,
+        "spectral_radius_A": 0.9,
+        "n_inputs_m": 1
+      },
+      "epsilon_fn_center": "1.05 closed_loop_performance_index"
+    },
+    "allowed_forward_operators": [
+      "full_state_feedback_lqr"
+    ],
+    "allowed_problem_classes": [
+      "parameter_estimation"
+    ],
+    "allowed_omega_dimensions": [
+      "system_order_n",
+      "Q_R_ratio",
+      "spectral_radius_A",
+      "n_inputs_m"
+    ],
+    "omega_bounds": {
+      "system_order_n": [
+        1,
+        50
+      ],
+      "Q_R_ratio": [
+        0.01,
+        100
+      ],
+      "spectral_radius_A": [
+        0.0,
+        0.999
+      ],
+      "n_inputs_m": [
+        1,
+        10
+      ]
+    },
+    "epsilon_bounds": {
+      "closed_loop_performance_index": [
+        0.9,
+        2.0
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

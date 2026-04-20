@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-365",
+  "layer": "L2",
+  "parent_l1": "L1-365",
+  "principle_ref": "sha256:<L1-365_principle_hash>",
+  "title": "Cosmological N-body (Large-Scale Structure) \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "N_particles": [
+        262144,
+        8589934592
+      ],
+      "box_size_Mpc_h": [
+        50,
+        2000
+      ],
+      "Omega_m": [
+        0.2,
+        0.5
+      ],
+      "sigma_8": [
+        0.6,
+        1.0
+      ]
+    },
+    "E": {
+      "forward": "x'' + 2H x' = -nabla phi/a^2, nabla^2 phi = 4*pi*G*a^2*(rho - rho_bar)",
+      "operator": "pm_tree_gravity",
+      "primitive_chain": "F.fourier.pm_gravity -> S.tree.force_softening -> O.leapfrog.comoving",
+      "inverse": "recover dark matter density field delta(x) and velocity field v(x) in comoving coordinates from galaxy catalog (angular positions"
+    },
+    "B": {
+      "mass_conservation": "total matter conserved",
+      "cosmological_expansion": "a(t) from Friedmann"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "matter_power_spectrum_P_k_chi2",
+      "halo_mass_function_error",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "1.0 + 0.05 * (sigma_8 - 0.8)^2 / 0.04"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 3D_dark_matter_density"
+    },
+    "baselines": [
+      {
+        "name": "Gadget2_TreePM",
+        "method_sig": "L+O",
+        "expected_score": 1.05
+      },
+      {
+        "name": "FastPM",
+        "method_sig": "L+O",
+        "expected_score": 1.08
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_particles": 134217728,
+        "box_size_Mpc_h": 250.0,
+        "Omega_m": 0.3,
+        "sigma_8": 0.8,
+        "cosmological_parameter_uncertainty": 0.0,
+        "baryonic_feedback_neglect": 0.0,
+        "neutrino_mass_uncertainty": 0.0
+      },
+      "epsilon": 1.02
+    },
+    "tier_bounds": {
+      "N_particles": [
+        262144,
+        8589934592
+      ],
+      "box_size_Mpc_h": [
+        50,
+        2000
+      ],
+      "Omega_m": [
+        0.2,
+        0.5
+      ],
+      "sigma_8": [
+        0.6,
+        1.0
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.35,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.35 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

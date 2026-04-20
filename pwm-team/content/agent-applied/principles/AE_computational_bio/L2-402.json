@@ -1,0 +1,117 @@
+{
+  "artifact_id": "L2-402",
+  "layer": "L2",
+  "parent_l1": "L1-402",
+  "principle_ref": "sha256:<L1-402_principle_hash>",
+  "title": "Pharmacokinetics Compartment Model \u2014 Nominal + Mismatch Specs",
+  "spec_type": "nominal_and_mismatch",
+  "six_tuple": {
+    "omega": {
+      "N_subjects": [
+        5,
+        200
+      ],
+      "N_samples_per_subject": [
+        3,
+        20
+      ],
+      "CL_L_hr": [
+        0.1,
+        100
+      ],
+      "bioavailability_F": [
+        0.1,
+        1.0
+      ]
+    },
+    "E": {
+      "forward": "dA_1/dt = -k_10*A_1 - k_12*A_1 + k_21*A_2 + F*Dose*k_a*e^{-k_a*t}; C(t) = A_1/V_1",
+      "operator": "blood_concentration_sampling",
+      "primitive_chain": "M.ode.pk_compartments -> O.nls.pk_fit -> S.bootstrap.uncertainty_PK",
+      "inverse": "recover PK parameters (CL from plasma concentration C(t_i) at N_samples sampling time points"
+    },
+    "B": {
+      "positivity": "CL, V, k > 0",
+      "bioavailability": "F in (0, 1]"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "AUC_RMSE_percent",
+      "C_max_prediction_RMSE_ng_mL",
+      "residual_norm",
+      "convergence_curve"
+    ],
+    "epsilon_fn": "10 + 5 * (20 / N_subjects)^0.5"
+  },
+  "protocol_fields": {
+    "input_format": {
+      "measurement": "float32(N)"
+    },
+    "output_format": {
+      "solution": "float32 PK_parameter_vector"
+    },
+    "baselines": [
+      {
+        "name": "NONMEM_FOCE",
+        "method_sig": "L+O",
+        "expected_score": 18
+      },
+      {
+        "name": "Monolix_SAEM",
+        "method_sig": "L+O",
+        "expected_score": 14
+      }
+    ]
+  },
+  "ibenchmark_range": {
+    "center_ibenchmark": {
+      "rho": 1,
+      "omega_tier": {
+        "N_subjects": 20,
+        "N_samples_per_subject": 8,
+        "CL_L_hr": 5.0,
+        "bioavailability_F": 0.8,
+        "inter_individual_variability": 0.0,
+        "protein_binding_uncertainty": 0.0,
+        "assay_lower_LOQ": 0.0
+      },
+      "epsilon": 15.0
+    },
+    "tier_bounds": {
+      "N_subjects": [
+        5,
+        200
+      ],
+      "N_samples_per_subject": [
+        3,
+        20
+      ],
+      "CL_L_hr": [
+        0.1,
+        100
+      ],
+      "bioavailability_F": [
+        0.1,
+        1.0
+      ]
+    },
+    "proximity_threshold": 0.1
+  },
+  "d_spec": 0.28,
+  "d_spec_notes": "Nominal spec anchored at domain-standard operating point; d_spec ~ 0.28 from any other registered spec.",
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_justifications": {
+    "S1": "Dimensional consistency verified across all DAG nodes.",
+    "S2": "Well-posedness confirmed under stated constraints.",
+    "S3": "Solver convergence proven for stated solver class.",
+    "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
+  },
+  "ipfs_cid": null
+}

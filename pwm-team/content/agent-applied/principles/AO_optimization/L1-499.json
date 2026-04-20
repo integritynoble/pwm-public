@@ -1,0 +1,136 @@
+{
+  "artifact_id": "L1-499",
+  "layer": "L1",
+  "principle_number": "499",
+  "title": "Shape Optimization",
+  "domain": "Optimization",
+  "sub_domain": "Boundary shape",
+  "source_file": "AO_optimization/499_shape_optimization.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "Shape optimization using shape calculus: find boundary shape minimizing objective (drag, stress) subject to PDE constraint.",
+    "forward_model": "J(Omega) = integral_Omega j(u) dV, where u solves PDE on Omega; dJ/dOmega via shape derivative",
+    "world_state_x": "boundary shape Gamma parameterized by control points or level set phi",
+    "observation_y": "objective J (scalar), PDE solution u on current domain",
+    "physical_parameters_theta": [
+      "regularization_weight alpha",
+      "step_size dt",
+      "mesh_smoothing_iterations",
+      "boundary_perturbation_amplitude"
+    ]
+  },
+  "G": {
+    "dag": "S.shape.derivative -> M.fem.adjoint -> O.gradient.descent",
+    "vertices": [
+      "S.shape.derivative",
+      "M.fem.adjoint",
+      "O.gradient.descent"
+    ],
+    "arcs": [
+      "S.shape.derivative -> M.fem.adjoint",
+      "M.fem.adjoint -> O.gradient.descent"
+    ],
+    "L_DAG": 3.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 5000,
+    "condition_number_effective": 100,
+    "condition_number_mismatched": 300,
+    "regime": "Non-convex; multiple local minima; gradient-based methods converge to local optimum; regularization ensures smooth boundaries."
+  },
+  "C": {
+    "solver_class": "gradient_descent with shape derivative or level_set_evolution",
+    "convergence_rate_q": 1.5,
+    "error_bound": "|J(Omega_k) - J*| <= C * alpha^k",
+    "complexity": "O(N_dof * N_iter) for FEM + adjoint per iteration"
+  },
+  "physics_fingerprint": {
+    "carrier": "N/A",
+    "sensing_mechanism": "shape_sensitivity_analysis",
+    "integration_axis": "boundary_surface",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "deterministic",
+    "solution_space": "2D_boundary_curve",
+    "primitives": [
+      "S.shape.derivative",
+      "M.fem.adjoint",
+      "O.gradient.descent"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "mesh_quality_degradation",
+    "adjoint_discretization_error",
+    "boundary_parameterization_error"
+  ],
+  "error_metric": "objective_reduction_ratio",
+  "error_metric_secondary": "constraint_violation",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "nonlinear_inverse",
+      "forward_operator": "shape_sensitivity_analysis",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_control_pts": 50,
+        "regularization_alpha": 0.01,
+        "step_size_dt": 0.1
+      },
+      "epsilon_fn_center": "0.30 objective_reduction_ratio"
+    },
+    "allowed_forward_operators": [
+      "shape_sensitivity_analysis"
+    ],
+    "allowed_problem_classes": [
+      "nonlinear_inverse"
+    ],
+    "allowed_omega_dimensions": [
+      "N_control_pts",
+      "regularization_alpha",
+      "step_size_dt"
+    ],
+    "omega_bounds": {
+      "N_control_pts": [
+        10,
+        200
+      ],
+      "regularization_alpha": [
+        0.001,
+        0.1
+      ],
+      "step_size_dt": [
+        0.01,
+        1.0
+      ]
+    },
+    "epsilon_bounds": {
+      "objective_reduction_ratio": [
+        0.1,
+        0.6
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}

@@ -1,0 +1,142 @@
+{
+  "artifact_id": "L1-398",
+  "layer": "L1",
+  "principle_number": "398",
+  "title": "Cable Equation (Dendrite Propagation)",
+  "domain": "Computational Biology",
+  "sub_domain": "Computational neuroscience",
+  "source_file": "AE_computational_bio/398_cable_equation.md",
+  "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
+  "E": {
+    "description": "Cable equation inversion: recover dendritic conductance distribution from voltage recordings at one or few locations.",
+    "forward_model": "C_m * dV/dt = (1/r_i) * d^2V/dx^2 - g_L*(V-E_L) - g_syn(x,t)*(V-E_syn)",
+    "world_state_x": "synaptic conductance distribution g_syn(x,t) along dendritic cable",
+    "observation_y": "voltage V(t) recorded at soma or branch point from synaptic inputs",
+    "physical_parameters_theta": [
+      "cable_length_lambda_um",
+      "membrane_resistance_R_m",
+      "axial_resistance_R_i",
+      "C_m"
+    ]
+  },
+  "G": {
+    "dag": "M.pde.cable_equation -> S.green_function.cable -> O.tikhonov.cable_inversion",
+    "vertices": [
+      "M.pde.cable_equation",
+      "S.green_function.cable",
+      "O.tikhonov.cable_inversion"
+    ],
+    "arcs": [
+      "M.pde.cable_equation -> S.green_function.cable",
+      "S.green_function.cable -> O.tikhonov.cable_inversion"
+    ],
+    "L_DAG": 3.0,
+    "n_c": 0
+  },
+  "W": {
+    "existence": true,
+    "uniqueness": true,
+    "stability": "conditional",
+    "condition_number_kappa": 2000,
+    "condition_number_effective": 80,
+    "condition_number_mismatched": 400,
+    "regime": "Linear PDE; electrotonic decay with space constant lambda; branching reduces to equivalent cylinder; location ambiguity for distributed inputs."
+  },
+  "C": {
+    "solver_class": "Green_function_inversion or Tikhonov_regularization",
+    "convergence_rate_q": 2.0,
+    "error_bound": "conductance recovery < 20% error for well-constrained cable",
+    "complexity": "O(N_spatial * N_temporal) for cable simulation"
+  },
+  "physics_fingerprint": {
+    "carrier": "N/A",
+    "sensing_mechanism": "intracellular_voltage_recording",
+    "integration_axis": "spatial_dendritic",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "dendritic_conductance_distribution",
+    "primitives": [
+      "M.pde.cable_equation",
+      "S.green_function.cable",
+      "O.tikhonov.cable_inversion"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "dendritic_branching_approximation",
+    "nonlinear_membrane_conductances",
+    "cable_parameter_uncertainty"
+  ],
+  "error_metric": "conductance_distribution_RMSE",
+  "error_metric_secondary": "voltage_reconstruction_RMSE_mV",
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "linear_inverse",
+      "forward_operator": "intracellular_voltage_recording",
+      "input_format": "measurement_only",
+      "omega": {
+        "N_recording_sites": 3,
+        "cable_length_um": 500,
+        "lambda_space_constant_um": 200,
+        "noise_sigma_mV": 0.1
+      },
+      "epsilon_fn_center": "0.15 conductance_distribution_RMSE"
+    },
+    "allowed_forward_operators": [
+      "intracellular_voltage_recording"
+    ],
+    "allowed_problem_classes": [
+      "linear_inverse"
+    ],
+    "allowed_omega_dimensions": [
+      "N_recording_sites",
+      "cable_length_um",
+      "lambda_space_constant_um",
+      "noise_sigma_mV"
+    ],
+    "omega_bounds": {
+      "N_recording_sites": [
+        1,
+        20
+      ],
+      "cable_length_um": [
+        50,
+        5000
+      ],
+      "lambda_space_constant_um": [
+        50,
+        1000
+      ],
+      "noise_sigma_mV": [
+        0.01,
+        2.0
+      ]
+    },
+    "epsilon_bounds": {
+      "conductance_distribution_RMSE": [
+        0.02,
+        0.5
+      ]
+    }
+  },
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null
+}
