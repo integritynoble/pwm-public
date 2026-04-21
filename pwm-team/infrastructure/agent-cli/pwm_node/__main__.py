@@ -14,11 +14,11 @@ import argparse
 import sys
 from pathlib import Path
 
-from pwm_node.commands import balance, benchmarks, inspect, verify
+from pwm_node.commands import balance, benchmarks, inspect, submit, verify
 
 
 # Online commands — stubbed pending further sessions
-_CHAIN_COMMANDS = {"mine", "submit-cert", "sp", "stake"}
+_CHAIN_COMMANDS = {"mine", "sp", "stake"}
 
 
 def _repo_root_default() -> Path:
@@ -91,8 +91,34 @@ def build_parser() -> argparse.ArgumentParser:
     balp.add_argument("--address", help="Address to query (defaults to PWM_PRIVATE_KEY signer).")
     balp.set_defaults(handler=balance.run)
 
+    # submit-cert — upload and submit a signed L4 certificate
+    scp = sub.add_parser(
+        "submit-cert",
+        help="Submit a signed L4 certificate to PWMCertificate on testnet/mainnet.",
+    )
+    scp.add_argument("--cert", type=Path, required=True, help="Path to cert_payload JSON file.")
+    scp.add_argument(
+        "--ipfs-upload",
+        action="store_true",
+        help="Upload the cert payload to IPFS before submitting (adds ipfs_cid to payload).",
+    )
+    scp.add_argument(
+        "--skip-ipfs-on-failure",
+        action="store_true",
+        help="If --ipfs-upload fails, continue submission without CID instead of aborting.",
+    )
+    scp.add_argument(
+        "--dry-run",
+        action="store_true",
+        help="Validate and print payload but do not broadcast the submit tx.",
+    )
+    scp.add_argument("--no-wait", action="store_true", help="Do not wait for tx confirmation.")
+    scp.add_argument("--timeout", type=int, default=300, help="Tx wait timeout in seconds.")
+    scp.add_argument("--gas", type=int, default=500000, help="Gas budget for the submit tx.")
+    scp.set_defaults(handler=submit.run)
+
     # Stubs for remaining chain-dependent commands
-    for cmd in ["mine", "submit-cert", "stake", "sp"]:
+    for cmd in ["mine", "stake", "sp"]:
         s = sub.add_parser(cmd, help=f"[Phase C stub] {cmd} — chain-dependent; next session.")
         s.add_argument("args", nargs="*")
         s.set_defaults(handler=_chain_stub)
