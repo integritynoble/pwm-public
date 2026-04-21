@@ -1,8 +1,22 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { api } from '@/lib/api';
 import { ForwardModel } from '@/components/Math';
 import { weiToPwm } from '@/lib/format';
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}): Promise<Metadata> {
+  const { id } = await params;
+  const data = await api.principle(id);
+  if (!data) return { title: `${id} not found · PWM Explorer` };
+  const title = `${data.principle.title} (${data.principle.artifact_id}) · PWM`;
+  const description: string = data.principle?.E?.description?.slice(0, 200) ?? `PWM principle ${id}`;
+  return { title, description };
+}
 
 export default async function PrincipleDetail({
   params,
