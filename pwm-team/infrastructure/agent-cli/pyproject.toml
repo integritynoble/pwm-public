@@ -1,0 +1,44 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pwm-node"
+version = "0.1.0"
+description = "PWM protocol CLI — discover benchmarks, verify solvers, mine certificates"
+readme = "CLAUDE.md"
+requires-python = ">=3.10"
+authors = [
+    {name = "PWM founding team"}
+]
+license = {text = "MIT"}
+keywords = ["pwm", "proof-of-solution", "compressive-imaging", "mining"]
+
+dependencies = [
+    "click>=8.1",
+    "pyyaml>=6.0",
+    "numpy>=1.24",
+    "web3>=6.0",
+]
+
+[project.optional-dependencies]
+scoring = [
+    "pwm-scoring>=0.1.0",
+]
+dev = [
+    "pytest>=7.4",
+    "pytest-cov>=4.1",
+    "ruff>=0.1",
+]
+
+[project.scripts]
+pwm-node = "pwm_node.__main__:main"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["pwm_node*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+python_files = "test_*.py"
+addopts = "-v --tb=short"
