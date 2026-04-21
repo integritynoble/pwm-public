@@ -1,0 +1,84 @@
+# PWM Web Explorer — Production single-container deployment
+# Build context: repository root (pwm/)
+#
+# docker build -f pwm-team/infrastructure/agent-web/deploy/Dockerfile.production -t pwm-explorer .
+#
+# Bundles: Next.js frontend (SSR) + FastAPI backend + SQLite indexer
+# Only port 3000 exposed — Next.js fetches from localhost:8000 server-side.
+
+# ── Stage 1: Build Next.js frontend ──────────────────────────────
+FROM node:20-alpine AS frontend
+
+WORKDIR /build
+COPY pwm-team/infrastructure/agent-web/frontend/package.json \
+     pwm-team/infrastructure/agent-web/frontend/package-lock.json* ./
+RUN npm install --no-audit --no-fund
+
+COPY pwm-team/infrastructure/agent-web/frontend/ ./
+ENV NEXT_TELEMETRY_DISABLED=1
+ENV PWM_API_URL=http://localhost:8000
+RUN npm run build
+
+# ── Stage 2: Production runtime ──────────────────────────────────
+FROM python:3.12-slim
+
+# Node.js 20 for the Next.js standalone server
+RUN apt-get update \
+    && apt-get install -y --no-install-recommends ca-certificates curl gnupg \
+    && mkdir -p /etc/apt/keyrings \
+    && curl -fsSL https://deb.nodesource.com/gpgkey/nodesource-repo.gpg.key \
+       | gpg --dearmor -o /etc/apt/keyrings/nodesource.gpg \
+    && echo "deb [signed-by=/etc/apt/keyrings/nodesource.gpg] https://deb.nodesource.com/node_20.x nodistro main" \
+       > /etc/apt/sources.list.d/nodesource.list \
+    && apt-get update \
+    && apt-get install -y --no-install-recommends nodejs \
+    && apt-get purge -y gnupg \
+    && rm -rf /var/lib/apt/lists/*
+
+WORKDIR /app
+
+# Python dependencies
+COPY pwm-team/infrastructure/agent-web/api/requirements.txt /tmp/api-req.txt
+COPY pwm-team/infrastructure/agent-web/indexer/requirements.txt /tmp/idx-req.txt
+RUN pip install --no-cache-dir -r /tmp/api-req.txt -r /tmp/idx-req.txt \
+    && rm /tmp/*.txt
+
+# Application code
+COPY pwm-team/infrastructure/agent-web/api    /app/api
+COPY pwm-team/infrastructure/agent-web/indexer /app/indexer
+
+# Static data (replaces the volume mounts from docker-compose)
+COPY pwm-team/coordination/agent-coord/interfaces/contracts_abi  /app/coord/contracts_abi
+COPY pwm-team/coordination/agent-coord/interfaces/addresses.json /app/coord/addresses.json
+COPY pwm-team/coordination/agent-coord/interfaces/bounties       /app/coord/bounties
+COPY pwm-team/pwm_product/genesis                                /app/genesis
+
+# Built frontend (standalone output from Stage 1)
+COPY --from=frontend /build/.next/standalone /app/frontend
+COPY --from=frontend /build/.next/static     /app/frontend/.next/static
+COPY --from=frontend /build/public           /app/frontend/public
+
+# Entrypoint script (sed strips Windows CRLF line endings)
+COPY pwm-team/infrastructure/agent-web/deploy/start.sh /app/start.sh
+RUN sed -i 's/\r$//' /app/start.sh && chmod +x /app/start.sh
+
+# Environment defaults
+ENV PYTHONPATH=/app \
+    PWM_NETWORK=testnet \
+    PWM_RPC_URL=https://ethereum-sepolia-rpc.publicnode.com \
+    PWM_DB=/data/pwm_index.db \
+    PWM_ABI_DIR=/app/coord/contracts_abi \
+    PWM_ADDRESSES=/app/coord/addresses.json \
+    PWM_GENESIS_DIR=/app/genesis \
+    PWM_BOUNTIES_DIR=/app/coord/bounties \
+    PWM_API_URL=http://localhost:8000 \
+    PWM_CACHE_SECONDS=60 \
+    NODE_ENV=production \
+    HOSTNAME=0.0.0.0 \
+    PORT=3000
+
+RUN mkdir -p /data
+
+EXPOSE 3000
+
+CMD ["/app/start.sh"]
