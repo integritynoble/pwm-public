@@ -12,7 +12,10 @@ from functools import lru_cache
 from pathlib import Path
 
 
-PWM_TEAM_ROOT = Path(__file__).resolve().parents[3]
+try:
+    PWM_TEAM_ROOT = Path(__file__).resolve().parents[3]
+except IndexError:
+    PWM_TEAM_ROOT = Path("/repo/pwm-team")
 REPO_ROOT = PWM_TEAM_ROOT.parent  # used only for relative display paths
 DEFAULT_DIR = PWM_TEAM_ROOT / "coordination" / "agent-coord" / "interfaces" / "bounties"
 
