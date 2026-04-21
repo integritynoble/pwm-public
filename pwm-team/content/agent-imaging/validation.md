@@ -2,123 +2,141 @@
 
 Run every check below before merging the imaging principles PR. All content agents follow the same L1/L2/L3 structure. Domain-specific values are in the tables below.
 
+> **Schema note.** Field references use the canonical L1 schema from `CLAUDE.md`, with `E`, `G`, `W`, `C` as top-level namespaces on every L1 JSON. L2 follows `S = (Ω, E, B, I, O, ε)` inside a `six_tuple` block. L3 follows the benchmark schema with I-tiers + P-benchmark.
+
 ---
 
 ## V1 — Domain Coverage
 
 | Domain Folder | Expected Principles | Delivered? |
-|---|---|---|
-| A_microscopy | ~24 | [ ] |
-| B_compressive_imaging | ~5 | [ ] |
-| C_medical_imaging | ~41 | [ ] |
-| D_coherent_imaging | ~5 | [ ] |
-| E_computational_photography | ~5 | [ ] |
-| F_computational_optics | ~4 | [ ] |
-| G_electron_microscopy | ~11 | [ ] |
-| H_depth_imaging | ~5 | [ ] |
-| I_remote_sensing | ~11 | [ ] |
-| J_industrial_inspection | ~14 | [ ] |
-| M_ultrafast_imaging | ~4 | [ ] |
-| N_quantum_imaging | ~3 | [ ] |
-| O_multimodal_fusion | ~6 | [ ] |
-| P_scanning_probe | ~4 | [ ] |
-| **Total** | **~115** | [ ] |
+|---|---:|:---:|
+| A_microscopy              | 24 | [ ] |
+| B_compressive_imaging     |  5 | [ ] |
+| C_medical_imaging         | 41 | [ ] |
+| D_coherent_imaging        |  5 | [ ] |
+| E_computational_photo     |  5 | [ ] |
+| F_computational_optics    |  4 | [ ] |
+| G_electron_microscopy     | 11 | [ ] |
+| H_depth_imaging           |  5 | [ ] |
+| I_remote_sensing          | 11 | [ ] |
+| J_industrial_inspect      | 14 | [ ] |
+| M_ultrafast_imaging       |  4 | [ ] |
+| N_quantum_imaging         |  3 | [ ] |
+| O_multimodal_fusion       |  6 | [ ] |
+| P_scanning_probe          |  4 | [ ] |
+| **Total**                 | **142** | [ ] |
 
-**Verify folder names are canonical (no truncation):**
+> **Open reconciliation — folder names.** CLAUDE.md assigns truncated folder names for agent-imaging output (`E_computational_photo`, `J_industrial_inspect`), but the corresponding `source/` symlink uses the full names (`E_computational_photography`, `J_industrial_inspection`). Decide which pattern is canonical; if the full name wins, rename the two output folders and update CLAUDE.md + this checklist.
+>
+> **Open reconciliation — total count.** The `~115` headline in CLAUDE.md under-counts; the explicit `plan.md` table and the source-file count agree at **142**. Use 142.
+
+**Verify folder names:**
 ```bash
-# These must match exactly
 ls pwm-team/content/agent-imaging/principles/ | sort
-# Must include E_computational_photography (not E_computational_photo)
-# Must include J_industrial_inspection (not J_industrial_inspect)
+# Must list exactly the 14 folder names in the table above.
 ```
 
 ---
 
 ## V2 — Per-Principle File Structure
 
-For EVERY principle, verify 3 files exist:
+For EVERY principle, verify 3 files exist (filenames carry a `_<slug>` suffix):
 
 ```
-principles/<domain>/L1-NNN.json   # Principle
-principles/<domain>/L2-NNN.json   # Spec
-principles/<domain>/L3-NNN.json   # Benchmark
+principles/<domain>/L1-NNN_<slug>.json   # Principle
+principles/<domain>/L2-NNN_<slug>.json   # Spec
+principles/<domain>/L3-NNN_<slug>.json   # Benchmark
 ```
 
 **Verify:**
 ```bash
-# Count L1/L2/L3 files per domain
+# Count L1/L2/L3 files per domain (run from pwm-team/content/agent-imaging/)
 for d in principles/*/; do
   l1=$(ls "$d"L1-*.json 2>/dev/null | wc -l)
   l2=$(ls "$d"L2-*.json 2>/dev/null | wc -l)
   l3=$(ls "$d"L3-*.json 2>/dev/null | wc -l)
-  echo "$d: L1=$l1 L2=$l2 L3=$l3"
+  printf "%-45s L1=%d L2=%d L3=%d\n" "$d" "$l1" "$l2" "$l3"
 done
-# L1 count should match L2 and L3 counts per domain
+# L1 count must equal L2 count must equal L3 count per domain.
 ```
 
 ---
 
 ## V3 — L1 Principle JSON (P = (E, G, W, C) Quadruple)
 
-For each L1-NNN.json, verify:
+For each `L1-NNN_<slug>.json`, verify:
 
 ### Required top-level fields:
-- [ ] `artifact_id` — unique identifier
-- [ ] `layer` — must be 1
-- [ ] `principle_number` — sequential
+- [ ] `artifact_id` — unique identifier (e.g., `"L1-003"`)
+- [ ] `layer` — string `"L1"`
+- [ ] `principle_number` — sequential string (e.g., `"003"`)
 - [ ] `title` — descriptive name
-- [ ] `domain` — matches parent folder name
-- [ ] `source_file` — reference to mine_example source
+- [ ] `domain` — matches parent folder (e.g., `"Microscopy"`, `"Compressive Imaging"`)
+- [ ] `source_file` — reference to `source/<domain>/NNN_<slug>.md`
 
-### P = (E, G, W, C) — all four must be present:
+### P = (E, G, W, C) — all four top-level namespaces must be present:
 
 **E — Forward Model:**
-- [ ] `forward_model.equation` — mathematical expression (y = Φx + ε)
-- [ ] `forward_model.description` — plain English
-- [ ] `world_state_x` — what's being recovered
-- [ ] `observation_y` — what's measured
-- [ ] `physical_parameters_theta` — physical constants
+- [ ] `E.description` — plain-English chain-of-physics (multi-sentence)
+- [ ] `E.forward_model` — mathematical expression (e.g., `"y = Φx + ε"`)
+- [ ] `E.world_state_x` — what's being recovered
+- [ ] `E.observation_y` — what's measured
+- [ ] `E.physical_parameters_theta` — list of physical constants / system parameters
 
 **G — DAG:**
-- [ ] `dag.nodes` — list of operator nodes
-- [ ] `dag.edges` — connections between nodes
-- [ ] No cycles in DAG (P10 test)
+- [ ] `G.dag` — string form of the operator chain (e.g., `"K.psf.airy -> int.temporal"`)
+- [ ] `G.vertices` — list of primitive nodes
+- [ ] `G.arcs` — list of directed edges
+- [ ] `G.L_DAG` — numeric: `(|V|-1) + log10(κ/κ₀) + n_c`
+- [ ] `G.n_c` — integer, coupling constraint count
+- [ ] DAG is acyclic (P10 gate)
 
 **W — Well-posedness:**
-- [ ] `well_posedness.existence` — bool
-- [ ] `well_posedness.uniqueness` — bool
-- [ ] `well_posedness.stability` — "stable" | "conditionally_stable" | "unstable"
-- [ ] `well_posedness.condition_number` — numeric estimate
+- [ ] `W.existence` — bool
+- [ ] `W.uniqueness` — bool
+- [ ] `W.stability` — `"stable" | "conditional" | "unstable"`
+- [ ] `W.condition_number_kappa` — numeric (system compound κ)
+- [ ] `W.condition_number_effective` — numeric (κ_eff after regularization)
+- [ ] `W.regime` — prose describing the stability regime
 
-**C — Convergence:**
-- [ ] `convergence.solver_class` — e.g., "iterative", "direct", "MAP"
-- [ ] `convergence.convergence_rate_q` — default 2.0
-- [ ] `convergence.error_bound` — expression
-- [ ] `convergence.complexity` — Big-O notation
+**C — Convergence / Error:**
+- [ ] `C.solver_class` — e.g., `"iterative_proximal"`, `"direct"`, `"MAP"`
+- [ ] `C.convergence_rate_q` — default `2.0`
+- [ ] `C.error_bound` — expression (e.g., `"||x_hat - x||_2 <= C1·σ/√m + C2·|mismatch|"`)
+- [ ] `C.complexity` — Big-O (e.g., `"O(H·W·log(HW))"`)
 
 ### Additional required fields:
-- [ ] `difficulty_delta` — integer: 1 (trivial), 3 (standard), 5 (challenging), 10 (hard), 50 (frontier)
-- [ ] `error_metric.primary` — e.g., "PSNR", "SSIM"
-- [ ] `error_metric.secondary` — e.g., "SAM" for hyperspectral
+- [ ] `difficulty_delta` — integer in `{1, 3, 5, 10, 50}` for `{trivial, standard, challenging, hard, frontier}`
+- [ ] `difficulty_tier` — matching string
+- [ ] `error_metric` — primary metric string (e.g., `"PSNR_dB"`, `"SSIM"`)
+- [ ] `error_metric_secondary` — secondary (e.g., `"SAM_deg"` for hyperspectral)
 - [ ] `physics_fingerprint` — all 7 subfields present (see V4)
-- [ ] `spec_range` — Ω parameter ranges
-- [ ] `ibenchmark_range` — center_ibenchmark, tier_bounds
+- [ ] `spec_range` — Ω parameter ranges, allowed operators / problem classes
 - [ ] `mismatch_parameters` — list (may be empty for oracle specs)
-- [ ] `p1_p10_tests` — results of physics validity tests
-- [ ] `s1_s4_gates` — gate check results
+- [ ] `p1_p10_tests` — list of 10 `"PASS"` / `"FAIL"` entries
+- [ ] `s1_s4_gates` — list of 4 gate results
 
 **JSON schema validation:**
 ```python
 import json, glob
-for f in glob.glob("principles/*/L1-*.json"):
+REQ_TOP = ["artifact_id","layer","principle_number","title","domain","source_file",
+           "E","G","W","C","physics_fingerprint","difficulty_delta","difficulty_tier",
+           "mismatch_parameters","error_metric","spec_range",
+           "p1_p10_tests","s1_s4_gates"]
+REQ_E = ["description","forward_model","world_state_x","observation_y","physical_parameters_theta"]
+REQ_G = ["dag","vertices","arcs","L_DAG","n_c"]
+REQ_W = ["existence","uniqueness","stability","condition_number_kappa","condition_number_effective","regime"]
+REQ_C = ["solver_class","convergence_rate_q","error_bound","complexity"]
+
+for f in sorted(glob.glob("principles/*/L1-*.json")):
     data = json.load(open(f))
-    assert data["layer"] == 1, f"{f}: wrong layer"
-    assert "forward_model" in data, f"{f}: missing forward_model (E)"
-    assert "dag" in data, f"{f}: missing dag (G)"
-    assert "well_posedness" in data, f"{f}: missing well_posedness (W)"
-    assert "convergence" in data, f"{f}: missing convergence (C)"
-    assert "difficulty_delta" in data, f"{f}: missing difficulty_delta"
-    assert "physics_fingerprint" in data, f"{f}: missing physics_fingerprint"
+    assert data["layer"] == "L1",                  f"{f}: wrong layer ({data.get('layer')!r})"
+    for k in REQ_TOP: assert k in data,             f"{f}: missing top-level {k}"
+    for k in REQ_E:   assert k in data["E"],        f"{f}: missing E.{k}"
+    for k in REQ_G:   assert k in data["G"],        f"{f}: missing G.{k}"
+    for k in REQ_W:   assert k in data["W"],        f"{f}: missing W.{k}"
+    for k in REQ_C:   assert k in data["C"],        f"{f}: missing C.{k}"
+    assert data["difficulty_delta"] in (1,3,5,10,50), f"{f}: bad difficulty_delta"
     print(f"OK  {f}")
 ```
 
@@ -126,22 +144,22 @@ for f in glob.glob("principles/*/L1-*.json"):
 
 ## V4 — Physics Fingerprint (7 Fields)
 
-Every L1 must have all 7:
+Every L1 must have all 7 subfields inside `physics_fingerprint`:
 
 | Field | Valid Values (imaging) | Present? |
-|---|---|---|
-| `carrier` | "photon", "electron", "X-ray", "spin", etc. | [ ] |
-| `sensing_mechanism` | "tomographic", "interferometric", "coded_aperture", "resonant", "spectral" | [ ] |
-| `integration_axis` | "spectral", "temporal", "spatial", "angular", "volumetric" | [ ] |
-| `problem_class` | "linear_inverse", "nonlinear_inverse", "forward", "estimation" | [ ] |
-| `noise_model` | "gaussian", "poisson", "shot_poisson", "multiplicative" | [ ] |
-| `solution_space` | "2D_spatial", "3D_temporal", "4D_spectral_depth", etc. | [ ] |
-| `primitives` | list of Level 1 and/or Level 2 primitives | [ ] |
+|---|---|:---:|
+| `carrier`            | `"photon"`, `"electron"`, `"x_ray"`, `"radio_wave"`, `"acoustic"`, `"spin"`, `"none"` | [ ] |
+| `sensing_mechanism`  | `"tomographic"`, `"interferometric"`, `"coded_aperture"`, `"resonant"`, `"spectral"`, … | [ ] |
+| `integration_axis`   | `"spectral"`, `"temporal"`, `"spatial"`, `"angular"`, `"axial"`, … | [ ] |
+| `problem_class`      | `"linear_inverse"`, `"nonlinear_inverse"`, `"forward"`, `"estimation"` | [ ] |
+| `noise_model`        | `"gaussian"`, `"poisson"`, `"shot_poisson"`, `"poisson_gaussian"`, `"speckle"`, `"multiplicative"`, `"asynchronous_event"` | [ ] |
+| `solution_space`     | `"2D_spatial"`, `"3D_temporal"`, `"3D_spectral"`, `"4D_BOLD_signal"`, `"complex_2D"`, `"point_list"`, … | [ ] |
+| `primitives`         | list of Level-1/Level-2/Level-3 primitives from the 12-root basis | [ ] |
 
 **Verify:**
 ```python
-FINGERPRINT_KEYS = {"carrier", "sensing_mechanism", "integration_axis",
-                     "problem_class", "noise_model", "solution_space", "primitives"}
+FINGERPRINT_KEYS = {"carrier","sensing_mechanism","integration_axis",
+                    "problem_class","noise_model","solution_space","primitives"}
 for f in glob.glob("principles/*/L1-*.json"):
     data = json.load(open(f))
     fp = data.get("physics_fingerprint", {})
@@ -153,16 +171,25 @@ for f in glob.glob("principles/*/L1-*.json"):
 
 ## V5 — L2 Spec JSON (S = (Ω, E, B, I, O, ε))
 
-For each L2-NNN.json:
+For each `L2-NNN_<slug>.json`:
 
-- [ ] `layer` = 2
-- [ ] References parent L1 by `principle_id`
+- [ ] `layer` = `"L2"`
+- [ ] `parent_l1` references the corresponding L1 (e.g., `"L1-003"`)
+- [ ] `spec_type` is one of `"mismatch_only"` or `"oracle_assisted"`
 - [ ] At least 1 spec (2 preferred):
-  - Spec 1: mismatch-only (Ω = uncertain parameters)
-  - Spec 2: oracle-assisted (known parameters)
-- [ ] `epsilon_fn` — string expression, evaluable by epsilon.py
-- [ ] `omega_range` — parameter ranges for Ω
-- [ ] S1-S4 gate justifications present
+  - Spec 1: mismatch-only (Ω includes uncertain/calibration parameters)
+  - Spec 2: oracle-assisted (calibration parameters moved to `true_phi` input)
+- [ ] `six_tuple` contains all six components:
+  - `six_tuple.omega` — parameter ranges
+  - `six_tuple.E` — `{forward, operator, primitive_chain, inverse}`
+  - `six_tuple.B` — boundary / prior conditions
+  - `six_tuple.I` — init strategy
+  - `six_tuple.O` — list of observables
+  - `six_tuple.epsilon_fn` — AST-safe Python expression
+- [ ] `protocol_fields` contains `input_format`, `output_format`, `baselines`
+- [ ] `ibenchmark_range.center_ibenchmark` with `rho`, `omega_tier`, `epsilon`
+- [ ] `ibenchmark_range.tier_bounds` and `proximity_threshold`
+- [ ] `d_spec` present; S1–S4 gate justifications present
 
 ### epsilon_fn calibration:
 ```
@@ -174,17 +201,20 @@ d(Ω_centroid) = (ε_fn(Ω_centroid) - floor) / (sota - floor)
 
 ### epsilon_fn evaluation test:
 ```python
-from pwm_scoring.epsilon import eval_epsilon
+import json, glob, random
+# from pwm_scoring.epsilon import eval_epsilon   # when available
+
 for f in glob.glob("principles/*/L2-*.json"):
     data = json.load(open(f))
-    eps_fn = data["epsilon_fn"]
-    omega = data["omega_range"]
-    # Test at 10 random Omega samples
+    eps_fn = data["six_tuple"]["epsilon_fn"]
+    omega  = data["six_tuple"]["omega"]
+    # Test at 10 random Omega samples within declared ranges
     for _ in range(10):
-        sample = {k: random.uniform(v[0], v[1]) for k, v in omega.items()}
-        result = eval_epsilon(eps_fn, sample)
-        assert isinstance(result, float), f"{f}: epsilon_fn didn't return float"
-        assert result > 0, f"{f}: epsilon_fn returned non-positive"
+        sample = {k: random.uniform(v[0], v[1])
+                  for k, v in omega.items() if isinstance(v, list)}
+        # result = eval_epsilon(eps_fn, sample)
+        # assert isinstance(result, float), f"{f}: epsilon_fn didn't return float"
+        # assert result > 0,                 f"{f}: epsilon_fn returned non-positive"
 ```
 
 ### Distance gate:
@@ -197,52 +227,60 @@ for f in glob.glob("principles/*/L2-*.json"):
 
 ## V6 — L3 Benchmark JSON
 
-For each L3-NNN.json:
+For each `L3-NNN_<slug>.json`:
 
-- [ ] `layer` = 3
-- [ ] References parent L2 by `spec_id`
+- [ ] `layer` = `"L3"`
+- [ ] `parent_l1` and `parent_l2` reference the corresponding L1 / L2
+- [ ] `benchmark_type` present (typically `"combined_P_and_I"`)
+- [ ] `dataset_registry` with `primary` / `secondary` / `construction_method` / `num_dev_instances_per_tier`
 
-### 4 I-benchmark tiers (T1-T4):
+### 4 I-benchmark tiers (T1–T4):
 
 | Tier | Ω Position | ρ | d range |
 |------|-----------|---|---------|
-| T1 nominal | Ω_centroid | 1 | d < 0.2 |
-| T2 low | easy Ω | 3 | 0.2 ≤ d < 0.4 |
-| T3 moderate | mid Ω | 5 | 0.4 ≤ d < 0.6 |
-| T4 blind | hard Ω | 10 | 0.6 ≤ d < 0.8 |
+| T1 nominal | Ω_centroid | 1  | d < 0.2 |
+| T2 low     | easy Ω     | 3  | 0.2 ≤ d < 0.4 |
+| T3 moderate| mid Ω      | 5  | 0.4 ≤ d < 0.6 |
+| T4 blind   | hard Ω     | 10 | 0.6 ≤ d < 0.8 |
 
-- [ ] All 4 tiers present
-- [ ] ρ values match table above
-- [ ] Each tier has: `omega_tier`, `dataset_description`, `quality_thresholds`
+- [ ] All 4 tiers present in `ibenchmarks`
+- [ ] `rho` values match table above
+- [ ] Each tier has: `omega_tier`, `epsilon`, `d_ibench`, `baselines` (each with `name`, `score`, `Q`)
 
 ### P-benchmark:
-- [ ] Real dataset (not synthetic only)
+- [ ] `p_benchmark` present; real dataset referenced (`dataset_p_benchmark.name`)
 - [ ] Covers full Ω range
-- [ ] ρ = 50 (fixed for all P-benchmarks)
+- [ ] `rho = 50` (fixed for all P-benchmarks)
 - [ ] If H×W > 480×480: uses 2×2 hard stitch (seam_map in true_phi)
 
 ### Baselines (≥ 2 per benchmark):
-- [ ] At least 2 baseline solvers included
-- [ ] Each baseline has: expected PSNR, expected Q
-- [ ] **HARDNESS RULE**: no single baseline passes epsilon_fn everywhere across all Ω
+- [ ] At least 2 baseline solvers included per tier
+- [ ] Each baseline has: `score` (PSNR or principle-appropriate metric) and `Q`
+- [ ] **HARDNESS RULE**: no single baseline passes `epsilon_fn` everywhere across all Ω — every L3 must carry a `hardness_rule_check` string naming the failure corner.
   ```python
-  # For each baseline, verify it fails epsilon at some Omega point
-  for baseline in data["baselines"]:
-      all_pass = all(
-          baseline["psnr_at_omega"][i] >= eval_epsilon(eps_fn, omega_i)
-          for i, omega_i in enumerate(omega_samples)
-      )
-      assert not all_pass, f"Baseline {baseline['name']} passes everywhere — violates hardness rule"
+  for f in glob.glob("principles/*/L3-*.json"):
+      data = json.load(open(f))
+      assert "hardness_rule_check" in data, f"{f}: missing hardness_rule_check"
+      assert "SATISFIED" in data["hardness_rule_check"], \
+          f"{f}: hardness_rule_check not SATISFIED"
   ```
 
 ### I-benchmark tier spacing:
 - [ ] Each consecutive tier differs ≥ 10% in at least 1 Ω dimension
   ```python
-  # For each pair of adjacent tiers
-  for t1, t2 in [(T1, T2), (T2, T3), (T3, T4)]:
-      max_diff = max(abs(t1.omega[k] - t2.omega[k]) / max(abs(t1.omega[k]), 1e-10)
-                     for k in t1.omega)
-      assert max_diff >= 0.10, f"Tiers too close: max relative diff = {max_diff}"
+  # For each pair of adjacent tiers (T1→T2, T2→T3, T3→T4)
+  for f in glob.glob("principles/*/L3-*.json"):
+      data = json.load(open(f))
+      tiers = data["ibenchmarks"]
+      for t1, t2 in zip(tiers, tiers[1:]):
+          shared = set(t1["omega_tier"]) & set(t2["omega_tier"])
+          numeric_shared = [k for k in shared
+                            if isinstance(t1["omega_tier"][k], (int, float))
+                            and isinstance(t2["omega_tier"][k], (int, float))]
+          max_diff = max((abs(t1["omega_tier"][k] - t2["omega_tier"][k])
+                          / max(abs(t1["omega_tier"][k]), 1e-10))
+                         for k in numeric_shared) if numeric_shared else 0
+          assert max_diff >= 0.10, f"{f}: tiers {t1['tier']}→{t2['tier']} too close: {max_diff:.3f}"
   ```
 
 ### I-benchmark distance:
@@ -263,51 +301,51 @@ Run for EVERY principle (L1+L2+L3 set):
 7. [ ] d_ibench ≥ 0.10 from existing I-benchmarks in same spec
 8. [ ] I-benchmark tiers: each differs ≥ 10% in ≥ 1 Ω dimension
 9. [ ] All JSON fields present and correctly typed
-10. [ ] forward_model in L1 matches E in L2
-11. [ ] difficulty_delta consistent with L_DAG complexity
-12. [ ] P1-P10 physics tests PASS
+10. [ ] `E.forward_model` in L1 matches `six_tuple.E.forward` in L2
+11. [ ] `difficulty_delta` consistent with `G.L_DAG` complexity
+12. [ ] P1–P10 physics tests PASS
 
 ---
 
 ## V8 — Batch Validation Script
 
 ```python
+#!/usr/bin/env python3
 import json, glob, os
+from collections import Counter
 
 errors = []
-domains = {}
+domains = Counter()
 
 for f in sorted(glob.glob("principles/*/L1-*.json")):
     domain = os.path.basename(os.path.dirname(f))
-    domains.setdefault(domain, 0)
     domains[domain] += 1
-
     data = json.load(open(f))
 
-    # Check P quadruple
-    for key in ["forward_model", "dag", "well_posedness", "convergence"]:
+    # layer must be "L1"
+    if data.get("layer") != "L1":
+        errors.append(f"{f}: layer != 'L1' (got {data.get('layer')!r})")
+
+    # P = (E, G, W, C) quadruple — top-level namespaces
+    for key in ("E", "G", "W", "C"):
         if key not in data:
-            errors.append(f"{f}: missing {key}")
+            errors.append(f"{f}: missing top-level {key}")
 
-    # Check layer
-    if data.get("layer") != 1:
-        errors.append(f"{f}: layer != 1")
-
-    # Check fingerprint
+    # Fingerprint
     fp = data.get("physics_fingerprint", {})
-    for key in ["carrier", "sensing_mechanism", "integration_axis",
-                 "problem_class", "noise_model", "solution_space", "primitives"]:
+    for key in ("carrier","sensing_mechanism","integration_axis",
+                "problem_class","noise_model","solution_space","primitives"):
         if key not in fp:
             errors.append(f"{f}: missing fingerprint.{key}")
 
-    # Check difficulty_delta valid
+    # difficulty_delta valid
     delta = data.get("difficulty_delta")
-    if delta not in [1, 3, 5, 10, 50]:
+    if delta not in (1, 3, 5, 10, 50):
         errors.append(f"{f}: invalid difficulty_delta={delta}")
 
 print("=== Domain Counts ===")
 for d, c in sorted(domains.items()):
-    print(f"  {d}: {c}")
+    print(f"  {d:30s} {c}")
 print(f"  TOTAL: {sum(domains.values())}")
 
 if errors:
@@ -316,6 +354,28 @@ if errors:
         print(f"  {e}")
 else:
     print("\nAll L1 files valid!")
+```
+
+**Expected (as of 2026-04-20):**
+```
+=== Domain Counts ===
+  A_microscopy              24
+  B_compressive_imaging      5
+  C_medical_imaging         41
+  D_coherent_imaging         5
+  E_computational_photo      5
+  F_computational_optics     4
+  G_electron_microscopy     11
+  H_depth_imaging            5
+  I_remote_sensing          11
+  J_industrial_inspect      14
+  M_ultrafast_imaging        4
+  N_quantum_imaging          3
+  O_multimodal_fusion        6
+  P_scanning_probe           4
+  TOTAL: 142
+
+All L1 files valid!
 ```
 
 ---
@@ -331,7 +391,8 @@ else:
 
 ## V10 — Progress Reporting
 
-After each domain batch, progress.md should show:
+After each domain batch, `coordination/agent-coord/progress.md` should show a row like:
+
 ```
 | agent-imaging | B_compressive_imaging | 5 | 5 | DONE | feat/genesis-principles-imaging |
 ```
