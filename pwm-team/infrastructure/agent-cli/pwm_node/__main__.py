@@ -14,11 +14,11 @@ import argparse
 import sys
 from pathlib import Path
 
-from pwm_node.commands import benchmarks, inspect, verify
+from pwm_node.commands import balance, benchmarks, inspect, verify
 
 
-# Online commands — stubbed for next session
-_CHAIN_COMMANDS = {"mine", "submit-cert", "sp", "balance", "stake"}
+# Online commands — stubbed pending further sessions
+_CHAIN_COMMANDS = {"mine", "submit-cert", "sp", "stake"}
 
 
 def _repo_root_default() -> Path:
@@ -83,8 +83,16 @@ def build_parser() -> argparse.ArgumentParser:
     vp.add_argument("--solver-output", type=Path, help="Solver output directory to check.")
     vp.set_defaults(handler=verify.run)
 
-    # Stubs for chain-dependent commands (wire up in next session)
-    for cmd in ["mine", "submit-cert", "balance", "stake", "sp"]:
+    # balance — show native ETH balance (requires --network testnet/mainnet)
+    balp = sub.add_parser(
+        "balance",
+        help="Show native ETH balance on testnet/mainnet (--network required).",
+    )
+    balp.add_argument("--address", help="Address to query (defaults to PWM_PRIVATE_KEY signer).")
+    balp.set_defaults(handler=balance.run)
+
+    # Stubs for remaining chain-dependent commands
+    for cmd in ["mine", "submit-cert", "stake", "sp"]:
         s = sub.add_parser(cmd, help=f"[Phase C stub] {cmd} — chain-dependent; next session.")
         s.add_argument("args", nargs="*")
         s.set_defaults(handler=_chain_stub)
