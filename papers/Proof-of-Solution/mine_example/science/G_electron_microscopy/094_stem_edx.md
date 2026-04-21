@@ -1,8 +1,8 @@
-# Stem Edx — Complete Four-Layer Walkthrough
+# STEM-EDX — Complete Four-Layer Walkthrough
 
-**Principle #94: Stem Edx**
-Domain: Microscopy | Difficulty: Standard (delta=2) | Carrier: Photon
-Verification: draft — base-copy from pilot; needs physics + numerics + cross-domain verifier sign-off
+**Principle #94: STEM-EDX**
+Domain: Electron Microscopy | Difficulty: Standard (delta=3) | Carrier: Electron
+Verification: draft (identity-polished; physics body still widefield-templated) — Elemental mapping via X-ray emission lines at each STEM probe position. Phase F re-author queued.
 
 ---
 

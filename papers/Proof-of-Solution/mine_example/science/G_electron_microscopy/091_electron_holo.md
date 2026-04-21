@@ -1,8 +1,8 @@
-# Electron Holo — Complete Four-Layer Walkthrough
+# Off-Axis Electron Holography — Complete Four-Layer Walkthrough
 
-**Principle #91: Electron Holo**
-Domain: Microscopy | Difficulty: Standard (delta=2) | Carrier: Photon
-Verification: draft — base-copy from pilot; needs physics + numerics + cross-domain verifier sign-off
+**Principle #91: Off-Axis Electron Holography**
+Domain: Electron Microscopy | Difficulty: Advanced (delta=4) | Carrier: Electron
+Verification: draft (identity-polished; physics body still widefield-templated) — Phase retrieval via electron biprism interference; magnetic/electric field mapping. Phase F re-author queued.
 
 ---
 

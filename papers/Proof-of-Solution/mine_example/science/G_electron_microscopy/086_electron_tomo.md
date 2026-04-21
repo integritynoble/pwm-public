@@ -1,8 +1,8 @@
-# Electron Tomo — Complete Four-Layer Walkthrough
+# Electron Tomography — Complete Four-Layer Walkthrough
 
-**Principle #86: Electron Tomo**
-Domain: Microscopy | Difficulty: Standard (delta=2) | Carrier: Photon
-Verification: draft — base-copy from pilot; needs physics + numerics + cross-domain verifier sign-off
+**Principle #86: Electron Tomography**
+Domain: Electron Microscopy | Difficulty: Standard (delta=3) | Carrier: Electron
+Verification: draft (identity-polished; physics body still widefield-templated) — Tilt-series 3D reconstruction; weighted back-projection (WBP) + SIRT baselines. Phase F re-author queued.
 
 ---
 

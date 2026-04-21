@@ -1,8 +1,8 @@
-# Ebsd — Complete Four-Layer Walkthrough
+# Electron Backscatter Diffraction (EBSD) — Complete Four-Layer Walkthrough
 
-**Principle #89: Ebsd**
-Domain: Microscopy | Difficulty: Standard (delta=2) | Carrier: Photon
-Verification: draft — base-copy from pilot; needs physics + numerics + cross-domain verifier sign-off
+**Principle #89: Electron Backscatter Diffraction (EBSD)**
+Domain: Electron Microscopy | Difficulty: Standard (delta=3) | Carrier: Electron
+Verification: draft (identity-polished; physics body still widefield-templated) — Crystallographic orientation mapping from Kikuchi patterns. Phase F re-author queued.
 
 ---
 

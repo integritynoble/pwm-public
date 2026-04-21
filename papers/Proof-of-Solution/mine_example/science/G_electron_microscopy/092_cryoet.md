@@ -1,8 +1,8 @@
-# Cryoet — Complete Four-Layer Walkthrough
+# Cryo-Electron Tomography (Cryo-ET) — Complete Four-Layer Walkthrough
 
-**Principle #92: Cryoet**
-Domain: Microscopy | Difficulty: Standard (delta=2) | Carrier: Photon
-Verification: draft — base-copy from pilot; needs physics + numerics + cross-domain verifier sign-off
+**Principle #92: Cryo-Electron Tomography (Cryo-ET)**
+Domain: Electron Microscopy | Difficulty: Advanced (delta=4) | Carrier: Electron
+Verification: draft (identity-polished; physics body still widefield-templated) — Frozen samples + tilt series; radiation dose budget is the binding constraint. Phase F re-author queued.
 
 ---
 

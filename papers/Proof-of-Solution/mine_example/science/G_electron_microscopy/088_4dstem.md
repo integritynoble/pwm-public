@@ -1,8 +1,8 @@
-# 4dstem — Complete Four-Layer Walkthrough
+# 4D-STEM — Complete Four-Layer Walkthrough
 
-**Principle #88: 4dstem**
-Domain: Microscopy | Difficulty: Standard (delta=2) | Carrier: Photon
-Verification: draft — base-copy from pilot; needs physics + numerics + cross-domain verifier sign-off
+**Principle #88: 4D-STEM**
+Domain: Electron Microscopy | Difficulty: Advanced (delta=4) | Carrier: Electron
+Verification: draft (identity-polished; physics body still widefield-templated) — Full diffraction pattern at every scan position; 4D data cube; ptychographic reconstruction possible. Phase F re-author queued.
 
 ---
 

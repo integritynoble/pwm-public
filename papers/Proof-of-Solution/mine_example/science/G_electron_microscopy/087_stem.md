@@ -1,8 +1,8 @@
-# Stem — Complete Four-Layer Walkthrough
+# Scanning Transmission Electron Microscopy (STEM) — Complete Four-Layer Walkthrough
 
-**Principle #87: Stem**
-Domain: Microscopy | Difficulty: Standard (delta=2) | Carrier: Photon
-Verification: draft — base-copy from pilot; needs physics + numerics + cross-domain verifier sign-off
+**Principle #87: Scanning Transmission Electron Microscopy (STEM)**
+Domain: Electron Microscopy | Difficulty: Standard (delta=3) | Carrier: Electron
+Verification: draft (identity-polished; physics body still widefield-templated) — Probe-scan + pixelated detectors (ADF, ABF, BF); atomic-resolution imaging. Phase F re-author queued.
 
 ---
 

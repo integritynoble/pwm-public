@@ -1,8 +1,8 @@
-# Eels — Complete Four-Layer Walkthrough
+# Electron Energy-Loss Spectroscopy (EELS) — Complete Four-Layer Walkthrough
 
-**Principle #90: Eels**
-Domain: Microscopy | Difficulty: Standard (delta=2) | Carrier: Photon
-Verification: draft — base-copy from pilot; needs physics + numerics + cross-domain verifier sign-off
+**Principle #90: Electron Energy-Loss Spectroscopy (EELS)**
+Domain: Electron Microscopy | Difficulty: Standard (delta=3) | Carrier: Electron
+Verification: draft (identity-polished; physics body still widefield-templated) — Spectroscopy at each STEM probe position; core-loss edges, plasmons. Phase F re-author queued.
 
 ---
 

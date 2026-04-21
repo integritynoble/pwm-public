@@ -1,8 +1,8 @@
-# Fibsem — Complete Four-Layer Walkthrough
+# Focused Ion Beam SEM (FIB-SEM) — Complete Four-Layer Walkthrough
 
-**Principle #93: Fibsem**
-Domain: Microscopy | Difficulty: Standard (delta=2) | Carrier: Photon
-Verification: draft — base-copy from pilot; needs physics + numerics + cross-domain verifier sign-off
+**Principle #93: Focused Ion Beam SEM (FIB-SEM)**
+Domain: Electron Microscopy | Difficulty: Standard (delta=3) | Carrier: Electron
+Verification: draft (identity-polished; physics body still widefield-templated) — Serial sectioning by ion beam + SEM imaging; 3D reconstruction. Phase F re-author queued.
 
 ---
 
