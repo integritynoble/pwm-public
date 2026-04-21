@@ -8,7 +8,7 @@
   "source_file": "AI_robotics/447_inverse_kinematics.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Inverse kinematics: find joint angles q that achieve desired end-effector pose T_desired.",
+    "description": "Inverse Kinematics: Inverse kinematics: find joint angles q that achieve desired end-effector pose T_desired. The forward operator produces the measurement through a 3-node primitive DAG (S.ik.jacobian_pseudo_inverse\u2026); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=3 with effective condition number kappa_eff~200; singularity_proximity, joint_limit_approach set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "FK(q) = T_desired; solved iteratively via Jacobian J: dq = J^+ * de",
     "world_state_x": "joint angle vector q in R ** n satisfying FK(q) = T_desired",
     "observation_y": "desired end-effector pose (position + orientation) as input",
@@ -40,13 +40,13 @@
     "condition_number_kappa": 5000,
     "condition_number_effective": 200,
     "condition_number_mismatched": 1000,
-    "regime": "Multiple solutions for redundant robots; singularities cause rank deficiency; DLS provides robustness near singularities."
+    "regime": "Existence of the recovered joint_angle_vector is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 200); singularity_proximity dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Deterministic sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "Jacobian_pseudo_inverse or DLS or FABRIK or analytical_closed_form",
+    "solver_class": "classical [Jacobian_pseudo_inverse or DLS or FABRIK or analytical_closed_form]",
     "convergence_rate_q": 2.0,
-    "error_bound": "position error < 0.1 mm in 50 iterations for non-singular config",
-    "complexity": "O(n ** 3 * N_iter) per IK solution"
+    "error_bound": "Data-fidelity bound: position error < 0.1 mm in 50 iterations for non-singular config. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~200. Mismatch-induced bias + C2 * |singularity_proximity|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(n ** 3 * N_iter) per IK solution per iteration"
   },
   "physics_fingerprint": {
     "carrier": "N/A",

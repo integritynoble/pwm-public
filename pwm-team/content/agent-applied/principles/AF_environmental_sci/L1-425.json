@@ -8,7 +8,7 @@
   "source_file": "AF_environmental_sci/425_groundwater_contaminant.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Groundwater contaminant transport inversion: infer hydraulic conductivity K field from head and concentration data.",
+    "description": "Groundwater Contaminant Transport Inversion: Groundwater contaminant transport inversion: infer hydraulic conductivity K field from head and concentration data. The forward operator produces the measurement through a 3-node primitive DAG (M.darcy.groundwater_flow\u2026); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=5 with effective condition number kappa_eff~2000; density_dependent_flow_effects, preferential_flow_paths set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "nabla*(K*nabla h) = S_s*(dh/dt) + q (Darcy); dC/dt + v*nabla C = nabla*(D*nabla C) - lambda*C",
     "world_state_x": "hydraulic conductivity field K(x,y,z) in 3D aquifer domain",
     "observation_y": "hydraulic head h(t) at N_wells observation wells, concentration breakthrough curves",
@@ -40,13 +40,13 @@
     "condition_number_kappa": 100000.0,
     "condition_number_effective": 2000,
     "condition_number_mismatched": 10000.0,
-    "regime": "Highly heterogeneous K spans 6 orders of magnitude; non-unique solutions; kriging provides spatial structure; ensemble methods handle non-Gaussianity."
+    "regime": "Existence of the recovered 3D_hydraulic_conductivity is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 2000); density_dependent_flow_effects dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Measurement gaussian sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "ensemble_Kalman_smoother or pilot_point_regularization (PEST)",
+    "solver_class": "sequential-filter [ensemble_Kalman_smoother or pilot_point_regularization (PEST)]",
     "convergence_rate_q": 1.5,
-    "error_bound": "head RMSE < 0.1 m; concentration within factor 2",
-    "complexity": "O(N_ensemble * N_sim * N_iter) or O(N_pilot_points ** 2 * N_obs) for PEST"
+    "error_bound": "Data-fidelity bound: head RMSE < 0.1 m; concentration within factor 2. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~2000. Mismatch-induced bias + C2 * |density_dependent_flow_effects|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(N_ensemble * N_sim * N_iter) or O(N_pilot_points ** 2 * N_obs) for PEST per iteration"
   },
   "physics_fingerprint": {
     "carrier": "N/A",

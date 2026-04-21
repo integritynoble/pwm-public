@@ -8,7 +8,7 @@
   "source_file": "AM_particle_physics/483_calorimeter_response.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Calorimeter calibration: determine energy response and resolution functions from test beam or in-situ data.",
+    "description": "Calorimeter Energy Response Inversion: Calorimeter calibration: determine energy response and resolution functions from test beam or in-situ data. The forward operator produces the measurement through a 3-node primitive DAG (M.shower.em_hadronic\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=5 with effective condition number kappa_eff~500; aging_degradation_percent, temperature_variation_effect set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "E_meas = a * E_true + b + sigma_E * noise; EM linearity + hadronic e/h ratio",
     "world_state_x": "calibration coefficients a(eta, phi, E) and resolution parameters sigma_E/E",
     "observation_y": "measured cluster energies E_meas for single particles (test beam) or in-situ (Z->ee, pi0->gamma gamma)",
@@ -40,13 +40,13 @@
     "condition_number_kappa": 10000.0,
     "condition_number_effective": 500,
     "condition_number_mismatched": 2000,
-    "regime": "EM calorimeter well-understood; hadronic compensation (e/h ~ 1) requires dual-readout; forward region less constrained."
+    "regime": "Existence of the recovered energy_calibration_coefficients is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 500); aging_degradation_percent dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Detector gaussian sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "in_situ_intercalibration or test_beam_chi2_minimization",
+    "solver_class": "classical [in_situ_intercalibration or test_beam_chi2_minimization]",
     "convergence_rate_q": 2.0,
-    "error_bound": "energy resolution < 10%/sqrt(E) for EM, < 50%/sqrt(E) for hadronic",
-    "complexity": "O(N_cells * N_events) for calibration coefficient determination"
+    "error_bound": "Data-fidelity bound: energy resolution < 10%/sqrt(E) for EM, < 50%/sqrt(E) for hadronic. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~500. Mismatch-induced bias + C2 * |aging_degradation_percent|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(N_cells * N_events) for calibration coefficient determination per iteration"
   },
   "physics_fingerprint": {
     "carrier": "particle",

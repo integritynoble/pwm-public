@@ -8,7 +8,7 @@
   "source_file": "AF_environmental_sci/421_river_hydraulics.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "River hydraulics inversion: infer Manning's roughness and bathymetry from water level and discharge observations.",
+    "description": "River Hydraulics Shallow Water Inversion: River hydraulics inversion: infer Manning's roughness and bathymetry from water level and discharge observations. The forward operator produces the measurement through a 3-node primitive DAG (M.swe.saint_venant\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~80; bank_overflow_uncertainty, sediment_transport_coupling set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "dA/dt + dQ/dx = q_lat; dQ/dt + d(Q ** 2/A)/dx + g*A*dh/dx + g*A*S_f = 0; S_f = n ** 2*Q ** 2/(A ** 2*R^{4/3})",
     "world_state_x": "Manning's roughness n(x) and cross-section bathymetry A(h, x) along river reach",
     "observation_y": "water stage H(t) at N_gauges gauging stations and discharge Q(t)",
@@ -40,13 +40,13 @@
     "condition_number_kappa": 2000,
     "condition_number_effective": 80,
     "condition_number_mismatched": 400,
-    "regime": "Subcritical flow (Fr < 1) for most rivers; Manning's n non-unique at high water; floodplain dominated at peak flow."
+    "regime": "Existence of the recovered Manning_roughness_bathymetry is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 80); bank_overflow_uncertainty dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Gaussian sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "HEC-RAS or TELEMAC or adjoint_Saint_Venant",
+    "solver_class": "classical [HEC-RAS or TELEMAC or adjoint_Saint_Venant]",
     "convergence_rate_q": 2.0,
-    "error_bound": "stage RMSE < 0.1 m for calibrated HEC-RAS model",
-    "complexity": "O(N_cross_sections * N_timesteps) for 1D routing"
+    "error_bound": "Data-fidelity bound: stage RMSE < 0.1 m for calibrated HEC-RAS model. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~80. Mismatch-induced bias + C2 * |bank_overflow_uncertainty|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(N_cross_sections * N_timesteps) for 1D routing per iteration"
   },
   "physics_fingerprint": {
     "carrier": "N/A",

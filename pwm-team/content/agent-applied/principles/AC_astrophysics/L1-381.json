@@ -8,7 +8,7 @@
   "source_file": "AC_astrophysics/381_type_ia_distance.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "SN Ia distance standardization: calibrate stretch-color-luminosity relation to minimize Hubble residuals and constrain H0.",
+    "description": "Type Ia Supernova Distance Standardization: SN Ia distance standardization: calibrate stretch-color-luminosity relation to minimize Hubble residuals and constrain H0. The forward operator produces the measurement through a 3-node primitive DAG (M.sed.salt2_template\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~15; Malmquist_bias, peculiar_velocity_field_km_s set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "mu = m_B - M + alpha*x1 - beta*c + delta_M; H0 from slope of mu vs. log10(z)",
     "world_state_x": "Hubble constant H0 and dark energy equation of state w",
     "observation_y": "Hubble diagram {mu_i vs. z_i} for N_SN type Ia supernovae",
@@ -41,13 +41,13 @@
     "condition_number_kappa": 300,
     "condition_number_effective": 15,
     "condition_number_mismatched": 80,
-    "regime": "Gaussian likelihood; stretch-color standardization well-understood; host mass step is 0.07 mag systematic."
+    "regime": "Existence of the recovered distance_modulus_H0 is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 15); Malmquist_bias dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Observation gaussian sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "BEAMS or UNITY or BHM hierarchical Bayesian",
+    "solver_class": "statistical [BEAMS or UNITY or BHM hierarchical Bayesian]",
     "convergence_rate_q": 2.0,
-    "error_bound": "sigma(H0) < 1 km/s/Mpc for N_SN > 200 in Hubble flow",
-    "complexity": "O(N_SN * N_params) for likelihood evaluation"
+    "error_bound": "Data-fidelity bound: sigma(H0) < 1 km/s/Mpc for N_SN > 200 in Hubble flow. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~15. Mismatch-induced bias + C2 * |Malmquist_bias|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(N_SN * N_params) for likelihood evaluation per iteration"
   },
   "physics_fingerprint": {
     "carrier": "photon",

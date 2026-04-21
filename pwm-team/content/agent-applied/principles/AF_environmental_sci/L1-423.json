@@ -8,7 +8,7 @@
   "source_file": "AF_environmental_sci/423_contaminant_source_id.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Contaminant source identification: locate unknown pollution source and quantify emission history from sparse observations.",
+    "description": "Contaminant Source Identification: Contaminant source identification: locate unknown pollution source and quantify emission history from sparse observations. The forward operator produces the measurement through a 3-node primitive DAG (M.transport.adjoint_source\u2026); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=5 with effective condition number kappa_eff~500; transport_model_uncertainty, background_contamination set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "c(x,t) = integral G(x,t; x_s, t_s) * Q(x_s, t_s) dV dt_s (Green's function convolution)",
     "world_state_x": "source location (x_s, y_s, z_s) and emission rate history Q(t_s)",
     "observation_y": "contaminant concentration measurements c_i(x_i, t_i) at N_sensors locations",
@@ -40,13 +40,13 @@
     "condition_number_kappa": 10000.0,
     "condition_number_effective": 500,
     "condition_number_mismatched": 2000,
-    "regime": "Highly ill-posed; multiple source combinations may explain observations; prior on source location and smoothness regularizes."
+    "regime": "Existence of the recovered source_location_strength_time is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 500); transport_model_uncertainty dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Lognormal sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "Bayesian_MCMC_source or adjoint_minimization",
+    "solver_class": "statistical [Bayesian_MCMC_source or adjoint_minimization]",
     "convergence_rate_q": 2.0,
-    "error_bound": "source location within 100 m for 10+ sensors in 1 km domain",
-    "complexity": "O(N_MCMC_samples * N_sensors * N_timesteps) for Bayesian inversion"
+    "error_bound": "Data-fidelity bound: source location within 100 m for 10+ sensors in 1 km domain. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~500. Mismatch-induced bias + C2 * |transport_model_uncertainty|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(N_MCMC_samples * N_sensors * N_timesteps) for Bayesian inversion per iteration"
   },
   "physics_fingerprint": {
     "carrier": "N/A",

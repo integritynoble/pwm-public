@@ -8,7 +8,7 @@
   "source_file": "AG_control_theory/431_system_identification.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "System identification: estimate state-space matrices (A,B,C,D) or ARX coefficients from input-output measurements.",
+    "description": "System Identification (N4SID/ARX): System identification: estimate state-space matrices (A,B,C,D) or ARX coefficients from input-output measurements. The forward operator produces the measurement through a 3-node primitive DAG (S.n4sid.subspace_id\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~100; undermodeling_order_mismatch, feedback_in_data set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "y(k) = C*x(k) + D*u(k) + e(k); x(k+1) = A*x(k) + B*u(k) + w(k); N4SID via block Hankel matrix SVD",
     "world_state_x": "system matrices (A,B,C,D) of order n, input delay",
     "observation_y": "input-output sequences {u(k), y(k)} for k=1..N",
@@ -40,13 +40,13 @@
     "condition_number_kappa": 2000,
     "condition_number_effective": 100,
     "condition_number_mismatched": 500,
-    "regime": "Consistent for large N under PE condition; order selection via AIC/BIC/MDL; closed-loop identification requires instrumental variables."
+    "regime": "Existence of the recovered system_matrices_ABCD is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 100); undermodeling_order_mismatch dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Gaussian sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "N4SID_subspace or ARX_RLS or PEM_prediction_error_method",
+    "solver_class": "classical [N4SID_subspace or ARX_RLS or PEM_prediction_error_method]",
     "convergence_rate_q": 2.0,
-    "error_bound": "model fit > 80% for good data; N4SID optimal for large N",
-    "complexity": "O(N * n ** 2) for subspace methods"
+    "error_bound": "Data-fidelity bound: model fit > 80% for good data; N4SID optimal for large N. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~100. Mismatch-induced bias + C2 * |undermodeling_order_mismatch|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(N * n ** 2) for subspace methods per iteration"
   },
   "physics_fingerprint": {
     "carrier": "N/A",

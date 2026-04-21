@@ -8,7 +8,7 @@
   "source_file": "AE_computational_bio/408_wright_fisher.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Wright-Fisher inference: estimate effective population size Ne, selection coefficient s, and mutation rates from allele frequency data.",
+    "description": "Wright-Fisher Population Genetics: Wright-Fisher inference: estimate effective population size Ne, selection coefficient s, and mutation rates from allele frequency data. The forward operator produces the measurement through a 3-node primitive DAG (M.wf.wright_fisher_drift\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=5 with effective condition number kappa_eff~100; population_structure_subdivision, bottleneck_demographic_history set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "p_{t+1} | p_t ~ Binomial(2Ne, p_t + s*p_t*(1-p_t)); allele frequencies drift under genetic drift and selection",
     "world_state_x": "effective population size Ne and selection coefficient s for each variant",
     "observation_y": "allele frequencies p(t) from time-series sequencing or cross-sectional population samples",
@@ -40,13 +40,13 @@
     "condition_number_kappa": 2000,
     "condition_number_effective": 100,
     "condition_number_mismatched": 500,
-    "regime": "Genetic drift strong for small Ne; selection dominates for |s| >> 1/(2Ne); demographic inference requires multiple loci to distinguish Ne from selection."
+    "regime": "Existence of the recovered population_genetic_parameter_vector is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 100); population_structure_subdivision dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Multinomial sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "MCMC_Wright_Fisher or ABC_population_genetics or WFABC",
+    "solver_class": "learned [MCMC_Wright_Fisher or ABC_population_genetics or WFABC]",
     "convergence_rate_q": 2.0,
-    "error_bound": "log(Ne) uncertainty < 0.3 for 10+ generations of data",
-    "complexity": "O(N_generations * N_loci * N_MCMC)"
+    "error_bound": "Data-fidelity bound: log(Ne) uncertainty < 0.3 for 10+ generations of data. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~100. Mismatch-induced bias + C2 * |population_structure_subdivision|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(N_generations * N_loci * N_MCMC) per iteration"
   },
   "physics_fingerprint": {
     "carrier": "N/A",

@@ -8,7 +8,7 @@
   "source_file": "AH_comp_finance/441_monte_carlo_option.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Monte Carlo option pricing: estimate exotic option price via simulation with variance reduction techniques.",
+    "description": "Monte Carlo Option Pricing: Monte Carlo option pricing: estimate exotic option price via simulation with variance reduction techniques. The forward operator produces the measurement through a 3-node primitive DAG (S.mc.path_generation\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~10; discretization_error_Euler_Milstein, random_seed_variance set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "C = e^{-rT} * E[max(S_T - K, 0)]; estimate by sample average over N_paths simulated paths",
     "world_state_x": "option price C and Greeks (delta, gamma, vega)",
     "observation_y": "simulated payoffs g(S_T ** i) for i=1..N_paths",
@@ -41,13 +41,13 @@
     "condition_number_kappa": 100,
     "condition_number_effective": 10,
     "condition_number_mismatched": 50,
-    "regime": "Unbiased for sufficient N_paths; variance reduction mandatory for efficiency; path-dependent payoffs require full simulation."
+    "regime": "Existence of the recovered option_price_scalar is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 10); discretization_error_Euler_Milstein dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Gaussian sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "standard_MC or antithetic_variates or quasi_MC_Sobol",
+    "solver_class": "classical [standard_MC or antithetic_variates or quasi_MC_Sobol]",
     "convergence_rate_q": 1.0,
-    "error_bound": "standard error scales as 1/sqrt(N_paths); quasi-MC as O(log ** d N / N)",
-    "complexity": "O(N_paths * N_timesteps) for path generation"
+    "error_bound": "Data-fidelity bound: standard error scales as 1/sqrt(N_paths); quasi-MC as O(log ** d N / N). Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~10. Mismatch-induced bias + C2 * |discretization_error_Euler_Milstein|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(N_paths * N_timesteps) for path generation per iteration"
   },
   "physics_fingerprint": {
     "carrier": "N/A",

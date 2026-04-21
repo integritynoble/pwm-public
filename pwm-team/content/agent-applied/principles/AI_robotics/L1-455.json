@@ -8,7 +8,7 @@
   "source_file": "AI_robotics/455_orbital_mechanics.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Lambert problem: find velocity vectors that connect two position vectors in a fixed time-of-flight (orbital transfer).",
+    "description": "Orbital Mechanics Inversion (Lambert): Lambert problem: find velocity vectors that connect two position vectors in a fixed time-of-flight (orbital transfer). The forward operator produces the measurement through a 3-node primitive DAG (M.lambert.problem_solver\u2026); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=3 with effective condition number kappa_eff~200; position_observation_error_km, perturbation_from_central_body set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "r1, r2 given, TOF = T; find v1 such that propagating from (r1,v1) reaches r2 in time T",
     "world_state_x": "initial and final velocity vectors v1, v2 defining the transfer orbit",
     "observation_y": "two position vectors r1, r2 and transfer time TOF",
@@ -40,13 +40,13 @@
     "condition_number_kappa": 5000,
     "condition_number_effective": 200,
     "condition_number_mismatched": 1000,
-    "regime": "Unique solution for single-rev; multi-rev has multiple branches; near-singular for 180 deg transfer."
+    "regime": "Existence of the recovered orbital_elements_vector is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 200); position_observation_error_km dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Observation gaussian sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "Izzo_Lancaster_Blanchard or Gooding_algorithm",
+    "solver_class": "classical [Izzo_Lancaster_Blanchard or Gooding_algorithm]",
     "convergence_rate_q": 2.0,
-    "error_bound": "Lambert solution accurate to < 1 m/s for 2-body problem",
-    "complexity": "O(N_iter) per Lambert solution (typically < 20 iterations)"
+    "error_bound": "Data-fidelity bound: Lambert solution accurate to < 1 m/s for 2-body problem. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~200. Mismatch-induced bias + C2 * |position_observation_error_km|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(N_iter) per Lambert solution (typically < 20 iterations) per iteration"
   },
   "physics_fingerprint": {
     "carrier": "N/A",

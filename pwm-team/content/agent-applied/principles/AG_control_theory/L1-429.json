@@ -8,7 +8,7 @@
   "source_file": "AG_control_theory/429_unscented_kalman_filter.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "UKF: deterministic sigma-point approximation propagates Gaussian through nonlinear system to 3rd order accuracy.",
+    "description": "Unscented Kalman Filter (UKF): UKF: deterministic sigma-point approximation propagates Gaussian through nonlinear system to 3rd order accuracy. The forward operator produces the measurement through a 3-node primitive DAG (S.ukf.sigma_points_UT\u2026); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=3 with effective condition number kappa_eff~50; heavy_tail_distribution, rank_deficient_covariance set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "Sigma points X_i = {x_hat, x_hat \u00b1 sqrt((n+kappa)*P)}; Y_i = h(X_i); y_hat = sum w_i Y_i",
     "world_state_x": "nonlinear state estimate x_hat_k to 3rd order accuracy in moments",
     "observation_y": "nonlinear measurements {y_k}",
@@ -40,13 +40,13 @@
     "condition_number_kappa": 1000,
     "condition_number_effective": 50,
     "condition_number_mismatched": 200,
-    "regime": "Derivative-free; handles moderate nonlinearity; fails for bimodal; numerically superior to EKF for state dimension < 20."
+    "regime": "Existence of the recovered nonlinear_state_estimate is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 50); heavy_tail_distribution dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Gaussian sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "UKF_Wan_Merwe or SRUKF_square_root",
+    "solver_class": "sequential-filter [UKF_Wan_Merwe or SRUKF_square_root]",
     "convergence_rate_q": 2.0,
-    "error_bound": "UKF accurate to 3rd order vs. EKF 1st order; SRUKF numerically stable",
-    "complexity": "O(n ** 3) per step (2n+1 sigma points each requiring f evaluation)"
+    "error_bound": "Data-fidelity bound: UKF accurate to 3rd order vs. EKF 1st order; SRUKF numerically stable. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~50. Mismatch-induced bias + C2 * |heavy_tail_distribution|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(n ** 3) per step (2n+1 sigma points each requiring f evaluation) per iteration"
   },
   "physics_fingerprint": {
     "carrier": "N/A",

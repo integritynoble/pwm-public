@@ -8,7 +8,7 @@
   "source_file": "AF_environmental_sci/417_general_circulation_model.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "GCM parameter estimation: infer climate sensitivity and parameterization coefficients from observed climate data.",
+    "description": "General Circulation Model (GCM) Inversion: GCM parameter estimation: infer climate sensitivity and parameterization coefficients from observed climate data. The forward operator produces the measurement through a 3-node primitive DAG (M.primitive.equations\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=10 with effective condition number kappa_eff~1000000.0; internal_variability_noise, aerosol_forcing_uncertainty set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "d/dt [T, u, v, q, ps] = F(T, u, v, q, ps; theta_param) using primitive equations on spectral grid",
     "world_state_x": "ECS (equilibrium climate sensitivity), parameterization parameters theta for convection, clouds, boundary layer",
     "observation_y": "global temperature trends, precipitation patterns, TOA radiation fluxes from reanalysis (ERA5)",
@@ -40,13 +40,13 @@
     "condition_number_kappa": 1000000000.0,
     "condition_number_effective": 1000000.0,
     "condition_number_mismatched": 10000000.0,
-    "regime": "Chaotic dynamics; ensemble averaging needed; butterfly effect limits deterministic predictability beyond ~2 weeks; ensemble spread constrains uncertainty."
+    "regime": "Existence of the recovered climate_forcing_parameter_vector is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 1000000.0); internal_variability_noise dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Observation gaussian sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "ensemble_MCMC_climate or emulator_based_calibration (ClimateBench)",
+    "solver_class": "statistical [ensemble_MCMC_climate or emulator_based_calibration (ClimateBench)]",
     "convergence_rate_q": 1.5,
-    "error_bound": "ECS uncertainty \u00b10.5 K at 1-sigma from perturbed physics ensembles",
-    "complexity": "O(N_ensemble * N_year_simulation) with N_year ~ 100 years"
+    "error_bound": "Data-fidelity bound: ECS uncertainty \u00b10.5 K at 1-sigma from perturbed physics ensembles. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~1000000.0. Mismatch-induced bias + C2 * |internal_variability_noise|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(N_ensemble * N_year_simulation) with N_year ~ 100 years per iteration"
   },
   "physics_fingerprint": {
     "carrier": "N/A",

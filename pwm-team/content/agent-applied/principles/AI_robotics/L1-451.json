@@ -8,7 +8,7 @@
   "source_file": "AI_robotics/451_rigid_body_dynamics.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Rigid body dynamics: simulate 6-DOF motion of rigid body under forces and torques using quaternion representation.",
+    "description": "Rigid Body Dynamics Simulation: Rigid body dynamics: simulate 6-DOF motion of rigid body under forces and torques using quaternion representation. The forward operator produces the measurement through a 3-node primitive DAG (M.euler.rigid_body_equations\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~50; inertia_tensor_uncertainty, aerodynamic_drag_neglect set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "p_dot = v; q_dot = 0.5*Omega(omega)*q; J*omega_dot = tau - omega x (J*omega); m*v_dot = F",
     "world_state_x": "6DOF state (position, quaternion orientation, linear/angular velocity)",
     "observation_y": "applied forces F and torques tau",
@@ -40,13 +40,13 @@
     "condition_number_kappa": 1000,
     "condition_number_effective": 50,
     "condition_number_mismatched": 200,
-    "regime": "Euler's equations singularity-free with quaternions; angular momentum conserved; numerical gyroscopic terms require care."
+    "regime": "Existence of the recovered 6DOF_state_trajectory is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 50); inertia_tensor_uncertainty dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Gaussian sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "RK4_integration or Adams_Bashforth",
+    "solver_class": "gradient-based [RK4_integration or Adams_Bashforth]",
     "convergence_rate_q": 4.0,
-    "error_bound": "attitude error < 0.01 deg for RK4 with dt < 0.001s",
-    "complexity": "O(N_timesteps) for Euler equations integration"
+    "error_bound": "Data-fidelity bound: attitude error < 0.01 deg for RK4 with dt < 0.001s. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~50. Mismatch-induced bias + C2 * |inertia_tensor_uncertainty|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(N_timesteps) for Euler equations integration per iteration"
   },
   "physics_fingerprint": {
     "carrier": "N/A",

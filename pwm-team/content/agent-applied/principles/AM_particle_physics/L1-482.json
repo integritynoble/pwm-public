@@ -8,7 +8,7 @@
   "source_file": "AM_particle_physics/482_mc_event_generators.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "MC event generator tuning: extract parton shower and hadronization parameters from LEP/LHC event shape distributions.",
+    "description": "Monte Carlo Event Generation: MC event generator tuning: extract parton shower and hadronization parameters from LEP/LHC event shape distributions. The forward operator produces the measurement through a 3-node primitive DAG (M.ps.parton_shower_dipole\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=5 with effective condition number kappa_eff~1000.0; non_perturbative_power_corrections, color_reconnection_model set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "p(event) = sigma_hard * PSF(parton_shower, {alpha_s, lambda}) * H(Lund_model, {a,b,sigma_p})",
     "world_state_x": "Pythia8/Herwig7 tune parameters (alpha_s_ISR, alpha_s_FSR, Lund_a, Lund_b, sigma_p)",
     "observation_y": "event shape distributions (thrust, sphericity, C-parameter) and particle multiplicities",
@@ -41,13 +41,13 @@
     "condition_number_kappa": 100000.0,
     "condition_number_effective": 1000.0,
     "condition_number_mismatched": 10000.0,
-    "regime": "High-dimensional parameter space; collinear singularities in shower; hadronization non-perturbative below 1 GeV."
+    "regime": "Existence of the recovered shower_parameter_vector is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 1000.0); non_perturbative_power_corrections dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Monte carlo statistical sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "Professor_parametrization or Bayesian_opt_Rivet",
+    "solver_class": "statistical [Professor_parametrization or Bayesian_opt_Rivet]",
     "convergence_rate_q": 2.0,
-    "error_bound": "chi2/dof ~ 1.0 for good tune; event shapes within 10%",
-    "complexity": "O(N_tune_points * N_events * N_observables)"
+    "error_bound": "Data-fidelity bound: chi2/dof ~ 1.0 for good tune; event shapes within 10%. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~1000.0. Mismatch-induced bias + C2 * |non_perturbative_power_corrections|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(N_tune_points * N_events * N_observables) per iteration"
   },
   "physics_fingerprint": {
     "carrier": "particle",

@@ -8,7 +8,7 @@
   "source_file": "AI_robotics/446_forward_kinematics.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Forward kinematics: compute end-effector pose from joint angles using DH parameter chain.",
+    "description": "Forward Kinematics: Forward kinematics: compute end-effector pose from joint angles using DH parameter chain. The forward operator produces the measurement through a 3-node primitive DAG (M.dh.transformation_matrix\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~20; DH_calibration_error, joint_flexibility set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "T_0_n = prod_{i=1}^{n} T_{i-1}^i(q_i); T = Rot * Trans using DH convention",
     "world_state_x": "end-effector pose (position + orientation) in task space",
     "observation_y": "joint angles {q_i} from encoders",
@@ -40,13 +40,13 @@
     "condition_number_kappa": 500,
     "condition_number_effective": 20,
     "condition_number_mismatched": 100,
-    "regime": "Exact solution for rigid body; calibration errors dominate; flexible joints require elastic models."
+    "regime": "Existence of the recovered cartesian_pose_vector is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 20); DH_calibration_error dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Gaussian sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "direct_DH_computation (analytical)",
+    "solver_class": "sparse-recovery [direct_DH_computation (analytical)]",
     "convergence_rate_q": 2.0,
-    "error_bound": "position accuracy < 1 mm for well-calibrated robot",
-    "complexity": "O(n) matrix multiplications"
+    "error_bound": "Data-fidelity bound: position accuracy < 1 mm for well-calibrated robot. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~20. Mismatch-induced bias + C2 * |DH_calibration_error|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(n) matrix multiplications per iteration"
   },
   "physics_fingerprint": {
     "carrier": "N/A",

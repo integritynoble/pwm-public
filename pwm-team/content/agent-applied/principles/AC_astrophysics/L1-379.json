@@ -8,7 +8,7 @@
   "source_file": "AC_astrophysics/379_bao.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "BAO analysis: measure acoustic scale in galaxy clustering to constrain Hubble parameter and angular diameter distance.",
+    "description": "Baryon Acoustic Oscillation (BAO) Fitting: BAO analysis: measure acoustic scale in galaxy clustering to constrain Hubble parameter and angular diameter distance. The forward operator produces the measurement through a 3-node primitive DAG (F.fourier.power_spectrum\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=5 with effective condition number kappa_eff~30; galaxy_bias_nonlinearity, RSD_model_error set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "xi(s) = integral P(k) * sinc(k*s) k ** 2 dk / (2*pi ** 2); BAO peak at s ~ 150 Mpc/h",
     "world_state_x": "distance ratios D_V/r_d and D_H/r_d at survey redshift z_eff",
     "observation_y": "galaxy 2-point correlation function xi(s) or power spectrum P(k) from spectroscopic survey",
@@ -41,13 +41,13 @@
     "condition_number_kappa": 500,
     "condition_number_effective": 30,
     "condition_number_mismatched": 150,
-    "regime": "BAO peak robustly detected in linear regime; reconstruction sharpens peak; non-linear broadening is systematic."
+    "regime": "Existence of the recovered cosmological_distance_ratios is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 30); galaxy_bias_nonlinearity dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Cosmic variance gaussian sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "standard_BAO_fitting_template or BAOfit or EFTofLSS",
+    "solver_class": "sparse-recovery [standard_BAO_fitting_template or BAOfit or EFTofLSS]",
     "convergence_rate_q": 2.0,
-    "error_bound": "sigma(D_V/r_d) < 1% for Stage-IV survey",
-    "complexity": "O(N_gal ** 2) for pair counting or O(N_gal * log N_gal) with FFT"
+    "error_bound": "Data-fidelity bound: sigma(D_V/r_d) < 1% for Stage-IV survey. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~30. Mismatch-induced bias + C2 * |galaxy_bias_nonlinearity|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(N_gal ** 2) for pair counting or O(N_gal * log N_gal) with FFT per iteration"
   },
   "physics_fingerprint": {
     "carrier": "N/A",

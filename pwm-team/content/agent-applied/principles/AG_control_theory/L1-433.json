@@ -8,7 +8,7 @@
   "source_file": "AG_control_theory/433_model_predictive_control.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "MPC/NMPC: solve finite-horizon constrained optimization at each time step, apply first control action.",
+    "description": "Model Predictive Control (MPC/NMPC): MPC/NMPC: solve finite-horizon constrained optimization at each time step, apply first control action. The forward operator produces the measurement through a 3-node primitive DAG (M.mpc.prediction_model\u2026); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=5 with effective condition number kappa_eff~500; model_plant_mismatch, disturbance_unforeseen set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "min_{u} sum_{k=0}^{N} l(x_k, u_k) + V_f(x_N) s.t. x_{k+1}=f(x_k,u_k), u_min<=u<=u_max, x in X",
     "world_state_x": "optimal control sequence U* = {u_0*, ..., u_{N-1}*} for prediction horizon N",
     "observation_y": "current state x(t) measurement (or estimate), disturbance preview",
@@ -40,13 +40,13 @@
     "condition_number_kappa": 10000.0,
     "condition_number_effective": 500,
     "condition_number_mismatched": 2000,
-    "regime": "Real-time iteration (RTI) enables fast NMPC at 100 Hz; constraint handling explicit; robust MPC handles bounded disturbances."
+    "regime": "Existence of the recovered control_sequence_vector is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 500); model_plant_mismatch dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Deterministic sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "QP_solver_for_linear_MPC or NLP_IPOPT_ACADOS_for_NMPC",
+    "solver_class": "sparse-recovery [QP_solver_for_linear_MPC or NLP_IPOPT_ACADOS_for_NMPC]",
     "convergence_rate_q": 2.0,
-    "error_bound": "recursive feasibility guaranteed with terminal constraint; stability via Lyapunov function",
-    "complexity": "O(N * n_x ** 3) for QP MPC; O(N * NLP_iter) for NMPC"
+    "error_bound": "Data-fidelity bound: recursive feasibility guaranteed with terminal constraint; stability via Lyapunov function. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~500. Mismatch-induced bias + C2 * |model_plant_mismatch|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(N * n_x ** 3) for QP MPC; O(N * NLP_iter) for NMPC per iteration"
   },
   "physics_fingerprint": {
     "carrier": "N/A",

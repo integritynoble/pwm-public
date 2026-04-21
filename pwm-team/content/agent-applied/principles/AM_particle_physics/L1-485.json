@@ -8,7 +8,7 @@
   "source_file": "AM_particle_physics/485_neutrino_oscillation.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Neutrino oscillation fitting: extract PMNS mixing angles and mass-squared differences from appearance/disappearance spectra.",
+    "description": "Neutrino Oscillation Parameter Extraction: Neutrino oscillation fitting: extract PMNS mixing angles and mass-squared differences from appearance/disappearance spectra. The forward operator produces the measurement through a 3-node primitive DAG (M.pmns.mixing_matrix\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=5 with effective condition number kappa_eff~500; flux_normalization_uncertainty_percent, cross_section_model_error set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "P(nu_alpha -> nu_beta) = |sum_i U_{alpha_i} e^{-i m_i ** 2 L/(2E)} U*_{beta_i}|^2",
     "world_state_x": "PMNS parameters (theta_12, theta_13, theta_23, delta_CP, Delta_m21 ** 2, Delta_m31 ** 2)",
     "observation_y": "measured neutrino event rates N_obs(E, L) in bins of neutrino energy E",
@@ -40,13 +40,13 @@
     "condition_number_kappa": 10000.0,
     "condition_number_effective": 500,
     "condition_number_mismatched": 2000,
-    "regime": "3-flavor mixing with matter effects; CP violation measurable at NOvA/T2K; degeneracies (theta_23 octant, mass hierarchy) broken by appearance channel."
+    "regime": "Existence of the recovered PMNS_parameter_vector is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 500); flux_normalization_uncertainty_percent dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Poisson sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "chi2_minimization_GLoBES or Bayesian_NOvA or MCMC_T2K",
+    "solver_class": "statistical [chi2_minimization_GLoBES or Bayesian_NOvA or MCMC_T2K]",
     "convergence_rate_q": 2.0,
-    "error_bound": "sigma(delta_CP) < 20 deg with 3*10 ** 21 POT exposure",
-    "complexity": "O(N_bins * N_params) per chi2 evaluation + oscillation probability"
+    "error_bound": "Data-fidelity bound: sigma(delta_CP) < 20 deg with 3*10 ** 21 POT exposure. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~500. Mismatch-induced bias + C2 * |flux_normalization_uncertainty_percent|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(N_bins * N_params) per chi2 evaluation + oscillation probability per iteration"
   },
   "physics_fingerprint": {
     "carrier": "particle",

@@ -8,7 +8,7 @@
   "source_file": "AK_geodesy/470_photogrammetry_sfm.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "SfM photogrammetry: recover 3D scene structure and camera poses from unordered image set via bundle adjustment.",
+    "description": "Photogrammetry Structure-from-Motion: SfM photogrammetry: recover 3D scene structure and camera poses from unordered image set via bundle adjustment. The forward operator produces the measurement through a 3-node primitive DAG (S.sfm.feature_matching\u2026); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=3 with effective condition number kappa_eff~200; GPS_geotag_accuracy_m, feature_matching_outlier_rate set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "x_ij = P_i * X_j / lambda_ij; P_i = K * [R_i | t_i]; minimize sum ||x_ij - x_ij ** obs||^2",
     "world_state_x": "3D point positions X_j and camera pose parameters (R_i, t_i, K_i)",
     "observation_y": "2D keypoint observations x_ij for N_images images, M_points 3D points",
@@ -40,13 +40,13 @@
     "condition_number_kappa": 10000.0,
     "condition_number_effective": 200,
     "condition_number_mismatched": 1000,
-    "regime": "Gauge freedom (7-DOF similarity); GCPs fix absolute scale/orientation; degenerate configurations from planar scenes."
+    "regime": "Existence of the recovered 3D_point_cloud_camera_poses is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 200); GPS_geotag_accuracy_m dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Gaussian sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "bundle_adjustment_Ceres or COLMAP or OpenSfM",
+    "solver_class": "classical [bundle_adjustment_Ceres or COLMAP or OpenSfM]",
     "convergence_rate_q": 2.0,
-    "error_bound": "GCP RMSE < 5 cm UAV, < 1 cm aerial with GCPs",
-    "complexity": "O(N_images * N_points * N_iter) for sparse bundle adjustment"
+    "error_bound": "Data-fidelity bound: GCP RMSE < 5 cm UAV, < 1 cm aerial with GCPs. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~200. Mismatch-induced bias + C2 * |GPS_geotag_accuracy_m|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(N_images * N_points * N_iter) for sparse bundle adjustment per iteration"
   },
   "physics_fingerprint": {
     "carrier": "photon",

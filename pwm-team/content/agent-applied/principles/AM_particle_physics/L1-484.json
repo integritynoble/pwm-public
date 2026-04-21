@@ -8,7 +8,7 @@
   "source_file": "AM_particle_physics/484_charged_particle_tracking.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Charged particle tracking: reconstruct helical track parameters from silicon detector hits using Kalman filter.",
+    "description": "Charged Particle Track Reconstruction: Charged particle tracking: reconstruct helical track parameters from silicon detector hits using Kalman filter. The forward operator produces the measurement through a 3-node primitive DAG (S.kalman.track_filter\u2026); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=5 with effective condition number kappa_eff~200; alignment_uncertainty_um, B_field_map_error_T set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "x_pred_k = F_k * x_{k-1} + noise; H_k * x_k = m_k (measurement); helix in B-field",
     "world_state_x": "track state vector (d0, phi0, pt, dz0, tan_lambda) at perigee",
     "observation_y": "silicon strip/pixel hit positions {u_k, v_k} at N_layers layers",
@@ -40,13 +40,13 @@
     "condition_number_kappa": 10000.0,
     "condition_number_effective": 200,
     "condition_number_mismatched": 1000,
-    "regime": "Kalman filter is optimal for linear Gaussian; nonlinear helix requires EKF; combinatorial background in high-pileup."
+    "regime": "Existence of the recovered track_parameter_vector is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 200); alignment_uncertainty_um dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Gaussian sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "Kalman_filter_Billoir or global_chi2_DELPHI",
+    "solver_class": "sequential-filter [Kalman_filter_Billoir or global_chi2_DELPHI]",
     "convergence_rate_q": 2.0,
-    "error_bound": "sigma(pt)/pt < 0.01% * pt/GeV for ATLAS-like detector",
-    "complexity": "O(N_layers * N_tracks * N_iter) per event"
+    "error_bound": "Data-fidelity bound: sigma(pt)/pt < 0.01% * pt/GeV for ATLAS-like detector. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~200. Mismatch-induced bias + C2 * |alignment_uncertainty_um|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(N_layers * N_tracks * N_iter) per event per iteration"
   },
   "physics_fingerprint": {
     "carrier": "particle",

@@ -8,7 +8,7 @@
   "source_file": "AC_astrophysics/368_strong_lensing.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Strong lensing inversion: reconstruct lens mass distribution and source surface brightness from multiply-imaged arcs.",
+    "description": "Strong Gravitational Lensing Inversion: Strong lensing inversion: reconstruct lens mass distribution and source surface brightness from multiply-imaged arcs. The forward operator produces the measurement through a 3-node primitive DAG (M.lens.deflection\u2026); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=10 with effective condition number kappa_eff~5000; PSF_mismatch, line_of_sight_contamination set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "I_obs(theta) = integral PSF(theta-theta') * I_src(beta(theta', kappa)) dtheta' + noise",
     "world_state_x": "convergence kappa(theta) (lens) and source surface brightness I_src(beta)",
     "observation_y": "lensed image I_obs(theta) in R^{H x W} (HST/JWST quality)",
@@ -41,13 +41,13 @@
     "condition_number_kappa": 1000000.0,
     "condition_number_effective": 5000,
     "condition_number_mismatched": 20000.0,
-    "regime": "Mass-sheet degeneracy; source-position degeneracy; pixelized approaches break degeneracies with regularization."
+    "regime": "Existence of the recovered 2D_lens_mass_distribution is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 5000); PSF_mismatch dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Shot poisson sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "pixelized_source_inversion (Warren_Dye) or semi_linear_inversion (Vegetti_Koopmans)",
+    "solver_class": "classical [pixelized_source_inversion (Warren_Dye) or semi_linear_inversion (Vegetti_Koopmans)]",
     "convergence_rate_q": 2.0,
-    "error_bound": "chi2_red ~ 1.0 at convergence; residual < 3-sigma per pixel",
-    "complexity": "O(N_src_pix * N_img_pix ** 2) for linear inversion"
+    "error_bound": "Data-fidelity bound: chi2_red ~ 1.0 at convergence; residual < 3-sigma per pixel. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~5000. Mismatch-induced bias + C2 * |PSF_mismatch|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(N_src_pix * N_img_pix ** 2) for linear inversion per iteration"
   },
   "physics_fingerprint": {
     "carrier": "photon",

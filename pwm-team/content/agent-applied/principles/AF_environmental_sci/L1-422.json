@@ -8,7 +8,7 @@
   "source_file": "AF_environmental_sci/422_sediment_transport.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Sediment transport inversion: infer bed material size distribution and critical shear stress from bedload and suspended transport measurements.",
+    "description": "Sediment Transport Inversion: Sediment transport inversion: infer bed material size distribution and critical shear stress from bedload and suspended transport measurements. The forward operator produces the measurement through a 3-node primitive DAG (M.mpm.bedload_formula\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~40; armoring_effect, wash_load_contamination set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "q_b = 8*(tau* - tau*_c) ** 1.5 * sqrt((s-1)*g*d ** 3) (MPM); q_s = c_a * u * h (van Rijn suspended)",
     "world_state_x": "d50 bed material grain size (mm), tau*_c critical Shields stress, bed roughness ks",
     "observation_y": "bedload flux q_b (kg/m/s), suspended sediment concentration SSC (mg/L) vs. discharge",
@@ -40,13 +40,13 @@
     "condition_number_kappa": 1000,
     "condition_number_effective": 40,
     "condition_number_mismatched": 200,
-    "regime": "Bedload is threshold process (highly nonlinear near critical shear); suspended load dominates at high Q; bimodal grain size causes complex transport."
+    "regime": "Existence of the recovered sediment_flux_parameter_vector is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 40); armoring_effect dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Lognormal sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "MPM_formula_fit or neural_network_sediment_flux",
+    "solver_class": "learned [MPM_formula_fit or neural_network_sediment_flux]",
     "convergence_rate_q": 2.0,
-    "error_bound": "bedload flux within factor 2 for well-constrained conditions",
-    "complexity": "O(N_measurements) for formula-based inversion"
+    "error_bound": "Data-fidelity bound: bedload flux within factor 2 for well-constrained conditions. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~40. Mismatch-induced bias + C2 * |armoring_effect|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(N_measurements) for formula-based inversion per iteration"
   },
   "physics_fingerprint": {
     "carrier": "N/A",

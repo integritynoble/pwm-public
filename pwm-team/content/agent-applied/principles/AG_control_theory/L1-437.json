@@ -8,7 +8,7 @@
   "source_file": "AG_control_theory/437_nonlinear_observer.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Nonlinear observer: estimate state of nonlinear system dx/dt = f(x, u), y = h(x) using high-gain or Luenberger design.",
+    "description": "Nonlinear Observer Design: Nonlinear observer: estimate state of nonlinear system dx/dt = f(x, u), y = h(x) using high-gain or Luenberger design. The forward operator produces the measurement through a 3-node primitive DAG (S.hgo.high_gain_observer\u2026); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=5 with effective condition number kappa_eff~200; Lipschitz_constant_violation, output_noise_amplification set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "dx_hat/dt = f(x_hat, u) + L(y - h(x_hat)); gain L chosen for exponential error decay",
     "world_state_x": "nonlinear state estimate x_hat(t) with exponential convergence to x(t)",
     "observation_y": "output y(t) = h(x(t)) + noise from output map h",
@@ -40,13 +40,13 @@
     "condition_number_kappa": 5000,
     "condition_number_effective": 200,
     "condition_number_mismatched": 1000,
-    "regime": "High-gain observers have peaking phenomenon; input saturation may help; ISS-based observers more robust; applicable when output observability holds."
+    "regime": "Existence of the recovered nonlinear_state_estimate is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 200); Lipschitz_constant_violation dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Gaussian sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "high_gain_observer or ISS_Lyapunov_based",
+    "solver_class": "classical [high_gain_observer or ISS_Lyapunov_based]",
     "convergence_rate_q": 2.0,
     "error_bound": "||x_hat - x|| <= C * exp(-lambda*t) * ||x_hat_0 - x_0|| + O(noise) for Lipschitz f",
-    "complexity": "O(n_x * n_y) per time step for observer update"
+    "complexity": "O(n_x * n_y) per time step for observer update per iteration"
   },
   "physics_fingerprint": {
     "carrier": "N/A",

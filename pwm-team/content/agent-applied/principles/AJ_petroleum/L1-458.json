@@ -8,7 +8,7 @@
   "source_file": "AJ_petroleum/458_black_oil_reservoir.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Black-oil reservoir simulation: model two/three-phase (oil/water/gas) flow in porous media under Darcy's law.",
+    "description": "Black-Oil Reservoir Simulation: Black-oil reservoir simulation: model two/three-phase (oil/water/gas) flow in porous media under Darcy's law. The forward operator produces the measurement through a 3-node primitive DAG (M.darcy.multiphase_flow\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=5 with effective condition number kappa_eff~1000; permeability_heterogeneity_uncertainty, rel_perm_uncertainty set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "phi*(d(rho_a*S_a)/dt) = -nabla*(rho_a*k_ra/mu_a*K*nabla(P_a - rho_a*g*z)) + q_a",
     "world_state_x": "pressure P(x,t) and saturation S_w(x,t) fields across 3D grid",
     "observation_y": "production rates q_o, q_w, q_g and BHP at well locations over time",
@@ -40,13 +40,13 @@
     "condition_number_kappa": 100000.0,
     "condition_number_effective": 1000,
     "condition_number_mismatched": 5000,
-    "regime": "Nonlinear due to rel perm and capillary pressure; fully implicit for stability; large systems require iterative linear solvers."
+    "regime": "Existence of the recovered 3D_pressure_saturation_field is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 1000); permeability_heterogeneity_uncertainty dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Measurement gaussian sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "IMPES or fully_implicit_reservoir_simulator (CMG, Eclipse)",
+    "solver_class": "sparse-recovery [IMPES or fully_implicit_reservoir_simulator (CMG] | classical [Eclipse)]",
     "convergence_rate_q": 2.0,
-    "error_bound": "NRMS < 0.10 for history match quality",
-    "complexity": "O(N_cells * N_timesteps * N_Newton_iter) per simulation"
+    "error_bound": "Data-fidelity bound: NRMS < 0.10 for history match quality. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~1000. Mismatch-induced bias + C2 * |permeability_heterogeneity_uncertainty|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(N_cells * N_timesteps * N_Newton_iter) per simulation per iteration"
   },
   "physics_fingerprint": {
     "carrier": "acoustic",

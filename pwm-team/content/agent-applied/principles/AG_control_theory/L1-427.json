@@ -8,7 +8,7 @@
   "source_file": "AG_control_theory/427_kalman_filter.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Kalman filter: optimal linear estimator for Gaussian linear dynamics; minimizes mean squared error of state estimate.",
+    "description": "Kalman Filter State Estimation: Kalman filter: optimal linear estimator for Gaussian linear dynamics; minimizes mean squared error of state estimate. The forward operator produces the measurement through a 3-node primitive DAG (S.kalman.predict_update\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~20; Q_R_mismatch, model_uncertainty set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "x_{k+1} = A*x_k + B*u_k + w_k, w~N(0,Q); y_k = C*x_k + v_k, v~N(0,R)",
     "world_state_x": "posterior state estimate x_hat_k|k and covariance P_k|k",
     "observation_y": "measurement sequence {y_k} for k=1..N",
@@ -40,13 +40,13 @@
     "condition_number_kappa": 500,
     "condition_number_effective": 20,
     "condition_number_mismatched": 100,
-    "regime": "Optimal for linear Gaussian; exact for Q, R known; inconsistent filter diverges; innovation sequence whiteness is consistency test."
+    "regime": "Existence of the recovered state_estimate_covariance is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 20); Q_R_mismatch dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Gaussian sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "standard_Kalman_filter",
+    "solver_class": "sequential-filter [standard_Kalman_filter]",
     "convergence_rate_q": 2.0,
-    "error_bound": "NEES ~ chi2(n)/n in expectation for consistent filter; NIS ~ chi2(p)/p",
-    "complexity": "O(n ** 2 * p) per update step"
+    "error_bound": "Data-fidelity bound: NEES ~ chi2(n)/n in expectation for consistent filter; NIS ~ chi2(p)/p. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~20. Mismatch-induced bias + C2 * |Q_R_mismatch|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(n ** 2 * p) per update step per iteration"
   },
   "physics_fingerprint": {
     "carrier": "N/A",

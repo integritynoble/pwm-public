@@ -8,7 +8,7 @@
   "source_file": "AI_robotics/456_rotor_dynamics.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Rotor dynamics identification: infer rotor blade properties from thrust, torque, and vibration measurements.",
+    "description": "Rotor Dynamics Aeroelastic Inversion: Rotor dynamics identification: infer rotor blade properties from thrust, torque, and vibration measurements. The forward operator produces the measurement through a 3-node primitive DAG (M.blade.element_momentum\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=5 with effective condition number kappa_eff~500; dynamic_stall_effect, tip_loss_factor_uncertainty set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "T = 0.5*rho*A*(Omega*R) ** 2 * C_T(lambda_i, theta, a, e); blade element with flapping equation",
     "world_state_x": "blade parameters: twist theta_0, collective, flapping a1 b1, stiffness EI",
     "observation_y": "thrust T (N), torque Q (Nm), vibrational modes from accelerometers",
@@ -40,13 +40,13 @@
     "condition_number_kappa": 10000.0,
     "condition_number_effective": 500,
     "condition_number_mismatched": 2000,
-    "regime": "BEM valid for small advance ratios; dynamic stall at high angle of attack; aeroelastic coupling at high RPM."
+    "regime": "Existence of the recovered rotor_parameter_vector is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 500); dynamic_stall_effect dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Gaussian sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "BEM_parameter_fit or full_BEMT_numerical",
+    "solver_class": "classical [BEM_parameter_fit or full_BEMT_numerical]",
     "convergence_rate_q": 2.0,
-    "error_bound": "C_T prediction within 5% for hover conditions",
-    "complexity": "O(N_blade_elements * N_azimuth * N_iter) per operating point"
+    "error_bound": "Data-fidelity bound: C_T prediction within 5% for hover conditions. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~500. Mismatch-induced bias + C2 * |dynamic_stall_effect|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(N_blade_elements * N_azimuth * N_iter) per operating point per iteration"
   },
   "physics_fingerprint": {
     "carrier": "N/A",

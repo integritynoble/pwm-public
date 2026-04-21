@@ -8,7 +8,7 @@
   "source_file": "AE_computational_bio/400_hemodynamics.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Cardiovascular hemodynamics: infer blood flow, pressure, and wall shear stress from 4D flow MRI data.",
+    "description": "Hemodynamics (Navier-Stokes Cardiovascular): Cardiovascular hemodynamics: infer blood flow, pressure, and wall shear stress from 4D flow MRI data. The forward operator produces the measurement through a 3-node primitive DAG (M.ns.incompressible\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=5 with effective condition number kappa_eff~2000; MRI_velocity_noise, vessel_wall_motion set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "rho*(du/dt + u*nabla u) = -nabla p + mu*nabla ** 2 u; nabla*u = 0 (incompressible NS)",
     "world_state_x": "3D velocity field u(x,t) and pressure p(x,t) throughout vascular geometry",
     "observation_y": "4D phase-contrast MRI velocity measurements v_MRI(x,t) at ~2mm resolution",
@@ -40,13 +40,13 @@
     "condition_number_kappa": 100000.0,
     "condition_number_effective": 2000,
     "condition_number_mismatched": 10000.0,
-    "regime": "Reynolds number ~ 500-4000 in aorta (laminar to transitional); FSI important for compliant vessels; 4D flow MRI has limited resolution."
+    "regime": "Existence of the recovered 3D_velocity_pressure_field is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 2000); MRI_velocity_noise dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Measurement gaussian sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "OpenFOAM_CFD or SimVascular or ANSYS_Fluent",
+    "solver_class": "classical [OpenFOAM_CFD or SimVascular or ANSYS_Fluent]",
     "convergence_rate_q": 2.0,
-    "error_bound": "WSS within 20% of ground truth for resolved geometry",
-    "complexity": "O(N_mesh * N_timesteps * N_Newton_iter) for CFD"
+    "error_bound": "Data-fidelity bound: WSS within 20% of ground truth for resolved geometry. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~2000. Mismatch-induced bias + C2 * |MRI_velocity_noise|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(N_mesh * N_timesteps * N_Newton_iter) for CFD per iteration"
   },
   "physics_fingerprint": {
     "carrier": "N/A",

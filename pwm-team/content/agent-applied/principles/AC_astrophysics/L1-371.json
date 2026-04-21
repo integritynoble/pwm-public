@@ -8,7 +8,7 @@
   "source_file": "AC_astrophysics/371_stellar_atmosphere.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Stellar spectral inversion: recover T_eff, log g, [Fe/H] from high-resolution spectra via atmosphere model fitting.",
+    "description": "Stellar Atmosphere Spectral Inversion: Stellar spectral inversion: recover T_eff, log g, [Fe/H] from high-resolution spectra via atmosphere model fitting. The forward operator produces the measurement through a 3-node primitive DAG (S.radiative.transfer_lte\u2026); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=5 with effective condition number kappa_eff~500; continuum_normalization_error, wavelength_calibration_error_kms set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "F_lambda(T_eff, log_g, [M/H]) from MARCS/KURUCZ model atmosphere + spectral synthesis",
     "world_state_x": "stellar parameters (T_eff, log_g, [Fe/H], v_micro, v_macro) and abundance ratios",
     "observation_y": "observed stellar spectrum F_lambda at resolution R=lambda/delta_lambda",
@@ -41,13 +41,13 @@
     "condition_number_kappa": 50000.0,
     "condition_number_effective": 500,
     "condition_number_mismatched": 2000,
-    "regime": "LTE models accurate for FGK stars; NLTE corrections needed for A stars and metal-poor giants; T_eff-log_g degeneracy broken by surface gravity indicators."
+    "regime": "Existence of the recovered 1D_atmospheric_profile is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 500); continuum_normalization_error dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Shot poisson sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "MCMC_SED_fitting or chi2_grid_search (FERRE) or NN_emulator",
+    "solver_class": "statistical [MCMC_SED_fitting or chi2_grid_search (FERRE) or NN_emulator]",
     "convergence_rate_q": 2.0,
-    "error_bound": "sigma(T_eff) < 100 K, sigma(log_g) < 0.1 dex at SNR > 50",
-    "complexity": "O(N_lambda * N_grid) for chi2 grid search"
+    "error_bound": "Data-fidelity bound: sigma(T_eff) < 100 K, sigma(log_g) < 0.1 dex at SNR > 50. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~500. Mismatch-induced bias + C2 * |continuum_normalization_error|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(N_lambda * N_grid) for chi2 grid search per iteration"
   },
   "physics_fingerprint": {
     "carrier": "photon",

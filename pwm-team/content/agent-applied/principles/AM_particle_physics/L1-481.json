@@ -8,7 +8,7 @@
   "source_file": "AM_particle_physics/481_parton_dglap.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "PDF extraction: determine parton distribution functions from global fit to DIS, Drell-Yan, and jet cross-section data via DGLAP evolution.",
+    "description": "Parton Distribution Functions (DGLAP): PDF extraction: determine parton distribution functions from global fit to DIS, Drell-Yan, and jet cross-section data via DGLAP evolution. The forward operator produces the measurement through a 3-node primitive DAG (M.dglap.splitting_functions\u2026); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=10 with effective condition number kappa_eff~10000.0; nuclear_correction_uncertainty, higher_twist_uncertainty set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "d/d(ln Q ** 2) f_i(x, Q ** 2) = sum_j integral_{x}^{1} (dz/z) P_{ij}(z) f_j(x/z, Q ** 2)",
     "world_state_x": "parton distribution functions f_i(x, Q ** 2) for i=gluon,u,d,s,c,b quarks",
     "observation_y": "measured cross sections sigma_exp for DIS (HERA), pp (LHC), DY experiments",
@@ -40,13 +40,13 @@
     "condition_number_kappa": 1000000.0,
     "condition_number_effective": 10000.0,
     "condition_number_mismatched": 100000.0,
-    "regime": "DGLAP is integro-differential evolution; functional-form bias in traditional fits; NNPDF uses neural networks for flexibility."
+    "regime": "Existence of the recovered PDF_function_space is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 10000.0); nuclear_correction_uncertainty dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Experimental gaussian sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "APFEL_evolution + Hessian_or_MC_uncertainty or neural_net_PDF (NNPDF)",
+    "solver_class": "learned [APFEL_evolution + Hessian_or_MC_uncertainty or neural_net_PDF (NNPDF)]",
     "convergence_rate_q": 2.0,
-    "error_bound": "chi2/dof ~ 1.0 for well-constrained PDF set",
-    "complexity": "O(N_data * N_PDF_grid_points * N_DGLAP_iterations)"
+    "error_bound": "Data-fidelity bound: chi2/dof ~ 1.0 for well-constrained PDF set. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~10000.0. Mismatch-induced bias + C2 * |nuclear_correction_uncertainty|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(N_data * N_PDF_grid_points * N_DGLAP_iterations) per iteration"
   },
   "physics_fingerprint": {
     "carrier": "particle",

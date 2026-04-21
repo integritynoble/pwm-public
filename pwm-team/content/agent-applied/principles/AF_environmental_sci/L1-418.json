@@ -8,7 +8,7 @@
   "source_file": "AF_environmental_sci/418_numerical_weather_prediction.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "4D-Var data assimilation: find optimal initial conditions minimizing misfit to observations over assimilation window.",
+    "description": "Numerical Weather Prediction Data Assimilation: 4D-Var data assimilation: find optimal initial conditions minimizing misfit to observations over assimilation window. The forward operator produces the measurement through a 3-node primitive DAG (M.nwp.primitive_equations\u2026); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=10 with effective condition number kappa_eff~100000.0; model_error_during_window, observation_bias_correction_error set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "J(x0) = 0.5*(x0-x_b) ** T B^{-1} (x0-x_b) + 0.5*sum_t (H_t M_t(x0) - y_t) ** T R_t^{-1} (H_t M_t(x0) - y_t)",
     "world_state_x": "atmospheric initial state x0 (T, u, v, q, ps) at analysis time",
     "observation_y": "conventional + satellite observations y_t over 6-12 hour window",
@@ -40,12 +40,12 @@
     "condition_number_kappa": 100000000.0,
     "condition_number_effective": 100000.0,
     "condition_number_mismatched": 1000000.0,
-    "regime": "Nonlinear NWP model; quadratic cost function approximated; outer loop linearizes model; balance constraints essential."
+    "regime": "Existence of the recovered atmospheric_state_vector is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 100000.0); model_error_during_window dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Observation gaussian sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "L-BFGS_4DVar or adjoint_based_gradient_descent",
+    "solver_class": "gradient-based [L-BFGS_4DVar or adjoint_based_gradient_descent]",
     "convergence_rate_q": 1.5,
-    "error_bound": "analysis RMSE < 0.5 K in temperature; 24h forecast skill S1 < 10",
+    "error_bound": "Data-fidelity bound: analysis RMSE < 0.5 K in temperature; 24h forecast skill S1 < 10. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~100000.0. Mismatch-induced bias + C2 * |model_error_during_window|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
     "complexity": "O(N_iter * N_model_calls) with N_model_calls = O(N_obs_types) adjoint integrations"
   },
   "physics_fingerprint": {

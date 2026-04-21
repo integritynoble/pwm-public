@@ -8,7 +8,7 @@
   "source_file": "AE_computational_bio/413_hmm_alignment.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Profile HMM: learn emission and transition probabilities from multiple sequence alignment; find optimal alignment via Viterbi.",
+    "description": "HMM Sequence Alignment and Profile Inference: Profile HMM: learn emission and transition probabilities from multiple sequence alignment; find optimal alignment via Viterbi. The forward operator produces the measurement through a 3-node primitive DAG (M.hmm.profile_model\u2026); recovery is posed as a statistical_inverse problem. Difficulty tier delta=5 with effective condition number kappa_eff~500; sequence_divergence_too_high, domain_boundaries_unknown set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "P(seq | HMM) = prod_t P(obs_t | state_t) * P(state_t | state_{t-1}); Viterbi decodes optimal path",
     "world_state_x": "HMM parameters: emission matrix E (20 amino acids x M_match states), transition matrix T",
     "observation_y": "multiple sequence alignment (N_seq sequences, L_length positions) for training",
@@ -40,13 +40,13 @@
     "condition_number_kappa": 10000.0,
     "condition_number_effective": 500,
     "condition_number_mismatched": 2000,
-    "regime": "Profile HMM captures evolutionary variation; Viterbi gives ML alignment; posterior alignment (forward-backward) gives uncertainty; homology detectable at < 10% identity."
+    "regime": "Existence of the recovered HMM_profile_parameter_matrix is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 500); sequence_divergence_too_high dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Multinomial sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "HMMER4_Baum_Welch or ViterbiEM",
+    "solver_class": "classical [HMMER4_Baum_Welch or ViterbiEM]",
     "convergence_rate_q": 2.0,
-    "error_bound": "alignment sensitivity > 80% at 25% sequence identity",
-    "complexity": "O(N_seq * L ** 2 * M) for Viterbi + Baum-Welch"
+    "error_bound": "Data-fidelity bound: alignment sensitivity > 80% at 25% sequence identity. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~500. Mismatch-induced bias + C2 * |sequence_divergence_too_high|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(N_seq * L ** 2 * M) for Viterbi + Baum-Welch per iteration"
   },
   "physics_fingerprint": {
     "carrier": "N/A",

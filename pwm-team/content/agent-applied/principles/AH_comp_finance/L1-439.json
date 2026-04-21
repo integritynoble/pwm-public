@@ -8,7 +8,7 @@
   "source_file": "AH_comp_finance/439_heston_stochastic_vol.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Heston model calibration: fit 5-parameter stochastic vol model to observed implied volatility surface.",
+    "description": "Heston Stochastic Volatility Calibration: Heston model calibration: fit 5-parameter stochastic vol model to observed implied volatility surface. The forward operator produces the measurement through a 3-node primitive DAG (M.heston.characteristic_function\u2026); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=5 with effective condition number kappa_eff~500; data_sparsity_OTM_options, term_structure_inversion_error set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "dS = rS dt + sqrt(v) S dW_S; dv = kappa(theta-v)dt + xi*sqrt(v)*dW_v; option price via Fourier inversion",
     "world_state_x": "Heston parameters (v0, kappa, theta, xi, rho) describing vol dynamics",
     "observation_y": "implied vol surface sigma_impl(K, T) or market prices C(K_i, T_j)",
@@ -41,13 +41,13 @@
     "condition_number_kappa": 10000.0,
     "condition_number_effective": 500,
     "condition_number_mismatched": 2000,
-    "regime": "Non-convex optimization; multiple local minima; Feller condition for non-explosion; parameter correlations cause degeneracies."
+    "regime": "Existence of the recovered stochastic_vol_parameter_vector is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 500); data_sparsity_OTM_options dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Market bid ask gaussian sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "differential_evolution or Levenberg_Marquardt or CMA-ES",
+    "solver_class": "classical [differential_evolution or Levenberg_Marquardt or CMA-ES]",
     "convergence_rate_q": 2.0,
-    "error_bound": "vol surface RMSE < 50 bp for liquid options",
-    "complexity": "O(N_options * N_FFT_points) per forward evaluation"
+    "error_bound": "Data-fidelity bound: vol surface RMSE < 50 bp for liquid options. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~500. Mismatch-induced bias + C2 * |data_sparsity_OTM_options|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(N_options * N_FFT_points) per forward evaluation per iteration"
   },
   "physics_fingerprint": {
     "carrier": "N/A",

@@ -8,7 +8,7 @@
   "source_file": "AC_astrophysics/376_cosmic_ray_propagation.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "CR propagation inversion: infer diffusion coefficient D, convection velocity, and source distribution from CR flux ratios (B/C, positron fraction).",
+    "description": "Cosmic Ray Propagation Inversion: CR propagation inversion: infer diffusion coefficient D, convection velocity, and source distribution from CR flux ratios (B/C, positron fraction). The forward operator produces the measurement through a 3-node primitive DAG (S.diffusion.galactic\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~50; solar_modulation_uncertainty, cross_section_uncertainty set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "partial_t N = nabla(D nabla N) - nabla(v_c N) - N/tau + Q(r,E); B/C ratio from propagated spectra",
     "world_state_x": "diffusion coefficient D_0 and spatial/energy dependence, source spectral index gamma_src",
     "observation_y": "B/C, p-bar/p, positron fraction, CR fluxes from AMS-02/PAMELA",
@@ -40,13 +40,13 @@
     "condition_number_kappa": 1000,
     "condition_number_effective": 50,
     "condition_number_mismatched": 200,
-    "regime": "Linear transport equation; degeneracy between D and v_c; probed by secondary/primary ratios."
+    "regime": "Existence of the recovered CR_spectral_source_distribution is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 50); solar_modulation_uncertainty dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Observation gaussian sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "GALPROP or DRAGON2 with MCMC parameter scan",
+    "solver_class": "statistical [GALPROP or DRAGON2 with MCMC parameter scan]",
     "convergence_rate_q": 2.0,
-    "error_bound": "chi2/dof < 1.5 for AMS-02 data at standard solution",
-    "complexity": "O(N_energy * N_spatial * N_species) per GALPROP call"
+    "error_bound": "Data-fidelity bound: chi2/dof < 1.5 for AMS-02 data at standard solution. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~50. Mismatch-induced bias + C2 * |solar_modulation_uncertainty|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(N_energy * N_spatial * N_species) per GALPROP call per iteration"
   },
   "physics_fingerprint": {
     "carrier": "particle",

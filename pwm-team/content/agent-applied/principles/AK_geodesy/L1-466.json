@@ -8,7 +8,7 @@
   "source_file": "AK_geodesy/466_gnss_positioning.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "GNSS positioning: estimate 3D position and receiver clock bias from pseudorange and carrier phase measurements.",
+    "description": "GNSS Positioning and Navigation: GNSS positioning: estimate 3D position and receiver clock bias from pseudorange and carrier phase measurements. The forward operator produces the measurement through a 3-node primitive DAG (M.pseudorange.geometry\u2026); recovery is posed as a linear_inverse problem. Difficulty tier delta=3 with effective condition number kappa_eff~10; ionospheric_model_error_m, tropospheric_model_error_m set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "rho_i = |X - X_i| + c*dt_rcvr - c*dt_sat_i + I_i + T_i + epsilon_i",
     "world_state_x": "receiver position (X,Y,Z) and clock bias dt_rcvr",
     "observation_y": "pseudoranges rho_i and carrier phases phi_i from N_sat >= 4 satellites",
@@ -40,13 +40,13 @@
     "condition_number_kappa": 100,
     "condition_number_effective": 10,
     "condition_number_mismatched": 50,
-    "regime": "Overdetermined for N_sat >= 4; DOP degrades with poor satellite geometry; ionosphere dominant error source at L1-only."
+    "regime": "Existence of the recovered 3D_position_velocity is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 10); ionospheric_model_error_m dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Gaussian sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "WLS_least_squares or Kalman_filter_navigation",
+    "solver_class": "sequential-filter [WLS_least_squares or Kalman_filter_navigation]",
     "convergence_rate_q": 2.0,
-    "error_bound": "horizontal position < 2.5 m (C/A code), < 10 mm (RTK)",
-    "complexity": "O(N_sat * N_epoch) per position fix"
+    "error_bound": "Data-fidelity bound: horizontal position < 2.5 m (C/A code), < 10 mm (RTK). Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~10. Mismatch-induced bias + C2 * |ionospheric_model_error_m|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(N_sat * N_epoch) per position fix per iteration"
   },
   "physics_fingerprint": {
     "carrier": "RF",

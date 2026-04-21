@@ -8,7 +8,7 @@
   "source_file": "AG_control_theory/432_optimal_control_lqr.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "LQR optimal control: find state feedback gain K minimizing infinite-horizon quadratic cost J = integral(x ** T Q x + u ** T R u) dt.",
+    "description": "Optimal Control (LQR): LQR optimal control: find state feedback gain K minimizing infinite-horizon quadratic cost J = integral(x ** T Q x + u ** T R u) dt. The forward operator produces the measurement through a 3-node primitive DAG (M.riccati.algebraic\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~20; model_uncertainty_A_B, Q_R_mistuning set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "u = -K*x; K = R^{-1} B ** T P; P solves algebraic Riccati: A ** T P + P A - P B R^{-1} B ** T P + Q = 0",
     "world_state_x": "optimal control gain matrix K in R^{m x n}",
     "observation_y": "system matrices (A, B) and cost weights (Q, R) as inputs",
@@ -40,13 +40,13 @@
     "condition_number_kappa": 500,
     "condition_number_effective": 20,
     "condition_number_mismatched": 100,
-    "regime": "Globally optimal for linear quadratic; guaranteed stability margins; extensions to LQG (with Kalman filter) and H2/Hinf for robust control."
+    "regime": "Existence of the recovered control_gain_matrix is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 20); model_uncertainty_A_B dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Deterministic sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "DARE_Riccati_solver (MATLAB lqr or scipy.signal.lqr)",
+    "solver_class": "classical [DARE_Riccati_solver (MATLAB lqr or scipy.signal.lqr)]",
     "convergence_rate_q": 2.0,
-    "error_bound": "optimal cost J* = x0 ** T P x0; guaranteed stability margins: PM >= 60 deg, GM >= 6 dB",
-    "complexity": "O(n ** 3) for Riccati equation solution"
+    "error_bound": "Data-fidelity bound: optimal cost J* = x0 ** T P x0; guaranteed stability margins: PM >= 60 deg, GM >= 6 dB. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~20. Mismatch-induced bias + C2 * |model_uncertainty_A_B|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(n ** 3) for Riccati equation solution per iteration"
   },
   "physics_fingerprint": {
     "carrier": "N/A",

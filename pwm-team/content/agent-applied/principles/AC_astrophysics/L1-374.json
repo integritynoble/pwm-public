@@ -8,7 +8,7 @@
   "source_file": "AC_astrophysics/374_gravitational_wave.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "GW parameter estimation: infer binary merger parameters (masses, spins, sky position) from LIGO/Virgo strain data via Bayesian inference.",
+    "description": "Gravitational Wave Parameter Estimation: GW parameter estimation: infer binary merger parameters (masses, spins, sky position) from LIGO/Virgo strain data via Bayesian inference. The forward operator produces the measurement through a 3-node primitive DAG (S.waveform.IMRPhenomD\u2026); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=10 with effective condition number kappa_eff~10000.0; waveform_model_systematic, non_gaussian_noise_artifact set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "h(t; theta) = F_+(psi) h_+(t; m1,m2,chi1,chi2,iota,d_L) + F_x(psi) h_x(t); likelihood L propto exp(-chi2/2)",
     "world_state_x": "compact binary parameters theta = (m1, m2, chi1, chi2, d_L, iota, psi, ra, dec, tc, phi_c)",
     "observation_y": "detector strain s(t) = h(t; theta) + n(t) for LIGO Hanford + Livingston + Virgo",
@@ -41,13 +41,13 @@
     "condition_number_kappa": 100000000.0,
     "condition_number_effective": 10000.0,
     "condition_number_mismatched": 100000.0,
-    "regime": "High-dimensional (15 parameters); multimodal posteriors for aligned-spin systems; computing limited by waveform cost."
+    "regime": "Existence of the recovered CBC_parameter_vector is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 10000.0); waveform_model_systematic dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Detector noise gaussian sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "Bilby_dynesty or RIFT_PE or LALInference_MCMC",
+    "solver_class": "statistical [Bilby_dynesty or RIFT_PE or LALInference_MCMC]",
     "convergence_rate_q": 2.0,
-    "error_bound": "90% CI volume in parameter space; sky area < 100 deg2",
-    "complexity": "O(N_waveform * N_sample) with N_waveform ~ 1s per evaluation"
+    "error_bound": "Data-fidelity bound: 90% CI volume in parameter space; sky area < 100 deg2. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~10000.0. Mismatch-induced bias + C2 * |waveform_model_systematic|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(N_waveform * N_sample) with N_waveform ~ 1s per evaluation per iteration"
   },
   "physics_fingerprint": {
     "carrier": "N/A",

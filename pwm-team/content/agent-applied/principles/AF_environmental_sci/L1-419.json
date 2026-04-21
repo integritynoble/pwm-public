@@ -8,7 +8,7 @@
   "source_file": "AF_environmental_sci/419_ocean_circulation.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Ocean state estimation: infer 3D temperature, salinity, and velocity fields consistent with all observations (ECCO approach).",
+    "description": "Ocean Circulation Inverse Modeling: Ocean state estimation: infer 3D temperature, salinity, and velocity fields consistent with all observations (ECCO approach). The forward operator produces the measurement through a 3-node primitive DAG (M.primitive.boussinesq_ocean\u2026); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=5 with effective condition number kappa_eff~10000.0; forcing_uncertainty, mixing_parameterization_error set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "OGCM (MITgcm): primitive equations for T, S, u, v, w, eta; forcing from ERA5 winds and fluxes",
     "world_state_x": "global ocean T(x,y,z,t), S(x,y,z,t), u,v,w fields and surface forcing corrections",
     "observation_y": "Argo float T/S profiles, altimetry SSH, SST from satellites, hydrographic sections",
@@ -40,13 +40,13 @@
     "condition_number_kappa": 10000000.0,
     "condition_number_effective": 10000.0,
     "condition_number_mismatched": 100000.0,
-    "regime": "Rotating, stratified ocean; thermohaline circulation timescale decades; adjoint provides exact gradient for unconstrained optimization."
+    "regime": "Existence of the recovered 3D_ocean_state is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 10000.0); forcing_uncertainty dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Observation gaussian sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "adjoint_4DVar_ECCO or EnKF_ocean",
+    "solver_class": "classical [adjoint_4DVar_ECCO or EnKF_ocean]",
     "convergence_rate_q": 1.5,
-    "error_bound": "temperature RMSE < 0.3 K globally in ECCO v4",
-    "complexity": "O(N_iter * N_OGCM_calls) per optimization with N_OGCM = 20-year forward+adjoint"
+    "error_bound": "Data-fidelity bound: temperature RMSE < 0.3 K globally in ECCO v4. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~10000.0. Mismatch-induced bias + C2 * |forcing_uncertainty|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(N_iter * N_OGCM_calls) per optimization with N_OGCM = 20-year forward+adjoint per iteration"
   },
   "physics_fingerprint": {
     "carrier": "N/A",

@@ -8,7 +8,7 @@
   "source_file": "AJ_petroleum/464_decline_curve_arps.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Arps decline curve analysis: fit exponential/hyperbolic/harmonic decline to production history to forecast EUR.",
+    "description": "Arps Decline Curve Analysis: Arps decline curve analysis: fit exponential/hyperbolic/harmonic decline to production history to forecast EUR. The forward operator produces the measurement through a 3-node primitive DAG (M.arps.hyperbolic_decline\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~10; rate_interference_from_offset_wells, compression_uplift_events set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "q(t) = q_i / (1 + b*D_i*t)^{1/b} (hyperbolic); b=0 exponential, b=1 harmonic",
     "world_state_x": "decline parameters (q_i, D_i, b) and EUR (estimated ultimate recovery)",
     "observation_y": "monthly production rate time series {q(t_k)} for k=1..N_months",
@@ -40,13 +40,13 @@
     "condition_number_kappa": 200,
     "condition_number_effective": 10,
     "condition_number_mismatched": 50,
-    "regime": "Empirical model; well-suited for boundary-dominated flow; transient flow requires Duong model; unconventional wells have b>1."
+    "regime": "Existence of the recovered decline_parameter_vector is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 10); rate_interference_from_offset_wells dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Lognormal sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "Levenberg_Marquardt_NLS or Bayesian_decline_curve",
+    "solver_class": "statistical [Levenberg_Marquardt_NLS or Bayesian_decline_curve]",
     "convergence_rate_q": 2.0,
-    "error_bound": "EUR uncertainty \u00b120% for conventional wells with 2+ years history",
-    "complexity": "O(N_months * N_params) for nonlinear regression"
+    "error_bound": "Data-fidelity bound: EUR uncertainty \u00b120% for conventional wells with 2+ years history. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~10. Mismatch-induced bias + C2 * |rate_interference_from_offset_wells|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(N_months * N_params) for nonlinear regression per iteration"
   },
   "physics_fingerprint": {
     "carrier": "N/A",

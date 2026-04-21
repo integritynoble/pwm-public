@@ -8,7 +8,7 @@
   "source_file": "AC_astrophysics/369_weak_lensing.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Weak lensing: measure coherent distortion of galaxy shapes to infer projected matter distribution.",
+    "description": "Weak Gravitational Lensing Shear Estimation: Weak lensing: measure coherent distortion of galaxy shapes to infer projected matter distribution. The forward operator produces the measurement through a 3-node primitive DAG (S.shear.ellipticity\u2026); recovery is posed as a statistical_inverse problem. Difficulty tier delta=5 with effective condition number kappa_eff~20; PSF_leakage, multiplicative_shear_bias_m set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "gamma_obs = gamma_true + e_intrinsic + noise; xi_pm(theta) = <gamma*_t gamma_t>(theta)",
     "world_state_x": "matter power spectrum P(k) and cosmological parameters (sigma_8, Omega_m)",
     "observation_y": "galaxy ellipticities e_obs for N_gal galaxies across survey area",
@@ -40,13 +40,13 @@
     "condition_number_kappa": 500,
     "condition_number_effective": 20,
     "condition_number_mismatched": 100,
-    "regime": "Shape noise dominated; linear KSB approximation fails at 1% level; requires multiplicative bias correction."
+    "regime": "Existence of the recovered 2D_convergence_map is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 20); PSF_leakage dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Shape noise gaussian sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "KSB or metacalibration or BFD",
+    "solver_class": "classical [KSB or metacalibration or BFD]",
     "convergence_rate_q": 2.0,
-    "error_bound": "shear calibration |m| < 0.01, |c| < 1e-4 for Stage-IV",
-    "complexity": "O(N_gal * N_ell) for power spectrum estimation"
+    "error_bound": "Data-fidelity bound: shear calibration |m| < 0.01, |c| < 1e-4 for Stage-IV. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~20. Mismatch-induced bias + C2 * |PSF_leakage|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(N_gal * N_ell) for power spectrum estimation per iteration"
   },
   "physics_fingerprint": {
     "carrier": "photon",

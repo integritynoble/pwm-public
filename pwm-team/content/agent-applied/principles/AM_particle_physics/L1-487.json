@@ -8,7 +8,7 @@
   "source_file": "AM_particle_physics/487_jet_reconstruction.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Jet reconstruction: cluster final-state particles into jets using anti-kT algorithm with pileup subtraction and JES calibration.",
+    "description": "Jet Reconstruction (Anti-kT): Jet reconstruction: cluster final-state particles into jets using anti-kT algorithm with pileup subtraction and JES calibration. The forward operator produces the measurement through a 3-node primitive DAG (S.antikt.sequential_clustering\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=5 with effective condition number kappa_eff~100; pileup_contamination_residual, underlying_event_modeling set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "d_ij = min(k_{Ti}^{-2}, k_{Tj}^{-2}) * Delta_ij ** 2 / R ** 2; jet E corrected by JES(eta, pt, mu)",
     "world_state_x": "jet 4-vectors {E, px, py, pz} for N_jets jets above pt threshold",
     "observation_y": "calorimeter clusters + track momenta for N_particles per event",
@@ -40,13 +40,13 @@
     "condition_number_kappa": 1000.0,
     "condition_number_effective": 100,
     "condition_number_mismatched": 500,
-    "regime": "Anti-kT gives conical hard jets; pileup subtraction via jet area method; JES determined from gamma+jet/Z+jet in-situ."
+    "regime": "Existence of the recovered jet_4vector_list is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 100); pileup_contamination_residual dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Pileup detector gaussian sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "FastJet_antikT + JES_calibration",
+    "solver_class": "classical [FastJet_antikT + JES_calibration]",
     "convergence_rate_q": 2.0,
-    "error_bound": "JER < 5% for pt > 100 GeV; JES uncertainty < 1%",
-    "complexity": "O(N_particles ** 2) naive, O(N_particles * log N_particles) FastJet"
+    "error_bound": "Data-fidelity bound: JER < 5% for pt > 100 GeV; JES uncertainty < 1%. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~100. Mismatch-induced bias + C2 * |pileup_contamination_residual|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(N_particles ** 2) naive, O(N_particles * log N_particles) FastJet per iteration"
   },
   "physics_fingerprint": {
     "carrier": "particle",

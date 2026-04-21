@@ -8,7 +8,7 @@
   "source_file": "AF_environmental_sci/420_sea_ice.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Sea ice state estimation: retrieve ice concentration, thickness, and drift from passive microwave and altimetry.",
+    "description": "Sea Ice Thermodynamic-Dynamic Inversion: Sea ice state estimation: retrieve ice concentration, thickness, and drift from passive microwave and altimetry. The forward operator produces the measurement through a 3-node primitive DAG (S.passive_microwave.brightness_temp\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=5 with effective condition number kappa_eff~200; melt_pond_fraction, snow_ice_interface_uncertainty set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "T_B(f, theta, p) = (1-A)*T_ocean + A*[T_ice + f_snow(T_snow)]; ice motion from TOPAZ/neXtSIM",
     "world_state_x": "sea ice concentration A (%), thickness h_i (m), drift velocity u_i (m/day)",
     "observation_y": "satellite brightness temperatures T_B(19,37,85 GHz), ICESat/Cryosat-2 freeboard",
@@ -40,13 +40,13 @@
     "condition_number_kappa": 5000,
     "condition_number_effective": 200,
     "condition_number_mismatched": 1000,
-    "regime": "Summer melt ponds cause large algorithm uncertainty; thin ice thermodynamically coupled to atmosphere; Arctic amplification changes emissivity regimes."
+    "regime": "Existence of the recovered sea_ice_state_vector is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 200); melt_pond_fraction dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Measurement gaussian sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "NASA_team_algorithm or Bootstrap_algorithm or PIOMAS_assimilation",
+    "solver_class": "classical [NASA_team_algorithm or Bootstrap_algorithm or PIOMAS_assimilation]",
     "convergence_rate_q": 2.0,
-    "error_bound": "SIC uncertainty < 5% for compact ice; thickness < 0.5 m",
-    "complexity": "O(N_swath_pixels * N_frequencies) per orbit"
+    "error_bound": "Data-fidelity bound: SIC uncertainty < 5% for compact ice; thickness < 0.5 m. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~200. Mismatch-induced bias + C2 * |melt_pond_fraction|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(N_swath_pixels * N_frequencies) per orbit per iteration"
   },
   "physics_fingerprint": {
     "carrier": "photon",

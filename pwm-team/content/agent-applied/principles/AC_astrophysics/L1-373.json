@@ -8,7 +8,7 @@
   "source_file": "AC_astrophysics/373_pulsar_timing.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Pulsar timing array: detect stochastic GW background from its Hellings-Downs correlation pattern in timing residuals.",
+    "description": "Pulsar Timing Array GW Background: Pulsar timing array: detect stochastic GW background from its Hellings-Downs correlation pattern in timing residuals. The forward operator produces the measurement through a 3-node primitive DAG (S.pulsar.timing_residuals\u2026); recovery is posed as a statistical_inverse problem. Difficulty tier delta=5 with effective condition number kappa_eff~1000; solar_system_ephemeris_error, DM_variation_uncertainty set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "R_a(t) = integral h_ab(t) * F ** ab_a(t) dt + n_a(t); HD_curve = 3/2*(1-x)/2*ln((1-x)/2) - (1-x)/4 + 1/2",
     "world_state_x": "GW background strain spectrum h_c(f) = A*(f/f_yr) ** alpha",
     "observation_y": "timing residuals R_a(t) for N_psr pulsars over T_obs years",
@@ -40,13 +40,13 @@
     "condition_number_kappa": 100000.0,
     "condition_number_effective": 1000,
     "condition_number_mismatched": 5000,
-    "regime": "Hellings-Downs correlation is the smoking gun; noise processes (red noise, DM variations) must be jointly modeled."
+    "regime": "Existence of the recovered GW_background_spectrum is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 1000); solar_system_ephemeris_error dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Timing noise red white sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "enterprise_MCMC or PTMCMCSampler with GW likelihood",
+    "solver_class": "statistical [enterprise_MCMC or PTMCMCSampler with GW likelihood]",
     "convergence_rate_q": 2.0,
-    "error_bound": "sigma(log10 A_15) < 0.2 at SNR > 3 detection",
-    "complexity": "O(N_psr ** 2 * N_TOA ** 2) for full covariance matrix per likelihood eval"
+    "error_bound": "Data-fidelity bound: sigma(log10 A_15) < 0.2 at SNR > 3 detection. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~1000. Mismatch-induced bias + C2 * |solar_system_ephemeris_error|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(N_psr ** 2 * N_TOA ** 2) for full covariance matrix per likelihood eval per iteration"
   },
   "physics_fingerprint": {
     "carrier": "radio_wave",

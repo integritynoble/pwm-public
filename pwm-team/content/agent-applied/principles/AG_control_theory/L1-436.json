@@ -8,7 +8,7 @@
   "source_file": "AG_control_theory/436_ensemble_kalman_filter.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "EnKF: ensemble-based approximation of Kalman filter covariance; scales to large state dimensions.",
+    "description": "Ensemble Kalman Filter (EnKF): EnKF: ensemble-based approximation of Kalman filter covariance; scales to large state dimensions. The forward operator produces the measurement through a 3-node primitive DAG (S.enkf.ensemble_update\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=5 with effective condition number kappa_eff~500; sampling_error_finite_ensemble, localization_radius_choice set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "K = P_f H ** T (H P_f H ** T + R)^{-1}; P_f estimated from ensemble; analysis: x_a ** i = x_f ** i + K(y ** i - Hx_f ** i)",
     "world_state_x": "ensemble of state estimates {x_a ** i} representing posterior distribution",
     "observation_y": "observations {y_t} at each assimilation cycle",
@@ -40,13 +40,13 @@
     "condition_number_kappa": 10000.0,
     "condition_number_effective": 500,
     "condition_number_mismatched": 2000,
-    "regime": "Scales to O(10 ** 8) state dimensions with localization; N_e = 20-100 typically sufficient; inflation prevents ensemble collapse."
+    "regime": "Existence of the recovered ensemble_state_distribution is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 500); sampling_error_finite_ensemble dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Gaussian sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "LETKF or serial_EnSRF or EAKF",
+    "solver_class": "classical [LETKF or serial_EnSRF or EAKF]",
     "convergence_rate_q": 2.0,
-    "error_bound": "spread-skill ratio ~ 1 for well-tuned ensemble; localization prevents sampling error",
-    "complexity": "O(N_e * n_state * N_obs) per cycle"
+    "error_bound": "Data-fidelity bound: spread-skill ratio ~ 1 for well-tuned ensemble; localization prevents sampling error. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~500. Mismatch-induced bias + C2 * |sampling_error_finite_ensemble|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(N_e * n_state * N_obs) per cycle per iteration"
   },
   "physics_fingerprint": {
     "carrier": "N/A",
