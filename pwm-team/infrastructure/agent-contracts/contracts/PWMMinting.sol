@@ -217,13 +217,17 @@ contract PWMMinting {
         if (A_kjb > 0) {
             require(address(this).balance >= A_kjb, "PWMMinting: underfunded");
             M_emitted += A_kjb;
-            reward.depositMinting{value: A_kjb}(benchmarkHash);
         }
 
-        // Update activities for next event.
+        // CEI: update all state before external calls.
         _incrementActivity(principleId, benchmarkHash);
 
         emit Minted(principleId, benchmarkHash, A_k, A_kjb, M_POOL - M_emitted);
+
+        // Interaction last — external call after all state updates.
+        if (A_kjb > 0) {
+            reward.depositMinting{value: A_kjb}(benchmarkHash);
+        }
     }
 
     function _incrementActivity(uint256 principleId, bytes32 benchmarkHash) internal {
