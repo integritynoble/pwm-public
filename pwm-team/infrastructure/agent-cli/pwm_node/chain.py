@@ -292,6 +292,72 @@ class PWMChain:
             raise ChainError(f"Transaction {tx_hash} reverted on-chain")
         return dict(receipt)
 
+    # ───── staking ─────
+
+    # Layer constants per PWMStaking ABI (match the on-chain LAYER_* view returns)
+    LAYER_PRINCIPLE = 0
+    LAYER_SPEC = 1
+    LAYER_BENCHMARK = 2
+
+    _LAYER_NAMES = {0: "principle", 1: "spec", 2: "benchmark"}
+
+    def stake_amount(self, layer: int) -> int:
+        """Return the required stake in wei for a given layer (0/1/2)."""
+        if layer not in self._LAYER_NAMES:
+            raise ChainError(f"layer must be 0, 1, or 2 (got {layer}). See PWMChain.LAYER_*.")
+        staking = self.contracts["PWMStaking"].contract
+        try:
+            return int(staking.functions.stakeAmount(layer).call())
+        except (ContractLogicError, Web3RPCError) as e:
+            raise ChainError(f"stakeAmount({layer}) failed: {e}")
+
+    def stake_of(self, artifact_hash: str) -> int:
+        """Return the current stake on an artifact, in wei."""
+        staking = self.contracts["PWMStaking"].contract
+        h = artifact_hash if artifact_hash.startswith("0x") else "0x" + artifact_hash
+        try:
+            # Some ABIs expose stakeOf(bytes32), others stakes(bytes32). Probe.
+            if hasattr(staking.functions, "stakeOf"):
+                return int(staking.functions.stakeOf(h).call())
+            return int(staking.functions.stakes(h).call())
+        except (ContractLogicError, Web3RPCError) as e:
+            raise ChainError(f"stakeOf({h}) failed: {e}")
+
+    def stake(self, layer: int, artifact_hash: str, *, gas: int = 200000) -> str:
+        """Stake on an artifact. Sends the required stake amount as tx value.
+
+        Returns the tx hash. Caller should `wait_for_tx` to confirm.
+        """
+        if layer not in self._LAYER_NAMES:
+            raise ChainError(f"layer must be 0/1/2 (got {layer})")
+        acct = self._get_account()
+        staking = self.contracts["PWMStaking"].contract
+        h = artifact_hash if artifact_hash.startswith("0x") else "0x" + artifact_hash
+
+        required = self.stake_amount(layer)
+        if required == 0:
+            raise ChainError(
+                f"stakeAmount for layer {layer} ({self._LAYER_NAMES[layer]}) is 0 — "
+                "has the contract been initialized?"
+            )
+
+        fn = staking.functions.stake(layer, h)
+        tx = fn.build_transaction(
+            {
+                "from": acct.address,
+                "chainId": self.chain_id,
+                "nonce": self.w3.eth.get_transaction_count(acct.address),
+                "gas": gas,
+                "value": required,
+                "maxFeePerGas": self.w3.eth.gas_price * 2,
+                "maxPriorityFeePerGas": self.w3.to_wei(1, "gwei"),
+            }
+        )
+        signed = acct.sign_transaction(tx)
+        raw = getattr(signed, "raw_transaction", None) or signed.rawTransaction  # type: ignore[attr-defined]
+        tx_hash = self.w3.eth.send_raw_transaction(raw)
+        return tx_hash.hex()
+
     # ───── debug helpers ─────
 
     def info(self) -> dict:

@@ -14,11 +14,11 @@ import argparse
 import sys
 from pathlib import Path
 
-from pwm_node.commands import balance, benchmarks, inspect, mine, submit, verify
+from pwm_node.commands import balance, benchmarks, inspect, mine, stake, submit, verify
 
 
 # Online commands — stubbed pending further sessions
-_CHAIN_COMMANDS = {"sp", "stake"}
+_CHAIN_COMMANDS = {"sp"}
 
 
 def _repo_root_default() -> Path:
@@ -129,8 +129,27 @@ def build_parser() -> argparse.ArgumentParser:
     mp.add_argument("--timeout", type=int, default=600, help="Solver wall-clock timeout in seconds.")
     mp.set_defaults(handler=mine.run)
 
+    # stake — view required / stake on principle|spec|benchmark
+    stp = sub.add_parser(
+        "stake",
+        help="Show required stake or stake on a principle/spec/benchmark artifact.",
+    )
+    stake_sub = stp.add_subparsers(dest="stake_sub", required=True, metavar="<subcommand>")
+    # stake quote [--layer N]
+    q = stake_sub.add_parser("quote", help="Print required stake (in ETH) per layer.")
+    q.add_argument("--layer", type=int, choices=[0, 1, 2], help="Limit to one layer (0=principle,1=spec,2=benchmark).")
+    # stake principle|spec|benchmark <artifact_hash>
+    for layer_name in ("principle", "spec", "benchmark"):
+        sp_ = stake_sub.add_parser(layer_name, help=f"Stake on a {layer_name} artifact.")
+        sp_.add_argument("artifact_hash", help="32-byte artifact hash (0x-prefixed or hex).")
+        sp_.add_argument("--dry-run", action="store_true", help="Print plan; do not broadcast.")
+        sp_.add_argument("--no-wait", action="store_true", help="Do not wait for tx confirmation.")
+        sp_.add_argument("--timeout", type=int, default=300, help="Tx wait timeout in seconds.")
+        sp_.add_argument("--gas", type=int, default=200000, help="Gas budget.")
+    stp.set_defaults(handler=stake.run)
+
     # Stubs for remaining chain-dependent commands
-    for cmd in ["stake", "sp"]:
+    for cmd in ["sp"]:
         s = sub.add_parser(cmd, help=f"[Phase C stub] {cmd} — chain-dependent; next session.")
         s.add_argument("args", nargs="*")
         s.set_defaults(handler=_chain_stub)
