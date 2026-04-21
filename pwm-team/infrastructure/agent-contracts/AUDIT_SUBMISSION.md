@@ -111,9 +111,25 @@ PWMGovernance (3-of-5 multisig, 48h timelock)
 | L1 creator share | 5% | PWMReward |
 | Treasury share | 15% (remainder absorbs dust) | PWMReward |
 | shareRatioP range | 1000-9000 (10%-90% in bps) | PWMCertificate, PWMReward |
-| Staking: L1 Principle | 10 PWM | PWMStaking |
-| Staking: L2 Spec | 2 PWM | PWMStaking |
-| Staking: L3 Benchmark | 1 PWM | PWMStaking |
+| Staking: L1 Principle (mainnet design) | 10 PWM | PWMStaking |
+| Staking: L2 Spec (mainnet design) | 2 PWM | PWMStaking |
+| Staking: L3 Benchmark (mainnet design) | 1 PWM | PWMStaking |
+
+**Note on stake unit / current testnet values.** `PWMStaking.stake()` accepts the
+chain's native asset (`msg.value`). No PWM ERC20 token is deployed; the PWM
+denomination above describes the *mainnet* design intent once the PWM token
+ships. The current **Sepolia testnet** live values, set via
+`setStakeAmount()` by governance, are:
+
+| Layer | Testnet value (native ETH) |
+|-------|----------------------------|
+| L1 Principle | 0 ETH |
+| L2 Spec | 10 ETH |
+| L3 Benchmark | 2 ETH |
+
+Auditors should review the slashing/graduation math against both sets of
+values — particularly any rounding behavior where `amount / 2` meets odd
+wei totals.
 | Adversarial bounty cap | 50% of T_k | PWMTreasury |
 | BURN_SINK | 0x000000000000000000000000000000000000dEaD | PWMStaking |
 
@@ -146,6 +162,8 @@ The `shareRatioP` parameter (the AC/CP split ratio `p`) is set by the certificat
 ### 3.6 Activity Uses Cumulative Count (Not Rolling Window)
 
 `PWMMinting` uses cumulative activity counters for weight calculation rather than the 90-day rolling window specified in the design document. This is a deliberate simplification for M1.1; the rolling window is flagged as a follow-up item. Auditors should evaluate the cumulative model as-deployed.
+
+**Expected remediation:** We anticipate auditors will recommend implementing the 90-day rolling window before mainnet (either via circular-buffer accounting or chunked epoch decay). We agree this should land pre-mainnet; the pre-disclosure is informational so auditors understand it is a known gap, not an oversight.
 
 ### 3.7 No External Dependencies
 
@@ -318,7 +336,7 @@ infrastructure/agent-contracts/
 - IPFS integration
 - Frontend / API code
 - Genesis JSON content
-- `commit()` / `reveal()` -- planned extension, not yet implemented
+- **On-chain `commit()` / `reveal()`** -- planned extension, not yet implemented on any contract in this audit. Note: `agent-miner/pwm_miner/commit_reveal.py` implements an *off-chain* commit/reveal state machine that a future on-chain version would mirror. The off-chain module is out of scope for this audit.
 - DAO voting implementation (deferred post-M3; `activateDAO()` is a flag only)
 
 ---
@@ -380,8 +398,19 @@ SCOPE
 
 REPOSITORY
 
-- GitHub: https://github.com/integritynoble/pwm
+- GitHub: https://github.com/integritynoble/pwm  (currently private; we will
+  grant read access to Code4rena staff upon engagement, or provide a
+  public snapshot at the `audit-v1` tag)
 - Path: pwm-team/infrastructure/agent-contracts/contracts/
+- Scope commit: tagged `audit-v1` — frozen snapshot for the duration of
+  the contest
+- Submission package (this document): pwm-team/infrastructure/agent-contracts/AUDIT_SUBMISSION.md
+
+BUDGET
+
+- Prize pool / contest fee: [TODO: $XX,000 USD — to be set by director before sending]
+- We are flexible on the split between prize pool, judge pool, and
+  remediation review fees
 
 KEY RISK AREAS
 
@@ -445,8 +474,19 @@ CONTRACTS
 
 REPOSITORY
 
-- GitHub: https://github.com/integritynoble/pwm
+- GitHub: https://github.com/integritynoble/pwm  (currently private; we will
+  grant read access to Sherlock staff upon engagement, or provide a
+  public snapshot at the `audit-v1` tag)
 - Path: pwm-team/infrastructure/agent-contracts/contracts/
+- Scope commit: tagged `audit-v1` — frozen snapshot for the duration of
+  the contest
+- Submission package (this document): pwm-team/infrastructure/agent-contracts/AUDIT_SUBMISSION.md
+
+BUDGET
+
+- Prize pool / contest fee: [TODO: $XX,000 USD — to be set by director before sending]
+- We are flexible on the split between contest pool, lead auditor fee,
+  and remediation review
 
 We have prepared a comprehensive audit submission package with known design
 decisions, severity definitions, and architecture documentation. We can provide

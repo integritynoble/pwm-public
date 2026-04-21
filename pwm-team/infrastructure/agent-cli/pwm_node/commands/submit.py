@@ -41,7 +41,9 @@ _BYTES32_FIELDS = ("certHash", "benchmarkHash")
 _ADDRESS_FIELDS = ("l1Creator", "l2Creator", "l3Creator", "acWallet", "cpWallet")
 _INT_RANGES = {
     "principleId": (0, 2**256 - 1),
-    "shareRatioP": (0, 10_000),
+    # Contract-enforced at PWMReward.sol:147 / PWMCertificate.sol:128.
+    # Out-of-range values revert on-chain; catching them here saves the gas.
+    "shareRatioP": (1_000, 9_000),
     "Q_int": (0, 100),
     "delta": (0, 255),
     "rank": (0, 255),

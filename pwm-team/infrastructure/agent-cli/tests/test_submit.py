@@ -69,10 +69,13 @@ def test_validate_cert_rejects_zero_address():
 
 
 def test_validate_cert_share_ratio_out_of_range():
-    p = _valid_payload()
-    p["shareRatioP"] = 20_000
-    errors = _validate_cert(p)
-    assert any("shareRatioP" in e and "[0, 10000]" in e for e in errors)
+    """shareRatioP must be within the contract-enforced [1000, 9000] band."""
+    for bad in (0, 500, 999, 9001, 10_000, 20_000):
+        p = _valid_payload()
+        p["shareRatioP"] = bad
+        errors = _validate_cert(p)
+        assert any("shareRatioP" in e and "[1000, 9000]" in e for e in errors), \
+            f"expected rejection for shareRatioP={bad}, got {errors}"
 
 
 def test_validate_cert_q_int_out_of_range():
