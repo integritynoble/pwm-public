@@ -14,11 +14,11 @@ import argparse
 import sys
 from pathlib import Path
 
-from pwm_node.commands import balance, benchmarks, inspect, submit, verify
+from pwm_node.commands import balance, benchmarks, inspect, mine, submit, verify
 
 
 # Online commands — stubbed pending further sessions
-_CHAIN_COMMANDS = {"mine", "sp", "stake"}
+_CHAIN_COMMANDS = {"sp", "stake"}
 
 
 def _repo_root_default() -> Path:
@@ -117,8 +117,20 @@ def build_parser() -> argparse.ArgumentParser:
     scp.add_argument("--gas", type=int, default=500000, help="Gas budget for the submit tx.")
     scp.set_defaults(handler=submit.run)
 
+    # mine — the flagship: resolve benchmark, run solver, score, submit
+    mp = sub.add_parser(
+        "mine",
+        help="Mine a benchmark end-to-end: resolve → solve → score → submit.",
+    )
+    mp.add_argument("benchmark_id", help="Benchmark to mine (e.g. L3-003 or cassi/t1_nominal).")
+    mp.add_argument("--solver", type=Path, required=True, help="Path to solver .py file.")
+    mp.add_argument("--work-dir", type=Path, help="Working directory for input/output (default: $CWD/pwm_work_<ts>).")
+    mp.add_argument("--dry-run", action="store_true", help="Score and build cert but do not submit.")
+    mp.add_argument("--timeout", type=int, default=600, help="Solver wall-clock timeout in seconds.")
+    mp.set_defaults(handler=mine.run)
+
     # Stubs for remaining chain-dependent commands
-    for cmd in ["mine", "stake", "sp"]:
+    for cmd in ["stake", "sp"]:
         s = sub.add_parser(cmd, help=f"[Phase C stub] {cmd} — chain-dependent; next session.")
         s.add_argument("args", nargs="*")
         s.set_defaults(handler=_chain_stub)

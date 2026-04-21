@@ -98,8 +98,11 @@ def test_verify_missing_fields_returns_4(tmp_path, capsys):
 
 
 def test_chain_stub_returns_2(capsys):
-    """Chain-dependent commands (mine, submit-cert) print deferral notice and return 2."""
-    rc = main(["mine", "cassi/t1_nominal"])
+    """Still-stubbed chain commands (sp, stake) print deferral notice and return 2.
+
+    Note: 'mine' moved from stub to real command in Phase C session 5.
+    """
+    rc = main(["sp", "register"])
     assert rc == 2
     err = capsys.readouterr().err
     assert "not implemented yet" in err
