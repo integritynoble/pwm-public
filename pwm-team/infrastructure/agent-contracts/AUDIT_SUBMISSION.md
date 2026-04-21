@@ -402,8 +402,8 @@ REPOSITORY
   grant read access to Code4rena staff upon engagement, or provide a
   public snapshot at the `audit-v1` tag)
 - Path: pwm-team/infrastructure/agent-contracts/contracts/
-- Scope commit: tagged `audit-v1` — frozen snapshot for the duration of
-  the contest
+- Scope commit: `cdff8e3569650ca57142728a2f617ec9f2c26002` (tag `audit-v1`)
+  — frozen snapshot for the duration of the contest
 - Submission package (this document): pwm-team/infrastructure/agent-contracts/AUDIT_SUBMISSION.md
 
 BUDGET
@@ -478,8 +478,8 @@ REPOSITORY
   grant read access to Sherlock staff upon engagement, or provide a
   public snapshot at the `audit-v1` tag)
 - Path: pwm-team/infrastructure/agent-contracts/contracts/
-- Scope commit: tagged `audit-v1` — frozen snapshot for the duration of
-  the contest
+- Scope commit: `cdff8e3569650ca57142728a2f617ec9f2c26002` (tag `audit-v1`)
+  — frozen snapshot for the duration of the contest
 - Submission package (this document): pwm-team/infrastructure/agent-contracts/AUDIT_SUBMISSION.md
 
 BUDGET
