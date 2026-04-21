@@ -127,6 +127,18 @@ def build_parser() -> argparse.ArgumentParser:
     mp.add_argument("--work-dir", type=Path, help="Working directory for input/output (default: $CWD/pwm_work_<ts>).")
     mp.add_argument("--dry-run", action="store_true", help="Score and build cert but do not submit.")
     mp.add_argument("--timeout", type=int, default=600, help="Solver wall-clock timeout in seconds.")
+    mp.add_argument(
+        "--sp-wallet",
+        dest="sp_wallet",
+        help="Override the SP/CP/creator wallet used in the cert (default: PWM_PRIVATE_KEY signer, else 0x00…00).",
+    )
+    mp.add_argument(
+        "--share-ratio-p",
+        dest="share_ratio_p",
+        type=int,
+        default=5000,
+        help="SP share p × 10000. Range [0, 10000]. Default 5000 (p=0.50).",
+    )
     mp.set_defaults(handler=mine.run)
 
     # stake — view required / stake on principle|spec|benchmark

@@ -98,20 +98,56 @@ def test_resolve_benchmark_miss(fake_l3_dir):
     assert _resolve_benchmark_offline(fake_l3_dir, "xyz999") is None
 
 
+_WALLET = "0x0c566f0F87cD062C3DE95943E50d572c74A87dEd"
+
+
 def test_build_cert_payload_hash_is_deterministic():
+    art = {"artifact_id": "L3-003", "principle_number": "003", "difficulty_delta": 3}
+    p1 = _build_cert_payload(art, Q=0.9, gate_verdicts={"S1": "pass"}, sp_wallet=_WALLET)
+    p2 = _build_cert_payload(art, Q=0.9, gate_verdicts={"S1": "pass"}, sp_wallet=_WALLET)
+    assert p1["certHash"] == p2["certHash"]
+    assert p1["certHash"].startswith("0x")
+    assert len(p1["certHash"]) == 2 + 64  # '0x' + 64 hex
+
+
+def test_build_cert_payload_has_12_struct_fields():
+    art = {"artifact_id": "L3-003", "principle_number": "003", "difficulty_delta": 3}
+    payload = _build_cert_payload(art, Q=0.92, gate_verdicts={"S1": "pass"}, sp_wallet=_WALLET)
+    for key in (
+        "certHash", "benchmarkHash", "principleId",
+        "l1Creator", "l2Creator", "l3Creator", "acWallet", "cpWallet",
+        "shareRatioP", "Q_int", "delta", "rank",
+    ):
+        assert key in payload, f"missing struct field: {key}"
+
+
+def test_build_cert_payload_maps_artifact_fields():
+    art = {"artifact_id": "L3-003", "parent_l1": "L1-003", "difficulty_delta": 3}
+    payload = _build_cert_payload(art, Q=0.85, gate_verdicts={}, sp_wallet=_WALLET)
+    assert payload["principleId"] == 3
+    assert payload["delta"] == 3
+    assert payload["Q_int"] == 85
+    assert payload["rank"] == 0
+    assert payload["l1Creator"] == _WALLET
+    assert payload["cpWallet"] == _WALLET
+
+
+def test_build_cert_payload_defaults_to_zero_address_when_no_wallet():
     art = {"artifact_id": "L3-003", "principle_number": "003"}
-    p1 = _build_cert_payload(art, Q=0.9, gate_verdicts={"S1": "pass"})
-    p2 = _build_cert_payload(art, Q=0.9, gate_verdicts={"S1": "pass"})
-    assert p1["cert_hash"] == p2["cert_hash"]
-    assert p1["cert_hash"].startswith("sha256:")
-    assert len(p1["cert_hash"]) == 7 + 64  # 'sha256:' + 64 hex
+    payload = _build_cert_payload(art, Q=0.7, gate_verdicts={})
+    assert payload["l1Creator"] == "0x" + "0" * 40
 
 
-def test_build_cert_payload_has_required_keys():
-    art = {"artifact_id": "L3-003", "principle_ref": "sha256:abc", "spec_ref": "sha256:def"}
-    payload = _build_cert_payload(art, Q=0.92, gate_verdicts={"S1": "pass"})
-    for key in ("h_p", "h_s", "h_b", "h_x", "Q", "gate_verdicts", "cert_hash"):
-        assert key in payload
+def test_build_cert_payload_benchmark_hash_matches_canonical_keccak():
+    """benchmarkHash must be keccak256(canonical_json(artifact)) — the same
+    hash register_genesis_sepolia.py produces, so certs can reference
+    on-chain-registered L3 artifacts."""
+    art = {"artifact_id": "L3-003", "principle_number": "003"}
+    payload = _build_cert_payload(art, Q=0.5, gate_verdicts={}, sp_wallet=_WALLET)
+    # Recompute independently and compare
+    from pwm_node.commands.mine import _canonical_json, _keccak256_hex
+    expected = _keccak256_hex(_canonical_json(art))
+    assert payload["benchmarkHash"] == expected
 
 
 def test_run_solver_echo(tmp_path, echo_solver):
@@ -209,5 +245,6 @@ def test_mine_dry_run_happy_path(fake_l3_dir, echo_solver, capsys):
     out = capsys.readouterr().out
     assert "resolved L3-003" in out
     assert "Q = 0.850" in out or "Q = 0.8500" in out
-    assert "cert_hash" in out
+    assert "certHash" in out
+    assert "benchmarkHash" in out
     assert "--dry-run: not submitting" in out

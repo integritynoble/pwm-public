@@ -12,37 +12,84 @@ from __future__ import annotations
 
 import argparse
 import json
+import re
 from pathlib import Path
 
 
-# Minimum keys a cert_payload must have per interfaces/cert_schema.json
-# (Full schema validation deferred to pwm_scoring.cert.validate; this is a
-# fast local pre-check so users don't burn gas on an obviously-malformed cert.)
-_REQUIRED_CERT_KEYS = {
-    "cert_hash",
-    "h_p",
-    "h_s",
-    "h_b",
-    "h_x",
-    "Q",
-    "gate_verdicts",
+# 12 struct fields in the ABI-declared order. camelCase keys match
+# interfaces/cert_schema.json and the Solidity SubmitArgs struct exactly.
+_REQUIRED_CERT_KEYS = (
+    "certHash",
+    "benchmarkHash",
+    "principleId",
+    "l1Creator",
+    "l2Creator",
+    "l3Creator",
+    "acWallet",
+    "cpWallet",
+    "shareRatioP",
+    "Q_int",
+    "delta",
+    "rank",
+)
+
+_BYTES32_HEX_RE = re.compile(r"^0x[0-9a-fA-F]{64}$")
+_ADDRESS_HEX_RE = re.compile(r"^0x[0-9a-fA-F]{40}$")
+_ZERO_ADDR = "0x" + "0" * 40
+
+_BYTES32_FIELDS = ("certHash", "benchmarkHash")
+_ADDRESS_FIELDS = ("l1Creator", "l2Creator", "l3Creator", "acWallet", "cpWallet")
+_INT_RANGES = {
+    "principleId": (0, 2**256 - 1),
+    "shareRatioP": (0, 10_000),
+    "Q_int": (0, 100),
+    "delta": (0, 255),
+    "rank": (0, 255),
 }
 
 
 def _validate_cert(payload: dict) -> list[str]:
-    """Return a list of missing/bad-typed keys. Empty list = valid."""
-    errors = []
+    """Return a list of validation errors. Empty list = valid.
+
+    Validates the 12-field SubmitArgs schema (interfaces/cert_schema.json):
+    bytes32 hex for certHash/benchmarkHash, address hex for the five wallet
+    fields, and non-negative integers within uint range for the rest.
+
+    Extras: rejects zero-address fields (all-zero wallets are a signal that
+    the cert was built offline/dry-run without a signer configured, and
+    submitting such a cert wastes gas).
+    """
+    errors: list[str] = []
     for key in _REQUIRED_CERT_KEYS:
         if key not in payload:
             errors.append(f"missing required key: {key!r}")
-    if "Q" in payload and not isinstance(payload["Q"], (int, float)):
-        errors.append(f"Q must be int or float, got {type(payload['Q']).__name__}")
-    if "Q" in payload and isinstance(payload["Q"], (int, float)):
-        if not (0.0 <= float(payload["Q"]) <= 1.0):
-            errors.append(f"Q must be in [0.0, 1.0], got {payload['Q']}")
-    gv = payload.get("gate_verdicts")
-    if gv is not None and not isinstance(gv, dict):
-        errors.append(f"gate_verdicts must be a dict, got {type(gv).__name__}")
+    if errors:
+        return errors
+
+    for f in _BYTES32_FIELDS:
+        v = payload[f]
+        if not isinstance(v, str) or not _BYTES32_HEX_RE.match(v):
+            errors.append(f"{f} must be 0x + 64 hex chars, got {v!r}")
+
+    for f in _ADDRESS_FIELDS:
+        v = payload[f]
+        if not isinstance(v, str) or not _ADDRESS_HEX_RE.match(v):
+            errors.append(f"{f} must be 0x + 40 hex chars, got {v!r}")
+            continue
+        if v.lower() == _ZERO_ADDR:
+            errors.append(
+                f"{f} is the zero address — the cert was likely built with no "
+                "signer configured. Set PWM_PRIVATE_KEY or pass --sp-wallet and rebuild."
+            )
+
+    for f, (lo, hi) in _INT_RANGES.items():
+        v = payload[f]
+        if not isinstance(v, int) or isinstance(v, bool):
+            errors.append(f"{f} must be an integer, got {type(v).__name__}")
+            continue
+        if not (lo <= v <= hi):
+            errors.append(f"{f} must be in [{lo}, {hi}], got {v}")
+
     return errors
 
 
@@ -65,6 +112,10 @@ def run(args: argparse.Namespace) -> int:
     except json.JSONDecodeError as e:
         print(f"[pwm-node submit-cert] invalid JSON in {cert_path}: {e}")
         return 1
+
+    # Strip the optional human-readable metadata before validating: the chain
+    # submission only carries the 12 struct fields, and _meta is additive.
+    payload.pop("_meta", None)
 
     errors = _validate_cert(payload)
     if errors:

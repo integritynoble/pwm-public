@@ -239,37 +239,92 @@ class PWMChain:
 
     # ───── write methods (wallet required) ─────
 
-    def submit_certificate(self, cert_payload: dict, *, gas: int = 500000) -> str:
-        """Call PWMCertificate.submit(payload). Returns tx hash (hex string).
+    # 12-field SubmitArgs struct order — must match
+    # interfaces/contracts_abi/PWMCertificate.json.
+    _SUBMIT_STRUCT_FIELDS = (
+        "certHash",
+        "benchmarkHash",
+        "principleId",
+        "l1Creator",
+        "l2Creator",
+        "l3Creator",
+        "acWallet",
+        "cpWallet",
+        "shareRatioP",
+        "Q_int",
+        "delta",
+        "rank",
+    )
 
-        cert_payload must match interfaces/cert_schema.json.
+    def _build_submit_tuple(self, cert_payload: dict) -> tuple:
+        """Convert the JSON cert payload into the ABI-encodable 12-tuple.
+
+        Converts bytes32 hex strings to raw bytes (web3.py 7.x requires this),
+        checksums the five address fields, and casts integers.
+        """
+        missing = [k for k in self._SUBMIT_STRUCT_FIELDS if k not in cert_payload]
+        if missing:
+            raise ChainError(
+                f"cert_payload missing struct fields: {missing}. "
+                "Rebuild with `pwm-node mine` or check interfaces/cert_schema.json."
+            )
+
+        def _to_bytes32(hex_str: str) -> bytes:
+            if not isinstance(hex_str, str):
+                raise ChainError(f"expected bytes32 hex str, got {type(hex_str).__name__}")
+            h = hex_str[2:] if hex_str.startswith("0x") else hex_str
+            if len(h) != 64:
+                raise ChainError(f"bytes32 hex must be 64 chars, got {len(h)}")
+            return bytes.fromhex(h)
+
+        return (
+            _to_bytes32(cert_payload["certHash"]),
+            _to_bytes32(cert_payload["benchmarkHash"]),
+            int(cert_payload["principleId"]),
+            self.w3.to_checksum_address(cert_payload["l1Creator"]),
+            self.w3.to_checksum_address(cert_payload["l2Creator"]),
+            self.w3.to_checksum_address(cert_payload["l3Creator"]),
+            self.w3.to_checksum_address(cert_payload["acWallet"]),
+            self.w3.to_checksum_address(cert_payload["cpWallet"]),
+            int(cert_payload["shareRatioP"]),
+            int(cert_payload["Q_int"]),
+            int(cert_payload["delta"]),
+            int(cert_payload["rank"]),
+        )
+
+    def submit_certificate(self, cert_payload: dict, *, gas: int = 500000) -> str:
+        """Call PWMCertificate.submit(SubmitArgs). Returns tx hash (hex string).
+
+        ``cert_payload`` must match the 12-field schema in
+        ``interfaces/cert_schema.json``. Any ``_meta`` block is ignored.
         """
         acct = self._get_account()
         cert = self.contracts["PWMCertificate"].contract
 
-        # Build the call; the exact function may be submit() or submitCertificate()
-        if hasattr(cert.functions, "submit"):
-            fn = cert.functions.submit(cert_payload)
-        elif hasattr(cert.functions, "submitCertificate"):
-            fn = cert.functions.submitCertificate(cert_payload)
-        else:
+        if not hasattr(cert.functions, "submit"):
             raise ChainError(
-                "PWMCertificate has no submit() or submitCertificate() function. "
+                "PWMCertificate has no submit() function. "
                 "Check ABI at interfaces/contracts_abi/PWMCertificate.json"
             )
 
-        # Estimate gas, fall back to the passed budget if estimation fails
+        struct = self._build_submit_tuple(cert_payload)
+        fn = cert.functions.submit(struct)
+
         try:
             gas = fn.estimate_gas({"from": acct.address})
-        except Exception:
-            pass  # keep the default budget
+        except Exception as e:
+            # Most reverts surface here; propagate with actionable context.
+            raise ChainError(
+                f"gas estimation failed (likely on-chain revert): {e}. "
+                "Is benchmarkHash registered to PWMRegistry and is the wallet funded?"
+            )
 
         tx = fn.build_transaction(
             {
                 "from": acct.address,
                 "chainId": self.chain_id,
                 "nonce": self.w3.eth.get_transaction_count(acct.address),
-                "gas": gas,
+                "gas": int(gas * 1.2),
                 "maxFeePerGas": self.w3.eth.gas_price * 2,
                 "maxPriorityFeePerGas": self.w3.to_wei(1, "gwei"),
             }
@@ -277,7 +332,8 @@ class PWMChain:
         signed = acct.sign_transaction(tx)
         raw = getattr(signed, "raw_transaction", None) or signed.rawTransaction  # type: ignore[attr-defined]
         tx_hash = self.w3.eth.send_raw_transaction(raw)
-        return tx_hash.hex()
+        tx_hex = tx_hash.hex() if isinstance(tx_hash, bytes) else str(tx_hash)
+        return tx_hex if tx_hex.startswith("0x") else "0x" + tx_hex
 
     def wait_for_tx(self, tx_hash: str, *, timeout_s: int = 300) -> dict:
         """Block until ``tx_hash`` is mined. Returns the receipt as a dict.

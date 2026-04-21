@@ -19,10 +19,86 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
+import re
 import subprocess
 import sys
 import time
 from pathlib import Path
+
+# Placeholder address used when no signer is configured (e.g. --dry-run with
+# PWM_PRIVATE_KEY unset). Keeps the payload shape valid so tests and offline
+# users can inspect the cert. The chain-submit path rejects zero-address
+# payloads before broadcasting.
+_ZERO_ADDR = "0x" + "0" * 40
+
+
+def _canonical_json(obj) -> bytes:
+    """Stable-serialize to bytes: sorted keys, compact separators, UTF-8.
+
+    Must match scripts/register_genesis_sepolia.py::_canonical_json so the
+    benchmarkHash we compute here equals the hash that was registered on-chain.
+    """
+    return json.dumps(obj, sort_keys=True, separators=(",", ":")).encode("utf-8")
+
+
+def _keccak256_hex(data: bytes) -> str:
+    """keccak256 as ``0x`` + 64 hex chars, preserving leading zero bytes."""
+    try:
+        from eth_utils import keccak  # type: ignore
+    except ImportError:
+        # Fallback: pycryptodome's Keccak (same algorithm) — web3.py installs it
+        # transitively. We need the Ethereum keccak, NOT hashlib.sha3_256.
+        from Crypto.Hash import keccak as _keccak  # type: ignore
+        h = _keccak.new(digest_bits=256)
+        h.update(data)
+        digest = h.digest()
+    else:
+        digest = keccak(data)
+    return "0x" + digest.hex().zfill(64)
+
+
+def _resolve_delta(artifact: dict, genesis_dir: Path | None) -> int:
+    """Return the difficulty_delta for an L3 artifact.
+
+    L3 JSON doesn't carry the delta directly — it lives on the parent L1.
+    We resolve it by looking up ``genesis_dir/l1/<parent_l1>.json``, falling
+    back to any ``difficulty_delta`` on the L3 itself, else 0.
+    """
+    direct = artifact.get("difficulty_delta")
+    if isinstance(direct, int):
+        return direct
+    parent_l1 = artifact.get("parent_l1")
+    if not parent_l1 or genesis_dir is None:
+        return 0
+    l1_path = Path(genesis_dir) / "l1" / f"{parent_l1}.json"
+    if not l1_path.is_file():
+        return 0
+    try:
+        l1 = json.loads(l1_path.read_text())
+    except (json.JSONDecodeError, OSError):
+        return 0
+    v = l1.get("difficulty_delta")
+    return int(v) if isinstance(v, int) else 0
+
+
+def _principle_id_from_artifact(artifact: dict) -> int:
+    """Extract the integer principle id from an L3 artifact.
+
+    Looks at (in order): ``principle_number``, ``parent_l1`` (e.g. ``L1-003``),
+    ``artifact_id`` (``L3-003``). Returns 0 if nothing parses — useful for
+    synthetic test artifacts but guarantees the field is always an int.
+    """
+    for key in ("principle_number", "parent_l1", "artifact_id"):
+        v = artifact.get(key)
+        if v is None:
+            continue
+        # Grab the TRAILING digit run: "L1-003" → 3, "L3-003" → 3, "003" → 3.
+        # A leading regex like \d+ would match the "1" in "L1-003".
+        m = re.search(r"(\d+)\s*$", str(v))
+        if m:
+            return int(m.group(1))
+    return 0
 
 
 def _resolve_benchmark_offline(genesis_dir: Path, bench_id: str) -> tuple[dict, Path] | None:
@@ -88,25 +164,91 @@ def _build_cert_payload(
     Q: float,
     gate_verdicts: dict,
     *,
-    solution_hash: str = "pending",
+    sp_wallet: str | None = None,
+    share_ratio_p: int = 5000,
+    delta: int | None = None,
 ) -> dict:
-    """Assemble a cert_payload dict from the scoring output + benchmark metadata."""
-    principle_ref = artifact.get("principle_ref") or artifact.get("principle_hash") or f"sha256:<{artifact.get('principle_number', '?')}_principle>"
-    spec_ref = artifact.get("spec_ref") or f"sha256:<{artifact.get('principle_number', '?')}_spec>"
-    bench_ref = artifact.get("artifact_id") or "unknown"
+    """Assemble a cert_payload dict matching the PWMCertificate.submit() struct.
 
-    payload = {
-        "h_p": principle_ref,
-        "h_s": spec_ref,
-        "h_b": f"sha256:<{bench_ref}_hash>",
-        "h_x": solution_hash,
-        "Q": round(float(Q), 4),
-        "gate_verdicts": gate_verdicts,
+    Produces the 12-field camelCase schema defined in
+    ``interfaces/cert_schema.json``. ``sp_wallet`` defaults to the zero address
+    when not provided (offline/dry-run); all five wallet fields are set to it
+    for the single-wallet self-solve case. ``delta`` is read from the artifact
+    when possible (``difficulty_delta``), otherwise uses the passed default.
+
+    Parameters
+    ----------
+    artifact : dict
+        The L3 benchmark JSON (as loaded from genesis/l3/L3-<n>.json).
+    Q : float
+        Quality score in [0, 1]; rounded × 100 to get Q_int.
+    gate_verdicts : dict
+        S1-S4 verdicts — stored under ``_meta`` for inspection only; the chain
+        submission itself does not carry them.
+    sp_wallet : str, optional
+        0x-prefixed 40-char address. Defaults to the zero address.
+    share_ratio_p : int
+        SP share × 10000. Default 5000 (0.50).
+    delta : int, optional
+        Override the artifact-derived difficulty tier.
+
+    Returns
+    -------
+    dict
+        12 struct fields (camelCase) plus an optional ``_meta`` block.
+    """
+    wallet = sp_wallet or _ZERO_ADDR
+    principle_id = _principle_id_from_artifact(artifact)
+    resolved_delta = delta if delta is not None else int(artifact.get("difficulty_delta") or 0)
+    Q_int = int(round(float(Q) * 100))
+    Q_int = max(0, min(100, Q_int))  # clamp to u8 range covered by the schema
+
+    benchmark_hash = _keccak256_hex(_canonical_json(artifact))
+
+    # Struct-level fields, in the ABI-declared order.
+    payload: dict = {
+        "benchmarkHash": benchmark_hash,
+        "principleId": principle_id,
+        "l1Creator": wallet,
+        "l2Creator": wallet,
+        "l3Creator": wallet,
+        "acWallet": wallet,
+        "cpWallet": wallet,
+        "shareRatioP": int(share_ratio_p),
+        "Q_int": Q_int,
+        "delta": int(resolved_delta),
+        "rank": 0,
     }
-    # cert_hash = sha256 of the stable-serialized payload (minus cert_hash itself)
-    serialized = json.dumps(payload, sort_keys=True).encode("utf-8")
-    payload["cert_hash"] = "sha256:" + hashlib.sha256(serialized).hexdigest()
+    # certHash = keccak256 over the 11 non-certHash fields, stable-serialized.
+    payload["certHash"] = _keccak256_hex(_canonical_json(payload))
+    # Preserve human-readable scoring context out-of-band; the chain ignores it.
+    payload["_meta"] = {
+        "artifact_id": artifact.get("artifact_id"),
+        "Q_float": round(float(Q), 6),
+        "gate_verdicts": dict(gate_verdicts),
+    }
     return payload
+
+
+def _resolve_signer_address() -> str | None:
+    """Return the signer address from PWM_PRIVATE_KEY, or None if unset/invalid.
+
+    Never raises — callers fall back to the zero address. Used for --dry-run
+    so offline users get a well-formed cert payload without configuring a key.
+    """
+    pk = os.environ.get("PWM_PRIVATE_KEY")
+    if not pk:
+        return None
+    try:
+        from eth_account import Account  # type: ignore
+    except ImportError:
+        return None
+    try:
+        if not pk.startswith("0x"):
+            pk = "0x" + pk
+        return Account.from_key(pk).address
+    except Exception:
+        return None
 
 
 def run(args: argparse.Namespace) -> int:
@@ -189,11 +331,20 @@ def run(args: argparse.Namespace) -> int:
         return 4
 
     # Step 5: build cert_payload
-    payload = _build_cert_payload(artifact, Q, gate_verdicts)
+    sp_wallet = getattr(args, "sp_wallet", None) or _resolve_signer_address()
+    share_ratio_p = int(getattr(args, "share_ratio_p", 5000))
+    delta = _resolve_delta(artifact, args.genesis_dir)
+    payload = _build_cert_payload(
+        artifact, Q, gate_verdicts,
+        sp_wallet=sp_wallet,
+        share_ratio_p=share_ratio_p,
+        delta=delta,
+    )
     cert_file = work_dir / "cert_payload.json"
     cert_file.write_text(json.dumps(payload, indent=2, sort_keys=True))
     print(f"[pwm-node mine] cert payload written to: {cert_file}")
-    print(f"[pwm-node mine] cert_hash: {payload['cert_hash']}")
+    print(f"[pwm-node mine] certHash: {payload['certHash']}")
+    print(f"[pwm-node mine] benchmarkHash: {payload['benchmarkHash']}")
 
     if args.dry_run:
         print("[pwm-node mine] --dry-run: not submitting to chain.")

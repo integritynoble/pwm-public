@@ -78,7 +78,7 @@ def test_mine_cassi_dry_run(repo_root, demo_solver_path, tmp_path):
 
     assert result.returncode == 0, f"mine dry-run failed:\n{stdout}"
     assert "resolved L3-003" in stdout, f"missing 'resolved L3-003' in output:\n{stdout}"
-    assert "cert_hash" in stdout, f"missing 'cert_hash' in output:\n{stdout}"
+    assert "certHash" in stdout, f"missing 'certHash' in output:\n{stdout}"
     assert "not submitting to chain" in stdout or "--dry-run" in stdout
 
     # Cert payload file must exist in work_dir
@@ -87,10 +87,14 @@ def test_mine_cassi_dry_run(repo_root, demo_solver_path, tmp_path):
 
     import json
     payload = json.loads(cert_file.read_text())
-    for key in ("h_p", "h_s", "h_b", "h_x", "Q", "gate_verdicts", "cert_hash"):
-        assert key in payload, f"cert payload missing key: {key}"
+    for key in (
+        "certHash", "benchmarkHash", "principleId",
+        "l1Creator", "l2Creator", "l3Creator", "acWallet", "cpWallet",
+        "shareRatioP", "Q_int", "delta", "rank",
+    ):
+        assert key in payload, f"cert payload missing struct field: {key}"
 
-    # Determinism: same inputs → same cert_hash
+    # Determinism: same inputs → same certHash
     import shutil
     shutil.rmtree(work_dir)
     result2 = subprocess.run(cmd, capture_output=True, text=True, timeout=180)
@@ -98,8 +102,8 @@ def test_mine_cassi_dry_run(repo_root, demo_solver_path, tmp_path):
     assert result2.returncode == 0
     cert_file2 = work_dir / "cert_payload.json"
     payload2 = json.loads(cert_file2.read_text())
-    assert payload["cert_hash"] == payload2["cert_hash"], (
-        "cert_hash is not deterministic across runs:\n"
-        f"first : {payload['cert_hash']}\n"
-        f"second: {payload2['cert_hash']}"
+    assert payload["certHash"] == payload2["certHash"], (
+        "certHash is not deterministic across runs:\n"
+        f"first : {payload['certHash']}\n"
+        f"second: {payload2['certHash']}"
     )
