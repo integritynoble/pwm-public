@@ -1,0 +1,2 @@
+[console_scripts]
+pwm-miner = pwm_miner.__main__:main
