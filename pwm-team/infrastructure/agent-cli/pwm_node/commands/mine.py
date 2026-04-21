@@ -83,29 +83,71 @@ def _run_solver(solver_path: Path, work_dir: Path, *, timeout_s: int) -> tuple[i
         return 124, output_dir, elapsed  # 124 is the conventional timeout code
 
 
+def _compute_artifact_hash(file_path: Path) -> str:
+    """Compute the SHA-256 hash of a file (same as on-chain registration)."""
+    content = file_path.read_bytes()
+    return "0x" + hashlib.sha256(content).hexdigest()
+
+
 def _build_cert_payload(
     artifact: dict,
     Q: float,
     gate_verdicts: dict,
     *,
     solution_hash: str = "pending",
+    genesis_dir: Path | None = None,
+    art_path: Path | None = None,
 ) -> dict:
-    """Assemble a cert_payload dict from the scoring output + benchmark metadata."""
-    principle_ref = artifact.get("principle_ref") or artifact.get("principle_hash") or f"sha256:<{artifact.get('principle_number', '?')}_principle>"
-    spec_ref = artifact.get("spec_ref") or f"sha256:<{artifact.get('principle_number', '?')}_spec>"
+    """Assemble a cert_payload dict from the scoring output + benchmark metadata.
+
+    When genesis_dir is provided, computes real SHA-256 hashes matching the
+    on-chain registered artifacts.  Falls back to placeholder strings for
+    dry-run / offline use.
+    """
     bench_ref = artifact.get("artifact_id") or "unknown"
 
+    # Compute real hashes from genesis files when available
+    if genesis_dir and art_path:
+        benchmark_hash = _compute_artifact_hash(art_path)
+        # Derive parent paths: L3-003 → l2/L2-003.json, l1/L1-003.json
+        art_id = artifact.get("artifact_id", "")
+        suffix = art_id.replace("L3-", "") if art_id.startswith("L3-") else ""
+        spec_path = genesis_dir / "l2" / f"L2-{suffix}.json"
+        principle_path = genesis_dir / "l1" / f"L1-{suffix}.json"
+        h_s = _compute_artifact_hash(spec_path) if spec_path.is_file() else f"sha256:<{bench_ref}_spec>"
+        h_p = _compute_artifact_hash(principle_path) if principle_path.is_file() else f"sha256:<{bench_ref}_principle>"
+    else:
+        benchmark_hash = f"sha256:<{bench_ref}_hash>"
+        h_p = artifact.get("principle_ref") or f"sha256:<{bench_ref}_principle>"
+        h_s = artifact.get("spec_ref") or f"sha256:<{bench_ref}_spec>"
+
+    # Read delta from L1 if available
+    delta = 3  # default
+    if genesis_dir:
+        suffix = (artifact.get("artifact_id") or "").replace("L3-", "")
+        l1_path = genesis_dir / "l1" / f"L1-{suffix}.json"
+        if l1_path.is_file():
+            try:
+                l1 = json.loads(l1_path.read_text())
+                delta = int(l1.get("difficulty_delta", 3))
+            except (json.JSONDecodeError, OSError, ValueError):
+                pass
+
     payload = {
-        "h_p": principle_ref,
-        "h_s": spec_ref,
-        "h_b": f"sha256:<{bench_ref}_hash>",
+        "h_p": h_p,
+        "h_s": h_s,
+        "h_b": benchmark_hash,
         "h_x": solution_hash,
         "Q": round(float(Q), 4),
+        "Q_int": min(100, max(0, int(round(Q * 100)))),
         "gate_verdicts": gate_verdicts,
+        # Fields for on-chain SubmitArgs struct
+        "benchmark_hash": benchmark_hash,
+        "delta": delta,
     }
     # cert_hash = sha256 of the stable-serialized payload (minus cert_hash itself)
     serialized = json.dumps(payload, sort_keys=True).encode("utf-8")
-    payload["cert_hash"] = "sha256:" + hashlib.sha256(serialized).hexdigest()
+    payload["cert_hash"] = "0x" + hashlib.sha256(serialized).hexdigest()
     return payload
 
 
@@ -189,7 +231,11 @@ def run(args: argparse.Namespace) -> int:
         return 4
 
     # Step 5: build cert_payload
-    payload = _build_cert_payload(artifact, Q, gate_verdicts)
+    payload = _build_cert_payload(
+        artifact, Q, gate_verdicts,
+        genesis_dir=args.genesis_dir,
+        art_path=art_path,
+    )
     cert_file = work_dir / "cert_payload.json"
     cert_file.write_text(json.dumps(payload, indent=2, sort_keys=True))
     print(f"[pwm-node mine] cert payload written to: {cert_file}")

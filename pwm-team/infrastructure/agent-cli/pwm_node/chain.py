@@ -240,18 +240,45 @@ class PWMChain:
     # ───── write methods (wallet required) ─────
 
     def submit_certificate(self, cert_payload: dict, *, gas: int = 500000) -> str:
-        """Call PWMCertificate.submit(payload). Returns tx hash (hex string).
+        """Call PWMCertificate.submit(SubmitArgs). Returns tx hash (hex string).
 
-        cert_payload must match interfaces/cert_schema.json.
+        cert_payload keys used:
+          cert_hash, benchmark_hash: hex strings (0x-prefixed, 32 bytes)
+          principle_id: int
+          l1_creator, l2_creator, l3_creator: address strings
+          ac_wallet, cp_wallet: address strings
+          share_ratio_p: int (basis points, e.g. 5500 for 55%)
+          Q_int: int (0-100)
+          delta: int
+          rank: int
         """
         acct = self._get_account()
         cert = self.contracts["PWMCertificate"].contract
 
-        # Build the call; the exact function may be submit() or submitCertificate()
+        # Build the SubmitArgs tuple expected by the contract
+        def _to_bytes32(v: str) -> bytes:
+            h = v if v.startswith("0x") else "0x" + v
+            return bytes.fromhex(h[2:].zfill(64))
+
+        submit_args = (
+            _to_bytes32(cert_payload["cert_hash"]),
+            _to_bytes32(cert_payload["benchmark_hash"]),
+            int(cert_payload.get("principle_id", 0)),
+            self.w3.to_checksum_address(cert_payload.get("l1_creator", acct.address)),
+            self.w3.to_checksum_address(cert_payload.get("l2_creator", acct.address)),
+            self.w3.to_checksum_address(cert_payload.get("l3_creator", acct.address)),
+            self.w3.to_checksum_address(cert_payload.get("ac_wallet", acct.address)),
+            self.w3.to_checksum_address(cert_payload.get("cp_wallet", acct.address)),
+            int(cert_payload.get("share_ratio_p", 5500)),
+            int(cert_payload.get("Q_int", 0)),
+            int(cert_payload.get("delta", 3)),
+            int(cert_payload.get("rank", 0)),
+        )
+
         if hasattr(cert.functions, "submit"):
-            fn = cert.functions.submit(cert_payload)
+            fn = cert.functions.submit(submit_args)
         elif hasattr(cert.functions, "submitCertificate"):
-            fn = cert.functions.submitCertificate(cert_payload)
+            fn = cert.functions.submitCertificate(submit_args)
         else:
             raise ChainError(
                 "PWMCertificate has no submit() or submitCertificate() function. "
