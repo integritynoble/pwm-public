@@ -40,9 +40,14 @@ bytes32 content-address convention used throughout the PWM contracts.
 
 ## Parent chain (from ``MVP_FIRST_STRATEGY.md §Phase E``)
 
-- L1 → parent = 0x0000...0000 (32 zero bytes; principle roots have no parent)
-- L2 → parent = L1's computed hash
-- L3 → parent = L2's computed hash
+- L1 (layer 1) → parent = 0x0000...0000 (32 zero bytes; principle roots have no parent)
+- L2 (layer 2) → parent = L1's computed hash
+- L3 (layer 3) → parent = L2's computed hash
+
+Layer numbering matches the PWMRegistry.sol contract:
+``require(layer >= 1 && layer <= 4)`` with 1=Principle, 2=Spec, 3=Benchmark,
+4=Certificate. L4 certificates are written by PWMCertificate.sol, not by
+this bootstrap script.
 
 This matches the L1→L2→L3 hash chain documented in
 ``cassi.md §Complete Hash Chain``.
@@ -64,14 +69,15 @@ logger = logging.getLogger("register_genesis")
 # ───── artifacts to register ─────
 
 # (artifact_id, json_path_suffix, layer)
-# layer: 0=principle, 1=spec, 2=benchmark per PWM conventions
+# layer numbering matches PWMRegistry.sol require(layer >= 1 && layer <= 4):
+#   1 = Principle (L1), 2 = Spec (L2), 3 = Benchmark (L3), 4 = Certificate (L4)
 ARTIFACTS_TO_REGISTER = [
-    ("L1-003", "l1/L1-003.json", 0),
-    ("L2-003", "l2/L2-003.json", 1),
-    ("L3-003", "l3/L3-003.json", 2),
-    ("L1-004", "l1/L1-004.json", 0),
-    ("L2-004", "l2/L2-004.json", 1),
-    ("L3-004", "l3/L3-004.json", 2),
+    ("L1-003", "l1/L1-003.json", 1),
+    ("L2-003", "l2/L2-003.json", 2),
+    ("L3-003", "l3/L3-003.json", 3),
+    ("L1-004", "l1/L1-004.json", 1),
+    ("L2-004", "l2/L2-004.json", 2),
+    ("L3-004", "l3/L3-004.json", 3),
 ]
 
 
@@ -119,7 +125,13 @@ def _canonical_json(obj: Any) -> bytes:
 
 def _artifact_hash(artifact_obj: dict, w3) -> str:
     """keccak256(canonical_json(obj)) as a 0x-prefixed hex string."""
-    return "0x" + w3.keccak(_canonical_json(artifact_obj)).hex().lstrip("0x")
+    digest = w3.keccak(_canonical_json(artifact_obj))
+    # Always 32 bytes → exactly 64 hex chars. Don't lstrip("0x") — that also
+    # strips leading "0" chars and breaks hashes whose first byte is 0x00.
+    hex_str = digest.hex()
+    if hex_str.startswith("0x"):
+        hex_str = hex_str[2:]
+    return "0x" + hex_str.zfill(64)
 
 
 # ───── main registration routine ─────
@@ -215,9 +227,11 @@ def run(args: argparse.Namespace) -> int:
     to_register = []
     for artifact_id, h, parent_h, layer in plan:
         try:
-            exists = registry.functions.exists(h).call()
+            # web3.py expects bytes32 args as hex-bytes, not str.
+            # bytes.fromhex strips 0x prefix then converts; produces exactly 32 bytes.
+            exists = registry.functions.exists(bytes.fromhex(h[2:])).call()
         except Exception as e:
-            logger.warning(f"exists({artifact_id}) check failed: {e} — will attempt registration")
+            logger.warning(f"exists({artifact_id}) check failed ({type(e).__name__}) — will attempt registration")
             exists = False
         if exists:
             logger.info(f"  {artifact_id}: already registered on-chain (skip)")
@@ -237,7 +251,9 @@ def run(args: argparse.Namespace) -> int:
     for artifact_id, h, parent_h, layer in to_register:
         logger.info(f"  sending register({artifact_id})...")
         try:
-            fn = registry.functions.register(h, parent_h, layer, acct.address)
+            h_bytes = bytes.fromhex(h[2:])
+            parent_bytes = bytes.fromhex(parent_h[2:])
+            fn = registry.functions.register(h_bytes, parent_bytes, layer, acct.address)
             tx = fn.build_transaction({
                 "from": acct.address,
                 "chainId": chain_id,
