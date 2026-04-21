@@ -1,8 +1,8 @@
-# Elastography — Complete Four-Layer Walkthrough
+# Ultrasound Elastography — Complete Four-Layer Walkthrough
 
-**Principle #47: Elastography**
-Domain: Microscopy | Difficulty: Standard (delta=2) | Carrier: Photon
-Verification: draft — base-copy from pilot; needs physics + numerics + cross-domain verifier sign-off
+**Principle #47: Ultrasound Elastography**
+Domain: Medical Imaging | Difficulty: Standard (delta=3) | Carrier: Phonon
+Verification: draft (identity-polished; physics body still widefield-templated) — Shear-wave elastography; tracks propagating shear waves to recover tissue stiffness maps. Phase F re-author queued.
 
 ---
 

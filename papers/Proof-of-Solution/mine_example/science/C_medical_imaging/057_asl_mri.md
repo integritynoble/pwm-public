@@ -1,8 +1,8 @@
-# Asl Mri — Complete Four-Layer Walkthrough
+# Arterial Spin Labeling MRI — Complete Four-Layer Walkthrough
 
-**Principle #57: Asl Mri**
-Domain: Microscopy | Difficulty: Standard (delta=2) | Carrier: Photon
-Verification: draft — base-copy from pilot; needs physics + numerics + cross-domain verifier sign-off
+**Principle #57: Arterial Spin Labeling MRI**
+Domain: Medical Imaging | Difficulty: Standard (delta=3) | Carrier: Field
+Verification: draft (identity-polished; physics body still widefield-templated) — Magnetic labeling of inflowing arterial blood; non-contrast perfusion quantification. Phase F re-author queued.
 
 ---
 

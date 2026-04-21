@@ -1,8 +1,8 @@
-# Ceus — Complete Four-Layer Walkthrough
+# Contrast-Enhanced Ultrasound (CEUS) — Complete Four-Layer Walkthrough
 
-**Principle #62: Ceus**
-Domain: Microscopy | Difficulty: Standard (delta=2) | Carrier: Photon
-Verification: draft — base-copy from pilot; needs physics + numerics + cross-domain verifier sign-off
+**Principle #62: Contrast-Enhanced Ultrasound (CEUS)**
+Domain: Medical Imaging | Difficulty: Standard (delta=3) | Carrier: Phonon
+Verification: draft (identity-polished; physics body still widefield-templated) — Microbubble contrast agents; nonlinear harmonic imaging; perfusion quantification. Phase F re-author queued.
 
 ---
 

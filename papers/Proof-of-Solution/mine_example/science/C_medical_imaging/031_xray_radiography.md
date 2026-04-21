@@ -1,8 +1,8 @@
-# Xray Radiography — Complete Four-Layer Walkthrough
+# X-ray Radiography — Complete Four-Layer Walkthrough
 
-**Principle #31: Xray Radiography**
-Domain: Microscopy | Difficulty: Standard (delta=2) | Carrier: Photon
-Verification: draft — base-copy from pilot; needs physics + numerics + cross-domain verifier sign-off
+**Principle #31: X-ray Radiography**
+Domain: Medical Imaging | Difficulty: Standard (delta=2) | Carrier: Photon
+Verification: draft (identity-polished; physics body still widefield-templated) — Planar X-ray projection; Beer-Lambert attenuation imaging; foundational medical imaging. Phase F re-author queued.
 
 ---
 

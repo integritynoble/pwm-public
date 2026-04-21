@@ -1,8 +1,8 @@
-# Fluoroscopy — Complete Four-Layer Walkthrough
+# X-ray Fluoroscopy — Complete Four-Layer Walkthrough
 
-**Principle #35: Fluoroscopy**
-Domain: Microscopy | Difficulty: Standard (delta=2) | Carrier: Photon
-Verification: draft — base-copy from pilot; needs physics + numerics + cross-domain verifier sign-off
+**Principle #35: X-ray Fluoroscopy**
+Domain: Medical Imaging | Difficulty: Standard (delta=2) | Carrier: Photon
+Verification: draft (identity-polished; physics body still widefield-templated) — Real-time X-ray video for interventional guidance; image intensifier or flat-panel detector. Phase F re-author queued.
 
 ---
 

@@ -1,8 +1,8 @@
-# Spect — Complete Four-Layer Walkthrough
+# Single-Photon Emission CT (SPECT) — Complete Four-Layer Walkthrough
 
-**Principle #34: Spect**
-Domain: Microscopy | Difficulty: Standard (delta=2) | Carrier: Photon
-Verification: draft — base-copy from pilot; needs physics + numerics + cross-domain verifier sign-off
+**Principle #34: Single-Photon Emission CT (SPECT)**
+Domain: Medical Imaging | Difficulty: Standard (delta=3) | Carrier: Particle
+Verification: draft (identity-polished; physics body still widefield-templated) — Gamma-emitting radiotracer; collimator direction encoding; rotating gamma camera. Phase F re-author queued.
 
 ---
 

@@ -1,8 +1,8 @@
-# Fmri — Complete Four-Layer Walkthrough
+# Functional MRI (fMRI) — Complete Four-Layer Walkthrough
 
-**Principle #43: Fmri**
-Domain: Microscopy | Difficulty: Standard (delta=2) | Carrier: Photon
-Verification: draft — base-copy from pilot; needs physics + numerics + cross-domain verifier sign-off
+**Principle #43: Functional MRI (fMRI)**
+Domain: Medical Imaging | Difficulty: Standard (delta=3) | Carrier: Field
+Verification: draft (identity-polished; physics body still widefield-templated) — BOLD contrast time series; hemodynamic response function; general-linear-model analysis for activation maps. Phase F re-author queued.
 
 ---
 

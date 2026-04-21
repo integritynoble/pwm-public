@@ -1,8 +1,8 @@
 # Fiber Endoscopy — Complete Four-Layer Walkthrough
 
 **Principle #48: Fiber Endoscopy**
-Domain: Microscopy | Difficulty: Standard (delta=2) | Carrier: Photon
-Verification: draft — base-copy from pilot; needs physics + numerics + cross-domain verifier sign-off
+Domain: Medical Imaging | Difficulty: Standard (delta=2) | Carrier: Photon
+Verification: draft (identity-polished; physics body still widefield-templated) — Optical fiber-bundle imaging; chromatic + spatial correction; minimally-invasive endoscopy. Phase F re-author queued.
 
 ---
 

@@ -1,8 +1,8 @@
-# Proton Therapy — Complete Four-Layer Walkthrough
+# Proton Therapy Delivery Planning — Complete Four-Layer Walkthrough
 
-**Principle #51: Proton Therapy**
-Domain: Microscopy | Difficulty: Standard (delta=2) | Carrier: Photon
-Verification: draft — base-copy from pilot; needs physics + numerics + cross-domain verifier sign-off
+**Principle #51: Proton Therapy Delivery Planning**
+Domain: Medical Imaging | Difficulty: Advanced (delta=4) | Carrier: Particle
+Verification: draft (identity-polished; physics body still widefield-templated) — Proton Bragg peak dose deposition; inverse IMPT optimization; range uncertainty. Phase F re-author queued.
 
 ---
 

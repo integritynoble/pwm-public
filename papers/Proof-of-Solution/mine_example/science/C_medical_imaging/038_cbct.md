@@ -1,8 +1,8 @@
-# Cbct — Complete Four-Layer Walkthrough
+# Cone-Beam CT (CBCT) — Complete Four-Layer Walkthrough
 
-**Principle #38: Cbct**
-Domain: Microscopy | Difficulty: Standard (delta=2) | Carrier: Photon
-Verification: draft — base-copy from pilot; needs physics + numerics + cross-domain verifier sign-off
+**Principle #38: Cone-Beam CT (CBCT)**
+Domain: Medical Imaging | Difficulty: Standard (delta=3) | Carrier: Photon
+Verification: draft (identity-polished; physics body still widefield-templated) — Cone-beam geometry for dental/IGRT; FDK reconstruction; higher noise than fan-beam CT. Phase F re-author queued.
 
 ---
 

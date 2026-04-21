@@ -1,8 +1,8 @@
-# Octa — Complete Four-Layer Walkthrough
+# OCT Angiography (OCTA) — Complete Four-Layer Walkthrough
 
-**Principle #50: Octa**
-Domain: Microscopy | Difficulty: Standard (delta=2) | Carrier: Photon
-Verification: draft — base-copy from pilot; needs physics + numerics + cross-domain verifier sign-off
+**Principle #50: OCT Angiography (OCTA)**
+Domain: Medical Imaging | Difficulty: Standard (delta=3) | Carrier: Photon
+Verification: draft (identity-polished; physics body still widefield-templated) — Motion-contrast OCT variant; microvasculature imaging without contrast agent; flow-decorrelation metric. Phase F re-author queued.
 
 ---
 

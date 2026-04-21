@@ -1,8 +1,8 @@
-# Cest Mri — Complete Four-Layer Walkthrough
+# Chemical Exchange Saturation Transfer MRI — Complete Four-Layer Walkthrough
 
-**Principle #56: Cest Mri**
-Domain: Microscopy | Difficulty: Standard (delta=2) | Carrier: Photon
-Verification: draft — base-copy from pilot; needs physics + numerics + cross-domain verifier sign-off
+**Principle #56: Chemical Exchange Saturation Transfer MRI**
+Domain: Medical Imaging | Difficulty: Advanced (delta=4) | Carrier: Field
+Verification: draft (identity-polished; physics body still widefield-templated) — RF-saturation of exchange pools; indirect detection of low-concentration metabolites via water pool. Phase F re-author queued.
 
 ---
 

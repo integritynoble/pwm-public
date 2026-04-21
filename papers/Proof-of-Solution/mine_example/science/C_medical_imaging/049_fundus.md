@@ -1,8 +1,8 @@
-# Fundus — Complete Four-Layer Walkthrough
+# Fundus Retinal Imaging — Complete Four-Layer Walkthrough
 
-**Principle #49: Fundus**
-Domain: Microscopy | Difficulty: Standard (delta=2) | Carrier: Photon
-Verification: draft — base-copy from pilot; needs physics + numerics + cross-domain verifier sign-off
+**Principle #49: Fundus Retinal Imaging**
+Domain: Medical Imaging | Difficulty: Standard (delta=2) | Carrier: Photon
+Verification: draft (identity-polished; physics body still widefield-templated) — Color or monochromatic retinal photography; diabetic retinopathy screening. Phase F re-author queued.
 
 ---
 

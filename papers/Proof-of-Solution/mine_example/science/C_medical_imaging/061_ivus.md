@@ -1,8 +1,8 @@
-# Ivus — Complete Four-Layer Walkthrough
+# Intravascular Ultrasound (IVUS) — Complete Four-Layer Walkthrough
 
-**Principle #61: Ivus**
-Domain: Microscopy | Difficulty: Standard (delta=2) | Carrier: Photon
-Verification: draft — base-copy from pilot; needs physics + numerics + cross-domain verifier sign-off
+**Principle #61: Intravascular Ultrasound (IVUS)**
+Domain: Medical Imaging | Difficulty: Standard (delta=3) | Carrier: Phonon
+Verification: draft (identity-polished; physics body still widefield-templated) — Miniaturized rotating or phased-array transducer inside blood vessel; plaque/vessel-wall imaging. Phase F re-author queued.
 
 ---
 

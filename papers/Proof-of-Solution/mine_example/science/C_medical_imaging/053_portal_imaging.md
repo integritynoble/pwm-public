@@ -1,8 +1,8 @@
 # Portal Imaging — Complete Four-Layer Walkthrough
 
 **Principle #53: Portal Imaging**
-Domain: Microscopy | Difficulty: Standard (delta=2) | Carrier: Photon
-Verification: draft — base-copy from pilot; needs physics + numerics + cross-domain verifier sign-off
+Domain: Medical Imaging | Difficulty: Standard (delta=2) | Carrier: Photon
+Verification: draft (identity-polished; physics body still widefield-templated) — MV X-ray beam for radiotherapy alignment verification; electronic portal imaging device. Phase F re-author queued.
 
 ---
 

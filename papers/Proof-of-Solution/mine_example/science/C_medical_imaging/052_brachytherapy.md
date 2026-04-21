@@ -1,8 +1,8 @@
-# Brachytherapy — Complete Four-Layer Walkthrough
+# Brachytherapy Dose Planning — Complete Four-Layer Walkthrough
 
-**Principle #52: Brachytherapy**
-Domain: Microscopy | Difficulty: Standard (delta=2) | Carrier: Photon
-Verification: draft — base-copy from pilot; needs physics + numerics + cross-domain verifier sign-off
+**Principle #52: Brachytherapy Dose Planning**
+Domain: Medical Imaging | Difficulty: Standard (delta=3) | Carrier: Particle
+Verification: draft (identity-polished; physics body still widefield-templated) — Sealed radioactive source placement (HDR/LDR); inverse dose planning with OAR constraints. Phase F re-author queued.
 
 ---
 

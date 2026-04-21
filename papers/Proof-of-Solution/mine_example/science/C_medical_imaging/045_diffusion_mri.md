@@ -1,8 +1,8 @@
-# Diffusion Mri — Complete Four-Layer Walkthrough
+# Diffusion-Weighted MRI (DWI/DTI) — Complete Four-Layer Walkthrough
 
-**Principle #45: Diffusion Mri**
-Domain: Microscopy | Difficulty: Standard (delta=2) | Carrier: Photon
-Verification: draft — base-copy from pilot; needs physics + numerics + cross-domain verifier sign-off
+**Principle #45: Diffusion-Weighted MRI (DWI/DTI)**
+Domain: Medical Imaging | Difficulty: Advanced (delta=4) | Carrier: Field
+Verification: draft (identity-polished; physics body still widefield-templated) — Diffusion-encoding gradients; tensor or higher-order model per voxel; white-matter tractography. Phase F re-author queued.
 
 ---
 

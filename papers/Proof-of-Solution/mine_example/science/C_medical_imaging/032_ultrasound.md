@@ -1,8 +1,8 @@
-# Ultrasound — Complete Four-Layer Walkthrough
+# B-Mode Ultrasound — Complete Four-Layer Walkthrough
 
-**Principle #32: Ultrasound**
-Domain: Microscopy | Difficulty: Standard (delta=2) | Carrier: Photon
-Verification: draft — base-copy from pilot; needs physics + numerics + cross-domain verifier sign-off
+**Principle #32: B-Mode Ultrasound**
+Domain: Medical Imaging | Difficulty: Standard (delta=3) | Carrier: Phonon
+Verification: draft (identity-polished; physics body still widefield-templated) — Pulse-echo imaging with beamforming; fundamental clinical imaging modality; synthetic aperture variants. Phase F re-author queued.
 
 ---
 

@@ -1,8 +1,8 @@
-# Fnirs — Complete Four-Layer Walkthrough
+# Functional Near-Infrared Spectroscopy (fNIRS) — Complete Four-Layer Walkthrough
 
-**Principle #65: Fnirs**
-Domain: Microscopy | Difficulty: Standard (delta=2) | Carrier: Photon
-Verification: draft — base-copy from pilot; needs physics + numerics + cross-domain verifier sign-off
+**Principle #65: Functional Near-Infrared Spectroscopy (fNIRS)**
+Domain: Medical Imaging | Difficulty: Standard (delta=3) | Carrier: Photon
+Verification: draft (identity-polished; physics body still widefield-templated) — NIR light absorption measuring cerebral hemoglobin oxygenation; functional brain imaging. Phase F re-author queued.
 
 ---
 

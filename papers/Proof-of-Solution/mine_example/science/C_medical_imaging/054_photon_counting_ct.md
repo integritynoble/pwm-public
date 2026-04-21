@@ -1,8 +1,8 @@
-# Photon Counting Ct — Complete Four-Layer Walkthrough
+# Photon-Counting CT (PCCT) — Complete Four-Layer Walkthrough
 
-**Principle #54: Photon Counting Ct**
-Domain: Microscopy | Difficulty: Standard (delta=2) | Carrier: Photon
-Verification: draft — base-copy from pilot; needs physics + numerics + cross-domain verifier sign-off
+**Principle #54: Photon-Counting CT (PCCT)**
+Domain: Medical Imaging | Difficulty: Advanced (delta=4) | Carrier: Photon
+Verification: draft (identity-polished; physics body still widefield-templated) — Energy-resolving semiconductor detector; multi-bin spectral CT; material decomposition. Phase F re-author queued.
 
 ---
 

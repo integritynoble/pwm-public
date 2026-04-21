@@ -1,8 +1,8 @@
-# Dexa — Complete Four-Layer Walkthrough
+# Dual-Energy X-ray Absorptiometry (DEXA) — Complete Four-Layer Walkthrough
 
-**Principle #37: Dexa**
-Domain: Microscopy | Difficulty: Standard (delta=2) | Carrier: Photon
-Verification: draft — base-copy from pilot; needs physics + numerics + cross-domain verifier sign-off
+**Principle #37: Dual-Energy X-ray Absorptiometry (DEXA)**
+Domain: Medical Imaging | Difficulty: Standard (delta=3) | Carrier: Photon
+Verification: draft (identity-polished; physics body still widefield-templated) — Two-energy X-ray attenuation decomposition for bone mineral density quantification. Phase F re-author queued.
 
 ---
 

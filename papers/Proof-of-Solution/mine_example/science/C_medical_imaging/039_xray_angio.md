@@ -1,8 +1,8 @@
-# Xray Angio — Complete Four-Layer Walkthrough
+# X-ray Angiography — Complete Four-Layer Walkthrough
 
-**Principle #39: Xray Angio**
-Domain: Microscopy | Difficulty: Standard (delta=2) | Carrier: Photon
-Verification: draft — base-copy from pilot; needs physics + numerics + cross-domain verifier sign-off
+**Principle #39: X-ray Angiography**
+Domain: Medical Imaging | Difficulty: Standard (delta=3) | Carrier: Photon
+Verification: draft (identity-polished; physics body still widefield-templated) — Iodinated contrast + fluoroscopic imaging; vascular tree visualization; DSA baseline subtraction. Phase F re-author queued.
 
 ---
 

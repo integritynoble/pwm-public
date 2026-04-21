@@ -1,8 +1,8 @@
-# Doppler Us — Complete Four-Layer Walkthrough
+# Doppler Ultrasound — Complete Four-Layer Walkthrough
 
-**Principle #46: Doppler Us**
-Domain: Microscopy | Difficulty: Standard (delta=2) | Carrier: Photon
-Verification: draft — base-copy from pilot; needs physics + numerics + cross-domain verifier sign-off
+**Principle #46: Doppler Ultrasound**
+Domain: Medical Imaging | Difficulty: Standard (delta=3) | Carrier: Phonon
+Verification: draft (identity-polished; physics body still widefield-templated) — Frequency shift from moving scatterers; color flow and spectral Doppler; blood velocity mapping. Phase F re-author queued.
 
 ---
 
