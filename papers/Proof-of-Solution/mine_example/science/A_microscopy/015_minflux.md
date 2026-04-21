@@ -2,6 +2,7 @@
 
 **Principle #15: MINFLUX Microscopy**
 Domain: Microscopy | Difficulty: Advanced (delta=4) | Carrier: Photon
+Verification: draft — base-copy from pilot; needs physics + numerics + cross-domain verifier sign-off
 
 ---
 

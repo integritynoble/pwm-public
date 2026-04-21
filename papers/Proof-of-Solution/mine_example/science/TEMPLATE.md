@@ -21,6 +21,7 @@ Every file begins with this exact frame:
 
 **Principle #{{N}}: {{Full Name}}**
 Domain: {{Domain}} | Difficulty: {{Tier}} (delta={{δ}}) | Carrier: {{Carrier}}
+Verification: {{level}} — {{one-line status}}
 
 ---
 ```
@@ -33,6 +34,8 @@ Placeholder meanings:
 - `{{Tier}}` — one of: `Textbook`, `Standard`, `Advanced`, `Research`, `Frontier`.
 - `{{δ}}` — integer 1-5 matching the tier.
 - `{{Carrier}}` — Photon, Electron, Phonon, Field, Particle, etc.
+- `{{level}}` — one of: `draft`, `single-reviewer`, `triple-verified`, `production` (see STYLE_NOTES §10 for transition rules).
+- `{{one-line status}}` — e.g. "base-copy from pilot; needs physics + numerics + cross-domain review" or "hand-authored against cassi.md reference; physics + numerics verified 2026-04-20".
 
 ## 2. Mandatory section tree
 

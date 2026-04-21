@@ -2,6 +2,7 @@
 
 **Principle #1: Widefield Fluorescence Microscopy**
 Domain: Microscopy | Difficulty: Textbook (delta=1) | Carrier: Photon
+Verification: single-reviewer — hand-authored against cassi.md reference; needs physics + numerics + cross-domain verifier sign-off
 
 ---
 
