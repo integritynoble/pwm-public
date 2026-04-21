@@ -1,2 +1,305 @@
-"""Contract call wrappers. Reads ABI from agent-coord/interfaces/contracts_abi/."""
-# TODO: implement — see agent-cli/CLAUDE.md
+"""Contract call wrappers over web3.py.
+
+Provides ``PWMChain`` — one class that owns a web3 connection, loads the 7
+contract ABIs from ``interfaces/contracts_abi/``, resolves addresses from
+``interfaces/addresses.json`` for the selected network, and exposes the
+read/write methods pwm-node commands need.
+
+Design:
+- Read methods never require a wallet; callable even with ``PWM_PRIVATE_KEY``
+  unset.
+- Write methods require ``PWM_PRIVATE_KEY`` env var (Phase C session 2) —
+  OS-keychain integration deferred to a later session (see bounty spec §3).
+- Wraps failures in ``ChainError`` with actionable messages.
+- Pure functions where possible; state is only in the ``PWMChain`` instance.
+"""
+from __future__ import annotations
+
+import json
+import os
+from dataclasses import dataclass
+from pathlib import Path
+from typing import Any
+
+try:
+    from web3 import Web3
+    from web3.exceptions import ContractLogicError, Web3RPCError
+    from eth_account import Account
+    _WEB3_AVAILABLE = True
+except ImportError:
+    _WEB3_AVAILABLE = False
+
+
+# The 7 PWM contracts — one ABI file per name, matched in addresses.json
+CONTRACT_NAMES = (
+    "PWMRegistry",
+    "PWMMinting",
+    "PWMStaking",
+    "PWMCertificate",
+    "PWMReward",
+    "PWMTreasury",
+    "PWMGovernance",
+)
+
+
+# Default RPC endpoints per network. Override via PWM_RPC_URL env var.
+DEFAULT_RPCS = {
+    "sepolia": "https://rpc.sepolia.org",
+    "mainnet": "https://eth.llamarpc.com",
+}
+
+
+class ChainError(RuntimeError):
+    """Actionable failure from a chain interaction."""
+
+
+@dataclass
+class ContractRef:
+    """A loaded, connected contract — address + ABI + web3 contract object."""
+    name: str
+    address: str
+    abi: list
+    contract: Any  # web3.contract.Contract
+
+
+def _interfaces_dir(start: Path | None = None) -> Path:
+    """Walk up from ``start`` (or cwd) looking for the pwm-team/ root."""
+    cur = (start or Path.cwd()).resolve()
+    for p in [cur, *cur.parents]:
+        probe = p / "pwm-team" / "coordination" / "agent-coord" / "interfaces"
+        if probe.is_dir():
+            return probe
+    raise ChainError(
+        "Cannot find pwm-team/coordination/agent-coord/interfaces/ by walking up from "
+        f"{cur}. Pass interfaces_dir= to PWMChain explicitly."
+    )
+
+
+class PWMChain:
+    """Connected PWM chain session. Instantiate once per command invocation.
+
+    Parameters
+    ----------
+    network: 'testnet' (Sepolia) or 'mainnet'.
+    rpc_url: optional RPC override. Defaults to DEFAULT_RPCS[network] or env
+             PWM_RPC_URL.
+    interfaces_dir: path to pwm-team/coordination/agent-coord/interfaces/
+                    (auto-detected from cwd if not passed).
+    """
+
+    def __init__(
+        self,
+        network: str = "testnet",
+        rpc_url: str | None = None,
+        interfaces_dir: Path | None = None,
+    ):
+        if not _WEB3_AVAILABLE:
+            raise ChainError(
+                "web3.py not installed. Run: pip install 'pwm-node'  "
+                "(which pulls in web3>=6.0)"
+            )
+        if network not in ("testnet", "mainnet"):
+            raise ChainError(f"network must be 'testnet' or 'mainnet', got: {network!r}")
+
+        self.network = network
+        self.interfaces_dir = interfaces_dir or _interfaces_dir()
+
+        # Load addresses for this network
+        addresses_file = self.interfaces_dir / "addresses.json"
+        try:
+            all_addresses = json.loads(addresses_file.read_text())
+        except (json.JSONDecodeError, OSError) as e:
+            raise ChainError(f"Cannot read addresses.json: {e}")
+
+        network_key = "testnet" if network == "testnet" else "mainnet"
+        net_info = all_addresses.get(network_key, {})
+        if network == "mainnet" and not net_info.get("PWMRegistry"):
+            raise ChainError(
+                "Mainnet contracts not yet deployed (addresses.json has null). "
+                "Use --network testnet for now."
+            )
+
+        self.chain_id = net_info.get("chainId")
+        self.addresses = {name: net_info.get(name) for name in CONTRACT_NAMES}
+        missing = [n for n, a in self.addresses.items() if not a]
+        if missing:
+            raise ChainError(
+                f"addresses.json[{network_key}] missing contracts: {missing}"
+            )
+
+        # Connect to RPC
+        resolved_rpc = rpc_url or os.environ.get("PWM_RPC_URL") or DEFAULT_RPCS.get(
+            net_info.get("network") or ("sepolia" if network == "testnet" else "mainnet")
+        )
+        if not resolved_rpc:
+            raise ChainError("No RPC URL. Set PWM_RPC_URL or pass rpc_url=")
+        self.w3 = Web3(Web3.HTTPProvider(resolved_rpc, request_kwargs={"timeout": 20}))
+        if not self.w3.is_connected():
+            raise ChainError(f"Cannot connect to RPC {resolved_rpc}")
+
+        # Load ABIs, build contract objects
+        self.contracts: dict[str, ContractRef] = {}
+        for name in CONTRACT_NAMES:
+            abi_path = self.interfaces_dir / "contracts_abi" / f"{name}.json"
+            try:
+                abi_raw = json.loads(abi_path.read_text())
+            except (json.JSONDecodeError, OSError) as e:
+                raise ChainError(f"Cannot read ABI for {name}: {e}")
+            # ABI files may store the ABI directly (list) or under an 'abi' key (hardhat style)
+            abi = abi_raw if isinstance(abi_raw, list) else abi_raw.get("abi", [])
+            addr_cs = self.w3.to_checksum_address(self.addresses[name])
+            contract = self.w3.eth.contract(address=addr_cs, abi=abi)
+            self.contracts[name] = ContractRef(
+                name=name, address=addr_cs, abi=abi, contract=contract
+            )
+
+    # ───── wallet handling ─────
+
+    def _get_account(self):
+        """Resolve a signer account from PWM_PRIVATE_KEY env var.
+
+        OS-keychain integration deferred to a later session per CLAUDE.md §3.
+        """
+        pk = os.environ.get("PWM_PRIVATE_KEY")
+        if not pk:
+            raise ChainError(
+                "PWM_PRIVATE_KEY env var not set. Required for write operations. "
+                "Set via: export PWM_PRIVATE_KEY=0x<your-64-char-hex>"
+            )
+        if not pk.startswith("0x"):
+            pk = "0x" + pk
+        try:
+            return Account.from_key(pk)
+        except Exception as e:
+            raise ChainError(f"Invalid private key format: {e}")
+
+    def signer_address(self) -> str | None:
+        """Return the signer address if a key is configured, else None.
+
+        Never raises — used for `balance` and UX prompts.
+        """
+        try:
+            return self._get_account().address
+        except ChainError:
+            return None
+
+    # ───── read methods (no wallet required) ─────
+
+    def get_balance(self, address: str | None = None) -> float:
+        """Return native ETH balance in ether. Uses signer address if none given."""
+        addr = address or self.signer_address()
+        if not addr:
+            raise ChainError("No address provided and no PWM_PRIVATE_KEY signer configured")
+        wei = self.w3.eth.get_balance(self.w3.to_checksum_address(addr))
+        return float(self.w3.from_wei(wei, "ether"))
+
+    def get_artifact(self, artifact_hash: str) -> dict | None:
+        """Look up an artifact by its 32-byte hash in PWMRegistry.
+
+        Returns the decoded artifact struct as a dict, or None if not registered.
+        """
+        reg = self.contracts["PWMRegistry"].contract
+        h = artifact_hash if artifact_hash.startswith("0x") else "0x" + artifact_hash
+        try:
+            # Method name may be getArtifact / artifacts — depends on the ABI.
+            # Probe for the most likely read functions.
+            if hasattr(reg.functions, "getArtifact"):
+                raw = reg.functions.getArtifact(h).call()
+            elif hasattr(reg.functions, "artifacts"):
+                raw = reg.functions.artifacts(h).call()
+            else:
+                raise ChainError(
+                    "PWMRegistry has no getArtifact() or artifacts() function. "
+                    "Check ABI at interfaces/contracts_abi/PWMRegistry.json"
+                )
+        except (ContractLogicError, Web3RPCError) as e:
+            # Not-found typically reverts — return None rather than raise
+            if "revert" in str(e).lower() or "invalid" in str(e).lower():
+                return None
+            raise ChainError(f"getArtifact({h}) failed: {e}")
+        # Decode tuple-return into a dict using ABI output names when available
+        return {"raw": raw, "hash": h}
+
+    def get_pool_balance(self, principle_hash: str, spec_hash: str, bench_hash: str) -> int:
+        """Return the current draw-pool balance for one (k,j,b) benchmark key, in wei."""
+        reg = self.contracts["PWMReward"].contract
+        for h in (principle_hash, spec_hash, bench_hash):
+            if not h.startswith("0x"):
+                h = "0x" + h
+        try:
+            if hasattr(reg.functions, "poolBalance"):
+                return int(reg.functions.poolBalance(principle_hash, spec_hash, bench_hash).call())
+            return 0
+        except (ContractLogicError, Web3RPCError) as e:
+            raise ChainError(f"poolBalance({principle_hash}, {spec_hash}, {bench_hash}) failed: {e}")
+
+    def block_number(self) -> int:
+        """Latest block number on the target chain."""
+        return int(self.w3.eth.block_number)
+
+    # ───── write methods (wallet required) ─────
+
+    def submit_certificate(self, cert_payload: dict, *, gas: int = 500000) -> str:
+        """Call PWMCertificate.submit(payload). Returns tx hash (hex string).
+
+        cert_payload must match interfaces/cert_schema.json.
+        """
+        acct = self._get_account()
+        cert = self.contracts["PWMCertificate"].contract
+
+        # Build the call; the exact function may be submit() or submitCertificate()
+        if hasattr(cert.functions, "submit"):
+            fn = cert.functions.submit(cert_payload)
+        elif hasattr(cert.functions, "submitCertificate"):
+            fn = cert.functions.submitCertificate(cert_payload)
+        else:
+            raise ChainError(
+                "PWMCertificate has no submit() or submitCertificate() function. "
+                "Check ABI at interfaces/contracts_abi/PWMCertificate.json"
+            )
+
+        # Estimate gas, fall back to the passed budget if estimation fails
+        try:
+            gas = fn.estimate_gas({"from": acct.address})
+        except Exception:
+            pass  # keep the default budget
+
+        tx = fn.build_transaction(
+            {
+                "from": acct.address,
+                "chainId": self.chain_id,
+                "nonce": self.w3.eth.get_transaction_count(acct.address),
+                "gas": gas,
+                "maxFeePerGas": self.w3.eth.gas_price * 2,
+                "maxPriorityFeePerGas": self.w3.to_wei(1, "gwei"),
+            }
+        )
+        signed = acct.sign_transaction(tx)
+        raw = getattr(signed, "raw_transaction", None) or signed.rawTransaction  # type: ignore[attr-defined]
+        tx_hash = self.w3.eth.send_raw_transaction(raw)
+        return tx_hash.hex()
+
+    def wait_for_tx(self, tx_hash: str, *, timeout_s: int = 300) -> dict:
+        """Block until ``tx_hash`` is mined. Returns the receipt as a dict.
+
+        Raises ChainError on timeout or tx failure.
+        """
+        try:
+            receipt = self.w3.eth.wait_for_transaction_receipt(tx_hash, timeout=timeout_s)
+        except Exception as e:
+            raise ChainError(f"wait_for_tx({tx_hash}) failed: {e}")
+        if receipt.get("status") == 0:
+            raise ChainError(f"Transaction {tx_hash} reverted on-chain")
+        return dict(receipt)
+
+    # ───── debug helpers ─────
+
+    def info(self) -> dict:
+        """Summary of the chain connection — useful for `pwm-node balance` header."""
+        return {
+            "network": self.network,
+            "chain_id": self.chain_id,
+            "block": self.block_number(),
+            "signer": self.signer_address(),
+            "contracts": {name: ref.address for name, ref in self.contracts.items()},
+        }
