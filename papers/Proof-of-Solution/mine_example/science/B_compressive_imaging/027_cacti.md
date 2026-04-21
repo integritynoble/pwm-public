@@ -1,8 +1,8 @@
 # Cacti — Complete Four-Layer Walkthrough
 
-**Principle #27: Cacti**
-Domain: Microscopy | Difficulty: Standard (delta=2) | Carrier: Photon
-Verification: draft — base-copy from pilot; needs physics + numerics + cross-domain verifier sign-off
+**Principle #27: Coded Aperture Compressive Temporal Imaging (CACTI)**
+Domain: Compressive Imaging | Difficulty: Standard (delta=3) | Carrier: Photon
+Verification: deprecated-placeholder — this file is a widefield-template base-copy. CACTI's authoritative content lives in `papers/Proof-of-Solution/mine_example/cacti.md` (triple-verified) and `pwm-team/pwm_product/genesis/l{1,2,3}/L{1,2,3}-004.json`. Phase F will re-author this placeholder to match the canonical references.
 
 ---
 

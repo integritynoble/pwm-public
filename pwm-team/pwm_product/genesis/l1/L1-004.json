@@ -31,8 +31,9 @@
     "arcs": [
       "S.temporal.coded -> int.temporal"
     ],
-    "L_DAG": 2.0,
-    "n_c": 0
+    "L_DAG": 1.4,
+    "n_c": 0,
+    "_L_DAG_derivation": "(|V|-1) + log10(kappa_sys/kappa_0) + n_c = 1 + log10(2500/1000) + 0 = 1 + 0.398 = 1.398 (rounded to 1.4). kappa_0=1000 is the registry-wide convention (established by CASSI #25); CACTI satisfies kappa_sys >= kappa_0 so no max(0, .) clamp applies."
   },
 
   "W": {

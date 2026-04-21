@@ -1,8 +1,8 @@
 # Cassi — Complete Four-Layer Walkthrough
 
-**Principle #25: Cassi**
-Domain: Microscopy | Difficulty: Standard (delta=2) | Carrier: Photon
-Verification: draft — base-copy from pilot; needs physics + numerics + cross-domain verifier sign-off
+**Principle #25: Coded Aperture Snapshot Spectral Imaging (CASSI)**
+Domain: Compressive Imaging | Difficulty: Standard (delta=3) | Carrier: Photon
+Verification: deprecated-placeholder — this file is a widefield-template base-copy. CASSI's authoritative content lives in `papers/Proof-of-Solution/mine_example/cassi.md` (triple-verified) and `pwm-team/pwm_product/genesis/l{1,2,3}/L{1,2,3}-003.json`. Phase F will re-author this placeholder to match the canonical references.
 
 ---
 
