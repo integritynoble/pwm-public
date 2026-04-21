@@ -1,8 +1,8 @@
-# Libs Imaging — Complete Four-Layer Walkthrough
+# Laser-Induced Breakdown Spectroscopy (LIBS) — Complete Four-Layer Walkthrough
 
-**Principle #141: Libs Imaging**
-Domain: Microscopy | Difficulty: Standard (delta=2) | Carrier: Photon
-Verification: draft — base-copy from pilot; needs physics + numerics + cross-domain verifier sign-off
+**Principle #141: Laser-Induced Breakdown Spectroscopy (LIBS)**
+Domain: Spectroscopy | Difficulty: Standard (delta=3) | Carrier: Photon
+Verification: draft (identity-polished; physics body still widefield-templated) — Pulsed laser ablates sample → plasma emission → atomic lines; elemental mapping; destructive. Phase F re-author queued.
 
 ---
 

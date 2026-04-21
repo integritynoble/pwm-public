@@ -1,8 +1,8 @@
-# Uv Vis — Complete Four-Layer Walkthrough
+# UV-Visible Absorption Spectroscopy — Complete Four-Layer Walkthrough
 
-**Principle #145: Uv Vis**
-Domain: Microscopy | Difficulty: Standard (delta=2) | Carrier: Photon
-Verification: draft — base-copy from pilot; needs physics + numerics + cross-domain verifier sign-off
+**Principle #145: UV-Visible Absorption Spectroscopy**
+Domain: Spectroscopy | Difficulty: Textbook (delta=1) | Carrier: Photon
+Verification: draft (identity-polished; physics body still widefield-templated) — Beer-Lambert absorption of UV-visible light by electronic transitions; foundational analytical chemistry; well-conditioned inverse. Phase F re-author queued.
 
 ---
 

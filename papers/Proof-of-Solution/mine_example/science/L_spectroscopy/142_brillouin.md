@@ -1,8 +1,8 @@
-# Brillouin — Complete Four-Layer Walkthrough
+# Brillouin Spectroscopy — Complete Four-Layer Walkthrough
 
-**Principle #142: Brillouin**
-Domain: Microscopy | Difficulty: Standard (delta=2) | Carrier: Photon
-Verification: draft — base-copy from pilot; needs physics + numerics + cross-domain verifier sign-off
+**Principle #142: Brillouin Spectroscopy**
+Domain: Spectroscopy | Difficulty: Advanced (delta=4) | Carrier: Photon
+Verification: draft (identity-polished; physics body still widefield-templated) — Inelastic scattering from acoustic phonons; GHz frequency shifts; probes viscoelastic properties; VIPA or tandem-FP dispersion. Phase F re-author queued.
 
 ---
 

@@ -1,8 +1,8 @@
-# Cars — Complete Four-Layer Walkthrough
+# Coherent Anti-Stokes Raman Scattering (CARS) — Complete Four-Layer Walkthrough
 
-**Principle #138: Cars**
-Domain: Microscopy | Difficulty: Standard (delta=2) | Carrier: Photon
-Verification: draft — base-copy from pilot; needs physics + numerics + cross-domain verifier sign-off
+**Principle #138: Coherent Anti-Stokes Raman Scattering (CARS)**
+Domain: Spectroscopy | Difficulty: Standard (delta=3) | Carrier: Photon
+Verification: draft (identity-polished; physics body still widefield-templated) — Four-wave-mixing Raman; pump+Stokes+probe at vibrational frequency; coherent signal scales as I² — fast but with non-resonant background. Phase F re-author queued.
 
 ---
 

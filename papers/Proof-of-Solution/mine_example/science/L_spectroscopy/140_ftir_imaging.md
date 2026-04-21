@@ -1,8 +1,8 @@
-# Ftir Imaging — Complete Four-Layer Walkthrough
+# Fourier-Transform Infrared Imaging (FTIR) — Complete Four-Layer Walkthrough
 
-**Principle #140: Ftir Imaging**
-Domain: Microscopy | Difficulty: Standard (delta=2) | Carrier: Photon
-Verification: draft — base-copy from pilot; needs physics + numerics + cross-domain verifier sign-off
+**Principle #140: Fourier-Transform Infrared Imaging (FTIR)**
+Domain: Spectroscopy | Difficulty: Standard (delta=2) | Carrier: Photon
+Verification: draft (identity-polished; physics body still widefield-templated) — IR absorption at vibrational modes via Michelson interferogram; 2D FPA detector; standard pharmaceutical/materials analysis. Phase F re-author queued.
 
 ---
 

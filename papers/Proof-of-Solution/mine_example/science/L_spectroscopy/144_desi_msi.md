@@ -1,8 +1,8 @@
-# Desi Msi — Complete Four-Layer Walkthrough
+# Desorption Electrospray Ionization MSI — Complete Four-Layer Walkthrough
 
-**Principle #144: Desi Msi**
-Domain: Microscopy | Difficulty: Standard (delta=2) | Carrier: Photon
-Verification: draft — base-copy from pilot; needs physics + numerics + cross-domain verifier sign-off
+**Principle #144: Desorption Electrospray Ionization MSI**
+Domain: Spectroscopy | Difficulty: Standard (delta=3) | Carrier: Particle
+Verification: draft (identity-polished; physics body still widefield-templated) — Ambient mass spec imaging; charged solvent microdroplets desorb surface analytes; atmospheric-pressure ionization. Phase F re-author queued.
 
 ---
 

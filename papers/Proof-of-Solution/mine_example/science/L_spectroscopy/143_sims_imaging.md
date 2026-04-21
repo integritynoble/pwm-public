@@ -1,8 +1,8 @@
-# Sims Imaging — Complete Four-Layer Walkthrough
+# Secondary Ion Mass Spectrometry (SIMS) Imaging — Complete Four-Layer Walkthrough
 
-**Principle #143: Sims Imaging**
-Domain: Microscopy | Difficulty: Standard (delta=2) | Carrier: Photon
-Verification: draft — base-copy from pilot; needs physics + numerics + cross-domain verifier sign-off
+**Principle #143: Secondary Ion Mass Spectrometry (SIMS) Imaging**
+Domain: Spectroscopy | Difficulty: Standard (delta=3) | Carrier: Particle
+Verification: draft (identity-polished; physics body still widefield-templated) — Primary ion beam sputters secondary ions → mass spectrum at each pixel; nanoscale 2D/3D elemental imaging; ToF-SIMS and NanoSIMS variants. Phase F re-author queued.
 
 ---
 

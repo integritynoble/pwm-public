@@ -1,8 +1,8 @@
-# Raman Imaging — Complete Four-Layer Walkthrough
+# Raman Spectroscopy Imaging — Complete Four-Layer Walkthrough
 
-**Principle #137: Raman Imaging**
-Domain: Microscopy | Difficulty: Standard (delta=2) | Carrier: Photon
-Verification: draft — base-copy from pilot; needs physics + numerics + cross-domain verifier sign-off
+**Principle #137: Raman Spectroscopy Imaging**
+Domain: Spectroscopy | Difficulty: Standard (delta=3) | Carrier: Photon
+Verification: draft (identity-polished; physics body still widefield-templated) — Inelastic scattering at molecular vibrational modes; confocal or line-scan acquisition; hyperspectral cube (x,y,λ). Phase F re-author queued.
 
 ---
 

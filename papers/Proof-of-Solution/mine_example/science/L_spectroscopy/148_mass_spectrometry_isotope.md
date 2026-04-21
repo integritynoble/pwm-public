@@ -1,8 +1,8 @@
-# Mass Spectrometry Isotope — Complete Four-Layer Walkthrough
+# Isotope Ratio Mass Spectrometry (IRMS) — Complete Four-Layer Walkthrough
 
-**Principle #148: Mass Spectrometry Isotope**
-Domain: Microscopy | Difficulty: Standard (delta=2) | Carrier: Photon
-Verification: draft — base-copy from pilot; needs physics + numerics + cross-domain verifier sign-off
+**Principle #148: Isotope Ratio Mass Spectrometry (IRMS)**
+Domain: Spectroscopy | Difficulty: Standard (delta=3) | Carrier: Particle
+Verification: draft (identity-polished; physics body still widefield-templated) — Precise isotope abundance ratios (δ¹³C, δ¹⁵N, etc.) via magnetic-sector mass analyzer; geochemistry, ecology, provenance. Phase F re-author queued.
 
 ---
 

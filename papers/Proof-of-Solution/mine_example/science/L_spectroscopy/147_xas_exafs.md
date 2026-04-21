@@ -1,8 +1,8 @@
-# Xas Exafs — Complete Four-Layer Walkthrough
+# X-ray Absorption Spectroscopy (XAS/EXAFS) — Complete Four-Layer Walkthrough
 
-**Principle #147: Xas Exafs**
-Domain: Microscopy | Difficulty: Standard (delta=2) | Carrier: Photon
-Verification: draft — base-copy from pilot; needs physics + numerics + cross-domain verifier sign-off
+**Principle #147: X-ray Absorption Spectroscopy (XAS/EXAFS)**
+Domain: Spectroscopy | Difficulty: Standard (delta=3) | Carrier: Photon
+Verification: draft (identity-polished; physics body still widefield-templated) — X-ray absorption edge fine-structure; EXAFS oscillations encode bond distances; synchrotron-required for high resolution. Phase F re-author queued.
 
 ---
 
