@@ -1,8 +1,8 @@
-# Single Pixel — Complete Four-Layer Walkthrough
+# Single-Pixel Camera (SPC) — Complete Four-Layer Walkthrough
 
-**Principle #26: Single Pixel**
-Domain: Microscopy | Difficulty: Standard (delta=2) | Carrier: Photon
-Verification: draft — base-copy from pilot; needs physics + numerics + cross-domain verifier sign-off
+**Principle #26: Single-Pixel Camera (SPC)**
+Domain: Compressive Imaging | Difficulty: Standard (delta=3) | Carrier: Photon
+Verification: draft (identity-polished; physics body still widefield-templated) — authoritative content lives in (pending) `pwm-team/pwm_product/genesis/l{1,2,3}/L{1,2,3}-005.json`. Sibling of CASSI (#25) and CACTI (#27); uses spatial DMD modulation instead of spectral dispersion (CASSI) or temporal modulation (CACTI). Phase F re-author queued.
 
 ---
 

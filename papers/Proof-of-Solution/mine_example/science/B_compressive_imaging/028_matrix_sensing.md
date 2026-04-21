@@ -1,8 +1,8 @@
-# Matrix Sensing — Complete Four-Layer Walkthrough
+# Low-Rank Matrix Sensing — Complete Four-Layer Walkthrough
 
-**Principle #28: Matrix Sensing**
-Domain: Microscopy | Difficulty: Standard (delta=2) | Carrier: Photon
-Verification: draft — base-copy from pilot; needs physics + numerics + cross-domain verifier sign-off
+**Principle #28: Low-Rank Matrix Sensing**
+Domain: Compressive Imaging | Difficulty: Standard (delta=3) | Carrier: N/A (synthetic)
+Verification: draft (identity-polished; physics body still widefield-templated) — authoritative content lives in (pending) `pwm-team/pwm_product/genesis/l{1,2,3}/L{1,2,3}-006.json`. Sibling of CASSI/SPC/CACTI within B_compressive_imaging cluster; distinguishes by being a generic CS framework (rank-r recovery from linear measurements) rather than a specific hardware instantiation. Phase F re-author queued.
 
 ---
 
