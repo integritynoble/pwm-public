@@ -14,11 +14,11 @@ import argparse
 import sys
 from pathlib import Path
 
-from pwm_node.commands import balance, benchmarks, inspect, mine, stake, submit, verify
+from pwm_node.commands import balance, benchmarks, inspect, mine, sp, stake, submit, verify
 
 
-# Online commands — stubbed pending further sessions
-_CHAIN_COMMANDS = {"sp"}
+# All commands are now live. _CHAIN_COMMANDS kept for backward compat.
+_CHAIN_COMMANDS: set[str] = set()
 
 
 def _repo_root_default() -> Path:
@@ -148,11 +148,28 @@ def build_parser() -> argparse.ArgumentParser:
         sp_.add_argument("--gas", type=int, default=200000, help="Gas budget.")
     stp.set_defaults(handler=stake.run)
 
-    # Stubs for remaining chain-dependent commands
-    for cmd in ["sp"]:
-        s = sub.add_parser(cmd, help=f"[Phase C stub] {cmd} — chain-dependent; next session.")
-        s.add_argument("args", nargs="*")
-        s.set_defaults(handler=_chain_stub)
+    # sp — declare SP compute manifest (local config, not a chain call)
+    spp = sub.add_parser(
+        "sp",
+        help="Solution Provider config: register / show / remove.",
+    )
+    sp_sub = spp.add_subparsers(dest="sp_sub", required=True, metavar="<subcommand>")
+    reg = sp_sub.add_parser("register", help="Declare your compute manifest.")
+    reg.add_argument("--entry-point", required=True, help="Path to your solver .py file.")
+    reg.add_argument("--share-ratio", type=float, required=True, help="Your share p ∈ [0.10, 0.90].")
+    reg.add_argument("--min-vram-gb", type=int, default=0, help="Minimum GPU VRAM required (GB).")
+    reg.add_argument("--recommended-vram-gb", type=int, help="Recommended VRAM (GB).")
+    reg.add_argument("--cpu-only", action="store_true", help="Solver runs on CPU only (no GPU).")
+    reg.add_argument("--min-ram-gb", type=int, help="Minimum system RAM (GB).")
+    reg.add_argument(
+        "--framework",
+        choices=["pytorch", "jax", "numpy", "tensorflow", "classical"],
+        help="Runtime framework.",
+    )
+    reg.add_argument("--expected-runtime-s", type=int, help="Expected solver runtime per instance.")
+    reg.add_argument("--precision", choices=["float32", "float16", "bfloat16"], help="Numeric precision.")
+    reg.add_argument("--output", help="Custom output path (default: ~/.pwm-node/sp_manifest.json).")
+    spp.set_defaults(handler=sp.run)
 
     return p
 

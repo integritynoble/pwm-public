@@ -97,12 +97,10 @@ def test_verify_missing_fields_returns_4(tmp_path, capsys):
     assert rc == 4
 
 
-def test_chain_stub_returns_2(capsys):
-    """Still-stubbed chain commands (sp, stake) print deferral notice and return 2.
-
-    Note: 'mine' moved from stub to real command in Phase C session 5.
-    """
-    rc = main(["sp", "register"])
-    assert rc == 2
-    err = capsys.readouterr().err
-    assert "not implemented yet" in err
+def test_all_commands_live(capsys):
+    """All 8 CLI commands are now real (no stubs remain). The _chain_stub
+    handler is vestigial and not reachable via any command as of Phase C session 7."""
+    p = build_parser()
+    help_text = p.format_help()
+    # Sanity: none of the mandatory commands advertise a '[Phase C stub]' label
+    assert "[Phase C stub]" not in help_text
