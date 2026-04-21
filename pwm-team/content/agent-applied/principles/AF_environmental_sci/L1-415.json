@@ -8,7 +8,7 @@
   "source_file": "AF_environmental_sci/415_advection_dispersion.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "ADE inversion: recover solute source concentration history from downgradient breakthrough curves.",
+    "description": "Advection-Dispersion Transport Inversion: ADE inversion: recover solute source concentration history from downgradient breakthrough curves. The forward operator produces the measurement through a 3-node primitive DAG (M.ade.advection_dispersion\u2026); recovery is posed as a linear_inverse problem. Difficulty tier delta=3 with effective condition number kappa_eff~200; velocity_field_uncertainty, dispersion_coefficient_uncertainty set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "dC/dt + v*(dC/dx) = D*(d ** 2C/dx ** 2) - lambda*C + S(x,t)",
     "world_state_x": "source concentration history S(t) at source location x_s",
     "observation_y": "breakthrough curves C(x_obs, t) at N_monitoring wells",
@@ -40,13 +40,13 @@
     "condition_number_kappa": 5000,
     "condition_number_effective": 200,
     "condition_number_mismatched": 1000,
-    "regime": "Ill-posed due to diffusion smearing; Tikhonov regularization stabilizes; prior on source smoothness."
+    "regime": "Existence of the recovered 1D_concentration_source is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 200); velocity_field_uncertainty dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Gaussian sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "Tikhonov_regularization or TSVD_source_inversion",
+    "solver_class": "classical [Tikhonov_regularization or TSVD_source_inversion]",
     "convergence_rate_q": 2.0,
-    "error_bound": "source concentration RMSE < 10% with well-constrained transport params",
-    "complexity": "O(N_wells * N_timesteps * N_source_bins) for design matrix"
+    "error_bound": "Data-fidelity bound: source concentration RMSE < 10% with well-constrained transport params. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~200. Mismatch-induced bias + C2 * |velocity_field_uncertainty|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(N_wells * N_timesteps * N_source_bins) for design matrix per iteration"
   },
   "physics_fingerprint": {
     "carrier": "N/A",

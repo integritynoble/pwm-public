@@ -8,7 +8,7 @@
   "source_file": "C_medical_imaging/056_cest_mri.md",
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical medical-imaging literature for this principle.",
   "E": {
-    "description": "Chemical Exchange Saturation Transfer (CEST) MRI forward model.",
+    "description": "Chemical Exchange Saturation Transfer (CEST) MRI: mri chemical exchange produces the measurement through a 4-node primitive DAG L.rf_excitation -> L.saturation_rf_pulse -> L.z_spectrum_fit -> int.spectral, with spectral-channel integration and additive Gaussian thermal/electronic noise. Recovery is posed as a non-convex inverse problem that inverts the forward operator to estimate the scene-side 3D cest spectrum. Difficulty tier delta=5 with effective condition number kappa_eff~17; calibration-level mismatch (B0_inhomogeneity, B1_inhomogeneity, direct_water_saturation) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
     "forward_model": "S(omega_sat) = (1 - k_ex * alpha / R1) * S_0 + direct_sat; fit Z-spectrum for CEST contrast",
     "world_state_x": "Patient-side quantity of interest (attenuation / activity / perfusion / stiffness etc.)",
     "observation_y": "Clinical sensor output at declared resolution + noise",
@@ -48,13 +48,13 @@
     "stability": "conditional",
     "condition_number_kappa": 340,
     "condition_number_effective": 17,
-    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+    "regime": "Existence of the recovered 3D cest spectrum is guaranteed within the declared Omega bounds. Uniqueness is local rather than global (non-convex landscape); convergence depends on initialisation and priors. Stability is moderately conditioned (kappa_eff ~= 17); B0_inhomogeneity dominates the stability cliff; B1_inhomogeneity and the remaining mismatch parameters contribute higher-order bias terms. Additive gaussian thermal/electronic noise sets the irreducible data-fidelity floor, while TV / wavelet-sparsity / deep priors stabilise recovery at the ill-conditioned end of Omega."
   },
   "C": {
-    "solver_class": "Asymmetry-Analysis, Lorentzian-Fit, CEST-Net",
+    "solver_class": "linear-operator + convex optimisation [Asymmetry-Analysis, Lorentzian-Fit] | linear-operator + deep neural prior [CEST-Net]",
     "convergence_rate_q": 2.0,
-    "error_bound": "Bounded by sensor SNR + mismatch bias + regularisation.",
-    "complexity": "O(H W) to O(H W Z) per iteration"
+    "error_bound": "Data-fidelity bound: ||x_hat - x||_2 <= C1 * sigma_noise / sqrt(N_measurements). Mismatch-induced bias adds + C2 * |B0_inhomogeneity| + C3 * ||x - x_s||_1 (best s-sparse / low-rank approximation residual). Iterative solvers achieve q=2 convergence (O(1/k^2)) near the MLE; epsilon_fn captures the monotone quality degradation across declared Omega.",
+    "complexity": "O(H * W * Z * log(...)) per iteration; learned variants: O(H W Z * F_theta_cost) per forward pass"
   },
   "physics_fingerprint": {
     "carrier": "radio_wave",

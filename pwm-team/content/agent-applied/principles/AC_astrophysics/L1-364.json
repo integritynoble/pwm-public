@@ -8,7 +8,7 @@
   "source_file": "AC_astrophysics/364_nbody_gravitational.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "N-body gravitational dynamics: integrate orbits of N point masses under mutual gravitational attraction.",
+    "description": "N-body Gravitational Simulation: N-body gravitational dynamics: integrate orbits of N point masses under mutual gravitational attraction. The forward operator produces the measurement through a 3-node primitive DAG (F.gravity.nbody\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~500; initial_condition_uncertainty, missing_body_perturbation set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "m_i * r_i'' = sum_{j!=i} G m_i m_j (r_j - r_i) / |r_j - r_i|^3",
     "world_state_x": "phase-space coordinates {r_i, v_i} for i=1..N",
     "observation_y": "sky-projected positions and radial velocities (astrometry + spectroscopy)",
@@ -40,13 +40,13 @@
     "condition_number_kappa": 100000.0,
     "condition_number_effective": 500,
     "condition_number_mismatched": 2000,
-    "regime": "Hamiltonian system; long-term chaos for N>2; symplectic integrators conserve energy to machine precision."
+    "regime": "Existence of the recovered 6N_phase_space is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 500); initial_condition_uncertainty dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Observation gaussian sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "leapfrog or Hermite_integrator or tree_code",
+    "solver_class": "classical [leapfrog or Hermite_integrator or tree_code]",
     "convergence_rate_q": 2.0,
-    "error_bound": "energy error dE/E0 <= epsilon_step ** 2 per orbit",
-    "complexity": "O(N ** 2) direct, O(N log N) Barnes-Hut per timestep"
+    "error_bound": "Data-fidelity bound: energy error dE/E0 <= epsilon_step ** 2 per orbit. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~500. Mismatch-induced bias + C2 * |initial_condition_uncertainty|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(N ** 2) direct, O(N log N) Barnes-Hut per timestep per iteration"
   },
   "physics_fingerprint": {
     "carrier": "N/A",

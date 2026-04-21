@@ -1,8 +1,22 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { api } from '@/lib/api';
 import { shortAddr, weiToPwm } from '@/lib/format';
 import { StatusBadge } from '@/components/Badges';
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ ref: string }>;
+}): Promise<Metadata> {
+  const { ref } = await params;
+  const data = await api.benchmark(ref);
+  const title = data?.genesis?.title
+    ? `${data.genesis.title} · PWM benchmark`
+    : `Benchmark ${ref.slice(0, 10)}… · PWM`;
+  return { title };
+}
 
 export default async function BenchmarkDetail({ params }: { params: Promise<{ ref: string }> }) {
   const { ref } = await params;

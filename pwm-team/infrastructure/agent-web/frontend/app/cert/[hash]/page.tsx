@@ -1,8 +1,18 @@
+import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
 import { api } from '@/lib/api';
 import { GateBadge, StatusBadge } from '@/components/Badges';
 import { shortAddr, STATUS_LABELS, timeAgo, weiToPwm } from '@/lib/format';
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ hash: string }>;
+}): Promise<Metadata> {
+  const { hash } = await params;
+  return { title: `Certificate ${hash.slice(0, 10)}… · PWM` };
+}
 
 export default async function CertificatePage({ params }: { params: Promise<{ hash: string }> }) {
   const { hash } = await params;

@@ -8,7 +8,7 @@
   "source_file": "A_microscopy/013_polarization.md",
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical domain literature for this specific principle.",
   "E": {
-    "description": "Polarization Microscopy (Stokes / birefringence imaging) forward model.",
+    "description": "Polarization Microscopy (Stokes / birefringence imaging): polarization stokes produces the measurement through a 3-node primitive DAG L.polarizer -> L.analyzer -> int.temporal, with time-integrated exposure and additive Gaussian thermal/electronic noise. Recovery is posed as a linear inverse problem that inverts the forward operator to estimate the scene-side stokes triplet. Difficulty tier delta=3 with effective condition number kappa_eff~10; calibration-level mismatch (polarizer_alignment_error, retarder_drift, intrinsic_birefringence_background) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
     "forward_model": "I_k(r) = M_k . S(r) + n, k = 1..N_states; S = (I, Q, U, V) Stokes vector",
     "world_state_x": "Scene parameter of interest (density / complex field / lifetime / normals depending on spec).",
     "observation_y": "Measured intensity or photon counts from the imaging system.",
@@ -42,13 +42,13 @@
     "stability": "conditional",
     "condition_number_kappa": 200,
     "condition_number_effective": 10,
-    "regime": "Conditional stability; principle-specific mismatch dominates at Omega bounds (see `mismatch_parameters`)."
+    "regime": "Existence of the recovered stokes triplet is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by the declared priors. Stability is moderately conditioned (kappa_eff ~= 10); polarizer_alignment_error dominates the stability cliff; retarder_drift and the remaining mismatch parameters contribute higher-order bias terms. Additive gaussian thermal/electronic noise sets the irreducible data-fidelity floor, while mild Tikhonov or analytic inversion is sufficient at the nominal Omega point."
   },
   "C": {
-    "solver_class": "LS-Stokes, TV-ADMM-Pol, PolDenoise-Net",
+    "solver_class": "linear-operator + convex optimisation [LS-Stokes, TV-ADMM-Pol] | linear-operator + deep neural prior [PolDenoise-Net]",
     "convergence_rate_q": 2.0,
-    "error_bound": "Bounded by sigma_noise / sqrt(photon_count) + mismatch-induced bias.",
-    "complexity": "O(H W) to O(H W Z) per iteration depending on dimensionality"
+    "error_bound": "Data-fidelity bound: ||x_hat - x||_2 <= C1 * sigma_noise / sqrt(N_measurements). Mismatch-induced bias adds + C2 * |polarizer_alignment_error| + C3 * ||x - x_s||_1 (best s-sparse / low-rank approximation residual). Iterative solvers achieve q=2 convergence (O(1/k^2)) near the MLE; epsilon_fn captures the monotone quality degradation across declared Omega.",
+    "complexity": "O(H * W * log(...)) per iteration; learned variants: O(H W Z * F_theta_cost) per forward pass"
   },
   "physics_fingerprint": {
     "carrier": "photon",

@@ -5,15 +5,25 @@ import { ApiDown, Empty } from '@/components/Empty';
 export default async function PrinciplesPage({
   searchParams,
 }: {
-  searchParams: Promise<{ domain?: string }>;
+  searchParams: Promise<{ domain?: string; q?: string }>;
 }) {
   const data = await api.principles();
   const params = await searchParams;
   if (!data) return <ApiDown />;
 
-  const filtered = params.domain
-    ? data.genesis.filter((p) => p.domain === params.domain)
-    : data.genesis;
+  const domainFilter = params.domain;
+  const q = (params.q ?? '').trim().toLowerCase();
+  const filtered = data.genesis.filter((p) => {
+    if (domainFilter && p.domain !== domainFilter) return false;
+    if (q) {
+      const haystack = [p.artifact_id, p.title, p.domain, p.sub_domain, p.forward_model]
+        .filter(Boolean)
+        .join(' ')
+        .toLowerCase();
+      if (!haystack.includes(q)) return false;
+    }
+    return true;
+  });
 
   return (
     <div className="space-y-6">
@@ -24,30 +34,50 @@ export default async function PrinciplesPage({
         </div>
       </div>
 
+      <form action="/principles" method="GET" className="flex gap-2">
+        {domainFilter && <input type="hidden" name="domain" value={domainFilter} />}
+        <input
+          type="search"
+          name="q"
+          defaultValue={q}
+          placeholder="Search by ID, title, domain, or forward model…"
+          className="flex-1 bg-slate-950/60 border border-slate-800 rounded px-3 py-2 text-sm focus:outline-none focus:border-pwm-accent"
+        />
+        <button type="submit" className="pwm-pill !border-pwm-accent !text-pwm-accent px-4">
+          Search
+        </button>
+      </form>
+
       {data.domains.length > 0 && (
         <div className="flex flex-wrap gap-2">
           <Link
-            href="/principles"
-            className={`pwm-pill ${!params.domain ? '!text-white !border-pwm-accent' : ''}`}
+            href={q ? `/principles?q=${encodeURIComponent(q)}` : '/principles'}
+            className={`pwm-pill ${!domainFilter ? '!text-white !border-pwm-accent' : ''}`}
           >
             All
           </Link>
-          {data.domains.map((d) => (
-            <Link
-              key={d}
-              href={`/principles?domain=${encodeURIComponent(d)}`}
-              className={`pwm-pill ${params.domain === d ? '!text-white !border-pwm-accent' : ''}`}
-            >
-              {d}
-            </Link>
-          ))}
+          {data.domains.map((d) => {
+            const qs = new URLSearchParams();
+            qs.set('domain', d);
+            if (q) qs.set('q', q);
+            return (
+              <Link
+                key={d}
+                href={`/principles?${qs.toString()}`}
+                className={`pwm-pill ${domainFilter === d ? '!text-white !border-pwm-accent' : ''}`}
+              >
+                {d}
+              </Link>
+            );
+          })}
         </div>
       )}
 
       {filtered.length === 0 ? (
         <Empty>
-          No genesis principles match. As content agents publish L1 JSONs under{' '}
-          <code>pwm_product/genesis/l1/</code>, they&apos;ll appear here.
+          {q || domainFilter
+            ? <>No principles match those filters. <Link href="/principles" className="pwm-link">Clear filters</Link>.</>
+            : <>No genesis principles yet. As content agents publish L1 JSONs under{' '}<code>pwm_product/genesis/l1/</code>, they&apos;ll appear here.</>}
         </Empty>
       ) : (
         <div className="pwm-card overflow-x-auto">

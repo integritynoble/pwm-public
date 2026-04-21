@@ -8,7 +8,7 @@
   "source_file": "C_medical_imaging/049_fundus.md",
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical medical-imaging literature for this principle.",
   "E": {
-    "description": "Fundus Imaging (retinal photography) forward model.",
+    "description": "Fundus Imaging (retinal photography): fundus imaging produces the measurement through a 3-node primitive DAG L.fundus_flash -> K.psf.eye_pupil -> int.spatial, with spatially-projected accumulation and additive Gaussian thermal/electronic noise. Recovery is posed as a linear inverse problem that inverts the forward operator to estimate the scene-side 2D retinal image. Difficulty tier delta=1 with effective condition number kappa_eff~6; calibration-level mismatch (cataract_opacity, reflex_artifact, misalignment) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
     "forward_model": "y(r) = [PSF_eye conv retinal_reflectance] + flash_reflex + n",
     "world_state_x": "Patient-side quantity of interest (attenuation / activity / perfusion / stiffness etc.)",
     "observation_y": "Clinical sensor output at declared resolution + noise",
@@ -43,13 +43,13 @@
     "stability": "conditional",
     "condition_number_kappa": 120,
     "condition_number_effective": 6,
-    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+    "regime": "Existence of the recovered 2D retinal image is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by the declared priors. Stability is well-conditioned (kappa_eff ~= 6); cataract_opacity dominates the stability cliff; reflex_artifact and the remaining mismatch parameters contribute higher-order bias terms. Additive gaussian thermal/electronic noise sets the irreducible data-fidelity floor, while mild Tikhonov or analytic inversion is sufficient at the nominal Omega point."
   },
   "C": {
-    "solver_class": "Vignette-Correct, CLAHE-Fundus, Fundus-Net",
+    "solver_class": "linear-operator + convex optimisation [Vignette-Correct, CLAHE-Fundus] | linear-operator + deep neural prior [Fundus-Net]",
     "convergence_rate_q": 2.0,
-    "error_bound": "Bounded by sensor SNR + mismatch bias + regularisation.",
-    "complexity": "O(H W) to O(H W Z) per iteration"
+    "error_bound": "Data-fidelity bound: ||x_hat - x||_2 <= C1 * sigma_noise / sqrt(N_measurements). Mismatch-induced bias adds + C2 * |cataract_opacity| + C3 * ||x - x_s||_1 (best s-sparse / low-rank approximation residual). Iterative solvers achieve q=2 convergence (O(1/k^2)) near the MLE; epsilon_fn captures the monotone quality degradation across declared Omega.",
+    "complexity": "O(H * W * log(...)) per iteration; learned variants: O(H W Z * F_theta_cost) per forward pass"
   },
   "physics_fingerprint": {
     "carrier": "photon",

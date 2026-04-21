@@ -8,7 +8,7 @@
   "source_file": "Q_astronomy/168_eht_imaging.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "VLBI imaging: recover brightness distribution from sparse Fourier samples (visibilities) with closure-phase constraints.",
+    "description": "Event Horizon Telescope (VLBI) Imaging: VLBI imaging: recover brightness distribution from sparse Fourier samples (visibilities) with closure-phase constraints. The forward operator produces the measurement through a 4-node primitive DAG (F.fourier.nufft\u2026); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=5 with effective condition number kappa_eff~1000; station_gain_error, atmospheric_delay_error set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "V(u,v) = FT[I(l,m)](u,v) + noise; closure phases C_ijk = arg(V_ij * V_jk * V_ki*) noise-robust",
     "world_state_x": "brightness temperature image I(l,m) in R^{H x W}, total flux conserved",
     "observation_y": "complex visibilities V(u,v) at N_baselines sparse (u,v) locations; closure phases",
@@ -42,13 +42,13 @@
     "condition_number_kappa": 1000000.0,
     "condition_number_effective": 1000,
     "condition_number_mismatched": 5000,
-    "regime": "Severely underdetermined; closure phases are baseline-based; regularization (total variation, maximum entropy) required for unique solution."
+    "regime": "Existence of the recovered 2D_brightness_temperature is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 1000); station_gain_error dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Thermal gaussian sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "CLEAN variants (DIFMAP) or regularized_maximum_likelihood (eht-imaging, SMILI)",
+    "solver_class": "classical [CLEAN variants (DIFMAP) or regularized_maximum_likelihood (eht-imaging] | classical [SMILI)]",
     "convergence_rate_q": 2.0,
-    "error_bound": "chi2_reduced ~ 1.0 at convergence; dynamic range >= 100:1",
-    "complexity": "O(N_baselines * N_pixels * N_iter) for gradient-based imager"
+    "error_bound": "Data-fidelity bound: chi2_reduced ~ 1.0 at convergence; dynamic range >= 100:1. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~1000. Mismatch-induced bias + C2 * |station_gain_error|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(N_baselines * N_pixels * N_iter) for gradient-based imager per iteration"
   },
   "physics_fingerprint": {
     "carrier": "radio_wave",

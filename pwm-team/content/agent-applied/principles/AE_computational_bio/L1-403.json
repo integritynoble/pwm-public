@@ -8,7 +8,7 @@
   "source_file": "AE_computational_bio/403_pbpk.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "PBPK model: mechanistic organ-level pharmacokinetics connecting tissue concentrations to plasma via physiological parameters.",
+    "description": "Physiologically Based PK (PBPK): PBPK model: mechanistic organ-level pharmacokinetics connecting tissue concentrations to plasma via physiological parameters. The forward operator produces the measurement through a 3-node primitive DAG (M.ode.pbpk_organs\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=5 with effective condition number kappa_eff~500; in_vitro_in_vivo_extrapolation_IVIVE_bias, enzyme_induction_inhibition set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "dA_org/dt = Q_org*(C_arterial - C_venous_org) - CL_int*C_org; conservation of mass across organs",
     "world_state_x": "tissue-specific partition coefficients Kp and metabolic clearance CL_int per organ",
     "observation_y": "plasma and (optionally) tissue concentration-time profiles from in vivo or in vitro data",
@@ -40,13 +40,13 @@
     "condition_number_kappa": 10000.0,
     "condition_number_effective": 500,
     "condition_number_mismatched": 2000,
-    "regime": "Mechanistic; parameterized from in vitro data; scaling rules (allometry) for cross-species; IVIVE uncertainty is dominant."
+    "regime": "Existence of the recovered PBPK_parameter_vector is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 500); in_vitro_in_vivo_extrapolation_IVIVE_bias dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Lognormal sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "PK-Sim or GastroPlus or Simcyp_PBPK",
+    "solver_class": "classical [PK-Sim or GastroPlus or Simcyp_PBPK]",
     "convergence_rate_q": 2.0,
-    "error_bound": "plasma concentration within 2-fold; tissue Kp within 3-fold",
-    "complexity": "O(N_organs * N_timesteps) per ODE integration"
+    "error_bound": "Data-fidelity bound: plasma concentration within 2-fold; tissue Kp within 3-fold. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~500. Mismatch-induced bias + C2 * |in_vitro_in_vivo_extrapolation_IVIVE_bias|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(N_organs * N_timesteps) per ODE integration per iteration"
   },
   "physics_fingerprint": {
     "carrier": "N/A",

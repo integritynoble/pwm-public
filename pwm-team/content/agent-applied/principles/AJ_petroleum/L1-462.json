@@ -8,7 +8,7 @@
   "source_file": "AJ_petroleum/462_eor_modeling.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "EOR simulation: model waterflooding, CO2 miscible, or polymer flooding to predict incremental recovery factor.",
+    "description": "Enhanced Oil Recovery (EOR) Modeling: EOR simulation: model waterflooding, CO2 miscible, or polymer flooding to predict incremental recovery factor. The forward operator produces the measurement through a 3-node primitive DAG (M.fractional_flow.buckley_leverett\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=5 with effective condition number kappa_eff~500; viscous_fingering_onset, gravity_override_degree set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "dS_w/dt + df_w/dx = 0 (Buckley-Leverett); for CO2: compositional with MMP; for polymer: shear-thinning viscosity model",
     "world_state_x": "saturation S_w(x,t) and composition z_i(x,t) after EOR injection",
     "observation_y": "production data {q_o, q_w, tracers}(t), incremental recovery factor RF",
@@ -39,13 +39,13 @@
     "condition_number_kappa": 10000.0,
     "condition_number_effective": 500,
     "condition_number_mismatched": 2000,
-    "regime": "Viscous fingering (M_o > 1); gravity segregation at large scale; compositional effects for CO2/enriched gas; nonlinear front tracking."
+    "regime": "Existence of the recovered 3D_saturation_composition is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 500); viscous_fingering_onset dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Measurement gaussian sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "Buckley_Leverett_analytical or compositional_EOR_simulator",
+    "solver_class": "sparse-recovery [Buckley_Leverett_analytical or compositional_EOR_simulator]",
     "convergence_rate_q": 2.0,
-    "error_bound": "RF prediction within 3% of observed",
-    "complexity": "O(N_cells * N_timesteps) for displacement calculation"
+    "error_bound": "Data-fidelity bound: RF prediction within 3% of observed. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~500. Mismatch-induced bias + C2 * |viscous_fingering_onset|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(N_cells * N_timesteps) for displacement calculation per iteration"
   },
   "physics_fingerprint": {
     "carrier": "acoustic",

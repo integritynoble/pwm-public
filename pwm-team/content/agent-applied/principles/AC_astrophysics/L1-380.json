@@ -8,7 +8,7 @@
   "source_file": "AC_astrophysics/380_exoplanet_transit.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Exoplanet transit fitting: recover planet radius, orbital parameters, and limb darkening from transit light curves.",
+    "description": "Exoplanet Transit Photometry Inversion: Exoplanet transit fitting: recover planet radius, orbital parameters, and limb darkening from transit light curves. The forward operator produces the measurement through a 3-node primitive DAG (M.transit.mandel_agol\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~40; stellar_activity_spots, systematics_instrumental set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "F(t) = F_0 * (1 - lambda(p, b, z(t), u1, u2)); p = R_p/R_star, b = a*cos(i)/R_star",
     "world_state_x": "transit parameters (R_p/R_star, a/R_star, i, t_c, e, omega) + stellar limb darkening (u1, u2)",
     "observation_y": "normalized flux time series F(t) during transit (N_points epochs)",
@@ -41,13 +41,13 @@
     "condition_number_kappa": 1000,
     "condition_number_effective": 40,
     "condition_number_mismatched": 200,
-    "regime": "Well-posed for single isolated transits; TTVs require multi-transit modeling; stellar activity is dominant systematic."
+    "regime": "Existence of the recovered transit_parameter_vector is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 40); stellar_activity_spots dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Shot poisson sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "MCMC_batman or emcee or dynesty_juliet",
+    "solver_class": "statistical [MCMC_batman or emcee or dynesty_juliet]",
     "convergence_rate_q": 2.0,
-    "error_bound": "sigma(R_p/R_star) < 100 ppm for SNR > 50",
-    "complexity": "O(N_points * N_params) per likelihood call"
+    "error_bound": "Data-fidelity bound: sigma(R_p/R_star) < 100 ppm for SNR > 50. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~40. Mismatch-induced bias + C2 * |stellar_activity_spots|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(N_points * N_params) per likelihood call per iteration"
   },
   "physics_fingerprint": {
     "carrier": "photon",

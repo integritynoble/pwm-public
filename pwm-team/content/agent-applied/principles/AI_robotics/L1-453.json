@@ -8,7 +8,7 @@
   "source_file": "AI_robotics/453_vehicle_dynamics.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Vehicle dynamics: estimate vehicle state (yaw rate, side-slip) from IMU and wheel encoders using bicycle model.",
+    "description": "Vehicle Dynamics (Bicycle Model): Vehicle dynamics: estimate vehicle state (yaw rate, side-slip) from IMU and wheel encoders using bicycle model. The forward operator produces the measurement through a 3-node primitive DAG (M.bicycle.lateral_dynamics\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~80; tire_force_saturation, road_friction_uncertainty set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "m*v*(beta_dot + psi_dot) = F_yf + F_yr; I_z*psi_ddot = l_f*F_yf - l_r*F_yr; Pacejka tire forces",
     "world_state_x": "vehicle state (v_x, v_y, psi, psi_dot, beta) at each time step",
     "observation_y": "IMU (psi_dot, a_x, a_y), wheel speeds omega_i, steering angle delta_f",
@@ -40,13 +40,13 @@
     "condition_number_kappa": 2000,
     "condition_number_effective": 80,
     "condition_number_mismatched": 400,
-    "regime": "Linear bicycle model valid at small slip angles; nonlinear Pacejka needed at high lateral acceleration; ESP uses yaw rate estimation."
+    "regime": "Existence of the recovered vehicle_state_vector is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 80); tire_force_saturation dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Gaussian sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "EKF_vehicle_state or UKF_tire_model",
+    "solver_class": "sequential-filter [EKF_vehicle_state or UKF_tire_model]",
     "convergence_rate_q": 2.0,
-    "error_bound": "yaw rate error < 1 deg/s for highway driving",
-    "complexity": "O(n_state * N_timesteps) for filter"
+    "error_bound": "Data-fidelity bound: yaw rate error < 1 deg/s for highway driving. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~80. Mismatch-induced bias + C2 * |tire_force_saturation|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(n_state * N_timesteps) for filter per iteration"
   },
   "physics_fingerprint": {
     "carrier": "N/A",

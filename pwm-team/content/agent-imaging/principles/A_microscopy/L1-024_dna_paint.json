@@ -8,7 +8,7 @@
   "source_file": "A_microscopy/024_dna_paint.md",
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical domain literature for this specific principle.",
   "E": {
-    "description": "DNA-PAINT (transient DNA-hybridization localization microscopy) forward model.",
+    "description": "DNA-PAINT (transient DNA-hybridization localization microscopy): single molecule localization produces the measurement through a 4-node primitive DAG L.dna_hybridization_blinking -> K.psf.airy -> L.gaussian_fit -> int.temporal, with time-integrated exposure and photon-shot-noise-limited (Poisson counting). Recovery is posed as a non-convex inverse problem that inverts the forward operator to estimate the scene-side point list. Difficulty tier delta=10 with effective condition number kappa_eff~28; calibration-level mismatch (docking_strand_concentration, drift_nm_per_frame, non_specific_binding) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
     "forward_model": "y_t(r) = sum_i 1_{bound_i,t} * PSF(r - r_i) * A + n; programmable k_on/k_off via [strand]",
     "world_state_x": "Scene parameter of interest (density / complex field / lifetime / normals depending on spec).",
     "observation_y": "Measured intensity or photon counts from the imaging system.",
@@ -46,13 +46,13 @@
     "stability": "conditional",
     "condition_number_kappa": 560,
     "condition_number_effective": 28,
-    "regime": "Conditional stability; principle-specific mismatch dominates at Omega bounds (see `mismatch_parameters`)."
+    "regime": "Existence of the recovered point list is guaranteed within the declared Omega bounds. Uniqueness is local rather than global (non-convex landscape); convergence depends on initialisation and priors. Stability is moderately conditioned (kappa_eff ~= 28); docking_strand_concentration dominates the stability cliff; drift_nm_per_frame and the remaining mismatch parameters contribute higher-order bias terms. Photon-shot-noise-limited (poisson counting) sets the irreducible data-fidelity floor, while TV / wavelet-sparsity / deep priors stabilise recovery at the ill-conditioned end of Omega."
   },
   "C": {
-    "solver_class": "Picasso, DECODE-DNAPAINT, DNAPAINT-Net",
+    "solver_class": "linear-operator + convex optimisation [Picasso] | linear-operator + deep neural prior [DECODE-DNAPAINT, DNAPAINT-Net]",
     "convergence_rate_q": 2.0,
-    "error_bound": "Bounded by sigma_noise / sqrt(photon_count) + mismatch-induced bias.",
-    "complexity": "O(H W) to O(H W Z) per iteration depending on dimensionality"
+    "error_bound": "Data-fidelity bound: ||x_hat - x||_2 <= C1 * sqrt(sigma_signal^2) / sqrt(photon_count). Mismatch-induced bias adds + C2 * |docking_strand_concentration| + C3 * ||x - x_s||_1 (best s-sparse / low-rank approximation residual). Iterative solvers achieve q=2 convergence (O(1/k^2)) near the MLE; epsilon_fn captures the monotone quality degradation across declared Omega.",
+    "complexity": "O(H * W * log(...)) per iteration; learned variants: O(H W Z * F_theta_cost) per forward pass"
   },
   "physics_fingerprint": {
     "carrier": "photon",

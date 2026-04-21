@@ -8,7 +8,7 @@
   "source_file": "Q_astronomy/167_lucky_imaging.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Lucky imaging: select best short-exposure frames (minimal wavefront aberration), shift-and-add for diffraction-limited reconstruction.",
+    "description": "Lucky Imaging Atmospheric Turbulence Recovery: Lucky imaging: select best short-exposure frames (minimal wavefront aberration), shift-and-add for diffraction-limited reconstruction. The forward operator produces the measurement through a 3-node primitive DAG (K.psf.turbulence\u2026); recovery is posed as a linear_inverse problem. Difficulty tier delta=3 with effective condition number kappa_eff~50; seeing_variation, anisoplanatism set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "I_k(r) = PSF_k(r; phi_k) * f(r) + n_k(r), select frames where Strehl(phi_k) > threshold",
     "world_state_x": "true object f in R^{H x W} at diffraction limit",
     "observation_y": "stack of N_frames short-exposure images I_k in R^{H x W x N_frames}",
@@ -40,13 +40,13 @@
     "condition_number_kappa": 3000,
     "condition_number_effective": 50,
     "condition_number_mismatched": 200,
-    "regime": "Anisoplanatic regime; Kolmogorov turbulence statistics; lucky selection works for D/r0 < 5."
+    "regime": "Existence of the recovered 2D_intensity is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 50); seeing_variation dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Shot poisson sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "shift_and_add with optional blind_deconvolution (MFBD)",
+    "solver_class": "classical [shift_and_add with optional blind_deconvolution (MFBD)]",
     "convergence_rate_q": 1.5,
-    "error_bound": "Strehl >= 0.3 for r0 > 10 cm at 700nm with p_lucky = 1%",
-    "complexity": "O(N_frames * H * W * log(HW)) for FFT shift-and-add"
+    "error_bound": "Data-fidelity bound: Strehl >= 0.3 for r0 > 10 cm at 700nm with p_lucky = 1%. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~50. Mismatch-induced bias + C2 * |seeing_variation|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(N_frames * H * W * log(HW)) for FFT shift-and-add per iteration"
   },
   "physics_fingerprint": {
     "carrier": "photon",

@@ -8,7 +8,7 @@
   "source_file": "AE_computational_bio/396_hodgkin_huxley.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Hodgkin-Huxley parameter estimation: infer ion channel conductances and gating kinetics from patch-clamp recordings.",
+    "description": "Hodgkin-Huxley Neuron Model Parameter Estimation: Hodgkin-Huxley parameter estimation: infer ion channel conductances and gating kinetics from patch-clamp recordings. The forward operator produces the measurement through a 3-node primitive DAG (M.ode.hodgkin_huxley\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=5 with effective condition number kappa_eff~1000; channel_noise_stochastic, dendritic_morphology_neglect set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "C_m * dV/dt = -g_Na*m ** 3*h*(V-E_Na) - g_K*n ** 4*(V-E_K) - g_L*(V-E_L) + I_ext",
     "world_state_x": "HH parameters {g_Na, g_K, g_L, E_Na, E_K, E_L, C_m, tau kinetics}",
     "observation_y": "membrane voltage V(t) and ionic currents I(t) from voltage-clamp experiments",
@@ -40,13 +40,13 @@
     "condition_number_kappa": 50000.0,
     "condition_number_effective": 1000,
     "condition_number_mismatched": 5000,
-    "regime": "Nonlinear ODE; bifurcation at spiking threshold; gating variables m,h,n are coupled; stochastic channel noise needs Langevin or Markov chain."
+    "regime": "Existence of the recovered HH_parameter_vector is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 1000); channel_noise_stochastic dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Gaussian sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "MCMC_Bayesian or genetic_algorithm or gradient_SNPE",
+    "solver_class": "learned [MCMC_Bayesian or genetic_algorithm or gradient_SNPE]",
     "convergence_rate_q": 2.0,
-    "error_bound": "voltage RMSE < 2 mV for calibrated HH model",
-    "complexity": "O(N_timesteps * N_channels) per ODE integration"
+    "error_bound": "Data-fidelity bound: voltage RMSE < 2 mV for calibrated HH model. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~1000. Mismatch-induced bias + C2 * |channel_noise_stochastic|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(N_timesteps * N_channels) per ODE integration per iteration"
   },
   "physics_fingerprint": {
     "carrier": "N/A",

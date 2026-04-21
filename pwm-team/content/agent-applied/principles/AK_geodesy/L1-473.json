@@ -8,7 +8,7 @@
   "source_file": "AK_geodesy/473_radiometric_calibration.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Absolute radiometric calibration: determine gain and offset coefficients converting DN to physical radiance/reflectance.",
+    "description": "Radiometric Sensor Calibration: Absolute radiometric calibration: determine gain and offset coefficients converting DN to physical radiance/reflectance. The forward operator produces the measurement through a 3-node primitive DAG (S.calibration.vicarious\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~20; sensor_degradation_drift_percent_yr, BRDF_angular_effect set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "TOA_reflectance = gain * DN + offset; atmospheric correction: rho_surface = (rho_TOA - rho_path) / T_atm",
     "world_state_x": "calibration coefficients (gain, offset) per spectral band for satellite sensor",
     "observation_y": "DN values for calibration targets (pseudo-invariant sites, vicarious sites, on-board lamps)",
@@ -40,13 +40,13 @@
     "condition_number_kappa": 500,
     "condition_number_effective": 20,
     "condition_number_mismatched": 100,
-    "regime": "Linear gain-offset model; temporal degradation requires trending; vicarious calibration accuracy limited by target knowledge."
+    "regime": "Existence of the recovered calibration_coefficient_vector is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 20); sensor_degradation_drift_percent_yr dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Gaussian sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "vicarious_calibration_least_squares or cross_calibration",
+    "solver_class": "classical [vicarious_calibration_least_squares or cross_calibration]",
     "convergence_rate_q": 2.0,
-    "error_bound": "radiometric uncertainty < 3% for CEOS-calibrated sensors",
-    "complexity": "O(N_cal_sites * N_bands) per calibration update"
+    "error_bound": "Data-fidelity bound: radiometric uncertainty < 3% for CEOS-calibrated sensors. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~20. Mismatch-induced bias + C2 * |sensor_degradation_drift_percent_yr|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(N_cal_sites * N_bands) per calibration update per iteration"
   },
   "physics_fingerprint": {
     "carrier": "photon",

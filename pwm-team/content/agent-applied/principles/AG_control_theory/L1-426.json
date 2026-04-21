@@ -8,7 +8,7 @@
   "source_file": "AG_control_theory/426_linear_state_space.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Linear state-space: recover state x(t) from output y(t) for system dx/dt = Ax + Bu, y = Cx + Du.",
+    "description": "Linear State-Space System Analysis: Linear state-space: recover state x(t) from output y(t) for system dx/dt = Ax + Bu, y = Cx + Du. The forward operator produces the measurement through a 3-node primitive DAG (M.ss.matrices_ABCD\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~50; model_order_mismatch, parameter_perturbation set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "y(t) = C*exp(A*t)*x0 + integral_0 ** t C*exp(A*(t-s))*B*u(s) ds + D*u(t) + n(t)",
     "world_state_x": "state vector x(t) in R ** n, initial condition x0",
     "observation_y": "output y(t) in R ** p for p <= n observables",
@@ -40,13 +40,13 @@
     "condition_number_kappa": 1000,
     "condition_number_effective": 50,
     "condition_number_mismatched": 200,
-    "regime": "Stable if all eigenvalues of (A+LC) in left half-plane; observability condition: rank([C; CA; ...; CA^{n-1}]) = n."
+    "regime": "Existence of the recovered state_vector is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 50); model_order_mismatch dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Gaussian sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "Luenberger_observer or Kalman_filter (optimal)",
+    "solver_class": "sequential-filter [Luenberger_observer or Kalman_filter (optimal)]",
     "convergence_rate_q": 2.0,
-    "error_bound": "state error decays as exp(-lambda_min(A+LC)*t) with observer gain L",
-    "complexity": "O(n ** 3) for eigenvalue decomposition"
+    "error_bound": "Data-fidelity bound: state error decays as exp(-lambda_min(A+LC)*t) with observer gain L. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~50. Mismatch-induced bias + C2 * |model_order_mismatch|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(n ** 3) for eigenvalue decomposition per iteration"
   },
   "physics_fingerprint": {
     "carrier": "N/A",

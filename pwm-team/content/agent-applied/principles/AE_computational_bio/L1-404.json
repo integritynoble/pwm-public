@@ -8,7 +8,7 @@
   "source_file": "AE_computational_bio/404_pharmacodynamics.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "PD model fitting: estimate E_max, EC50, and Hill coefficient from dose-effect data using Emax model.",
+    "description": "Pharmacodynamics Dose-Response Inversion: PD model fitting: estimate E_max, EC50, and Hill coefficient from dose-effect data using Emax model. The forward operator produces the measurement through a 3-node primitive DAG (M.hill.emax_model\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~20; inter_individual_variability_PD, time_delay_effect_site_equilibration set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "E = E_0 + E_max * C ** n / (EC50 ** n + C ** n) (sigmoidal Emax/Hill equation)",
     "world_state_x": "PD parameters (E_0, E_max, EC50, n_Hill) for drug effect",
     "observation_y": "effect measurements E_i at concentrations C_i",
@@ -40,13 +40,13 @@
     "condition_number_kappa": 500,
     "condition_number_effective": 20,
     "condition_number_mismatched": 100,
-    "regime": "Well-identified for n >= 3 dose groups spanning EC20-EC80; n_Hill can be estimated from steep slope; E_max extrapolation unreliable."
+    "regime": "Existence of the recovered PD_parameter_vector is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 20); inter_individual_variability_PD dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Lognormal sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "NLS_Levenberg_Marquardt or Bayesian_PD",
+    "solver_class": "statistical [NLS_Levenberg_Marquardt or Bayesian_PD]",
     "convergence_rate_q": 2.0,
-    "error_bound": "EC50 estimate within 2-fold for well-designed study",
-    "complexity": "O(N_doses * N_params) per fit"
+    "error_bound": "Data-fidelity bound: EC50 estimate within 2-fold for well-designed study. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~20. Mismatch-induced bias + C2 * |inter_individual_variability_PD|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(N_doses * N_params) per fit per iteration"
   },
   "physics_fingerprint": {
     "carrier": "N/A",

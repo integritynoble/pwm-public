@@ -8,7 +8,7 @@
   "source_file": "AK_geodesy/469_lidar_point_cloud.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Airborne LiDAR mapping: recover 3D terrain/surface model from point cloud after boresight calibration.",
+    "description": "LiDAR Point Cloud 3D Mapping: Airborne LiDAR mapping: recover 3D terrain/surface model from point cloud after boresight calibration. The forward operator produces the measurement through a 3-node primitive DAG (M.tof.range_equation\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~20; IMU_drift_deg, GPS_accuracy_cm set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "X_obj = R_IMU * R_boresight * (R_scan * r_vec + t_scan) + X_IMU",
     "world_state_x": "3D surface elevation model DEM(x,y) or DSM",
     "observation_y": "point cloud (X,Y,Z,intensity) for N_points returns per flight strip",
@@ -40,13 +40,13 @@
     "condition_number_kappa": 500,
     "condition_number_effective": 20,
     "condition_number_mismatched": 100,
-    "regime": "Boresight calibration is linear; IMU/GPS integration is nonlinear; strip adjustment corrects systematic offsets."
+    "regime": "Existence of the recovered 3D_point_cloud is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 20); IMU_drift_deg dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Gaussian sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "boresight_calibration_strip_adjustment or ICP_registration",
+    "solver_class": "classical [boresight_calibration_strip_adjustment or ICP_registration]",
     "convergence_rate_q": 2.0,
-    "error_bound": "vertical RMSE < 5 cm for airborne, < 2 cm for terrestrial",
-    "complexity": "O(N_points * N_iter) for ICP registration"
+    "error_bound": "Data-fidelity bound: vertical RMSE < 5 cm for airborne, < 2 cm for terrestrial. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~20. Mismatch-induced bias + C2 * |IMU_drift_deg|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(N_points * N_iter) for ICP registration per iteration"
   },
   "physics_fingerprint": {
     "carrier": "photon",

@@ -8,7 +8,7 @@
   "source_file": "AE_computational_bio/412_protein_folding_energy.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Protein structure determination: recover 3D atomic coordinates from cryo-EM density map or experimental NMR restraints.",
+    "description": "Protein Folding Energy Landscape Inversion: Protein structure determination: recover 3D atomic coordinates from cryo-EM density map or experimental NMR restraints. The forward operator produces the measurement through a 3-node primitive DAG (M.energy.force_field\u2026); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=50 with effective condition number kappa_eff~10000000.0; conformational_heterogeneity, solvent_contribution_neglect set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "rho_exp(r) = sum_i w_i * exp(-|r - r_i|^2 / (2*sigma ** 2)) (cryo-EM density); NOE distances r_ij ~ |r_i - r_j|",
     "world_state_x": "3D protein structure: atomic coordinates {r_i} for all N_atoms atoms",
     "observation_y": "cryo-EM density map rho_exp or NMR NOE distance restraints {d_ij_obs}",
@@ -40,12 +40,12 @@
     "condition_number_kappa": 10000000000.0,
     "condition_number_effective": 10000000.0,
     "condition_number_mismatched": 1000000000.0,
-    "regime": "Energy landscape rugged with many local minima; MCMC/SA exploration needed; deep learning (AlphaFold2) transforms ab initio prediction; cryo-EM enables near-atomic resolution."
+    "regime": "Existence of the recovered 3D_protein_structure is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 10000000.0); conformational_heterogeneity dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Shot poisson sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "PHENIX_real_space_refinement or HADDOCK or AlphaFold2_structure_prediction",
+    "solver_class": "classical [PHENIX_real_space_refinement or HADDOCK or AlphaFold2_structure_prediction]",
     "convergence_rate_q": 2.0,
-    "error_bound": "TM-score > 0.5 for remotely homologous proteins; RMSD < 2 A for high-res cryo-EM",
+    "error_bound": "Data-fidelity bound: TM-score > 0.5 for remotely homologous proteins; RMSD < 2 A for high-res cryo-EM. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~10000000.0. Mismatch-induced bias + C2 * |conformational_heterogeneity|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
     "complexity": "O(N_atoms * N_iterations) for MD refinement; O(N_atoms ** 2) for energy evaluation"
   },
   "physics_fingerprint": {

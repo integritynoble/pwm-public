@@ -8,7 +8,7 @@
   "source_file": "M_ultrafast_imaging/151_cup.md",
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
   "E": {
-    "description": "Compressed Ultrafast Photography (CUP) \u2014 trillion fps imaging forward model.",
+    "description": "Compressed Ultrafast Photography (CUP) \u2014 trillion fps imaging: compressed ultrafast produces the measurement through a 5-node primitive DAG L.diag.binary -> S.temporal.coded -> L.streak_sweep -> L.modulus_squared -> int.temporal, with time-integrated exposure and photon-shot-noise-limited (Poisson counting). Recovery is posed as a linear inverse problem that inverts the forward operator to estimate the scene-side 3D xyt video. Difficulty tier delta=10 with effective condition number kappa_eff~28; calibration-level mismatch (dmd_mask_drift, streak_nonlinearity, cross_talk) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
     "forward_model": "y(x, y') = sum_t C(x, y - shear*t) * f(x, y, t) + n; recover 3D (x, y, t) from 2D streak image",
     "world_state_x": "Principle-specific quantity of interest",
     "observation_y": "Detector output at declared geometry",
@@ -47,13 +47,13 @@
     "stability": "conditional",
     "condition_number_kappa": 560,
     "condition_number_effective": 28,
-    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+    "regime": "Existence of the recovered 3D xyt video is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by the declared priors. Stability is moderately conditioned (kappa_eff ~= 28); dmd_mask_drift dominates the stability cliff; streak_nonlinearity and the remaining mismatch parameters contribute higher-order bias terms. Photon-shot-noise-limited (poisson counting) sets the irreducible data-fidelity floor, while TV / wavelet-sparsity / deep priors stabilise recovery at the ill-conditioned end of Omega."
   },
   "C": {
-    "solver_class": "GAP-TV-CUP, ADMM-CUP, PnP-CUP",
+    "solver_class": "linear-operator + convex optimisation [GAP-TV-CUP, ADMM-CUP] | linear-operator + deep neural prior [PnP-CUP]",
     "convergence_rate_q": 2.0,
-    "error_bound": "Bounded by sensor SNR + mismatch bias + regularization.",
-    "complexity": "principle-dependent"
+    "error_bound": "Data-fidelity bound: ||x_hat - x||_2 <= C1 * sqrt(sigma_signal^2) / sqrt(photon_count). Mismatch-induced bias adds + C2 * |dmd_mask_drift| + C3 * ||x - x_s||_1 (best s-sparse / low-rank approximation residual). Iterative solvers achieve q=2 convergence (O(1/k^2)) near the MLE; epsilon_fn captures the monotone quality degradation across declared Omega.",
+    "complexity": "O(H * W * log(...)) per iteration; learned variants: O(H W Z * F_theta_cost) per forward pass"
   },
   "physics_fingerprint": {
     "carrier": "photon",

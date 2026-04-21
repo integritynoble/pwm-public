@@ -8,7 +8,7 @@
   "source_file": "AE_computational_bio/411_oxygen_transport.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Krogh cylinder model inversion: estimate oxygen diffusivity D and consumption rate Q from tissue pO2 measurements.",
+    "description": "Oxygen Transport (Krogh Cylinder): Krogh cylinder model inversion: estimate oxygen diffusivity D and consumption rate Q from tissue pO2 measurements. The forward operator produces the measurement through a 3-node primitive DAG (M.pde.krogh_cylinder\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~50; non_uniform_capillary_spacing, convection_neglect set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "D * nabla ** 2 C - Q(C) = 0 (steady state); Q = Q_max*C/(C+K_m) (Michaelis-Menten)",
     "world_state_x": "oxygen diffusivity D_O2 and maximum consumption rate Q_max in tissue",
     "observation_y": "pO2 profile C(r) measured by fiber-optic oxygen probe at radial positions",
@@ -40,13 +40,13 @@
     "condition_number_kappa": 1000,
     "condition_number_effective": 50,
     "condition_number_mismatched": 200,
-    "regime": "Radially symmetric; Krogh cylinder is idealization; anoxic core for high Q_max; diffusion-limited transport."
+    "regime": "Existence of the recovered oxygen_distribution_field is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 50); non_uniform_capillary_spacing dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Gaussian sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "FDM_Krogh_cylinder or analytical_Krogh_solution",
+    "solver_class": "classical [FDM_Krogh_cylinder or analytical_Krogh_solution]",
     "convergence_rate_q": 2.0,
-    "error_bound": "pO2 profile within 5 mmHg for calibrated model",
-    "complexity": "O(N_radial_nodes) per steady-state solve"
+    "error_bound": "Data-fidelity bound: pO2 profile within 5 mmHg for calibrated model. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~50. Mismatch-induced bias + C2 * |non_uniform_capillary_spacing|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(N_radial_nodes) per steady-state solve per iteration"
   },
   "physics_fingerprint": {
     "carrier": "N/A",

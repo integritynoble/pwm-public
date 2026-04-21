@@ -8,7 +8,7 @@
   "source_file": "G_electron_microscopy/088_4dstem.md",
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical electron-microscopy literature for this principle.",
   "E": {
-    "description": "4D-STEM \u2014 pixelated-detector scanning diffraction imaging forward model.",
+    "description": "4D-STEM \u2014 pixelated-detector scanning diffraction imaging: 4d stem diffraction produces the measurement through a 5-node primitive DAG L.illumination.convergent_probe -> S.scan.raster -> L.diffraction -> L.modulus_squared -> int.spatial, with multi-angle tomographic integration and photon-shot-noise-limited (Poisson counting). Recovery is posed as a non-convex inverse problem that inverts the forward operator to estimate the scene-side complex 2D. Difficulty tier delta=10 with effective condition number kappa_eff~40; calibration-level mismatch (probe_aberration, scan_distortion, detector_gain) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
     "forward_model": "I(q, r) = |F{Psi_probe(r' - r) * O(r')}|^2 + n, recover O(r) via ptychography",
     "world_state_x": "Scene parameter (density / orientation / spectrum / complex field depending on principle)",
     "observation_y": "Electron detector output at declared geometry + noise",
@@ -48,13 +48,13 @@
     "stability": "conditional",
     "condition_number_kappa": 800,
     "condition_number_effective": 40,
-    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+    "regime": "Existence of the recovered complex 2D is guaranteed within the declared Omega bounds. Uniqueness is local rather than global (non-convex landscape); convergence depends on initialisation and priors. Stability is moderately conditioned (kappa_eff ~= 40); probe_aberration dominates the stability cliff; scan_distortion and the remaining mismatch parameters contribute higher-order bias terms. Photon-shot-noise-limited (poisson counting) sets the irreducible data-fidelity floor, while TV / wavelet-sparsity / deep priors stabilise recovery at the ill-conditioned end of Omega."
   },
   "C": {
-    "solver_class": "Single-Side-Band, EPIE-4DSTEM, Ptycho-Net",
+    "solver_class": "linear-operator + convex optimisation [Single-Side-Band] | iterative projection (ADMM / GAP) + optimisation [EPIE-4DSTEM] | linear-operator + deep neural prior [Ptycho-Net]",
     "convergence_rate_q": 2.0,
-    "error_bound": "Bounded by sigma_noise / sqrt(electron_count) + mismatch bias.",
-    "complexity": "O(H W) to O(H W Z) per iteration"
+    "error_bound": "Data-fidelity bound: ||x_hat - x||_2 <= C1 * sqrt(sigma_signal^2) / sqrt(photon_count). Mismatch-induced bias adds + C2 * |probe_aberration| + C3 * ||x - x_s||_1 (best s-sparse / low-rank approximation residual). Iterative solvers achieve q=2 convergence (O(1/k^2)) near the MLE; epsilon_fn captures the monotone quality degradation across declared Omega.",
+    "complexity": "O(H * W * N_spectral_bins * log(...)) per iteration; learned variants: O(H W Z * F_theta_cost) per forward pass"
   },
   "physics_fingerprint": {
     "carrier": "electron",

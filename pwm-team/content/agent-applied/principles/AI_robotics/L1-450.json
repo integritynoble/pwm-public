@@ -8,7 +8,7 @@
   "source_file": "AI_robotics/450_trajectory_optimization.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Trajectory optimization: find minimum-time or minimum-effort robot trajectory satisfying dynamics and obstacle constraints.",
+    "description": "Trajectory Optimization: Trajectory optimization: find minimum-time or minimum-effort robot trajectory satisfying dynamics and obstacle constraints. The forward operator produces the measurement through a 3-node primitive DAG (M.collocation.direct_transcription\u2026); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=5 with effective condition number kappa_eff~2000; dynamic_obstacle_uncertainty, model_uncertainty set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "min integral_0 ** T l(x,u) dt; s.t. dx/dt = f(x,u), g(x,u) <= 0 (constraints), x(0)=x0, x(T)=xT",
     "world_state_x": "optimal state-control trajectory {x*(t), u*(t)} over time horizon T",
     "observation_y": "initial/final conditions, obstacle set, dynamics model",
@@ -40,13 +40,13 @@
     "condition_number_kappa": 100000.0,
     "condition_number_effective": 2000,
     "condition_number_mismatched": 10000.0,
-    "regime": "Non-convex due to dynamics and obstacle constraints; DDP local-optimal but fast; warm-starting critical for real-time."
+    "regime": "Existence of the recovered optimal_trajectory is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 2000); dynamic_obstacle_uncertainty dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Deterministic sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "direct_collocation_IPOPT or DDP_iLQR or CHOMP",
+    "solver_class": "sparse-recovery [direct_collocation_IPOPT or DDP_iLQR or CHOMP]",
     "convergence_rate_q": 2.0,
-    "error_bound": "cost within 5% of global optimum for convex costs; local minima for nonconvex",
-    "complexity": "O(N_nodes * n_state ** 2 * N_iter) for direct methods"
+    "error_bound": "Data-fidelity bound: cost within 5% of global optimum for convex costs; local minima for nonconvex. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~2000. Mismatch-induced bias + C2 * |dynamic_obstacle_uncertainty|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(N_nodes * n_state ** 2 * N_iter) for direct methods per iteration"
   },
   "physics_fingerprint": {
     "carrier": "N/A",

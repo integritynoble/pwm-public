@@ -8,7 +8,7 @@
   "source_file": "C_medical_imaging/040_dot.md",
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical medical-imaging literature for this principle.",
   "E": {
-    "description": "Diffuse Optical Tomography (DOT) forward model.",
+    "description": "Diffuse Optical Tomography (DOT): near infrared diffusion produces the measurement through a 4-node primitive DAG L.nir_source -> L.diffusion_propagation -> S.scan.source_detector -> int.spatial, with spatially-projected accumulation and photon-shot-noise-limited (Poisson counting). Recovery is posed as a non-convex inverse problem that inverts the forward operator to estimate the scene-side 3D optical absorption. Difficulty tier delta=10 with effective condition number kappa_eff~30; calibration-level mismatch (tissue_scattering, anatomical_prior_error, partial_volume) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
     "forward_model": "y_sd(t) = integral G(source, detector, mu_a, mu_s) + n; invert mu_a(r) via Rytov/Born + regularization",
     "world_state_x": "Patient-side quantity of interest (attenuation / activity / perfusion / stiffness etc.)",
     "observation_y": "Clinical sensor output at declared resolution + noise",
@@ -46,13 +46,13 @@
     "stability": "conditional",
     "condition_number_kappa": 600,
     "condition_number_effective": 30,
-    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+    "regime": "Existence of the recovered 3D optical absorption is guaranteed within the declared Omega bounds. Uniqueness is local rather than global (non-convex landscape); convergence depends on initialisation and priors. Stability is moderately conditioned (kappa_eff ~= 30); tissue_scattering dominates the stability cliff; anatomical_prior_error and the remaining mismatch parameters contribute higher-order bias terms. Photon-shot-noise-limited (poisson counting) sets the irreducible data-fidelity floor, while TV / wavelet-sparsity / deep priors stabilise recovery at the ill-conditioned end of Omega."
   },
   "C": {
-    "solver_class": "Born-Linear, Rytov, NIRFAST, DOT-Net",
+    "solver_class": "linear-operator + convex optimisation [Born-Linear, Rytov] | iterative projection (ADMM / GAP) + optimisation [NIRFAST] | linear-operator + deep neural prior [DOT-Net]",
     "convergence_rate_q": 2.0,
-    "error_bound": "Bounded by sensor SNR + mismatch bias + regularisation.",
-    "complexity": "O(H W) to O(H W Z) per iteration"
+    "error_bound": "Data-fidelity bound: ||x_hat - x||_2 <= C1 * sqrt(sigma_signal^2) / sqrt(photon_count). Mismatch-induced bias adds + C2 * |tissue_scattering| + C3 * ||x - x_s||_1 (best s-sparse / low-rank approximation residual). Iterative solvers achieve q=2 convergence (O(1/k^2)) near the MLE; epsilon_fn captures the monotone quality degradation across declared Omega.",
+    "complexity": "O(H * W * log(...)) per iteration; learned variants: O(H W Z * F_theta_cost) per forward pass"
   },
   "physics_fingerprint": {
     "carrier": "photon",

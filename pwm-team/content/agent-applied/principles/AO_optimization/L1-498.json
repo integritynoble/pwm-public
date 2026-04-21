@@ -8,7 +8,7 @@
   "source_file": "AO_optimization/498_topology_optimization_simp.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "SIMP topology optimization: minimize structural compliance subject to volume fraction constraint using density-based penalization.",
+    "description": "Topology Optimization (SIMP): SIMP topology optimization: minimize structural compliance subject to volume fraction constraint using density-based penalization. The forward operator produces the measurement through a 4-node primitive DAG (F.filter.density\u2026); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=3 with effective condition number kappa_eff~200; load_direction_error, boundary_condition_uncertainty set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "K(rho)*u = f, C = f ** T u, rho_e in [rho_min, 1], penalty p=3",
     "world_state_x": "density field rho in [0,1]^N_e, N_e finite elements",
     "observation_y": "compliance C = f ** T K(rho)^{-1} f (scalar objective)",
@@ -42,12 +42,12 @@
     "condition_number_kappa": 10000.0,
     "condition_number_effective": 200,
     "condition_number_mismatched": 500,
-    "regime": "Nonlinear due to SIMP penalization; unique local minima; convergence to KKT point guaranteed under mild regularity."
+    "regime": "Existence of the recovered 2D_density_field is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 200); load_direction_error dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Deterministic sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "optimality_criteria or MMA (Method of Moving Asymptotes)",
+    "solver_class": "gradient-based [optimality_criteria or MMA (Method of Moving Asymptotes)]",
     "convergence_rate_q": 1.5,
-    "error_bound": "C_opt / C_init <= epsilon after N_iter iterations",
+    "error_bound": "Data-fidelity bound: C_opt / C_init <= epsilon after N_iter iterations. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~200. Mismatch-induced bias + C2 * |load_direction_error|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
     "complexity": "O(N_e * N_dof) per iteration (FEM solve + sensitivity)"
   },
   "physics_fingerprint": {

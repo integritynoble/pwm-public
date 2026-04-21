@@ -8,7 +8,7 @@
   "source_file": "AK_geodesy/467_satellite_orbit_determination.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Satellite orbit determination: estimate initial state vector from tracking data (range, range-rate, angles) using batch or sequential processing.",
+    "description": "Satellite Orbit Determination: Satellite orbit determination: estimate initial state vector from tracking data (range, range-rate, angles) using batch or sequential processing. The forward operator produces the measurement through a 3-node primitive DAG (M.ode.equations_of_motion\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~200; atmospheric_drag_uncertainty, SRP_modeling_error set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "rho(t) = |X_sat(t; x0) - X_gs|; X_sat integrated from EOM with SRP, drag, gravity harmonics",
     "world_state_x": "initial state vector x0 = (r0, v0) in ECI coordinates at epoch t0",
     "observation_y": "ground station range rho(t), range-rate rho_dot(t), angular observations for N_passes",
@@ -40,13 +40,13 @@
     "condition_number_kappa": 5000,
     "condition_number_effective": 200,
     "condition_number_mismatched": 1000,
-    "regime": "Nonlinear dynamics; linearization around reference orbit; drag uncertainty dominates for LEO."
+    "regime": "Existence of the recovered 6D_orbital_state_vector is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 200); atmospheric_drag_uncertainty dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Gaussian sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "batch_least_squares or extended_Kalman_filter (SGP4 for TLE)",
+    "solver_class": "sequential-filter [batch_least_squares or extended_Kalman_filter (SGP4 for TLE)]",
     "convergence_rate_q": 2.0,
-    "error_bound": "position prediction error < 100 m at 24h for LEO with SRP+drag",
-    "complexity": "O(N_obs * N_state ** 2) for batch normal equations"
+    "error_bound": "Data-fidelity bound: position prediction error < 100 m at 24h for LEO with SRP+drag. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~200. Mismatch-induced bias + C2 * |atmospheric_drag_uncertainty|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(N_obs * N_state ** 2) for batch normal equations per iteration"
   },
   "physics_fingerprint": {
     "carrier": "RF",

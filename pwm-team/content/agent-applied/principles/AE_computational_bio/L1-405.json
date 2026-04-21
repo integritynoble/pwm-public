@@ -8,7 +8,7 @@
   "source_file": "AE_computational_bio/405_sir_epidemic.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "SIR model fitting: estimate transmission rate beta and recovery rate gamma from epidemic incidence data.",
+    "description": "SIR Epidemic Parameter Estimation: SIR model fitting: estimate transmission rate beta and recovery rate gamma from epidemic incidence data. The forward operator produces the measurement through a 3-node primitive DAG (M.ode.sir_model\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~50; under_reporting_factor, heterogeneous_mixing set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "dS/dt = -beta*S*I/N; dI/dt = beta*S*I/N - gamma*I; dR/dt = gamma*I; R0 = beta/gamma",
     "world_state_x": "SIR parameters (beta_transmission, gamma_recovery) and R0 basic reproduction number",
     "observation_y": "daily/weekly incidence data I_new(t) = beta*S*I/N for epidemic period",
@@ -40,13 +40,13 @@
     "condition_number_kappa": 1000,
     "condition_number_effective": 50,
     "condition_number_mismatched": 200,
-    "regime": "Well-identified for growing epidemic (R0>1); identifiability lost for small I_0; reporting heterogeneity is dominant uncertainty."
+    "regime": "Existence of the recovered SIR_parameter_vector is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 50); under_reporting_factor dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Negative binomial sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "MCMC_Bayesian_SIR or maximum_likelihood_EpiEstim",
+    "solver_class": "statistical [MCMC_Bayesian_SIR or maximum_likelihood_EpiEstim]",
     "convergence_rate_q": 2.0,
-    "error_bound": "R0 uncertainty < 0.2 for well-detected epidemic",
-    "complexity": "O(N_days * N_MCMC) per epidemic fit"
+    "error_bound": "Data-fidelity bound: R0 uncertainty < 0.2 for well-detected epidemic. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~50. Mismatch-induced bias + C2 * |under_reporting_factor|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(N_days * N_MCMC) per epidemic fit per iteration"
   },
   "physics_fingerprint": {
     "carrier": "N/A",

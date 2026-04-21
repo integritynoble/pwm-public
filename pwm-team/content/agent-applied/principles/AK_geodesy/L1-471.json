@@ -8,7 +8,7 @@
   "source_file": "AK_geodesy/471_satellite_gravity_gradiometry.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "GOCE gravity gradiometry: recover Earth gravity field spherical harmonic coefficients from gravity gradient tensor measurements.",
+    "description": "Satellite Gravity Gradiometry (GOCE): GOCE gravity gradiometry: recover Earth gravity field spherical harmonic coefficients from gravity gradient tensor measurements. The forward operator produces the measurement through a 3-node primitive DAG (S.gravity.gradient_tensor\u2026); recovery is posed as a linear_inverse problem. Difficulty tier delta=5 with effective condition number kappa_eff~5000; calibration_bias_mE, non_gravitational_acceleration_residual set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "V_ij(r,theta,phi) = sum_{n,m} (R/r)^{n+3} * sum_m [C_nm F_nm + S_nm G_nm]; gradiometer measures V_xx, V_yy, V_zz, V_xz",
     "world_state_x": "Stokes coefficients C_nm, S_nm up to degree/order N_max",
     "observation_y": "gravity gradient tensor components [mE] along orbit arc",
@@ -40,13 +40,13 @@
     "condition_number_kappa": 100000.0,
     "condition_number_effective": 5000,
     "condition_number_mismatched": 20000.0,
-    "regime": "Very large linear system (N_max=300 gives 90000 unknowns); regularization mandatory; Kaula's rule as prior."
+    "regime": "Existence of the recovered spherical_harmonic_gravity is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 5000); calibration_bias_mE dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Gaussian sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "time_wise_approach or space_wise_approach or semi_analytic",
+    "solver_class": "classical [time_wise_approach or space_wise_approach or semi_analytic]",
     "convergence_rate_q": 2.0,
-    "error_bound": "geoid accuracy < 1 cm at 100 km resolution (GOCE requirement)",
-    "complexity": "O(N_max ** 2 * N_obs) for design matrix computation"
+    "error_bound": "Data-fidelity bound: geoid accuracy < 1 cm at 100 km resolution (GOCE requirement). Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~5000. Mismatch-induced bias + C2 * |calibration_bias_mE|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(N_max ** 2 * N_obs) for design matrix computation per iteration"
   },
   "physics_fingerprint": {
     "carrier": "N/A",

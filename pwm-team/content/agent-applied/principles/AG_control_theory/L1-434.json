@@ -8,7 +8,7 @@
   "source_file": "AG_control_theory/434_pid_controller_tuning.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "PID tuning: find Kp, Ki, Kd to minimize IAE/ISE for a given plant while satisfying stability margins.",
+    "description": "PID Controller Tuning: PID tuning: find Kp, Ki, Kd to minimize IAE/ISE for a given plant while satisfying stability margins. The forward operator produces the measurement through a 3-node primitive DAG (M.pid.transfer_function\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~10; plant_gain_variation, time_constant_change set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "C(s) = Kp*(1 + 1/(Ti*s) + Td*s); closed-loop T(s) = C(s)*G(s)/(1+C(s)*G(s))",
     "world_state_x": "PID parameters (Kp, Ti, Td) for plant G(s)",
     "observation_y": "step response y(t) and control effort u(t)",
@@ -40,13 +40,13 @@
     "condition_number_kappa": 200,
     "condition_number_effective": 10,
     "condition_number_mismatched": 50,
-    "regime": "Well-suited for FOPDT plants; Ziegler-Nichols often produces poor margins; SIMC provides robustness-performance balance."
+    "regime": "Existence of the recovered PID_parameter_vector is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 10); plant_gain_variation dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Gaussian sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "Ziegler_Nichols or SIMC_rule or optimization_based",
+    "solver_class": "classical [Ziegler_Nichols or SIMC_rule or optimization_based]",
     "convergence_rate_q": 2.0,
-    "error_bound": "IAE < 0.5 * IAE_untuned; PM > 30 deg; overshoot < 15%",
-    "complexity": "O(1) for rule-based; O(N_iter * N_sim) for optimization-based"
+    "error_bound": "Data-fidelity bound: IAE < 0.5 * IAE_untuned; PM > 30 deg; overshoot < 15%. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~10. Mismatch-induced bias + C2 * |plant_gain_variation|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(1) for rule-based; O(N_iter * N_sim) for optimization-based per iteration"
   },
   "physics_fingerprint": {
     "carrier": "N/A",

@@ -8,7 +8,7 @@
   "source_file": "AE_computational_bio/409_phylogenetic_likelihood.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Phylogenetic maximum likelihood: reconstruct evolutionary tree topology and branch lengths from DNA/protein alignment.",
+    "description": "Phylogenetic Likelihood Inference: Phylogenetic maximum likelihood: reconstruct evolutionary tree topology and branch lengths from DNA/protein alignment. The forward operator produces the measurement through a 3-node primitive DAG (M.felsenstein.pruning_algorithm\u2026); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=5 with effective condition number kappa_eff~2000; model_misspecification_substitution, long_branch_attraction set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "L(tree, theta) = prod_site prod_node P(obs_node | obs_children, branch_length, substitution_model)",
     "world_state_x": "tree topology tau, branch lengths t, substitution model parameters (GTR rates, base frequencies)",
     "observation_y": "multiple sequence alignment (MSA) with N_taxa taxa and N_sites alignment positions",
@@ -40,13 +40,13 @@
     "condition_number_kappa": 100000.0,
     "condition_number_effective": 2000,
     "condition_number_mismatched": 10000.0,
-    "regime": "NP-hard tree search space (N_taxa!! topologies); ML approximated by heuristic search; Bayesian MCMC samples topology posterior."
+    "regime": "Existence of the recovered phylogenetic_tree_topology is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 2000); model_misspecification_substitution dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Multinomial sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "IQ-TREE2_ML or MrBayes_MCMC or BEAST2",
+    "solver_class": "statistical [IQ-TREE2_ML or MrBayes_MCMC or BEAST2]",
     "convergence_rate_q": 2.0,
-    "error_bound": "RF distance < 10% topology error for 100 taxa at N_sites > 1000",
-    "complexity": "O(N_taxa ** 2 * N_sites) per tree evaluation with Felsenstein pruning"
+    "error_bound": "Data-fidelity bound: RF distance < 10% topology error for 100 taxa at N_sites > 1000. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~2000. Mismatch-induced bias + C2 * |model_misspecification_substitution|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(N_taxa ** 2 * N_sites) per tree evaluation with Felsenstein pruning per iteration"
   },
   "physics_fingerprint": {
     "carrier": "N/A",

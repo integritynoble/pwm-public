@@ -8,7 +8,7 @@
   "source_file": "AH_comp_finance/438_black_scholes.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Black-Scholes calibration: infer implied volatility sigma_impl from observed market option prices.",
+    "description": "Black-Scholes Option Pricing Calibration: Black-Scholes calibration: infer implied volatility sigma_impl from observed market option prices. The forward operator produces the measurement through a 3-node primitive DAG (M.bs.formula\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~10; bid_ask_spread_percent, liquidity_premium set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "C_BS(S, K, T, r, sigma) = S*N(d1) - K*e^{-rT}*N(d2); solve sigma = implied_vol(C_market)",
     "world_state_x": "implied volatility surface sigma_impl(K, T) across strikes and maturities",
     "observation_y": "market option prices C_market(K_i, T_j) from exchange data",
@@ -41,13 +41,13 @@
     "condition_number_kappa": 200,
     "condition_number_effective": 10,
     "condition_number_mismatched": 50,
-    "regime": "Black-Scholes is flat vol surface; smile/skew indicates model failure; Newton converges in 5-10 iterations."
+    "regime": "Existence of the recovered implied_vol_surface is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 10); bid_ask_spread_percent dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Market bid ask gaussian sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "Brent_root_finding or Newton_Raphson per option",
+    "solver_class": "classical [Brent_root_finding or Newton_Raphson per option]",
     "convergence_rate_q": 2.0,
-    "error_bound": "implied vol error < 1 bp for liquid options",
-    "complexity": "O(N_strikes * N_maturities) per calibration"
+    "error_bound": "Data-fidelity bound: implied vol error < 1 bp for liquid options. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~10. Mismatch-induced bias + C2 * |bid_ask_spread_percent|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(N_strikes * N_maturities) per calibration per iteration"
   },
   "physics_fingerprint": {
     "carrier": "N/A",

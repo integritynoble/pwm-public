@@ -8,7 +8,7 @@
   "source_file": "J_industrial_inspect/115_active_thermography.md",
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical NDT/NDE literature for this principle.",
   "E": {
-    "description": "Active Thermography (pulsed / lock-in IR inspection) forward model.",
+    "description": "Active Thermography (pulsed / lock-in IR inspection): active thermography ir produces the measurement through a 4-node primitive DAG L.heat_source -> L.thermal_diffusion -> D.ir_camera -> int.temporal, with time-integrated exposure and additive Gaussian thermal/electronic noise. Recovery is posed as a non-convex inverse problem that inverts the forward operator to estimate the scene-side 3D defect depth map. Difficulty tier delta=3 with effective condition number kappa_eff~12; calibration-level mismatch (emissivity_variation, surface_reflections, ambient_thermal_load) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
     "forward_model": "T(x,y,t) = T_bg + solve[heat_eqn with source(x,y,0) and boundary cond]; defect depth via phase contrast",
     "world_state_x": "Defect / strain / composition map depending on principle",
     "observation_y": "Sensor output at declared geometry",
@@ -45,13 +45,13 @@
     "stability": "conditional",
     "condition_number_kappa": 240,
     "condition_number_effective": 12,
-    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+    "regime": "Existence of the recovered 3D defect depth map is guaranteed within the declared Omega bounds. Uniqueness is local rather than global (non-convex landscape); convergence depends on initialisation and priors. Stability is moderately conditioned (kappa_eff ~= 12); emissivity_variation dominates the stability cliff; surface_reflections and the remaining mismatch parameters contribute higher-order bias terms. Additive gaussian thermal/electronic noise sets the irreducible data-fidelity floor, while mild Tikhonov or analytic inversion is sufficient at the nominal Omega point."
   },
   "C": {
-    "solver_class": "Phase-Lockin, PPT-Thermography, ThermoNet",
+    "solver_class": "linear-operator + convex optimisation [Phase-Lockin, PPT-Thermography] | linear-operator + deep neural prior [ThermoNet]",
     "convergence_rate_q": 2.0,
-    "error_bound": "Bounded by sensor SNR + mismatch bias.",
-    "complexity": "O(H W) to O(H W Z) per iteration"
+    "error_bound": "Data-fidelity bound: ||x_hat - x||_2 <= C1 * sigma_noise / sqrt(N_measurements). Mismatch-induced bias adds + C2 * |emissivity_variation| + C3 * ||x - x_s||_1 (best s-sparse / low-rank approximation residual). Iterative solvers achieve q=2 convergence (O(1/k^2)) near the MLE; epsilon_fn captures the monotone quality degradation across declared Omega.",
+    "complexity": "O(H * W * log(...)) per iteration; learned variants: O(H W Z * F_theta_cost) per forward pass"
   },
   "physics_fingerprint": {
     "carrier": "photon",

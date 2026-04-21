@@ -8,7 +8,7 @@
   "source_file": "AE_computational_bio/401_windkessel.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Windkessel model fitting: extract arterial compliance C, resistance R, and characteristic impedance Zc from pressure-flow data.",
+    "description": "Windkessel Cardiac Afterload Model: Windkessel model fitting: extract arterial compliance C, resistance R, and characteristic impedance Zc from pressure-flow data. The forward operator produces the measurement through a 3-node primitive DAG (M.ode.windkessel_3element\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~20; nonlinearity_pressure_compliance, wave_reflection_neglect set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "C*dP/dt + P/R = Q - Zc*dQ/dt; 3-element Windkessel (Westkessel model)",
     "world_state_x": "arterial parameters (R_peripheral, C_arterial, Z_c_characteristic)",
     "observation_y": "aortic pressure P(t) and flow Q(t) over one or more cardiac cycles",
@@ -40,13 +40,13 @@
     "condition_number_kappa": 500,
     "condition_number_effective": 20,
     "condition_number_mismatched": 100,
-    "regime": "3-element Windkessel fits 80% of hemodynamic features; wave reflections require distributed models; nonlinear C(P) improves accuracy."
+    "regime": "Existence of the recovered windkessel_parameter_vector is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 20); nonlinearity_pressure_compliance dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Measurement gaussian sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "NLS_parameter_fit or Bayesian_Windkessel",
+    "solver_class": "statistical [NLS_parameter_fit or Bayesian_Windkessel]",
     "convergence_rate_q": 2.0,
-    "error_bound": "pressure RMSE < 2 mmHg for calibrated 3-element WK",
-    "complexity": "O(N_cycles * N_params) for ODE integration per cycle"
+    "error_bound": "Data-fidelity bound: pressure RMSE < 2 mmHg for calibrated 3-element WK. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~20. Mismatch-induced bias + C2 * |nonlinearity_pressure_compliance|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(N_cycles * N_params) for ODE integration per cycle per iteration"
   },
   "physics_fingerprint": {
     "carrier": "N/A",

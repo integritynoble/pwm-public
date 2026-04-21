@@ -8,7 +8,7 @@
   "source_file": "AE_computational_bio/398_cable_equation.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Cable equation inversion: recover dendritic conductance distribution from voltage recordings at one or few locations.",
+    "description": "Cable Equation (Dendrite Propagation): Cable equation inversion: recover dendritic conductance distribution from voltage recordings at one or few locations. The forward operator produces the measurement through a 3-node primitive DAG (M.pde.cable_equation\u2026); recovery is posed as a linear_inverse problem. Difficulty tier delta=3 with effective condition number kappa_eff~80; dendritic_branching_approximation, nonlinear_membrane_conductances set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "C_m * dV/dt = (1/r_i) * d ** 2V/dx ** 2 - g_L*(V-E_L) - g_syn(x,t)*(V-E_syn)",
     "world_state_x": "synaptic conductance distribution g_syn(x,t) along dendritic cable",
     "observation_y": "voltage V(t) recorded at soma or branch point from synaptic inputs",
@@ -40,13 +40,13 @@
     "condition_number_kappa": 2000,
     "condition_number_effective": 80,
     "condition_number_mismatched": 400,
-    "regime": "Linear PDE; electrotonic decay with space constant lambda; branching reduces to equivalent cylinder; location ambiguity for distributed inputs."
+    "regime": "Existence of the recovered dendritic_conductance_distribution is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 80); dendritic_branching_approximation dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Gaussian sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "Green_function_inversion or Tikhonov_regularization",
+    "solver_class": "classical [Green_function_inversion or Tikhonov_regularization]",
     "convergence_rate_q": 2.0,
-    "error_bound": "conductance recovery < 20% error for well-constrained cable",
-    "complexity": "O(N_spatial * N_temporal) for cable simulation"
+    "error_bound": "Data-fidelity bound: conductance recovery < 20% error for well-constrained cable. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~80. Mismatch-induced bias + C2 * |dendritic_branching_approximation|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(N_spatial * N_temporal) for cable simulation per iteration"
   },
   "physics_fingerprint": {
     "carrier": "N/A",

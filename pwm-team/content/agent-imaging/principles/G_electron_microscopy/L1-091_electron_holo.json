@@ -8,7 +8,7 @@
   "source_file": "G_electron_microscopy/091_electron_holo.md",
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical electron-microscopy literature for this principle.",
   "E": {
-    "description": "Off-Axis Electron Holography \u2014 nanoscale phase imaging forward model.",
+    "description": "Off-Axis Electron Holography \u2014 nanoscale phase imaging: electron interferometry produces the measurement through a 4-node primitive DAG L.biprism -> L.add_coherent -> L.modulus_squared -> int.temporal, with spatially-projected accumulation and photon-shot-noise-limited (Poisson counting). Recovery is posed as a linear inverse problem that inverts the forward operator to estimate the scene-side complex 2D. Difficulty tier delta=5 with effective condition number kappa_eff~12; calibration-level mismatch (biprism_stability, fringe_contrast_loss, reference_drift) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
     "forward_model": "I(r) = |psi_obj + psi_ref * exp(i*q_c*r)|^2 + n; Fourier sideband filter recovers phase",
     "world_state_x": "Scene parameter (density / orientation / spectrum / complex field depending on principle)",
     "observation_y": "Electron detector output at declared geometry + noise",
@@ -45,13 +45,13 @@
     "stability": "conditional",
     "condition_number_kappa": 240,
     "condition_number_effective": 12,
-    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+    "regime": "Existence of the recovered complex 2D is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by the declared priors. Stability is moderately conditioned (kappa_eff ~= 12); biprism_stability dominates the stability cliff; fringe_contrast_loss and the remaining mismatch parameters contribute higher-order bias terms. Photon-shot-noise-limited (poisson counting) sets the irreducible data-fidelity floor, while mild Tikhonov or analytic inversion is sufficient at the nominal Omega point."
   },
   "C": {
-    "solver_class": "Fourier-Sideband, Iterative-Holo, EHolo-Net",
+    "solver_class": "linear-operator + convex optimisation [Fourier-Sideband] | iterative projection (ADMM / GAP) + optimisation [Iterative-Holo] | linear-operator + deep neural prior [EHolo-Net]",
     "convergence_rate_q": 2.0,
-    "error_bound": "Bounded by sigma_noise / sqrt(electron_count) + mismatch bias.",
-    "complexity": "O(H W) to O(H W Z) per iteration"
+    "error_bound": "Data-fidelity bound: ||x_hat - x||_2 <= C1 * sqrt(sigma_signal^2) / sqrt(photon_count). Mismatch-induced bias adds + C2 * |biprism_stability| + C3 * ||x - x_s||_1 (best s-sparse / low-rank approximation residual). Iterative solvers achieve q=2 convergence (O(1/k^2)) near the MLE; epsilon_fn captures the monotone quality degradation across declared Omega.",
+    "complexity": "O(H * W * log(...)) per iteration; learned variants: O(H W Z * F_theta_cost) per forward pass"
   },
   "physics_fingerprint": {
     "carrier": "electron",

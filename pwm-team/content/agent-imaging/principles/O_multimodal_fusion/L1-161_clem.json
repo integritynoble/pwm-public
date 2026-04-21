@@ -8,7 +8,7 @@
   "source_file": "O_multimodal_fusion/161_clem.md",
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
   "E": {
-    "description": "Correlative Light-Electron Microscopy (CLEM) forward model.",
+    "description": "Correlative Light-Electron Microscopy (CLEM): correlative light electron produces the measurement through a 4-node primitive DAG L.fluorescence_imaging -> L.em_imaging -> L.multi_scale_registration -> int.spatial, with spatially-projected accumulation and photon-shot-noise-limited (Poisson counting). Recovery is posed as a non-convex inverse problem that inverts the forward operator to estimate the scene-side 2D fluorescence plus em. Difficulty tier delta=5 with effective condition number kappa_eff~18; calibration-level mismatch (scale_mismatch, sample_preparation_artifact, registration_error) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
     "forward_model": "F(r_LM, r_EM) = align(LM_channels, EM_image, fiducials); scale ratio ~100x-1000x",
     "world_state_x": "Principle-specific quantity of interest",
     "observation_y": "Detector output at declared geometry",
@@ -47,13 +47,13 @@
     "stability": "conditional",
     "condition_number_kappa": 360,
     "condition_number_effective": 18,
-    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+    "regime": "Existence of the recovered 2D fluorescence plus em is guaranteed within the declared Omega bounds. Uniqueness is local rather than global (non-convex landscape); convergence depends on initialisation and priors. Stability is moderately conditioned (kappa_eff ~= 18); scale_mismatch dominates the stability cliff; sample_preparation_artifact and the remaining mismatch parameters contribute higher-order bias terms. Photon-shot-noise-limited (poisson counting) sets the irreducible data-fidelity floor, while TV / wavelet-sparsity / deep priors stabilise recovery at the ill-conditioned end of Omega."
   },
   "C": {
-    "solver_class": "Fiducial-Register, Feature-Match, CLEM-Net",
+    "solver_class": "linear-operator + convex optimisation [Fiducial-Register, Feature-Match] | linear-operator + deep neural prior [CLEM-Net]",
     "convergence_rate_q": 2.0,
-    "error_bound": "Bounded by sensor SNR + mismatch bias + regularization.",
-    "complexity": "principle-dependent"
+    "error_bound": "Data-fidelity bound: ||x_hat - x||_2 <= C1 * sqrt(sigma_signal^2) / sqrt(photon_count). Mismatch-induced bias adds + C2 * |scale_mismatch| + C3 * ||x - x_s||_1 (best s-sparse / low-rank approximation residual). Iterative solvers achieve q=2 convergence (O(1/k^2)) near the MLE; epsilon_fn captures the monotone quality degradation across declared Omega.",
+    "complexity": "O(H * W * log(...)) per iteration; learned variants: O(H W Z * F_theta_cost) per forward pass"
   },
   "physics_fingerprint": {
     "carrier": "electron",

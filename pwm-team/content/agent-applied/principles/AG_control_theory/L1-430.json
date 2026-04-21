@@ -8,7 +8,7 @@
   "source_file": "AG_control_theory/430_particle_filter.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Particle filter: SMC approximation of arbitrary posterior distribution for nonlinear non-Gaussian state estimation.",
+    "description": "Particle Filter (Sequential Monte Carlo): Particle filter: SMC approximation of arbitrary posterior distribution for nonlinear non-Gaussian state estimation. The forward operator produces the measurement through a 3-node primitive DAG (S.pf.importance_sampling\u2026); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=5 with effective condition number kappa_eff~200; particle_impoverishment, weight_degeneracy_high_dim set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "p(x_k | y_{1:k}) prop p(y_k | x_k) * p(x_k | x_{k-1}); approximated by N_p particles {x_k ** i, w_k ** i}",
     "world_state_x": "posterior distribution p(x_k | y_{1:k}) represented by weighted particles",
     "observation_y": "sequential observations {y_k} for nonlinear/non-Gaussian system",
@@ -40,13 +40,13 @@
     "condition_number_kappa": 5000,
     "condition_number_effective": 200,
     "condition_number_mismatched": 1000,
-    "regime": "Curse of dimensionality: N_p needs to grow exponentially with n for accuracy; APF/SMC2 mitigate; multimodal posteriors handled naturally."
+    "regime": "Existence of the recovered particle_distribution is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 200); particle_impoverishment dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Non gaussian sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "SIR_particle_filter or APF_auxiliary or SMC2",
+    "solver_class": "sequential-filter [SIR_particle_filter or APF_auxiliary or SMC2]",
     "convergence_rate_q": 1.5,
-    "error_bound": "RMSE ~ O(1/sqrt(N_particles)) for well-designed PF",
-    "complexity": "O(N_particles * n_state) per time step"
+    "error_bound": "Data-fidelity bound: RMSE ~ O(1/sqrt(N_particles)) for well-designed PF. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~200. Mismatch-induced bias + C2 * |particle_impoverishment|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(N_particles * n_state) per time step per iteration"
   },
   "physics_fingerprint": {
     "carrier": "N/A",

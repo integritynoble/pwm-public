@@ -8,7 +8,7 @@
   "source_file": "AH_comp_finance/442_implied_volatility.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Implied vol surface construction: build smooth, arbitrage-free implied volatility surface from sparse market quotes.",
+    "description": "Implied Volatility Surface Construction: Implied vol surface construction: build smooth, arbitrage-free implied volatility surface from sparse market quotes. The forward operator produces the measurement through a 3-node primitive DAG (S.interpolation.cubic_spline\u2026); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=3 with effective condition number kappa_eff~30; sparse_data_interpolation_error, butterfly_arbitrage_violation set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "sigma_impl(k, T) modeled by SVI parameterization: w(k) = a + b*(rho*(k-m) + sqrt((k-m) ** 2 + sigma ** 2))",
     "world_state_x": "continuous implied vol surface sigma(K/F, T) satisfying calendar and butterfly arbitrage constraints",
     "observation_y": "sparse market implied vols sigma_i at (K_i, T_j) grid points",
@@ -41,13 +41,13 @@
     "condition_number_kappa": 500,
     "condition_number_effective": 30,
     "condition_number_mismatched": 200,
-    "regime": "SVI is convex per slice; joint calendar arbitrage is linear constraint; thin tails poorly constrained without extrapolation model."
+    "regime": "Existence of the recovered implied_vol_surface is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 30); sparse_data_interpolation_error dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Market bid ask gaussian sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "SVI_SSVI_calibration or parametric_surface_fit",
+    "solver_class": "classical [SVI_SSVI_calibration or parametric_surface_fit]",
     "convergence_rate_q": 2.0,
-    "error_bound": "interpolation RMSE < 20 bp with SVI fit",
-    "complexity": "O(N_slices * N_params_SVI) per calibration"
+    "error_bound": "Data-fidelity bound: interpolation RMSE < 20 bp with SVI fit. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~30. Mismatch-induced bias + C2 * |sparse_data_interpolation_error|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(N_slices * N_params_SVI) per calibration per iteration"
   },
   "physics_fingerprint": {
     "carrier": "N/A",

@@ -8,7 +8,7 @@
   "source_file": "AI_robotics/454_spacecraft_attitude.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Spacecraft attitude determination: estimate quaternion attitude from star tracker, magnetometer, and gyroscope measurements.",
+    "description": "Spacecraft Attitude Determination: Spacecraft attitude determination: estimate quaternion attitude from star tracker, magnetometer, and gyroscope measurements. The forward operator produces the measurement through a 3-node primitive DAG (S.quest.quaternion_estimator\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~20; gyro_bias_estimation_error, star_catalog_uncertainty set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "q_dot = 0.5 * Xi(q) * omega; y_star = C(q) * r_inertial_star + noise",
     "world_state_x": "quaternion q(t) representing rotation from body to inertial frame",
     "observation_y": "star tracker unit vectors {v_i}, magnetometer vector B_body, gyroscope omega_body",
@@ -40,13 +40,13 @@
     "condition_number_kappa": 500,
     "condition_number_effective": 20,
     "condition_number_mismatched": 100,
-    "regime": "QUEST optimal single-frame; MEKF propagates state with gyro bias estimation; quaternion normalization at each step."
+    "regime": "Existence of the recovered quaternion_attitude is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 20); gyro_bias_estimation_error dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Gaussian sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "QUEST_TRIAD or MEKF_multiplicative_EKF",
+    "solver_class": "sequential-filter [QUEST_TRIAD or MEKF_multiplicative_EKF]",
     "convergence_rate_q": 2.0,
-    "error_bound": "attitude knowledge < 1 arcsec with star tracker",
-    "complexity": "O(N_stars * n_state) per attitude update"
+    "error_bound": "Data-fidelity bound: attitude knowledge < 1 arcsec with star tracker. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~20. Mismatch-induced bias + C2 * |gyro_bias_estimation_error|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(N_stars * n_state) per attitude update per iteration"
   },
   "physics_fingerprint": {
     "carrier": "N/A",

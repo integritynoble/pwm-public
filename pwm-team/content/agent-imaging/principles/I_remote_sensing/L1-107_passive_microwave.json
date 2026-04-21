@@ -8,7 +8,7 @@
   "source_file": "I_remote_sensing/107_passive_microwave.md",
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical remote-sensing literature for this principle.",
   "E": {
-    "description": "Passive Microwave Radiometry forward model.",
+    "description": "Passive Microwave Radiometry: microwave radiometry produces the measurement through a 3-node primitive DAG L.radiometer -> L.antenna_pattern -> int.temporal, with time-integrated exposure and additive Gaussian thermal/electronic noise. Recovery is posed as a linear inverse problem that inverts the forward operator to estimate the scene-side 2D brightness temperature. Difficulty tier delta=3 with effective condition number kappa_eff~7; calibration-level mismatch (antenna_sidelobe, land_contamination, RFI) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
     "forward_model": "T_b(theta, phi) = integral antenna_pattern(theta, phi) * T_physical(surface) * emissivity + atm_contrib + n",
     "world_state_x": "Scene-side quantity of interest (reflectance / velocity / phase / concentration)",
     "observation_y": "Sensor output at declared resolution + noise",
@@ -43,13 +43,13 @@
     "stability": "conditional",
     "condition_number_kappa": 140,
     "condition_number_effective": 7,
-    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+    "regime": "Existence of the recovered 2D brightness temperature is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by the declared priors. Stability is well-conditioned (kappa_eff ~= 7); antenna_sidelobe dominates the stability cliff; land_contamination and the remaining mismatch parameters contribute higher-order bias terms. Additive gaussian thermal/electronic noise sets the irreducible data-fidelity floor, while mild Tikhonov or analytic inversion is sufficient at the nominal Omega point."
   },
   "C": {
-    "solver_class": "GMI-Backus-Gilbert, Brightness-Interp, MW-UNet",
+    "solver_class": "linear-operator + convex optimisation [GMI-Backus-Gilbert, Brightness-Interp] | linear-operator + deep neural prior [MW-UNet]",
     "convergence_rate_q": 2.0,
-    "error_bound": "Bounded by sensor SNR + mismatch-induced bias.",
-    "complexity": "O(H W) to O(H W N_bands) per iteration"
+    "error_bound": "Data-fidelity bound: ||x_hat - x||_2 <= C1 * sigma_noise / sqrt(N_measurements). Mismatch-induced bias adds + C2 * |antenna_sidelobe| + C3 * ||x - x_s||_1 (best s-sparse / low-rank approximation residual). Iterative solvers achieve q=2 convergence (O(1/k^2)) near the MLE; epsilon_fn captures the monotone quality degradation across declared Omega.",
+    "complexity": "O(H * W * log(...)) per iteration; learned variants: O(H W Z * F_theta_cost) per forward pass"
   },
   "physics_fingerprint": {
     "carrier": "radio_wave",

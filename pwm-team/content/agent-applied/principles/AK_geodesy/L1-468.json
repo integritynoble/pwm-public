@@ -8,7 +8,7 @@
   "source_file": "AK_geodesy/468_satellite_altimetry.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Radar altimetry: estimate sea surface height from radar echo waveform retracking (Brown model).",
+    "description": "Satellite Radar Altimetry: Radar altimetry: estimate sea surface height from radar echo waveform retracking (Brown model). The forward operator produces the measurement through a 3-node primitive DAG (S.altimeter.retracker_brown\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~30; rain_contamination, inland_water_reflection set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "P(tau) = sigma_0 * integral W(t) * G ** 2(theta) * sinc ** 2(...) dt; Brown ocean model",
     "world_state_x": "SSH, SWH (significant wave height), backscatter coefficient sigma_0",
     "observation_y": "radar return waveform P(tau) with N_gates gates at 20 Hz sampling",
@@ -40,13 +40,13 @@
     "condition_number_kappa": 500,
     "condition_number_effective": 30,
     "condition_number_mismatched": 150,
-    "regime": "Nonlinear waveform fitting; inland waters require sub-waveform retrackers; sea ice has specular reflection."
+    "regime": "Existence of the recovered 1D_sea_surface_height is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 30); rain_contamination dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Thermal gaussian sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "OCOG_retracker or Brown_MLE4 or SAMOSA",
+    "solver_class": "classical [OCOG_retracker or Brown_MLE4 or SAMOSA]",
     "convergence_rate_q": 2.0,
-    "error_bound": "SSH precision < 3 cm (1-Hz), < 1 cm (20-Hz with MLE4)",
-    "complexity": "O(N_gates * N_waveforms) per track"
+    "error_bound": "Data-fidelity bound: SSH precision < 3 cm (1-Hz), < 1 cm (20-Hz with MLE4). Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~30. Mismatch-induced bias + C2 * |rain_contamination|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(N_gates * N_waveforms) per track per iteration"
   },
   "physics_fingerprint": {
     "carrier": "RF",

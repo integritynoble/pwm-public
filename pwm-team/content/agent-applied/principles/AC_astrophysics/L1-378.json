@@ -8,7 +8,7 @@
   "source_file": "AC_astrophysics/378_21cm_cosmology.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "21cm reionization mapping: detect 21cm signal from neutral hydrogen during EoR against bright foreground emission.",
+    "description": "21cm Cosmology Reionization Signal: 21cm reionization mapping: detect 21cm signal from neutral hydrogen during EoR against bright foreground emission. The forward operator produces the measurement through a 3-node primitive DAG (F.fourier.power_spectrum_3d\u2026); recovery is posed as a statistical_inverse problem. Difficulty tier delta=10 with effective condition number kappa_eff~5000; calibration_errors_percent, ionospheric_distortion set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "T_b(z) = 27*x_HI*(1+delta)*((1+z)/10) ** 0.5 * (H/dv_r/dr) mK; foregrounds dominate at 4 orders of magnitude",
     "world_state_x": "HI neutral fraction x_HI(z) and 21cm brightness temperature power spectrum P_21cm(k,z)",
     "observation_y": "calibrated visibility data V(u,v,nu) from radio interferometer (HERA/SKA-Low)",
@@ -40,13 +40,13 @@
     "condition_number_kappa": 10000000.0,
     "condition_number_effective": 5000,
     "condition_number_mismatched": 20000.0,
-    "regime": "Foreground dominated at 4 orders of magnitude above signal; EoR wedge avoidance or foreground subtraction required."
+    "regime": "Existence of the recovered 3D_21cm_brightness_temperature is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 5000); calibration_errors_percent dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Thermal gaussian sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "delay_filtered_power_spectrum or GPR_foreground_removal",
+    "solver_class": "classical [delay_filtered_power_spectrum or GPR_foreground_removal]",
     "convergence_rate_q": 2.0,
-    "error_bound": "2-sigma detection at k ~ 0.1 h/Mpc requires 1000h HERA integration",
-    "complexity": "O(N_baselines * N_freq * N_time) for calibration + imaging"
+    "error_bound": "Data-fidelity bound: 2-sigma detection at k ~ 0.1 h/Mpc requires 1000h HERA integration. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~5000. Mismatch-induced bias + C2 * |calibration_errors_percent|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(N_baselines * N_freq * N_time) for calibration + imaging per iteration"
   },
   "physics_fingerprint": {
     "carrier": "radio_wave",

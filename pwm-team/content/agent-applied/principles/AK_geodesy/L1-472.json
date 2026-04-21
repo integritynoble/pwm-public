@@ -8,7 +8,7 @@
   "source_file": "AK_geodesy/472_spectral_unmixing.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Hyperspectral unmixing: estimate per-pixel endmember abundances from mixed pixel spectra assuming linear mixing model.",
+    "description": "Hyperspectral Spectral Unmixing: Hyperspectral unmixing: estimate per-pixel endmember abundances from mixed pixel spectra assuming linear mixing model. The forward operator produces the measurement through a 3-node primitive DAG (M.mixing.linear_model\u2026); recovery is posed as a linear_inverse problem. Difficulty tier delta=3 with effective condition number kappa_eff~50; endmember_variability, nonlinear_mixing_fraction set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "y = M * a + n; M is endmember matrix [L x K], a is abundance vector [K x 1], sum(a) = 1, a >= 0",
     "world_state_x": "abundance fractions a_k(x,y) for K endmembers across H x W image",
     "observation_y": "hyperspectral image Y in R^{H x W x L} at L spectral bands",
@@ -40,13 +40,13 @@
     "condition_number_kappa": 1000.0,
     "condition_number_effective": 50,
     "condition_number_mismatched": 200,
-    "regime": "Constrained least squares (sum-to-one + nonnegativity); endmember extraction (VCA, N-FINDR) required first."
+    "regime": "Existence of the recovered abundance_map is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 50); endmember_variability dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Gaussian sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "FCLS or SUNSAL or SUnSAL-TV",
+    "solver_class": "sparse-recovery [FCLS or SUNSAL or SUnSAL-TV]",
     "convergence_rate_q": 2.0,
-    "error_bound": "abundance RMSE < 0.05 for SNR > 30 dB",
-    "complexity": "O(H * W * K * L) per unmixing iteration"
+    "error_bound": "Data-fidelity bound: abundance RMSE < 0.05 for SNR > 30 dB. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~50. Mismatch-induced bias + C2 * |endmember_variability|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(H * W * K * L) per unmixing iteration per iteration"
   },
   "physics_fingerprint": {
     "carrier": "photon",

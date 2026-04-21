@@ -8,7 +8,7 @@
   "source_file": "AJ_petroleum/463_seismic_rock_physics.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Gassmann fluid substitution: predict seismic velocity changes from one fluid to another using Gassmann equations.",
+    "description": "Seismic Rock Physics (Gassmann): Gassmann fluid substitution: predict seismic velocity changes from one fluid to another using Gassmann equations. The forward operator produces the measurement through a 3-node primitive DAG (M.gassmann.fluid_substitution\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=5 with effective condition number kappa_eff~100; clay_mineral_uncertainty, patchy_saturation_effect set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "K_sat = K_dry + (1-K_dry/K_0) ** 2 / (phi/K_fl + (1-phi)/K_0 - K_dry/K_0 ** 2)",
     "world_state_x": "saturated bulk modulus K_sat and shear modulus G_sat = G_dry for brine/oil/gas",
     "observation_y": "seismic P-wave velocity Vp and S-wave velocity Vs measurements from well log",
@@ -41,13 +41,13 @@
     "condition_number_kappa": 2000,
     "condition_number_effective": 100,
     "condition_number_mismatched": 500,
-    "regime": "Gassmann valid at low frequency (seismic); high-frequency squirt flow needs Biot-Squirt model; clay content is dominant uncertainty."
+    "regime": "Existence of the recovered elastic_moduli_vector is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 100); clay_mineral_uncertainty dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Measurement gaussian sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "Gassmann_analytical or Hertz_Mindlin_Biot",
+    "solver_class": "classical [Gassmann_analytical or Hertz_Mindlin_Biot]",
     "convergence_rate_q": 2.0,
-    "error_bound": "Vp prediction within 50 m/s for well-characterized rocks",
-    "complexity": "O(N_samples) analytical computation"
+    "error_bound": "Data-fidelity bound: Vp prediction within 50 m/s for well-characterized rocks. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~100. Mismatch-induced bias + C2 * |clay_mineral_uncertainty|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(N_samples) analytical computation per iteration"
   },
   "physics_fingerprint": {
     "carrier": "acoustic",

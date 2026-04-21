@@ -8,7 +8,7 @@
   "source_file": "AJ_petroleum/460_history_matching.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Reservoir history matching: infer 3D permeability/porosity fields from historical production data using ensemble methods or adjoint.",
+    "description": "Reservoir History Matching: Reservoir history matching: infer 3D permeability/porosity fields from historical production data using ensemble methods or adjoint. The forward operator produces the measurement through a 3-node primitive DAG (S.ensemble.kalman_filter_reservoir\u2026); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=10 with effective condition number kappa_eff~100000.0; structural_uncertainty, rel_perm_uncertainty set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "d_obs = G(m) + epsilon; m = {log(K), phi} per cell; G = reservoir simulator",
     "world_state_x": "3D permeability K(x,y,z) and porosity phi(x,y,z) fields",
     "observation_y": "historical production rates {q_o, q_w, q_g}(t) and BHP at N_wells wells",
@@ -40,13 +40,13 @@
     "condition_number_kappa": 100000000.0,
     "condition_number_effective": 100000.0,
     "condition_number_mismatched": 1000000.0,
-    "regime": "Severely ill-posed (N_cells >> N_data); ensemble methods regularize implicitly; geologically-consistent updates needed."
+    "regime": "Existence of the recovered 3D_permeability_field is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 100000.0); structural_uncertainty dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Observation gaussian sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "ensemble_smoother_multiple_data_assimilation (ES-MDA) or adjoint_gradient",
+    "solver_class": "gradient-based [ensemble_smoother_multiple_data_assimilation (ES-MDA) or adjoint_gradient]",
     "convergence_rate_q": 1.5,
-    "error_bound": "NRMS < 0.10 for matched model",
-    "complexity": "O(N_ensemble * N_sim_per_iteration * N_iterations)"
+    "error_bound": "Data-fidelity bound: NRMS < 0.10 for matched model. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~100000.0. Mismatch-induced bias + C2 * |structural_uncertainty|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(N_ensemble * N_sim_per_iteration * N_iterations) per iteration"
   },
   "physics_fingerprint": {
     "carrier": "acoustic",

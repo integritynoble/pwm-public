@@ -8,7 +8,7 @@
   "source_file": "AI_robotics/448_forward_dynamics.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Forward dynamics: compute joint accelerations from applied torques and current state using Newton-Euler or Lagrangian mechanics.",
+    "description": "Forward Dynamics: Forward dynamics: compute joint accelerations from applied torques and current state using Newton-Euler or Lagrangian mechanics. The forward operator produces the measurement through a 3-node primitive DAG (M.newton_euler.forward\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~80; inertia_parameter_uncertainty, friction_model_error set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "M(q)*q_ddot + C(q,q_dot)*q_dot + g(q) = tau; solve q_ddot = M^{-1}(tau - C*q_dot - g)",
     "world_state_x": "joint accelerations q_ddot(t) and integrated trajectory {q(t), q_dot(t)}",
     "observation_y": "applied joint torques tau(t) and joint states {q, q_dot}",
@@ -40,13 +40,13 @@
     "condition_number_kappa": 2000,
     "condition_number_effective": 80,
     "condition_number_mismatched": 400,
-    "regime": "Articulated body algorithm is O(n) optimal; mass matrix M is positive definite; friction and flexibility introduce model error."
+    "regime": "Existence of the recovered joint_acceleration_vector is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 80); inertia_parameter_uncertainty dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Gaussian sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "Articulated_Body_Algorithm (Featherstone) or RNEA",
+    "solver_class": "classical [Articulated_Body_Algorithm (Featherstone) or RNEA]",
     "convergence_rate_q": 2.0,
-    "error_bound": "trajectory error < 1% of motion range for calibrated model",
-    "complexity": "O(n) for ABA vs. O(n ** 3) for naive M inversion"
+    "error_bound": "Data-fidelity bound: trajectory error < 1% of motion range for calibrated model. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~80. Mismatch-induced bias + C2 * |inertia_parameter_uncertainty|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(n) for ABA vs. O(n ** 3) for naive M inversion per iteration"
   },
   "physics_fingerprint": {
     "carrier": "N/A",

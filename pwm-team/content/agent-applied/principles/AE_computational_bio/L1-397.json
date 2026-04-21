@@ -8,7 +8,7 @@
   "source_file": "AE_computational_bio/397_fitzhugh_nagumo.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "FitzHugh-Nagumo model: 2D reduction of HH capturing excitability and bifurcation structure.",
+    "description": "FitzHugh-Nagumo Excitability Model: FitzHugh-Nagumo model: 2D reduction of HH capturing excitability and bifurcation structure. The forward operator produces the measurement through a 3-node primitive DAG (M.ode.fitzhugh_nagumo\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~50; noise_amplitude, heterogeneity_in_network set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "dv/dt = v - v ** 3/3 - w + I; dw/dt = epsilon*(v + a - b*w)",
     "world_state_x": "FHN parameters {a, b, epsilon, I_bias} controlling excitability and oscillation",
     "observation_y": "voltage-like variable v(t) and recovery variable w(t)",
@@ -40,13 +40,13 @@
     "condition_number_kappa": 1000,
     "condition_number_effective": 50,
     "condition_number_mismatched": 200,
-    "regime": "Limit cycle via Hopf bifurcation; excitable vs. oscillatory regimes; reduced dimensionality enables bifurcation analysis."
+    "regime": "Existence of the recovered FHN_parameter_vector is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 50); noise_amplitude dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Gaussian sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "nonlinear_least_squares or MCMC",
+    "solver_class": "statistical [nonlinear_least_squares or MCMC]",
     "convergence_rate_q": 2.0,
-    "error_bound": "phase portrait RMSE < 5% of attractor size",
-    "complexity": "O(N_timesteps) per ODE integration"
+    "error_bound": "Data-fidelity bound: phase portrait RMSE < 5% of attractor size. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~50. Mismatch-induced bias + C2 * |noise_amplitude|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(N_timesteps) per ODE integration per iteration"
   },
   "physics_fingerprint": {
     "carrier": "N/A",

@@ -8,7 +8,7 @@
   "source_file": "AE_computational_bio/406_seir_epidemic.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "SEIR model: adds exposed/latent compartment E accounting for incubation period before infectiousness.",
+    "description": "SEIR Epidemic with Exposed Compartment: SEIR model: adds exposed/latent compartment E accounting for incubation period before infectiousness. The forward operator produces the measurement through a 3-node primitive DAG (M.ode.seir_model\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~80; age_structure_neglect, spatial_heterogeneity set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "dS/dt = -beta*S*I/N; dE/dt = beta*S*I/N - sigma*E; dI/dt = sigma*E - gamma*I; dR/dt = gamma*I",
     "world_state_x": "SEIR parameters (beta, sigma, gamma, R0) and incubation period 1/sigma",
     "observation_y": "daily incidence I_new(t) and possibly hospitalization or death counts",
@@ -40,13 +40,13 @@
     "condition_number_kappa": 2000,
     "condition_number_effective": 80,
     "condition_number_mismatched": 400,
-    "regime": "SEIR identifiability weaker than SIR; sigma and gamma partially confounded early; serial interval constrains sigma+gamma."
+    "regime": "Existence of the recovered SEIR_parameter_vector is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 80); age_structure_neglect dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Negative binomial sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "MCMC_SEIR or particle_filter_sequential",
+    "solver_class": "statistical [MCMC_SEIR or particle_filter_sequential]",
     "convergence_rate_q": 2.0,
-    "error_bound": "peak timing error < 2 weeks for well-characterized epidemic",
-    "complexity": "O(N_days * N_MCMC) per fit"
+    "error_bound": "Data-fidelity bound: peak timing error < 2 weeks for well-characterized epidemic. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~80. Mismatch-induced bias + C2 * |age_structure_neglect|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(N_days * N_MCMC) per fit per iteration"
   },
   "physics_fingerprint": {
     "carrier": "N/A",

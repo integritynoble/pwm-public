@@ -8,7 +8,7 @@
   "source_file": "AE_computational_bio/407_lotka_volterra.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Lotka-Volterra parameter estimation: infer growth rates and interaction coefficients from time-series population data.",
+    "description": "Lotka-Volterra Predator-Prey Dynamics: Lotka-Volterra parameter estimation: infer growth rates and interaction coefficients from time-series population data. The forward operator produces the measurement through a 3-node primitive DAG (M.ode.lotka_volterra\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~20; stochastic_demographic_noise, environmental_variability set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "dH/dt = r*H - a*H*P; dP/dt = b*a*H*P - m*P; neutrally stable oscillations",
     "world_state_x": "LV parameters (r_prey_growth, a_predation, b_efficiency, m_predator_mortality)",
     "observation_y": "population counts {H(t_i), P(t_i)} from census or survey data",
@@ -40,13 +40,13 @@
     "condition_number_kappa": 500,
     "condition_number_effective": 20,
     "condition_number_mismatched": 100,
-    "regime": "Conservative oscillations; structural instability of Lotka-Volterra; extensions (Holling functional response) needed for real ecosystems."
+    "regime": "Existence of the recovered LV_parameter_vector is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 20); stochastic_demographic_noise dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Lognormal sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "NLS_ODE_fit or Bayesian_state_space_LV",
+    "solver_class": "statistical [NLS_ODE_fit or Bayesian_state_space_LV]",
     "convergence_rate_q": 2.0,
-    "error_bound": "log-population RMSE < 0.1 for well-sampled data",
-    "complexity": "O(N_timepoints * N_params) per ODE + fit"
+    "error_bound": "Data-fidelity bound: log-population RMSE < 0.1 for well-sampled data. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~20. Mismatch-induced bias + C2 * |stochastic_demographic_noise|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(N_timepoints * N_params) per ODE + fit per iteration"
   },
   "physics_fingerprint": {
     "carrier": "N/A",

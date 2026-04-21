@@ -8,7 +8,7 @@
   "source_file": "C_medical_imaging/041_pat.md",
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical medical-imaging literature for this principle.",
   "E": {
-    "description": "Photoacoustic Tomography (PAT) forward model.",
+    "description": "Photoacoustic Tomography (PAT): photoacoustic pa produces the measurement through a 4-node primitive DAG L.laser_pulse_excite -> L.thermoacoustic_generation -> D.ultrasound_array -> int.temporal, with multi-angle tomographic integration and additive Gaussian thermal/electronic noise. Recovery is posed as a non-convex inverse problem that inverts the forward operator to estimate the scene-side 3D optical absorption. Difficulty tier delta=5 with effective condition number kappa_eff~22; calibration-level mismatch (sound_speed_heterogeneity, limited_view_geometry, laser_fluence_variation) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
     "forward_model": "p(r, t) = integral A(r') * envelope(t - |r-r'|/c) + n; reconstruct A(r) via UBP or model-based",
     "world_state_x": "Patient-side quantity of interest (attenuation / activity / perfusion / stiffness etc.)",
     "observation_y": "Clinical sensor output at declared resolution + noise",
@@ -46,13 +46,13 @@
     "stability": "conditional",
     "condition_number_kappa": 440,
     "condition_number_effective": 22,
-    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+    "regime": "Existence of the recovered 3D optical absorption is guaranteed within the declared Omega bounds. Uniqueness is local rather than global (non-convex landscape); convergence depends on initialisation and priors. Stability is moderately conditioned (kappa_eff ~= 22); sound_speed_heterogeneity dominates the stability cliff; limited_view_geometry and the remaining mismatch parameters contribute higher-order bias terms. Additive gaussian thermal/electronic noise sets the irreducible data-fidelity floor, while TV / wavelet-sparsity / deep priors stabilise recovery at the ill-conditioned end of Omega."
   },
   "C": {
-    "solver_class": "UBP, Model-Based-PA, PA-Net",
+    "solver_class": "linear-operator + convex optimisation [UBP, Model-Based-PA] | linear-operator + deep neural prior [PA-Net]",
     "convergence_rate_q": 2.0,
-    "error_bound": "Bounded by sensor SNR + mismatch bias + regularisation.",
-    "complexity": "O(H W) to O(H W Z) per iteration"
+    "error_bound": "Data-fidelity bound: ||x_hat - x||_2 <= C1 * sigma_noise / sqrt(N_measurements). Mismatch-induced bias adds + C2 * |sound_speed_heterogeneity| + C3 * ||x - x_s||_1 (best s-sparse / low-rank approximation residual). Iterative solvers achieve q=2 convergence (O(1/k^2)) near the MLE; epsilon_fn captures the monotone quality degradation across declared Omega.",
+    "complexity": "O(H * W * Z * log(...)) per iteration; learned variants: O(H W Z * F_theta_cost) per forward pass"
   },
   "physics_fingerprint": {
     "carrier": "photon",

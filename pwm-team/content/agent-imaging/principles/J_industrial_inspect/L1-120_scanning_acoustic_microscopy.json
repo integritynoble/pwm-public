@@ -8,7 +8,7 @@
   "source_file": "J_industrial_inspect/120_scanning_acoustic_microscopy.md",
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical NDT/NDE literature for this principle.",
   "E": {
-    "description": "Scanning Acoustic Microscopy (SAM) forward model.",
+    "description": "Scanning Acoustic Microscopy (SAM): scanning acoustic microscopy produces the measurement through a 4-node primitive DAG L.acoustic_lens -> S.scan.raster -> L.pulse_echo -> int.temporal, with time-integrated exposure and additive Gaussian thermal/electronic noise. Recovery is posed as a linear inverse problem that inverts the forward operator to estimate the scene-side 3D acoustic impedance. Difficulty tier delta=3 with effective condition number kappa_eff~10; calibration-level mismatch (coupling_fluid_variation, surface_curvature, multiple_reflections) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
     "forward_model": "y(t, x, y) = pulse conv reflectivity(x, y, z=c*t/2) + n; A/B/C-scan slicing",
     "world_state_x": "Defect / strain / composition map depending on principle",
     "observation_y": "Sensor output at declared geometry",
@@ -46,13 +46,13 @@
     "stability": "conditional",
     "condition_number_kappa": 200,
     "condition_number_effective": 10,
-    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+    "regime": "Existence of the recovered 3D acoustic impedance is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by the declared priors. Stability is moderately conditioned (kappa_eff ~= 10); coupling_fluid_variation dominates the stability cliff; surface_curvature and the remaining mismatch parameters contribute higher-order bias terms. Additive gaussian thermal/electronic noise sets the irreducible data-fidelity floor, while mild Tikhonov or analytic inversion is sufficient at the nominal Omega point."
   },
   "C": {
-    "solver_class": "TOF-Gating, SAFT, SAM-CNN",
+    "solver_class": "linear-operator + convex optimisation [TOF-Gating, SAFT] | linear-operator + deep neural prior [SAM-CNN]",
     "convergence_rate_q": 2.0,
-    "error_bound": "Bounded by sensor SNR + mismatch bias.",
-    "complexity": "O(H W) to O(H W Z) per iteration"
+    "error_bound": "Data-fidelity bound: ||x_hat - x||_2 <= C1 * sigma_noise / sqrt(N_measurements). Mismatch-induced bias adds + C2 * |coupling_fluid_variation| + C3 * ||x - x_s||_1 (best s-sparse / low-rank approximation residual). Iterative solvers achieve q=2 convergence (O(1/k^2)) near the MLE; epsilon_fn captures the monotone quality degradation across declared Omega.",
+    "complexity": "O(H * W * Z * log(...)) per iteration; learned variants: O(H W Z * F_theta_cost) per forward pass"
   },
   "physics_fingerprint": {
     "carrier": "acoustic",

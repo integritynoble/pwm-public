@@ -8,7 +8,7 @@
   "source_file": "AJ_petroleum/461_hydraulic_fracture.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Hydraulic fracture modeling: infer fracture geometry (length, height, width) from treatment pressure and microseismic data.",
+    "description": "Hydraulic Fracture Propagation Modeling: Hydraulic fracture modeling: infer fracture geometry (length, height, width) from treatment pressure and microseismic data. The forward operator produces the measurement through a 3-node primitive DAG (M.pkn.fracture_model\u2026); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=5 with effective condition number kappa_eff~500; stress_shadow_complexity, natural_fracture_interaction set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "dp/dt = q/(V_f + C_L*A_f); w = (K_Ic/(E'*sqrt(L))) for PKN/KGD model",
     "world_state_x": "fracture half-length L_f, height H_f, average width w_bar, fracture conductivity",
     "observation_y": "surface treating pressure p(t), microseismic event locations {x_m, y_m, z_m}",
@@ -40,13 +40,13 @@
     "condition_number_kappa": 10000.0,
     "condition_number_effective": 500,
     "condition_number_mismatched": 2000,
-    "regime": "Nonlinear coupled fluid-solid mechanics; fracture toughness vs. viscosity dominated regimes; stress shadow in multi-stage."
+    "regime": "Existence of the recovered fracture_geometry_vector is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 500); stress_shadow_complexity dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Microseismic gaussian sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "PKN_KGD_analytical or UFM_complex_fracture or GEOS_3D",
+    "solver_class": "sparse-recovery [PKN_KGD_analytical or UFM_complex_fracture or GEOS_3D]",
     "convergence_rate_q": 2.0,
-    "error_bound": "fracture length uncertainty < 20% with microseismic",
-    "complexity": "O(N_timesteps * N_elements) for numerical fracture propagation"
+    "error_bound": "Data-fidelity bound: fracture length uncertainty < 20% with microseismic. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~500. Mismatch-induced bias + C2 * |stress_shadow_complexity|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(N_timesteps * N_elements) for numerical fracture propagation per iteration"
   },
   "physics_fingerprint": {
     "carrier": "acoustic",

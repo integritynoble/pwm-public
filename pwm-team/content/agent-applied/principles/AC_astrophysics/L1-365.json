@@ -8,7 +8,7 @@
   "source_file": "AC_astrophysics/365_cosmological_nbody.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Cosmological N-body: evolve dark matter particles in expanding universe under gravity to form large-scale structure.",
+    "description": "Cosmological N-body (Large-Scale Structure): Cosmological N-body: evolve dark matter particles in expanding universe under gravity to form large-scale structure. The forward operator produces the measurement through a 3-node primitive DAG (F.fourier.pm_gravity\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=5 with effective condition number kappa_eff~10000.0; cosmological_parameter_uncertainty, baryonic_feedback_neglect set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "x'' + 2H x' = -nabla phi/a ** 2, nabla ** 2 phi = 4*pi*G*a ** 2*(rho - rho_bar)",
     "world_state_x": "dark matter density field delta(x) and velocity field v(x) in comoving coordinates",
     "observation_y": "galaxy catalog (angular positions, redshifts), weak lensing convergence maps",
@@ -42,13 +42,13 @@
     "condition_number_kappa": 100000000.0,
     "condition_number_effective": 10000.0,
     "condition_number_mismatched": 100000.0,
-    "regime": "Fluid limit for large scales; highly nonlinear at small scales (halos); cosmic variance limits on large scales."
+    "regime": "Existence of the recovered 3D_dark_matter_density is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 10000.0); cosmological_parameter_uncertainty dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Cosmic variance sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "TreePM (Gadget) or PM (PMFAST) or AMR (RAMSES)",
+    "solver_class": "classical [TreePM (Gadget) or PM (PMFAST) or AMR (RAMSES)]",
     "convergence_rate_q": 2.0,
-    "error_bound": "P(k) agreement to 1% for k < 0.3 h/Mpc",
-    "complexity": "O(N_particles * log N_particles) per timestep (TreePM)"
+    "error_bound": "Data-fidelity bound: P(k) agreement to 1% for k < 0.3 h/Mpc. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~10000.0. Mismatch-induced bias + C2 * |cosmological_parameter_uncertainty|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(N_particles * log N_particles) per timestep (TreePM) per iteration"
   },
   "physics_fingerprint": {
     "carrier": "N/A",

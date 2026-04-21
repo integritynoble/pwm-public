@@ -8,7 +8,7 @@
   "source_file": "J_industrial_inspect/122_guided_wave_testing.md",
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical NDT/NDE literature for this principle.",
   "E": {
-    "description": "Guided-Wave Ultrasonic Testing (long-range pipe/rail inspection) forward model.",
+    "description": "Guided-Wave Ultrasonic Testing (long-range pipe/rail inspection): guided wave ultrasonics produces the measurement through a 4-node primitive DAG L.emit.guided_wave -> L.dispersive_propagation -> D.reflection_transmission -> int.temporal, with time-integrated exposure and additive Gaussian thermal/electronic noise. Recovery is posed as a non-convex inverse problem that inverts the forward operator to estimate the scene-side 1D axial defect profile. Difficulty tier delta=5 with effective condition number kappa_eff~14; calibration-level mismatch (mode_mixing, temperature_drift, coating_attenuation) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
     "forward_model": "y(t) = sum_r reflectivity(r) * dispersive_pulse(t - 2r/c_g(f)) + mode_mix + n; dispersive over frequency-thickness",
     "world_state_x": "Defect / strain / composition map depending on principle",
     "observation_y": "Sensor output at declared geometry",
@@ -45,13 +45,13 @@
     "stability": "conditional",
     "condition_number_kappa": 280,
     "condition_number_effective": 14,
-    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+    "regime": "Existence of the recovered 1D axial defect profile is guaranteed within the declared Omega bounds. Uniqueness is local rather than global (non-convex landscape); convergence depends on initialisation and priors. Stability is moderately conditioned (kappa_eff ~= 14); mode_mixing dominates the stability cliff; temperature_drift and the remaining mismatch parameters contribute higher-order bias terms. Additive gaussian thermal/electronic noise sets the irreducible data-fidelity floor, while mild Tikhonov or analytic inversion is sufficient at the nominal Omega point."
   },
   "C": {
-    "solver_class": "Matched-Filter, Dispersion-Compensation, GW-RNN",
+    "solver_class": "linear-operator + convex optimisation [Matched-Filter, Dispersion-Compensation] | linear-operator + deep neural prior [GW-RNN]",
     "convergence_rate_q": 2.0,
-    "error_bound": "Bounded by sensor SNR + mismatch bias.",
-    "complexity": "O(H W) to O(H W Z) per iteration"
+    "error_bound": "Data-fidelity bound: ||x_hat - x||_2 <= C1 * sigma_noise / sqrt(N_measurements). Mismatch-induced bias adds + C2 * |mode_mixing| + C3 * ||x - x_s||_1 (best s-sparse / low-rank approximation residual). Iterative solvers achieve q=2 convergence (O(1/k^2)) near the MLE; epsilon_fn captures the monotone quality degradation across declared Omega.",
+    "complexity": "O(H * W * log(...)) per iteration; learned variants: O(H W Z * F_theta_cost) per forward pass"
   },
   "physics_fingerprint": {
     "carrier": "acoustic",

@@ -8,7 +8,7 @@
   "source_file": "AH_comp_finance/444_portfolio_markowitz.md",
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Markowitz portfolio: find minimum variance portfolio for target return using covariance matrix from historical data.",
+    "description": "Markowitz Mean-Variance Portfolio Optimization: Markowitz portfolio: find minimum variance portfolio for target return using covariance matrix from historical data. The forward operator produces the measurement through a 3-node primitive DAG (M.covariance.sample_shrinkage\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~50; estimation_error_expected_returns, covariance_matrix_instability set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "min_w w ** T Sigma w s.t. mu ** T w = mu_target, 1 ** T w = 1, w >= 0",
     "world_state_x": "optimal portfolio weights w in R ** N satisfying constraints",
     "observation_y": "historical return matrix R in R^{T x N} for N assets over T periods",
@@ -40,13 +40,13 @@
     "condition_number_kappa": 1000.0,
     "condition_number_effective": 50,
     "condition_number_mismatched": 300,
-    "regime": "Convex QP; highly sensitive to expected return estimates; Ledoit-Wolf shrinkage stabilizes covariance; robust MV needed."
+    "regime": "Existence of the recovered portfolio_weight_vector is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by declared priors. Stability is conditionally stable (kappa_eff ~= 50); estimation_error_expected_returns dominates the stability cliff; the remaining mismatch parameters contribute higher-order bias terms. Estimation gaussian sets the irreducible data-fidelity floor."
   },
   "C": {
-    "solver_class": "quadratic_programming_CVXPY or analytical_frontier",
+    "solver_class": "classical [quadratic_programming_CVXPY or analytical_frontier]",
     "convergence_rate_q": 2.0,
-    "error_bound": "out-of-sample Sharpe > 0.5 for 1-year lookback",
-    "complexity": "O(N ** 2 * T) for covariance estimation + O(N ** 3) for QP"
+    "error_bound": "Data-fidelity bound: out-of-sample Sharpe > 0.5 for 1-year lookback. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~50. Mismatch-induced bias + C2 * |estimation_error_expected_returns|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "complexity": "O(N ** 2 * T) for covariance estimation + O(N ** 3) for QP per iteration"
   },
   "physics_fingerprint": {
     "carrier": "N/A",
