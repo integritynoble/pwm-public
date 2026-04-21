@@ -8,7 +8,7 @@
   "source_file": "C_medical_imaging/035_fluoroscopy.md",
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical medical-imaging literature for this principle.",
   "E": {
-    "description": "Fluoroscopy (real-time X-ray) forward model.",
+    "description": "Fluoroscopy (real-time X-ray): xray projection produces the measurement through a 4-node primitive DAG L.xray_source -> L.beer_lambert -> D.image_intensifier -> int.spatial, with spatially-projected accumulation and photon-shot-noise-limited (Poisson counting). Recovery is posed as a linear inverse problem that inverts the forward operator to estimate the scene-side 2D attenuation projection. Difficulty tier delta=3 with effective condition number kappa_eff~10; calibration-level mismatch (scatter, frame_rate_limits, low_dose_noise) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
     "forward_model": "y_t(u,v) = I_0 exp(-integral mu(r, t) ds) + scatter + n at frame rate 30 Hz",
     "world_state_x": "Patient-side quantity of interest (attenuation / activity / perfusion / stiffness etc.)",
     "observation_y": "Clinical sensor output at declared resolution + noise",
@@ -46,13 +46,13 @@
     "stability": "conditional",
     "condition_number_kappa": 200,
     "condition_number_effective": 10,
-    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+    "regime": "Existence of the recovered 2D attenuation projection is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by the declared priors. Stability is moderately conditioned (kappa_eff ~= 10); scatter dominates the stability cliff; frame_rate_limits and the remaining mismatch parameters contribute higher-order bias terms. Photon-shot-noise-limited (poisson counting) sets the irreducible data-fidelity floor, while mild Tikhonov or analytic inversion is sufficient at the nominal Omega point."
   },
   "C": {
-    "solver_class": "Wiener, BM3D-Fluoro, DeepFluoro",
+    "solver_class": "linear-operator + analytic regularisation [Wiener, BM3D-Fluoro] | linear-operator + deep neural prior [DeepFluoro]",
     "convergence_rate_q": 2.0,
-    "error_bound": "Bounded by sensor SNR + mismatch bias + regularisation.",
-    "complexity": "O(H W) to O(H W Z) per iteration"
+    "error_bound": "Data-fidelity bound: ||x_hat - x||_2 <= C1 * sqrt(sigma_signal^2) / sqrt(photon_count). Mismatch-induced bias adds + C2 * |scatter| + C3 * ||x - x_s||_1 (best s-sparse / low-rank approximation residual). Iterative solvers achieve q=2 convergence (O(1/k^2)) near the MLE; epsilon_fn captures the monotone quality degradation across declared Omega.",
+    "complexity": "O(H * W * log(...)) per iteration; learned variants: O(H W Z * F_theta_cost) per forward pass"
   },
   "physics_fingerprint": {
     "carrier": "x_ray",

@@ -8,7 +8,7 @@
   "source_file": "O_multimodal_fusion/157_pet_mr_fusion.md",
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
   "E": {
-    "description": "PET-MR Fusion (molecular + multi-contrast soft tissue) forward model.",
+    "description": "PET-MR Fusion (molecular + multi-contrast soft tissue): pet mr fusion produces the measurement through a 5-node primitive DAG L.mr_multi_contrast -> L.pet_activity_map -> L.registration -> L.attenuation_from_mr -> int.spatial, with spatially-projected accumulation and additive Gaussian thermal/electronic noise. Recovery is posed as a non-convex inverse problem that inverts the forward operator to estimate the scene-side 4D pet mr fused. Difficulty tier delta=5 with effective condition number kappa_eff~16; calibration-level mismatch (mr_based_attenuation_error, motion_between_scans, truncation) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
     "forward_model": "F = PET_recon(attenuation_from_MR, A) + MR_weighting(T1, T2); joint registration",
     "world_state_x": "Principle-specific quantity of interest",
     "observation_y": "Detector output at declared geometry",
@@ -47,13 +47,13 @@
     "stability": "conditional",
     "condition_number_kappa": 320,
     "condition_number_effective": 16,
-    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+    "regime": "Existence of the recovered 4D pet mr fused is guaranteed within the declared Omega bounds. Uniqueness is local rather than global (non-convex landscape); convergence depends on initialisation and priors. Stability is moderately conditioned (kappa_eff ~= 16); mr_based_attenuation_error dominates the stability cliff; motion_between_scans and the remaining mismatch parameters contribute higher-order bias terms. Additive gaussian thermal/electronic noise sets the irreducible data-fidelity floor, while TV / wavelet-sparsity / deep priors stabilise recovery at the ill-conditioned end of Omega."
   },
   "C": {
-    "solver_class": "Segment-AC, Dixon-AC, DeepAC-PET-MR",
+    "solver_class": "linear-operator + convex optimisation [Segment-AC, Dixon-AC] | linear-operator + deep neural prior [DeepAC-PET-MR]",
     "convergence_rate_q": 2.0,
-    "error_bound": "Bounded by sensor SNR + mismatch bias + regularization.",
-    "complexity": "principle-dependent"
+    "error_bound": "Data-fidelity bound: ||x_hat - x||_2 <= C1 * sigma_noise / sqrt(N_measurements). Mismatch-induced bias adds + C2 * |mr_based_attenuation_error| + C3 * ||x - x_s||_1 (best s-sparse / low-rank approximation residual). Iterative solvers achieve q=2 convergence (O(1/k^2)) near the MLE; epsilon_fn captures the monotone quality degradation across declared Omega.",
+    "complexity": "O(H * W * Z * log(...)) per iteration; learned variants: O(H W Z * F_theta_cost) per forward pass"
   },
   "physics_fingerprint": {
     "carrier": "photon",

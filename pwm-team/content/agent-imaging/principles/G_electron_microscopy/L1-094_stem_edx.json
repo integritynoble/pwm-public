@@ -8,7 +8,7 @@
   "source_file": "G_electron_microscopy/094_stem_edx.md",
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical electron-microscopy literature for this principle.",
   "E": {
-    "description": "STEM-EDX \u2014 X-ray energy-dispersive elemental mapping forward model.",
+    "description": "STEM-EDX \u2014 X-ray energy-dispersive elemental mapping: edx characteristic xray produces the measurement through a 4-node primitive DAG L.illumination.convergent_probe -> S.scan.raster -> D.edx_detector -> int.spectral, with spectral-channel integration and photon-shot-noise-limited (Poisson counting). Recovery is posed as a linear inverse problem that inverts the forward operator to estimate the scene-side elemental concentration map. Difficulty tier delta=3 with effective condition number kappa_eff~10; calibration-level mismatch (detector_dead_time, peak_overlap, absorption_correction) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
     "forward_model": "S(E, r) = sum_el c_el(r) * phi_el(E) + bremsstrahlung + n; unmix per element via reference peaks",
     "world_state_x": "Scene parameter (density / orientation / spectrum / complex field depending on principle)",
     "observation_y": "Electron detector output at declared geometry + noise",
@@ -46,13 +46,13 @@
     "stability": "conditional",
     "condition_number_kappa": 200,
     "condition_number_effective": 10,
-    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+    "regime": "Existence of the recovered elemental concentration map is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by the declared priors. Stability is moderately conditioned (kappa_eff ~= 10); detector_dead_time dominates the stability cliff; peak_overlap and the remaining mismatch parameters contribute higher-order bias terms. Photon-shot-noise-limited (poisson counting) sets the irreducible data-fidelity floor, while mild Tikhonov or analytic inversion is sufficient at the nominal Omega point."
   },
   "C": {
-    "solver_class": "Background-subtract, NMF-EDX, EDX-Net",
+    "solver_class": "linear-operator + convex optimisation [Background-subtract, NMF-EDX] | linear-operator + deep neural prior [EDX-Net]",
     "convergence_rate_q": 2.0,
-    "error_bound": "Bounded by sigma_noise / sqrt(electron_count) + mismatch bias.",
-    "complexity": "O(H W) to O(H W Z) per iteration"
+    "error_bound": "Data-fidelity bound: ||x_hat - x||_2 <= C1 * sqrt(sigma_signal^2) / sqrt(photon_count). Mismatch-induced bias adds + C2 * |detector_dead_time| + C3 * ||x - x_s||_1 (best s-sparse / low-rank approximation residual). Iterative solvers achieve q=2 convergence (O(1/k^2)) near the MLE; epsilon_fn captures the monotone quality degradation across declared Omega.",
+    "complexity": "O(H * W * log(...)) per iteration; learned variants: O(H W Z * F_theta_cost) per forward pass"
   },
   "physics_fingerprint": {
     "carrier": "electron",

@@ -8,7 +8,7 @@
   "source_file": "J_industrial_inspect/121_magnetic_flux_leakage.md",
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical NDT/NDE literature for this principle.",
   "E": {
-    "description": "Magnetic Flux Leakage (MFL) \u2014 pipeline & rail inspection forward model.",
+    "description": "Magnetic Flux Leakage (MFL) \u2014 pipeline & rail inspection: magnetic flux leakage produces the measurement through a 4-node primitive DAG L.dc_magnetize -> L.flux_leakage -> D.hall_sensor -> int.spatial, with spatially-projected accumulation and additive Gaussian thermal/electronic noise. Recovery is posed as a non-convex inverse problem that inverts the forward operator to estimate the scene-side 2D defect geometry. Difficulty tier delta=3 with effective condition number kappa_eff~10; calibration-level mismatch (liftoff_variation, magnetization_non_uniformity, external_interference) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
     "forward_model": "B_leak(x,y) = integral m(defect(r)) * kernel(r - (x,y), lift_off, velocity) + n",
     "world_state_x": "Defect / strain / composition map depending on principle",
     "observation_y": "Sensor output at declared geometry",
@@ -46,13 +46,13 @@
     "stability": "conditional",
     "condition_number_kappa": 200,
     "condition_number_effective": 10,
-    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+    "regime": "Existence of the recovered 2D defect geometry is guaranteed within the declared Omega bounds. Uniqueness is local rather than global (non-convex landscape); convergence depends on initialisation and priors. Stability is moderately conditioned (kappa_eff ~= 10); liftoff_variation dominates the stability cliff; magnetization_non_uniformity and the remaining mismatch parameters contribute higher-order bias terms. Additive gaussian thermal/electronic noise sets the irreducible data-fidelity floor, while mild Tikhonov or analytic inversion is sufficient at the nominal Omega point."
   },
   "C": {
-    "solver_class": "Dipole-Model, NN-MFL, Deep-MFL",
+    "solver_class": "linear-operator + convex optimisation [Dipole-Model] | linear-operator + deep neural prior [NN-MFL, Deep-MFL]",
     "convergence_rate_q": 2.0,
-    "error_bound": "Bounded by sensor SNR + mismatch bias.",
-    "complexity": "O(H W) to O(H W Z) per iteration"
+    "error_bound": "Data-fidelity bound: ||x_hat - x||_2 <= C1 * sigma_noise / sqrt(N_measurements). Mismatch-induced bias adds + C2 * |liftoff_variation| + C3 * ||x - x_s||_1 (best s-sparse / low-rank approximation residual). Iterative solvers achieve q=2 convergence (O(1/k^2)) near the MLE; epsilon_fn captures the monotone quality degradation across declared Omega.",
+    "complexity": "O(H * W * log(...)) per iteration; learned variants: O(H W Z * F_theta_cost) per forward pass"
   },
   "physics_fingerprint": {
     "carrier": "radio_wave",

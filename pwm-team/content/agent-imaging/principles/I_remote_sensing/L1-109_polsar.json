@@ -8,7 +8,7 @@
   "source_file": "I_remote_sensing/109_polsar.md",
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical remote-sensing literature for this principle.",
   "E": {
-    "description": "Polarimetric SAR (PolSAR) \u2014 full-polarimetric decomposition forward model.",
+    "description": "Polarimetric SAR (PolSAR) \u2014 full-polarimetric decomposition: polarimetric sar produces the measurement through a 4-node primitive DAG L.emit.polarized_chirp -> L.scattering_matrix -> L.polarimetric_decompose -> int.spatial, with spatially-projected accumulation and multiplicative speckle (Rayleigh amplitude / exponential intensity). Recovery is posed as a linear inverse problem that inverts the forward operator to estimate the scene-side polarization decomposition map. Difficulty tier delta=5 with effective condition number kappa_eff~16; calibration-level mismatch (polarization_crosstalk, calibration_drift, speckle_coherence_loss) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
     "forward_model": "S = [S_HH S_HV; S_VH S_VV] + polarization_crosstalk + faraday; Cloude-Pottier / Freeman-Durden decomposition",
     "world_state_x": "Scene-side quantity of interest (reflectance / velocity / phase / concentration)",
     "observation_y": "Sensor output at declared resolution + noise",
@@ -46,13 +46,13 @@
     "stability": "conditional",
     "condition_number_kappa": 320,
     "condition_number_effective": 16,
-    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+    "regime": "Existence of the recovered polarization decomposition map is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by the declared priors. Stability is moderately conditioned (kappa_eff ~= 16); polarization_crosstalk dominates the stability cliff; calibration_drift and the remaining mismatch parameters contribute higher-order bias terms. Multiplicative speckle (rayleigh amplitude / exponential intensity) sets the irreducible data-fidelity floor, while TV / wavelet-sparsity / deep priors stabilise recovery at the ill-conditioned end of Omega."
   },
   "C": {
-    "solver_class": "Pauli-Decomp, Freeman-Durden, PolSAR-Net",
+    "solver_class": "linear-operator + convex optimisation [Pauli-Decomp, Freeman-Durden] | linear-operator + deep neural prior [PolSAR-Net]",
     "convergence_rate_q": 2.0,
-    "error_bound": "Bounded by sensor SNR + mismatch-induced bias.",
-    "complexity": "O(H W) to O(H W N_bands) per iteration"
+    "error_bound": "Data-fidelity bound: ||x_hat - x||_F / ||x||_F <= C1 / sqrt(N_independent_looks). Mismatch-induced bias adds + C2 * |polarization_crosstalk| + C3 * ||x - x_s||_1 (best s-sparse / low-rank approximation residual). Iterative solvers achieve q=2 convergence (O(1/k^2)) near the MLE; epsilon_fn captures the monotone quality degradation across declared Omega.",
+    "complexity": "O(H * W * log(...)) per iteration; learned variants: O(H W Z * F_theta_cost) per forward pass"
   },
   "physics_fingerprint": {
     "carrier": "radio_wave",

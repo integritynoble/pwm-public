@@ -8,7 +8,7 @@
   "source_file": "C_medical_imaging/054_photon_counting_ct.md",
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical medical-imaging literature for this principle.",
   "E": {
-    "description": "Photon-Counting CT (PCCT) \u2014 spectral detector CT forward model.",
+    "description": "Photon-Counting CT (PCCT) \u2014 spectral detector CT: photon counting ct produces the measurement through a 6-node primitive DAG L.xray_source -> S.scan.angular -> D.pcd_detector -> L.spectral_decompose -> L.backproject -> int.angular, with multi-angle tomographic integration and photon-shot-noise-limited (Poisson counting). Recovery is posed as a non-convex inverse problem that inverts the forward operator to estimate the scene-side 3D material decomposition. Difficulty tier delta=10 with effective condition number kappa_eff~25; calibration-level mismatch (charge_sharing, pulse_pileup, beam_hardening) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
     "forward_model": "y_theta_{E_bin}(u,v) = integral mu(E, r) ds over bin + charge_sharing + pileup + n; spectral MBIR",
     "world_state_x": "Patient-side quantity of interest (attenuation / activity / perfusion / stiffness etc.)",
     "observation_y": "Clinical sensor output at declared resolution + noise",
@@ -52,13 +52,13 @@
     "stability": "conditional",
     "condition_number_kappa": 500,
     "condition_number_effective": 25,
-    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+    "regime": "Existence of the recovered 3D material decomposition is guaranteed within the declared Omega bounds. Uniqueness is local rather than global (non-convex landscape); convergence depends on initialisation and priors. Stability is moderately conditioned (kappa_eff ~= 25); charge_sharing dominates the stability cliff; pulse_pileup and the remaining mismatch parameters contribute higher-order bias terms. Photon-shot-noise-limited (poisson counting) sets the irreducible data-fidelity floor, while TV / wavelet-sparsity / deep priors stabilise recovery at the ill-conditioned end of Omega."
   },
   "C": {
-    "solver_class": "FBP-Spectral, Spectral-MBIR, PCCT-Net",
+    "solver_class": "linear-operator + convex optimisation [FBP-Spectral, Spectral-MBIR] | linear-operator + deep neural prior [PCCT-Net]",
     "convergence_rate_q": 2.0,
-    "error_bound": "Bounded by sensor SNR + mismatch bias + regularisation.",
-    "complexity": "O(H W) to O(H W Z) per iteration"
+    "error_bound": "Data-fidelity bound: ||x_hat - x||_2 <= C1 * sqrt(sigma_signal^2) / sqrt(photon_count). Mismatch-induced bias adds + C2 * |charge_sharing| + C3 * ||x - x_s||_1 (best s-sparse / low-rank approximation residual). Iterative solvers achieve q=2 convergence (O(1/k^2)) near the MLE; epsilon_fn captures the monotone quality degradation across declared Omega.",
+    "complexity": "O(H * W * Z * log(...)) per iteration; learned variants: O(H W Z * F_theta_cost) per forward pass"
   },
   "physics_fingerprint": {
     "carrier": "x_ray",

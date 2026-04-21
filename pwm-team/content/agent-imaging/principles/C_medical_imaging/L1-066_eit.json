@@ -8,7 +8,7 @@
   "source_file": "C_medical_imaging/066_eit.md",
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical medical-imaging literature for this principle.",
   "E": {
-    "description": "Electrical Impedance Tomography (EIT) forward model.",
+    "description": "Electrical Impedance Tomography (EIT): electrical impedance produces the measurement through a 4-node primitive DAG L.current_injection -> D.voltage_measure -> L.inverse_poisson -> int.spatial, with spatially-projected accumulation and additive Gaussian thermal/electronic noise. Recovery is posed as a non-convex inverse problem that inverts the forward operator to estimate the scene-side 2D conductivity map. Difficulty tier delta=10 with effective condition number kappa_eff~30; calibration-level mismatch (electrode_contact, model_geometry_error, noise_amplification) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
     "forward_model": "V_m = R(sigma) * I_applied + n; recover sigma(r) via regularized inverse Poisson",
     "world_state_x": "Patient-side quantity of interest (attenuation / activity / perfusion / stiffness etc.)",
     "observation_y": "Clinical sensor output at declared resolution + noise",
@@ -46,13 +46,13 @@
     "stability": "conditional",
     "condition_number_kappa": 600,
     "condition_number_effective": 30,
-    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+    "regime": "Existence of the recovered 2D conductivity map is guaranteed within the declared Omega bounds. Uniqueness is local rather than global (non-convex landscape); convergence depends on initialisation and priors. Stability is moderately conditioned (kappa_eff ~= 30); electrode_contact dominates the stability cliff; model_geometry_error and the remaining mismatch parameters contribute higher-order bias terms. Additive gaussian thermal/electronic noise sets the irreducible data-fidelity floor, while TV / wavelet-sparsity / deep priors stabilise recovery at the ill-conditioned end of Omega."
   },
   "C": {
-    "solver_class": "GN-EIT, TV-EIT, EIT-Net",
+    "solver_class": "iterative projection (ADMM / GAP) + optimisation [GN-EIT] | linear-operator + convex optimisation [TV-EIT] | linear-operator + deep neural prior [EIT-Net]",
     "convergence_rate_q": 2.0,
-    "error_bound": "Bounded by sensor SNR + mismatch bias + regularisation.",
-    "complexity": "O(H W) to O(H W Z) per iteration"
+    "error_bound": "Data-fidelity bound: ||x_hat - x||_2 <= C1 * sigma_noise / sqrt(N_measurements). Mismatch-induced bias adds + C2 * |electrode_contact| + C3 * ||x - x_s||_1 (best s-sparse / low-rank approximation residual). Iterative solvers achieve q=2 convergence (O(1/k^2)) near the MLE; epsilon_fn captures the monotone quality degradation across declared Omega.",
+    "complexity": "O(H * W * log(...)) per iteration; learned variants: O(H W Z * F_theta_cost) per forward pass"
   },
   "physics_fingerprint": {
     "carrier": "radio_wave",

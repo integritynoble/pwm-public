@@ -8,7 +8,7 @@
   "source_file": "P_scanning_probe/162_afm.md",
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
   "E": {
-    "description": "Atomic Force Microscopy (AFM) forward model.",
+    "description": "Atomic Force Microscopy (AFM): atomic force microscopy produces the measurement through a 4-node primitive DAG L.cantilever_oscillator -> S.scan.raster -> D.laser_deflection -> int.spatial, with spatially-projected accumulation and additive Gaussian thermal/electronic noise. Recovery is posed as a non-convex inverse problem that inverts the forward operator to estimate the scene-side 2D topography. Difficulty tier delta=3 with effective condition number kappa_eff~12; calibration-level mismatch (tip_convolution, thermal_drift, tip_wear) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
     "forward_model": "z(x,y) = height_true(x,y) conv tip_PSF + thermal_drift(t) + n",
     "world_state_x": "Principle-specific quantity of interest",
     "observation_y": "Detector output at declared geometry",
@@ -46,13 +46,13 @@
     "stability": "conditional",
     "condition_number_kappa": 240,
     "condition_number_effective": 12,
-    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+    "regime": "Existence of the recovered 2D topography is guaranteed within the declared Omega bounds. Uniqueness is local rather than global (non-convex landscape); convergence depends on initialisation and priors. Stability is moderately conditioned (kappa_eff ~= 12); tip_convolution dominates the stability cliff; thermal_drift and the remaining mismatch parameters contribute higher-order bias terms. Additive gaussian thermal/electronic noise sets the irreducible data-fidelity floor, while mild Tikhonov or analytic inversion is sufficient at the nominal Omega point."
   },
   "C": {
-    "solver_class": "Deconv-Tip, TV-ADMM-AFM, AFM-Net",
+    "solver_class": "linear-operator + convex optimisation [Deconv-Tip, TV-ADMM-AFM] | linear-operator + deep neural prior [AFM-Net]",
     "convergence_rate_q": 2.0,
-    "error_bound": "Bounded by sensor SNR + mismatch bias + regularization.",
-    "complexity": "principle-dependent"
+    "error_bound": "Data-fidelity bound: ||x_hat - x||_2 <= C1 * sigma_noise / sqrt(N_measurements). Mismatch-induced bias adds + C2 * |tip_convolution| + C3 * ||x - x_s||_1 (best s-sparse / low-rank approximation residual). Iterative solvers achieve q=2 convergence (O(1/k^2)) near the MLE; epsilon_fn captures the monotone quality degradation across declared Omega.",
+    "complexity": "O(H * W * log(...)) per iteration; learned variants: O(H W Z * F_theta_cost) per forward pass"
   },
   "physics_fingerprint": {
     "carrier": "none",

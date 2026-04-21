@@ -8,7 +8,7 @@
   "source_file": "M_ultrafast_imaging/152_xfel_sfx.md",
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
   "E": {
-    "description": "XFEL Serial Femtosecond Crystallography (SFX) forward model.",
+    "description": "XFEL Serial Femtosecond Crystallography (SFX): xfel serial crystallography produces the measurement through a 4-node primitive DAG L.xfel_pulse -> L.microcrystal_diffraction -> L.bragg_indexing -> int.spatial, with multi-angle tomographic integration and photon-shot-noise-limited (Poisson counting). Recovery is posed as a non-convex inverse problem that inverts the forward operator to estimate the scene-side 3D electron density. Difficulty tier delta=10 with effective condition number kappa_eff~32; calibration-level mismatch (hit_rate, detector_dynamic_range, partial_reflection) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
     "forward_model": "I_bragg(h, k, l) = |F(h, k, l)|^2 * partial_factor + n; merge thousands of single-pulse patterns",
     "world_state_x": "Principle-specific quantity of interest",
     "observation_y": "Detector output at declared geometry",
@@ -45,13 +45,13 @@
     "stability": "conditional",
     "condition_number_kappa": 640,
     "condition_number_effective": 32,
-    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+    "regime": "Existence of the recovered 3D electron density is guaranteed within the declared Omega bounds. Uniqueness is local rather than global (non-convex landscape); convergence depends on initialisation and priors. Stability is moderately conditioned (kappa_eff ~= 32); hit_rate dominates the stability cliff; detector_dynamic_range and the remaining mismatch parameters contribute higher-order bias terms. Photon-shot-noise-limited (poisson counting) sets the irreducible data-fidelity floor, while TV / wavelet-sparsity / deep priors stabilise recovery at the ill-conditioned end of Omega."
   },
   "C": {
-    "solver_class": "CrystFEL, CCTBX-SFX, XFEL-Net",
+    "solver_class": "linear-operator + convex optimisation [CrystFEL, CCTBX-SFX] | linear-operator + deep neural prior [XFEL-Net]",
     "convergence_rate_q": 2.0,
-    "error_bound": "Bounded by sensor SNR + mismatch bias + regularization.",
-    "complexity": "principle-dependent"
+    "error_bound": "Data-fidelity bound: ||x_hat - x||_2 <= C1 * sqrt(sigma_signal^2) / sqrt(photon_count). Mismatch-induced bias adds + C2 * |hit_rate| + C3 * ||x - x_s||_1 (best s-sparse / low-rank approximation residual). Iterative solvers achieve q=2 convergence (O(1/k^2)) near the MLE; epsilon_fn captures the monotone quality degradation across declared Omega.",
+    "complexity": "O(H * W * log(...)) per iteration; learned variants: O(H W Z * F_theta_cost) per forward pass"
   },
   "physics_fingerprint": {
     "carrier": "x_ray",

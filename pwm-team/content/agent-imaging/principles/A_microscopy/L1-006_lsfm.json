@@ -8,7 +8,7 @@
   "source_file": "A_microscopy/006_lsfm.md",
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical domain literature for this specific principle.",
   "E": {
-    "description": "Light Sheet Fluorescence Microscopy (LSFM / SPIM) forward model.",
+    "description": "Light Sheet Fluorescence Microscopy (LSFM / SPIM): light sheet illumination produces the measurement through a 4-node primitive DAG L.illumination.sheet -> K.psf.detection -> S.scan.axial -> int.temporal, with axial/z-step integration and Poisson signal noise + Gaussian read noise. Recovery is posed as a linear inverse problem that inverts the forward operator to estimate the scene-side 3D intensity. Difficulty tier delta=3 with effective condition number kappa_eff~10; calibration-level mismatch (sheet_thickness_nm, sheet_tilt, sample_induced_aberration) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
     "forward_model": "y(r,z) = integral [sheet(r,z - z_k) * f(r,z) * PSF_det(r,z)] + n",
     "world_state_x": "Scene parameter of interest (density / complex field / lifetime / normals depending on spec).",
     "observation_y": "Measured intensity or photon counts from the imaging system.",
@@ -46,13 +46,13 @@
     "stability": "conditional",
     "condition_number_kappa": 200,
     "condition_number_effective": 10,
-    "regime": "Conditional stability; principle-specific mismatch dominates at Omega bounds (see `mismatch_parameters`)."
+    "regime": "Existence of the recovered 3D intensity is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by the declared priors. Stability is moderately conditioned (kappa_eff ~= 10); sheet_thickness_nm dominates the stability cliff; sheet_tilt and the remaining mismatch parameters contribute higher-order bias terms. Poisson signal noise + gaussian read noise sets the irreducible data-fidelity floor, while mild Tikhonov or analytic inversion is sufficient at the nominal Omega point."
   },
   "C": {
-    "solver_class": "Richardson-Lucy-LSFM, Multiview-Fusion, Content-Aware-LSFM",
+    "solver_class": "iterative maximum-likelihood (Richardson-Lucy class) [Richardson-Lucy-LSFM] | linear-operator + convex optimisation [Multiview-Fusion] | linear-operator + deep neural prior [Content-Aware-LSFM]",
     "convergence_rate_q": 2.0,
-    "error_bound": "Bounded by sigma_noise / sqrt(photon_count) + mismatch-induced bias.",
-    "complexity": "O(H W) to O(H W Z) per iteration depending on dimensionality"
+    "error_bound": "Data-fidelity bound: ||x_hat - x||_2 <= C1 * sqrt(sigma_read^2 + alpha * signal) / sqrt(photon_count). Mismatch-induced bias adds + C2 * |sheet_thickness_nm| + C3 * ||x - x_s||_1 (best s-sparse / low-rank approximation residual). Iterative solvers achieve q=2 convergence (O(1/k^2)) near the MLE; epsilon_fn captures the monotone quality degradation across declared Omega.",
+    "complexity": "O(H * W * Z * log(...)) per iteration; learned variants: O(H W Z * F_theta_cost) per forward pass"
   },
   "physics_fingerprint": {
     "carrier": "photon",

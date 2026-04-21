@@ -8,7 +8,7 @@
   "source_file": "A_microscopy/023_threephoton.md",
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical domain literature for this specific principle.",
   "E": {
-    "description": "Three-Photon Microscopy (chi-5 deep-tissue imaging) forward model.",
+    "description": "Three-Photon Microscopy (chi-5 deep-tissue imaging): three photon nlo produces the measurement through a 3-node primitive DAG L.excitation.nonlinear_chi5 -> S.scan.raster -> int.temporal, with time-integrated exposure and photon-shot-noise-limited (Poisson counting). Recovery is posed as a non-convex inverse problem that inverts the forward operator to estimate the scene-side 3D intensity. Difficulty tier delta=10 with effective condition number kappa_eff~22; calibration-level mismatch (pulse_compression_drift, sample_scattering, long_wavelength_absorption) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
     "forward_model": "y(r) ~ [f(r) * I_ex^3(r)] * integral attenuation; depth penetration ~2x of 2P at 1300 nm",
     "world_state_x": "Scene parameter of interest (density / complex field / lifetime / normals depending on spec).",
     "observation_y": "Measured intensity or photon counts from the imaging system.",
@@ -44,13 +44,13 @@
     "stability": "conditional",
     "condition_number_kappa": 440,
     "condition_number_effective": 22,
-    "regime": "Conditional stability; principle-specific mismatch dominates at Omega bounds (see `mismatch_parameters`)."
+    "regime": "Existence of the recovered 3D intensity is guaranteed within the declared Omega bounds. Uniqueness is local rather than global (non-convex landscape); convergence depends on initialisation and priors. Stability is moderately conditioned (kappa_eff ~= 22); pulse_compression_drift dominates the stability cliff; sample_scattering and the remaining mismatch parameters contribute higher-order bias terms. Photon-shot-noise-limited (poisson counting) sets the irreducible data-fidelity floor, while TV / wavelet-sparsity / deep priors stabilise recovery at the ill-conditioned end of Omega."
   },
   "C": {
-    "solver_class": "Richardson-Lucy-3P, TV-ADMM-3P, CARE-3P",
+    "solver_class": "iterative maximum-likelihood (Richardson-Lucy class) [Richardson-Lucy-3P] | linear-operator + convex optimisation [TV-ADMM-3P] | linear-operator + deep neural prior [CARE-3P]",
     "convergence_rate_q": 2.0,
-    "error_bound": "Bounded by sigma_noise / sqrt(photon_count) + mismatch-induced bias.",
-    "complexity": "O(H W) to O(H W Z) per iteration depending on dimensionality"
+    "error_bound": "Data-fidelity bound: ||x_hat - x||_2 <= C1 * sqrt(sigma_signal^2) / sqrt(photon_count). Mismatch-induced bias adds + C2 * |pulse_compression_drift| + C3 * ||x - x_s||_1 (best s-sparse / low-rank approximation residual). Iterative solvers achieve q=2 convergence (O(1/k^2)) near the MLE; epsilon_fn captures the monotone quality degradation across declared Omega.",
+    "complexity": "O(H * W * Z * log(...)) per iteration; learned variants: O(H W Z * F_theta_cost) per forward pass"
   },
   "physics_fingerprint": {
     "carrier": "photon",

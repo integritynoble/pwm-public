@@ -8,7 +8,7 @@
   "source_file": "C_medical_imaging/057_asl_mri.md",
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical medical-imaging literature for this principle.",
   "E": {
-    "description": "Arterial Spin Labeling (ASL) MRI forward model.",
+    "description": "Arterial Spin Labeling (ASL) MRI: mri perfusion produces the measurement through a 4-node primitive DAG L.rf_excitation -> L.arterial_labeling_pulse -> L.difference_image -> int.temporal, with time-integrated exposure and additive Gaussian thermal/electronic noise. Recovery is posed as a linear inverse problem that inverts the forward operator to estimate the scene-side 3D perfusion map. Difficulty tier delta=5 with effective condition number kappa_eff~15; calibration-level mismatch (arterial_transit_time, labeling_efficiency, motion) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
     "forward_model": "delta_S = S_control - S_label = 2 M_0 * CBF / lambda * exp(-PLD / T1) * alpha_label + n",
     "world_state_x": "Patient-side quantity of interest (attenuation / activity / perfusion / stiffness etc.)",
     "observation_y": "Clinical sensor output at declared resolution + noise",
@@ -46,13 +46,13 @@
     "stability": "conditional",
     "condition_number_kappa": 300,
     "condition_number_effective": 15,
-    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+    "regime": "Existence of the recovered 3D perfusion map is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by the declared priors. Stability is moderately conditioned (kappa_eff ~= 15); arterial_transit_time dominates the stability cliff; labeling_efficiency and the remaining mismatch parameters contribute higher-order bias terms. Additive gaussian thermal/electronic noise sets the irreducible data-fidelity floor, while mild Tikhonov or analytic inversion is sufficient at the nominal Omega point."
   },
   "C": {
-    "solver_class": "Simple-Subtract, Kinetic-Model, ASL-Net",
+    "solver_class": "linear-operator + convex optimisation [Simple-Subtract, Kinetic-Model] | linear-operator + deep neural prior [ASL-Net]",
     "convergence_rate_q": 2.0,
-    "error_bound": "Bounded by sensor SNR + mismatch bias + regularisation.",
-    "complexity": "O(H W) to O(H W Z) per iteration"
+    "error_bound": "Data-fidelity bound: ||x_hat - x||_2 <= C1 * sigma_noise / sqrt(N_measurements). Mismatch-induced bias adds + C2 * |arterial_transit_time| + C3 * ||x - x_s||_1 (best s-sparse / low-rank approximation residual). Iterative solvers achieve q=2 convergence (O(1/k^2)) near the MLE; epsilon_fn captures the monotone quality degradation across declared Omega.",
+    "complexity": "O(H * W * Z * log(...)) per iteration; learned variants: O(H W Z * F_theta_cost) per forward pass"
   },
   "physics_fingerprint": {
     "carrier": "radio_wave",

@@ -8,7 +8,7 @@
   "source_file": "I_remote_sensing/102_hyperspectral.md",
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical remote-sensing literature for this principle.",
   "E": {
-    "description": "Hyperspectral Imaging (pushbroom / AVIRIS-style) forward model.",
+    "description": "Hyperspectral Imaging (pushbroom / AVIRIS-style): pushbroom spectrograph produces the measurement through a 3-node primitive DAG L.spectral_disperse -> S.scan.pushbroom -> int.spatial, with spatially-projected accumulation and additive Gaussian thermal/electronic noise. Recovery is posed as a linear inverse problem that inverts the forward operator to estimate the scene-side 3D spectral image. Difficulty tier delta=3 with effective condition number kappa_eff~10; calibration-level mismatch (atmospheric_water_vapor, smile_distortion, spectral_mixing) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
     "forward_model": "y(x, y, lambda) = R(x,y,lambda) * atm_trans(lambda) * solar_irr(lambda) + path_radiance + n",
     "world_state_x": "Scene-side quantity of interest (reflectance / velocity / phase / concentration)",
     "observation_y": "Sensor output at declared resolution + noise",
@@ -43,13 +43,13 @@
     "stability": "conditional",
     "condition_number_kappa": 200,
     "condition_number_effective": 10,
-    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+    "regime": "Existence of the recovered 3D spectral image is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by the declared priors. Stability is moderately conditioned (kappa_eff ~= 10); atmospheric_water_vapor dominates the stability cliff; smile_distortion and the remaining mismatch parameters contribute higher-order bias terms. Additive gaussian thermal/electronic noise sets the irreducible data-fidelity floor, while mild Tikhonov or analytic inversion is sufficient at the nominal Omega point."
   },
   "C": {
-    "solver_class": "FLAASH, SCAPE-M, HSI-CNN",
+    "solver_class": "linear-operator + convex optimisation [FLAASH, SCAPE-M] | linear-operator + deep neural prior [HSI-CNN]",
     "convergence_rate_q": 2.0,
-    "error_bound": "Bounded by sensor SNR + mismatch-induced bias.",
-    "complexity": "O(H W) to O(H W N_bands) per iteration"
+    "error_bound": "Data-fidelity bound: ||x_hat - x||_2 <= C1 * sigma_noise / sqrt(N_measurements). Mismatch-induced bias adds + C2 * |atmospheric_water_vapor| + C3 * ||x - x_s||_1 (best s-sparse / low-rank approximation residual). Iterative solvers achieve q=2 convergence (O(1/k^2)) near the MLE; epsilon_fn captures the monotone quality degradation across declared Omega.",
+    "complexity": "O(H * W * N_spectral_bins * log(...)) per iteration; learned variants: O(H W Z * F_theta_cost) per forward pass"
   },
   "physics_fingerprint": {
     "carrier": "photon",

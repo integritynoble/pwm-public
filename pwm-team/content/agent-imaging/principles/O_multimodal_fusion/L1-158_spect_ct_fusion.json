@@ -8,7 +8,7 @@
   "source_file": "O_multimodal_fusion/158_spect_ct_fusion.md",
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
   "E": {
-    "description": "SPECT-CT Fusion forward model.",
+    "description": "SPECT-CT Fusion: spect ct fusion produces the measurement through a 4-node primitive DAG L.ct_attenuation_map -> L.spect_activity_map -> L.registration -> int.spatial, with spatially-projected accumulation and additive Gaussian thermal/electronic noise. Recovery is posed as a linear inverse problem that inverts the forward operator to estimate the scene-side 3D fused activity anatomy. Difficulty tier delta=3 with effective condition number kappa_eff~13; calibration-level mismatch (registration_error, patient_motion, attenuation_correction_bias) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
     "forward_model": "F(r) = SPECT_AC(r, CT_mu) + CT(r) overlay; AC corrects gamma attenuation using CT density",
     "world_state_x": "Principle-specific quantity of interest",
     "observation_y": "Detector output at declared geometry",
@@ -45,13 +45,13 @@
     "stability": "conditional",
     "condition_number_kappa": 260,
     "condition_number_effective": 13,
-    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+    "regime": "Existence of the recovered 3D fused activity anatomy is guaranteed within the declared Omega bounds. Uniqueness holds on the measurement-supported subspace; out-of-support modes are controlled by the declared priors. Stability is moderately conditioned (kappa_eff ~= 13); registration_error dominates the stability cliff; patient_motion and the remaining mismatch parameters contribute higher-order bias terms. Additive gaussian thermal/electronic noise sets the irreducible data-fidelity floor, while mild Tikhonov or analytic inversion is sufficient at the nominal Omega point."
   },
   "C": {
-    "solver_class": "Rigid-Reg, AC-OSEM, SPECT-CT-Net",
+    "solver_class": "linear-operator + convex optimisation [Rigid-Reg, AC-OSEM] | linear-operator + deep neural prior [SPECT-CT-Net]",
     "convergence_rate_q": 2.0,
-    "error_bound": "Bounded by sensor SNR + mismatch bias + regularization.",
-    "complexity": "principle-dependent"
+    "error_bound": "Data-fidelity bound: ||x_hat - x||_2 <= C1 * sigma_noise / sqrt(N_measurements). Mismatch-induced bias adds + C2 * |registration_error| + C3 * ||x - x_s||_1 (best s-sparse / low-rank approximation residual). Iterative solvers achieve q=2 convergence (O(1/k^2)) near the MLE; epsilon_fn captures the monotone quality degradation across declared Omega.",
+    "complexity": "O(H * W * Z * log(...)) per iteration; learned variants: O(H W Z * F_theta_cost) per forward pass"
   },
   "physics_fingerprint": {
     "carrier": "photon",

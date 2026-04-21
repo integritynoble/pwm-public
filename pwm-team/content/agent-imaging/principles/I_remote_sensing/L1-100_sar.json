@@ -8,7 +8,7 @@
   "source_file": "I_remote_sensing/100_sar.md",
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical remote-sensing literature for this principle.",
   "E": {
-    "description": "Synthetic Aperture Radar (SAR) \u2014 range-Doppler coherent imaging forward model.",
+    "description": "Synthetic Aperture Radar (SAR) \u2014 range-Doppler coherent imaging: sar coherent imaging produces the measurement through a 5-node primitive DAG L.emit.chirp -> S.scan.platform -> L.pulse_compression -> L.range_doppler -> int.spatial, with multi-angle tomographic integration and multiplicative speckle (Rayleigh amplitude / exponential intensity). Recovery is posed as a non-convex inverse problem that inverts the forward operator to estimate the scene-side 2D complex scattering. Difficulty tier delta=5 with effective condition number kappa_eff~20; calibration-level mismatch (platform_motion_error, ionospheric_phase, speckle_coherence_loss) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
     "forward_model": "y(t, phi) = chirp conv s(r, a) * exp(i*4*pi*R/lambda) + n; recover complex scattering field s",
     "world_state_x": "Scene-side quantity of interest (reflectance / velocity / phase / concentration)",
     "observation_y": "Sensor output at declared resolution + noise",
@@ -48,13 +48,13 @@
     "stability": "conditional",
     "condition_number_kappa": 400,
     "condition_number_effective": 20,
-    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+    "regime": "Existence of the recovered 2D complex scattering is guaranteed within the declared Omega bounds. Uniqueness is local rather than global (non-convex landscape); convergence depends on initialisation and priors. Stability is moderately conditioned (kappa_eff ~= 20); platform_motion_error dominates the stability cliff; ionospheric_phase and the remaining mismatch parameters contribute higher-order bias terms. Multiplicative speckle (rayleigh amplitude / exponential intensity) sets the irreducible data-fidelity floor, while TV / wavelet-sparsity / deep priors stabilise recovery at the ill-conditioned end of Omega."
   },
   "C": {
-    "solver_class": "Range-Doppler, Omega-K, CS-SAR, SAR-Net",
+    "solver_class": "linear-operator + convex optimisation [Range-Doppler, Omega-K, CS-SAR] | linear-operator + deep neural prior [SAR-Net]",
     "convergence_rate_q": 2.0,
-    "error_bound": "Bounded by sensor SNR + mismatch-induced bias.",
-    "complexity": "O(H W) to O(H W N_bands) per iteration"
+    "error_bound": "Data-fidelity bound: ||x_hat - x||_F / ||x||_F <= C1 / sqrt(N_independent_looks). Mismatch-induced bias adds + C2 * |platform_motion_error| + C3 * ||x - x_s||_1 (best s-sparse / low-rank approximation residual). Iterative solvers achieve q=2 convergence (O(1/k^2)) near the MLE; epsilon_fn captures the monotone quality degradation across declared Omega.",
+    "complexity": "O(H * W * log(...)) per iteration; learned variants: O(H W Z * F_theta_cost) per forward pass"
   },
   "physics_fingerprint": {
     "carrier": "radio_wave",

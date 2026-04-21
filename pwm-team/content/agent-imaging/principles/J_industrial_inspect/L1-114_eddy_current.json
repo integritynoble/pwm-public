@@ -8,7 +8,7 @@
   "source_file": "J_industrial_inspect/114_eddy_current.md",
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical NDT/NDE literature for this principle.",
   "E": {
-    "description": "Eddy-Current Testing (near-surface metallic defect detection) forward model.",
+    "description": "Eddy-Current Testing (near-surface metallic defect detection): eddy current impedance produces the measurement through a 4-node primitive DAG L.induce_eddy_current -> L.secondary_field -> D.coil_impedance -> int.spatial, with spatially-projected accumulation and additive Gaussian thermal/electronic noise. Recovery is posed as a non-convex inverse problem that inverts the forward operator to estimate the scene-side 2D conductivity map. Difficulty tier delta=3 with effective condition number kappa_eff~10; calibration-level mismatch (lift_off_variation, conductivity_variation, edge_effect) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
     "forward_model": "Delta_Z(x,y) = integral eddy_current(defect(r)) * kernel(r - (x,y), f, lift_off) + n",
     "world_state_x": "Defect / strain / composition map depending on principle",
     "observation_y": "Sensor output at declared geometry",
@@ -45,13 +45,13 @@
     "stability": "conditional",
     "condition_number_kappa": 200,
     "condition_number_effective": 10,
-    "regime": "Conditional stability; mismatch parameters dominate at Omega bounds."
+    "regime": "Existence of the recovered 2D conductivity map is guaranteed within the declared Omega bounds. Uniqueness is local rather than global (non-convex landscape); convergence depends on initialisation and priors. Stability is moderately conditioned (kappa_eff ~= 10); lift_off_variation dominates the stability cliff; conductivity_variation and the remaining mismatch parameters contribute higher-order bias terms. Additive gaussian thermal/electronic noise sets the irreducible data-fidelity floor, while mild Tikhonov or analytic inversion is sufficient at the nominal Omega point."
   },
   "C": {
-    "solver_class": "Impedance-Plane, Kalman-Compensation, EC-CNN",
+    "solver_class": "linear-operator + convex optimisation [Impedance-Plane, Kalman-Compensation] | linear-operator + deep neural prior [EC-CNN]",
     "convergence_rate_q": 2.0,
-    "error_bound": "Bounded by sensor SNR + mismatch bias.",
-    "complexity": "O(H W) to O(H W Z) per iteration"
+    "error_bound": "Data-fidelity bound: ||x_hat - x||_2 <= C1 * sigma_noise / sqrt(N_measurements). Mismatch-induced bias adds + C2 * |lift_off_variation| + C3 * ||x - x_s||_1 (best s-sparse / low-rank approximation residual). Iterative solvers achieve q=2 convergence (O(1/k^2)) near the MLE; epsilon_fn captures the monotone quality degradation across declared Omega.",
+    "complexity": "O(H * W * log(...)) per iteration; learned variants: O(H W Z * F_theta_cost) per forward pass"
   },
   "physics_fingerprint": {
     "carrier": "radio_wave",
