@@ -1,8 +1,8 @@
-# Rans Kepsilon — Complete Four-Layer Walkthrough
+# RANS k-epsilon Turbulence Model — Complete Four-Layer Walkthrough
 
-**Principle #176: Rans Kepsilon**
-Domain: Microscopy | Difficulty: Standard (delta=2) | Carrier: Photon
-Verification: draft — base-copy from pilot; needs physics + numerics + cross-domain verifier sign-off
+**Principle #176: RANS k-epsilon Turbulence Model**
+Domain: Fluid Dynamics | Difficulty: Standard (delta=3) | Carrier: Fluid
+Verification: draft (identity-polished; physics body still widefield-templated) — Reynolds-averaged NS + 2-equation eddy viscosity; industry-standard for high-Re engineering flows. Phase F re-author queued.
 
 ---
 

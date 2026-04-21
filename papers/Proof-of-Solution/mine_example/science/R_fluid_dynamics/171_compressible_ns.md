@@ -1,8 +1,8 @@
-# Compressible Ns — Complete Four-Layer Walkthrough
+# Compressible Navier-Stokes Simulation — Complete Four-Layer Walkthrough
 
-**Principle #171: Compressible Ns**
-Domain: Microscopy | Difficulty: Standard (delta=2) | Carrier: Photon
-Verification: draft — base-copy from pilot; needs physics + numerics + cross-domain verifier sign-off
+**Principle #171: Compressible Navier-Stokes Simulation**
+Domain: Fluid Dynamics | Difficulty: Advanced (delta=4) | Carrier: Fluid
+Verification: draft (identity-polished; physics body still widefield-templated) — Full compressible NS + energy equation; shock-capturing schemes (HLLC, AUSM+); aeroacoustics and gas dynamics. Phase F re-author queued.
 
 ---
 

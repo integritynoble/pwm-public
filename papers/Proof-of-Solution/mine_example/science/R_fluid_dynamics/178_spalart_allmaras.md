@@ -1,8 +1,8 @@
-# Spalart Allmaras — Complete Four-Layer Walkthrough
+# Spalart-Allmaras One-Equation Turbulence Model — Complete Four-Layer Walkthrough
 
-**Principle #178: Spalart Allmaras**
-Domain: Microscopy | Difficulty: Standard (delta=2) | Carrier: Photon
-Verification: draft — base-copy from pilot; needs physics + numerics + cross-domain verifier sign-off
+**Principle #178: Spalart-Allmaras One-Equation Turbulence Model**
+Domain: Fluid Dynamics | Difficulty: Standard (delta=3) | Carrier: Fluid
+Verification: draft (identity-polished; physics body still widefield-templated) — Single transport equation for modified eddy viscosity; external aerodynamics standard. Phase F re-author queued.
 
 ---
 

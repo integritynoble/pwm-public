@@ -1,8 +1,8 @@
 # Potential Flow — Complete Four-Layer Walkthrough
 
 **Principle #175: Potential Flow**
-Domain: Microscopy | Difficulty: Standard (delta=2) | Carrier: Photon
-Verification: draft — base-copy from pilot; needs physics + numerics + cross-domain verifier sign-off
+Domain: Fluid Dynamics | Difficulty: Textbook (delta=1) | Carrier: Fluid
+Verification: draft (identity-polished; physics body still widefield-templated) — Irrotational + incompressible; Laplace equation for velocity potential; superposition of elementary flows; aerodynamics 101. Phase F re-author queued.
 
 ---
 

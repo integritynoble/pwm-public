@@ -1,8 +1,8 @@
-# Stokes Flow — Complete Four-Layer Walkthrough
+# Stokes Flow (Low Reynolds) — Complete Four-Layer Walkthrough
 
-**Principle #173: Stokes Flow**
-Domain: Microscopy | Difficulty: Standard (delta=2) | Carrier: Photon
-Verification: draft — base-copy from pilot; needs physics + numerics + cross-domain verifier sign-off
+**Principle #173: Stokes Flow (Low Reynolds)**
+Domain: Fluid Dynamics | Difficulty: Standard (delta=2) | Carrier: Fluid
+Verification: draft (identity-polished; physics body still widefield-templated) — Re << 1 limit; linear biharmonic equation for velocity; fundamental solution (Stokeslet) for microfluidics. Phase F re-author queued.
 
 ---
 

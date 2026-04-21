@@ -1,8 +1,8 @@
-# Boussinesq — Complete Four-Layer Walkthrough
+# Boussinesq Buoyancy Approximation — Complete Four-Layer Walkthrough
 
-**Principle #182: Boussinesq**
-Domain: Microscopy | Difficulty: Standard (delta=2) | Carrier: Photon
-Verification: draft — base-copy from pilot; needs physics + numerics + cross-domain verifier sign-off
+**Principle #182: Boussinesq Buoyancy Approximation**
+Domain: Fluid Dynamics | Difficulty: Standard (delta=3) | Carrier: Fluid
+Verification: draft (identity-polished; physics body still widefield-templated) — Density variation only in buoyancy term; natural convection, Rayleigh-Bénard, stratified flows. Phase F re-author queued.
 
 ---
 

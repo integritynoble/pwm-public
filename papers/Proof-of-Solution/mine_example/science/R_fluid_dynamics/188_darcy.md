@@ -1,8 +1,8 @@
-# Darcy — Complete Four-Layer Walkthrough
+# Darcy Flow in Porous Media — Complete Four-Layer Walkthrough
 
-**Principle #188: Darcy**
-Domain: Microscopy | Difficulty: Standard (delta=2) | Carrier: Photon
-Verification: draft — base-copy from pilot; needs physics + numerics + cross-domain verifier sign-off
+**Principle #188: Darcy Flow in Porous Media**
+Domain: Fluid Dynamics | Difficulty: Standard (delta=2) | Carrier: Fluid
+Verification: draft (identity-polished; physics body still widefield-templated) — Linear q=-K*grad(P) for saturated porous flow; groundwater + reservoir engineering. Phase F re-author queued.
 
 ---
 

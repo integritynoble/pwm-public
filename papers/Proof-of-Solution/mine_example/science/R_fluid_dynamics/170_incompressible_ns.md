@@ -1,8 +1,8 @@
-# Incompressible Ns — Complete Four-Layer Walkthrough
+# Incompressible Navier-Stokes Simulation — Complete Four-Layer Walkthrough
 
-**Principle #170: Incompressible Ns**
-Domain: Microscopy | Difficulty: Standard (delta=2) | Carrier: Photon
-Verification: draft — base-copy from pilot; needs physics + numerics + cross-domain verifier sign-off
+**Principle #170: Incompressible Navier-Stokes Simulation**
+Domain: Fluid Dynamics | Difficulty: Standard (delta=3) | Carrier: Fluid
+Verification: draft (identity-polished; physics body still widefield-templated) — Continuity + momentum PDE for incompressible flow; fractional-step / SIMPLE / PISO baselines; Re < Re_critical_for_turbulence. Phase F re-author queued.
 
 ---
 

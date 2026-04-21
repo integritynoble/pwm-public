@@ -1,8 +1,8 @@
-# Stefan — Complete Four-Layer Walkthrough
+# Stefan Problem (Moving Boundary Phase Change) — Complete Four-Layer Walkthrough
 
-**Principle #193: Stefan**
-Domain: Microscopy | Difficulty: Standard (delta=2) | Carrier: Photon
-Verification: draft — base-copy from pilot; needs physics + numerics + cross-domain verifier sign-off
+**Principle #193: Stefan Problem (Moving Boundary Phase Change)**
+Domain: Fluid Dynamics | Difficulty: Standard (delta=3) | Carrier: Fluid
+Verification: draft (identity-polished; physics body still widefield-templated) — Moving interface with latent heat release; solidification, melting; sharp-interface or enthalpy methods. Phase F re-author queued.
 
 ---
 

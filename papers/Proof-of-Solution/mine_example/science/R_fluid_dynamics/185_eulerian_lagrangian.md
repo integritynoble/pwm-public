@@ -1,8 +1,8 @@
-# Eulerian Lagrangian — Complete Four-Layer Walkthrough
+# Eulerian-Lagrangian (Discrete Particle Method, DPM) — Complete Four-Layer Walkthrough
 
-**Principle #185: Eulerian Lagrangian**
-Domain: Microscopy | Difficulty: Standard (delta=2) | Carrier: Photon
-Verification: draft — base-copy from pilot; needs physics + numerics + cross-domain verifier sign-off
+**Principle #185: Eulerian-Lagrangian (Discrete Particle Method, DPM)**
+Domain: Fluid Dynamics | Difficulty: Standard (delta=3) | Carrier: Fluid
+Verification: draft (identity-polished; physics body still widefield-templated) — Fluid phase on Eulerian grid + particles tracked Lagrangianly; sprays, sediment transport. Phase F re-author queued.
 
 ---
 

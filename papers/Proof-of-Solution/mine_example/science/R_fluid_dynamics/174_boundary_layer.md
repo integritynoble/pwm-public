@@ -1,8 +1,8 @@
-# Boundary Layer — Complete Four-Layer Walkthrough
+# Prandtl Boundary Layer — Complete Four-Layer Walkthrough
 
-**Principle #174: Boundary Layer**
-Domain: Microscopy | Difficulty: Standard (delta=2) | Carrier: Photon
-Verification: draft — base-copy from pilot; needs physics + numerics + cross-domain verifier sign-off
+**Principle #174: Prandtl Boundary Layer**
+Domain: Fluid Dynamics | Difficulty: Standard (delta=2) | Carrier: Fluid
+Verification: draft (identity-polished; physics body still widefield-templated) — Thin-layer approximation near walls; parabolic PDE; Blasius + Falkner-Skan similarity solutions. Phase F re-author queued.
 
 ---
 

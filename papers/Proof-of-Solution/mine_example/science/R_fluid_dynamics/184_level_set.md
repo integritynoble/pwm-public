@@ -1,8 +1,8 @@
-# Level Set — Complete Four-Layer Walkthrough
+# Level Set Interface Tracking — Complete Four-Layer Walkthrough
 
-**Principle #184: Level Set**
-Domain: Microscopy | Difficulty: Standard (delta=2) | Carrier: Photon
-Verification: draft — base-copy from pilot; needs physics + numerics + cross-domain verifier sign-off
+**Principle #184: Level Set Interface Tracking**
+Domain: Fluid Dynamics | Difficulty: Standard (delta=3) | Carrier: Fluid
+Verification: draft (identity-polished; physics body still widefield-templated) — Implicit interface as signed distance zero-level; reinitialization preserves distance property. Phase F re-author queued.
 
 ---
 

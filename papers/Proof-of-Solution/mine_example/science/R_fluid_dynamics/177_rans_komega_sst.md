@@ -1,8 +1,8 @@
-# Rans Komega Sst — Complete Four-Layer Walkthrough
+# RANS k-omega SST Turbulence Model — Complete Four-Layer Walkthrough
 
-**Principle #177: Rans Komega Sst**
-Domain: Microscopy | Difficulty: Standard (delta=2) | Carrier: Photon
-Verification: draft — base-copy from pilot; needs physics + numerics + cross-domain verifier sign-off
+**Principle #177: RANS k-omega SST Turbulence Model**
+Domain: Fluid Dynamics | Difficulty: Standard (delta=3) | Carrier: Fluid
+Verification: draft (identity-polished; physics body still widefield-templated) — Menter SST blend; better near-wall than k-epsilon; aerospace-grade baseline. Phase F re-author queued.
 
 ---
 

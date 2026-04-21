@@ -1,8 +1,8 @@
-# Shallow Water — Complete Four-Layer Walkthrough
+# Shallow Water Equations — Complete Four-Layer Walkthrough
 
-**Principle #181: Shallow Water**
-Domain: Microscopy | Difficulty: Standard (delta=2) | Carrier: Photon
-Verification: draft — base-copy from pilot; needs physics + numerics + cross-domain verifier sign-off
+**Principle #181: Shallow Water Equations**
+Domain: Fluid Dynamics | Difficulty: Standard (delta=2) | Carrier: Fluid
+Verification: draft (identity-polished; physics body still widefield-templated) — Depth-integrated NS; tsunami + flood modeling; well-balanced schemes for varying bathymetry. Phase F re-author queued.
 
 ---
 

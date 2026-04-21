@@ -1,8 +1,8 @@
-# Richards — Complete Four-Layer Walkthrough
+# Richards Equation (Unsaturated Flow) — Complete Four-Layer Walkthrough
 
-**Principle #189: Richards**
-Domain: Microscopy | Difficulty: Standard (delta=2) | Carrier: Photon
-Verification: draft — base-copy from pilot; needs physics + numerics + cross-domain verifier sign-off
+**Principle #189: Richards Equation (Unsaturated Flow)**
+Domain: Fluid Dynamics | Difficulty: Advanced (delta=4) | Carrier: Fluid
+Verification: draft (identity-polished; physics body still widefield-templated) — Nonlinear parabolic PDE; van Genuchten soil-water retention; vadose zone hydrology. Phase F re-author queued.
 
 ---
 

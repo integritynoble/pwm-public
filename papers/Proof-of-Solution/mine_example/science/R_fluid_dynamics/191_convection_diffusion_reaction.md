@@ -1,8 +1,8 @@
-# Convection Diffusion Reaction — Complete Four-Layer Walkthrough
+# Convection-Diffusion-Reaction (CDR) — Complete Four-Layer Walkthrough
 
-**Principle #191: Convection Diffusion Reaction**
-Domain: Microscopy | Difficulty: Standard (delta=2) | Carrier: Photon
-Verification: draft — base-copy from pilot; needs physics + numerics + cross-domain verifier sign-off
+**Principle #191: Convection-Diffusion-Reaction (CDR)**
+Domain: Fluid Dynamics | Difficulty: Standard (delta=3) | Carrier: Fluid
+Verification: draft (identity-polished; physics body still widefield-templated) — CDR with source term; combustion, atmospheric chemistry; stiff ODE coupling at each point. Phase F re-author queued.
 
 ---
 

@@ -1,8 +1,8 @@
-# Buckley Leverett — Complete Four-Layer Walkthrough
+# Buckley-Leverett Two-Phase Flow — Complete Four-Layer Walkthrough
 
-**Principle #192: Buckley Leverett**
-Domain: Microscopy | Difficulty: Standard (delta=2) | Carrier: Photon
-Verification: draft — base-copy from pilot; needs physics + numerics + cross-domain verifier sign-off
+**Principle #192: Buckley-Leverett Two-Phase Flow**
+Domain: Fluid Dynamics | Difficulty: Standard (delta=3) | Carrier: Fluid
+Verification: draft (identity-polished; physics body still widefield-templated) — Hyperbolic PDE for saturation front; oil-water displacement; fractional flow theory. Phase F re-author queued.
 
 ---
 

@@ -1,8 +1,8 @@
-# Euler Inviscid — Complete Four-Layer Walkthrough
+# Euler Inviscid Flow Simulation — Complete Four-Layer Walkthrough
 
-**Principle #172: Euler Inviscid**
-Domain: Microscopy | Difficulty: Standard (delta=2) | Carrier: Photon
-Verification: draft — base-copy from pilot; needs physics + numerics + cross-domain verifier sign-off
+**Principle #172: Euler Inviscid Flow Simulation**
+Domain: Fluid Dynamics | Difficulty: Standard (delta=3) | Carrier: Fluid
+Verification: draft (identity-polished; physics body still widefield-templated) — Navier-Stokes with zero viscosity; shock + rarefaction waves; Godunov-type upwind schemes. Phase F re-author queued.
 
 ---
 

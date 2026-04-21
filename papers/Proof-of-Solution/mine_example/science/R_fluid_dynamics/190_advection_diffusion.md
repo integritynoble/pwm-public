@@ -1,8 +1,8 @@
-# Advection Diffusion — Complete Four-Layer Walkthrough
+# Advection-Diffusion Transport — Complete Four-Layer Walkthrough
 
-**Principle #190: Advection Diffusion**
-Domain: Microscopy | Difficulty: Standard (delta=2) | Carrier: Photon
-Verification: draft — base-copy from pilot; needs physics + numerics + cross-domain verifier sign-off
+**Principle #190: Advection-Diffusion Transport**
+Domain: Fluid Dynamics | Difficulty: Textbook (delta=1) | Carrier: Fluid
+Verification: draft (identity-polished; physics body still widefield-templated) — Linear scalar transport in flow field; Peclet number regimes; upwinding for advection-dominated. Phase F re-author queued.
 
 ---
 
