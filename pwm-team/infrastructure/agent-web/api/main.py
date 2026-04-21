@@ -40,10 +40,11 @@ def _cached(body: Any) -> Response:
 
 
 def _load_addresses() -> dict:
-    p = Path(os.environ.get(
-        "PWM_ADDRESSES",
-        str(Path(__file__).resolve().parents[3] / "coordination" / "agent-coord" / "interfaces" / "addresses.json"),
-    ))
+    try:
+        _default_addr = str(Path(__file__).resolve().parents[3] / "coordination" / "agent-coord" / "interfaces" / "addresses.json")
+    except IndexError:
+        _default_addr = "/coord/addresses.json"
+    p = Path(os.environ.get("PWM_ADDRESSES", _default_addr))
     try:
         return json.loads(p.read_text())
     except OSError:

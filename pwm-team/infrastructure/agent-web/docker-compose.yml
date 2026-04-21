@@ -40,7 +40,7 @@ services:
       - ../../coordination/agent-coord/interfaces:/coord:ro
       - ../../:/repo:ro
     ports:
-      - "8000:8000"
+      - "${PWM_API_PORT:-9000}:8000"
     depends_on:
       - indexer
     restart: unless-stopped

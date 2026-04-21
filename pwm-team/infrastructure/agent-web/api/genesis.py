@@ -15,8 +15,11 @@ from typing import Iterable
 
 
 # __file__ = .../pwm-team/infrastructure/agent-web/api/genesis.py
-# .parents[3] = .../pwm-team
-PWM_TEAM_ROOT = Path(__file__).resolve().parents[3]
+# .parents[3] = .../pwm-team (local); Docker: /repo/pwm-team
+try:
+    PWM_TEAM_ROOT = Path(__file__).resolve().parents[3]
+except IndexError:
+    PWM_TEAM_ROOT = Path("/repo/pwm-team")
 DEFAULT_GENESIS_DIR = PWM_TEAM_ROOT / "pwm_product" / "genesis"
 
 

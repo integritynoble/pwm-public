@@ -7,7 +7,10 @@ from dataclasses import dataclass
 from pathlib import Path
 
 
-REPO_ROOT = Path(__file__).resolve().parents[3]
+try:
+    REPO_ROOT = Path(__file__).resolve().parents[3]
+except IndexError:
+    REPO_ROOT = Path("/repo")  # Docker fallback — repo mounted at /repo
 INTERFACES_DIR = REPO_ROOT / "coordination" / "agent-coord" / "interfaces"
 DEFAULT_DB_PATH = Path(__file__).resolve().parent / "pwm_index.db"
 DEFAULT_ADDRESSES = INTERFACES_DIR / "addresses.json"
