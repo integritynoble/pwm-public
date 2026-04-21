@@ -128,6 +128,11 @@ async function main() {
   let slot;
   if (network.name === "sepolia") slot = "testnet";
   else if (network.name === "mainnet") slot = "mainnet";
+  else if (network.name === "base") slot = "base";
+  else if (network.name === "arbitrum") slot = "arbitrum";
+  else if (network.name === "optimism") slot = "optimism";
+  else if (network.name === "baseSepolia") slot = "baseSepolia";
+  else if (network.name === "arbSepolia") slot = "arbSepolia";
   else slot = "local";
 
   const existing = current[slot] || {};
