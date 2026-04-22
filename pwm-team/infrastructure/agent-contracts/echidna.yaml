@@ -1,0 +1,14 @@
+# Echidna configuration for PWM invariant testing
+# Run: echidna-test contracts/test/EchidnaInvariantMinting.sol --contract EchidnaInvariantMinting --config echidna.yaml
+#      echidna-test contracts/test/EchidnaInvariantReward.sol --contract EchidnaInvariantReward --config echidna.yaml
+
+testMode: assertion
+testLimit: 500000
+seqLen: 100
+shrinkLimit: 5000
+contractAddr: "0x00a329c0648769A73afAc7F9381E08FB43dBEA72"
+deployer: "0x00a329c0648769A73afAc7F9381E08FB43dBEA72"
+sender: ["0x00a329c0648769A73afAc7F9381E08FB43dBEA72"]
+balanceAddr: 0xffffffffffffffffffffffffffffffff
+balanceContract: 0xffffffffffffffffffffffffffffffff
+cryticArgs: ["--solc-remaps", "@=node_modules/@", "--solc-args=--via-ir"]
