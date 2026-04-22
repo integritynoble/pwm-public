@@ -49,7 +49,7 @@ npx hardhat test        # ~54 tests, ~3 seconds
 | 5 | PWMReward | `PWMReward.sol` | 226 | ~160 | High | Per-benchmark reward pool, ranked-draw settlement (Rank 1-10), six-way payout split with treasury remainder, `maxBenchmarkPoolWei` cap |
 | 6 | PWMStaking | `PWMStaking.sol` | 196 | ~135 | Medium | Three-tier staking (10/2/1 PWM), graduation 50/50, challenge slash, fraud 100% burn, `maxTotalStakeWei` cap + `totalActiveStakeWei` running total |
 | 7 | PWMTreasury | `PWMTreasury.sol` | 76 | 55 | Low | Per-principle treasury T_k, 15% inflow from draws, adversarial bounty payouts capped at 50% |
-| | **Totals** | | **1,162** | **~832** | | |
+| | **Totals** | | **1,221** | **~867** | | |
 
 ### Complexity Ratings Explained
 
@@ -458,9 +458,9 @@ REPOSITORY
 
 - GitHub: https://github.com/integritynoble/pwm  (currently private; we will
   grant read access to Code4rena staff upon engagement, or provide a
-  public snapshot at the `audit-v1` tag)
+  public snapshot at the `audit-v2` tag)
 - Path: pwm-team/infrastructure/agent-contracts/contracts/
-- Scope commit: `cdff8e3569650ca57142728a2f617ec9f2c26002` (tag `audit-v1`)
+- Scope commit: `348ec2d6dc4dda1f6618f83b60f6d6d6f6a1eed9` (tag `audit-v2`)
   — frozen snapshot for the duration of the contest
 - Submission package (this document): pwm-team/infrastructure/agent-contracts/AUDIT_SUBMISSION.md
 
@@ -534,9 +534,9 @@ REPOSITORY
 
 - GitHub: https://github.com/integritynoble/pwm  (currently private; we will
   grant read access to Sherlock staff upon engagement, or provide a
-  public snapshot at the `audit-v1` tag)
+  public snapshot at the `audit-v2` tag)
 - Path: pwm-team/infrastructure/agent-contracts/contracts/
-- Scope commit: `cdff8e3569650ca57142728a2f617ec9f2c26002` (tag `audit-v1`)
+- Scope commit: `348ec2d6dc4dda1f6618f83b60f6d6d6f6a1eed9` (tag `audit-v2`)
   — frozen snapshot for the duration of the contest
 - Submission package (this document): pwm-team/infrastructure/agent-contracts/AUDIT_SUBMISSION.md
 

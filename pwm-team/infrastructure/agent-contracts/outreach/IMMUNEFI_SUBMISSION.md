@@ -40,13 +40,14 @@ distribution, and unclaimed ranks roll over into the next epoch's pool.
 The contracts are immutable (no proxies, no admin-controlled upgrades),
 use only native ETH for staking (no external ERC20), and depend on **zero
 external libraries** (no OpenZeppelin, no Chainlink, no oracles). The
-surface area is ~832 nSLOC across 7 contracts; full scope is in
+surface area is **~867 nSLOC across 7 contracts** (audit-v2, includes
+pre-mainnet TVL caps); full scope is in
 `pwm-team/infrastructure/agent-contracts/AUDIT_SUBMISSION.md` in the
 repo.
 
 ## Assets in scope
 
-All 7 contracts at the pinned commit `cdff8e3569650ca57142728a2f617ec9f2c26002` (tag `audit-v1`):
+All 7 contracts at the pinned commit `348ec2d6dc4dda1f6618f83b60f6d6d6f6a1eed9` (tag `audit-v2`):
 
 | Contract | Address (mainnet, TBD at deploy) | nSLOC | Complexity |
 |----------|-----------------------------------|-------|------------|
@@ -54,8 +55,8 @@ All 7 contracts at the pinned commit `cdff8e3569650ca57142728a2f617ec9f2c26002` 
 | `PWMGovernance` | TBD | 100 | Medium |
 | `PWMMinting` | TBD | 210 | **High** |
 | `PWMCertificate` | TBD | 155 | Medium |
-| `PWMReward` | TBD | 145 | **High** |
-| `PWMStaking` | TBD | 115 | Medium |
+| `PWMReward` | TBD | ~160 | **High** |
+| `PWMStaking` | TBD | ~135 | Medium |
 | `PWMTreasury` | TBD | 55 | Low |
 
 **Out of scope:**
