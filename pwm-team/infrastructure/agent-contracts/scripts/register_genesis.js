@@ -1,32 +1,109 @@
 /**
+ * ⚠️  DEPRECATED — use scripts/register_genesis.py instead  ⚠️
+ *
+ * This JS implementation cannot produce hashes that match what
+ * `pwm-node mine` computes as benchmarkHash. JavaScript's JSON.stringify
+ * loses the int/float distinction (26.0 → "26"), while Python's
+ * json.dumps preserves it (26.0 → "26.0"). The two produce different
+ * canonical-JSON bytes and therefore different keccak256 hashes.
+ *
+ * Running this script would register artifacts under hashes that the CLI
+ * cannot match — every certificate submission would revert with "benchmark
+ * not registered". The earlier sha256(file_bytes) form was also wrong.
+ *
+ * USE INSTEAD:
+ *   export PWM_RPC_URL=<your-rpc>
+ *   export PWM_PRIVATE_KEY=0x<deployer-key>
+ *   python3 scripts/register_genesis.py --network <baseSepolia|base|arbSepolia|arbitrum|optimism|testnet>
+ *
  * Register CASSI (#003) and CACTI (#004) L1/L2/L3 artifacts on PWMRegistry.
  *
- * Usage:
- *   DEPLOYER_PRIVATE_KEY=0x... SEPOLIA_RPC_URL=https://... \
- *     npx hardhat run scripts/register_genesis.js --network sepolia
- *
- * This makes 6 on-chain calls:
- *   L1-003 (parent=0x0), L1-004 (parent=0x0)
- *   L2-003 (parent=L1-003 hash), L2-004 (parent=L1-004 hash)
- *   L3-003 (parent=L2-003 hash), L3-004 (parent=L2-004 hash)
+ * This script is kept for historical reference and for the `--dry-run`
+ * plan print only — it BAILS OUT before sending any transaction.
  */
 
 const { ethers } = require("hardhat");
 const fs = require("fs");
 const path = require("path");
-const crypto = require("crypto");
+
+// Hashing convention MUST match scripts/register_genesis_sepolia.py and
+// pwm-team/infrastructure/agent-cli/pwm_node/commands/mine.py:
+//   artifactHash = keccak256(canonical_json(artifact_obj))
+// where canonical_json = JSON.stringify with sort_keys=true and compact
+// separators ",", ":".
+//
+// An earlier version of this file used sha256(file_bytes), which does not
+// match what `pwm-node mine` computes as benchmarkHash — every CLI-built
+// certificate would revert on-chain because the hash wouldn't resolve to a
+// registered L3 artifact. See CHECKLIST_EXECUTION_REPORT.md §6b for the
+// canonical hash audit.
+function canonicalJsonBytes(obj) {
+  // Recursively sort object keys to match Python's json.dumps(sort_keys=True).
+  const sortKeys = (v) => {
+    if (Array.isArray(v)) return v.map(sortKeys);
+    if (v !== null && typeof v === "object") {
+      return Object.keys(v).sort().reduce((acc, k) => {
+        acc[k] = sortKeys(v[k]);
+        return acc;
+      }, {});
+    }
+    return v;
+  };
+  // Compact separators (no spaces) to match separators=(",", ":")
+  return Buffer.from(JSON.stringify(sortKeys(obj)), "utf8");
+}
+
+function artifactHash(obj) {
+  // keccak256 as 0x + 64 hex (ethers does the hex; padding not needed since
+  // keccak always produces 32 bytes).
+  return ethers.keccak256(canonicalJsonBytes(obj));
+}
 
 async function main() {
+  console.error("");
+  console.error("==================================================================");
+  console.error("  This JS register_genesis.js is DEPRECATED.");
+  console.error("  Its JSON.stringify-based hash does NOT match what pwm-node mine");
+  console.error("  computes; running it would register artifacts that the CLI can't");
+  console.error("  reference.");
+  console.error("");
+  console.error("  Use the Python version instead:");
+  console.error("    python3 scripts/register_genesis.py --network <net>");
+  console.error("");
+  console.error("  Re-run this JS script with PWM_ALLOW_DEPRECATED=1 only if you");
+  console.error("  explicitly want the broken behavior (you almost certainly don't).");
+  console.error("==================================================================");
+  console.error("");
+  if (process.env.PWM_ALLOW_DEPRECATED !== "1") {
+    process.exitCode = 1;
+    return;
+  }
+
   const [signer] = await ethers.getSigners();
   console.log("Signer:", signer.address);
   console.log("Balance:", ethers.formatEther(await ethers.provider.getBalance(signer.address)), "ETH");
 
-  // Load addresses
+  // Load addresses. Route by hardhat network name:
+  //   sepolia → testnet, mainnet → mainnet,
+  //   base / arbitrum / optimism → same-named slot,
+  //   baseSepolia / arbSepolia → same-named slot,
+  //   anything else → local.
   const addrsPath = path.join(__dirname, "..", "addresses.json");
   const addrs = JSON.parse(fs.readFileSync(addrsPath, "utf8"));
-  const network = hre.network.name === "sepolia" ? "testnet" : "local";
-  const registryAddr = addrs[network].PWMRegistry;
-  console.log("PWMRegistry:", registryAddr, `(${network})`);
+  const netName = hre.network.name;
+  let slot;
+  if (netName === "sepolia") slot = "testnet";
+  else if (netName === "mainnet") slot = "mainnet";
+  else if (["base", "arbitrum", "optimism", "baseSepolia", "arbSepolia"].includes(netName)) slot = netName;
+  else slot = "local";
+  if (!addrs[slot] || !addrs[slot].PWMRegistry) {
+    throw new Error(
+      `addresses.json[${slot}].PWMRegistry not set. Run deploy/l2.js first, ` +
+      `or pick a different --network.`
+    );
+  }
+  const registryAddr = addrs[slot].PWMRegistry;
+  console.log("PWMRegistry:", registryAddr, `(slot: ${slot})`);
 
   // Get contract
   const Registry = await ethers.getContractAt("PWMRegistry", registryAddr);
@@ -42,12 +119,14 @@ async function main() {
     { id: "L3-004", layer: 3, file: "l3/L3-004.json", parent: "L2-004" },
   ];
 
-  // Compute all hashes first
+  // Compute all hashes via keccak256(canonical_json). MUST match the
+  // convention used by register_genesis_sepolia.py and pwm-node mine, else
+  // certs submitted via the CLI will fail benchmarkHash lookup on-chain.
   const hashes = {};
   for (const art of artifacts) {
     const filePath = path.join(genesisDir, art.file);
-    const content = fs.readFileSync(filePath);
-    const hash = "0x" + crypto.createHash("sha256").update(content).digest("hex");
+    const obj = JSON.parse(fs.readFileSync(filePath, "utf8"));
+    const hash = artifactHash(obj);
     hashes[art.id] = hash;
     console.log(`  ${art.id}: ${hash.slice(0, 20)}...`);
   }
