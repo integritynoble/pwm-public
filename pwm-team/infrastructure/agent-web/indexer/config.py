@@ -17,10 +17,27 @@ DEFAULT_ADDRESSES = INTERFACES_DIR / "addresses.json"
 DEFAULT_ABI_DIR = INTERFACES_DIR / "contracts_abi"
 
 
+# Per-network default RPC endpoints. Used when PWM_RPC_URL env var is unset.
+# Keys match slots in addresses.json. Unknown networks require PWM_RPC_URL
+# explicitly — we raise rather than fall through to a wrong default.
+DEFAULT_RPCS: dict[str, str] = {
+    "local":       "http://127.0.0.1:8545",
+    "testnet":     "https://ethereum-sepolia-rpc.publicnode.com",  # Sepolia
+    "mainnet":     "https://eth.llamarpc.com",
+    "base":        "https://mainnet.base.org",
+    "baseSepolia": "https://sepolia.base.org",
+    "arbitrum":    "https://arb1.arbitrum.io/rpc",
+    "arbSepolia":  "https://sepolia-rollup.arbitrum.io/rpc",
+    "optimism":    "https://mainnet.optimism.io",
+}
+
+
 @dataclass(frozen=True)
 class IndexerConfig:
     rpc_url: str
-    network: str  # 'local' | 'testnet' | 'mainnet'
+    # Slot name in addresses.json. One of: local, testnet, mainnet, base,
+    # baseSepolia, arbitrum, arbSepolia, optimism.
+    network: str
     db_path: Path
     abi_dir: Path
     addresses: dict
@@ -39,14 +56,20 @@ def load_config() -> IndexerConfig:
     addresses_all = json.loads(addresses_file.read_text())
     network_addresses = addresses_all.get(network, {})
 
-    default_rpc = {
-        "local": "http://127.0.0.1:8545",
-        "testnet": "https://rpc.sepolia.org",
-        "mainnet": "https://eth.llamarpc.com",
-    }[network]
+    rpc_from_env = os.environ.get("PWM_RPC_URL")
+    if rpc_from_env:
+        rpc_url = rpc_from_env
+    elif network in DEFAULT_RPCS:
+        rpc_url = DEFAULT_RPCS[network]
+    else:
+        raise ValueError(
+            f"PWM_NETWORK={network!r} is not a known slot and PWM_RPC_URL "
+            f"is not set. Known slots: {sorted(DEFAULT_RPCS)}. Set PWM_RPC_URL "
+            "or pick a known network."
+        )
 
     return IndexerConfig(
-        rpc_url=os.environ.get("PWM_RPC_URL", default_rpc),
+        rpc_url=rpc_url,
         network=network,
         db_path=Path(os.environ.get("PWM_DB", str(DEFAULT_DB_PATH))),
         abi_dir=Path(os.environ.get("PWM_ABI_DIR", str(DEFAULT_ABI_DIR))),
