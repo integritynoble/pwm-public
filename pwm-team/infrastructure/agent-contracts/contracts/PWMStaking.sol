@@ -29,6 +29,22 @@ contract PWMStaking {
 
     mapping(uint8 => uint256) public stakeAmount; // layer => required PWM amount (wei)
 
+    /// @notice Running total of all Active stake value across all artifacts, in wei.
+    ///         Incremented on stake(), decremented on resolution (graduate /
+    ///         slashForChallenge / slashForFraud) when the funds leave the
+    ///         contract. Used to enforce maxTotalStakeWei.
+    uint256 public totalActiveStakeWei;
+
+    /// @notice Soft cap on totalActiveStakeWei. Zero (default) means unlimited.
+    ///         Governance-settable. Enforced on stake() — lowering the cap
+    ///         below the current total just blocks further stakes, it does
+    ///         NOT forcibly refund existing stakers.
+    ///
+    ///         Rationale: bounds blast radius during the pre-audit mainnet
+    ///         soft-launch (see AUDIT_FREE_PATH.md Track D). Lifted to a
+    ///         higher value or to 0 (unlimited) once audited.
+    uint256 public maxTotalStakeWei;
+
     enum Status { None, Active, Graduated, Slashed, Fraud }
     struct Stake {
         address staker;
@@ -45,6 +61,7 @@ contract PWMStaking {
     event FraudSlashed(bytes32 indexed artifactHash, uint256 burned);
     event GovernanceUpdated(address indexed newGovernance);
     event RewardUpdated(address indexed newReward);
+    event MaxTotalStakeWeiUpdated(uint256 newMax);
 
     modifier onlyGovernance() { require(msg.sender == governance, "PWMStaking: not governance"); _; }
 
@@ -76,6 +93,12 @@ contract PWMStaking {
         emit StakeAmountUpdated(layer, amount);
     }
 
+    /// @notice Set the total-stake cap. Pass 0 to disable (unlimited).
+    function setMaxTotalStakeWei(uint256 newMax) external onlyGovernance {
+        maxTotalStakeWei = newMax;
+        emit MaxTotalStakeWeiUpdated(newMax);
+    }
+
     // ---------- staking ----------
 
     /// @notice Stake the exact per-layer amount against an artifact. Callable once per artifact.
@@ -85,6 +108,13 @@ contract PWMStaking {
         require(stakes[artifactHash].status == Status.None, "PWMStaking: already staked");
         uint256 required = stakeAmount[layer];
         require(msg.value == required, "PWMStaking: wrong amount");
+
+        uint256 newTotal = totalActiveStakeWei + required;
+        uint256 cap = maxTotalStakeWei;
+        if (cap != 0) {
+            require(newTotal <= cap, "PWMStaking: total stake cap exceeded");
+        }
+        totalActiveStakeWei = newTotal;
 
         stakes[artifactHash] = Stake({
             staker: msg.sender,
@@ -107,6 +137,9 @@ contract PWMStaking {
         require(benchmarkHash != bytes32(0), "PWMStaking: zero benchmark");
 
         s.status = Status.Graduated;
+        // CEI: decrement running total BEFORE any external call so a
+        // re-entrant stake() cannot see stale totalActiveStakeWei.
+        totalActiveStakeWei -= s.amount;
         uint256 half = s.amount / 2;
         uint256 other = s.amount - half;
 
@@ -124,6 +157,7 @@ contract PWMStaking {
         require(challenger != address(0), "PWMStaking: zero challenger");
 
         s.status = Status.Slashed;
+        totalActiveStakeWei -= s.amount;
         uint256 half = s.amount / 2;
         uint256 other = s.amount - half;
 
@@ -141,6 +175,7 @@ contract PWMStaking {
         require(s.status == Status.Active, "PWMStaking: not active");
 
         s.status = Status.Fraud;
+        totalActiveStakeWei -= s.amount;
         uint256 amt = s.amount;
         (bool ok, ) = payable(BURN_SINK).call{value: amt}("");
         require(ok, "PWMStaking: burn failed");

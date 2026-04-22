@@ -36,7 +36,7 @@ npx hardhat test        # ~54 tests, ~3 seconds
 
 ### Total nSLOC
 
-**~782 nSLOC** across 7 contracts (1,162 total lines including comments and blanks)
+**~862 nSLOC** across 7 contracts (~1,227 total lines including comments and blanks). Up from ~832 nSLOC / ~1,162 lines prior to the TVL-cap changes (see §3.11).
 
 ### Scope Table
 
@@ -46,8 +46,8 @@ npx hardhat test        # ~54 tests, ~3 seconds
 | 2 | PWMGovernance | `PWMGovernance.sol` | 133 | 100 | Medium | 3-of-5 multisig, 48h timelock proposals, irreversible DAO activation switch |
 | 3 | PWMMinting | `PWMMinting.sol` | 295 | 210 | High | Zeno-curve per-event emission from 17.22M fixed pool; weighted principle/benchmark allocation with cached totals |
 | 4 | PWMCertificate | `PWMCertificate.sol` | 227 | 155 | Medium | L4 certificate submission, 7/14-day challenge window, finalization dispatching to Reward and Minting |
-| 5 | PWMReward | `PWMReward.sol` | 202 | 145 | High | Per-benchmark reward pool, ranked-draw settlement (Rank 1-10), six-way payout split with treasury remainder |
-| 6 | PWMStaking | `PWMStaking.sol` | 161 | 115 | Medium | Three-tier staking (10/2/1 PWM), graduation 50/50, challenge slash, fraud 100% burn |
+| 5 | PWMReward | `PWMReward.sol` | 226 | ~160 | High | Per-benchmark reward pool, ranked-draw settlement (Rank 1-10), six-way payout split with treasury remainder, `maxBenchmarkPoolWei` cap |
+| 6 | PWMStaking | `PWMStaking.sol` | 196 | ~135 | Medium | Three-tier staking (10/2/1 PWM), graduation 50/50, challenge slash, fraud 100% burn, `maxTotalStakeWei` cap + `totalActiveStakeWei` running total |
 | 7 | PWMTreasury | `PWMTreasury.sol` | 76 | 55 | Low | Per-principle treasury T_k, 15% inflow from draws, adversarial bounty payouts capped at 50% |
 | | **Totals** | | **1,162** | **~832** | | |
 
@@ -132,6 +132,9 @@ values — particularly any rounding behavior where `amount / 2` meets odd
 wei totals.
 | Adversarial bounty cap | 50% of T_k | PWMTreasury |
 | BURN_SINK | 0x000000000000000000000000000000000000dEaD | PWMStaking |
+| `maxBenchmarkPoolWei` | 0 (unlimited by default; governance-settable) | PWMReward |
+| `maxTotalStakeWei` | 0 (unlimited by default; governance-settable) | PWMStaking |
+| `totalActiveStakeWei` | running sum, internal accounting | PWMStaking |
 
 ---
 
@@ -181,6 +184,36 @@ In `PWMGovernance`, any single founder can cancel any pending proposal via `canc
 
 `PWMCertificate.finalize()` skips the `minting.mintFor()` call if the minting address is unset (`address(0)`). This allows the certificate lifecycle to function in test environments or during pre-promotion phases without a live minting contract.
 
+### 3.11 Pre-Audit TVL Caps (Pre-Mainnet Soft-Launch)
+
+Two new governance-settable caps were added for the pre-audit mainnet
+soft-launch per `AUDIT_FREE_PATH.md` Track D:
+
+- **`PWMReward.maxBenchmarkPoolWei`** — soft cap on any single
+  benchmark-pool balance. Enforced on all three inflow paths
+  (`seedBPool`, `depositMinting`, `depositBounty`) via the internal
+  `_credit()` helper. Zero (default) means unlimited. Lowering the cap
+  below an existing pool balance simply blocks further inflows; it does
+  NOT forcibly refund — settlement outflow via `distribute()` is
+  unaffected.
+- **`PWMStaking.maxTotalStakeWei`** — soft cap on the sum of all
+  `Active`-status stakes across all artifacts. Enforced on `stake()`.
+  Tracked via a new `totalActiveStakeWei` running total that is
+  incremented on `stake()` and decremented on `graduate()`,
+  `slashForChallenge()`, and `slashForFraud()` (CEI order: decrement
+  before external calls).
+
+Both caps default to zero (= unlimited) so existing behavior and the
+53 prior tests are preserved. The new cap surface adds 16 focused tests
+(`PWMReward_cap.test.js`, `PWMStaking_cap.test.js`), total suite now 69
+passing.
+
+**Expected remediation:** auditors may recommend additional invariants
+around the running-total consistency (e.g. the property that
+`totalActiveStakeWei == sum_{a: stakes[a].status == Active} stakes[a].amount`
+after every external-call-boundary). We consider such findings
+"Informational" unless a concrete path is shown that desyncs the total.
+
 ---
 
 ## 4. Critical Audit Focus Areas
@@ -226,6 +259,29 @@ In `PWMGovernance`, any single founder can cancel any pending proposal via `canc
 - Fraud: 100% to BURN_SINK
 - One-shot enforcement: `stakes[hash].status == Status.None` required for `stake()` -- verify no double-stake
 - Can a staker front-run a slash by somehow unstaking? (No unstake function exists -- good)
+- **NEW in audit-v2:** `totalActiveStakeWei` must stay in sync with
+  `Σ stakes[h].amount where stakes[h].status == Active` under all
+  control flows. Decrements happen BEFORE external calls (CEI) in
+  graduate/slashForChallenge/slashForFraud. Verify no re-entrant path
+  through `reward.seedBPool` (from graduate) can observe a stale total
+  and bypass `maxTotalStakeWei`.
+
+### 4.8 Pre-Audit TVL Caps (audit-v2 addition)
+
+- `maxBenchmarkPoolWei` enforced in `PWMReward._credit()` — the single
+  chokepoint for all three inflow paths. Verify no inflow path bypasses
+  `_credit()`.
+- `maxTotalStakeWei` enforced in `PWMStaking.stake()`. Verify no other
+  function can inflate the running total.
+- Both caps default to zero = unlimited. Verify the `if (cap != 0)`
+  guard correctly treats zero as disabled rather than as "cap = 0 =
+  reject-everything."
+- Verify that lowering the cap below the current state is safe (no
+  arithmetic issues; no forced refunds; existing balances preserved).
+- Verify integer-overflow safety: `uint256` addition for
+  `pool[hash] + amount` and `totalActiveStakeWei + required` relies on
+  Solidity 0.8.x checked math. Confirm no `unchecked {}` block touches
+  these counters.
 
 ### 4.6 Governance (PWMGovernance)
 
@@ -293,8 +349,10 @@ In `PWMGovernance`, any single founder can cancel any pending proposal via `canc
 | PWMReward.test.js | 7 | Ranked draw, six-way split, pool accounting, double-spend prevention |
 | PWMStaking.test.js | 8 | Stake, graduate, challenge slash, fraud burn, one-shot enforcement |
 | PWMTreasury.test.js | 8 | Receive funding, bounty cap enforcement, isolation between principles |
+| PWMReward_cap.test.js | 8 | audit-v2: maxBenchmarkPoolWei cap on all three inflow paths, per-benchmark independence, raise/lower, zero = unlimited |
+| PWMStaking_cap.test.js | 8 | audit-v2: maxTotalStakeWei cap on stake(), totalActiveStakeWei decrement on graduate/slashForChallenge/slashForFraud, lower-cap-does-not-refund |
 | integration_l4_lifecycle.test.js | 1 | Full 7-contract end-to-end: register -> stake -> certify -> mint -> reward -> treasury |
-| **Total** | **~54** | |
+| **Total** | **69** | |
 
 ### Running Tests
 
@@ -315,8 +373,8 @@ infrastructure/agent-contracts/
 |   +-- PWMGovernance.sol        (133 lines, ~100 nSLOC)
 |   +-- PWMMinting.sol           (295 lines, ~210 nSLOC)
 |   +-- PWMCertificate.sol       (227 lines, ~155 nSLOC)
-|   +-- PWMReward.sol            (202 lines, ~145 nSLOC)
-|   +-- PWMStaking.sol           (161 lines, ~115 nSLOC)
+|   +-- PWMReward.sol            (226 lines, ~160 nSLOC)   [audit-v2: +maxBenchmarkPoolWei]
+|   +-- PWMStaking.sol           (196 lines, ~135 nSLOC)   [audit-v2: +maxTotalStakeWei, +totalActiveStakeWei]
 |   +-- PWMTreasury.sol          (76 lines,  ~55 nSLOC)
 +-- test/
 |   +-- PWMRegistry.test.js

@@ -41,6 +41,18 @@ contract PWMReward {
     mapping(bytes32 => uint256) public pool; // benchmarkHash => PWM balance
     mapping(bytes32 => bool)    public settled; // certHash => already distributed?
 
+    /// @notice Soft cap on the balance of any one benchmark pool, in wei.
+    ///         Zero (default) means unlimited. Governance-settable. Enforced on
+    ///         every inflow path (seedBPool / depositMinting / depositBounty) —
+    ///         cap does NOT affect distribute()'s outflow, so lowering the cap
+    ///         below an existing pool balance simply prevents further inflows,
+    ///         not settlements.
+    ///
+    ///         Rationale: bounds blast radius during the pre-audit mainnet
+    ///         soft-launch (see AUDIT_FREE_PATH.md Track D). Lifted to a higher
+    ///         value or to 0 (unlimited) once audited.
+    uint256 public maxBenchmarkPoolWei;
+
     struct Draw {
         bytes32 benchmarkHash;
         uint256 principleId;
@@ -67,6 +79,7 @@ contract PWMReward {
     event MintingUpdated(address indexed newMinting);
     event StakingUpdated(address indexed newStaking);
     event TreasuryUpdated(address indexed newTreasury);
+    event MaxBenchmarkPoolWeiUpdated(uint256 newMax);
 
     modifier onlyGovernance() { require(msg.sender == governance, "PWMReward: not governance"); _; }
     modifier onlyCertificate() { require(msg.sender == certificate, "PWMReward: not certificate"); _; }
@@ -104,6 +117,12 @@ contract PWMReward {
         emit TreasuryUpdated(x);
     }
 
+    /// @notice Set the per-benchmark pool cap. Pass 0 to disable (unlimited).
+    function setMaxBenchmarkPoolWei(uint256 newMax) external onlyGovernance {
+        maxBenchmarkPoolWei = newMax;
+        emit MaxBenchmarkPoolWeiUpdated(newMax);
+    }
+
     // ---------- pool inflows ----------
 
     /// @notice B-pool seed from a successful promotion (called by PWMStaking).
@@ -126,8 +145,13 @@ contract PWMReward {
     function _credit(bytes32 benchmarkHash, uint256 amount, string memory kind) internal {
         require(benchmarkHash != bytes32(0), "PWMReward: zero benchmark");
         require(amount > 0, "PWMReward: zero amount");
-        pool[benchmarkHash] += amount;
-        emit PoolSeeded(benchmarkHash, amount, pool[benchmarkHash], msg.sender, kind);
+        uint256 newBalance = pool[benchmarkHash] + amount;
+        uint256 cap = maxBenchmarkPoolWei;
+        if (cap != 0) {
+            require(newBalance <= cap, "PWMReward: pool cap exceeded");
+        }
+        pool[benchmarkHash] = newBalance;
+        emit PoolSeeded(benchmarkHash, amount, newBalance, msg.sender, kind);
     }
 
     // ---------- settlement ----------
