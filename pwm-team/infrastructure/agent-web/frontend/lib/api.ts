@@ -157,6 +157,7 @@ export const api = {
   bounties: () => get<{ bounties: Bounty[] }>('/api/bounties'),
   network: () => get<{ network: string; addresses: Record<string, string> }>('/api/network'),
   activity: (limit = 50) => get<{ activity: ActivityEntry[] }>(`/api/activity?limit=${limit}`),
+  demos: () => get<{ demos: Demo[] }>('/api/demos'),
   match: (params: {
     prompt?: string;
     domain?: string;
@@ -188,4 +189,21 @@ export type MatchResult = {
   candidates: MatchCandidate[];
   clarifying_question: string | null;
   confidence_floor_hit: boolean;
+};
+
+export type Demo = {
+  name: string;
+  meta: {
+    benchmark: string;
+    tier_approx?: string;
+    shape_snapshot?: number[];
+    shape_ground_truth?: number[];
+    shape_solution?: number[];
+    reference_solver?: string;
+    reference_solver_psnr_db?: number;
+    how_to_run?: string;
+    sha256?: Record<string, string>;
+    [k: string]: any;
+  };
+  files: Record<string, number>; // filename → size in bytes
 };

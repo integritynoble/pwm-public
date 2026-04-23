@@ -52,6 +52,8 @@ COPY pwm-team/coordination/agent-coord/interfaces/contracts_abi  /app/coord/cont
 COPY pwm-team/coordination/agent-coord/interfaces/addresses.json /app/coord/addresses.json
 COPY pwm-team/coordination/agent-coord/interfaces/bounties       /app/coord/bounties
 COPY pwm-team/pwm_product/genesis                                /app/genesis
+COPY pwm-team/pwm_product/demos                                  /app/demos
+COPY pwm-team/pwm_product/benchmark_cards                        /app/benchmark_cards
 
 # Built frontend (standalone output from Stage 1)
 COPY --from=frontend /build/.next/standalone /app/frontend
@@ -70,6 +72,8 @@ ENV PYTHONPATH=/app \
     PWM_ABI_DIR=/app/coord/contracts_abi \
     PWM_ADDRESSES=/app/coord/addresses.json \
     PWM_GENESIS_DIR=/app/genesis \
+    PWM_DEMOS_DIR=/app/demos \
+    PWM_CARDS_DIR=/app/benchmark_cards \
     PWM_BOUNTIES_DIR=/app/coord/bounties \
     PWM_API_URL=http://localhost:8000 \
     PWM_CACHE_SECONDS=60 \

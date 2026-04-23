@@ -12,7 +12,7 @@ from typing import Any
 from fastapi import FastAPI, HTTPException, Response
 from fastapi.middleware.cors import CORSMiddleware
 
-from . import bounties, genesis, matching, store
+from . import bounties, demos, genesis, matching, store
 
 
 app = FastAPI(
@@ -309,6 +309,32 @@ def leaderboard(benchmark_hash: str):
 @app.get("/api/bounties")
 def bounties_list():
     return _cached({"bounties": bounties.list_bounties()})
+
+
+@app.get("/api/demos")
+def demos_list():
+    """List canonical demo datasets (CASSI, CACTI anchors — plus U1b additions later)."""
+    return _cached({"demos": demos.list_demos()})
+
+
+@app.get("/api/demos/{demo_name}/{filename}")
+def demo_file(demo_name: str, filename: str):
+    """Stream one file from a demo directory.
+
+    Allowed filenames: snapshot.npz, ground_truth.npz, solution.npz,
+    meta.json, README.md. Anything else returns 404.
+    """
+    path = demos.resolve_file(demo_name, filename)
+    if path is None:
+        raise HTTPException(status_code=404, detail="demo file not found")
+    content = path.read_bytes()
+    mime = "application/octet-stream"
+    if filename.endswith(".json"):
+        mime = "application/json"
+    elif filename.endswith(".md"):
+        mime = "text/markdown"
+    return Response(content=content, media_type=mime,
+                    headers={"Cache-Control": "public, max-age=3600"})
 
 
 @app.get("/api/match")
