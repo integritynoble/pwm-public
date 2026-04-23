@@ -1,0 +1,54 @@
+# Benchmark card — auto-generated + handwritten blocks.
+# DO NOT edit the `auto:` block by hand; it regenerates from L3 JSON.
+# DO handwrite the fields under `handwritten:` — the generator preserves them.
+# Generator: scripts/generate_benchmark_cards.py v1.0.0
+
+auto:
+  benchmark_id: L3-003
+  principle_number: 3
+  principle_title: Coded Aperture Snapshot Spectral Imaging (CASSI)
+  title: CASSI Mismatch-Only Benchmark Suite (P-benchmark + 4 I-benchmark tiers)
+  domain: Compressive Imaging
+  sub_domain: Hyperspectral snapshot
+  benchmark_type: combined_P_and_I
+  input_shape: [H, W, 1]
+  output_shape: [H, W, N_bands]
+  tiers:
+    - tier: T1_nominal
+      rho: 1
+      H: 256
+      W: 256
+      noise_max: 0.01
+      mismatch_summary: noise_level=0.01
+      epsilon: 28.0
+    - tier: T2_low
+      rho: 3
+      H: 256
+      W: 256
+      noise_max: 0.02
+      mismatch_summary: "noise_level=0.02, disp_a1_error=0.01, disp_alpha_error=0.05, mask_dx=0.2, mask_dy=0.2, mask_theta=0.02"
+      epsilon: 25.5
+    - tier: T3_moderate
+      rho: 5
+      H: 512
+      W: 512
+      noise_max: 0.05
+      mismatch_summary: "noise_level=0.05, disp_a1_error=0.025, disp_alpha_error=0.12, mask_dx=0.5, mask_dy=0.5, mask_theta=0.07"
+      epsilon: 23.0
+    - tier: T4_blind
+      rho: 10
+      H: 1024
+      W: 1024
+      noise_max: 0.08
+      mismatch_summary: "noise_level=0.08, disp_a1_error=0.05, disp_alpha_error=0.28, mask_dx=1.0, mask_dy=1.0, mask_theta=0.14"
+      epsilon: 21.5
+  best_baseline_name: PnP-HSICNN
+  best_baseline_q: 0.7
+  quality_metric: PSNR_dB
+  quality_metric_secondary: SSIM
+  difficulty_delta: 3
+
+handwritten:
+  one_line: Reconstruct a 28-band hyperspectral image cube from a single 2D coded-aperture snapshot captured through a fixed binary mask with wavelength-dependent lateral dispersion.
+  forward_model_summary: "y = sum_lambda (shift_lambda(mask * x_lambda)) + n, where x is the (H,W,N_bands) spectral cube, mask is a binary coded aperture, shift_lambda applies a per-band lateral shift (dispersion), and integration is over the band axis to produce the (H,W,1) snapshot y. n is additive read noise. Deployment mismatch parameters: (mask_dx, mask_dy, mask_theta, disp_a1_error, disp_alpha_error, noise_level)."
+  bad_prompt_keywords: [RGB demosaicing, natural video reconstruction, point cloud, 3D mesh, depth map, MRI reconstruction, CT projection, ultrasound, 1D spectroscopy, audio denoising, seismic, still grayscale denoising]

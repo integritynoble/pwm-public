@@ -1,0 +1,54 @@
+# Benchmark card — auto-generated + handwritten blocks.
+# DO NOT edit the `auto:` block by hand; it regenerates from L3 JSON.
+# DO handwrite the fields under `handwritten:` — the generator preserves them.
+# Generator: scripts/generate_benchmark_cards.py v1.0.0
+
+auto:
+  benchmark_id: L3-004
+  principle_number: 4
+  principle_title: Coded Aperture Compressive Temporal Imaging (CACTI)
+  title: CACTI Mismatch-Only Benchmark Suite (P-benchmark + 4 I-benchmark tiers)
+  domain: Compressive Imaging
+  sub_domain: Video snapshot compressive sensing
+  benchmark_type: combined_P_and_I
+  input_shape: [H, W, 1]
+  output_shape: [H, W]
+  tiers:
+    - tier: T1_nominal
+      rho: 1
+      H: 256
+      W: 256
+      noise_max: 0.01
+      mismatch_summary: "B=8, noise_level=0.01, eta=1.0, gamma=1.0, sigma_n=1.0"
+      epsilon: 26.0
+    - tier: T2_low
+      rho: 3
+      H: 256
+      W: 256
+      noise_max: 0.02
+      mismatch_summary: "B=8, noise_level=0.02, dx=0.2, dy=0.2, theta=0.02, dt=0.02, eta=0.98, gamma=1.01, offset=0.002, sigma_n=1.2"
+      epsilon: 24.0
+    - tier: T3_moderate
+      rho: 5
+      H: 512
+      W: 512
+      noise_max: 0.05
+      mismatch_summary: "B=16, noise_level=0.05, dx=0.5, dy=0.5, theta=0.07, dt=0.05, eta=0.95, gamma=1.03, offset=0.005, sigma_n=1.5"
+      epsilon: 22.5
+    - tier: T4_blind
+      rho: 10
+      H: 1024
+      W: 1024
+      noise_max: 0.08
+      mismatch_summary: "B=32, noise_level=0.08, dx=1.0, dy=1.0, theta=0.14, dt=0.1, eta=0.9, gamma=1.05, offset=0.01, sigma_n=2.0"
+      epsilon: 21.0
+  best_baseline_name: EfficientSCI
+  best_baseline_q: 0.67
+  quality_metric: PSNR_dB
+  quality_metric_secondary: SSIM
+  difficulty_delta: 3
+
+handwritten:
+  one_line: Reconstruct a short video sequence (8+ frames) from a single 2D compressive temporal snapshot captured through a time-varying binary mask.
+  forward_model_summary: "y = sum_t (mask_t * x_t) + n, where x is the (H,W,T) video tensor, mask_t is the per-frame binary coded aperture applied in the t-th integration window, and integration is over time to produce the (H,W,1) snapshot y. n is additive read noise. Deployment mismatch parameters: (mask_dx, mask_dy, mask_theta, dt, eta, gamma, offset, sigma_n)."
+  bad_prompt_keywords: [hyperspectral, spectral imaging, 3D reconstruction, point cloud, still image, MRI, CT, ultrasound, audio, text, 1D time series]
