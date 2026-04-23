@@ -157,4 +157,35 @@ export const api = {
   bounties: () => get<{ bounties: Bounty[] }>('/api/bounties'),
   network: () => get<{ network: string; addresses: Record<string, string> }>('/api/network'),
   activity: (limit = 50) => get<{ activity: ActivityEntry[] }>(`/api/activity?limit=${limit}`),
+  match: (params: {
+    prompt?: string;
+    domain?: string;
+    modality?: string;
+    h?: number;
+    w?: number;
+    noise?: number;
+  }) => {
+    const q = new URLSearchParams();
+    if (params.prompt) q.set('prompt', params.prompt);
+    if (params.domain) q.set('domain', params.domain);
+    if (params.modality) q.set('modality', params.modality);
+    if (params.h !== undefined) q.set('h', String(params.h));
+    if (params.w !== undefined) q.set('w', String(params.w));
+    if (params.noise !== undefined) q.set('noise', String(params.noise));
+    return get<MatchResult>(`/api/match?${q.toString()}`);
+  },
+};
+
+export type MatchCandidate = {
+  benchmark_id: string;
+  rank: number;
+  score: number;
+  tier: string | null;
+  rationale: string;
+};
+
+export type MatchResult = {
+  candidates: MatchCandidate[];
+  clarifying_question: string | null;
+  confidence_floor_hit: boolean;
 };

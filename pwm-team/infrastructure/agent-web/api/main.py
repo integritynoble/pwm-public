@@ -12,7 +12,7 @@ from typing import Any
 from fastapi import FastAPI, HTTPException, Response
 from fastapi.middleware.cors import CORSMiddleware
 
-from . import bounties, genesis, store
+from . import bounties, genesis, matching, store
 
 
 app = FastAPI(
@@ -309,6 +309,30 @@ def leaderboard(benchmark_hash: str):
 @app.get("/api/bounties")
 def bounties_list():
     return _cached({"bounties": bounties.list_bounties()})
+
+
+@app.get("/api/match")
+def match(
+    prompt: str | None = None,
+    domain: str | None = None,
+    modality: str | None = None,
+    h: int | None = None,
+    w: int | None = None,
+    noise: float | None = None,
+):
+    """Faceted (LLM-free) benchmark matcher — reference implementation.
+
+    Call pattern: /api/match?prompt=...  OR  /api/match?domain=imaging&h=256
+    Response shape matches pwm_overview1.md §8.3 + 08-llm-matcher.md wire schema.
+
+    For LLM-routed / natural-language matching, see Bounty #8
+    (`interfaces/bounties/08-llm-matcher.md`).
+    """
+    # Responses are NOT cached — filters are combinatorial; would bloat the cache.
+    return matching.match_prompt(
+        prompt=prompt, domain=domain, modality=modality,
+        h=h, w=w, noise=noise,
+    )
 
 
 # ---------- helpers ----------

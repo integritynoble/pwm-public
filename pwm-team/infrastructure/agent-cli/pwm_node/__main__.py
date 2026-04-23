@@ -14,7 +14,7 @@ import argparse
 import sys
 from pathlib import Path
 
-from pwm_node.commands import balance, benchmarks, inspect, mine, sp, stake, submit, verify
+from pwm_node.commands import balance, benchmarks, inspect, match, mine, sp, stake, submit, verify
 
 
 # All commands are now live. _CHAIN_COMMANDS kept for backward compat.
@@ -116,6 +116,28 @@ def build_parser() -> argparse.ArgumentParser:
     scp.add_argument("--timeout", type=int, default=300, help="Tx wait timeout in seconds.")
     scp.add_argument("--gas", type=int, default=500000, help="Gas budget for the submit tx.")
     scp.set_defaults(handler=submit.run)
+
+    # match — faceted (LLM-free) benchmark matcher (reference impl)
+    matp = sub.add_parser(
+        "match",
+        help="Match a free-text prompt or structured filters to benchmarks (faceted, no LLM).",
+    )
+    matp.add_argument("--prompt", help="Free-text description of your data / problem.")
+    matp.add_argument("--domain", help="L1 domain filter (e.g. imaging, spectroscopy).")
+    matp.add_argument("--modality", help="Benchmark_type filter (e.g. snapshot, tomography).")
+    matp.add_argument("--h", type=int, help="Preferred image height.")
+    matp.add_argument("--w", type=int, help="Preferred image width.")
+    matp.add_argument("--noise", type=float,
+                      help="Max noise level you need the benchmark to tolerate.")
+    matp.add_argument("--json", action="store_true",
+                      help="Emit JSON output (matches 08-llm-matcher.md wire schema).")
+    matp.add_argument(
+        "--cards-dir",
+        type=Path,
+        default=default_root / "pwm-team" / "pwm_product" / "benchmark_cards",
+        help=f"Benchmark-cards directory (default: {default_root}/pwm-team/pwm_product/benchmark_cards).",
+    )
+    matp.set_defaults(handler=match.run)
 
     # mine — the flagship: resolve benchmark, run solver, score, submit
     mp = sub.add_parser(
