@@ -34,6 +34,8 @@ services:
       # Genesis JSONs + bounty specs are read directly from the repo.
       PWM_GENESIS_DIR: /repo/pwm_product/genesis
       PWM_BOUNTIES_DIR: /coord/bounties
+      PWM_CARDS_DIR: /repo/pwm_product/benchmark_cards
+      PWM_DEMOS_DIR: /repo/pwm_product/demos
       PWM_CACHE_SECONDS: "60"
     volumes:
       - pwm_data:/data:ro
