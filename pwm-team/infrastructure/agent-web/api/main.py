@@ -220,6 +220,20 @@ def benchmarks_list():
     })
 
 
+_BENCHMARK_TO_DEMO = {
+    "L3-003": "cassi",
+    "L3-004": "cacti",
+}
+
+
+def _demo_for_benchmark(benchmark_ref: str) -> dict | None:
+    """Return the demo record (samples + metadata) for a benchmark id, or None."""
+    demo_name = _BENCHMARK_TO_DEMO.get(benchmark_ref)
+    if not demo_name:
+        return None
+    return demos.find_demo(demo_name)
+
+
 @app.get("/api/benchmarks/{benchmark_ref}")
 def benchmark_detail(benchmark_ref: str):
     # Accept either an artifact_id (L3-003) or an on-chain hash.
@@ -238,6 +252,7 @@ def benchmark_detail(benchmark_ref: str):
             "chain": chain_row,
             "leaderboard": leaderboard,
             "pool_balance_wei": pool,
+            "demo": _demo_for_benchmark(benchmark_ref),
         })
     finally:
         conn.close()
@@ -317,23 +332,37 @@ def demos_list():
     return _cached({"demos": demos.list_demos()})
 
 
-@app.get("/api/demos/{demo_name}/{filename}")
-def demo_file(demo_name: str, filename: str):
-    """Stream one file from a demo directory.
+def _demo_mime(filename: str) -> str:
+    if filename.endswith(".json"):
+        return "application/json"
+    if filename.endswith(".md"):
+        return "text/markdown"
+    if filename.endswith(".png"):
+        return "image/png"
+    return "application/octet-stream"
 
-    Allowed filenames: snapshot.npz, ground_truth.npz, solution.npz,
-    meta.json, README.md. Anything else returns 404.
-    """
-    path = demos.resolve_file(demo_name, filename)
+
+@app.get("/api/demos/{demo_name}/{filename}")
+def demo_benchmark_file(demo_name: str, filename: str):
+    """Stream a benchmark-level file (README.md only)."""
+    path = demos.resolve_benchmark_file(demo_name, filename)
     if path is None:
         raise HTTPException(status_code=404, detail="demo file not found")
-    content = path.read_bytes()
-    mime = "application/octet-stream"
-    if filename.endswith(".json"):
-        mime = "application/json"
-    elif filename.endswith(".md"):
-        mime = "text/markdown"
-    return Response(content=content, media_type=mime,
+    return Response(content=path.read_bytes(), media_type=_demo_mime(filename),
+                    headers={"Cache-Control": "public, max-age=3600"})
+
+
+@app.get("/api/demos/{demo_name}/{sample_name}/{filename}")
+def demo_sample_file(demo_name: str, sample_name: str, filename: str):
+    """Stream one file from a demo sample dir.
+
+    Allowed filenames: snapshot.npz, ground_truth.npz, solution.npz,
+    snapshot.png, ground_truth.png, meta.json. Anything else → 404.
+    """
+    path = demos.resolve_sample_file(demo_name, sample_name, filename)
+    if path is None:
+        raise HTTPException(status_code=404, detail="demo sample file not found")
+    return Response(content=path.read_bytes(), media_type=_demo_mime(filename),
                     headers={"Cache-Control": "public, max-age=3600"})
 
 

@@ -1,0 +1,28 @@
+{
+  "benchmark": "L3-004 (CACTI) \u2014 DEMO (not the real benchmark)",
+  "generated_by": "scripts/generate_demos.py",
+  "how_to_run": "python3 pwm-team/pwm_product/reference_solvers/cacti/cacti_pnp_admm.py --input pwm-team/pwm_product/demos/cacti/sample_02 --output /tmp/out",
+  "reference_solver": "pwm-team/pwm_product/reference_solvers/cacti/cacti_pnp_admm.py",
+  "reference_solver_psnr_db": 14.88,
+  "seed": 43,
+  "sha256": {
+    "ground_truth.npz": "0da166fd864991b03ec4773fbf18064f3fbb443e5c70a834d5bb4beebbc26fa2",
+    "snapshot.npz": "8073f2bc51823d0c548504d909f671b3c7d2d0345db2e73a63cc4b46ef20ac17",
+    "solution.npz": "8721c79e50a017507a06a01b292c3104e7f39660bab1876864b46190d73edd55"
+  },
+  "shape_ground_truth": [
+    4,
+    32,
+    32
+  ],
+  "shape_snapshot": [
+    32,
+    32
+  ],
+  "shape_solution": [
+    4,
+    32,
+    32
+  ],
+  "tier_approx": "T1_nominal-equivalent"
+}

@@ -1,7 +1,7 @@
 {
   "benchmark": "L3-003 (CASSI) \u2014 DEMO (not the real benchmark)",
   "generated_by": "scripts/generate_demos.py",
-  "how_to_run": "python3 pwm-team/pwm_product/reference_solvers/cassi/cassi_gap_tv.py --input pwm-team/pwm_product/demos/cassi --output /tmp/out",
+  "how_to_run": "python3 pwm-team/pwm_product/reference_solvers/cassi/cassi_gap_tv.py --input pwm-team/pwm_product/demos/cassi/sample_01 --output /tmp/out",
   "reference_solver": "pwm-team/pwm_product/reference_solvers/cassi/cassi_gap_tv.py",
   "reference_solver_psnr_db": 10.6,
   "seed": 42,

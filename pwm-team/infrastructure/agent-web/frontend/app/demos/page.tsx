@@ -20,11 +20,12 @@ export default async function DemosPage() {
         <h1 className="text-3xl font-bold tracking-tight">Demos</h1>
         <p className="text-sm text-pwm-muted mt-2 max-w-2xl">
           Canonical demo datasets — committed to the repo, small
-          (&lt; 50 KB each), deterministic. Download the input, run the
-          reference solver locally, and see the full PWM mining pipeline
-          work in under a minute. <strong>These are not the real
-          benchmarks.</strong> They exist so newcomers can verify the
-          pipeline end-to-end before burning gas on a real{' '}
+          (&lt; 50 KB each), deterministic. Each benchmark ships two
+          independent samples so solver output isn&apos;t cherry-picked.
+          Download the input, run the reference solver locally, and see
+          the PWM pipeline work in under a minute. <strong>These are not
+          the real benchmarks.</strong> They exist so newcomers can verify
+          the pipeline end-to-end before burning gas on a real{' '}
           <Link href="/bounties" className="pwm-link">mine</Link>.
         </p>
       </div>
@@ -40,88 +41,125 @@ export default async function DemosPage() {
         </div>
       )}
 
-      {data.demos.map((d) => (
-        <div key={d.name} className="pwm-card space-y-4">
-          <div className="flex items-start justify-between gap-4 flex-wrap">
-            <div>
-              <div className="text-xs text-pwm-muted uppercase tracking-wide">
-                {d.meta.tier_approx ?? ''}
+      {data.demos.map((d) => {
+        const first = d.samples[0];
+        return (
+          <div key={d.name} className="pwm-card space-y-4">
+            <div className="flex items-start justify-between gap-4 flex-wrap">
+              <div>
+                <div className="text-xs text-pwm-muted uppercase tracking-wide">
+                  {first?.meta.tier_approx ?? ''}
+                </div>
+                <h2 className="text-xl font-semibold mt-1 font-mono">
+                  {d.name}
+                </h2>
+                <p className="text-sm text-pwm-muted mt-1">
+                  {first?.meta.benchmark}
+                </p>
+                {d.benchmark_id && (
+                  <Link
+                    href={`/benchmarks/${d.benchmark_id}`}
+                    className="pwm-link text-sm"
+                  >
+                    Full benchmark page → {d.benchmark_id}
+                  </Link>
+                )}
               </div>
-              <h2 className="text-xl font-semibold mt-1 font-mono">
-                {d.name}
-              </h2>
-              <p className="text-sm text-pwm-muted mt-1">
-                {d.meta.benchmark}
-              </p>
+              {first?.meta.reference_solver_psnr_db !== undefined && (
+                <div className="text-right text-sm">
+                  <div className="text-xs text-pwm-muted">reference PSNR</div>
+                  <div className="text-xl font-semibold text-pwm-accent">
+                    {first.meta.reference_solver_psnr_db.toFixed(1)} dB
+                  </div>
+                  <div className="text-xs text-pwm-muted mt-0.5">
+                    your solver should beat this
+                  </div>
+                </div>
+              )}
             </div>
-            {d.meta.reference_solver_psnr_db !== undefined && (
-              <div className="text-right text-sm">
-                <div className="text-xs text-pwm-muted">reference PSNR</div>
-                <div className="text-xl font-semibold text-pwm-accent">
-                  {d.meta.reference_solver_psnr_db.toFixed(1)} dB
+
+            <div>
+              <div className="text-xs uppercase tracking-wide text-pwm-muted mb-1">
+                Shape summary
+              </div>
+              <div className="text-sm space-y-0.5 font-mono">
+                {first?.meta.shape_snapshot && (
+                  <div>snapshot: [{first.meta.shape_snapshot.join(', ')}]</div>
+                )}
+                {first?.meta.shape_ground_truth && (
+                  <div>ground truth: [{first.meta.shape_ground_truth.join(', ')}]</div>
+                )}
+                {first?.meta.shape_solution && (
+                  <div>reference solution: [{first.meta.shape_solution.join(', ')}]</div>
+                )}
+              </div>
+            </div>
+
+            <div className="grid md:grid-cols-2 gap-3">
+              {d.samples.map((s) => (
+                <div key={s.name} className="border border-slate-800 rounded p-3 bg-slate-950/40 space-y-2">
+                  <div className="flex items-baseline justify-between">
+                    <div className="font-mono text-sm font-semibold">{s.name}</div>
+                    <div className="text-xs text-pwm-muted">
+                      seed {s.meta.seed} · {s.meta.reference_solver_psnr_db} dB
+                    </div>
+                  </div>
+                  {(s.files['snapshot.png'] || s.files['ground_truth.png']) && (
+                    <div className="grid grid-cols-2 gap-2">
+                      {s.files['snapshot.png'] && (
+                        <img
+                          src={`/api/demos/${d.name}/${s.name}/snapshot.png`}
+                          alt={`${s.name} snapshot`}
+                          className="w-full border border-slate-800 rounded [image-rendering:pixelated]"
+                          loading="lazy"
+                        />
+                      )}
+                      {s.files['ground_truth.png'] && (
+                        <img
+                          src={`/api/demos/${d.name}/${s.name}/ground_truth.png`}
+                          alt={`${s.name} ground truth`}
+                          className="w-full border border-slate-800 rounded [image-rendering:pixelated]"
+                          loading="lazy"
+                        />
+                      )}
+                    </div>
+                  )}
+                  <div className="space-y-1 text-xs">
+                    {Object.entries(s.files).map(([fname, size]) => (
+                      <a
+                        key={fname}
+                        href={`/api/demos/${d.name}/${s.name}/${fname}`}
+                        download
+                        className="flex justify-between items-center px-2 py-1 rounded border border-slate-800 hover:border-pwm-accent/50 hover:bg-slate-900/50 transition"
+                      >
+                        <code>{fname}</code>
+                        <span className="text-pwm-muted">{formatBytes(size)}</span>
+                      </a>
+                    ))}
+                  </div>
                 </div>
-                <div className="text-xs text-pwm-muted mt-0.5">
-                  your solver should beat this
+              ))}
+            </div>
+
+            {first?.meta.how_to_run && (
+              <div>
+                <div className="text-xs uppercase tracking-wide text-pwm-muted mb-1">
+                  Run it
                 </div>
+                <pre className="text-xs bg-slate-950 rounded p-3 overflow-x-auto">
+                  <code>{first.meta.how_to_run}</code>
+                </pre>
               </div>
             )}
           </div>
-
-          <div>
-            <div className="text-xs uppercase tracking-wide text-pwm-muted mb-1">
-              Shape summary
-            </div>
-            <div className="text-sm space-y-0.5 font-mono">
-              {d.meta.shape_snapshot && (
-                <div>snapshot: [{d.meta.shape_snapshot.join(', ')}]</div>
-              )}
-              {d.meta.shape_ground_truth && (
-                <div>ground truth: [{d.meta.shape_ground_truth.join(', ')}]</div>
-              )}
-              {d.meta.shape_solution && (
-                <div>reference solution: [{d.meta.shape_solution.join(', ')}]</div>
-              )}
-            </div>
-          </div>
-
-          <div>
-            <div className="text-xs uppercase tracking-wide text-pwm-muted mb-2">
-              Files
-            </div>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-2">
-              {Object.entries(d.files).map(([fname, size]) => (
-                <a
-                  key={fname}
-                  href={`/api/demos/${d.name}/${fname}`}
-                  className="flex justify-between items-center px-3 py-2 rounded border border-slate-800 hover:border-pwm-accent/50 hover:bg-slate-900/50 transition"
-                >
-                  <code className="text-sm">{fname}</code>
-                  <span className="text-xs text-pwm-muted">
-                    {formatBytes(size)}
-                  </span>
-                </a>
-              ))}
-            </div>
-          </div>
-
-          {d.meta.how_to_run && (
-            <div>
-              <div className="text-xs uppercase tracking-wide text-pwm-muted mb-1">
-                Run it
-              </div>
-              <pre className="text-xs bg-slate-950 rounded p-3 overflow-x-auto">
-                <code>{d.meta.how_to_run}</code>
-              </pre>
-            </div>
-          )}
-        </div>
-      ))}
+        );
+      })}
 
       <footer className="text-xs text-pwm-muted pt-4 border-t border-slate-800 max-w-2xl">
         Demo files are regenerated from{' '}
         <code className="text-slate-400">scripts/generate_demos.py</code> at
-        a fixed RNG seed — they're byte-stable across runs so any SHA-256
-        in a demo's <code className="text-slate-400">meta.json</code> can
+        fixed RNG seeds — byte-stable across runs so any SHA-256 in a
+        sample&apos;s <code className="text-slate-400">meta.json</code> can
         be cross-checked against the repo.
       </footer>
     </div>

@@ -1,7 +1,7 @@
 {
   "benchmark": "L3-004 (CACTI) \u2014 DEMO (not the real benchmark)",
   "generated_by": "scripts/generate_demos.py",
-  "how_to_run": "python3 pwm-team/pwm_product/reference_solvers/cacti/cacti_pnp_admm.py --input pwm-team/pwm_product/demos/cacti --output /tmp/out",
+  "how_to_run": "python3 pwm-team/pwm_product/reference_solvers/cacti/cacti_pnp_admm.py --input pwm-team/pwm_product/demos/cacti/sample_01 --output /tmp/out",
   "reference_solver": "pwm-team/pwm_product/reference_solvers/cacti/cacti_pnp_admm.py",
   "reference_solver_psnr_db": 14.87,
   "seed": 42,

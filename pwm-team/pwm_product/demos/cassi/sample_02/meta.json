@@ -1,0 +1,28 @@
+{
+  "benchmark": "L3-003 (CASSI) \u2014 DEMO (not the real benchmark)",
+  "generated_by": "scripts/generate_demos.py",
+  "how_to_run": "python3 pwm-team/pwm_product/reference_solvers/cassi/cassi_gap_tv.py --input pwm-team/pwm_product/demos/cassi/sample_02 --output /tmp/out",
+  "reference_solver": "pwm-team/pwm_product/reference_solvers/cassi/cassi_gap_tv.py",
+  "reference_solver_psnr_db": 10.73,
+  "seed": 43,
+  "sha256": {
+    "ground_truth.npz": "0b988419069b6c5204537d97bf4919e830ed45c7dac2b5af29aeb4304cc3f3bd",
+    "snapshot.npz": "0088b0f383842d33bbf575337ad38969d9d82ed04aabd8bd3d2bfd0756b2ba47",
+    "solution.npz": "628d80727cc07ca7ad78199b372aea5950a656ea866f8f29913ff793181408e3"
+  },
+  "shape_ground_truth": [
+    32,
+    32,
+    8
+  ],
+  "shape_snapshot": [
+    32,
+    32
+  ],
+  "shape_solution": [
+    32,
+    32,
+    8
+  ],
+  "tier_approx": "T1_nominal-equivalent"
+}

@@ -1,53 +1,39 @@
-# CACTI demo dataset — `L3-004` (T1_nominal-equivalent)
+# CACTI demo datasets — `L3-004`
 
-Canonical, committed-to-repo demo input + reference output. Any external
-user or CI job can verify the reference solver works against this
-dataset in < 5 seconds.
+Canonical, committed-to-repo inputs + reference outputs for `L3-004`.
+**2 independent samples** (different RNG seeds) so external users
+can see the reference solver is deterministic and not cherry-picked.
 
-**⚠ This is NOT the real L3-004 benchmark.** It is a 4-frame 32×32
-synthetic problem created by `scripts/generate_demos.py` from a fixed
-RNG seed. Use it to verify the pipeline; do NOT submit cert_hashes
-computed against it expecting to score on the real leaderboard.
+**⚠ These are NOT the real L3-004 benchmark.** They are small
+(32×32) synthetic problems created by `scripts/generate_demos.py`.
+Use them to verify the pipeline end-to-end; do NOT submit cert_hashes
+computed against them.
 
-## Files
+## Samples
 
-| File | Purpose | Shape |
-|------|---------|-------|
-| `snapshot.npz` | Solver input: `y`, `masks` | y: (32, 32) |
-| `ground_truth.npz` | True video (for PSNR scoring) | (4, 32, 32) |
-| `solution.npz` | Pre-computed output from the reference PnP-ADMM solver | (4, 32, 32) |
-| `meta.json` | Provenance + SHA-256 hashes of the three `.npz` files |
+| Sample | Seed | Reference PSNR |
+|--------|------|----------------|
+| `sample_01/` | 42 | 14.87 dB |
+| `sample_02/` | 43 | 14.88 dB |
 
-## Run the reference solver on this demo
+## Files in each sample
+
+| File | Purpose |
+|------|---------|
+| `snapshot.npz`     | Solver input |
+| `ground_truth.npz` | True cube/video (for PSNR scoring) |
+| `solution.npz`     | Pre-computed output from the reference solver |
+| `snapshot.png`     | Rendered preview of the input |
+| `ground_truth.png` | Rendered preview of the target |
+| `meta.json`        | Provenance + SHA-256 hashes |
+
+## Run the reference solver on sample_01
 
 ```bash
 python3 pwm-team/pwm_product/reference_solvers/cacti/cacti_pnp_admm.py \
-    --input  pwm-team/pwm_product/demos/cacti \
-    --output /tmp/cacti_out
-cat /tmp/cacti_out/meta.json
+    --input  pwm-team/pwm_product/demos/cacti/sample_01 \
+    --output /tmp/out
+cat /tmp/out/meta.json
 ```
 
-Expected: `PSNR=14.87 dB`. If your output differs, check numpy version
-drift or re-run `scripts/generate_demos.py --cacti`.
-
-## Swap in your own solver
-
-Any solver matching the input contract (reads `snapshot.npz` with keys
-`y`, `masks`; writes `solution.npz` with key `video`) can use this
-exact input:
-
-```bash
-python3 /path/to/your_solver.py \
-    --input pwm-team/pwm_product/demos/cacti \
-    --output /tmp/your_out
-```
-
-Compare PSNR to the 14.87 dB floor; if you beat it, submit via
-`pwm-node mine L3-004 --solver /path/to/your_solver.py` against the
-real benchmark (not this demo).
-
-## Regenerate
-
-```bash
-python3 scripts/generate_demos.py --cacti
-```
+Each sample is byte-stable across runs at the same git SHA.

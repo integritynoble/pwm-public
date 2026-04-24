@@ -1,9 +1,11 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
-import { api } from '@/lib/api';
+import { api, type Demo } from '@/lib/api';
 import { shortAddr, weiToPwm } from '@/lib/format';
 import { StatusBadge } from '@/components/Badges';
+
+const PUBLIC_REPO = 'https://github.com/integritynoble/Physics_World_Model/blob/master';
 
 export async function generateMetadata({
   params,
@@ -109,6 +111,10 @@ export default async function BenchmarkDetail({ params }: { params: Promise<{ re
         </section>
       )}
 
+      {data.demo && <ExampleDataSection demo={data.demo} />}
+
+      {data.demo && <GetThisBenchmarkSection demo={data.demo} benchmarkRef={ref} />}
+
       <section>
         <div className="flex items-baseline justify-between mb-3">
           <h2 className="text-lg font-semibold">Leaderboard (top 10)</h2>
@@ -145,5 +151,185 @@ export default async function BenchmarkDetail({ params }: { params: Promise<{ re
         )}
       </section>
     </div>
+  );
+}
+
+
+function fmtBytes(n: number): string {
+  if (n < 1024) return `${n} B`;
+  if (n < 1024 * 1024) return `${(n / 1024).toFixed(1)} KB`;
+  return `${(n / (1024 * 1024)).toFixed(2)} MB`;
+}
+
+
+function ExampleDataSection({ demo }: { demo: Demo }) {
+  const samples = demo.samples.slice(0, 2); // show first 2 samples
+  return (
+    <section>
+      <h2 className="text-lg font-semibold mb-3">Example data</h2>
+      <p className="text-sm text-pwm-muted mb-4 max-w-3xl">
+        Two independent sample instances from the reference demo (different
+        RNG seeds) so you can see the solver output isn&apos;t cherry-picked.
+        Snapshot is the compressed input; ground truth is the target the
+        solver is scored against. Small 32×32 synthetic problems — not the
+        real benchmark.
+      </p>
+      <div className="grid md:grid-cols-2 gap-4">
+        {samples.map((s) => (
+          <div key={s.name} className="pwm-card space-y-3">
+            <div className="flex items-baseline justify-between">
+              <h3 className="font-mono text-sm font-semibold">{s.name}</h3>
+              <span className="text-xs text-pwm-muted">
+                seed {s.meta.seed} · ref PSNR {s.meta.reference_solver_psnr_db} dB
+              </span>
+            </div>
+            <div className="grid grid-cols-2 gap-2">
+              <div>
+                <div className="text-xs text-pwm-muted mb-1">Input (snapshot)</div>
+                <img
+                  src={`/api/demos/${demo.name}/${s.name}/snapshot.png`}
+                  alt={`${demo.name} ${s.name} snapshot`}
+                  className="w-full border border-slate-800 rounded bg-slate-950 [image-rendering:pixelated]"
+                  loading="lazy"
+                />
+                <div className="text-[10px] text-slate-500 font-mono mt-1">
+                  shape {JSON.stringify(s.meta.shape_snapshot)}
+                </div>
+              </div>
+              <div>
+                <div className="text-xs text-pwm-muted mb-1">Target (ground truth)</div>
+                <img
+                  src={`/api/demos/${demo.name}/${s.name}/ground_truth.png`}
+                  alt={`${demo.name} ${s.name} ground truth`}
+                  className="w-full border border-slate-800 rounded bg-slate-950 [image-rendering:pixelated]"
+                  loading="lazy"
+                />
+                <div className="text-[10px] text-slate-500 font-mono mt-1">
+                  shape {JSON.stringify(s.meta.shape_ground_truth)}
+                </div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+    </section>
+  );
+}
+
+
+function GetThisBenchmarkSection({
+  demo,
+  benchmarkRef,
+}: {
+  demo: Demo;
+  benchmarkRef: string;
+}) {
+  const first = demo.samples[0];
+  const solverPath = first?.meta.reference_solver;
+  const cardYamlPath = `pwm-team/pwm_product/benchmark_cards/${demo.benchmark_id}.yaml`;
+  const l3JsonPath = `pwm-team/pwm_product/genesis/l3/${demo.benchmark_id}.json`;
+  const bountyIndexPath =
+    'pwm-team/coordination/agent-coord/interfaces/bounties/INDEX.md';
+  const demosReadmePath = `pwm-team/pwm_product/demos/${demo.name}/README.md`;
+
+  return (
+    <section className="pwm-card space-y-4 border-cyan-500/30">
+      <div>
+        <h2 className="text-lg font-semibold">Get this benchmark</h2>
+        <p className="text-sm text-pwm-muted mt-1 max-w-3xl">
+          Everything you need to run the reference solver locally, browse
+          the full benchmark specification, or submit a competing solution.
+        </p>
+      </div>
+
+      <div className="grid md:grid-cols-2 gap-3 text-sm">
+        <div>
+          <h3 className="text-xs uppercase tracking-wide text-pwm-muted mb-2">
+            Download sample data
+          </h3>
+          <div className="space-y-1">
+            {demo.samples.map((s) => (
+              <details key={s.name} className="bg-slate-950/60 border border-slate-800 rounded px-3 py-2">
+                <summary className="cursor-pointer font-mono text-xs">
+                  {s.name} · {Object.values(s.files).reduce((a, b) => a + b, 0)} B
+                </summary>
+                <ul className="mt-2 space-y-1 text-xs">
+                  {Object.entries(s.files).map(([name, size]) => (
+                    <li key={name} className="flex justify-between">
+                      <a
+                        className="pwm-link font-mono"
+                        href={`/api/demos/${demo.name}/${s.name}/${name}`}
+                        download
+                      >
+                        {name}
+                      </a>
+                      <span className="text-slate-500">{fmtBytes(size)}</span>
+                    </li>
+                  ))}
+                </ul>
+              </details>
+            ))}
+          </div>
+        </div>
+
+        <div>
+          <h3 className="text-xs uppercase tracking-wide text-pwm-muted mb-2">
+            Browse on GitHub
+          </h3>
+          <ul className="space-y-1 text-sm">
+            <li>
+              <a className="pwm-link" href={`${PUBLIC_REPO}/${cardYamlPath}`} target="_blank" rel="noreferrer">
+                Benchmark card
+              </a>{' '}
+              <span className="text-xs text-pwm-muted">(YAML spec)</span>
+            </li>
+            <li>
+              <a className="pwm-link" href={`${PUBLIC_REPO}/${l3JsonPath}`} target="_blank" rel="noreferrer">
+                L3 principle JSON
+              </a>{' '}
+              <span className="text-xs text-pwm-muted">(canonical on-chain spec)</span>
+            </li>
+            {solverPath && (
+              <li>
+                <a className="pwm-link" href={`${PUBLIC_REPO}/${solverPath}`} target="_blank" rel="noreferrer">
+                  Reference solver
+                </a>{' '}
+                <span className="text-xs text-pwm-muted">(Python)</span>
+              </li>
+            )}
+            <li>
+              <a className="pwm-link" href={`${PUBLIC_REPO}/${demosReadmePath}`} target="_blank" rel="noreferrer">
+                Demo README
+              </a>{' '}
+              <span className="text-xs text-pwm-muted">(full pipeline walkthrough)</span>
+            </li>
+            <li>
+              <a className="pwm-link" href={`${PUBLIC_REPO}/${bountyIndexPath}`} target="_blank" rel="noreferrer">
+                Bounty index
+              </a>{' '}
+              <span className="text-xs text-pwm-muted">(compete with a better solver)</span>
+            </li>
+          </ul>
+        </div>
+      </div>
+
+      {first?.meta.how_to_run && (
+        <div>
+          <h3 className="text-xs uppercase tracking-wide text-pwm-muted mb-2">
+            Run the reference solver locally
+          </h3>
+          <pre className="bg-slate-950 border border-slate-800 rounded px-3 py-2 text-xs overflow-x-auto">
+{`git clone https://github.com/integritynoble/Physics_World_Model.git
+cd Physics_World_Model
+${first.meta.how_to_run}
+cat /tmp/out/meta.json`}
+          </pre>
+          <p className="text-xs text-pwm-muted mt-2">
+            Expected reference PSNR: {first.meta.reference_solver_psnr_db} dB (seed{' '}
+            {first.meta.seed}). Byte-stable across runs at the same git SHA.
+          </p>
+        </div>
+      )}
+    </section>
   );
 }

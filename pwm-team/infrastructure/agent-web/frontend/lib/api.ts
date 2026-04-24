@@ -104,6 +104,7 @@ export type BenchmarkDetail = {
   chain: any;
   leaderboard: Array<any>;
   pool_balance_wei: string | null;
+  demo: Demo | null;
 };
 
 export type CertDetail = {
@@ -191,11 +192,12 @@ export type MatchResult = {
   confidence_floor_hit: boolean;
 };
 
-export type Demo = {
-  name: string;
+export type DemoSample = {
+  name: string; // e.g. "sample_01"
   meta: {
     benchmark: string;
     tier_approx?: string;
+    seed?: number;
     shape_snapshot?: number[];
     shape_ground_truth?: number[];
     shape_solution?: number[];
@@ -205,5 +207,12 @@ export type Demo = {
     sha256?: Record<string, string>;
     [k: string]: any;
   };
-  files: Record<string, number>; // filename → size in bytes
+  files: Record<string, number>;
+};
+
+export type Demo = {
+  name: string;                 // e.g. "cassi"
+  benchmark_id: string | null;  // e.g. "L3-003"
+  readme_available: boolean;
+  samples: DemoSample[];
 };
