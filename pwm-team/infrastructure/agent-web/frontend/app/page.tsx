@@ -88,9 +88,9 @@ export default async function HomePage() {
           </p>
         </Link>
         <Link href="/bounties" className="pwm-card hover:border-pwm-accent transition-colors">
-          <h3 className="font-semibold text-lg">Open Reserve bounties →</h3>
+          <h3 className="font-semibold text-lg">Reserve bounties →</h3>
           <p className="text-sm text-pwm-muted mt-1">
-            1,010,000 PWM across 6 open bounties — smart contracts, indexer, miner, scoring.
+            1,238,000 PWM across 8 bounties — 4 open now (460,000 PWM), 4 open on milestones.
           </p>
         </Link>
       </section>
