@@ -64,20 +64,26 @@ explorer — that rule belongs to the main platform site, not this one.
 
 ## How the explorer currently gets deployed
 
-Two parallel public deployments, both auto- or repo-driven from the
-same code path:
-
 - **GCP self-host (canonical):** `https://explorer.pwm.platformai.org/`
-  — built locally with `docker build … -t pwm-explorer:latest .`,
-  run behind nginx + Let's Encrypt. See
-  `pwm-team/coordination/EXPLORER_HOSTING_OPTIONS.md` Option 3.
+  — built locally from this **private** repo with
+  `docker build … -t pwm-explorer:latest .`, run behind nginx +
+  Let's Encrypt on the same GCP box that hosts `pwm.platformai.org`.
+  See `pwm-team/coordination/EXPLORER_HOSTING_OPTIONS.md` Option 3.
+  **Only URL to advertise publicly.**
 
-- **Render.com (backup):** `https://pwm-explorer-dsag.onrender.com/`
-  — auto-deploys on every push to `main` via `render.yaml` Blueprint.
-  Free tier; cold-starts after 15 min idle.
+- **Render.com (brittle backup):** `https://pwm-explorer-dsag.onrender.com/`
+  — was auto-deploying from the **public** repo's `render.yaml` +
+  Dockerfile. On 2026-04-24 the public repo was reverted to exclude
+  `pwm-team/` (per the founder-key-safety decision to keep Solidity
+  private until mainnet deploy), so Render's next auto-build will
+  fail. The currently-running container (built from public
+  `b7385c87`) keeps serving until Render gives up on it. **Do not
+  advertise this URL.** Disable Render auto-deploy to preserve the
+  running container as an ephemeral backup.
 
-Both serve the same code. Both read the same cards + demos + genesis
-files from `pwm_product/`.
+Both URLs currently serve the same code, but only the canonical URL
+gets new features — it's rebuilt from this private `main` whenever a
+new feature lands. Render will stay frozen at the pre-revert commit.
 
 ---
 
