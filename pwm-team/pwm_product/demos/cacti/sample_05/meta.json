@@ -1,0 +1,33 @@
+{
+  "benchmark": "L3-004 (CACTI) \u2014 InverseNet SCI Video Benchmark",
+  "citation": "Yuan et al. CACTI, Yang et al. SCI Video Benchmark",
+  "generated_by": "scripts/generate_demos.py",
+  "how_to_run": "python3 pwm-team/pwm_product/reference_solvers/cacti/cacti_pnp_admm.py --input pwm-team/pwm_product/demos/cacti/sample_05 --output /tmp/out",
+  "reference_solver": "pwm-team/pwm_product/reference_solvers/cacti/cacti_pnp_admm.py",
+  "reference_solver_psnr_db": 7.34,
+  "scene_id": "crash",
+  "sha256": {
+    "ground_truth.npz": "8d5fbccd813ecefe43320f294a40d0bb99d60aa534056838c2840fbb0ba86104",
+    "snapshot.npz": "b307044c67a47088d5338a817363259fbc9b9d7d20d9739157c75b70d06f2a6b",
+    "solution.npz": "035f201fc03c32277736da3b69c3a9b71c0ce6302e229252bd3bda49f2dbc4ce"
+  },
+  "shape_ground_truth": [
+    8,
+    256,
+    256
+  ],
+  "shape_snapshot": [
+    256,
+    256
+  ],
+  "shape_solution": [
+    8,
+    256,
+    256
+  ],
+  "solver_elapsed_sec": 1.4,
+  "solver_iterations": 12,
+  "source_dataset": "SCI Video Benchmark (Kobe/Traffic/Runner/Drop/Crash/Aerial); Liu et al. 2019 + Yuan et al. Bell Labs; redistributed in every major SCI paper (PnP-FFDNet, STFormer, EfficientSCI, DeepBC, BIRNAT).",
+  "source_mat": "crash32_cacti.mat",
+  "tier_approx": "T1_nominal"
+}

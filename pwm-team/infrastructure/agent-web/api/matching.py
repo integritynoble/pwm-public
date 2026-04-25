@@ -25,6 +25,40 @@ from typing import Any
 
 CONFIDENCE_FLOOR = 2.0
 
+# Banding for "strong/weak/no" match UI label (frontend also computes this
+# for resilience; keep thresholds in one place).
+SCORE_BAND_STRONG = 3.0
+SCORE_BAND_WEAK = CONFIDENCE_FLOOR  # i.e., 2.0
+
+# benchmark_id -> demo directory name (for preview thumbnails)
+_BENCHMARK_TO_DEMO = {
+    "L3-003": "cassi",
+    "L3-004": "cacti",
+}
+
+
+def _preview_urls(benchmark_id: str) -> dict | None:
+    """Return snapshot + ground-truth preview URLs for a matched benchmark,
+    or None if no demo exists yet for this id."""
+    demo = _BENCHMARK_TO_DEMO.get(benchmark_id)
+    if demo is None:
+        return None
+    base = f"/api/demos/{demo}/sample_01"
+    return {
+        "snapshot": f"{base}/snapshot.png",
+        "ground_truth": f"{base}/ground_truth.png",
+        "solution": f"{base}/solution.png",
+    }
+
+
+def _confidence_band(score: float) -> str:
+    """Return one of 'strong', 'weak', 'none' based on the score."""
+    if score >= SCORE_BAND_STRONG:
+        return "strong"
+    if score >= SCORE_BAND_WEAK:
+        return "weak"
+    return "none"
+
 SCORED_FIELDS: list[tuple[str, str, float]] = [
     ("handwritten.one_line",              "one_line",   3.0),
     ("handwritten.forward_model_summary", "forward",    2.0),
@@ -230,8 +264,10 @@ def match_prompt(prompt: str | None = None, **filters) -> dict:
             "benchmark_id": bid,
             "rank": rank,
             "score": round(score, 3),
+            "score_band": _confidence_band(score),
             "tier": tier,
             "rationale": _rationale(card, score, hits, tier),
+            "preview_urls": _preview_urls(bid),
         })
 
     if floor_hit:

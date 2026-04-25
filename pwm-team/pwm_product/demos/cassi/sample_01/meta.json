@@ -1,28 +1,32 @@
 {
-  "benchmark": "L3-003 (CASSI) \u2014 DEMO (not the real benchmark)",
+  "benchmark": "L3-003 (CASSI) \u2014 InverseNet KAIST-10 benchmark",
+  "citation": "Meng et al. 2020 + KAIST dataset; used in MST/HDNet/CST/DAUHST benchmarks",
   "generated_by": "scripts/generate_demos.py",
   "how_to_run": "python3 pwm-team/pwm_product/reference_solvers/cassi/cassi_gap_tv.py --input pwm-team/pwm_product/demos/cassi/sample_01 --output /tmp/out",
   "reference_solver": "pwm-team/pwm_product/reference_solvers/cassi/cassi_gap_tv.py",
-  "reference_solver_psnr_db": 10.6,
-  "seed": 42,
+  "reference_solver_psnr_db": 19.86,
+  "scene_id": "scene01",
   "sha256": {
-    "ground_truth.npz": "fe934b60c4f2bbcbb5a506f6010ec501c3eacb3535f117da99d689875ac824bf",
-    "snapshot.npz": "9f99c78650ff7ba8ed5e110234114a74b0b3e075f2d5304d56ddf93cb7a8c6e5",
-    "solution.npz": "b47428b0bf8d56a5dca217a636c3ccbbe0d794568be04d37e6eba50f66b15d63"
+    "ground_truth.npz": "fc17d8ff5930a47f436953acdb270265380ace799e13d1015d247ce6d07eff6e",
+    "snapshot.npz": "ba0fa0a792e962a03e5f8411260369bfd53591c80887b9739b504dca27076f78",
+    "solution.npz": "8578a017851fbc3a950602834931052e0bcc05a5d8d6e2ecff305752ad6c6efc"
   },
   "shape_ground_truth": [
-    32,
-    32,
-    8
+    256,
+    256,
+    28
   ],
   "shape_snapshot": [
-    32,
-    32
+    256,
+    256
   ],
   "shape_solution": [
-    32,
-    32,
-    8
+    256,
+    256,
+    28
   ],
-  "tier_approx": "T1_nominal-equivalent"
+  "solver_elapsed_sec": 7.0,
+  "solver_iterations": 15,
+  "source_dataset": "KAIST-10 CASSI scenes; see InverseNet paper (papers/inversenet/)",
+  "tier_approx": "T1_nominal"
 }

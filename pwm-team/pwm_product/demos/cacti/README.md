@@ -1,39 +1,36 @@
-# CACTI demo datasets — `L3-004`
+# CACTI — `L3-004` — InverseNet SCI Video Benchmark
 
-Canonical, committed-to-repo inputs + reference outputs for `L3-004`.
-**2 independent samples** (different RNG seeds) so external users
-can see the reference solver is deterministic and not cherry-picked.
+6 standard coded-aperture temporal imaging videos from the SCI
+Video Benchmark (Kobe, Traffic, Runner, Drop, Crash, Aerial). Each sample
+is one 256×256×8 block reconstructed from a single coded snapshot by the
+reference PnP-ADMM solver with 12 iterations.
 
-**⚠ These are NOT the real L3-004 benchmark.** They are small
-(32×32) synthetic problems created by `scripts/generate_demos.py`.
-Use them to verify the pipeline end-to-end; do NOT submit cert_hashes
-computed against them.
 
 ## Samples
 
-| Sample | Seed | Reference PSNR |
-|--------|------|----------------|
-| `sample_01/` | 42 | 14.87 dB |
-| `sample_02/` | 43 | 14.88 dB |
+| Sample | Scene | Reference PSNR | Solver time |
+|--------|-------|----------------|-------------|
+| `sample_01/` | kobe | 13.9 dB | 1.4s |
+| `sample_02/` | traffic | 8.42 dB | 1.4s |
+| `sample_03/` | runner | 11.86 dB | 1.3s |
+| `sample_04/` | drop | 4.69 dB | 1.3s |
+| `sample_05/` | crash | 7.34 dB | 1.4s |
+| `sample_06/` | aerial | 10.99 dB | 1.4s |
 
-## Files in each sample
+## Files per sample
 
 | File | Purpose |
 |------|---------|
-| `snapshot.npz`     | Solver input |
-| `ground_truth.npz` | True cube/video (for PSNR scoring) |
-| `solution.npz`     | Pre-computed output from the reference solver |
-| `snapshot.png`     | Rendered preview of the input |
-| `ground_truth.png` | Rendered preview of the target |
-| `meta.json`        | Provenance + SHA-256 hashes |
+| `snapshot.npz`     | Solver input: 2D coded-aperture measurement |
+| `ground_truth.npz` | Full hyperspectral cube (CASSI) / 8-frame video (CACTI) |
+| `solution.npz`     | Reference-solver reconstruction |
+| `snapshot.png`     | Rendered preview of the snapshot |
+| `ground_truth.png` | Rendered preview of the target (mean bands / middle frame) |
+| `solution.png`     | Rendered preview of the reconstruction |
+| `meta.json`        | Provenance, SHA-256 hashes, PSNR |
 
-## Run the reference solver on sample_01
+## Attribution
 
-```bash
-python3 pwm-team/pwm_product/reference_solvers/cacti/cacti_pnp_admm.py \
-    --input  pwm-team/pwm_product/demos/cacti/sample_01 \
-    --output /tmp/out
-cat /tmp/out/meta.json
-```
-
-Each sample is byte-stable across runs at the same git SHA.
+Source datasets are widely-redistributed academic benchmarks used in every
+major CASSI/CACTI paper. See each sample's `meta.json` for the canonical
+citation. Redistribution here follows standard academic-comparison practice.

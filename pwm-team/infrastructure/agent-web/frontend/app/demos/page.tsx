@@ -19,14 +19,18 @@ export default async function DemosPage() {
       <div>
         <h1 className="text-3xl font-bold tracking-tight">Demos</h1>
         <p className="text-sm text-pwm-muted mt-2 max-w-2xl">
-          Canonical demo datasets — committed to the repo, small
-          (&lt; 50 KB each), deterministic. Each benchmark ships two
-          independent samples so solver output isn&apos;t cherry-picked.
-          Download the input, run the reference solver locally, and see
-          the PWM pipeline work in under a minute. <strong>These are not
-          the real benchmarks.</strong> They exist so newcomers can verify
-          the pipeline end-to-end before burning gas on a real{' '}
-          <Link href="/bounties" className="pwm-link">mine</Link>.
+          Canonical demo datasets — the same scenes used in the{' '}
+          <strong>InverseNet paper</strong>: 10 KAIST-10 hyperspectral
+          scenes for CASSI and the 6 standard SCI Video Benchmark videos
+          (Kobe, Traffic, Runner, Drop, Crash, Aerial) for CACTI. Each
+          sample is 256×256, deterministic, and committed to the repo so
+          external users can verify reconstruction byte-for-byte. Download
+          the input, run the reference solver locally, and see the PWM
+          pipeline work end-to-end — or{' '}
+          <Link href="/bounties" className="pwm-link">
+            compete with a better solver
+          </Link>
+          .
         </p>
       </div>
 

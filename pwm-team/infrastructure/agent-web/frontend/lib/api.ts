@@ -182,8 +182,14 @@ export type MatchCandidate = {
   benchmark_id: string;
   rank: number;
   score: number;
+  score_band?: 'strong' | 'weak' | 'none';
   tier: string | null;
   rationale: string;
+  preview_urls?: {
+    snapshot: string;
+    ground_truth: string;
+    solution: string;
+  } | null;
 };
 
 export type MatchResult = {

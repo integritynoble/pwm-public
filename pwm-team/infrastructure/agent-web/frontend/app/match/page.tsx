@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { api } from '@/lib/api';
+import { api, type MatchCandidate } from '@/lib/api';
 import { ApiDown } from '@/components/Empty';
 
 export const dynamic = 'force-dynamic';
@@ -171,33 +171,7 @@ export default async function MatchPage({
                 Top {result.candidates.length} candidate{result.candidates.length === 1 ? '' : 's'}
               </h2>
               <div className="space-y-3 max-w-3xl">
-                {result.candidates.map((c) => (
-                  <div key={c.benchmark_id} className="pwm-card">
-                    <div className="flex items-start justify-between gap-3">
-                      <div className="flex-1 min-w-0">
-                        <div className="flex items-center gap-2 mb-1">
-                          <span className="text-xs text-pwm-muted">#{c.rank}</span>
-                          <Link
-                            href={`/benchmarks/${c.benchmark_id}`}
-                            className="font-mono font-semibold text-pwm-accent hover:underline"
-                          >
-                            {c.benchmark_id}
-                          </Link>
-                          {c.tier && (
-                            <span className="pwm-pill">tier: {c.tier}</span>
-                          )}
-                        </div>
-                        <p className="text-sm mt-1 break-words">{c.rationale}</p>
-                      </div>
-                      <div className="text-xs text-pwm-muted text-right shrink-0">
-                        score
-                        <div className="text-base text-white">
-                          {c.score.toFixed(2)}
-                        </div>
-                      </div>
-                    </div>
-                  </div>
-                ))}
+                {result.candidates.map((c) => <MatchCandidateCard key={c.benchmark_id} c={c} />)}
               </div>
               {result.clarifying_question && (
                 <div className="pwm-card max-w-3xl border-cyan-500/30">
@@ -221,6 +195,70 @@ export default async function MatchPage({
         (CLI). Third-party LLM-routed matchers compete via{' '}
         <Link href="/bounties" className="pwm-link">Bounty #8</Link> once qualified.
       </footer>
+    </div>
+  );
+}
+
+
+function matchBandLabel(band: MatchCandidate['score_band'] | undefined, score: number) {
+  // Fallback: derive from raw score if API didn't return a band
+  const b = band ?? (score >= 3.0 ? 'strong' : score >= 2.0 ? 'weak' : 'none');
+  if (b === 'strong')
+    return { text: 'Strong match', stars: '★★★★', color: 'text-emerald-400 border-emerald-500/40' };
+  if (b === 'weak')
+    return { text: 'Weak match', stars: '★★', color: 'text-amber-400 border-amber-500/40' };
+  return { text: 'No match', stars: '☆', color: 'text-slate-500 border-slate-700' };
+}
+
+
+function MatchCandidateCard({ c }: { c: MatchCandidate }) {
+  const band = matchBandLabel(c.score_band, c.score);
+  return (
+    <div className={`pwm-card ${band.color.split(' ')[1] ?? ''}`.trim() + ' border'}>
+      <div className="flex items-start gap-4 flex-wrap">
+        {c.preview_urls && (
+          <div className="flex gap-1 shrink-0">
+            <img
+              src={c.preview_urls.snapshot}
+              alt={`${c.benchmark_id} snapshot`}
+              className="w-24 h-24 border border-slate-800 rounded bg-slate-950 [image-rendering:pixelated]"
+              loading="lazy"
+            />
+            <img
+              src={c.preview_urls.ground_truth}
+              alt={`${c.benchmark_id} ground truth`}
+              className="w-24 h-24 border border-slate-800 rounded bg-slate-950 [image-rendering:pixelated]"
+              loading="lazy"
+            />
+          </div>
+        )}
+        <div className="flex-1 min-w-0 space-y-2">
+          <div className="flex items-center gap-2 flex-wrap">
+            <span className="text-xs text-pwm-muted">#{c.rank}</span>
+            <span className="font-mono font-semibold text-pwm-accent">{c.benchmark_id}</span>
+            {c.tier && <span className="pwm-pill">tier: {c.tier}</span>}
+            <span className={`text-xs font-semibold ${band.color.split(' ')[0]}`}>
+              {band.stars} {band.text}
+            </span>
+            <span className="text-xs text-pwm-muted ml-auto">score {c.score.toFixed(2)}</span>
+          </div>
+          <p className="text-sm break-words">{c.rationale}</p>
+          <div className="flex gap-2 pt-1">
+            <Link
+              href={`/benchmarks/${c.benchmark_id}`}
+              className="inline-block px-3 py-1.5 rounded bg-gradient-to-r from-cyan-500 to-indigo-500 text-black font-semibold text-sm"
+            >
+              Try this benchmark →
+            </Link>
+            <Link
+              href={`/bounties`}
+              className="inline-block px-3 py-1.5 rounded border border-slate-700 text-sm text-pwm-muted hover:text-pwm-accent hover:border-pwm-accent"
+            >
+              Compete (bounty)
+            </Link>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }

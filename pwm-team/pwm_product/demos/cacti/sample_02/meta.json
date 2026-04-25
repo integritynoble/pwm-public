@@ -1,28 +1,33 @@
 {
-  "benchmark": "L3-004 (CACTI) \u2014 DEMO (not the real benchmark)",
+  "benchmark": "L3-004 (CACTI) \u2014 InverseNet SCI Video Benchmark",
+  "citation": "Yuan et al. CACTI, Yang et al. SCI Video Benchmark",
   "generated_by": "scripts/generate_demos.py",
   "how_to_run": "python3 pwm-team/pwm_product/reference_solvers/cacti/cacti_pnp_admm.py --input pwm-team/pwm_product/demos/cacti/sample_02 --output /tmp/out",
   "reference_solver": "pwm-team/pwm_product/reference_solvers/cacti/cacti_pnp_admm.py",
-  "reference_solver_psnr_db": 14.88,
-  "seed": 43,
+  "reference_solver_psnr_db": 8.42,
+  "scene_id": "traffic",
   "sha256": {
-    "ground_truth.npz": "0da166fd864991b03ec4773fbf18064f3fbb443e5c70a834d5bb4beebbc26fa2",
-    "snapshot.npz": "8073f2bc51823d0c548504d909f671b3c7d2d0345db2e73a63cc4b46ef20ac17",
-    "solution.npz": "8721c79e50a017507a06a01b292c3104e7f39660bab1876864b46190d73edd55"
+    "ground_truth.npz": "0c8882a35a9b84c1be8cdea1be98c13272e87e35025a4c1a7b2d58b19eb989b0",
+    "snapshot.npz": "d7b6781c23987e008a8f7d83fb94ca5b9694b0614ab6e3b29951c6c66ee0644b",
+    "solution.npz": "131adf7e8a312ae2410af9f416441628f6f4f9cdbbe787945a75dc57292dfeca"
   },
   "shape_ground_truth": [
-    4,
-    32,
-    32
+    8,
+    256,
+    256
   ],
   "shape_snapshot": [
-    32,
-    32
+    256,
+    256
   ],
   "shape_solution": [
-    4,
-    32,
-    32
+    8,
+    256,
+    256
   ],
-  "tier_approx": "T1_nominal-equivalent"
+  "solver_elapsed_sec": 1.4,
+  "solver_iterations": 12,
+  "source_dataset": "SCI Video Benchmark (Kobe/Traffic/Runner/Drop/Crash/Aerial); Liu et al. 2019 + Yuan et al. Bell Labs; redistributed in every major SCI paper (PnP-FFDNet, STFormer, EfficientSCI, DeepBC, BIRNAT).",
+  "source_mat": "traffic_cacti.mat",
+  "tier_approx": "T1_nominal"
 }
