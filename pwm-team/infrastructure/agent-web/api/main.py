@@ -352,12 +352,43 @@ def demo_benchmark_file(demo_name: str, filename: str):
                     headers={"Cache-Control": "public, max-age=3600"})
 
 
+def _default_walkthroughs_dir() -> str:
+    """Fall back to the dev-tree path; the Docker image sets PWM_WALKTHROUGHS_DIR."""
+    try:
+        return str(Path(__file__).resolve().parents[3] / "pwm_product" / "walkthroughs")
+    except IndexError:
+        return "/app/walkthroughs"
+
+
+_WALKTHROUGH_DIR = Path(os.environ.get("PWM_WALKTHROUGHS_DIR", _default_walkthroughs_dir()))
+_WALKTHROUGH_ALLOWED = frozenset({"cassi", "cacti"})
+
+
+@app.get("/api/walkthrough/{anchor}")
+def walkthrough(anchor: str):
+    """Return the markdown body of one anchor's complete 4-layer walkthrough.
+
+    Source: papers/Proof-of-Solution/mine_example/<anchor>.md, mirrored to
+    pwm-team/pwm_product/walkthroughs/<anchor>.md and copied into the image.
+    """
+    if anchor not in _WALKTHROUGH_ALLOWED:
+        raise HTTPException(status_code=404, detail="unknown walkthrough")
+    path = _WALKTHROUGH_DIR / f"{anchor}.md"
+    if not path.is_file():
+        raise HTTPException(status_code=404, detail="walkthrough not found")
+    return Response(
+        content=path.read_bytes(),
+        media_type="text/markdown",
+        headers={"Cache-Control": "public, max-age=3600"},
+    )
+
+
 @app.get("/api/demos/{demo_name}/{sample_name}/{filename}")
 def demo_sample_file(demo_name: str, sample_name: str, filename: str):
     """Stream one file from a demo sample dir.
 
     Allowed filenames: snapshot.npz, ground_truth.npz, solution.npz,
-    snapshot.png, ground_truth.png, meta.json. Anything else → 404.
+    snapshot.png, ground_truth.png, solution.png, meta.json. Anything else → 404.
     """
     path = demos.resolve_sample_file(demo_name, sample_name, filename)
     if path is None:

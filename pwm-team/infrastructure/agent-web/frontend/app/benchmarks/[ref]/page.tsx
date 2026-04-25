@@ -41,6 +41,14 @@ export default async function BenchmarkDetail({ params }: { params: Promise<{ re
           {g?.title ?? ref}
           <span className="text-pwm-muted text-lg ml-3">{g?.artifact_id ?? shortAddr(ref)}</span>
         </h1>
+        {(ref === 'L3-003' || ref === 'L3-004') && (
+          <Link
+            href={`/walkthroughs/${ref === 'L3-003' ? 'cassi' : 'cacti'}`}
+            className="inline-block mt-4 px-4 py-2 rounded bg-gradient-to-r from-cyan-500 to-indigo-500 text-black font-semibold text-sm"
+          >
+            Read full 4-layer walkthrough →
+          </Link>
+        )}
       </div>
 
       <section className="grid md:grid-cols-2 gap-4">

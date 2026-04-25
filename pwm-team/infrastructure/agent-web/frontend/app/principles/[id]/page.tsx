@@ -31,6 +31,8 @@ export default async function PrincipleDetail({
   const g = p.G ?? {};
   const w = p.W ?? {};
   const c = p.C ?? {};
+  const walkthroughAnchor: string | null =
+    id === 'L1-003' ? 'cassi' : id === 'L1-004' ? 'cacti' : null;
 
   return (
     <div className="space-y-8">
@@ -45,6 +47,14 @@ export default async function PrincipleDetail({
           {p.difficulty_tier && <span className="pwm-pill">δ={p.difficulty_delta} · {p.difficulty_tier}</span>}
           {g.L_DAG != null && <span className="pwm-pill">L_DAG = {g.L_DAG}</span>}
         </div>
+        {walkthroughAnchor && (
+          <Link
+            href={`/walkthroughs/${walkthroughAnchor}`}
+            className="inline-block mt-4 px-4 py-2 rounded bg-gradient-to-r from-cyan-500 to-indigo-500 text-black font-semibold text-sm"
+          >
+            Read full 4-layer walkthrough →
+          </Link>
+        )}
       </div>
 
       <section className="pwm-card">
