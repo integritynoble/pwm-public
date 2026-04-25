@@ -162,55 +162,92 @@ function fmtBytes(n: number): string {
 }
 
 
+function PreviewTile({
+  label,
+  src,
+  alt,
+  shape,
+  badge,
+}: {
+  label: string;
+  src: string;
+  alt: string;
+  shape?: number[];
+  badge?: string;
+}) {
+  return (
+    <div>
+      <div className="flex items-baseline justify-between mb-1">
+        <div className="text-xs text-pwm-muted">{label}</div>
+        {badge && (
+          <span className="text-[10px] font-semibold text-emerald-400">{badge}</span>
+        )}
+      </div>
+      <img
+        src={src}
+        alt={alt}
+        className="w-full border border-slate-800 rounded bg-slate-950 [image-rendering:pixelated]"
+        loading="lazy"
+      />
+      {shape && (
+        <div className="text-[10px] text-slate-500 font-mono mt-1">
+          shape {JSON.stringify(shape)}
+        </div>
+      )}
+    </div>
+  );
+}
+
+
 function ExampleDataSection({ demo }: { demo: Demo }) {
   const samples = demo.samples.slice(0, 2); // show first 2 samples
   return (
     <section>
       <h2 className="text-lg font-semibold mb-3">Example data</h2>
       <p className="text-sm text-pwm-muted mb-4 max-w-3xl">
-        Two independent sample instances from the reference demo (different
-        RNG seeds) so you can see the solver output isn&apos;t cherry-picked.
-        Snapshot is the compressed input; ground truth is the target the
-        solver is scored against. Small 32×32 synthetic problems — not the
-        real benchmark.
+        Two independent samples from the InverseNet benchmark, each shown as
+        <strong> measurement → ground truth → reference reconstruction</strong>.
+        The reconstruction is the reference solver&apos;s output — the bar a
+        competing solver must beat to win the bounty.
       </p>
-      <div className="grid md:grid-cols-2 gap-4">
-        {samples.map((s) => (
-          <div key={s.name} className="pwm-card space-y-3">
-            <div className="flex items-baseline justify-between">
-              <h3 className="font-mono text-sm font-semibold">{s.name}</h3>
-              <span className="text-xs text-pwm-muted">
-                seed {s.meta.seed} · ref PSNR {s.meta.reference_solver_psnr_db} dB
-              </span>
-            </div>
-            <div className="grid grid-cols-2 gap-2">
-              <div>
-                <div className="text-xs text-pwm-muted mb-1">Input (snapshot)</div>
-                <img
-                  src={`/api/demos/${demo.name}/${s.name}/snapshot.png`}
-                  alt={`${demo.name} ${s.name} snapshot`}
-                  className="w-full border border-slate-800 rounded bg-slate-950 [image-rendering:pixelated]"
-                  loading="lazy"
-                />
-                <div className="text-[10px] text-slate-500 font-mono mt-1">
-                  shape {JSON.stringify(s.meta.shape_snapshot)}
-                </div>
+      <div className="space-y-4">
+        {samples.map((s) => {
+          const sceneId = (s.meta as any).scene_id;
+          const psnr = s.meta.reference_solver_psnr_db;
+          return (
+            <div key={s.name} className="pwm-card space-y-3">
+              <div className="flex items-baseline justify-between flex-wrap gap-2">
+                <h3 className="font-mono text-sm font-semibold">
+                  {s.name}{sceneId ? ` · ${sceneId}` : ''}
+                </h3>
+                <span className="text-xs text-pwm-muted">
+                  reference PSNR {psnr} dB
+                </span>
               </div>
-              <div>
-                <div className="text-xs text-pwm-muted mb-1">Target (ground truth)</div>
-                <img
+              <div className="grid grid-cols-3 gap-2">
+                <PreviewTile
+                  label="Measurement"
+                  src={`/api/demos/${demo.name}/${s.name}/snapshot.png`}
+                  alt={`${demo.name} ${s.name} measurement`}
+                  shape={s.meta.shape_snapshot}
+                />
+                <PreviewTile
+                  label="Ground truth"
                   src={`/api/demos/${demo.name}/${s.name}/ground_truth.png`}
                   alt={`${demo.name} ${s.name} ground truth`}
-                  className="w-full border border-slate-800 rounded bg-slate-950 [image-rendering:pixelated]"
-                  loading="lazy"
+                  shape={s.meta.shape_ground_truth}
                 />
-                <div className="text-[10px] text-slate-500 font-mono mt-1">
-                  shape {JSON.stringify(s.meta.shape_ground_truth)}
-                </div>
+                <PreviewTile
+                  label="Reference reconstruction"
+                  src={`/api/demos/${demo.name}/${s.name}/solution.png`}
+                  alt={`${demo.name} ${s.name} reconstruction`}
+                  shape={s.meta.shape_solution}
+                  badge={psnr ? `${psnr} dB` : undefined}
+                />
               </div>
             </div>
-          </div>
-        ))}
+          );
+        })}
       </div>
     </section>
   );

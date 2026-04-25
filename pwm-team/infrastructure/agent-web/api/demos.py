@@ -39,7 +39,7 @@ def demos_dir() -> Path:
 
 SAMPLE_FILES = frozenset({
     "snapshot.npz", "ground_truth.npz", "solution.npz",
-    "snapshot.png", "ground_truth.png",
+    "snapshot.png", "ground_truth.png", "solution.png",
     "meta.json",
 })
 

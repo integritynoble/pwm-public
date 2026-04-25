@@ -100,34 +100,37 @@ export default async function DemosPage() {
             </div>
 
             <div className="grid md:grid-cols-2 gap-3">
-              {d.samples.map((s) => (
+              {d.samples.map((s) => {
+                const sceneId = (s.meta as any).scene_id;
+                return (
                 <div key={s.name} className="border border-slate-800 rounded p-3 bg-slate-950/40 space-y-2">
-                  <div className="flex items-baseline justify-between">
-                    <div className="font-mono text-sm font-semibold">{s.name}</div>
+                  <div className="flex items-baseline justify-between flex-wrap gap-2">
+                    <div className="font-mono text-sm font-semibold">
+                      {s.name}{sceneId ? ` · ${sceneId}` : ''}
+                    </div>
                     <div className="text-xs text-pwm-muted">
-                      seed {s.meta.seed} · {s.meta.reference_solver_psnr_db} dB
+                      ref PSNR {s.meta.reference_solver_psnr_db} dB
                     </div>
                   </div>
-                  {(s.files['snapshot.png'] || s.files['ground_truth.png']) && (
-                    <div className="grid grid-cols-2 gap-2">
-                      {s.files['snapshot.png'] && (
-                        <img
-                          src={`/api/demos/${d.name}/${s.name}/snapshot.png`}
-                          alt={`${s.name} snapshot`}
-                          className="w-full border border-slate-800 rounded [image-rendering:pixelated]"
-                          loading="lazy"
-                        />
-                      )}
-                      {s.files['ground_truth.png'] && (
-                        <img
-                          src={`/api/demos/${d.name}/${s.name}/ground_truth.png`}
-                          alt={`${s.name} ground truth`}
-                          className="w-full border border-slate-800 rounded [image-rendering:pixelated]"
-                          loading="lazy"
-                        />
-                      )}
-                    </div>
-                  )}
+                  <div className="grid grid-cols-3 gap-1.5">
+                    {[
+                      ['Measurement', 'snapshot.png'],
+                      ['Ground truth', 'ground_truth.png'],
+                      ['Reference', 'solution.png'],
+                    ].map(([label, fname]) => (
+                      s.files[fname] ? (
+                        <div key={fname}>
+                          <div className="text-[10px] text-pwm-muted mb-0.5">{label}</div>
+                          <img
+                            src={`/api/demos/${d.name}/${s.name}/${fname}`}
+                            alt={`${s.name} ${label}`}
+                            className="w-full border border-slate-800 rounded [image-rendering:pixelated]"
+                            loading="lazy"
+                          />
+                        </div>
+                      ) : null
+                    ))}
+                  </div>
                   <div className="space-y-1 text-xs">
                     {Object.entries(s.files).map(([fname, size]) => (
                       <a
@@ -142,7 +145,8 @@ export default async function DemosPage() {
                     ))}
                   </div>
                 </div>
-              ))}
+                );
+              })}
             </div>
 
             {first?.meta.how_to_run && (

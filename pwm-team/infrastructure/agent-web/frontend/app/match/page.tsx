@@ -217,19 +217,35 @@ function MatchCandidateCard({ c }: { c: MatchCandidate }) {
     <div className={`pwm-card ${band.color.split(' ')[1] ?? ''}`.trim() + ' border'}>
       <div className="flex items-start gap-4 flex-wrap">
         {c.preview_urls && (
-          <div className="flex gap-1 shrink-0">
-            <img
-              src={c.preview_urls.snapshot}
-              alt={`${c.benchmark_id} snapshot`}
-              className="w-24 h-24 border border-slate-800 rounded bg-slate-950 [image-rendering:pixelated]"
-              loading="lazy"
-            />
-            <img
-              src={c.preview_urls.ground_truth}
-              alt={`${c.benchmark_id} ground truth`}
-              className="w-24 h-24 border border-slate-800 rounded bg-slate-950 [image-rendering:pixelated]"
-              loading="lazy"
-            />
+          <div className="shrink-0">
+            <div className="flex gap-1">
+              <img
+                src={c.preview_urls.snapshot}
+                alt={`${c.benchmark_id} measurement`}
+                title="Measurement"
+                className="w-24 h-24 border border-slate-800 rounded bg-slate-950 [image-rendering:pixelated]"
+                loading="lazy"
+              />
+              <img
+                src={c.preview_urls.ground_truth}
+                alt={`${c.benchmark_id} ground truth`}
+                title="Ground truth"
+                className="w-24 h-24 border border-slate-800 rounded bg-slate-950 [image-rendering:pixelated]"
+                loading="lazy"
+              />
+              <img
+                src={c.preview_urls.solution}
+                alt={`${c.benchmark_id} reference reconstruction`}
+                title="Reference reconstruction"
+                className="w-24 h-24 border border-slate-800 rounded bg-slate-950 [image-rendering:pixelated]"
+                loading="lazy"
+              />
+            </div>
+            <div className="grid grid-cols-3 gap-1 mt-0.5 text-[9px] text-pwm-muted text-center">
+              <span>measurement</span>
+              <span>ground truth</span>
+              <span>reference</span>
+            </div>
           </div>
         )}
         <div className="flex-1 min-w-0 space-y-2">
