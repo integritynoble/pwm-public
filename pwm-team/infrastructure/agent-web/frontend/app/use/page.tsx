@@ -47,12 +47,62 @@ export default async function UseSolutionPage() {
       <header>
         <h1 className="text-3xl font-bold tracking-tight">Use a Solution</h1>
         <p className="text-pwm-muted mt-2 max-w-3xl text-sm">
-          Find a PWM-validated solution for your data in three steps:
-          (1) describe what you have, (2) preview the matched benchmark&apos;s
-          example data, (3) run the reference solver on your own input.
-          No wallet required.
+          Two ways to use PWM-validated solutions:
+          (a) <strong>SpecLab</strong> — a chat interface where you describe your
+          data in plain English, upload measurement files, and get reconstructions
+          back; or (b) <strong>self-serve</strong> — match against PWM benchmarks,
+          download sample data, run the reference solver locally. SpecLab is
+          recommended for non-developers; self-serve is recommended for
+          reproducibility-first workflows.
         </p>
       </header>
+
+      {/* SpecLab CTA — recommended path */}
+      <section className="pwm-card border-cyan-500/40 bg-gradient-to-br from-cyan-950/20 to-indigo-950/20">
+        <div className="flex items-baseline justify-between flex-wrap gap-3 mb-3">
+          <h2 className="text-xl font-semibold">SpecLab — chat interface (recommended)</h2>
+          <span className="text-[10px] uppercase tracking-wide px-1.5 py-0.5 border rounded border-emerald-500/40 text-emerald-400">
+            ● live · pwm.platformai.org
+          </span>
+        </div>
+        <p className="text-sm text-pwm-muted mb-4 max-w-3xl">
+          Talk to PWM in plain English. Four modes: <strong>Reconstruct</strong>{' '}
+          (recover a clean signal from a noisy measurement),{' '}
+          <strong>Mismatch</strong> (analyze calibration drift),{' '}
+          <strong>Design</strong> (propose a new measurement system), and{' '}
+          <strong>Scientific Simulation</strong> (run physics-faithful forward
+          models). Upload <code className="text-slate-400">.npy</code> /{' '}
+          <code className="text-slate-400">.npz</code> /{' '}
+          <code className="text-slate-400">.mat</code> data, get
+          reconstructions + spec.md back. No coding required.
+        </p>
+        <a
+          href="https://pwm.platformai.org/speclab"
+          target="_blank"
+          rel="noreferrer"
+          className="inline-block px-4 py-2 rounded bg-gradient-to-r from-cyan-500 to-indigo-500 text-black font-semibold text-sm"
+        >
+          Open SpecLab →
+        </a>
+        <p className="text-xs text-pwm-muted mt-3">
+          SpecLab lives on the main platform site (pwm.platformai.org) — the
+          full product UI with chat history, file upload, and account
+          management. The explorer (this site) is the read-only protocol view.
+          See{' '}
+          <Link href="/contribute" className="pwm-link">
+            /contribute
+          </Link>{' '}
+          for the platform-vs-explorer split.
+        </p>
+      </section>
+
+      <p className="text-sm text-pwm-muted max-w-3xl">
+        <strong>Or use the explorer&apos;s self-serve path</strong> below — three
+        steps: (1) describe your data, (2) preview the matched benchmark&apos;s
+        example samples, (3) run the reference solver locally. Quicker to
+        verify reproducibility, no account required, results are byte-stable
+        across runs.
+      </p>
 
       {/* Step 1: Match form */}
       <section>
