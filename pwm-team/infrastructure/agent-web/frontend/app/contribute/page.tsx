@@ -182,21 +182,51 @@ const STYLE_PILL: Record<Action['style'], string> = {
   stake: 'border-amber-500/40 text-amber-400',
 };
 
-export default function ContributePage() {
+type SectionId = 'principle' | 'spec' | 'benchmark' | 'solution' | 'bounty';
+
+const TABS: Array<{ id: SectionId; label: string; sub: string }> = [
+  { id: 'principle', label: 'Principle', sub: 'L1' },
+  { id: 'spec',      label: 'Spec',      sub: 'L2' },
+  { id: 'benchmark', label: 'Benchmark', sub: 'L3' },
+  { id: 'solution',  label: 'Solution',  sub: 'L4' },
+  { id: 'bounty',    label: 'Bounty',    sub: 'infra' },
+];
+
+const LAYER_BY_SECTION: Record<SectionId, 'L1' | 'L2' | 'L3' | 'L4' | null> = {
+  principle: 'L1',
+  spec: 'L2',
+  benchmark: 'L3',
+  solution: 'L4',
+  bounty: null,
+};
+
+export default async function ContributePage({
+  searchParams,
+}: {
+  searchParams: Promise<{ section?: string }>;
+}) {
+  const params = await searchParams;
+  const requested = (params.section ?? 'principle') as SectionId;
+  const active: SectionId = TABS.some((t) => t.id === requested)
+    ? requested
+    : 'principle';
+
+  const activeLayer = LAYER_BY_SECTION[active];
+  const activeSection = activeLayer
+    ? SECTIONS.find((s) => s.layer === activeLayer)
+    : null;
+
   return (
-    <div className="space-y-10">
+    <div className="space-y-6">
       <header>
         <h1 className="text-3xl font-bold tracking-tight">Contribute to PWM</h1>
         <p className="text-sm text-pwm-muted mt-2 max-w-3xl">
-          Five contributor sections, organized by the four-layer artifact
-          hierarchy plus Reserve bounties for infrastructure. Each layer has
-          three actions — <strong>Browse</strong> what exists,{' '}
-          <strong>Mine</strong> a new one, <strong>Stake</strong> a slot.{' '}
-          <strong>
-            Solutions (L4) have only two actions — solutions cannot be staked,
-            because they are the work product, not a registerable slot.
-          </strong>{' '}
-          Source: pwm_overview1.md §3-§6 + §10.
+          Five contributor sections — pick one. Each layer has three actions:{' '}
+          <strong>Browse</strong> what exists, <strong>Mine</strong> a new one,{' '}
+          <strong>Stake</strong> a slot. <strong>Solutions (L4) have only two
+          actions</strong> (Browse + Mine) — solutions cannot be staked because
+          they&apos;re the work product, not a registerable slot. Source:{' '}
+          pwm_overview1.md §3-§6 + §10.
         </p>
       </header>
 
@@ -208,10 +238,10 @@ export default function ContributePage() {
               Current focus
             </span>
             <p className="text-sm mt-1">
-              For now, only <strong>CASSI</strong> (L3-003) and{' '}
-              <strong>CACTI</strong> (L3-004) are live for solution mining.
-              New principles, specs, and benchmarks become creatable after the
-              G4 gate clears (≥ 20 non-founder L4 submissions). See the{' '}
+              Only <strong>CASSI</strong> (L3-003) and <strong>CACTI</strong>{' '}
+              (L3-004) are live for solution mining today. New principles,
+              specs, and benchmarks become creatable after the G4 gate clears
+              (≥ 20 non-founder L4 submissions) — see the{' '}
               <Link href="/roadmap" className="pwm-link">
                 roadmap
               </Link>
@@ -221,40 +251,38 @@ export default function ContributePage() {
         </div>
       </section>
 
-      {/* Layer flow visualization */}
-      <section className="pwm-card max-w-3xl">
-        <h2 className="text-sm font-semibold mb-2 uppercase tracking-wide text-pwm-muted">
-          Four-layer flow (browseable in either direction)
-        </h2>
-        <div className="flex items-center gap-2 flex-wrap text-sm">
-          <a href="#principle" className="px-3 py-1.5 rounded bg-slate-900/60 border border-slate-700 hover:border-pwm-accent">
-            <strong>L1</strong> Principle
-          </a>
-          <span className="text-pwm-muted">↔</span>
-          <a href="#spec" className="px-3 py-1.5 rounded bg-slate-900/60 border border-slate-700 hover:border-pwm-accent">
-            <strong>L2</strong> Spec
-          </a>
-          <span className="text-pwm-muted">↔</span>
-          <a href="#benchmark" className="px-3 py-1.5 rounded bg-slate-900/60 border border-slate-700 hover:border-pwm-accent">
-            <strong>L3</strong> Benchmark
-          </a>
-          <span className="text-pwm-muted">↔</span>
-          <a href="#solution" className="px-3 py-1.5 rounded bg-slate-900/60 border border-slate-700 hover:border-pwm-accent">
-            <strong>L4</strong> Solution
-          </a>
-          <span className="text-pwm-muted mx-2">·</span>
-          <a href="#bounty" className="px-3 py-1.5 rounded bg-slate-900/60 border border-slate-700 hover:border-pwm-accent">
-            <strong>Bounty</strong>
-          </a>
-        </div>
-      </section>
+      {/* Tab buttons (5) */}
+      <nav className="flex gap-2 flex-wrap border-b border-slate-800 pb-2">
+        {TABS.map((t) => {
+          const isActive = active === t.id;
+          return (
+            <Link
+              key={t.id}
+              href={`/contribute?section=${t.id}`}
+              className={
+                isActive
+                  ? 'px-4 py-2 rounded-t bg-gradient-to-r from-cyan-500 to-indigo-500 text-black font-semibold text-sm'
+                  : 'px-4 py-2 rounded-t bg-slate-900/60 border border-slate-700 hover:border-pwm-accent hover:text-pwm-accent text-sm transition'
+              }
+            >
+              {t.label}{' '}
+              <span
+                className={
+                  isActive ? 'text-black/60 text-xs' : 'text-pwm-muted text-xs'
+                }
+              >
+                ({t.sub})
+              </span>
+            </Link>
+          );
+        })}
+      </nav>
 
-      {/* Per-layer sections */}
-      {SECTIONS.map((s) => (
-        <LayerSectionCard key={s.layer} section={s} />
-      ))}
-
-      <BountySection />
+      {/* Active section content */}
+      <div className="space-y-6 pt-2">
+        {activeSection && <LayerSectionCard section={activeSection} />}
+        {active === 'bounty' && <BountySection />}
+      </div>
 
       <footer className="text-xs text-pwm-muted pt-4 border-t border-slate-800">
         Reference doc:{' '}
@@ -291,23 +319,23 @@ function LayerSectionCard({ section: s }: { section: LayerSection }) {
         ))}
       </div>
 
-      {/* Cross-navigation between layers */}
+      {/* Cross-navigation between layers (switches the active tab) */}
       <div className="flex items-center gap-3 text-sm flex-wrap pt-2 border-t border-slate-800">
         {s.prevLayer && (
-          <a
-            href={`#${s.prevLayer.id}`}
+          <Link
+            href={`/contribute?section=${s.prevLayer.id}`}
             className="text-pwm-muted hover:text-pwm-accent"
           >
             ← {s.prevLayer.name}
-          </a>
+          </Link>
         )}
         {s.nextLayer && (
-          <a
-            href={`#${s.nextLayer.id}`}
+          <Link
+            href={`/contribute?section=${s.nextLayer.id}`}
             className="text-pwm-muted hover:text-pwm-accent ml-auto"
           >
             {s.nextLayer.name} →
-          </a>
+          </Link>
         )}
       </div>
     </section>
@@ -430,12 +458,12 @@ function BountySection() {
         </Link>
       </div>
       <div className="pt-2">
-        <a
-          href="#solution"
+        <Link
+          href="/contribute?section=solution"
           className="text-pwm-muted hover:text-pwm-accent text-sm"
         >
           ← Back to Solution (L4)
-        </a>
+        </Link>
       </div>
     </section>
   );
