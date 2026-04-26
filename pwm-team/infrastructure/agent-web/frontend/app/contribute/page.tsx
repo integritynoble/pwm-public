@@ -339,6 +339,8 @@ export default function ContributePage() {
         </PathCard>
       </section>
 
+      <LayerMiningSection />
+
       <section className="pwm-card max-w-4xl border-cyan-500/30">
         <h2 className="text-lg font-semibold mb-2">Three honest filters to choose</h2>
         <ol className="list-decimal list-inside space-y-2 text-sm">
@@ -394,5 +396,217 @@ function PathCard({
       <p className="text-sm text-pwm-muted mb-4">{subtitle}</p>
       {children}
     </div>
+  );
+}
+
+
+// === L1-L4 mining-by-layer ===
+// Source: papers/Proof-of-Solution/pwm_overview1.md §3-§6 (per-layer
+// definitions) + §10 "Token Economics" → Three-Tier Staking System
+// + §6 "L4 Solution: Primary Mining Path".
+
+const LAYERS: Array<{
+  layer: 'L1' | 'L2' | 'L3' | 'L4';
+  name: string;
+  short: string;
+  longDescription: string;
+  mineableHow: string;
+  stakeUSD: string;
+  stakePWMFloor: string;
+  earnFrom: string;
+  paperRef: string;
+  canStake: boolean;
+}> = [
+  {
+    layer: 'L1',
+    name: 'Principle',
+    short: 'A new physics principle',
+    longDescription:
+      'The protocol\'s "constitution layer" — a six-tuple (Ω, E, B, I, O, ε) describing the physics of a problem class plus the L_DAG complexity score. Must pass the 10 Physics-Validity tests (P1–P10) and S1–S4 mathematical gates.',
+    mineableHow:
+      'Stake PWM, draft the principle (forward model + L_DAG + spec range), submit for S1–S4 verification + sub-DAO physics review. Reserve grant on acceptance (DAO-voted). Plus 5% upstream royalty on every L4 event under your principle, forever.',
+    stakeUSD: '≥ $50',
+    stakePWMFloor: 'min 10 PWM',
+    earnFrom: 'Reserve grant (DAO vote at S4) + 5% upstream cut from every L4 event under this principle',
+    paperRef: '§3 The Principle (L1): Physics Foundation',
+    canStake: true,
+  },
+  {
+    layer: 'L2',
+    name: 'Spec (spec.md)',
+    short: 'A formal task definition under an existing Principle',
+    longDescription:
+      'A six-tuple (Ω-range, E-bound, B-bound, I-bound, O-bound, ε-fn) that pins one task within a Principle. Must include an ε_fn that maps any Ω point to a minimum acceptable quality threshold, plus an I-benchmark range that defines the canonical evaluation point.',
+    mineableHow:
+      'Stake PWM, draft the spec.md (YAML), submit for S1–S4 + d_spec ≥ 0.35 in-range check. Reserve grant on acceptance. Plus 10% upstream royalty on every L4 event under your spec.',
+    stakeUSD: '≥ $5',
+    stakePWMFloor: 'min 2 PWM',
+    earnFrom: 'Reserve grant (DAO vote at S4 + d_spec ≥ 0.35) + 10% upstream cut from every L4 event under this spec',
+    paperRef: '§4 The spec.md (L2): Formal Task Definition',
+    canStake: true,
+  },
+  {
+    layer: 'L3',
+    name: 'Benchmark',
+    short: 'A complete, hash-committed dataset under an existing spec',
+    longDescription:
+      'A self-contained dataset enabling trustless verification of solutions. Includes generator code, test instances at multiple resolutions (M2 convergence), four mismatch tiers (T1 nominal → T4 blind), six anti-overfitting mechanisms (M1–M6), and pre-computed reference baselines.',
+    mineableHow:
+      'Stake PWM, build the dataset + thresholds (ε per tier), submit for S1–S4 + d_ibench ≥ τ in-range check. Reserve grant on acceptance. Plus 15% upstream royalty on every L4 event scored against your benchmark.',
+    stakeUSD: '≥ $1',
+    stakePWMFloor: 'min 1 PWM',
+    earnFrom: 'Reserve grant (DAO vote at S4 + d_ibench ≥ τ) + 15% upstream cut from every L4 event under this benchmark',
+    paperRef: '§5 The Benchmark (L3): Verification Infrastructure',
+    canStake: true,
+  },
+  {
+    layer: 'L4',
+    name: 'Solution (cert)',
+    short: 'A solver submission for an existing benchmark',
+    longDescription:
+      'The primary mining path. A verified algorithm that solves the benchmark on K=5 unpredictable test instances drawn at submission time from G(SHA256(h_submission ‖ k)). Cert is certified iff worst-case Q = min_i(score_i) ≥ ε. SP (= AC) holds the slot, CP runs the binary; sub-split is `p × 55%` SP / `(1−p) × 55%` CP.',
+    mineableHow:
+      'No stake required for one-shot cert submission (just gas). Run `pwm-node mine <benchmark> --solver your_solver.py`; protocol generates K=5 test instances, runs your solver, computes worst-case Q, certifies if Q ≥ ε. Optionally register as long-running SP / CP (≥ $50 / ≥ $5) to earn ongoing usage fees.',
+    stakeUSD: 'None for cert submission · ≥ $50 (SP) · ≥ $5 (CP) post-U1b',
+    stakePWMFloor: 'gas only · 50 / 5 PWM floors',
+    earnFrom: 'Ranked-draw share of the benchmark\'s pool — `p × 55%` to SP, `(1−p) × 55%` to CP, `15%` to T_k principle treasury, remainder to Reserve',
+    paperRef: '§6 The Solution (L4): Primary Mining Path',
+    canStake: false,
+  },
+];
+
+
+function LayerMiningSection() {
+  return (
+    <section className="space-y-4 max-w-4xl">
+      <div>
+        <h2 className="text-xl font-semibold">Mining by layer (L1 / L2 / L3 / L4)</h2>
+        <p className="text-sm text-pwm-muted mt-2">
+          The four-layer artifact hierarchy is the protocol&apos;s core
+          structure. Each layer is mineable but with different stake/earn
+          rules. <strong>Solutions can only be mined</strong> (no stake
+          required to create — they are the work product). Principles, specs,
+          and benchmarks can both be{' '}
+          <em>created via stake</em> and <em>used to earn upstream royalties</em>.
+          Stake floors are USD-denominated; PWM amounts adjust at the 30-day
+          TWAP. Source:{' '}
+          <a
+            href="https://github.com/integritynoble/Physics_World_Model/blob/master/papers/Proof-of-Solution/pwm_overview1.md"
+            target="_blank"
+            rel="noreferrer"
+            className="pwm-link"
+          >
+            pwm_overview1.md
+          </a>{' '}
+          §3–§6 + §10.
+        </p>
+      </div>
+
+      {/* Quick comparison table */}
+      <div className="pwm-card overflow-x-auto">
+        <table className="pwm-table">
+          <thead>
+            <tr>
+              <th>Layer</th>
+              <th>What</th>
+              <th>Stake to create?</th>
+              <th>Stake floor</th>
+              <th>Earn from</th>
+            </tr>
+          </thead>
+          <tbody>
+            {LAYERS.map((L) => (
+              <tr key={L.layer}>
+                <td className="font-mono font-semibold">{L.layer}</td>
+                <td>{L.name}</td>
+                <td>
+                  {L.canStake ? (
+                    <span className="text-emerald-400">✓ yes</span>
+                  ) : (
+                    <span className="text-amber-400">✗ no — only mineable</span>
+                  )}
+                </td>
+                <td className="font-mono text-xs">
+                  {L.stakeUSD}{' '}
+                  <span className="text-pwm-muted">/ {L.stakePWMFloor}</span>
+                </td>
+                <td className="text-xs">{L.earnFrom.split(' + ')[0]}…</td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
+
+      {/* Per-layer detail cards */}
+      <div className="space-y-3">
+        {LAYERS.map((L) => (
+          <div key={L.layer} className="pwm-card">
+            <div className="flex items-baseline justify-between flex-wrap gap-2 mb-2">
+              <h3 className="font-semibold">
+                <span className="font-mono text-pwm-accent">{L.layer}</span>{' '}
+                · {L.name}{' '}
+                <span className="text-sm text-pwm-muted font-normal">
+                  — {L.short}
+                </span>
+              </h3>
+              <span className="text-[10px] uppercase tracking-wide text-pwm-muted">
+                {L.paperRef}
+              </span>
+            </div>
+
+            <p className="text-sm mt-2">{L.longDescription}</p>
+
+            <div className="grid md:grid-cols-3 gap-3 mt-3 text-xs">
+              <div className="bg-slate-950/40 border border-slate-800 rounded p-2">
+                <div className="text-[10px] uppercase tracking-wide text-pwm-muted mb-1">
+                  Stake floor
+                </div>
+                <div className="font-mono">{L.stakeUSD}</div>
+                <div className="font-mono text-pwm-muted">{L.stakePWMFloor}</div>
+              </div>
+              <div className="bg-slate-950/40 border border-slate-800 rounded p-2">
+                <div className="text-[10px] uppercase tracking-wide text-pwm-muted mb-1">
+                  How to mine
+                </div>
+                <div>{L.mineableHow}</div>
+              </div>
+              <div className="bg-slate-950/40 border border-slate-800 rounded p-2">
+                <div className="text-[10px] uppercase tracking-wide text-pwm-muted mb-1">
+                  Earn from
+                </div>
+                <div>{L.earnFrom}</div>
+              </div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Stake fate + caveats */}
+      <div className="pwm-card text-sm space-y-2 border-amber-500/30">
+        <h3 className="font-semibold">Stake fate (L1 / L2 / L3 only)</h3>
+        <ul className="list-disc list-inside text-pwm-muted text-xs space-y-1">
+          <li>
+            <strong>On graduation</strong> (your artifact promoted from
+            contributor-funded to protocol-funded): 50% returned to your
+            wallet · 50% locked as permanent B-pool seed for the artifact.
+          </li>
+          <li>
+            <strong>On challenge upheld</strong> (someone proves your
+            artifact violates S1–S4): 50% burned · 50% to challenger ·
+            artifact delisted.
+          </li>
+          <li>
+            <strong>On fraud</strong> (deliberate violation): 100% burned ·
+            artifact permanently delisted.
+          </li>
+        </ul>
+        <p className="text-xs text-pwm-muted pt-2 border-t border-slate-800">
+          <strong>Genesis 500 are locked at protocol launch.</strong> All
+          principle-creation paths above are for adding the 501st principle
+          and beyond, post-mainnet. Genesis principles are auto-promoted at
+          launch with no staking required.
+        </p>
+      </div>
+    </section>
   );
 }
