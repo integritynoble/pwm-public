@@ -8,14 +8,12 @@ export const metadata: Metadata = {
     'Public explorer for the Physics World Model protocol — principles, benchmarks, certificates, pools.',
 };
 
+// Two main user sessions (Solution usage + Contribute) plus Overview and
+// Roadmap. The legacy deep-link routes (Match, Demos, Principles, Benchmarks,
+// Pools, Bounties) are reachable from /use and /contribute, plus by direct URL.
 const NAV = [
   { href: '/', label: 'Overview' },
-  { href: '/match', label: 'Match' },
-  { href: '/demos', label: 'Demos' },
-  { href: '/principles', label: 'Principles' },
-  { href: '/benchmarks', label: 'Benchmarks' },
-  { href: '/pools', label: 'Pools' },
-  { href: '/bounties', label: 'Bounties' },
+  { href: '/use', label: 'Use a Solution' },
   { href: '/contribute', label: 'Contribute' },
   { href: '/roadmap', label: 'Roadmap' },
 ];

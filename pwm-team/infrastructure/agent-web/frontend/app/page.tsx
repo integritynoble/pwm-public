@@ -87,7 +87,7 @@ export default async function HomePage() {
       <section>
         <h2 className="text-xl font-semibold mb-3">How to engage with PWM</h2>
         <div className="grid md:grid-cols-3 gap-4">
-          <Link href="/match" className="pwm-card hover:border-pwm-accent transition-colors block">
+          <Link href="/use" className="pwm-card hover:border-pwm-accent transition-colors block">
             <div className="text-2xl font-black text-pwm-accent">1</div>
             <h3 className="font-semibold text-lg mt-1">Use a solution →</h3>
             <p className="text-sm text-pwm-muted mt-1">
