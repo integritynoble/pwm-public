@@ -140,7 +140,7 @@ export default function RoadmapPage() {
           criterion. A phase is &ldquo;done&rdquo; when every exit signal is
           true. Source of truth:{' '}
           <code className="text-slate-400">
-            pwm-team/coordination/PWM_PRODUCT_VISION.md
+            pwm-team/coordination/strategy/PWM_PRODUCT_VISION.md
           </code>{' '}
           (private repo; this page mirrors the published phase tables).
         </p>
