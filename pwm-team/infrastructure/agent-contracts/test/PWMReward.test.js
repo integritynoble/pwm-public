@@ -161,6 +161,30 @@ describe("PWMReward", function () {
       .to.be.revertedWith("PWMReward: p out of range");
   });
 
+  it("distribute: tiny pool exercises _send(0) early-return for shares that round to 0", async () => {
+    // With balance=20 wei, rank=1 (40%) → drawAmt=8 wei.
+    // shareRatioP=1000 (10/90) yields:
+    //   acAmt = 8 * 1000 * 5500 / 1e8 = 0  → _send(ac, 0) early-return
+    //   cpAmt = 8 * 9000 * 5500 / 1e8 = 3
+    //   l1Amt = 8 * 500 / 1e4 = 0          → _send(l1, 0) early-return
+    //   l2Amt = 8 * 1000 / 1e4 = 0         → _send(l2, 0) early-return
+    //   l3Amt = 8 * 1500 / 1e4 = 1
+    //   tk    = remainder (treasury receives via receive15pct, which has its
+    //           own zero-amount handling)
+    const bh = H("tiny-distribute");
+    await reward.connect(minter).depositMinting(bh, { value: 20n });
+    const d = {
+      benchmarkHash: bh, principleId: 1,
+      l1Creator: l1c.address, l2Creator: l2c.address, l3Creator: l3c.address,
+      acWallet: ac.address, cpWallet: cp.address,
+      shareRatioP: 1000, rank: 1,
+    };
+    await expect(reward.connect(cert).distribute(H("cert-tiny-pool"), d))
+      .to.emit(reward, "DrawSettled");
+    // Pool should be reduced by drawAmt = 8
+    expect(await reward.poolOf(bh)).to.equal(12n);
+  });
+
   it("distribute: drawAmt rounds to 0 (balance*rbps < BPS_DENOM) — emits zero-draw, pool intact", async () => {
     // rank 4 → rbps=100 → drawAmt = balance*100/10000 = balance/100.
     // For balance = 50 wei, drawAmt = 0; pool stays at 50.
