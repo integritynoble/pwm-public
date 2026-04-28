@@ -81,50 +81,72 @@ for path in "/" "/match" "/demos" "/contribute" "/use" "/roadmap" \
 done
 echo
 
-echo "[2] /match API returns confidence > 2.0 for hyperspectral query"
-match_body=$(http_body "${BASE_URL}/api/match?q=hyperspectral+snapshot")
+echo "[2] /match returns L3-003 (CASSI) as strong match for structured query"
+match_body=$(http_body "${BASE_URL}/api/match?modality=hyperspectral&domain=imaging")
 if [[ -n "$match_body" ]] && command -v jq >/dev/null 2>&1; then
-    conf=$(echo "$match_body" | jq -r '.results[0].confidence // 0' 2>/dev/null || echo 0)
-    if awk -v c="$conf" 'BEGIN{exit !(c+0 > 2.0)}'; then
-        ok "/match top result confidence=${conf} > 2.0"
+    top_id=$(echo "$match_body" | jq -r '.candidates[0].benchmark_id // empty' 2>/dev/null)
+    top_score=$(echo "$match_body" | jq -r '.candidates[0].score // 0' 2>/dev/null || echo 0)
+    top_band=$(echo "$match_body" | jq -r '.candidates[0].score_band // empty' 2>/dev/null)
+    if [[ "$top_id" == "L3-003" ]] && awk -v c="$top_score" 'BEGIN{exit !(c+0 >= 2.0)}'; then
+        ok "/match returns L3-003 with score=${top_score} band=${top_band}"
     else
-        bad "/match top result confidence=${conf} <= 2.0"
+        bad "/match top result is '${top_id}' score=${top_score} band=${top_band} (expected L3-003 with score >= 2.0)"
     fi
 else
     bad "/match returned empty body or jq missing (got ${#match_body} bytes)"
 fi
 echo
 
-echo "[3] /demos serves all 16 sample previews"
+echo "[3] /demos serves snapshot/solution PNGs for all 16 samples"
 for i in 01 02 03 04 05 06 07 08 09 10 ; do
-    code=$(http_code "${BASE_URL}/api/demos/cassi/sample_${i}/preview.png")
-    if [[ "$code" == "200" ]]; then
-        ok "cassi sample_${i} preview HTTP 200"
-    else
-        bad "cassi sample_${i} preview HTTP ${code}"
-    fi
+    for kind in snapshot solution ; do
+        code=$(http_code "${BASE_URL}/api/demos/cassi/sample_${i}/${kind}.png")
+        if [[ "$code" == "200" ]]; then
+            ok "cassi sample_${i} ${kind}.png HTTP 200"
+        else
+            bad "cassi sample_${i} ${kind}.png HTTP ${code}"
+        fi
+    done
 done
 for i in 01 02 03 04 05 06 ; do
-    code=$(http_code "${BASE_URL}/api/demos/cacti/sample_${i}/preview.png")
-    if [[ "$code" == "200" ]]; then
-        ok "cacti sample_${i} preview HTTP 200"
-    else
-        bad "cacti sample_${i} preview HTTP ${code}"
-    fi
+    for kind in snapshot solution ; do
+        code=$(http_code "${BASE_URL}/api/demos/cacti/sample_${i}/${kind}.png")
+        if [[ "$code" == "200" ]]; then
+            ok "cacti sample_${i} ${kind}.png HTTP 200"
+        else
+            bad "cacti sample_${i} ${kind}.png HTTP ${code}"
+        fi
+    done
 done
 echo
 
 echo "[4] /api/network reports current network"
 net_body=$(http_body "${BASE_URL}/api/network")
-if [[ -n "$net_body" ]]; then
-    ok "/api/network responsive (body: $(echo "$net_body" | head -c 80))"
+if [[ -n "$net_body" ]] && command -v jq >/dev/null 2>&1; then
+    net_name=$(echo "$net_body" | jq -r '.network // empty' 2>/dev/null)
+    if [[ -n "$net_name" ]]; then
+        ok "/api/network reports network='${net_name}'"
+    else
+        bad "/api/network response missing 'network' field (body: $(echo "$net_body" | head -c 80))"
+    fi
 else
-    bad "/api/network returned empty body"
+    bad "/api/network returned empty body or jq missing"
 fi
 echo
 
-echo "[5] Health endpoint"
-require_200 "GET /health" "${BASE_URL}/health"
+echo "[5] Demo index lists CASSI + CACTI"
+demos_body=$(http_body "${BASE_URL}/api/demos")
+if [[ -n "$demos_body" ]] && command -v jq >/dev/null 2>&1; then
+    cassi_present=$(echo "$demos_body" | jq -r '.demos[]?.name | select(. == "cassi")' 2>/dev/null)
+    cacti_present=$(echo "$demos_body" | jq -r '.demos[]?.name | select(. == "cacti")' 2>/dev/null)
+    if [[ "$cassi_present" == "cassi" && "$cacti_present" == "cacti" ]]; then
+        ok "/api/demos lists both 'cassi' and 'cacti'"
+    else
+        bad "/api/demos missing cassi or cacti (cassi='${cassi_present}' cacti='${cacti_present}')"
+    fi
+else
+    bad "/api/demos returned empty body or jq missing"
+fi
 echo
 
 # --- summary -----------------------------------------------------------
