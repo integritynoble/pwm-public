@@ -65,6 +65,8 @@ Staking, Certificate, Minting, plus three integration files
 
 `cd pwm-team/infrastructure/agent-contracts && npx hardhat coverage`
 
+### Initial baseline (mainnet-v1.0.0 commit)
+
 | Contract | % Stmts | % Branch | % Funcs | % Lines |
 |---|---|---|---|---|
 | PWMCertificate | 95.00 | 67.86 | 91.67 | 93.88 |
@@ -76,27 +78,44 @@ Staking, Certificate, Minting, plus three integration files
 | PWMTreasury | 100 | 90.00 | 100 | 100 |
 | **Aggregate** | **92.13** | **67.84** | **91.25** | **92.97** |
 
-**Aggregate clears the 90% threshold on Stmts, Funcs, and Lines.**
-Branch coverage aggregate is 67.84% — below 90%. PWMMinting is below
-90% on every dimension.
+This was the state at `mainnet-v1.0.0` (commit 3bd9a3e). Aggregate
+cleared the 90% threshold on Stmts, Funcs, and Lines. Branch
+aggregate was 67.84% (below 90%). PWMMinting was below 90% on every
+dimension. **These gaps did not block mainnet** for the current
+scope (testnet soft-launch with $10K TVL cap) but were flagged for
+closure before lifting the cap.
 
-### Coverage gap acknowledgements
+### Updated state (post-coverage-uplift, 2026-04-28)
 
-- **PWMMinting**: Zeno-curve per-event emission, decay logic, weighted
-  per-principle/per-benchmark allocation. The 16.85% uncovered Stmts
-  is concentrated in lines 235-283 (the per-benchmark emission inner
-  loop and rounding-dust path). Increasing coverage here is tracked as
-  a follow-up; the uncovered branches are exercised in the integration
-  tests but the line-level instrumentation under `npx hardhat coverage`
-  doesn't fully credit them.
-- **Branch coverage in general (67.84%)**: Most uncovered branches are
-  defensive `require()` paths (zero-address rejection, governance
-  guard reverts) that the test suite covers via positive-only paths
-  on each setX function.
+After 16 new tests added across PWMMinting (×11), PWMCertificate (×1),
+PWMReward (×2), PWMStaking (×1):
 
-These gaps DO NOT block mainnet for the current scope (testnet
-soft-launch with $10K TVL cap), but should be raised to ≥ 90% per
-contract / ≥ 90% branch before lifting the cap.
+| Contract | % Stmts | % Branch | % Funcs | % Lines |
+|---|---|---|---|---|
+| PWMCertificate | **100** | 76.79 | **100** | **100** |
+| PWMGovernance | 100 | 69.64 | 100 | 100 |
+| PWMMinting | **100** | **90.70** | **100** | **100** |
+| PWMRegistry | 100 | 100 | 100 | 100 |
+| PWMReward | **98.53** | 76.47 | **100** | **100** |
+| PWMStaking | **100** | 72.41 | **100** | **100** |
+| PWMTreasury | 100 | 90.00 | 100 | 100 |
+| **Aggregate** | **99.67** | **80.27** | **100** | **100** |
+
+Per-contract Lines all at 100%. Six of seven contracts at 100% Stmts.
+Aggregate Stmts/Funcs/Lines all > 99%. Aggregate Branch up from 67.84%
+to 80.27%. **PWMMinting now meets the ≥ 90% threshold on every
+dimension** — closing the most material gap in the original baseline.
+
+### Remaining gaps (residual; for Step 1b external-audit-clean)
+
+- **Branch coverage on PWMCertificate (76.79%), PWMReward (76.47%),
+  PWMStaking (72.41%), PWMGovernance (69.64%)**: most uncovered
+  branches are defensive `require()` reverts that the tests cover in
+  the happy-path direction only. Closing these to 90%+ is a routine
+  add of revert-direction tests; tracked for Step 1b.
+- **Echidna invariant contracts (`contracts/test/`)**: 0% coverage by
+  Hardhat coverage (these are Echidna fuzz harnesses, not unit
+  tests; they run separately).
 
 ## 5. AUDIT_SUBMISSION.md status
 

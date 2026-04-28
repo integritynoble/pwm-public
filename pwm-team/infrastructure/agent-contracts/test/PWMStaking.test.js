@@ -114,4 +114,14 @@ describe("PWMStaking", function () {
       .to.be.revertedWith("PWMStaking: wrong amount");
     await staking.connect(staker).stake(3, H("new"), { value: ethers.parseEther("5") });
   });
+
+  it("setGovernance: rejects zero, rejects non-governance, transfers cleanly", async () => {
+    await expect(staking.connect(gov).setGovernance(ethers.ZeroAddress))
+      .to.be.revertedWith("PWMStaking: zero governance");
+    await expect(staking.connect(outsider).setGovernance(outsider.address))
+      .to.be.revertedWith("PWMStaking: not governance");
+    await expect(staking.connect(gov).setGovernance(outsider.address))
+      .to.emit(staking, "GovernanceUpdated").withArgs(outsider.address);
+    expect(await staking.governance()).to.equal(outsider.address);
+  });
 });

@@ -184,4 +184,144 @@ describe("PWMMinting (per-event Zeno, pwm_overview1.md)", function () {
     const b1 = await minting.benchmarkOf(1, H("b1"));
     expect(b1.registered).to.equal(false);
   });
+
+  // ===== coverage uplift (2026-04-28): setGovernance, setBenchmarkRho,
+  // un-promote path, principleWeight/benchmarkWeight views =====
+
+  it("setGovernance: rejects zero, rejects non-governance, transfers cleanly", async () => {
+    await expect(minting.connect(gov).setGovernance(ethers.ZeroAddress))
+      .to.be.revertedWith("PWMMinting: zero governance");
+    await expect(minting.connect(outsider).setGovernance(outsider.address))
+      .to.be.revertedWith("PWMMinting: not governance");
+    await expect(minting.connect(gov).setGovernance(outsider.address))
+      .to.emit(minting, "GovernanceUpdated").withArgs(outsider.address);
+    expect(await minting.governance()).to.equal(outsider.address);
+    // After handoff, original gov is no longer authorized
+    await expect(minting.connect(gov).setGovernance(gov.address))
+      .to.be.revertedWith("PWMMinting: not governance");
+  });
+
+  it("setCertificate / setReward: zero rejected; non-governance rejected", async () => {
+    await expect(minting.connect(gov).setCertificate(ethers.ZeroAddress))
+      .to.be.revertedWith("PWMMinting: zero certificate");
+    await expect(minting.connect(outsider).setCertificate(outsider.address))
+      .to.be.revertedWith("PWMMinting: not governance");
+    await expect(minting.connect(gov).setReward(ethers.ZeroAddress))
+      .to.be.revertedWith("PWMMinting: zero reward");
+    await expect(minting.connect(outsider).setReward(outsider.address))
+      .to.be.revertedWith("PWMMinting: not governance");
+  });
+
+  it("setDelta rejects zero; non-governance blocked", async () => {
+    await expect(minting.connect(gov).setDelta(1, 0))
+      .to.be.revertedWith("PWMMinting: zero delta");
+    await expect(minting.connect(outsider).setDelta(1, 5))
+      .to.be.revertedWith("PWMMinting: not governance");
+  });
+
+  it("setPromotion: un-promote decrements totalPrincipleWeight", async () => {
+    // Two promoted principles; un-promote one and confirm totalPrincipleWeight tracks.
+    await register(1, 3, H("b1"), 1);  // weight = 3
+    await register(2, 5, H("b2"), 1);  // weight = 5
+    expect(await minting.totalPrincipleWeight()).to.equal(8n);
+    await expect(minting.connect(gov).setPromotion(1, false))
+      .to.emit(minting, "PromotionSet").withArgs(1, false);
+    expect(await minting.totalPrincipleWeight()).to.equal(5n);
+    expect((await minting.principleOf(1)).promoted).to.equal(false);
+    // No-op cases (already-not-promoted, already-promoted) don't alter weight
+    await minting.connect(gov).setPromotion(1, false);
+    expect(await minting.totalPrincipleWeight()).to.equal(5n);
+    await minting.connect(gov).setPromotion(2, true);
+    expect(await minting.totalPrincipleWeight()).to.equal(5n);
+  });
+
+  it("setBenchmarkRho: updates rho, rejects zero, rejects unknown, blocks non-governance", async () => {
+    await register(1, 1, H("b1"), 2);
+    expect((await minting.benchmarkOf(1, H("b1"))).rho).to.equal(2n);
+
+    await expect(minting.connect(gov).setBenchmarkRho(1, H("b1"), 0))
+      .to.be.revertedWith("PWMMinting: zero rho");
+    await expect(minting.connect(gov).setBenchmarkRho(1, H("missing"), 5))
+      .to.be.revertedWith("PWMMinting: unknown benchmark");
+    await expect(minting.connect(outsider).setBenchmarkRho(1, H("b1"), 5))
+      .to.be.revertedWith("PWMMinting: not governance");
+
+    // Happy path: rho update + sumBenchmarkWeight bookkeeping correct.
+    // For b.activity < rho, _benchmarkWeight = rho^2.
+    expect(await minting.sumBenchmarkWeight(1)).to.equal(4n);  // rho=2 → weight = 2*max(0,2)=4
+    await expect(minting.connect(gov).setBenchmarkRho(1, H("b1"), 5))
+      .to.emit(minting, "BenchmarkRhoUpdated").withArgs(1, H("b1"), 5);
+    expect((await minting.benchmarkOf(1, H("b1"))).rho).to.equal(5n);
+    expect(await minting.sumBenchmarkWeight(1)).to.equal(25n);  // rho=5 → weight = 5*5 = 25
+  });
+
+  it("principleWeight view: 0 if unpromoted, delta*max(activity,1) if promoted", async () => {
+    // Unpromoted (no delta yet)
+    expect(await minting.principleWeight(1)).to.equal(0n);
+
+    // delta set but not yet promoted (registerBenchmark needed first)
+    await minting.connect(gov).setDelta(1, 7);
+    expect(await minting.principleWeight(1)).to.equal(0n);
+
+    // Register + promote: weight = delta * max(activity, 1) = 7 * 1 = 7
+    await minting.connect(gov).registerBenchmark(1, H("b1"), 1);
+    await minting.connect(gov).setPromotion(1, true);
+    expect(await minting.principleWeight(1)).to.equal(7n);
+
+    // Un-promote → 0 again
+    await minting.connect(gov).setPromotion(1, false);
+    expect(await minting.principleWeight(1)).to.equal(0n);
+  });
+
+  it("benchmarkWeight view: 0 if unregistered, rho*max(activity,rho) if registered", async () => {
+    // Unregistered
+    expect(await minting.benchmarkWeight(1, H("nope"))).to.equal(0n);
+
+    // After register: rho=3, activity=0 → weight = 3*max(0,3) = 9
+    await minting.connect(gov).setDelta(1, 1);
+    await minting.connect(gov).registerBenchmark(1, H("b1"), 3);
+    expect(await minting.benchmarkWeight(1, H("b1"))).to.equal(9n);
+
+    // After promotion + 1 mintFor: activity=1 still < rho=3 → weight = 3*3 = 9 (unchanged)
+    await minting.connect(gov).setPromotion(1, true);
+    await funder.sendTransaction({ to: await minting.getAddress(),
+                                   value: ethers.parseEther("100000000") });
+    await minting.connect(cert).mintFor(1, H("b1"));
+    expect(await minting.benchmarkWeight(1, H("b1"))).to.equal(9n);
+  });
+
+  it("setDelta on unpromoted principle does not touch totalPrincipleWeight", async () => {
+    // Branch coverage: setDelta when p.promoted == false skips the totalPrincipleWeight update.
+    await minting.connect(gov).setDelta(1, 3);
+    expect(await minting.totalPrincipleWeight()).to.equal(0n);
+    await minting.connect(gov).setDelta(1, 5);
+    expect(await minting.totalPrincipleWeight()).to.equal(0n);
+    expect((await minting.principleOf(1)).delta).to.equal(5n);
+  });
+
+  it("registerBenchmark: rejects zero hash, zero rho, duplicate, non-governance", async () => {
+    await expect(minting.connect(gov).registerBenchmark(1, ethers.ZeroHash, 1))
+      .to.be.revertedWith("PWMMinting: zero benchmark");
+    await expect(minting.connect(gov).registerBenchmark(1, H("b1"), 0))
+      .to.be.revertedWith("PWMMinting: zero rho");
+    await expect(minting.connect(outsider).registerBenchmark(1, H("b1"), 1))
+      .to.be.revertedWith("PWMMinting: not governance");
+    await minting.connect(gov).registerBenchmark(1, H("b1"), 1);
+    await expect(minting.connect(gov).registerBenchmark(1, H("b1"), 1))
+      .to.be.revertedWith("PWMMinting: already registered");
+  });
+
+  it("removeBenchmark: rejects unknown, blocks non-governance, allows when unpromoted", async () => {
+    await expect(minting.connect(gov).removeBenchmark(1, H("missing")))
+      .to.be.revertedWith("PWMMinting: unknown benchmark");
+    // Register (no promotion) → removable freely
+    await minting.connect(gov).setDelta(1, 1);
+    await minting.connect(gov).registerBenchmark(1, H("b1"), 1);
+    expect((await minting.principleOf(1)).numBenchmarks).to.equal(1n);
+    await expect(minting.connect(outsider).removeBenchmark(1, H("b1")))
+      .to.be.revertedWith("PWMMinting: not governance");
+    await expect(minting.connect(gov).removeBenchmark(1, H("b1")))
+      .to.emit(minting, "BenchmarkRemoved");
+    expect((await minting.principleOf(1)).numBenchmarks).to.equal(0n);
+  });
 });

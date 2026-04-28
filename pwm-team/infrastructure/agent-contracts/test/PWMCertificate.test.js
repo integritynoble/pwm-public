@@ -159,4 +159,14 @@ describe("PWMCertificate", function () {
     const c = await cert.certificates(ch);
     expect(await cert.windowEndOf(ch)).to.equal(c.submittedAt + BigInt(7 * DAY));
   });
+
+  it("setGovernance: rejects zero, rejects non-governance, transfers cleanly", async () => {
+    await expect(cert.connect(gov).setGovernance(ethers.ZeroAddress))
+      .to.be.revertedWith("PWMCertificate: zero governance");
+    await expect(cert.connect(submitter).setGovernance(submitter.address))
+      .to.be.revertedWith("PWMCertificate: not governance");
+    await expect(cert.connect(gov).setGovernance(submitter.address))
+      .to.emit(cert, "GovernanceUpdated").withArgs(submitter.address);
+    expect(await cert.governance()).to.equal(submitter.address);
+  });
 });

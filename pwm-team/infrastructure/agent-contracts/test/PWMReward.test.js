@@ -160,4 +160,29 @@ describe("PWMReward", function () {
     await expect(reward.connect(cert).distribute(H("high-p"), { ...d, shareRatioP: 9001 }))
       .to.be.revertedWith("PWMReward: p out of range");
   });
+
+  it("distribute: drawAmt rounds to 0 (balance*rbps < BPS_DENOM) — emits zero-draw, pool intact", async () => {
+    // rank 4 → rbps=100 → drawAmt = balance*100/10000 = balance/100.
+    // For balance = 50 wei, drawAmt = 0; pool stays at 50.
+    const bh = H("tiny-pool");
+    await reward.connect(minter).depositMinting(bh, { value: 50n });
+    const d = {
+      benchmarkHash: bh, principleId: 1,
+      l1Creator: l1c.address, l2Creator: l2c.address, l3Creator: l3c.address,
+      acWallet: ac.address, cpWallet: cp.address, shareRatioP: 5000, rank: 4,
+    };
+    await expect(reward.connect(cert).distribute(H("cert-zero-draw"), d))
+      .to.emit(reward, "DrawSettled").withArgs(H("cert-zero-draw"), bh, 4, 0n, 50n);
+    expect(await reward.poolOf(bh)).to.equal(50n);
+  });
+
+  it("setGovernance: rejects zero, rejects non-governance, transfers cleanly", async () => {
+    await expect(reward.connect(gov).setGovernance(ethers.ZeroAddress))
+      .to.be.revertedWith("PWMReward: zero governance");
+    await expect(reward.connect(outsider).setGovernance(outsider.address))
+      .to.be.revertedWith("PWMReward: not governance");
+    await expect(reward.connect(gov).setGovernance(outsider.address))
+      .to.emit(reward, "GovernanceUpdated").withArgs(outsider.address);
+    expect(await reward.governance()).to.equal(outsider.address);
+  });
 });
