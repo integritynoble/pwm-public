@@ -1,0 +1,30 @@
+{
+  "_comment": "Canonical PWMGovernance addresses per network. Mirrors addresses.json for the .PWMGovernance entry but kept here for the multisig audit trail. Update when redeploys happen.",
+
+  "testnet": {
+    "PWMGovernance": "0xf5a061B18455bf4a66441B0B5B84159d69af1286",
+    "deployedAt": "2026-04-19T23:26:12.707Z",
+    "founders_at_deploy": [
+      "0x0c566f0F87cD062C3DE95943E50d572c74A87dEd",
+      "0x122A58C9c386Dea6ADcb75A407C005F5C51a138a",
+      "0xC4cd47ddE9204539c9445efB7A3c0dCa16193690",
+      "0xB4EE47D18Fe2c36Ef2a24f18c92aDeCB745A8Ad5",
+      "0x179704627329a01a7381E5eC2d604583b593eAb1"
+    ],
+    "_note": "Sepolia testnet. Founders are hot wallets used for deploy convenience. Do NOT replicate this on mainnet."
+  },
+
+  "baseSepolia": {
+    "PWMGovernance": null,
+    "deployedAt": null,
+    "founders_at_deploy": [],
+    "_note": "Base Sepolia rehearsal deploy. Use the same 5 addresses planned for mainnet so the rehearsal exercises the real flow end-to-end."
+  },
+
+  "base": {
+    "PWMGovernance": null,
+    "deployedAt": null,
+    "founders_at_deploy": [],
+    "_note": "Base L2 mainnet. Founders MUST be the 5 hardware-wallet addresses recorded in multisig/signers.md. Set-once at PWMGovernance constructor; cannot be changed without redeploy or DAO activation."
+  }
+}
