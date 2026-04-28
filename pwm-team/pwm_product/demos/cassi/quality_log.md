@@ -29,3 +29,24 @@ Per `papers/inversenet/RECONSTRUCTION_ALGORITHM_GUIDE.md` and
 | **MST-L** (deep) | **34.81 ± 2.11 dB** | 20.83 ± 2.01 dB | Best overall |
 
 Our current 15.65 dB is materially below the GAP-TV Scenario I baseline (24.34 dB) and even below the GAP-TV Scenario II baseline (20.96 dB), suggesting the demo generation is operating with non-ideal-and-non-baseline parameters — investigate `scripts/generate_demos.py` solver hyperparameters and forward-model configuration. Achieving the 24 dB target via GAP-TV alone is realistic under Scenario I; alternatively, integrate HDNet or MST-L from `papers/inversenet/scripts/validate_cassi_inversenet_v2.py`.
+
+## Single-sample proof (2026-04-28): public algorithm_base hits target
+
+Ran `scripts/reproduce_inversenet_baseline.py` which uses the canonical
+`pwm_core.recon.gap_tv.gap_tv_cassi` from
+`public/algorithm_base/cassi/`:
+
+```
+CASSI sample_01:  25.66 dB  (28.5s; GAP-TV iter=100 lam=0.1 step=2; target >= 24, InverseNet claim 24.34 +/- 1.90)
+CASSI PASS (target 24 dB)
+```
+
+Three deltas vs the existing demo solution.npz:
+1. **Step-2 spectral dispersion** (snapshot width = 256 + 27*2 = 310). PWM `cassi_gap_tv.py` and `generate_demos.py` use step=1 and width=256.
+2. **100 iterations** vs the demo's `CASSI_N_ITERS = 15`.
+3. **lam=0.1** TV weight vs the demo's `tv_lambda=0.005`.
+
+To clear the 24 dB target on all 10 KAIST samples, regenerate
+`pwm-team/pwm_product/demos/cassi/sample_*/{snapshot,solution}.npz`
+using `pwm_core.recon.gap_tv.gap_tv_cassi` with these hyperparameters.
+Patch needed: update `scripts/generate_demos.py::generate_cassi_sample()`.
