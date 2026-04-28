@@ -90,6 +90,9 @@ async function main() {
   console.log("  PWMMinting:", mintingAddr);
 
   // ----- cross-contract wiring -----
+  // Wiring is done while admin == deployer because each setX() requires
+  // the current governance to call it. After wiring, hand off admin to
+  // PWMGovernance.
   console.log("\nWiring addresses…");
   await (await reward.setCertificate(certAddr)).wait();
   await (await reward.setStaking(stakingAddr)).wait();
@@ -103,6 +106,30 @@ async function main() {
   await (await minting.setCertificate(certAddr)).wait();
   await (await minting.setReward(rewardAddr)).wait();
   console.log("  wiring complete.");
+
+  // ----- governance handoff -----
+  // CRITICAL: after wiring is done, transfer admin from the deployer to
+  // PWMGovernance. Without this step, all 5 admin contracts remain
+  // controlled by the deployer's single key — a single-key root for the
+  // entire protocol. Set PWM_SKIP_GOVERNANCE_HANDOFF=1 only for local
+  // hardhat testing where you need the deployer as admin for further calls.
+  if (process.env.PWM_SKIP_GOVERNANCE_HANDOFF === "1") {
+    console.log("\nSkipping governance handoff (PWM_SKIP_GOVERNANCE_HANDOFF=1).");
+    console.log("  ⚠ admin remains the deployer — DO NOT do this on mainnet.");
+  } else {
+    console.log("\nHanding off admin to PWMGovernance…");
+    await (await reward.setGovernance(govAddr)).wait();
+    console.log("  ✓ PWMReward.governance =", govAddr);
+    await (await staking.setGovernance(govAddr)).wait();
+    console.log("  ✓ PWMStaking.governance =", govAddr);
+    await (await certificate.setGovernance(govAddr)).wait();
+    console.log("  ✓ PWMCertificate.governance =", govAddr);
+    await (await minting.setGovernance(govAddr)).wait();
+    console.log("  ✓ PWMMinting.governance =", govAddr);
+    await (await treasury.setGovernance(govAddr)).wait();
+    console.log("  ✓ PWMTreasury.governance =", govAddr);
+    console.log("  governance handoff complete — admin is now PWMGovernance.");
+  }
 
   // ----- persist addresses -----
   const addressesPath = path.join(__dirname, "..", "addresses.json");

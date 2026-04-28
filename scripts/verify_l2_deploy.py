@@ -233,6 +233,23 @@ def run(args: argparse.Namespace) -> int:
                "all 5 governance-gated contracts agree on governance address",
                "governance addresses diverge across contracts",
                errors)
+
+        # Stronger check: governance must point at PWMGovernance, NOT at the
+        # deployer hot wallet. This catches the deploy-time omission where
+        # admin handoff to PWMGovernance was never executed.
+        gov_contract = contracts["PWMGovernance"].address
+        deployer = (slot.get("deployer") or "").lower()
+        admin_at_pwmgov = _eq(gov_staking, gov_contract)
+        _check(admin_at_pwmgov,
+               f"all 5 governance() addresses == PWMGovernance ({gov_contract})",
+               (f"governance() = {gov_staking} != PWMGovernance ({gov_contract}). "
+                "Likely deploy-time omission: deploy/testnet.js wires admin to "
+                "deployer for setX() calls but never runs setGovernance(PWMGovernance) "
+                "afterwards. Run scripts/transfer_admin_to_governance.js to fix."),
+               errors)
+        if not admin_at_pwmgov and deployer and _eq(gov_staking, deployer):
+            logger.error("  ⚠ governance() points at deployer hot wallet — "
+                         "single-key control of all admin functions; NOT acceptable on mainnet")
     except Exception as e:
         errors.append(f"governance() probe failed: {e}")
 
