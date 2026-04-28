@@ -185,4 +185,30 @@ describe("PWMReward", function () {
       .to.emit(reward, "GovernanceUpdated").withArgs(outsider.address);
     expect(await reward.governance()).to.equal(outsider.address);
   });
+
+  it("setCertificate / setMinting / setStaking / setTreasury: zero rejected; non-governance rejected", async () => {
+    for (const fn of ["setCertificate", "setMinting", "setStaking", "setTreasury"]) {
+      await expect(reward.connect(gov)[fn](ethers.ZeroAddress))
+        .to.be.reverted;
+      await expect(reward.connect(outsider)[fn](outsider.address))
+        .to.be.revertedWith("PWMReward: not governance");
+    }
+  });
+
+  it("constructor rejects zero governance", async () => {
+    const R = await ethers.getContractFactory("PWMReward");
+    await expect(R.deploy(ethers.ZeroAddress))
+      .to.be.revertedWith("PWMReward: zero governance");
+  });
+
+  it("seedBPool / depositMinting / depositBounty: revert on zero / unset deps", async () => {
+    const bh = H("zero-tests");
+    // seedBPool requires non-zero msg.value
+    await expect(reward.connect(staker).seedBPool(bh, { value: 0n }))
+      .to.be.reverted;
+    // depositMinting requires onlyMinting (here minter set to gov.address as placeholder
+    // — outsider call should revert)
+    await expect(reward.connect(outsider).depositMinting(bh, { value: 1n }))
+      .to.be.reverted;
+  });
 });

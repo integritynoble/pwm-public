@@ -55,4 +55,11 @@ module.exports = {
     artifacts: "./artifacts",
     cache: "./cache",
   },
+  // STEP_1 PASS advisory (2026-04-28): integration tests timed out on first
+  // cold-cache run (Mocha default 40 s) on a slower verifier. Bumping the
+  // global timeout to 120 s makes verification deterministic on first run
+  // while staying low enough to fail fast on a real hang.
+  mocha: {
+    timeout: 120_000,
+  },
 };

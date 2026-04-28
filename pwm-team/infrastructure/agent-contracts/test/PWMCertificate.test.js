@@ -169,4 +169,19 @@ describe("PWMCertificate", function () {
       .to.emit(cert, "GovernanceUpdated").withArgs(submitter.address);
     expect(await cert.governance()).to.equal(submitter.address);
   });
+
+  it("setRegistry / setReward / setMinting: zero rejected; non-governance rejected", async () => {
+    for (const fn of ["setRegistry", "setReward", "setMinting"]) {
+      await expect(cert.connect(gov)[fn](ethers.ZeroAddress))
+        .to.be.reverted;
+      await expect(cert.connect(submitter)[fn](submitter.address))
+        .to.be.revertedWith("PWMCertificate: not governance");
+    }
+  });
+
+  it("constructor rejects zero governance", async () => {
+    const C = await ethers.getContractFactory("PWMCertificate");
+    await expect(C.deploy(ethers.ZeroAddress))
+      .to.be.revertedWith("PWMCertificate: zero governance");
+  });
 });

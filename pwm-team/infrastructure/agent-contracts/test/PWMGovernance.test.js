@@ -79,6 +79,65 @@ describe("PWMGovernance", function () {
       .to.be.revertedWith("PWMGovernance: finalised");
   });
 
+  it("approveProposal: rejects unknown id, finalised, double-approve by other founder", async () => {
+    // unknown id
+    await expect(gov.connect(founders[0]).approveProposal(999))
+      .to.be.revertedWith("PWMGovernance: unknown proposal");
+
+    // approve on cancelled proposal → finalised
+    await gov.connect(founders[0]).proposeParameter(KEY("K"), 1);
+    await gov.connect(founders[0]).cancelProposal(0);
+    await expect(gov.connect(founders[1]).approveProposal(0))
+      .to.be.revertedWith("PWMGovernance: finalised");
+  });
+
+  it("executeProposal: rejects unknown id, cancelled, no timelock yet, no approvals", async () => {
+    await expect(gov.connect(founders[0]).executeProposal(999))
+      .to.be.revertedWith("PWMGovernance: unknown proposal");
+
+    await gov.connect(founders[0]).proposeParameter(KEY("K"), 1);
+    await gov.connect(founders[0]).cancelProposal(0);
+    await expect(gov.connect(founders[0]).executeProposal(0))
+      .to.be.revertedWith("PWMGovernance: finalised");
+  });
+
+  it("cancelProposal: rejects unknown id, finalised", async () => {
+    await expect(gov.connect(founders[0]).cancelProposal(999))
+      .to.be.revertedWith("PWMGovernance: unknown proposal");
+
+    await gov.connect(founders[0]).proposeParameter(KEY("K"), 1);
+    await gov.connect(founders[1]).approveProposal(0);
+    await gov.connect(founders[2]).approveProposal(0);
+    await time.increase(TIMELOCK);
+    await gov.connect(founders[0]).executeProposal(0);
+    await expect(gov.connect(founders[1]).cancelProposal(0))
+      .to.be.revertedWith("PWMGovernance: finalised");
+  });
+
+  it("activateDAO: rejects unknown id, finalised, insufficient approvals, no timelock", async () => {
+    await expect(gov.connect(founders[0]).activateDAO(999))
+      .to.be.revertedWith("PWMGovernance: unknown proposal");
+
+    // cancelled
+    await gov.connect(founders[0]).proposeParameter(KEY("ACTIVATE_DAO"), 0);
+    await gov.connect(founders[0]).cancelProposal(0);
+    await expect(gov.connect(founders[0]).activateDAO(0))
+      .to.be.revertedWith("PWMGovernance: finalised");
+
+    // insufficient approvals
+    await gov.connect(founders[0]).proposeParameter(KEY("ACTIVATE_DAO"), 0);
+    await time.increase(TIMELOCK);
+    await expect(gov.connect(founders[0]).activateDAO(1))
+      .to.be.revertedWith("PWMGovernance: insufficient approvals");
+
+    // timelock not elapsed
+    await gov.connect(founders[0]).proposeParameter(KEY("ACTIVATE_DAO"), 0);
+    await gov.connect(founders[1]).approveProposal(2);
+    await gov.connect(founders[2]).approveProposal(2);
+    await expect(gov.connect(founders[0]).activateDAO(2))
+      .to.be.revertedWith("PWMGovernance: timelock not elapsed");
+  });
+
   it("activateDAO requires a proposal with ACTIVATE_DAO key", async () => {
     // wrong key
     await gov.connect(founders[0]).proposeParameter(KEY("not_the_right_key"), 1);

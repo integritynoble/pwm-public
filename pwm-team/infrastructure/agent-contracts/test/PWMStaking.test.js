@@ -124,4 +124,29 @@ describe("PWMStaking", function () {
       .to.emit(staking, "GovernanceUpdated").withArgs(outsider.address);
     expect(await staking.governance()).to.equal(outsider.address);
   });
+
+  it("setReward: zero rejected; non-governance rejected", async () => {
+    await expect(staking.connect(gov).setReward(ethers.ZeroAddress))
+      .to.be.revertedWith("PWMStaking: zero reward");
+    await expect(staking.connect(outsider).setReward(outsider.address))
+      .to.be.revertedWith("PWMStaking: not governance");
+  });
+
+  it("setStakeAmount: bad layer + zero amount + non-governance", async () => {
+    // bad layer (out of LAYER_PRINCIPLE..LAYER_BENCHMARK range)
+    await expect(staking.connect(gov).setStakeAmount(99, 1))
+      .to.be.revertedWith("PWMStaking: bad layer");
+    // zero amount on a valid layer (1 = LAYER_SPEC)
+    await expect(staking.connect(gov).setStakeAmount(1, 0))
+      .to.be.revertedWith("PWMStaking: zero amount");
+    // non-governance blocked
+    await expect(staking.connect(outsider).setStakeAmount(1, 1))
+      .to.be.revertedWith("PWMStaking: not governance");
+  });
+
+  it("constructor rejects zero governance", async () => {
+    const S = await ethers.getContractFactory("PWMStaking");
+    await expect(S.deploy(ethers.ZeroAddress))
+      .to.be.revertedWith("PWMStaking: zero governance");
+  });
 });
