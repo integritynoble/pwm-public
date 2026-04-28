@@ -38,8 +38,12 @@ def _load_array(npz_path: Path, candidate_keys: tuple[str, ...]) -> np.ndarray:
     raise RuntimeError(f"{npz_path} has no arrays")
 
 
-def _psnr(gt: np.ndarray, sol: np.ndarray, data_range: float | None = None) -> float:
-    """Standard PSNR in dB. data_range defaults to max(gt) - min(gt)."""
+def _psnr(gt: np.ndarray, sol: np.ndarray) -> float:
+    """PSNR in dB after per-array max normalization to [0, 1].
+
+    Matches the InverseNet paper [0, 1] convention and the
+    pwm_product/scripts/generate_demos.py grading convention.
+    """
     gt = gt.astype(np.float64)
     sol = sol.astype(np.float64)
     if gt.shape != sol.shape:
@@ -47,12 +51,12 @@ def _psnr(gt: np.ndarray, sol: np.ndarray, data_range: float | None = None) -> f
             sol = np.moveaxis(sol, [0, 1, 2], [2, 0, 1])
     if gt.shape != sol.shape:
         raise ValueError(f"shape mismatch: gt={gt.shape} sol={sol.shape}")
-    mse = float(np.mean((gt - sol) ** 2))
+    gt_n = gt / max(float(gt.max()), 1e-8)
+    sol_n = sol / max(float(sol.max()), 1e-8)
+    mse = float(np.mean((gt_n - sol_n) ** 2))
     if mse == 0:
         return float("inf")
-    if data_range is None:
-        data_range = float(gt.max() - gt.min()) or 1.0
-    return float(10.0 * np.log10((data_range ** 2) / mse))
+    return float(10.0 * np.log10(1.0 / mse))
 
 
 def _per_sample_psnr() -> list[tuple[str, float, dict]]:
