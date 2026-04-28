@@ -55,6 +55,34 @@ module.exports = {
     artifacts: "./artifacts",
     cache: "./cache",
   },
+  // Block-explorer keys for `npx hardhat verify` and the bundled
+  // scripts/verify-all.js task. Set BASESCAN_API_KEY for Base L2 verification
+  // (works on both Base mainnet and Base Sepolia per Etherscan v2 unified API),
+  // ETHERSCAN_API_KEY for Ethereum L1 / Sepolia, ARBISCAN_API_KEY for
+  // Arbitrum, OPTIMISTIC_ETHERSCAN_API_KEY for Optimism.
+  etherscan: {
+    apiKey: {
+      mainnet:     process.env.ETHERSCAN_API_KEY    || "",
+      sepolia:     process.env.ETHERSCAN_API_KEY    || "",
+      base:        process.env.BASESCAN_API_KEY     || "",
+      baseSepolia: process.env.BASESCAN_API_KEY     || "",
+      arbitrumOne: process.env.ARBISCAN_API_KEY     || "",
+      arbSepolia:  process.env.ARBISCAN_API_KEY     || "",
+      optimisticEthereum: process.env.OPTIMISTIC_ETHERSCAN_API_KEY || "",
+    },
+    customChains: [
+      {
+        network: "base",
+        chainId: 8453,
+        urls: { apiURL: "https://api.basescan.org/api", browserURL: "https://basescan.org" },
+      },
+      {
+        network: "baseSepolia",
+        chainId: 84532,
+        urls: { apiURL: "https://api-sepolia.basescan.org/api", browserURL: "https://sepolia.basescan.org" },
+      },
+    ],
+  },
   // STEP_1 PASS advisory (2026-04-28): integration tests timed out on first
   // cold-cache run (Mocha default 40 s) on a slower verifier. Bumping the
   // global timeout to 120 s makes verification deterministic on first run
