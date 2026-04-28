@@ -149,4 +149,32 @@ describe("PWMStaking", function () {
     await expect(S.deploy(ethers.ZeroAddress))
       .to.be.revertedWith("PWMStaking: zero governance");
   });
+
+  it("graduate: rejects non-active stake + zero benchmark", async () => {
+    // Non-active stake (never staked)
+    await expect(staking.connect(gov).graduate(H("never-staked"), H("bm")))
+      .to.be.revertedWith("PWMStaking: not active");
+    // Stake then graduate twice — second call sees Status.Graduated
+    await staking.connect(staker).stake(1, H("p1"), { value: ethers.parseEther("10") });
+    await staking.connect(gov).graduate(H("p1"), H("bm"));
+    await expect(staking.connect(gov).graduate(H("p1"), H("bm")))
+      .to.be.revertedWith("PWMStaking: not active");
+    // Zero-benchmark guard
+    await staking.connect(staker).stake(1, H("p2"), { value: ethers.parseEther("10") });
+    await expect(staking.connect(gov).graduate(H("p2"), ethers.ZeroHash))
+      .to.be.revertedWith("PWMStaking: zero benchmark");
+  });
+
+  it("slashForChallenge: rejects non-active stake + zero challenger", async () => {
+    await expect(staking.connect(gov).slashForChallenge(H("never-staked"), challenger.address))
+      .to.be.revertedWith("PWMStaking: not active");
+    await staking.connect(staker).stake(1, H("p3"), { value: ethers.parseEther("10") });
+    await expect(staking.connect(gov).slashForChallenge(H("p3"), ethers.ZeroAddress))
+      .to.be.revertedWith("PWMStaking: zero challenger");
+  });
+
+  it("slashForFraud: rejects non-active stake", async () => {
+    await expect(staking.connect(gov).slashForFraud(H("never-staked")))
+      .to.be.revertedWith("PWMStaking: not active");
+  });
 });

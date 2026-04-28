@@ -158,5 +158,16 @@ describe("PWMGovernance", function () {
     // multisig routes disabled after DAO activation
     await expect(gov.connect(founders[0]).proposeParameter(KEY("X"), 1))
       .to.be.revertedWith("PWMGovernance: DAO active, multisig disabled");
+    // approveProposal / executeProposal / cancelProposal / activateDAO
+    // all also gated by multisigActive — confirm the modifier path fires
+    // for each of them post-DAO-activation
+    await expect(gov.connect(founders[1]).approveProposal(0))
+      .to.be.revertedWith("PWMGovernance: DAO active, multisig disabled");
+    await expect(gov.connect(founders[1]).executeProposal(0))
+      .to.be.revertedWith("PWMGovernance: DAO active, multisig disabled");
+    await expect(gov.connect(founders[1]).cancelProposal(0))
+      .to.be.revertedWith("PWMGovernance: DAO active, multisig disabled");
+    await expect(gov.connect(founders[1]).activateDAO(0))
+      .to.be.revertedWith("PWMGovernance: DAO active, multisig disabled");
   });
 });

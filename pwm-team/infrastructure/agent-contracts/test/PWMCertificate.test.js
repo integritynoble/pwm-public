@@ -184,4 +184,47 @@ describe("PWMCertificate", function () {
     await expect(C.deploy(ethers.ZeroAddress))
       .to.be.revertedWith("PWMCertificate: zero governance");
   });
+
+  it("submit: shareRatioP out of range, zero AC/CP, zero creator", async () => {
+    const { b } = await registerChain();
+    const lowP = baseArgs({ b, certHash: H("low") });
+    lowP.shareRatioP = 999;
+    await expect(cert.connect(submitter).submit(lowP))
+      .to.be.revertedWith("PWMCertificate: p out of range");
+    const highP = baseArgs({ b, certHash: H("high") });
+    highP.shareRatioP = 9001;
+    await expect(cert.connect(submitter).submit(highP))
+      .to.be.revertedWith("PWMCertificate: p out of range");
+    const noAc = baseArgs({ b, certHash: H("noac") });
+    noAc.acWallet = ethers.ZeroAddress;
+    await expect(cert.connect(submitter).submit(noAc))
+      .to.be.revertedWith("PWMCertificate: zero AC/CP");
+    const noL1 = baseArgs({ b, certHash: H("nol1") });
+    noL1.l1Creator = ethers.ZeroAddress;
+    await expect(cert.connect(submitter).submit(noL1))
+      .to.be.revertedWith("PWMCertificate: zero creator");
+  });
+
+  it("challenge: rejects non-pending cert", async () => {
+    const { b } = await registerChain();
+    const ch = H("chal-not-pending");
+    await cert.connect(submitter).submit(baseArgs({ b, certHash: ch }));
+    await cert.connect(challenger).challenge(ch, "0x");
+    // status is now Challenged; another challenge() should fail
+    await expect(cert.connect(challenger).challenge(ch, "0x"))
+      .to.be.revertedWith("PWMCertificate: not pending");
+  });
+
+  it("resolveChallenge: rejects non-challenged + supports upheld=false reinstate", async () => {
+    const { b } = await registerChain();
+    const ch = H("resolve-test");
+    await cert.connect(submitter).submit(baseArgs({ b, certHash: ch }));
+    // Not yet challenged → resolve must revert
+    await expect(cert.connect(gov).resolveChallenge(ch, true))
+      .to.be.revertedWith("PWMCertificate: not challenged");
+    await cert.connect(challenger).challenge(ch, "0x");
+    // upheld=false reinstates to Pending
+    await cert.connect(gov).resolveChallenge(ch, false);
+    expect((await cert.certificates(ch)).status).to.equal(1); // Status.Pending
+  });
 });

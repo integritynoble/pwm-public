@@ -254,11 +254,22 @@ def run(args: argparse.Namespace) -> int:
         errors.append(f"governance() probe failed: {e}")
 
     # Check 5: stake amounts.
+    # PWMStaking uses LAYER_PRINCIPLE=1, LAYER_SPEC=2, LAYER_BENCHMARK=3
+    # (NOT 0/1/2 — index 0 is the unset mapping default and always returns 0).
+    # Defaults set in the constructor:
+    #   stakeAmount[1] = 10 ether (10 PWM L1 principle stake)
+    #   stakeAmount[2] = 2 ether  (2 PWM  L2 spec stake)
+    #   stakeAmount[3] = 1 ether  (1 PWM  L3 benchmark stake)
+    # Units are PWM tokens denominated in wei (1e18 base units), labeled "PWM"
+    # for clarity. On the current native-ETH testnet they read as ETH numerically;
+    # post ERC-20 migration they will read as PWM tokens. Per
+    # `pwm-team/coordination/MAINNET_DEPLOY_AUDIT_2026-04-28.md` Gap 7.
     logger.info("verifying stake amounts (informational)...")
     try:
-        for layer, name in [(0, "L1 Principle"), (1, "L2 Spec"), (2, "L3 Benchmark")]:
+        for layer, name in [(1, "L1 Principle"), (2, "L2 Spec"), (3, "L3 Benchmark")]:
             amt_wei = staking.functions.stakeAmount(layer).call()
-            logger.info(f"  stakeAmount[{layer}] ({name}) = {w3.from_wei(amt_wei, 'ether')} ETH")
+            amt_units = w3.from_wei(amt_wei, "ether")
+            logger.info(f"  stakeAmount[{layer}] ({name}) = {amt_units} PWM (= {amt_wei} wei)")
     except Exception as e:
         errors.append(f"stakeAmount probe failed: {e}")
 

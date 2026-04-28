@@ -20,17 +20,70 @@ async function main() {
   console.log(`Network: ${network.name} (chainId=${network.config.chainId ?? "n/a"})`);
   console.log(`Deployer: ${deployer.address}`);
 
-  // Founders for the 3-of-5 multisig. For live testnet, override via
-  // FOUNDER_ADDRESSES env var (comma-separated). Otherwise use first 5 signers.
+  // Founders for the 3-of-5 multisig. For live testnet/mainnet, override via
+  // FOUNDER_ADDRESSES env var (comma-separated). Local hardhat falls back to
+  // the first 5 signers.
+  //
+  // Live networks REQUIRE FOUNDER_ADDRESSES — the getSigners() fallback only
+  // returns the deployer key on a live RPC (PWM_PRIVATE_KEY is the only
+  // configured account), so f1..f4 are undefined and the deploy would fail
+  // with a vague signer-count error. Fail fast with a clear message instead.
+  // Per `pwm-team/coordination/MAINNET_DEPLOY_AUDIT_2026-04-28.md` Gap 4.
+  const LIVE_NETWORKS = new Set([
+    "sepolia", "mainnet",
+    "base", "arbitrum", "optimism",
+    "baseSepolia", "arbSepolia",
+  ]);
+  const isLive = LIVE_NETWORKS.has(network.name);
+
   let founders;
   if (process.env.FOUNDER_ADDRESSES) {
     founders = process.env.FOUNDER_ADDRESSES.split(",").map((s) => s.trim());
-    if (founders.length !== 5) throw new Error("FOUNDER_ADDRESSES must list 5 addresses");
+    if (founders.length !== 5) {
+      throw new Error("FOUNDER_ADDRESSES must list exactly 5 addresses (got " +
+                      founders.length + ")");
+    }
+    // Sanity check: every entry must look like an address.
+    for (const a of founders) {
+      if (!/^0x[0-9a-fA-F]{40}$/.test(a)) {
+        throw new Error(`FOUNDER_ADDRESSES contains invalid address: ${a}`);
+      }
+    }
+    // Cross-check (Gap 11): if multisig/signers.md exists, warn on mismatch.
+    try {
+      const fs = require("fs");
+      const path = require("path");
+      const sp = path.join(__dirname, "..", "multisig", "signers.md");
+      if (fs.existsSync(sp)) {
+        const text = fs.readFileSync(sp, "utf8");
+        // Pull all 0x... addresses with valid checksum-length out of the file.
+        const inFile = (text.match(/0x[0-9a-fA-F]{40}/g) || []).map(a => a.toLowerCase());
+        const inEnv = founders.map(a => a.toLowerCase());
+        const missing = inEnv.filter(a => !inFile.includes(a));
+        if (missing.length > 0) {
+          console.warn(`  ⚠ FOUNDER_ADDRESSES contains ${missing.length} ` +
+                       `address(es) NOT recorded in multisig/signers.md: ` +
+                       `${missing.join(", ")}`);
+          console.warn("    Update multisig/signers.md before mainnet deploy.");
+        }
+      }
+    } catch (e) {
+      console.warn("  ⚠ multisig/signers.md cross-check skipped:", e.message);
+    }
+  } else if (isLive) {
+    throw new Error(
+      `FOUNDER_ADDRESSES env var is REQUIRED on live network '${network.name}'. ` +
+      "On a live RPC, getSigners() only returns the deployer key — the f1..f4 fallback " +
+      "would yield undefined addresses. Set FOUNDER_ADDRESSES to a comma-separated list of " +
+      "the 5 founder hardware-wallet addresses recorded in " +
+      "pwm-team/infrastructure/agent-contracts/multisig/signers.md."
+    );
   } else {
+    // Local hardhat / localhost: getSigners returns 20 funded accounts; first 5 are founders.
     founders = [deployer.address, f1?.address, f2?.address, f3?.address, f4?.address]
       .filter(Boolean);
     if (founders.length !== 5) {
-      throw new Error("Need 5 signer accounts or FOUNDER_ADDRESSES env var");
+      throw new Error("Need 5 signer accounts (local hardhat) or set FOUNDER_ADDRESSES.");
     }
   }
   console.log("Founders:", founders);
