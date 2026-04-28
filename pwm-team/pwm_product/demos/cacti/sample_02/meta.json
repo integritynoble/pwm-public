@@ -1,15 +1,16 @@
 {
   "benchmark": "L3-004 (CACTI) \u2014 InverseNet SCI Video Benchmark",
-  "citation": "Yuan et al. CACTI, Yang et al. SCI Video Benchmark",
-  "generated_by": "scripts/generate_demos.py",
-  "how_to_run": "python3 pwm-team/pwm_product/reference_solvers/cacti/cacti_pnp_admm.py --input pwm-team/pwm_product/demos/cacti/sample_02 --output /tmp/out",
-  "reference_solver": "pwm-team/pwm_product/reference_solvers/cacti/cacti_pnp_admm.py",
-  "reference_solver_psnr_db": 8.42,
+  "citation": "Yuan et al. CACTI; Yang et al. SCI Video Benchmark",
+  "data_range": "[0, 1] for both ground_truth and solution (normalized from raw .mat)",
+  "generated_by": "scripts/regenerate_demos_inversenet.py",
+  "how_to_run": "python3 scripts/regenerate_demos_inversenet.py --only cacti (uses pwm_core.recon.cacti_solvers.gap_tv_cacti)",
+  "psnr_convention": "InverseNet paper compute_psnr: clip both to [0,1], peak=1",
+  "reference_solver_psnr_db": 20.88,
   "scene_id": "traffic",
   "sha256": {
     "ground_truth.npz": "0c8882a35a9b84c1be8cdea1be98c13272e87e35025a4c1a7b2d58b19eb989b0",
-    "snapshot.npz": "d7b6781c23987e008a8f7d83fb94ca5b9694b0614ab6e3b29951c6c66ee0644b",
-    "solution.npz": "131adf7e8a312ae2410af9f416441628f6f4f9cdbbe787945a75dc57292dfeca"
+    "snapshot.npz": "2055e9f52ba71d0a6a9dc8cbfc1b48acf6c8f24b67600fedd70ad91854da0da4",
+    "solution.npz": "01d30b017bb3752676f72277863c96ffa2f2f65825ec38b467dfa005ef50864a"
   },
   "shape_ground_truth": [
     8,
@@ -25,9 +26,11 @@
     256,
     256
   ],
-  "solver_elapsed_sec": 1.4,
-  "solver_iterations": 12,
-  "source_dataset": "SCI Video Benchmark (Kobe/Traffic/Runner/Drop/Crash/Aerial); Liu et al. 2019 + Yuan et al. Bell Labs; redistributed in every major SCI paper (PnP-FFDNet, STFormer, EfficientSCI, DeepBC, BIRNAT).",
+  "solver": "pwm_core.recon.cacti_solvers.gap_tv_cacti",
+  "solver_elapsed_sec": 3.7,
+  "solver_iterations": 100,
+  "source_dataset": "SCI Video Benchmark (Kobe/Traffic/Runner/Drop/Crash/Aerial); Liu et al. 2019 + Yuan et al. Bell Labs",
   "source_mat": "traffic_cacti.mat",
-  "tier_approx": "T1_nominal"
+  "tier_approx": "T1_nominal",
+  "tv_weight": 0.1
 }

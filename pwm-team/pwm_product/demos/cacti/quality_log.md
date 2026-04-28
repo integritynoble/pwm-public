@@ -41,12 +41,15 @@ CACTI sample_01 [kobe]:  27.99 dB  (3.5s; GAP-TV iter=100 tv_weight=0.1; target 
 CACTI PASS (target 24 dB)
 ```
 
-Three issues with the existing PWM demos:
+Four issues with the existing PWM demos:
 1. **Mask scale.** PWM demos store masks at uint8/255 scale (range [0, 0.0039]) instead of [0, 1]. `_to_float01` only normalizes integer dtypes; the .mat masks come in as floats with uint8 values. Fix: divide by mask.max() at load.
 2. **Ground-truth scale.** PWM demos store gt in [0, 255] instead of [0, 1]. Same root cause as #1.
 3. **Solver lacks bounded clip.** PWM `cacti_pnp_admm.py` doesn't clip output to [0, 1] each iteration; the public `gap_tv_cacti` (in cacti_solvers.py) does Nesterov + clip and stays well-behaved.
+4. **Paper's PSNR convention** (clip both arrays to [0,1], peak=1) — see CASSI log for full rationale; switching from per-array max to the paper's `compute_psnr` keeps the comparison apples-to-apples with the InverseNet paper claim of 26.75 ± 4.48 dB.
 
 To clear the 24 dB target on all 6 SCI samples, regenerate
 `pwm-team/pwm_product/demos/cacti/sample_*/{snapshot,ground_truth,solution}.npz`
-using `pwm_core.recon.cacti_solvers.gap_tv_cacti` with normalized
-inputs. Patch needed: update `scripts/generate_demos.py::generate_cacti_sample()`.
+using `scripts/regenerate_demos_inversenet.py --only cacti` (which
+uses `pwm_core.recon.cacti_solvers.gap_tv_cacti` with normalized
+inputs and stores ground_truth in [0, 1] matching the InverseNet
+paper's data convention).

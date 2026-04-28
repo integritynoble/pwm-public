@@ -37,16 +37,17 @@ Ran `scripts/reproduce_inversenet_baseline.py` which uses the canonical
 `public/algorithm_base/cassi/`:
 
 ```
-CASSI sample_01:  25.66 dB  (28.5s; GAP-TV iter=100 lam=0.1 step=2; target >= 24, InverseNet claim 24.34 +/- 1.90)
+CASSI sample_01:  26.49 dB  (29.8s; GAP-TV iter=100 lam=0.1 step=2; target >= 24, InverseNet claim 24.34 +/- 1.90)
 CASSI PASS (target 24 dB)
 ```
 
-Three deltas vs the existing demo solution.npz:
+Four deltas vs the existing demo solution.npz:
 1. **Step-2 spectral dispersion** (snapshot width = 256 + 27*2 = 310). PWM `cassi_gap_tv.py` and `generate_demos.py` use step=1 and width=256.
 2. **100 iterations** vs the demo's `CASSI_N_ITERS = 15`.
 3. **lam=0.1** TV weight vs the demo's `tv_lambda=0.005`.
+4. **Paper's PSNR convention** (clip both arrays to [0,1], peak=1) — earlier per-array max normalization in test_cassi_quality.py was wrong; bright GAP-TV solutions (sol.max ≈ 1.45) got penalized rather than clipped. Switching to the paper's `compute_psnr` (see `papers/inversenet/scripts/validate_cassi_inversenet.py` line 374) lifts sample_01 from 22.14 → 26.49 dB.
 
 To clear the 24 dB target on all 10 KAIST samples, regenerate
 `pwm-team/pwm_product/demos/cassi/sample_*/{snapshot,solution}.npz`
-using `pwm_core.recon.gap_tv.gap_tv_cassi` with these hyperparameters.
-Patch needed: update `scripts/generate_demos.py::generate_cassi_sample()`.
+using `scripts/regenerate_demos_inversenet.py --only cassi` (which
+uses `pwm_core.recon.gap_tv.gap_tv_cassi` with the four corrections).

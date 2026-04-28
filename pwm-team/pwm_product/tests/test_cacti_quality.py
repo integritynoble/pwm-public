@@ -39,10 +39,10 @@ def _load_array(npz_path: Path, candidate_keys: tuple[str, ...]) -> np.ndarray:
 
 
 def _psnr(gt: np.ndarray, sol: np.ndarray) -> float:
-    """PSNR in dB after per-array max normalization to [0, 1].
+    """PSNR in dB — InverseNet paper's exact convention.
 
-    Matches the InverseNet paper [0, 1] convention and the
-    pwm_product/scripts/generate_demos.py grading convention.
+    See test_cassi_quality.py for the full rationale (paper's
+    `compute_psnr` clips both arrays to [0, 1] before MSE).
     """
     gt = gt.astype(np.float64)
     sol = sol.astype(np.float64)
@@ -51,11 +51,17 @@ def _psnr(gt: np.ndarray, sol: np.ndarray) -> float:
             sol = np.moveaxis(sol, [0, 1, 2], [2, 0, 1])
     if gt.shape != sol.shape:
         raise ValueError(f"shape mismatch: gt={gt.shape} sol={sol.shape}")
-    gt_n = gt / max(float(gt.max()), 1e-8)
-    sol_n = sol / max(float(sol.max()), 1e-8)
-    mse = float(np.mean((gt_n - sol_n) ** 2))
-    if mse == 0:
-        return float("inf")
+    # Auto-handle integer-derived ground truth (e.g., [0, 255]):
+    # divide BOTH arrays by gt.max() so they share a common scale.
+    gt_peak = float(gt.max())
+    if gt_peak > 1.5:
+        gt = gt / max(gt_peak, 1e-8)
+        sol = sol / max(gt_peak, 1e-8)
+    gt = np.clip(gt, 0.0, 1.0)
+    sol = np.clip(sol, 0.0, 1.0)
+    mse = float(np.mean((gt - sol) ** 2))
+    if mse < 1e-10:
+        return 100.0
     return float(10.0 * np.log10(1.0 / mse))
 
 

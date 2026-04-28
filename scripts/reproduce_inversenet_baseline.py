@@ -51,13 +51,14 @@ sys.path.insert(0, str(REPO / "public"))
 sys.path.insert(0, str(REPO / "public/packages/pwm_core"))
 
 
-def psnr(gt: np.ndarray, sol: np.ndarray, peak: float | None = None) -> float:
+def psnr(gt: np.ndarray, sol: np.ndarray) -> float:
+    """InverseNet paper's compute_psnr: clip both to [0,1], peak=1."""
+    gt = np.clip(gt.astype(np.float64), 0.0, 1.0)
+    sol = np.clip(sol.astype(np.float64), 0.0, 1.0)
     mse = float(np.mean((gt - sol) ** 2))
-    if mse == 0:
-        return float("inf")
-    if peak is None:
-        peak = float(gt.max() - gt.min()) or 1.0
-    return float(10.0 * np.log10(peak ** 2 / mse))
+    if mse < 1e-10:
+        return 100.0
+    return float(10.0 * np.log10(1.0 / mse))
 
 
 def cassi_sample_01() -> float:

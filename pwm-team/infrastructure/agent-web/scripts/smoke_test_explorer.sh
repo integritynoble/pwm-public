@@ -83,17 +83,28 @@ echo
 
 echo "[2] /match returns L3-003 (CASSI) as strong match for structured query"
 match_body=$(http_body "${BASE_URL}/api/match?modality=hyperspectral&domain=imaging")
-if [[ -n "$match_body" ]] && command -v jq >/dev/null 2>&1; then
-    top_id=$(echo "$match_body" | jq -r '.candidates[0].benchmark_id // empty' 2>/dev/null)
-    top_score=$(echo "$match_body" | jq -r '.candidates[0].score // 0' 2>/dev/null || echo 0)
-    top_band=$(echo "$match_body" | jq -r '.candidates[0].score_band // empty' 2>/dev/null)
+if [[ -n "$match_body" ]]; then
+    # No jq dependency — use python -c so the test runs on any verifier
+    # (GPU server lacks jq; this avoids parse-fail false negatives).
+    parsed=$(python3 -c "
+import json, sys
+try:
+    d = json.loads(sys.argv[1])
+except Exception as e:
+    print(f'PARSE_ERR {e}'); sys.exit(0)
+c = d.get('candidates') or []
+if not c:
+    print('NO_CANDIDATES'); sys.exit(0)
+print(f\"{c[0].get('benchmark_id','')} {c[0].get('score',0)} {c[0].get('score_band','')}\")
+" "$match_body" 2>/dev/null)
+    read -r top_id top_score top_band <<<"$parsed"
     if [[ "$top_id" == "L3-003" ]] && awk -v c="$top_score" 'BEGIN{exit !(c+0 >= 2.0)}'; then
         ok "/match returns L3-003 with score=${top_score} band=${top_band}"
     else
         bad "/match top result is '${top_id}' score=${top_score} band=${top_band} (expected L3-003 with score >= 2.0)"
     fi
 else
-    bad "/match returned empty body or jq missing (got ${#match_body} bytes)"
+    bad "/match returned empty body"
 fi
 echo
 
@@ -122,30 +133,45 @@ echo
 
 echo "[4] /api/network reports current network"
 net_body=$(http_body "${BASE_URL}/api/network")
-if [[ -n "$net_body" ]] && command -v jq >/dev/null 2>&1; then
-    net_name=$(echo "$net_body" | jq -r '.network // empty' 2>/dev/null)
+if [[ -n "$net_body" ]]; then
+    net_name=$(python3 -c "
+import json, sys
+try:
+    d = json.loads(sys.argv[1])
+    print(d.get('network', ''))
+except Exception:
+    print('')
+" "$net_body" 2>/dev/null)
     if [[ -n "$net_name" ]]; then
         ok "/api/network reports network='${net_name}'"
     else
         bad "/api/network response missing 'network' field (body: $(echo "$net_body" | head -c 80))"
     fi
 else
-    bad "/api/network returned empty body or jq missing"
+    bad "/api/network returned empty body"
 fi
 echo
 
 echo "[5] Demo index lists CASSI + CACTI"
 demos_body=$(http_body "${BASE_URL}/api/demos")
-if [[ -n "$demos_body" ]] && command -v jq >/dev/null 2>&1; then
-    cassi_present=$(echo "$demos_body" | jq -r '.demos[]?.name | select(. == "cassi")' 2>/dev/null)
-    cacti_present=$(echo "$demos_body" | jq -r '.demos[]?.name | select(. == "cacti")' 2>/dev/null)
+if [[ -n "$demos_body" ]]; then
+    presence=$(python3 -c "
+import json, sys
+try:
+    d = json.loads(sys.argv[1])
+    names = {x.get('name','') for x in d.get('demos', [])}
+    print('cassi' if 'cassi' in names else '-', 'cacti' if 'cacti' in names else '-')
+except Exception:
+    print('- -')
+" "$demos_body" 2>/dev/null)
+    read -r cassi_present cacti_present <<<"$presence"
     if [[ "$cassi_present" == "cassi" && "$cacti_present" == "cacti" ]]; then
         ok "/api/demos lists both 'cassi' and 'cacti'"
     else
         bad "/api/demos missing cassi or cacti (cassi='${cassi_present}' cacti='${cacti_present}')"
     fi
 else
-    bad "/api/demos returned empty body or jq missing"
+    bad "/api/demos returned empty body"
 fi
 echo
 

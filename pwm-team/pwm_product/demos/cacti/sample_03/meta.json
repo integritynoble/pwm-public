@@ -1,15 +1,16 @@
 {
   "benchmark": "L3-004 (CACTI) \u2014 InverseNet SCI Video Benchmark",
-  "citation": "Yuan et al. CACTI, Yang et al. SCI Video Benchmark",
-  "generated_by": "scripts/generate_demos.py",
-  "how_to_run": "python3 pwm-team/pwm_product/reference_solvers/cacti/cacti_pnp_admm.py --input pwm-team/pwm_product/demos/cacti/sample_03 --output /tmp/out",
-  "reference_solver": "pwm-team/pwm_product/reference_solvers/cacti/cacti_pnp_admm.py",
-  "reference_solver_psnr_db": 11.86,
+  "citation": "Yuan et al. CACTI; Yang et al. SCI Video Benchmark",
+  "data_range": "[0, 1] for both ground_truth and solution (normalized from raw .mat)",
+  "generated_by": "scripts/regenerate_demos_inversenet.py",
+  "how_to_run": "python3 scripts/regenerate_demos_inversenet.py --only cacti (uses pwm_core.recon.cacti_solvers.gap_tv_cacti)",
+  "psnr_convention": "InverseNet paper compute_psnr: clip both to [0,1], peak=1",
+  "reference_solver_psnr_db": 29.63,
   "scene_id": "runner",
   "sha256": {
-    "ground_truth.npz": "1a53cc2fdc2c1b625fca0ea067c1960d58cb947ebf99cb06c064e88b6ee99489",
-    "snapshot.npz": "fdbd1ed3052d16474b788757fc450c6067a048cad5c2da2f07c5c8a7b33ba646",
-    "solution.npz": "afb8f1470705edb6d098e684470ba2d40601135c2636e08307b722f3a7283eab"
+    "ground_truth.npz": "230c565430e9da3b7adf8524d78c155aeb6f3d7348fa0d68bdfec04e0e675f16",
+    "snapshot.npz": "e7b3328db30724ce86430f2a044400f52513e2dc4ced89abb8df996f7f18182e",
+    "solution.npz": "b0113bb14b062592f79d70c05bd052475c81aaf259acc398123d96b7e0796be9"
   },
   "shape_ground_truth": [
     8,
@@ -25,9 +26,11 @@
     256,
     256
   ],
-  "solver_elapsed_sec": 1.3,
-  "solver_iterations": 12,
-  "source_dataset": "SCI Video Benchmark (Kobe/Traffic/Runner/Drop/Crash/Aerial); Liu et al. 2019 + Yuan et al. Bell Labs; redistributed in every major SCI paper (PnP-FFDNet, STFormer, EfficientSCI, DeepBC, BIRNAT).",
+  "solver": "pwm_core.recon.cacti_solvers.gap_tv_cacti",
+  "solver_elapsed_sec": 3.7,
+  "solver_iterations": 100,
+  "source_dataset": "SCI Video Benchmark (Kobe/Traffic/Runner/Drop/Crash/Aerial); Liu et al. 2019 + Yuan et al. Bell Labs",
   "source_mat": "runner8_cacti.mat",
-  "tier_approx": "T1_nominal"
+  "tier_approx": "T1_nominal",
+  "tv_weight": 0.1
 }

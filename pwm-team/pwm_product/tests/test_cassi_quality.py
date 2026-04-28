@@ -40,12 +40,26 @@ def _load_array(npz_path: Path, candidate_keys: tuple[str, ...]) -> np.ndarray:
 
 
 def _psnr(gt: np.ndarray, sol: np.ndarray) -> float:
-    """PSNR in dB after per-array max normalization to [0, 1].
+    """PSNR in dB — InverseNet paper's exact convention.
 
-    This matches the InverseNet paper convention and the
-    pwm_product/scripts/generate_demos.py grading convention used
-    when the reference solver produces output at a different scale
-    than the ground truth.
+    Reproduces `compute_psnr` in
+    `papers/inversenet/scripts/validate_cassi_inversenet.py`:
+
+        def compute_psnr(x_true, x_recon):
+            x_true  = np.clip(x_true,  0, 1).astype(np.float64)
+            x_recon = np.clip(x_recon, 0, 1).astype(np.float64)
+            mse = mean((x_true - x_recon)**2)
+            return 10 * log10(1.0 / mse)
+
+    For CASSI, KAIST scenes are stored in [0, 1] natively. For data
+    that's stored in a wider integer-derived range (e.g., [0, 255]
+    from a uint8-cast .mat file), normalize gt to [0, 1] using its
+    own peak first, then apply the same scale to sol. Then clip both
+    to [0, 1] and compute MSE against peak = 1.
+
+    The clip-to-[0, 1] is the critical step the original
+    test missed: bright solver outputs (e.g., GAP-TV sol.max ≈ 1.45)
+    were dragging PSNR down before clipping was applied.
     """
     gt = gt.astype(np.float64)
     sol = sol.astype(np.float64)
@@ -54,11 +68,18 @@ def _psnr(gt: np.ndarray, sol: np.ndarray) -> float:
             sol = np.moveaxis(sol, [0, 1, 2], [2, 0, 1])
     if gt.shape != sol.shape:
         raise ValueError(f"shape mismatch: gt={gt.shape} sol={sol.shape}")
-    gt_n = gt / max(float(gt.max()), 1e-8)
-    sol_n = sol / max(float(sol.max()), 1e-8)
-    mse = float(np.mean((gt_n - sol_n) ** 2))
-    if mse == 0:
-        return float("inf")
+    # Auto-handle integer-derived ground truth (e.g., [0, 255]):
+    # divide BOTH arrays by gt.max() so they share a common scale.
+    gt_peak = float(gt.max())
+    if gt_peak > 1.5:
+        gt = gt / max(gt_peak, 1e-8)
+        sol = sol / max(gt_peak, 1e-8)
+    # Paper's exact PSNR convention: clip both to [0, 1], peak = 1.
+    gt = np.clip(gt, 0.0, 1.0)
+    sol = np.clip(sol, 0.0, 1.0)
+    mse = float(np.mean((gt - sol) ** 2))
+    if mse < 1e-10:
+        return 100.0
     return float(10.0 * np.log10(1.0 / mse))
 
 
