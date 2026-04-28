@@ -177,4 +177,29 @@ describe("PWMStaking", function () {
     await expect(staking.connect(gov).slashForFraud(H("never-staked")))
       .to.be.revertedWith("PWMStaking: not active");
   });
+
+  it("graduate: revert path when staker rejects ETH refund (require(ok))", async () => {
+    // Deploy a contract whose receive() reverts; have it stake; graduate should
+    // hit the `require(ok)` branch on the half-refund leg.
+    const Mal = await ethers.getContractFactory("MaliciousReceiver");
+    const mal = await Mal.deploy();
+    await mal.waitForDeployment();
+    await mal.connect(staker).stakeOn(
+      await staking.getAddress(), 1, H("malstake1"),
+      { value: ethers.parseEther("10") }
+    );
+    await expect(staking.connect(gov).graduate(H("malstake1"), H("bm")))
+      .to.be.revertedWith("PWMStaking: return failed");
+  });
+
+  it("slashForChallenge: revert path when challenger rejects ETH (require(okCh))", async () => {
+    // Stake from a normal account, then slash with a malicious-receiver as
+    // the challenger so the half-payout to the challenger reverts.
+    await staking.connect(staker).stake(1, H("malslash1"), { value: ethers.parseEther("10") });
+    const Mal = await ethers.getContractFactory("MaliciousReceiver");
+    const mal = await Mal.deploy();
+    await mal.waitForDeployment();
+    await expect(staking.connect(gov).slashForChallenge(H("malslash1"), await mal.getAddress()))
+      .to.be.revertedWith("PWMStaking: challenger transfer failed");
+  });
 });

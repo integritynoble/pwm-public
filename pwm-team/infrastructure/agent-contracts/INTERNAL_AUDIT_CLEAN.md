@@ -87,8 +87,9 @@ closure before lifting the cap.
 
 ### Updated state (post-coverage-uplift, 2026-04-28)
 
-After 32 new tests added across all 4 holdout contracts. Stream-2
-internal-audit branch gap is now closed:
+After 34 new tests + a `MaliciousReceiver` test contract that exercises
+the `require(ok)` branches on ETH transfers. Stream-2 internal-audit
+branch coverage gap is now FULLY CLOSED on every production contract:
 
 | Contract | % Stmts | % Branch | % Funcs | % Lines |
 |---|---|---|---|---|
@@ -97,34 +98,31 @@ internal-audit branch gap is now closed:
 | PWMMinting | **100** | **90.70** | **100** | **100** |
 | PWMRegistry | 100 | 100 | 100 | 100 |
 | PWMReward | **98.53** | **91.18** | **100** | **100** |
-| PWMStaking | **100** | 87.93 | **100** | **100** |
+| PWMStaking | **100** | **91.38** | **100** | **100** |
 | PWMTreasury | 100 | 90.00 | 100 | 100 |
-| **Aggregate** | **99.67** | **91.62** | **100** | **100** |
+| **Aggregate** | **99.67** | **92.16** | **100** | **100** |
 
-**Aggregate Branch coverage now exceeds 90%** (91.62%, up from
-67.84%). Per-contract Stmts/Funcs/Lines all at ≥ 98%/100%/100%.
-Six of seven contracts at ≥ 90% Branch.
+**All 7 production contracts ≥ 90% on every dimension.**
+- Aggregate Stmts: 99.67%
+- Aggregate Branch: **92.16%** (up from 67.84% at the start of session)
+- Aggregate Funcs: 100%
+- Aggregate Lines: 100%
 
-Test count: 69 → 101.
+Test count: 69 → 103.
 
-### Remaining gaps (residual; tracked for Step 1b external-audit-clean)
+### Residual gaps (tracked for Step 1b external-audit-clean)
 
-- **PWMStaking branch coverage at 87.93%**: the 2% gap is concentrated
-  in the `require(ok)` checks following payable `call()` for ETH
-  transfers (BURN_SINK, challenger, staker). These are defensive
-  reverts that can only fire if the call to `payable(addr).call{value:}` 
-  fails — testing that requires either a malicious receiver contract
-  rejecting ETH or a low-level mock. The branches exist for safety
-  but are operationally unreachable in normal usage.
 - **Echidna invariant contracts (`contracts/test/`)**: 0% Hardhat
   coverage (these are Echidna fuzz harnesses run separately, not
-  Hardhat unit tests).
-- **PWMMinting branch at exactly 90.70%**: residual gap is the
-  rounding-dust handling in the per-benchmark emission loop.
+  Hardhat unit tests). MaliciousReceiver.sol (also under
+  `contracts/test/`) is now at 100% Stmts / 100% Lines but is
+  test-only and irrelevant to mainnet.
+- **PWMMinting branch at 90.70% / PWMTreasury at 90.00%**: just
+  clear the threshold; residual is the rounding-dust handling in
+  the per-benchmark emission loop and a small set of view-edge
+  branches in PWMTreasury.
 
-These three remaining gaps DO NOT block Step 1 (internal-audit-clean)
-and are explicitly captured as Step 1b (external-audit) input for
-the eventual full audit.
+No gap blocks Step 1 (internal-audit-clean) or any downstream step.
 
 ## 5. AUDIT_SUBMISSION.md status
 
