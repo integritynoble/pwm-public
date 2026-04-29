@@ -6,6 +6,9 @@
   "domain": "Robotics",
   "sub_domain": "Tribology",
   "source_file": "AI_robotics/457_hydrodynamic_lubrication.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
     "description": "Hydrodynamic Lubrication (Reynolds Equation): Reynolds equation inversion: recover bearing geometry, clearance, and lubricant properties from pressure measurements. The forward operator produces the measurement through a 3-node primitive DAG (M.reynolds.thin_film\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~100; viscosity_temperature_dependence, surface_roughness_effect set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
@@ -138,5 +141,12 @@
     "PASS",
     "PASS"
   ],
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": false,
+    "coupling_count_n_c": 0,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

@@ -6,6 +6,9 @@
   "domain": "Semiconductor Physics",
   "sub_domain": "Confined electronic states",
   "source_file": "AN_semiconductor/496_quantum_well_dot.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
   "E": {
     "description": "Envelope-function k.p or tight-binding Hamiltonian for semiconductor nanostructures; Schr\u00f6dinger-Poisson self-consistent for charged QDs; exchange-correlation via LDA/GGA.",
@@ -149,5 +152,12 @@
     "PASS",
     "PASS"
   ],
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": true,
+    "coupling_count_n_c": 1,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

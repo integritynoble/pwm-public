@@ -6,6 +6,9 @@
   "domain": "Scanning Probe",
   "sub_domain": "Cantilever-tip topography",
   "source_file": "P_scanning_probe/162_afm.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
   "E": {
     "description": "Atomic Force Microscopy (AFM): atomic force microscopy produces the measurement through a 4-node primitive DAG L.cantilever_oscillator -> S.scan.raster -> D.laser_deflection -> int.spatial, with spatially-projected accumulation and additive Gaussian thermal/electronic noise. Recovery is posed as a non-convex inverse problem that inverts the forward operator to estimate the scene-side 2D topography. Difficulty tier delta=3 with effective condition number kappa_eff~12; calibration-level mismatch (tip_convolution, thermal_drift, tip_wear) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
@@ -174,5 +177,12 @@
     "PASS",
     "PASS"
   ],
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": false,
+    "coupling_count_n_c": 0,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

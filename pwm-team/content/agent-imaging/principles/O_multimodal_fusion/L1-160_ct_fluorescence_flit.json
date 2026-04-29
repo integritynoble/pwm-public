@@ -6,6 +6,9 @@
   "domain": "Multimodal Fusion",
   "sub_domain": "Hybrid x-ray CT + diffuse fluorescence tomography",
   "source_file": "O_multimodal_fusion/160_ct_fluorescence_flit.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
   "E": {
     "description": "CT-FLIT (Fluorescence Lifetime Imaging Tomography): ct fluorescence fusion produces the measurement through a 4-node primitive DAG L.ct_structure -> L.diffuse_fluorescence_tomo -> L.regularize_with_ct -> int.spatial, with spatially-projected accumulation and photon-shot-noise-limited (Poisson counting). Recovery is posed as a non-convex inverse problem that inverts the forward operator to estimate the scene-side 3D fluorophore concentration. Difficulty tier delta=10 with effective condition number kappa_eff~30; calibration-level mismatch (tissue_scattering_model, CT_prior_mismatch, fluorophore_leakage) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
@@ -181,5 +184,12 @@
     "PASS",
     "PASS"
   ],
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": false,
+    "coupling_count_n_c": 0,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

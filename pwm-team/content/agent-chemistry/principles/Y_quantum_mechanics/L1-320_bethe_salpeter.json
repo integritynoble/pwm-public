@@ -6,6 +6,9 @@
   "domain": "Quantum Mechanics",
   "sub_domain": "Optical excitations from GW+BSE",
   "source_file": "Y_quantum_mechanics/320_bethe_salpeter.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
   "E": {
     "description": "BSE on GW quasiparticles: 2-particle propagator for electron-hole pairs; captures excitons, charge-transfer states.",
@@ -138,5 +141,12 @@
     "PASS",
     "PASS"
   ],
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": false,
+    "coupling_count_n_c": 0,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

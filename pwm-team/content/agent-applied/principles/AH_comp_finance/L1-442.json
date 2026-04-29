@@ -6,6 +6,9 @@
   "domain": "Computational Finance",
   "sub_domain": "Volatility modeling",
   "source_file": "AH_comp_finance/442_implied_volatility.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
     "description": "Implied Volatility Surface Construction: Implied vol surface construction: build smooth, arbitrage-free implied volatility surface from sparse market quotes. The forward operator produces the measurement through a 3-node primitive DAG (S.interpolation.cubic_spline\u2026); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=3 with effective condition number kappa_eff~30; sparse_data_interpolation_error, butterfly_arbitrage_violation set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
@@ -139,5 +142,12 @@
     "PASS",
     "PASS"
   ],
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": true,
+    "coupling_count_n_c": 1,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

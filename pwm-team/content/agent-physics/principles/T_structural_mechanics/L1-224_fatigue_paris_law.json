@@ -6,6 +6,9 @@
   "domain": "Structural Mechanics",
   "sub_domain": "da/dN = C * (delta K)^m crack growth",
   "source_file": "T_structural_mechanics/224_fatigue_paris_law.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
     "description": "Fatigue \u2014 Paris law crack growth forward model.",
@@ -150,5 +153,12 @@
     "PASS",
     "PASS"
   ],
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": false,
+    "coupling_count_n_c": 0,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

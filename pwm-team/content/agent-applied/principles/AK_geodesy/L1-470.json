@@ -6,6 +6,9 @@
   "domain": "Geodesy",
   "sub_domain": "Photogrammetry",
   "source_file": "AK_geodesy/470_photogrammetry_sfm.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
     "description": "Photogrammetry Structure-from-Motion: SfM photogrammetry: recover 3D scene structure and camera poses from unordered image set via bundle adjustment. The forward operator produces the measurement through a 3-node primitive DAG (S.sfm.feature_matching\u2026); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=3 with effective condition number kappa_eff~200; GPS_geotag_accuracy_m, feature_matching_outlier_rate set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
@@ -138,5 +141,12 @@
     "PASS",
     "PASS"
   ],
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": true,
+    "coupling_count_n_c": 1,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

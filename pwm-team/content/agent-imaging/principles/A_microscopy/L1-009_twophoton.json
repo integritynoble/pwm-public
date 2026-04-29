@@ -6,6 +6,9 @@
   "domain": "Microscopy",
   "sub_domain": "Non-linear optical deep tissue imaging",
   "source_file": "A_microscopy/009_twophoton.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical domain literature for this specific principle.",
   "E": {
     "description": "Two-Photon Microscopy (chi-3 NLO excitation): two photon nlo produces the measurement through a 3-node primitive DAG L.excitation.nonlinear_chi3 -> S.scan.raster -> int.temporal, with time-integrated exposure and photon-shot-noise-limited (Poisson counting). Recovery is posed as a non-convex inverse problem that inverts the forward operator to estimate the scene-side 3D intensity. Difficulty tier delta=5 with effective condition number kappa_eff~15; calibration-level mismatch (pulse_compression_drift, sample_scattering, laser_pointing_jitter) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
@@ -179,5 +182,12 @@
     "PASS",
     "PASS"
   ],
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": false,
+    "coupling_count_n_c": 0,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

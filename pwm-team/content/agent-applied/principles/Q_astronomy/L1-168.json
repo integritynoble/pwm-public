@@ -6,6 +6,9 @@
   "domain": "Astronomy",
   "sub_domain": "Radio interferometry",
   "source_file": "Q_astronomy/168_eht_imaging.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
     "description": "Event Horizon Telescope (VLBI) Imaging: VLBI imaging: recover brightness distribution from sparse Fourier samples (visibilities) with closure-phase constraints. The forward operator produces the measurement through a 4-node primitive DAG (F.fourier.nufft\u2026); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=5 with effective condition number kappa_eff~1000; station_gain_error, atmospheric_delay_error set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
@@ -147,5 +150,12 @@
     "PASS",
     "PASS"
   ],
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": true,
+    "coupling_count_n_c": 1,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

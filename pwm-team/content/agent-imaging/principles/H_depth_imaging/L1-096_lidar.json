@@ -6,8 +6,10 @@
   "domain": "Depth Imaging",
   "sub_domain": "Direct ToF ranging",
   "source_file": "H_depth_imaging/096_lidar.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical pulsed-ToF LiDAR literature (Amann-Bosch 2001) and automotive/aerial LiDAR sensor models (Velodyne, Ouster, Hesai).",
-
   "E": {
     "description": "A short laser pulse (~ns) is emitted toward a target point. A photodetector (APD or SPAD) records the return timestamp t; round-trip distance d = c * t / 2. A scanning mirror / MEMS / OPA steers the beam over the scene to build a 3D point cloud; automotive sensors typically deliver 10-100 Hz scans with 64-128 channels.",
     "forward_model": "r(t) = h_pulse(t - 2d/c) * alpha(theta, lambda, d) + n_bg(t) + n_shot(t)",
@@ -21,10 +23,14 @@
       "Scanning mode (rotating, MEMS, OPA), revolution rate f_scan"
     ]
   },
-
   "G": {
     "dag": "S.emit.pulse -> L.reflect_scene -> D.timestamp -> int.angular",
-    "vertices": ["S.emit.pulse", "L.reflect_scene", "D.timestamp", "int.angular"],
+    "vertices": [
+      "S.emit.pulse",
+      "L.reflect_scene",
+      "D.timestamp",
+      "int.angular"
+    ],
     "arcs": [
       "S.emit.pulse -> L.reflect_scene",
       "L.reflect_scene -> D.timestamp",
@@ -33,7 +39,6 @@
     "L_DAG": 3.0,
     "n_c": 0
   },
-
   "W": {
     "existence": true,
     "uniqueness": true,
@@ -42,14 +47,12 @@
     "condition_number_effective": 8,
     "regime": "Well-posed when returned pulse SNR > 10 dB. Atmospheric attenuation alpha_atm(d) = exp(-gamma * d) cuts range quadratically at rain/fog; retroreflective surfaces saturate the receiver; motion distortion (rolling-shutter of scan) biases point cloud during ego-motion."
   },
-
   "C": {
     "solver_class": "leading-edge / matched-filter timing, TDC + constant-fraction-discriminator, learned (DeepLidar, PointNet++ denoise, RangeNet++)",
     "convergence_rate_q": 2.0,
     "error_bound": "sigma_d = c * tau_pulse / (2 * sqrt(2) * sqrt(SNR)); atmospheric extinction reduces effective range by a factor exp(gamma * d / 2)",
     "complexity": "O(M_h * M_v) per scan; O(N_scan * N_points * log N_points) for point-cloud registration"
   },
-
   "physics_fingerprint": {
     "carrier": "photon",
     "sensing_mechanism": "pulsed_dtof_scan",
@@ -57,39 +60,142 @@
     "problem_class": "linear_inverse",
     "noise_model": "shot_poisson",
     "solution_space": "3D_point_cloud",
-    "primitives": ["S.emit.pulse", "L.reflect_scene", "D.timestamp", "int.angular"]
+    "primitives": [
+      "S.emit.pulse",
+      "L.reflect_scene",
+      "D.timestamp",
+      "int.angular"
+    ]
   },
-
   "difficulty_delta": 3,
   "difficulty_tier": "standard",
-
-  "mismatch_parameters": ["atmospheric_extinction", "retroreflector_saturation", "motion_distortion", "crosstalk_neighbour_beams", "beam_walk_error"],
+  "mismatch_parameters": [
+    "atmospheric_extinction",
+    "retroreflector_saturation",
+    "motion_distortion",
+    "crosstalk_neighbour_beams",
+    "beam_walk_error"
+  ],
   "error_metric": "point_cloud_RMSE_m",
   "error_metric_secondary": "detection_recall_at_range",
-
   "spec_range": {
     "center_spec": {
       "problem_class": "pulsed_dtof_lidar",
       "forward_operator": "pulsed_scanning_lidar",
       "input_format": "range_scan_plus_intensity",
-      "omega": {"N_ch": 64, "f_scan_Hz": 10, "tau_pulse_ns": 5, "lambda_nm": 905, "max_range_m": 200, "photon_count_per_beam": 500, "atmospheric_extinction": 0.0, "motion_distortion": 0.0, "retroreflector_saturation": 0.0},
+      "omega": {
+        "N_ch": 64,
+        "f_scan_Hz": 10,
+        "tau_pulse_ns": 5,
+        "lambda_nm": 905,
+        "max_range_m": 200,
+        "photon_count_per_beam": 500,
+        "atmospheric_extinction": 0.0,
+        "motion_distortion": 0.0,
+        "retroreflector_saturation": 0.0
+      },
       "epsilon_fn_center": "0.05 m point RMSE at 100 m"
     },
-    "allowed_forward_operators": ["pulsed_scanning_lidar", "fmcw_lidar", "coincidence_spad_lidar"],
-    "allowed_problem_classes": ["pulsed_dtof_lidar", "lidar_semantic_segmentation", "lidar_slam"],
-    "allowed_omega_dimensions": ["N_ch", "f_scan_Hz", "tau_pulse_ns", "lambda_nm", "max_range_m", "photon_count_per_beam", "atmospheric_extinction", "motion_distortion", "retroreflector_saturation", "crosstalk_neighbour_beams", "beam_walk_error"],
+    "allowed_forward_operators": [
+      "pulsed_scanning_lidar",
+      "fmcw_lidar",
+      "coincidence_spad_lidar"
+    ],
+    "allowed_problem_classes": [
+      "pulsed_dtof_lidar",
+      "lidar_semantic_segmentation",
+      "lidar_slam"
+    ],
+    "allowed_omega_dimensions": [
+      "N_ch",
+      "f_scan_Hz",
+      "tau_pulse_ns",
+      "lambda_nm",
+      "max_range_m",
+      "photon_count_per_beam",
+      "atmospheric_extinction",
+      "motion_distortion",
+      "retroreflector_saturation",
+      "crosstalk_neighbour_beams",
+      "beam_walk_error"
+    ],
     "omega_bounds": {
-      "N_ch": [16, 256], "f_scan_Hz": [5, 30],
-      "tau_pulse_ns": [0.5, 10], "lambda_nm": [850, 1550],
-      "max_range_m": [30, 500], "photon_count_per_beam": [10, 5000],
-      "atmospheric_extinction": [0.0, 2.0], "motion_distortion": [0.0, 0.5],
-      "retroreflector_saturation": [0.0, 0.2],
-      "crosstalk_neighbour_beams": [0.0, 0.05], "beam_walk_error": [0.0, 0.01]
+      "N_ch": [
+        16,
+        256
+      ],
+      "f_scan_Hz": [
+        5,
+        30
+      ],
+      "tau_pulse_ns": [
+        0.5,
+        10
+      ],
+      "lambda_nm": [
+        850,
+        1550
+      ],
+      "max_range_m": [
+        30,
+        500
+      ],
+      "photon_count_per_beam": [
+        10,
+        5000
+      ],
+      "atmospheric_extinction": [
+        0.0,
+        2.0
+      ],
+      "motion_distortion": [
+        0.0,
+        0.5
+      ],
+      "retroreflector_saturation": [
+        0.0,
+        0.2
+      ],
+      "crosstalk_neighbour_beams": [
+        0.0,
+        0.05
+      ],
+      "beam_walk_error": [
+        0.0,
+        0.01
+      ]
     },
-    "epsilon_bounds": {"rmse_m": [0.01, 1.0]}
+    "epsilon_bounds": {
+      "rmse_m": [
+        0.01,
+        1.0
+      ]
+    }
   },
-
-  "p1_p10_tests": ["PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS"],
-  "s1_s4_gates": ["PASS", "PASS", "PASS", "PASS"],
-  "ipfs_cid": null
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": false,
+    "coupling_count_n_c": 0,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

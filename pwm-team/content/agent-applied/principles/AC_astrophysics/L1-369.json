@@ -6,6 +6,9 @@
   "domain": "Astrophysics",
   "sub_domain": "Cosmic shear",
   "source_file": "AC_astrophysics/369_weak_lensing.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
     "description": "Weak Gravitational Lensing Shear Estimation: Weak lensing: measure coherent distortion of galaxy shapes to infer projected matter distribution. The forward operator produces the measurement through a 3-node primitive DAG (S.shear.ellipticity\u2026); recovery is posed as a statistical_inverse problem. Difficulty tier delta=5 with effective condition number kappa_eff~20; PSF_leakage, multiplicative_shear_bias_m set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
@@ -138,5 +141,12 @@
     "PASS",
     "PASS"
   ],
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": false,
+    "coupling_count_n_c": 0,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

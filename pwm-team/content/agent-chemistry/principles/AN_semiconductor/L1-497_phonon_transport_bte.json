@@ -6,6 +6,9 @@
   "domain": "Semiconductor Physics",
   "sub_domain": "Thermal phonon transport",
   "source_file": "AN_semiconductor/497_phonon_transport_bte.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
   "E": {
     "description": "BTE for phonon distribution n_{q,s}(r,t): drift with group velocity v_g + scattering (three-phonon, boundary, isotope); Callaway or full iterative treatment for thermal conductivity.",
@@ -142,5 +145,12 @@
     "PASS",
     "PASS"
   ],
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": false,
+    "coupling_count_n_c": 0,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

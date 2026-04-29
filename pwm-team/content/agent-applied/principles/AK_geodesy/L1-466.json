@@ -6,6 +6,9 @@
   "domain": "Geodesy",
   "sub_domain": "Satellite positioning",
   "source_file": "AK_geodesy/466_gnss_positioning.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
     "description": "GNSS Positioning and Navigation: GNSS positioning: estimate 3D position and receiver clock bias from pseudorange and carrier phase measurements. The forward operator produces the measurement through a 3-node primitive DAG (M.pseudorange.geometry\u2026); recovery is posed as a linear_inverse problem. Difficulty tier delta=3 with effective condition number kappa_eff~10; ionospheric_model_error_m, tropospheric_model_error_m set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
@@ -138,5 +141,12 @@
     "PASS",
     "PASS"
   ],
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": false,
+    "coupling_count_n_c": 0,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

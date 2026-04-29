@@ -6,6 +6,9 @@
   "domain": "Semiconductor Physics",
   "sub_domain": "Photovoltaic devices",
   "source_file": "AN_semiconductor/493_solar_cell_physics.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
   "E": {
     "description": "Photovoltaic cell as drift-diffusion device with photogeneration G(x,lambda); one-diode or two-diode compact model with parasitic R_s, R_sh; efficiency bounded by Shockley-Queisser.",
@@ -144,5 +147,12 @@
     "PASS",
     "PASS"
   ],
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": false,
+    "coupling_count_n_c": 0,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

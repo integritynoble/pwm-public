@@ -6,6 +6,9 @@
   "domain": "Ultrafast Imaging",
   "sub_domain": "Single-pulse diffraction from microcrystals at XFEL",
   "source_file": "M_ultrafast_imaging/152_xfel_sfx.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
   "E": {
     "description": "XFEL Serial Femtosecond Crystallography (SFX): xfel serial crystallography produces the measurement through a 4-node primitive DAG L.xfel_pulse -> L.microcrystal_diffraction -> L.bragg_indexing -> int.spatial, with multi-angle tomographic integration and photon-shot-noise-limited (Poisson counting). Recovery is posed as a non-convex inverse problem that inverts the forward operator to estimate the scene-side 3D electron density. Difficulty tier delta=10 with effective condition number kappa_eff~32; calibration-level mismatch (hit_rate, detector_dynamic_range, partial_reflection) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
@@ -167,5 +170,12 @@
     "PASS",
     "PASS"
   ],
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": false,
+    "coupling_count_n_c": 0,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

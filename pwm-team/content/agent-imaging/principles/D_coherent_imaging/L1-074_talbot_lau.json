@@ -6,8 +6,10 @@
   "domain": "Coherent Imaging",
   "sub_domain": "Grating-based phase and dark-field imaging",
   "source_file": "D_coherent_imaging/074_talbot_lau.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical Talbot-Lau literature (Pfeiffer, Weitkamp, David, Momose) for polychromatic X-ray phase imaging with partially-coherent lab sources.",
-
   "E": {
     "description": "Three X-ray gratings (G0 source grating, G1 phase grating, G2 analyzer grating) encode phase and small-angle scattering as a spatially modulated moire pattern. Phase stepping (typically 8 steps) of one grating recovers three contrast images per pixel: absorption (A), differential phase (phi), and dark-field (visibility V).",
     "forward_model": "I_k(x,y) = a_0(x,y) + a_1(x,y) * cos(2*pi*k/K + phi(x,y)); Fourier analysis over k yields (A, phi, V)",
@@ -21,10 +23,14 @@
       "source coherence length (set by G0 slit width)"
     ]
   },
-
   "G": {
     "dag": "K.transmit.grating -> F.propagation.fresnel -> L.modulation.analyzer -> int.spatial",
-    "vertices": ["K.transmit.grating", "F.propagation.fresnel", "L.modulation.analyzer", "int.spatial"],
+    "vertices": [
+      "K.transmit.grating",
+      "F.propagation.fresnel",
+      "L.modulation.analyzer",
+      "int.spatial"
+    ],
     "arcs": [
       "K.transmit.grating -> F.propagation.fresnel",
       "F.propagation.fresnel -> L.modulation.analyzer",
@@ -33,7 +39,6 @@
     "L_DAG": 3.4,
     "n_c": 0
   },
-
   "W": {
     "existence": true,
     "uniqueness": true,
@@ -42,14 +47,12 @@
     "condition_number_effective": 8,
     "regime": "Well-conditioned linear Fourier extraction of three contrast channels from K phase-stepped frames (K >= 3 required; K = 8 typical for noise averaging). Stability dominated by grating alignment and vibration; dark-field channel degrades when visibility V < 0.15."
   },
-
   "C": {
     "solver_class": "Fourier demodulation (analytical), weighted least-squares, TV-regularized ADMM for A/phi/V fusion, learned (TalbotNet)",
     "convergence_rate_q": 2.0,
     "error_bound": "sigma_phi = sqrt(2) / (sqrt(K) * V * sqrt(photon_count)); dark-field noise ~ 1/sqrt(photon_count); bias from detrending cross-talk at V < 0.15",
     "complexity": "O(K * H * W) for Fourier extraction"
   },
-
   "physics_fingerprint": {
     "carrier": "x_ray",
     "sensing_mechanism": "grating_interferometry",
@@ -57,39 +60,142 @@
     "problem_class": "linear_inverse",
     "noise_model": "shot_poisson",
     "solution_space": "triplet_2D_fields",
-    "primitives": ["K.transmit.grating", "F.propagation.fresnel", "L.modulation.analyzer", "int.spatial"]
+    "primitives": [
+      "K.transmit.grating",
+      "F.propagation.fresnel",
+      "L.modulation.analyzer",
+      "int.spatial"
+    ]
   },
-
   "difficulty_delta": 3,
   "difficulty_tier": "standard",
-
-  "mismatch_parameters": ["grating_period_drift", "alignment_tilt", "phase_step_jitter", "source_coherence_loss", "beam_hardening"],
+  "mismatch_parameters": [
+    "grating_period_drift",
+    "alignment_tilt",
+    "phase_step_jitter",
+    "source_coherence_loss",
+    "beam_hardening"
+  ],
   "error_metric": "phase_PSNR_dB",
   "error_metric_secondary": "darkfield_SNR",
   "error_metric_tertiary": "absorption_PSNR_dB",
-
   "spec_range": {
     "center_spec": {
       "problem_class": "grating_phase_contrast_imaging",
       "forward_operator": "talbot_lau_three_grating",
       "input_format": "K_phase_stepped_intensity_frames",
-      "omega": {"H": 1024, "W": 1024, "K_steps": 8, "grating_period_um": 4.8, "E_mean_keV": 40.0, "V_center": 0.30, "photon_count_per_pixel": 10000, "grating_period_drift": 0.0, "alignment_tilt": 0.0},
+      "omega": {
+        "H": 1024,
+        "W": 1024,
+        "K_steps": 8,
+        "grating_period_um": 4.8,
+        "E_mean_keV": 40.0,
+        "V_center": 0.3,
+        "photon_count_per_pixel": 10000,
+        "grating_period_drift": 0.0,
+        "alignment_tilt": 0.0
+      },
       "epsilon_fn_center": "30.0 dB phase PSNR"
     },
-    "allowed_forward_operators": ["talbot_lau_three_grating", "edge_illumination", "moire_deflectometry"],
-    "allowed_problem_classes": ["grating_phase_contrast_imaging", "xray_phase_tomography"],
-    "allowed_omega_dimensions": ["H", "W", "K_steps", "grating_period_um", "E_mean_keV", "V_center", "photon_count_per_pixel", "grating_period_drift", "alignment_tilt", "phase_step_jitter", "source_coherence_loss"],
+    "allowed_forward_operators": [
+      "talbot_lau_three_grating",
+      "edge_illumination",
+      "moire_deflectometry"
+    ],
+    "allowed_problem_classes": [
+      "grating_phase_contrast_imaging",
+      "xray_phase_tomography"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "K_steps",
+      "grating_period_um",
+      "E_mean_keV",
+      "V_center",
+      "photon_count_per_pixel",
+      "grating_period_drift",
+      "alignment_tilt",
+      "phase_step_jitter",
+      "source_coherence_loss"
+    ],
     "omega_bounds": {
-      "H": [256, 4096], "W": [256, 4096], "K_steps": [3, 16],
-      "grating_period_um": [1.0, 10.0], "E_mean_keV": [10.0, 120.0],
-      "V_center": [0.05, 0.60], "photon_count_per_pixel": [100, 1000000],
-      "grating_period_drift": [0.0, 0.05], "alignment_tilt": [0.0, 0.02],
-      "phase_step_jitter": [0.0, 0.1], "source_coherence_loss": [0.0, 0.5]
+      "H": [
+        256,
+        4096
+      ],
+      "W": [
+        256,
+        4096
+      ],
+      "K_steps": [
+        3,
+        16
+      ],
+      "grating_period_um": [
+        1.0,
+        10.0
+      ],
+      "E_mean_keV": [
+        10.0,
+        120.0
+      ],
+      "V_center": [
+        0.05,
+        0.6
+      ],
+      "photon_count_per_pixel": [
+        100,
+        1000000
+      ],
+      "grating_period_drift": [
+        0.0,
+        0.05
+      ],
+      "alignment_tilt": [
+        0.0,
+        0.02
+      ],
+      "phase_step_jitter": [
+        0.0,
+        0.1
+      ],
+      "source_coherence_loss": [
+        0.0,
+        0.5
+      ]
     },
-    "epsilon_bounds": {"psnr_db": [18.0, 42.0]}
+    "epsilon_bounds": {
+      "psnr_db": [
+        18.0,
+        42.0
+      ]
+    }
   },
-
-  "p1_p10_tests": ["PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS"],
-  "s1_s4_gates": ["PASS", "PASS", "PASS", "PASS"],
-  "ipfs_cid": null
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": false,
+    "coupling_count_n_c": 0,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

@@ -6,6 +6,9 @@
   "domain": "Control Theory",
   "sub_domain": "Classical control",
   "source_file": "AG_control_theory/434_pid_controller_tuning.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
     "description": "PID Controller Tuning: PID tuning: find Kp, Ki, Kd to minimize IAE/ISE for a given plant while satisfying stability margins. The forward operator produces the measurement through a 3-node primitive DAG (M.pid.transfer_function\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~10; plant_gain_variation, time_constant_change set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
@@ -138,5 +141,12 @@
     "PASS",
     "PASS"
   ],
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": false,
+    "coupling_count_n_c": 0,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

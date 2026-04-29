@@ -6,6 +6,9 @@
   "domain": "Industrial Inspection",
   "sub_domain": "THz non-ionizing NDT for dielectrics",
   "source_file": "J_industrial_inspect/116_terahertz_imaging.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical NDT/NDE literature for this principle.",
   "E": {
     "description": "Terahertz Imaging (0.1-10 THz time-domain / CW): terahertz time domain produces the measurement through a 4-node primitive DAG L.thz_source -> L.transmit_sample -> D.thz_detector -> int.spectral, with spectral-channel integration and additive Gaussian thermal/electronic noise. Recovery is posed as a linear inverse problem that inverts the forward operator to estimate the scene-side 2D complex permittivity. Difficulty tier delta=5 with effective condition number kappa_eff~14; calibration-level mismatch (water_absorption, scattering_at_defects, dispersive_media) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
@@ -176,5 +179,12 @@
     "PASS",
     "PASS"
   ],
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": false,
+    "coupling_count_n_c": 0,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

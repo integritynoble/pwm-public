@@ -6,6 +6,9 @@
   "domain": "Astronomy",
   "sub_domain": "Solar physics",
   "source_file": "Q_astronomy/169_solar_euv_xray.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
     "description": "Solar EUV/X-ray Image Reconstruction: Solar EUV/X-ray DEM inversion: recover differential emission measure DEM(T) from multi-channel EUV images. The forward operator produces the measurement through a 3-node primitive DAG (K.psf.coded_aperture\u2026); recovery is posed as a linear_inverse problem. Difficulty tier delta=3 with effective condition number kappa_eff~80; calibration_uncertainty_percent, temperature_response_error set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
@@ -144,5 +147,12 @@
     "PASS",
     "PASS"
   ],
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": false,
+    "coupling_count_n_c": 0,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

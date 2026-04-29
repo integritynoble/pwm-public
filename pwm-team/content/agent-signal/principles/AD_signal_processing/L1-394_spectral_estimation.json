@@ -6,8 +6,10 @@
   "domain": "Signal Processing",
   "sub_domain": "Frequency estimation from finite-length time series",
   "source_file": "AD_signal_processing/394_spectral_estimation.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence boilerplate. Physics grounded in Stoica-Moses 2005 Spectral Analysis of Signals textbook; Kay 1988 Modern Spectral Estimation; Schmidt 1986 MUSIC; Roy-Kailath ESPRIT; Tang-Bhaskar-Shah-Recht 2013 continuous CS for line spectrum.",
-
   "E": {
     "description": "A complex-exponential / sinusoidal signal is modeled as sum of K components with unknown frequencies omega_k, amplitudes c_k, and phases phi_k, observed on a finite time window of N samples plus noise; the goal is to estimate (omega_k, c_k, phi_k) via subspace, parametric, or atomic-norm methods.",
     "forward_model": "y[n] = sum_{k=1}^K c_k * exp(j*omega_k*n + j*phi_k) + w[n],  n = 0,...,N-1",
@@ -21,32 +23,33 @@
       "Irregular/uniform sampling"
     ]
   },
-
   "G": {
     "dag": "L.synthesis.harmonic -> int.temporal",
-    "vertices": ["L.synthesis.harmonic", "int.temporal"],
-    "arcs": ["L.synthesis.harmonic -> int.temporal"],
+    "vertices": [
+      "L.synthesis.harmonic",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.synthesis.harmonic -> int.temporal"
+    ],
     "L_DAG": 2.3,
     "n_c": 0
   },
-
   "W": {
     "existence": true,
-    "uniqueness": "for well-separated frequencies (delta_omega > 4pi/N) — Rayleigh criterion",
+    "uniqueness": "for well-separated frequencies (delta_omega > 4pi/N) \u2014 Rayleigh criterion",
     "stability": "conditional",
     "condition_number_kappa": 500,
     "condition_number_effective": 10,
     "condition_number_mismatched": 300,
     "regime": "Fourier-limited resolution 2pi/N; subspace methods (MUSIC, ESPRIT) achieve super-resolution given SNR; atomic-norm minimization (Tang-Bhaskar-Shah-Recht) guarantees exact recovery when delta_omega > 4pi/N."
   },
-
   "C": {
     "solver_class": "Periodogram/Welch, Yule-Walker AR, MUSIC, ESPRIT, Prony, atomic-norm (AST), sparse BPDN in DFT grid, Nonlinear LS",
     "convergence_rate_q": 2.0,
     "error_bound": "CRLB_omega = 6 * sigma^2 / (N^3 * c^2); subspace methods tight at high SNR; periodogram-peak picks resolve to 2pi/N",
     "complexity": "FFT: O(N*log(N)); MUSIC O(N^3 + N^2*Ngrid); ESPRIT closed-form; atomic SDP O(N^3.5)"
   },
-
   "physics_fingerprint": {
     "carrier": "electromagnetic",
     "sensing_mechanism": "harmonic_observation",
@@ -54,38 +57,117 @@
     "problem_class": "parametric_spectral_estimation",
     "noise_model": "complex_gaussian",
     "solution_space": "frequency_parameters",
-    "primitives": ["L.synthesis.harmonic", "int.temporal"]
+    "primitives": [
+      "L.synthesis.harmonic",
+      "int.temporal"
+    ]
   },
-
   "difficulty_delta": 3,
   "difficulty_tier": "standard",
-
-  "mismatch_parameters": ["K_overestimation", "frequency_separation", "SNR", "windowing_error", "sampling_irregularity"],
+  "mismatch_parameters": [
+    "K_overestimation",
+    "frequency_separation",
+    "SNR",
+    "windowing_error",
+    "sampling_irregularity"
+  ],
   "error_metric": "frequency_RMSE_cyc",
   "error_metric_secondary": "amplitude_RMSE",
   "error_metric_tertiary": "resolution_at_2sigma",
-
   "spec_range": {
     "center_spec": {
       "problem_class": "line_spectrum_estimation",
       "forward_operator": "uniform_sampling_complex_exp",
       "input_format": "time_series",
-      "omega": {"N": 256, "K": 3, "SNR_dB": 20, "delta_omega": 0.05, "sampling": "uniform"},
+      "omega": {
+        "N": 256,
+        "K": 3,
+        "SNR_dB": 20,
+        "delta_omega": 0.05,
+        "sampling": "uniform"
+      },
       "epsilon_fn_center": "1e-3 cyc"
     },
-    "allowed_forward_operators": ["uniform_sampling_complex_exp", "nonuniform_sampling", "windowed_observation"],
-    "allowed_problem_classes": ["line_spectrum_estimation", "ar_ma_estimation", "atomic_norm_dereverberation"],
-    "allowed_omega_dimensions": ["N", "K", "SNR_dB", "delta_omega", "sampling", "windowing_error", "K_overestimation"],
+    "allowed_forward_operators": [
+      "uniform_sampling_complex_exp",
+      "nonuniform_sampling",
+      "windowed_observation"
+    ],
+    "allowed_problem_classes": [
+      "line_spectrum_estimation",
+      "ar_ma_estimation",
+      "atomic_norm_dereverberation"
+    ],
+    "allowed_omega_dimensions": [
+      "N",
+      "K",
+      "SNR_dB",
+      "delta_omega",
+      "sampling",
+      "windowing_error",
+      "K_overestimation"
+    ],
     "omega_bounds": {
-      "N": [32, 16384], "K": [1, 64],
-      "SNR_dB": [-10, 40], "delta_omega": [0.001, 0.5],
-      "windowing_error": [0.0, 0.5], "K_overestimation": [0, 30],
-      "sampling_irregularity": [0.0, 0.5]
+      "N": [
+        32,
+        16384
+      ],
+      "K": [
+        1,
+        64
+      ],
+      "SNR_dB": [
+        -10,
+        40
+      ],
+      "delta_omega": [
+        0.001,
+        0.5
+      ],
+      "windowing_error": [
+        0.0,
+        0.5
+      ],
+      "K_overestimation": [
+        0,
+        30
+      ],
+      "sampling_irregularity": [
+        0.0,
+        0.5
+      ]
     },
-    "epsilon_bounds": {"rmse_cyc": [1e-6, 0.5]}
+    "epsilon_bounds": {
+      "rmse_cyc": [
+        1e-06,
+        0.5
+      ]
+    }
   },
-
-  "p1_p10_tests": ["PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS"],
-  "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
-  "ipfs_cid": null
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": false,
+    "coupling_count_n_c": 0,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

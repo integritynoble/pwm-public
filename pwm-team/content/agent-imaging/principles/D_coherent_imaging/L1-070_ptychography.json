@@ -6,9 +6,11 @@
   "domain": "Coherent Imaging",
   "sub_domain": "Scanning coherent diffraction",
   "source_file": "D_coherent_imaging/070_ptychography.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "reference_mine_example": "papers/Proof-of-Solution/mine_example/ptychography.md",
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is extracted from mine_example/ptychography.md and canonical ptychography literature (Rodenburg, Pfeiffer).",
-
   "E": {
     "description": "Ptychography acquires J overlapping far-field diffraction intensities I_j as a coherent probe P scans across a complex object O on a regular or random grid. Each intensity is the phaseless squared magnitude of the Fourier transform of the product probe*object patch. The high inter-patch overlap (60-80%) creates redundancy that jointly constrains probe and object phases.",
     "forward_model": "I_j(k) = |F{P(r - r_j) * O(r)}|^2 + n_j(k),  j = 1..J",
@@ -22,10 +24,15 @@
       "Source coherence (partial coherence degrades recovery)"
     ]
   },
-
   "G": {
     "dag": "S.scan.grid -> L.hadamard.complex -> F.fourier -> L.modulus_squared -> int.spatial",
-    "vertices": ["S.scan.grid", "L.hadamard.complex", "F.fourier", "L.modulus_squared", "int.spatial"],
+    "vertices": [
+      "S.scan.grid",
+      "L.hadamard.complex",
+      "F.fourier",
+      "L.modulus_squared",
+      "int.spatial"
+    ],
     "arcs": [
       "S.scan.grid -> L.hadamard.complex",
       "L.hadamard.complex -> F.fourier",
@@ -35,7 +42,6 @@
     "L_DAG": 4.5,
     "n_c": 1
   },
-
   "W": {
     "existence": true,
     "uniqueness": true,
@@ -44,14 +50,12 @@
     "condition_number_effective": 80,
     "regime": "Non-convex phaseless recovery; Hayes ambiguity (global phase, conjugate flip, constant offset) resolved by overlap redundancy and probe structure. Oversampling sigma >= 2 per dim combined with overlap >= 0.6 guarantees local-minimum convergence for iterative projection solvers."
   },
-
   "C": {
     "solver_class": "iterative projection (ePIE, PIE, rPIE, DM), proximal (ADMM-ptycho), Wirtinger-flow, learned (PtychoNN, PtychoDV)",
     "convergence_rate_q": 1.5,
     "error_bound": "||O_hat - O||_2 <= C1 * sigma / sqrt(photon_count) + C2 * (1 - overlap_fraction) * ||nabla O||; FRC at half-bit threshold quantifies resolution.",
     "complexity": "O(J * K^2 * log K) per epoch (J scan positions, K-pixel diffraction patterns)"
   },
-
   "physics_fingerprint": {
     "carrier": "photon",
     "sensing_mechanism": "coherent_diffraction_scanning",
@@ -59,38 +63,137 @@
     "problem_class": "nonlinear_inverse",
     "noise_model": "shot_poisson",
     "solution_space": "complex_2D",
-    "primitives": ["S.scan.grid", "L.hadamard.complex", "F.fourier", "L.modulus_squared", "int.spatial"]
+    "primitives": [
+      "S.scan.grid",
+      "L.hadamard.complex",
+      "F.fourier",
+      "L.modulus_squared",
+      "int.spatial"
+    ]
   },
-
   "difficulty_delta": 5,
   "difficulty_tier": "challenging",
-
-  "mismatch_parameters": ["probe_position_error", "probe_shape_drift", "partial_coherence", "background_scatter", "detector_gain"],
+  "mismatch_parameters": [
+    "probe_position_error",
+    "probe_shape_drift",
+    "partial_coherence",
+    "background_scatter",
+    "detector_gain"
+  ],
   "error_metric": "FRC_half_bit_resolution",
   "error_metric_secondary": "PSNR_dB",
   "error_metric_tertiary": "phase_L2_error",
-
   "spec_range": {
     "center_spec": {
       "problem_class": "ptychographic_recovery",
       "forward_operator": "ptychographic_forward",
       "input_format": "diffraction_patterns_plus_scan_positions",
-      "omega": {"H": 512, "W": 512, "probe_size": 128, "J_scan": 400, "overlap_fraction": 0.70, "photon_count": 1000, "probe_position_error": 0.0, "partial_coherence": 1.0},
+      "omega": {
+        "H": 512,
+        "W": 512,
+        "probe_size": 128,
+        "J_scan": 400,
+        "overlap_fraction": 0.7,
+        "photon_count": 1000,
+        "probe_position_error": 0.0,
+        "partial_coherence": 1.0
+      },
       "epsilon_fn_center": "30.0 dB PSNR at center probe"
     },
-    "allowed_forward_operators": ["ptychographic_forward", "fourier_ptychography", "bragg_ptychography"],
-    "allowed_problem_classes": ["ptychographic_recovery", "fourier_ptychography"],
-    "allowed_omega_dimensions": ["H", "W", "probe_size", "J_scan", "overlap_fraction", "photon_count", "probe_position_error", "probe_shape_drift", "partial_coherence", "background_scatter"],
+    "allowed_forward_operators": [
+      "ptychographic_forward",
+      "fourier_ptychography",
+      "bragg_ptychography"
+    ],
+    "allowed_problem_classes": [
+      "ptychographic_recovery",
+      "fourier_ptychography"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "probe_size",
+      "J_scan",
+      "overlap_fraction",
+      "photon_count",
+      "probe_position_error",
+      "probe_shape_drift",
+      "partial_coherence",
+      "background_scatter"
+    ],
     "omega_bounds": {
-      "H": [128, 4096], "W": [128, 4096], "probe_size": [32, 512], "J_scan": [50, 10000],
-      "overlap_fraction": [0.30, 0.85], "photon_count": [10, 100000],
-      "probe_position_error": [0.0, 2.0], "probe_shape_drift": [0.0, 0.2],
-      "partial_coherence": [0.70, 1.0], "background_scatter": [0.0, 0.10]
+      "H": [
+        128,
+        4096
+      ],
+      "W": [
+        128,
+        4096
+      ],
+      "probe_size": [
+        32,
+        512
+      ],
+      "J_scan": [
+        50,
+        10000
+      ],
+      "overlap_fraction": [
+        0.3,
+        0.85
+      ],
+      "photon_count": [
+        10,
+        100000
+      ],
+      "probe_position_error": [
+        0.0,
+        2.0
+      ],
+      "probe_shape_drift": [
+        0.0,
+        0.2
+      ],
+      "partial_coherence": [
+        0.7,
+        1.0
+      ],
+      "background_scatter": [
+        0.0,
+        0.1
+      ]
     },
-    "epsilon_bounds": {"psnr_db": [15.0, 42.0]}
+    "epsilon_bounds": {
+      "psnr_db": [
+        15.0,
+        42.0
+      ]
+    }
   },
-
-  "p1_p10_tests": ["PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS"],
-  "s1_s4_gates": ["PASS", "PASS", "PASS", "PASS"],
-  "ipfs_cid": null
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": true,
+    "coupling_count_n_c": 1,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

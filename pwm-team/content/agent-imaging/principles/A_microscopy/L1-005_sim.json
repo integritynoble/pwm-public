@@ -6,6 +6,9 @@
   "domain": "Microscopy",
   "sub_domain": "Super-resolution via spatial-frequency demodulation",
   "source_file": "A_microscopy/005_sim.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical domain literature for this specific principle.",
   "E": {
     "description": "Structured Illumination Microscopy (SIM) \u2014 lateral 2x resolution: structured illumination produces the measurement through a 3-node primitive DAG L.modulation.grating -> K.psf.airy -> int.temporal, with time-integrated exposure and Poisson signal noise + Gaussian read noise. Recovery is posed as a linear inverse problem that inverts the forward operator to estimate the scene-side 2D intensity. Difficulty tier delta=5 with effective condition number kappa_eff~25; calibration-level mismatch (pattern_phase_error, pattern_angle_error, pattern_frequency_drift) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
@@ -179,5 +182,12 @@
     "PASS",
     "PASS"
   ],
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": false,
+    "coupling_count_n_c": 0,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

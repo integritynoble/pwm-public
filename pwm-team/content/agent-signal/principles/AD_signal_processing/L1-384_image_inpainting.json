@@ -6,8 +6,10 @@
   "domain": "Signal Processing",
   "sub_domain": "Spatial hole-filling / occlusion removal",
   "source_file": "AD_signal_processing/384_image_inpainting.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence boilerplate. Physics below is grounded in PDE-based inpainting (Bertalmio et al. 2000), exemplar-based (Criminisi et al. 2004), and learned inpainting (Pathak et al. 2016; Yu et al. 2018 DeepFill; Liu et al. 2018 partial convolutions; Suvorov et al. 2022 LaMa).",
-
   "E": {
     "description": "A binary mask M removes pixels from the image x (unknown pixels replaced by a sentinel); the task recovers x in the masked region using surrounding context and a natural-image prior.",
     "forward_model": "y = M .* x + (1 - M) .* fill + n;   M in {0,1}^{H x W}",
@@ -20,15 +22,18 @@
       "Boundary-pixel uncertainty (dilation epsilon)"
     ]
   },
-
   "G": {
     "dag": "D.mask.spatial -> int.spatial",
-    "vertices": ["D.mask.spatial", "int.spatial"],
-    "arcs": ["D.mask.spatial -> int.spatial"],
+    "vertices": [
+      "D.mask.spatial",
+      "int.spatial"
+    ],
+    "arcs": [
+      "D.mask.spatial -> int.spatial"
+    ],
     "L_DAG": 2.0,
     "n_c": 0
   },
-
   "W": {
     "existence": true,
     "uniqueness": false,
@@ -38,14 +43,12 @@
     "condition_number_mismatched": 1000,
     "regime": "Strictly underdetermined inside mask; uniqueness is prior-induced (TV, non-local similarity, learned). Stability decreases super-linearly with mask_ratio and hole diameter."
   },
-
   "C": {
     "solver_class": "PDE diffusion (Bertalmio), exemplar-based (Criminisi), total-variation (TV), patch-match, learned (DeepFill, partial-conv, LaMa, MAT)",
     "convergence_rate_q": 2.0,
     "error_bound": "Error bounded by prior bias on the masked region; increases as hole_area^1.5 empirically for natural images",
     "complexity": "PDE O(H*W*iterations); patch-match O(H*W*P); learned single forward O(H*W*C*F)"
   },
-
   "physics_fingerprint": {
     "carrier": "photon",
     "sensing_mechanism": "binary_masking",
@@ -53,37 +56,114 @@
     "problem_class": "linear_inverse_masked",
     "noise_model": "gaussian",
     "solution_space": "2D_image",
-    "primitives": ["D.mask.spatial", "int.spatial"]
+    "primitives": [
+      "D.mask.spatial",
+      "int.spatial"
+    ]
   },
-
   "difficulty_delta": 3,
   "difficulty_tier": "standard",
-
-  "mismatch_parameters": ["mask_ratio", "hole_diameter_max", "mask_shape", "boundary_dilation", "noise_level"],
+  "mismatch_parameters": [
+    "mask_ratio",
+    "hole_diameter_max",
+    "mask_shape",
+    "boundary_dilation",
+    "noise_level"
+  ],
   "error_metric": "PSNR_dB",
   "error_metric_secondary": "SSIM",
   "error_metric_tertiary": "LPIPS",
-
   "spec_range": {
     "center_spec": {
       "problem_class": "freeform_inpainting",
       "forward_operator": "binary_mask",
       "input_format": "measurement_plus_mask",
-      "omega": {"H": 512, "W": 512, "mask_ratio": 0.25, "hole_diameter_max": 64, "mask_shape": "freeform", "boundary_dilation": 0, "noise_level": 0.0},
+      "omega": {
+        "H": 512,
+        "W": 512,
+        "mask_ratio": 0.25,
+        "hole_diameter_max": 64,
+        "mask_shape": "freeform",
+        "boundary_dilation": 0,
+        "noise_level": 0.0
+      },
       "epsilon_fn_center": "27.0 dB PSNR"
     },
-    "allowed_forward_operators": ["binary_mask", "soft_mask"],
-    "allowed_problem_classes": ["freeform_inpainting", "rectangular_inpainting", "object_removal"],
-    "allowed_omega_dimensions": ["H", "W", "mask_ratio", "hole_diameter_max", "mask_shape", "boundary_dilation", "noise_level"],
+    "allowed_forward_operators": [
+      "binary_mask",
+      "soft_mask"
+    ],
+    "allowed_problem_classes": [
+      "freeform_inpainting",
+      "rectangular_inpainting",
+      "object_removal"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "mask_ratio",
+      "hole_diameter_max",
+      "mask_shape",
+      "boundary_dilation",
+      "noise_level"
+    ],
     "omega_bounds": {
-      "H": [128, 2048], "W": [128, 2048],
-      "mask_ratio": [0.05, 0.75], "hole_diameter_max": [8, 512],
-      "boundary_dilation": [0, 8], "noise_level": [0.0, 0.05]
+      "H": [
+        128,
+        2048
+      ],
+      "W": [
+        128,
+        2048
+      ],
+      "mask_ratio": [
+        0.05,
+        0.75
+      ],
+      "hole_diameter_max": [
+        8,
+        512
+      ],
+      "boundary_dilation": [
+        0,
+        8
+      ],
+      "noise_level": [
+        0.0,
+        0.05
+      ]
     },
-    "epsilon_bounds": {"psnr_db": [15.0, 40.0]}
+    "epsilon_bounds": {
+      "psnr_db": [
+        15.0,
+        40.0
+      ]
+    }
   },
-
-  "p1_p10_tests": ["PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS"],
-  "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
-  "ipfs_cid": null
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": false,
+    "coupling_count_n_c": 0,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

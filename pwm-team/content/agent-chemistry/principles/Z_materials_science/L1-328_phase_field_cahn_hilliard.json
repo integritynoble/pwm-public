@@ -6,6 +6,9 @@
   "domain": "Materials Science",
   "sub_domain": "Conserved order parameter dynamics",
   "source_file": "Z_materials_science/328_phase_field_cahn_hilliard.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
   "E": {
     "description": "Cahn-Hilliard: gradient flow with conserved composition phi; dphi/dt = div(M * grad(mu)) where mu = -kappa*Laplacian(phi) + df/dphi.",
@@ -152,5 +155,12 @@
     "PASS",
     "PASS"
   ],
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": false,
+    "coupling_count_n_c": 0,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

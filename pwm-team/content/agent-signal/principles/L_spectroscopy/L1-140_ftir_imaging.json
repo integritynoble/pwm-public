@@ -2,12 +2,14 @@
   "artifact_id": "L1-140",
   "layer": "L1",
   "principle_number": "140",
-  "title": "FTIR Imaging — Fourier-Transform Infrared Hyperspectral Microscopy",
+  "title": "FTIR Imaging \u2014 Fourier-Transform Infrared Hyperspectral Microscopy",
   "domain": "Spectroscopy",
   "sub_domain": "Mid-IR vibrational absorption hyperspectral imaging",
   "source_file": "L_spectroscopy/140_ftir_imaging.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence boilerplate. Physics grounded in Griffiths-DeHaseth 2007 FTIR textbook; Levin-Bhargava 2005 FPA FTIR review; Bassan-Byrne-Bonnier-Gardner-Dorling 2013 baseline correction; Mayerich et al. 2015 microscope.",
-
   "E": {
     "description": "A broadband IR source is passed through a Michelson interferometer; the OPD-varying interferogram modulates light through the sample; a FPA detector records interferograms per pixel, FFT yields absorption spectrum A(r, nu) = -log10(I/I_0). Beer-Lambert linear absorbance of K species with known molar absorption coefficients epsilon_k(nu).",
     "forward_model": "A(r, nu) = sum_k epsilon_k(nu) * c_k(r) * l + scatter(r, nu) + baseline(r, nu) + n(r, nu)",
@@ -22,15 +24,20 @@
       "Detector nonlinearity and baseline drift"
     ]
   },
-
   "G": {
     "dag": "L.modulate.interferometer -> L.absorb.beerlambert -> int.spectral",
-    "vertices": ["L.modulate.interferometer", "L.absorb.beerlambert", "int.spectral"],
-    "arcs": ["L.modulate.interferometer -> L.absorb.beerlambert", "L.absorb.beerlambert -> int.spectral"],
+    "vertices": [
+      "L.modulate.interferometer",
+      "L.absorb.beerlambert",
+      "int.spectral"
+    ],
+    "arcs": [
+      "L.modulate.interferometer -> L.absorb.beerlambert",
+      "L.absorb.beerlambert -> int.spectral"
+    ],
     "L_DAG": 2.7,
     "n_c": 0
   },
-
   "W": {
     "existence": true,
     "uniqueness": "unique under Beer-Lambert linearity when c_k * l small",
@@ -40,14 +47,12 @@
     "condition_number_mismatched": 400,
     "regime": "Linear Beer-Lambert inverse problem; conditioning depends on spectral-overlap of K species. Mismatch: Mie scattering induces resonant distortions (Kramers-Kronig-like baseline); water vapor spikes."
   },
-
   "C": {
     "solver_class": "CLS, PLS, ME-EMSC (extended-multiplicative-scatter-correction), RMieS (resonant-Mie), MCR-ALS, learned (IR-UNet, FTIR-classifier)",
     "convergence_rate_q": 2.0,
     "error_bound": "Concentration NMSE bounded by sigma_n^2 / (c^2 * N_nu * SNR_FTIR); scattering adds systematic bias",
     "complexity": "CLS O(H*W*K*N_nu); RMieS O(H*W*iter*N_nu^2) for reference-spectrum update"
   },
-
   "physics_fingerprint": {
     "carrier": "photon",
     "sensing_mechanism": "ir_absorption_interferometric",
@@ -55,38 +60,129 @@
     "problem_class": "linear_inverse_absorption",
     "noise_model": "gaussian",
     "solution_space": "concentration_map_hyperspectral",
-    "primitives": ["L.modulate.interferometer", "L.absorb.beerlambert", "int.spectral"]
+    "primitives": [
+      "L.modulate.interferometer",
+      "L.absorb.beerlambert",
+      "int.spectral"
+    ]
   },
-
   "difficulty_delta": 3,
   "difficulty_tier": "standard",
-
-  "mismatch_parameters": ["mie_scattering", "baseline_drift", "water_vapor_spikes", "detector_nonlinearity", "pure_component_uncertainty"],
+  "mismatch_parameters": [
+    "mie_scattering",
+    "baseline_drift",
+    "water_vapor_spikes",
+    "detector_nonlinearity",
+    "pure_component_uncertainty"
+  ],
   "error_metric": "concentration_NMSE",
   "error_metric_secondary": "classification_accuracy",
   "error_metric_tertiary": "SNR_dB",
-
   "spec_range": {
     "center_spec": {
       "problem_class": "ftir_hyperspectral_unmix",
       "forward_operator": "beerlambert_spectrum",
       "input_format": "absorbance_cube_plus_library",
-      "omega": {"H": 128, "W": 128, "N_nu": 1000, "delta_nu_cm1": 8, "K": 5, "mie_scattering": 0.0, "baseline_drift": 0.05},
+      "omega": {
+        "H": 128,
+        "W": 128,
+        "N_nu": 1000,
+        "delta_nu_cm1": 8,
+        "K": 5,
+        "mie_scattering": 0.0,
+        "baseline_drift": 0.05
+      },
       "epsilon_fn_center": "NMSE 5e-3"
     },
-    "allowed_forward_operators": ["beerlambert_spectrum", "rmies_forward"],
-    "allowed_problem_classes": ["ftir_hyperspectral_unmix", "ftir_classification", "blind_ftir_demix"],
-    "allowed_omega_dimensions": ["H", "W", "N_nu", "delta_nu_cm1", "K", "mie_scattering", "baseline_drift", "water_vapor_spikes", "pure_component_uncertainty"],
+    "allowed_forward_operators": [
+      "beerlambert_spectrum",
+      "rmies_forward"
+    ],
+    "allowed_problem_classes": [
+      "ftir_hyperspectral_unmix",
+      "ftir_classification",
+      "blind_ftir_demix"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "N_nu",
+      "delta_nu_cm1",
+      "K",
+      "mie_scattering",
+      "baseline_drift",
+      "water_vapor_spikes",
+      "pure_component_uncertainty"
+    ],
     "omega_bounds": {
-      "H": [32, 1024], "W": [32, 1024], "N_nu": [128, 4096],
-      "delta_nu_cm1": [2, 32], "K": [1, 20],
-      "mie_scattering": [0.0, 0.5], "baseline_drift": [0.0, 0.3],
-      "water_vapor_spikes": [0.0, 0.2], "pure_component_uncertainty": [0.0, 0.3]
+      "H": [
+        32,
+        1024
+      ],
+      "W": [
+        32,
+        1024
+      ],
+      "N_nu": [
+        128,
+        4096
+      ],
+      "delta_nu_cm1": [
+        2,
+        32
+      ],
+      "K": [
+        1,
+        20
+      ],
+      "mie_scattering": [
+        0.0,
+        0.5
+      ],
+      "baseline_drift": [
+        0.0,
+        0.3
+      ],
+      "water_vapor_spikes": [
+        0.0,
+        0.2
+      ],
+      "pure_component_uncertainty": [
+        0.0,
+        0.3
+      ]
     },
-    "epsilon_bounds": {"nmse": [1e-4, 1e-1]}
+    "epsilon_bounds": {
+      "nmse": [
+        0.0001,
+        0.1
+      ]
+    }
   },
-
-  "p1_p10_tests": ["PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS"],
-  "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
-  "ipfs_cid": null
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": false,
+    "coupling_count_n_c": 0,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

@@ -6,6 +6,9 @@
   "domain": "Multimodal Fusion",
   "sub_domain": "Fluorescence + TEM/SEM on the same sample",
   "source_file": "O_multimodal_fusion/161_clem.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
   "E": {
     "description": "Correlative Light-Electron Microscopy (CLEM): correlative light electron produces the measurement through a 4-node primitive DAG L.fluorescence_imaging -> L.em_imaging -> L.multi_scale_registration -> int.spatial, with spatially-projected accumulation and photon-shot-noise-limited (Poisson counting). Recovery is posed as a non-convex inverse problem that inverts the forward operator to estimate the scene-side 2D fluorescence plus em. Difficulty tier delta=5 with effective condition number kappa_eff~18; calibration-level mismatch (scale_mismatch, sample_preparation_artifact, registration_error) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
@@ -183,5 +186,12 @@
     "PASS",
     "PASS"
   ],
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": false,
+    "coupling_count_n_c": 0,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

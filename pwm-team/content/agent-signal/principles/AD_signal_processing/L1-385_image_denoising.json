@@ -6,8 +6,10 @@
   "domain": "Signal Processing",
   "sub_domain": "Pixelwise noise removal",
   "source_file": "AD_signal_processing/385_image_denoising.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence boilerplate. Physics below is grounded in Rudin-Osher-Fatemi (1992) TV denoising; Dabov et al. 2007 BM3D; Zhang et al. 2017 DnCNN; Krull et al. 2019 Noise2Void.",
-
   "E": {
     "description": "A clean image x is corrupted by pixelwise noise n(r) whose distribution depends on the capture mode (Gaussian for low-light DSLR, Poisson for photon-shot-noise limited, Rician for MRI, Speckle for SAR/ultrasound).",
     "forward_model": "y(r) = x(r) + n(r)   OR   y(r) ~ Poisson(x(r))   (pixelwise)",
@@ -20,15 +22,15 @@
       "Sensor gain, read noise, dark current"
     ]
   },
-
   "G": {
     "dag": "int.spatial",
-    "vertices": ["int.spatial"],
+    "vertices": [
+      "int.spatial"
+    ],
     "arcs": [],
     "L_DAG": 1.0,
     "n_c": 0
   },
-
   "W": {
     "existence": true,
     "uniqueness": false,
@@ -36,16 +38,14 @@
     "condition_number_kappa": 1,
     "condition_number_effective": 1,
     "condition_number_mismatched": 3,
-    "regime": "Identity operator with additive noise — trivially well-posed in forward sense; inverse relies on prior (TV, non-local, learned). Mismatch primarily in noise-model specification."
+    "regime": "Identity operator with additive noise \u2014 trivially well-posed in forward sense; inverse relies on prior (TV, non-local, learned). Mismatch primarily in noise-model specification."
   },
-
   "C": {
     "solver_class": "TV (ROF), BM3D, NLM, Wiener, DnCNN, N2N, Noise2Void, Restormer, SwinIR",
     "convergence_rate_q": 2.0,
     "error_bound": "||x_hat - x||_2^2 <= C1 * sigma_n^2 * area + C2 * ||grad x||_1; PSNR saturates near Cramer-Rao bound for Gaussian noise",
     "complexity": "O(H*W*C) per iteration for local filters; O(H*W*C*P^2) for NLM patch-match; learned single forward"
   },
-
   "physics_fingerprint": {
     "carrier": "photon",
     "sensing_mechanism": "additive_noise",
@@ -53,36 +53,110 @@
     "problem_class": "identity_plus_noise",
     "noise_model": "gaussian_or_poisson",
     "solution_space": "2D_image",
-    "primitives": ["int.spatial"]
+    "primitives": [
+      "int.spatial"
+    ]
   },
-
   "difficulty_delta": 2,
   "difficulty_tier": "standard",
-
-  "mismatch_parameters": ["noise_type", "noise_level", "spatial_correlation", "gain_uncertainty", "mixed_signal_noise"],
+  "mismatch_parameters": [
+    "noise_type",
+    "noise_level",
+    "spatial_correlation",
+    "gain_uncertainty",
+    "mixed_signal_noise"
+  ],
   "error_metric": "PSNR_dB",
   "error_metric_secondary": "SSIM",
   "error_metric_tertiary": "LPIPS",
-
   "spec_range": {
     "center_spec": {
       "problem_class": "gaussian_denoising",
       "forward_operator": "additive_gaussian",
       "input_format": "measurement_only",
-      "omega": {"H": 256, "W": 256, "sigma_n": 25, "noise_type": "gaussian", "gain_uncertainty": 0.0},
+      "omega": {
+        "H": 256,
+        "W": 256,
+        "sigma_n": 25,
+        "noise_type": "gaussian",
+        "gain_uncertainty": 0.0
+      },
       "epsilon_fn_center": "30.0 dB PSNR"
     },
-    "allowed_forward_operators": ["additive_gaussian", "poisson", "mixed", "speckle", "rician"],
-    "allowed_problem_classes": ["gaussian_denoising", "poisson_denoising", "real_world_denoising", "blind_denoising"],
-    "allowed_omega_dimensions": ["H", "W", "sigma_n", "noise_type", "gain_uncertainty", "spatial_correlation"],
+    "allowed_forward_operators": [
+      "additive_gaussian",
+      "poisson",
+      "mixed",
+      "speckle",
+      "rician"
+    ],
+    "allowed_problem_classes": [
+      "gaussian_denoising",
+      "poisson_denoising",
+      "real_world_denoising",
+      "blind_denoising"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "sigma_n",
+      "noise_type",
+      "gain_uncertainty",
+      "spatial_correlation"
+    ],
     "omega_bounds": {
-      "H": [64, 2048], "W": [64, 2048], "sigma_n": [1, 75],
-      "gain_uncertainty": [0.0, 0.3], "spatial_correlation": [0.0, 0.5]
+      "H": [
+        64,
+        2048
+      ],
+      "W": [
+        64,
+        2048
+      ],
+      "sigma_n": [
+        1,
+        75
+      ],
+      "gain_uncertainty": [
+        0.0,
+        0.3
+      ],
+      "spatial_correlation": [
+        0.0,
+        0.5
+      ]
     },
-    "epsilon_bounds": {"psnr_db": [20.0, 45.0]}
+    "epsilon_bounds": {
+      "psnr_db": [
+        20.0,
+        45.0
+      ]
+    }
   },
-
-  "p1_p10_tests": ["PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS"],
-  "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
-  "ipfs_cid": null
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": false,
+    "coupling_count_n_c": 0,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

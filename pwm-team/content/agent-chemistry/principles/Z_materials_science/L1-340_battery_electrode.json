@@ -6,6 +6,9 @@
   "domain": "Materials Science",
   "sub_domain": "Porous-electrode Li-ion transport",
   "source_file": "Z_materials_science/340_battery_electrode.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
   "E": {
     "description": "Pseudo-2D Newman-Doyle-Fuller model: porous-electrode transport + solid-diffusion in particles + Butler-Volmer intercalation; cell voltage V_cell(t, I).",
@@ -153,5 +156,12 @@
     "PASS",
     "PASS"
   ],
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": false,
+    "coupling_count_n_c": 0,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

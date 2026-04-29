@@ -6,8 +6,10 @@
   "domain": "Signal Processing",
   "sub_domain": "Sparse linear inverse under RIP measurement",
   "source_file": "AD_signal_processing/386_compressed_sensing.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence boilerplate. Physics grounded in Donoho 2006 / Candes-Tao 2006 CS foundations; Tropp-Gilbert 2007 OMP; Daubechies et al. 2004 ISTA/FISTA; Metzler-Maleki-Baraniuk 2016 LDAMP.",
-
   "E": {
     "description": "A sparse (or compressible in some basis Psi) signal x is measured via a sub-sampling sensing matrix A in R^{M x N} with M << N; the RIP condition on A allows exact recovery of k-sparse x with overwhelming probability when M = O(k log(N/k)).",
     "forward_model": "y = A * x + n;   A in R^{M x N}, M/N in [0.1, 0.8]",
@@ -21,15 +23,18 @@
       "Noise std sigma_n"
     ]
   },
-
   "G": {
     "dag": "L.project.random -> int.spatial",
-    "vertices": ["L.project.random", "int.spatial"],
-    "arcs": ["L.project.random -> int.spatial"],
+    "vertices": [
+      "L.project.random",
+      "int.spatial"
+    ],
+    "arcs": [
+      "L.project.random -> int.spatial"
+    ],
     "L_DAG": 2.3,
     "n_c": 0
   },
-
   "W": {
     "existence": true,
     "uniqueness": "with RIP(2k, delta < sqrt(2) - 1)",
@@ -39,14 +44,12 @@
     "condition_number_mismatched": 500,
     "regime": "Well-posed under RIP (Candes-Tao 2006); kappa = (1+delta_2k)/(1-delta_2k). Failure when measurement_ratio < 2*k/N * log(N/k). Mismatch parameters: sparsity_overestimation, non-exact-sparsity (compressible)."
   },
-
   "C": {
     "solver_class": "L1-min (LASSO, BP, ISTA/FISTA), greedy (OMP, CoSaMP, SP), AMP, learned (LDAMP, LISTA, ISTA-Net+)",
     "convergence_rate_q": 2.0,
     "error_bound": "||x_hat - x||_2 <= C1 * sigma_n * sqrt(k*log(N)/M) + C2 * ||x - x_k||_1 / sqrt(k); tight for random Gaussian A",
     "complexity": "OMP: O(M*N*k); LASSO/FISTA: O(M*N*iter); AMP: O(M*N*iter) with fastest convergence"
   },
-
   "physics_fingerprint": {
     "carrier": "electromagnetic",
     "sensing_mechanism": "random_projection",
@@ -54,37 +57,115 @@
     "problem_class": "sparse_linear_inverse",
     "noise_model": "gaussian",
     "solution_space": "sparse_vector",
-    "primitives": ["L.project.random", "int.spatial"]
+    "primitives": [
+      "L.project.random",
+      "int.spatial"
+    ]
   },
-
   "difficulty_delta": 3,
   "difficulty_tier": "standard",
-
-  "mismatch_parameters": ["measurement_ratio", "sparsity_level", "basis_mismatch", "coherence", "noise_level"],
+  "mismatch_parameters": [
+    "measurement_ratio",
+    "sparsity_level",
+    "basis_mismatch",
+    "coherence",
+    "noise_level"
+  ],
   "error_metric": "NMSE",
   "error_metric_secondary": "support_recovery_rate",
   "error_metric_tertiary": "SNR_dB",
-
   "spec_range": {
     "center_spec": {
       "problem_class": "gaussian_cs",
       "forward_operator": "gaussian_random_matrix",
       "input_format": "measurement_plus_matrix",
-      "omega": {"N": 1024, "M": 256, "k": 40, "sigma_n": 0.01, "basis": "identity", "coherence": 0.05},
+      "omega": {
+        "N": 1024,
+        "M": 256,
+        "k": 40,
+        "sigma_n": 0.01,
+        "basis": "identity",
+        "coherence": 0.05
+      },
       "epsilon_fn_center": "NMSE 1e-3"
     },
-    "allowed_forward_operators": ["gaussian_random_matrix", "partial_dft", "bernoulli", "sub_gaussian"],
-    "allowed_problem_classes": ["gaussian_cs", "structured_cs", "block_sparse_cs"],
-    "allowed_omega_dimensions": ["N", "M", "k", "sigma_n", "basis", "coherence", "basis_mismatch"],
+    "allowed_forward_operators": [
+      "gaussian_random_matrix",
+      "partial_dft",
+      "bernoulli",
+      "sub_gaussian"
+    ],
+    "allowed_problem_classes": [
+      "gaussian_cs",
+      "structured_cs",
+      "block_sparse_cs"
+    ],
+    "allowed_omega_dimensions": [
+      "N",
+      "M",
+      "k",
+      "sigma_n",
+      "basis",
+      "coherence",
+      "basis_mismatch"
+    ],
     "omega_bounds": {
-      "N": [256, 16384], "M": [32, 12288],
-      "k": [5, 2000], "sigma_n": [0.001, 0.1],
-      "coherence": [0.01, 0.5], "basis_mismatch": [0.0, 0.3]
+      "N": [
+        256,
+        16384
+      ],
+      "M": [
+        32,
+        12288
+      ],
+      "k": [
+        5,
+        2000
+      ],
+      "sigma_n": [
+        0.001,
+        0.1
+      ],
+      "coherence": [
+        0.01,
+        0.5
+      ],
+      "basis_mismatch": [
+        0.0,
+        0.3
+      ]
     },
-    "epsilon_bounds": {"nmse": [1e-5, 1e-1]}
+    "epsilon_bounds": {
+      "nmse": [
+        1e-05,
+        0.1
+      ]
+    }
   },
-
-  "p1_p10_tests": ["PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS"],
-  "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
-  "ipfs_cid": null
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": false,
+    "coupling_count_n_c": 0,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

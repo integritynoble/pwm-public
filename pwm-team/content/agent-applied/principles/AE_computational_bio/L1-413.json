@@ -6,6 +6,9 @@
   "domain": "Computational Biology",
   "sub_domain": "Computational genomics",
   "source_file": "AE_computational_bio/413_hmm_alignment.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
     "description": "HMM Sequence Alignment and Profile Inference: Profile HMM: learn emission and transition probabilities from multiple sequence alignment; find optimal alignment via Viterbi. The forward operator produces the measurement through a 3-node primitive DAG (M.hmm.profile_model\u2026); recovery is posed as a statistical_inverse problem. Difficulty tier delta=5 with effective condition number kappa_eff~500; sequence_divergence_too_high, domain_boundaries_unknown set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
@@ -138,5 +141,12 @@
     "PASS",
     "PASS"
   ],
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": true,
+    "coupling_count_n_c": 1,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

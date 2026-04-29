@@ -6,6 +6,9 @@
   "domain": "Environmental Science",
   "sub_domain": "Hydrology",
   "source_file": "AF_environmental_sci/421_river_hydraulics.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
     "description": "River Hydraulics Shallow Water Inversion: River hydraulics inversion: infer Manning's roughness and bathymetry from water level and discharge observations. The forward operator produces the measurement through a 3-node primitive DAG (M.swe.saint_venant\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~80; bank_overflow_uncertainty, sediment_transport_coupling set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
@@ -138,5 +141,12 @@
     "PASS",
     "PASS"
   ],
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": false,
+    "coupling_count_n_c": 0,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

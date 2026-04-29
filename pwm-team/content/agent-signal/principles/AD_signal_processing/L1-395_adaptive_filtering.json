@@ -6,8 +6,10 @@
   "domain": "Signal Processing",
   "sub_domain": "Online stochastic-gradient / recursive-least-squares",
   "source_file": "AD_signal_processing/395_adaptive_filtering.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence boilerplate. Physics grounded in Widrow-Hoff 1960 LMS; Haykin 2013 Adaptive Filter Theory; Sayed 2008 Adaptive Filters book; Diniz 2020 review.",
-
   "E": {
     "description": "A desired signal d[n] is modeled as the output of an unknown time-varying linear filter h*[n] applied to a known reference input x[n], plus measurement noise; the adaptive filter iteratively updates an estimate h_hat[n] so that the error e[n] = d[n] - h_hat[n]^T x[n] is minimized in expectation.",
     "forward_model": "d[n] = h*[n]^T * x[n] + v[n];  e[n] = d[n] - h_hat[n]^T * x[n]",
@@ -21,15 +23,18 @@
       "Noise variance sigma_v^2"
     ]
   },
-
   "G": {
     "dag": "L.project.reference -> int.temporal",
-    "vertices": ["L.project.reference", "int.temporal"],
-    "arcs": ["L.project.reference -> int.temporal"],
+    "vertices": [
+      "L.project.reference",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.project.reference -> int.temporal"
+    ],
     "L_DAG": 2.3,
     "n_c": 0
   },
-
   "W": {
     "existence": true,
     "uniqueness": "in expectation when x[n] is persistently exciting",
@@ -39,14 +44,12 @@
     "condition_number_mismatched": 300,
     "regime": "LMS converges in mean for 0 < mu < 2/lambda_max; RLS converges in one step for stationary deterministic input; tracking error scales with non-stationarity rate."
   },
-
   "C": {
     "solver_class": "LMS, NLMS, Sign-LMS, Affine-Projection (AP), RLS, Fast-RLS, Kalman-filter-based, learned (Meta-LMS)",
     "convergence_rate_q": 1.0,
     "error_bound": "LMS steady-state MSE = sigma_v^2 + mu*tr(R_x)*sigma_v^2 / 2 (excess); RLS steady-state MSE = (1-lambda)*L*sigma_v^2",
     "complexity": "LMS: O(L) per sample; NLMS: O(L); RLS: O(L^2); Fast-RLS: O(L)"
   },
-
   "physics_fingerprint": {
     "carrier": "electromagnetic",
     "sensing_mechanism": "reference_probe_online",
@@ -54,38 +57,118 @@
     "problem_class": "online_linear_regression",
     "noise_model": "gaussian",
     "solution_space": "time_varying_filter",
-    "primitives": ["L.project.reference", "int.temporal"]
+    "primitives": [
+      "L.project.reference",
+      "int.temporal"
+    ]
   },
-
   "difficulty_delta": 2,
   "difficulty_tier": "standard",
-
-  "mismatch_parameters": ["non_stationarity_rate", "input_eigenspread", "noise_level", "step_size_miscal", "impulsive_noise_fraction"],
+  "mismatch_parameters": [
+    "non_stationarity_rate",
+    "input_eigenspread",
+    "noise_level",
+    "step_size_miscal",
+    "impulsive_noise_fraction"
+  ],
   "error_metric": "tracking_MSE_dB",
   "error_metric_secondary": "convergence_time_samples",
   "error_metric_tertiary": "misadjustment_ratio",
-
   "spec_range": {
     "center_spec": {
       "problem_class": "lms_system_identification",
       "forward_operator": "fir_filter_online",
       "input_format": "reference_plus_desired",
-      "omega": {"L": 32, "mu": 0.01, "eigenspread": 10, "non_stationarity_rate": 0.0, "sigma_v": 0.01},
+      "omega": {
+        "L": 32,
+        "mu": 0.01,
+        "eigenspread": 10,
+        "non_stationarity_rate": 0.0,
+        "sigma_v": 0.01
+      },
       "epsilon_fn_center": "-30 dB tracking MSE"
     },
-    "allowed_forward_operators": ["fir_filter_online", "iir_filter_online", "nonlinear_volterra"],
-    "allowed_problem_classes": ["lms_system_identification", "channel_equalization", "echo_cancellation", "active_noise_control"],
-    "allowed_omega_dimensions": ["L", "mu", "eigenspread", "non_stationarity_rate", "sigma_v", "step_size_miscal", "impulsive_noise_fraction"],
+    "allowed_forward_operators": [
+      "fir_filter_online",
+      "iir_filter_online",
+      "nonlinear_volterra"
+    ],
+    "allowed_problem_classes": [
+      "lms_system_identification",
+      "channel_equalization",
+      "echo_cancellation",
+      "active_noise_control"
+    ],
+    "allowed_omega_dimensions": [
+      "L",
+      "mu",
+      "eigenspread",
+      "non_stationarity_rate",
+      "sigma_v",
+      "step_size_miscal",
+      "impulsive_noise_fraction"
+    ],
     "omega_bounds": {
-      "L": [4, 4096], "mu": [1e-5, 1.0],
-      "eigenspread": [1, 1000], "non_stationarity_rate": [0.0, 0.1],
-      "sigma_v": [1e-4, 1.0], "step_size_miscal": [0.0, 5.0],
-      "impulsive_noise_fraction": [0.0, 0.1]
+      "L": [
+        4,
+        4096
+      ],
+      "mu": [
+        1e-05,
+        1.0
+      ],
+      "eigenspread": [
+        1,
+        1000
+      ],
+      "non_stationarity_rate": [
+        0.0,
+        0.1
+      ],
+      "sigma_v": [
+        0.0001,
+        1.0
+      ],
+      "step_size_miscal": [
+        0.0,
+        5.0
+      ],
+      "impulsive_noise_fraction": [
+        0.0,
+        0.1
+      ]
     },
-    "epsilon_bounds": {"mse_db": [-60, 10]}
+    "epsilon_bounds": {
+      "mse_db": [
+        -60,
+        10
+      ]
+    }
   },
-
-  "p1_p10_tests": ["PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS"],
-  "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
-  "ipfs_cid": null
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": false,
+    "coupling_count_n_c": 0,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

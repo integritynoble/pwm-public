@@ -6,6 +6,9 @@
   "domain": "Medical Imaging",
   "sub_domain": "Microbubble-contrast harmonic ultrasound",
   "source_file": "C_medical_imaging/062_ceus.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical medical-imaging literature for this principle.",
   "E": {
     "description": "Contrast-Enhanced Ultrasound (CEUS): contrast enhanced ultrasound produces the measurement through a 4-node primitive DAG L.emit.acoustic_pulse -> L.microbubble_oscillate -> L.harmonic_separate -> int.temporal, with time-integrated exposure and additive Gaussian thermal/electronic noise. Recovery is posed as a non-convex inverse problem that inverts the forward operator to estimate the scene-side 2D perfusion map. Difficulty tier delta=3 with effective condition number kappa_eff~11; calibration-level mismatch (bubble_destruction, nonlinear_tissue_harmonics, flow_artifacts) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
@@ -180,5 +183,12 @@
     "PASS",
     "PASS"
   ],
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": false,
+    "coupling_count_n_c": 0,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

@@ -6,6 +6,9 @@
   "domain": "Plasma Physics",
   "sub_domain": "Plasma-wall sheath region",
   "source_file": "AA_plasma_physics/350_plasma_sheath.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
     "description": "Plasma Sheath \u2014 Debye-scale boundary layer forward model.",
@@ -150,5 +153,12 @@
     "PASS",
     "PASS"
   ],
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": false,
+    "coupling_count_n_c": 0,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

@@ -6,6 +6,9 @@
   "domain": "Astrophysics",
   "sub_domain": "Large-scale structure",
   "source_file": "AC_astrophysics/379_bao.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
     "description": "Baryon Acoustic Oscillation (BAO) Fitting: BAO analysis: measure acoustic scale in galaxy clustering to constrain Hubble parameter and angular diameter distance. The forward operator produces the measurement through a 3-node primitive DAG (F.fourier.power_spectrum\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=5 with effective condition number kappa_eff~30; galaxy_bias_nonlinearity, RSD_model_error set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
@@ -139,5 +142,12 @@
     "PASS",
     "PASS"
   ],
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": false,
+    "coupling_count_n_c": 0,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

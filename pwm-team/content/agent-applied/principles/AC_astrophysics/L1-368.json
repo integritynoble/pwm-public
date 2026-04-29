@@ -6,6 +6,9 @@
   "domain": "Astrophysics",
   "sub_domain": "Gravitational lensing",
   "source_file": "AC_astrophysics/368_strong_lensing.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
     "description": "Strong Gravitational Lensing Inversion: Strong lensing inversion: reconstruct lens mass distribution and source surface brightness from multiply-imaged arcs. The forward operator produces the measurement through a 3-node primitive DAG (M.lens.deflection\u2026); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=10 with effective condition number kappa_eff~5000; PSF_mismatch, line_of_sight_contamination set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
@@ -145,5 +148,12 @@
     "PASS",
     "PASS"
   ],
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": true,
+    "coupling_count_n_c": 2,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

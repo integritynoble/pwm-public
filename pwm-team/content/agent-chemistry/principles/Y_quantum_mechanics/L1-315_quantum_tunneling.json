@@ -6,6 +6,9 @@
   "domain": "Quantum Mechanics",
   "sub_domain": "WKB and transfer matrix",
   "source_file": "Y_quantum_mechanics/315_quantum_tunneling.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
   "E": {
     "description": "Quantum transmission through arbitrary barrier: WKB T ~ exp(-2*integral sqrt(2m(V-E))/hbar dx); transfer matrix for multiple layers.",
@@ -135,5 +138,12 @@
     "PASS",
     "PASS"
   ],
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": false,
+    "coupling_count_n_c": 0,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

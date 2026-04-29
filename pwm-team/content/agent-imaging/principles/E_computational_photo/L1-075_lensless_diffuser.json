@@ -6,8 +6,10 @@
   "domain": "Computational Photography",
   "sub_domain": "Flat-form-factor lensless imaging",
   "source_file": "E_computational_photo/075_lensless_diffuser.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical DiffuserCam literature (Antipa, Waller 2018) and lensless-imaging references.",
-
   "E": {
     "description": "DiffuserCam replaces the lens with a random phase mask (diffuser) that produces a spatially-varying caustic PSF. Each scene point maps to a large, high-contrast caustic pattern on the sensor; under shift-invariance the full sensor image is the convolution of the scene with the calibrated diffuser PSF, with sensor crop C applied at the boundary.",
     "forward_model": "y(u,v) = C * (x(u,v) conv psf_diffuser(u,v)) + n(u,v)",
@@ -21,10 +23,13 @@
       "sensor gain, quantum efficiency, read noise"
     ]
   },
-
   "G": {
     "dag": "K.psf.caustic -> M.sensor_crop -> int.temporal",
-    "vertices": ["K.psf.caustic", "M.sensor_crop", "int.temporal"],
+    "vertices": [
+      "K.psf.caustic",
+      "M.sensor_crop",
+      "int.temporal"
+    ],
     "arcs": [
       "K.psf.caustic -> M.sensor_crop",
       "M.sensor_crop -> int.temporal"
@@ -32,7 +37,6 @@
     "L_DAG": 2.6,
     "n_c": 0
   },
-
   "W": {
     "existence": true,
     "uniqueness": true,
@@ -41,14 +45,12 @@
     "condition_number_effective": 25,
     "regime": "Deconvolution with a wideband random PSF is well-conditioned over the non-zero OTF support (caustics have rich high-frequency content). Cropping by sensor extent introduces boundary ill-posedness (recoverable via TV + boundary-extension priors). Mismatch between calibrated PSF and actual PSF (temperature drift, mask rotation) dominates stability."
   },
-
   "C": {
     "solver_class": "FISTA-TV, ADMM with Anderson acceleration, Le-ADMM-U (learned unrolling), Plug-and-Play with deep denoisers",
     "convergence_rate_q": 2.0,
     "error_bound": "||x_hat - x||_2 <= C1 * sigma / sqrt(photon_count) + C2 * ||psf_delta||_F * ||x||_1; boundary artifact term ~ sqrt(border_extent / H)",
     "complexity": "O(H' * W' * log(H'*W')) per iteration (FFT-based convolution)"
   },
-
   "physics_fingerprint": {
     "carrier": "photon",
     "sensing_mechanism": "diffuser_caustic_imaging",
@@ -56,37 +58,128 @@
     "problem_class": "linear_inverse",
     "noise_model": "gaussian",
     "solution_space": "2D_spatial",
-    "primitives": ["K.psf.caustic", "M.sensor_crop", "int.temporal"]
+    "primitives": [
+      "K.psf.caustic",
+      "M.sensor_crop",
+      "int.temporal"
+    ]
   },
-
   "difficulty_delta": 3,
   "difficulty_tier": "standard",
-
-  "mismatch_parameters": ["psf_drift", "mask_rotation", "chromatic_aberration", "dark_offset"],
+  "mismatch_parameters": [
+    "psf_drift",
+    "mask_rotation",
+    "chromatic_aberration",
+    "dark_offset"
+  ],
   "error_metric": "PSNR_dB",
   "error_metric_secondary": "SSIM",
-
   "spec_range": {
     "center_spec": {
       "problem_class": "lensless_deconvolution",
       "forward_operator": "diffuser_psf_convolution",
       "input_format": "raw_sensor_image_plus_calibrated_psf",
-      "omega": {"H": 512, "W": 512, "psf_H": 256, "psf_W": 256, "photon_count": 1000, "psf_drift": 0.0, "mask_rotation": 0.0, "chromatic_aberration": 0.0},
+      "omega": {
+        "H": 512,
+        "W": 512,
+        "psf_H": 256,
+        "psf_W": 256,
+        "photon_count": 1000,
+        "psf_drift": 0.0,
+        "mask_rotation": 0.0,
+        "chromatic_aberration": 0.0
+      },
       "epsilon_fn_center": "26.0 dB PSNR"
     },
-    "allowed_forward_operators": ["diffuser_psf_convolution", "pbar_psf", "mla_lenslet_psf"],
-    "allowed_problem_classes": ["lensless_deconvolution", "flat_cam_recovery"],
-    "allowed_omega_dimensions": ["H", "W", "psf_H", "psf_W", "photon_count", "psf_drift", "mask_rotation", "chromatic_aberration", "dark_offset"],
+    "allowed_forward_operators": [
+      "diffuser_psf_convolution",
+      "pbar_psf",
+      "mla_lenslet_psf"
+    ],
+    "allowed_problem_classes": [
+      "lensless_deconvolution",
+      "flat_cam_recovery"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "psf_H",
+      "psf_W",
+      "photon_count",
+      "psf_drift",
+      "mask_rotation",
+      "chromatic_aberration",
+      "dark_offset"
+    ],
     "omega_bounds": {
-      "H": [128, 2048], "W": [128, 2048], "psf_H": [64, 512], "psf_W": [64, 512],
-      "photon_count": [10, 10000], "psf_drift": [0.0, 0.1],
-      "mask_rotation": [0.0, 0.02], "chromatic_aberration": [0.0, 0.05],
-      "dark_offset": [0.0, 0.02]
+      "H": [
+        128,
+        2048
+      ],
+      "W": [
+        128,
+        2048
+      ],
+      "psf_H": [
+        64,
+        512
+      ],
+      "psf_W": [
+        64,
+        512
+      ],
+      "photon_count": [
+        10,
+        10000
+      ],
+      "psf_drift": [
+        0.0,
+        0.1
+      ],
+      "mask_rotation": [
+        0.0,
+        0.02
+      ],
+      "chromatic_aberration": [
+        0.0,
+        0.05
+      ],
+      "dark_offset": [
+        0.0,
+        0.02
+      ]
     },
-    "epsilon_bounds": {"psnr_db": [16.0, 38.0]}
+    "epsilon_bounds": {
+      "psnr_db": [
+        16.0,
+        38.0
+      ]
+    }
   },
-
-  "p1_p10_tests": ["PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS"],
-  "s1_s4_gates": ["PASS", "PASS", "PASS", "PASS"],
-  "ipfs_cid": null
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": false,
+    "coupling_count_n_c": 0,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

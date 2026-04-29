@@ -2,12 +2,14 @@
   "artifact_id": "L1-082",
   "layer": "L1",
   "principle_number": "082",
-  "title": "Neural Radiance Fields (NeRF) — implicit volumetric scene representation",
+  "title": "Neural Radiance Fields (NeRF) \u2014 implicit volumetric scene representation",
   "domain": "Computational Optics",
   "sub_domain": "Implicit 3D scene reconstruction",
   "source_file": "F_computational_optics/082_nerf.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in Mildenhall et al. 2020 NeRF and canonical volume-rendering literature (Kajiya 1986, Max 1995).",
-
   "E": {
     "description": "NeRF represents a scene as an MLP F_theta: (x, y, z, theta, phi) -> (sigma, c) mapping a 3D position and view direction to volumetric density and RGB color. Rendering a pixel casts a ray and numerically integrates the classical volume-rendering equation along quadrature samples; training fits theta by back-propagating photometric error on K posed reference images.",
     "forward_model": "C_hat(r) = sum_{i=1}^{N_samp} T_i * (1 - exp(-sigma_i * delta_i)) * c_i   with   T_i = exp(-sum_{j<i} sigma_j * delta_j)",
@@ -21,10 +23,14 @@
       "Scene bounding box and near/far planes"
     ]
   },
-
   "G": {
     "dag": "S.scan.view -> L.ray_march -> L.volume_render -> int.temporal",
-    "vertices": ["S.scan.view", "L.ray_march", "L.volume_render", "int.temporal"],
+    "vertices": [
+      "S.scan.view",
+      "L.ray_march",
+      "L.volume_render",
+      "int.temporal"
+    ],
     "arcs": [
       "S.scan.view -> L.ray_march",
       "L.ray_march -> L.volume_render",
@@ -33,7 +39,6 @@
     "L_DAG": 4.0,
     "n_c": 1
   },
-
   "W": {
     "existence": true,
     "uniqueness": false,
@@ -42,14 +47,12 @@
     "condition_number_effective": 120,
     "regime": "Strongly non-convex MLP fitting. Unique 3D scene only when K views cover the scene with sufficient baseline and pose accuracy; view-dependent effects (specularity, transparency) can be absorbed into radiance ambiguously. Pose error, lighting drift, and under-covered regions cause floaters, baked-in artifacts, and depth collapse."
   },
-
   "C": {
     "solver_class": "SGD / Adam on MLP weights with hierarchical sampling; accelerated variants (Instant-NGP hashgrid, TensoRF factorisation, Plenoxels voxel grid)",
     "convergence_rate_q": 1.5,
     "error_bound": "|C_hat - C|_L2 <= C1 * sigma_pixel + C2 * pose_error_rad + C3 * under_view_coverage + C4 * view_dependent_residual",
     "complexity": "O(N_rays * N_samp * F_theta_cost); Instant-NGP reduces F_theta_cost by ~100x via hash grid"
   },
-
   "physics_fingerprint": {
     "carrier": "photon",
     "sensing_mechanism": "multi_view_photogrammetry",
@@ -57,39 +60,143 @@
     "problem_class": "nonlinear_inverse",
     "noise_model": "gaussian",
     "solution_space": "3D_implicit_field",
-    "primitives": ["S.scan.view", "L.ray_march", "L.volume_render", "int.temporal"]
+    "primitives": [
+      "S.scan.view",
+      "L.ray_march",
+      "L.volume_render",
+      "int.temporal"
+    ]
   },
-
   "difficulty_delta": 5,
   "difficulty_tier": "challenging",
-
-  "mismatch_parameters": ["pose_error_rad", "lighting_drift", "non_lambertian", "under_view_coverage", "motion_blur_per_frame"],
+  "mismatch_parameters": [
+    "pose_error_rad",
+    "lighting_drift",
+    "non_lambertian",
+    "under_view_coverage",
+    "motion_blur_per_frame"
+  ],
   "error_metric": "PSNR_dB",
   "error_metric_secondary": "SSIM",
   "error_metric_tertiary": "LPIPS",
-
   "spec_range": {
     "center_spec": {
       "problem_class": "nerf_novel_view_synthesis",
       "forward_operator": "volume_rendering_integral",
       "input_format": "K_posed_images_plus_intrinsics",
-      "omega": {"H": 800, "W": 800, "K_views": 100, "N_samp_per_ray": 192, "scene_bbox_m": 2.0, "photon_count": 1000, "pose_error_rad": 0.0, "lighting_drift": 0.0, "non_lambertian": 0.0},
+      "omega": {
+        "H": 800,
+        "W": 800,
+        "K_views": 100,
+        "N_samp_per_ray": 192,
+        "scene_bbox_m": 2.0,
+        "photon_count": 1000,
+        "pose_error_rad": 0.0,
+        "lighting_drift": 0.0,
+        "non_lambertian": 0.0
+      },
       "epsilon_fn_center": "30.0 dB PSNR"
     },
-    "allowed_forward_operators": ["volume_rendering_integral", "surface_rendering_nerf", "sdf_volume_rendering"],
-    "allowed_problem_classes": ["nerf_novel_view_synthesis", "nerf_dynamic_scene", "nerf_relighting"],
-    "allowed_omega_dimensions": ["H", "W", "K_views", "N_samp_per_ray", "scene_bbox_m", "photon_count", "pose_error_rad", "lighting_drift", "non_lambertian", "under_view_coverage", "motion_blur_per_frame"],
+    "allowed_forward_operators": [
+      "volume_rendering_integral",
+      "surface_rendering_nerf",
+      "sdf_volume_rendering"
+    ],
+    "allowed_problem_classes": [
+      "nerf_novel_view_synthesis",
+      "nerf_dynamic_scene",
+      "nerf_relighting"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "K_views",
+      "N_samp_per_ray",
+      "scene_bbox_m",
+      "photon_count",
+      "pose_error_rad",
+      "lighting_drift",
+      "non_lambertian",
+      "under_view_coverage",
+      "motion_blur_per_frame"
+    ],
     "omega_bounds": {
-      "H": [200, 2000], "W": [200, 2000], "K_views": [10, 500],
-      "N_samp_per_ray": [32, 512], "scene_bbox_m": [0.5, 50.0],
-      "photon_count": [100, 10000], "pose_error_rad": [0.0, 0.1],
-      "lighting_drift": [0.0, 0.3], "non_lambertian": [0.0, 0.5],
-      "under_view_coverage": [0.0, 0.5], "motion_blur_per_frame": [0.0, 0.1]
+      "H": [
+        200,
+        2000
+      ],
+      "W": [
+        200,
+        2000
+      ],
+      "K_views": [
+        10,
+        500
+      ],
+      "N_samp_per_ray": [
+        32,
+        512
+      ],
+      "scene_bbox_m": [
+        0.5,
+        50.0
+      ],
+      "photon_count": [
+        100,
+        10000
+      ],
+      "pose_error_rad": [
+        0.0,
+        0.1
+      ],
+      "lighting_drift": [
+        0.0,
+        0.3
+      ],
+      "non_lambertian": [
+        0.0,
+        0.5
+      ],
+      "under_view_coverage": [
+        0.0,
+        0.5
+      ],
+      "motion_blur_per_frame": [
+        0.0,
+        0.1
+      ]
     },
-    "epsilon_bounds": {"psnr_db": [18.0, 42.0]}
+    "epsilon_bounds": {
+      "psnr_db": [
+        18.0,
+        42.0
+      ]
+    }
   },
-
-  "p1_p10_tests": ["PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS"],
-  "s1_s4_gates": ["PASS", "PASS", "PASS", "PASS"],
-  "ipfs_cid": null
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": true,
+    "coupling_count_n_c": 1,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

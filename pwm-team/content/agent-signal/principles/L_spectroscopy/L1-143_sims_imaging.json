@@ -2,12 +2,14 @@
   "artifact_id": "L1-143",
   "layer": "L1",
   "principle_number": "143",
-  "title": "SIMS — Secondary-Ion Mass Spectrometry Imaging",
+  "title": "SIMS \u2014 Secondary-Ion Mass Spectrometry Imaging",
   "domain": "Spectroscopy",
   "sub_domain": "Mass-resolved ion imaging of surfaces",
   "source_file": "L_spectroscopy/143_sims_imaging.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence boilerplate. Physics grounded in Benninghoven-Rudenauer-Werner 1987 SIMS textbook; Winograd 2005 chemical imaging with ToF-SIMS; Fletcher et al. 2011 Nat. Protoc. bio-SIMS; NanoSIMS Lechene 2006.",
-
   "E": {
     "description": "A focused primary-ion beam (Ga+, Bi_n+, C60+, Ar_n+ GCIB) sputters ions from a surface; secondary ions are extracted and mass-analyzed (ToF or magnetic sector) with high mass resolution M/dM > 5000. Image generation by rastering primary beam while counting ions per (m/z, pixel).",
     "forward_model": "y(r, m/z) = Y_eff(m/z) * c(r, m/z) * I_primary * sputter_time + n",
@@ -22,15 +24,20 @@
       "Detector dead time and ionization suppression"
     ]
   },
-
   "G": {
     "dag": "S.sputter.ion -> L.disperse.mass -> int.temporal",
-    "vertices": ["S.sputter.ion", "L.disperse.mass", "int.temporal"],
-    "arcs": ["S.sputter.ion -> L.disperse.mass", "L.disperse.mass -> int.temporal"],
+    "vertices": [
+      "S.sputter.ion",
+      "L.disperse.mass",
+      "int.temporal"
+    ],
+    "arcs": [
+      "S.sputter.ion -> L.disperse.mass",
+      "L.disperse.mass -> int.temporal"
+    ],
     "L_DAG": 2.7,
     "n_c": 0
   },
-
   "W": {
     "existence": true,
     "uniqueness": "peak ID unique for high-res ToF; quantitation requires yield correction",
@@ -40,14 +47,12 @@
     "condition_number_mismatched": 2000,
     "regime": "Linear at low primary doses (static SIMS); Dynamic SIMS erodes sample while imaging depth. Matrix ionization-yield varies 1-3 orders of magnitude across analyte environments."
   },
-
   "C": {
     "solver_class": "Peak integration, PCA / NMF decomposition, MCR-ALS, matrix-effect correction, learned (CNN-SIMS)",
     "convergence_rate_q": 2.0,
     "error_bound": "Counts-limited Poisson SNR sqrt(N); yield-correction RMSE depends on reference uncertainty",
     "complexity": "Peak integration O(H*W*N_mz); MCR-ALS O(iter*H*W*K*N_mz)"
   },
-
   "physics_fingerprint": {
     "carrier": "ion",
     "sensing_mechanism": "sputter_ionization",
@@ -55,39 +60,136 @@
     "problem_class": "linear_inverse_count",
     "noise_model": "shot_poisson",
     "solution_space": "surface_chemical_map",
-    "primitives": ["S.sputter.ion", "L.disperse.mass", "int.temporal"]
+    "primitives": [
+      "S.sputter.ion",
+      "L.disperse.mass",
+      "int.temporal"
+    ]
   },
-
   "difficulty_delta": 3,
   "difficulty_tier": "standard",
-
-  "mismatch_parameters": ["matrix_ionization_yield", "beam_drift", "dead_time_saturation", "mass_calibration_error", "depth_resolution_error"],
+  "mismatch_parameters": [
+    "matrix_ionization_yield",
+    "beam_drift",
+    "dead_time_saturation",
+    "mass_calibration_error",
+    "depth_resolution_error"
+  ],
   "error_metric": "concentration_NMSE",
   "error_metric_secondary": "spatial_resolution_nm",
   "error_metric_tertiary": "mass_accuracy_ppm",
-
   "spec_range": {
     "center_spec": {
       "problem_class": "sims_surface_mapping",
       "forward_operator": "sims_forward",
       "input_format": "ion_count_cube",
-      "omega": {"H": 256, "W": 256, "N_mz": 10000, "I_primary_nA": 0.1, "R_mass": 10000, "K": 10, "matrix_ionization_yield": 0.0},
+      "omega": {
+        "H": 256,
+        "W": 256,
+        "N_mz": 10000,
+        "I_primary_nA": 0.1,
+        "R_mass": 10000,
+        "K": 10,
+        "matrix_ionization_yield": 0.0
+      },
       "epsilon_fn_center": "NMSE 0.05"
     },
-    "allowed_forward_operators": ["sims_forward", "nanosims_forward", "gcib_sims_forward"],
-    "allowed_problem_classes": ["sims_surface_mapping", "sims_3d_depth", "sims_matrix_classification"],
-    "allowed_omega_dimensions": ["H", "W", "N_mz", "I_primary_nA", "R_mass", "K", "matrix_ionization_yield", "beam_drift", "dead_time_saturation", "mass_calibration_error", "depth_resolution_error"],
+    "allowed_forward_operators": [
+      "sims_forward",
+      "nanosims_forward",
+      "gcib_sims_forward"
+    ],
+    "allowed_problem_classes": [
+      "sims_surface_mapping",
+      "sims_3d_depth",
+      "sims_matrix_classification"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "N_mz",
+      "I_primary_nA",
+      "R_mass",
+      "K",
+      "matrix_ionization_yield",
+      "beam_drift",
+      "dead_time_saturation",
+      "mass_calibration_error",
+      "depth_resolution_error"
+    ],
     "omega_bounds": {
-      "H": [32, 2048], "W": [32, 2048], "N_mz": [1000, 100000],
-      "I_primary_nA": [0.001, 10], "R_mass": [1000, 100000],
-      "K": [1, 30],
-      "matrix_ionization_yield": [0.0, 2.0], "beam_drift": [0.0, 0.1],
-      "dead_time_saturation": [0.0, 0.3], "mass_calibration_error": [0.0, 100]
+      "H": [
+        32,
+        2048
+      ],
+      "W": [
+        32,
+        2048
+      ],
+      "N_mz": [
+        1000,
+        100000
+      ],
+      "I_primary_nA": [
+        0.001,
+        10
+      ],
+      "R_mass": [
+        1000,
+        100000
+      ],
+      "K": [
+        1,
+        30
+      ],
+      "matrix_ionization_yield": [
+        0.0,
+        2.0
+      ],
+      "beam_drift": [
+        0.0,
+        0.1
+      ],
+      "dead_time_saturation": [
+        0.0,
+        0.3
+      ],
+      "mass_calibration_error": [
+        0.0,
+        100
+      ]
     },
-    "epsilon_bounds": {"nmse": [1e-3, 0.5]}
+    "epsilon_bounds": {
+      "nmse": [
+        0.001,
+        0.5
+      ]
+    }
   },
-
-  "p1_p10_tests": ["PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS"],
-  "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
-  "ipfs_cid": null
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": false,
+    "coupling_count_n_c": 0,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

@@ -6,8 +6,10 @@
   "domain": "Computational Photography",
   "sub_domain": "Image fusion and stitching",
   "source_file": "E_computational_photo/076_panorama_multifocus.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical image-fusion literature (Burt & Adelson Laplacian pyramid, Szeliski panorama stitching, MFIF-GAN).",
-
   "E": {
     "description": "A sequence of K images {y_k} of the same scene is captured with varying focus distance z_k (multi-focus) or camera pose (panorama). Each y_k blurs the 3D scene x(u,v,z) through a depth-dependent PSF_k and an affine warp W_k. Fusion recovers an all-in-focus, globally aligned image X.",
     "forward_model": "y_k(u,v) = W_k{int_z PSF(u,v; z - z_k) * x(u,v,z) dz} + n_k(u,v)",
@@ -21,10 +23,14 @@
       "Sensor gain, read noise, motion jitter"
     ]
   },
-
   "G": {
     "dag": "S.scan.pose -> K.psf.defocus -> L.warp.affine -> int.spatial",
-    "vertices": ["S.scan.pose", "K.psf.defocus", "L.warp.affine", "int.spatial"],
+    "vertices": [
+      "S.scan.pose",
+      "K.psf.defocus",
+      "L.warp.affine",
+      "int.spatial"
+    ],
     "arcs": [
       "S.scan.pose -> K.psf.defocus",
       "K.psf.defocus -> L.warp.affine",
@@ -33,7 +39,6 @@
     "L_DAG": 3.0,
     "n_c": 0
   },
-
   "W": {
     "existence": true,
     "uniqueness": true,
@@ -42,14 +47,12 @@
     "condition_number_effective": 12,
     "regime": "Well-conditioned when scenes are Lambertian, inter-frame parallax is small (pure rotation or small translation), and focus distances span the scene depth range. Degrades catastrophically for moving subjects (ghosting) and unconstrained parallax (depth ambiguity)."
   },
-
   "C": {
     "solver_class": "Laplacian-pyramid fusion, gradient-based focus measure (SML, ML, tenengrad), Poisson-blend stitching, learned fusion (MFIF-GAN, U2Fusion), graph-cut seam selection",
     "convergence_rate_q": 2.0,
     "error_bound": "||X_hat - X||_2 <= C1 * sigma + C2 * parallax_displacement + C3 * misalignment_residual; seam artifacts quantified by local gradient magnitude at blend boundaries",
     "complexity": "O(K * H * W * log(max(H,W))) for pyramid; O(K * H * W) for gradient fusion"
   },
-
   "physics_fingerprint": {
     "carrier": "photon",
     "sensing_mechanism": "multi_frame_capture",
@@ -57,38 +60,125 @@
     "problem_class": "linear_inverse",
     "noise_model": "gaussian",
     "solution_space": "2D_spatial",
-    "primitives": ["S.scan.pose", "K.psf.defocus", "L.warp.affine", "int.spatial"]
+    "primitives": [
+      "S.scan.pose",
+      "K.psf.defocus",
+      "L.warp.affine",
+      "int.spatial"
+    ]
   },
-
   "difficulty_delta": 3,
   "difficulty_tier": "standard",
-
-  "mismatch_parameters": ["registration_error", "motion_ghosting", "exposure_variation", "chromatic_fringing"],
+  "mismatch_parameters": [
+    "registration_error",
+    "motion_ghosting",
+    "exposure_variation",
+    "chromatic_fringing"
+  ],
   "error_metric": "PSNR_dB",
   "error_metric_secondary": "SSIM",
   "error_metric_tertiary": "VIF",
-
   "spec_range": {
     "center_spec": {
       "problem_class": "image_fusion",
       "forward_operator": "multi_focus_stitch",
       "input_format": "K_aligned_frames",
-      "omega": {"H": 1024, "W": 1024, "K_frames": 5, "parallax_px": 0.0, "motion_ghosting": 0.0, "exposure_variation": 0.0, "registration_error": 0.0},
+      "omega": {
+        "H": 1024,
+        "W": 1024,
+        "K_frames": 5,
+        "parallax_px": 0.0,
+        "motion_ghosting": 0.0,
+        "exposure_variation": 0.0,
+        "registration_error": 0.0
+      },
       "epsilon_fn_center": "30.0 dB PSNR"
     },
-    "allowed_forward_operators": ["multi_focus_stitch", "panorama_homography", "focus_stack_depth"],
-    "allowed_problem_classes": ["image_fusion", "panorama_stitching", "all_in_focus"],
-    "allowed_omega_dimensions": ["H", "W", "K_frames", "parallax_px", "motion_ghosting", "exposure_variation", "registration_error", "chromatic_fringing"],
+    "allowed_forward_operators": [
+      "multi_focus_stitch",
+      "panorama_homography",
+      "focus_stack_depth"
+    ],
+    "allowed_problem_classes": [
+      "image_fusion",
+      "panorama_stitching",
+      "all_in_focus"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "K_frames",
+      "parallax_px",
+      "motion_ghosting",
+      "exposure_variation",
+      "registration_error",
+      "chromatic_fringing"
+    ],
     "omega_bounds": {
-      "H": [256, 8192], "W": [256, 8192], "K_frames": [2, 32],
-      "parallax_px": [0.0, 30.0], "motion_ghosting": [0.0, 0.5],
-      "exposure_variation": [0.0, 2.0], "registration_error": [0.0, 5.0],
-      "chromatic_fringing": [0.0, 2.0]
+      "H": [
+        256,
+        8192
+      ],
+      "W": [
+        256,
+        8192
+      ],
+      "K_frames": [
+        2,
+        32
+      ],
+      "parallax_px": [
+        0.0,
+        30.0
+      ],
+      "motion_ghosting": [
+        0.0,
+        0.5
+      ],
+      "exposure_variation": [
+        0.0,
+        2.0
+      ],
+      "registration_error": [
+        0.0,
+        5.0
+      ],
+      "chromatic_fringing": [
+        0.0,
+        2.0
+      ]
     },
-    "epsilon_bounds": {"psnr_db": [18.0, 40.0]}
+    "epsilon_bounds": {
+      "psnr_db": [
+        18.0,
+        40.0
+      ]
+    }
   },
-
-  "p1_p10_tests": ["PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS"],
-  "s1_s4_gates": ["PASS", "PASS", "PASS", "PASS"],
-  "ipfs_cid": null
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": false,
+    "coupling_count_n_c": 0,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

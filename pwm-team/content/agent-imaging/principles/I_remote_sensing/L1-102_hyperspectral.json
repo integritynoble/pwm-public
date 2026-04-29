@@ -6,6 +6,9 @@
   "domain": "Remote Sensing",
   "sub_domain": "Airborne/satellite hyperspectral",
   "source_file": "I_remote_sensing/102_hyperspectral.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical remote-sensing literature for this principle.",
   "E": {
     "description": "Hyperspectral Imaging (pushbroom / AVIRIS-style): pushbroom spectrograph produces the measurement through a 3-node primitive DAG L.spectral_disperse -> S.scan.pushbroom -> int.spatial, with spatially-projected accumulation and additive Gaussian thermal/electronic noise. Recovery is posed as a linear inverse problem that inverts the forward operator to estimate the scene-side 3D spectral image. Difficulty tier delta=3 with effective condition number kappa_eff~10; calibration-level mismatch (atmospheric_water_vapor, smile_distortion, spectral_mixing) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
@@ -171,5 +174,12 @@
     "PASS",
     "PASS"
   ],
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": false,
+    "coupling_count_n_c": 0,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

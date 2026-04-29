@@ -6,6 +6,9 @@
   "domain": "Industrial Inspection",
   "sub_domain": "High-frequency ultrasonic microscopy for buried interfaces",
   "source_file": "J_industrial_inspect/120_scanning_acoustic_microscopy.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical NDT/NDE literature for this principle.",
   "E": {
     "description": "Scanning Acoustic Microscopy (SAM): scanning acoustic microscopy produces the measurement through a 4-node primitive DAG L.acoustic_lens -> S.scan.raster -> L.pulse_echo -> int.temporal, with time-integrated exposure and additive Gaussian thermal/electronic noise. Recovery is posed as a linear inverse problem that inverts the forward operator to estimate the scene-side 3D acoustic impedance. Difficulty tier delta=3 with effective condition number kappa_eff~10; calibration-level mismatch (coupling_fluid_variation, surface_curvature, multiple_reflections) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
@@ -184,5 +187,12 @@
     "PASS",
     "PASS"
   ],
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": false,
+    "coupling_count_n_c": 0,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

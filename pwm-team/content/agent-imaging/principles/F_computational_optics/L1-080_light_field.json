@@ -6,8 +6,10 @@
   "domain": "Computational Optics",
   "sub_domain": "4D plenoptic sampling",
   "source_file": "F_computational_optics/080_light_field.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in Levoy-Hanrahan 1996 light-field rendering and Ng-Lytro 2005 plenoptic camera.",
-
   "E": {
     "description": "A plenoptic camera samples the 4D light field L(u,v,s,t) (spatial x angular) via a main lens + microlens array (MLA) or a camera array. Each microlens projects the pupil onto an (s,t) sub-image; the 4D LF supports refocusing at any depth z via shear-integration and sub-aperture view synthesis.",
     "forward_model": "I(u,v) = iint L(u - a*s, v - a*t, s, t) ds dt  (projection at slope a => depth z = f/a)",
@@ -21,10 +23,14 @@
       "Sensor bit depth, gain, read noise"
     ]
   },
-
   "G": {
     "dag": "L.project.pupil -> S.scan.angular -> F.shear -> int.angular",
-    "vertices": ["L.project.pupil", "S.scan.angular", "F.shear", "int.angular"],
+    "vertices": [
+      "L.project.pupil",
+      "S.scan.angular",
+      "F.shear",
+      "int.angular"
+    ],
     "arcs": [
       "L.project.pupil -> S.scan.angular",
       "S.scan.angular -> F.shear",
@@ -33,7 +39,6 @@
     "L_DAG": 3.2,
     "n_c": 0
   },
-
   "W": {
     "existence": true,
     "uniqueness": true,
@@ -42,14 +47,12 @@
     "condition_number_effective": 20,
     "regime": "Well-posed when MLA is calibrated and scene lies within depth-of-field cone of each sub-aperture. Degrades at occlusion boundaries, specular highlights, and beyond the angular-resolution disparity limit; MLA misregistration couples spatial and angular dimensions."
   },
-
   "C": {
     "solver_class": "shear-sum refocus (analytical), epipolar-plane image (EPI) depth estimation, iterative LF super-resolution, learned (LFGAN, LFTransformer, DistgLF)",
     "convergence_rate_q": 2.0,
     "error_bound": "|I_hat - I|_L2 <= C1 * sigma / sqrt(U*V) + C2 * mla_misregistration_px + C3 * aliasing_at_high_disparity",
     "complexity": "O(H * W * U * V) for refocus; O(U * V * H * W * log) for deep LF super-resolution"
   },
-
   "physics_fingerprint": {
     "carrier": "photon",
     "sensing_mechanism": "plenoptic_sampling",
@@ -57,38 +60,130 @@
     "problem_class": "linear_inverse",
     "noise_model": "gaussian",
     "solution_space": "4D_light_field",
-    "primitives": ["L.project.pupil", "S.scan.angular", "F.shear", "int.angular"]
+    "primitives": [
+      "L.project.pupil",
+      "S.scan.angular",
+      "F.shear",
+      "int.angular"
+    ]
   },
-
   "difficulty_delta": 3,
   "difficulty_tier": "standard",
-
-  "mismatch_parameters": ["mla_rotation", "mla_offset", "vignetting_per_subaperture", "disparity_range_error"],
+  "mismatch_parameters": [
+    "mla_rotation",
+    "mla_offset",
+    "vignetting_per_subaperture",
+    "disparity_range_error"
+  ],
   "error_metric": "LF_PSNR_dB",
   "error_metric_secondary": "refocus_PSNR_dB",
   "error_metric_tertiary": "disparity_MAE_px",
-
   "spec_range": {
     "center_spec": {
       "problem_class": "lightfield_decoding",
       "forward_operator": "plenoptic_mla_capture",
       "input_format": "raw_lf_mosaic_plus_calibration",
-      "omega": {"H": 625, "W": 434, "U": 9, "V": 9, "photon_count": 1000, "mla_rotation": 0.0, "mla_offset": 0.0},
+      "omega": {
+        "H": 625,
+        "W": 434,
+        "U": 9,
+        "V": 9,
+        "photon_count": 1000,
+        "mla_rotation": 0.0,
+        "mla_offset": 0.0
+      },
       "epsilon_fn_center": "32.0 dB LF-PSNR"
     },
-    "allowed_forward_operators": ["plenoptic_mla_capture", "focused_plenoptic", "camera_array_capture"],
-    "allowed_problem_classes": ["lightfield_decoding", "lightfield_super_resolution", "plenoptic_depth"],
-    "allowed_omega_dimensions": ["H", "W", "U", "V", "photon_count", "mla_rotation", "mla_offset", "vignetting_per_subaperture", "disparity_range_error"],
+    "allowed_forward_operators": [
+      "plenoptic_mla_capture",
+      "focused_plenoptic",
+      "camera_array_capture"
+    ],
+    "allowed_problem_classes": [
+      "lightfield_decoding",
+      "lightfield_super_resolution",
+      "plenoptic_depth"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "U",
+      "V",
+      "photon_count",
+      "mla_rotation",
+      "mla_offset",
+      "vignetting_per_subaperture",
+      "disparity_range_error"
+    ],
     "omega_bounds": {
-      "H": [128, 2048], "W": [128, 2048], "U": [3, 17], "V": [3, 17],
-      "photon_count": [50, 10000], "mla_rotation": [0.0, 0.05],
-      "mla_offset": [0.0, 2.0], "vignetting_per_subaperture": [0.0, 0.20],
-      "disparity_range_error": [0.0, 2.0]
+      "H": [
+        128,
+        2048
+      ],
+      "W": [
+        128,
+        2048
+      ],
+      "U": [
+        3,
+        17
+      ],
+      "V": [
+        3,
+        17
+      ],
+      "photon_count": [
+        50,
+        10000
+      ],
+      "mla_rotation": [
+        0.0,
+        0.05
+      ],
+      "mla_offset": [
+        0.0,
+        2.0
+      ],
+      "vignetting_per_subaperture": [
+        0.0,
+        0.2
+      ],
+      "disparity_range_error": [
+        0.0,
+        2.0
+      ]
     },
-    "epsilon_bounds": {"psnr_db": [20.0, 44.0]}
+    "epsilon_bounds": {
+      "psnr_db": [
+        20.0,
+        44.0
+      ]
+    }
   },
-
-  "p1_p10_tests": ["PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS"],
-  "s1_s4_gates": ["PASS", "PASS", "PASS", "PASS"],
-  "ipfs_cid": null
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": false,
+    "coupling_count_n_c": 0,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

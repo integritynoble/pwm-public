@@ -2,12 +2,14 @@
   "artifact_id": "L1-141",
   "layer": "L1",
   "principle_number": "141",
-  "title": "LIBS — Laser-Induced Breakdown Spectroscopy imaging",
+  "title": "LIBS \u2014 Laser-Induced Breakdown Spectroscopy imaging",
   "domain": "Spectroscopy",
   "sub_domain": "Atomic emission elemental imaging",
   "source_file": "L_spectroscopy/141_libs_imaging.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence boilerplate. Physics grounded in Cremers-Radziemski 2013 Handbook of LIBS; Motto-Ros et al. 2012 LIBS imaging; Hahn-Omenetto 2012 part II review.",
-
   "E": {
     "description": "A pulsed laser (typically Nd:YAG, 1064 or 266 nm, ns pulse) is focused onto a sample, ablating a ~micrograms of material and creating a plasma at T~10000 K. As the plasma cools (1-100 us gate), excited atoms emit characteristic lines; a spectrograph + gated ICCD records I(lambda, r) across a raster map; calibration relates peak intensity to element concentration.",
     "forward_model": "y(r, lambda) = sum_k A_k * g_k * exp(-E_k / k_B T(r)) * c_k(r) * instrument_response(lambda) + continuum(r, lambda) + n",
@@ -22,15 +24,22 @@
       "Matrix effects (composition-dependent plasma)"
     ]
   },
-
   "G": {
     "dag": "L.ablate.plasma -> S.emit.atomic -> L.disperse.spectral -> int.temporal",
-    "vertices": ["L.ablate.plasma", "S.emit.atomic", "L.disperse.spectral", "int.temporal"],
-    "arcs": ["L.ablate.plasma -> S.emit.atomic", "S.emit.atomic -> L.disperse.spectral", "L.disperse.spectral -> int.temporal"],
+    "vertices": [
+      "L.ablate.plasma",
+      "S.emit.atomic",
+      "L.disperse.spectral",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.ablate.plasma -> S.emit.atomic",
+      "S.emit.atomic -> L.disperse.spectral",
+      "L.disperse.spectral -> int.temporal"
+    ],
     "L_DAG": 3.0,
     "n_c": 0
   },
-
   "W": {
     "existence": true,
     "uniqueness": "calibration-free LIBS (CF-LIBS) under LTE assumption; univariate regression for major elements",
@@ -40,14 +49,12 @@
     "condition_number_mismatched": 1000,
     "regime": "Plasma physics non-linear but under LTE the Saha-Boltzmann equation yields explicit calibration; self-absorption violates linearity; matrix-effect mismatch dominant uncertainty."
   },
-
   "C": {
     "solver_class": "Univariate linear regression, PLS, MCR-ALS, CF-LIBS, random-forest / SVM classification, learned (CNN-LIBS, LIBSNet)",
     "convergence_rate_q": 2.0,
     "error_bound": "Concentration NMSE bounded by plasma-temperature fluctuation sigma_T^2 * (E_k/k_B T)^2; CF-LIBS ~5-10% LOD",
     "complexity": "Linear reg O(H*W*K*N_lambda); PLS O(iter*K*H*W*N_lambda); CF-LIBS O(H*W*K^2)"
   },
-
   "physics_fingerprint": {
     "carrier": "photon",
     "sensing_mechanism": "plasma_emission",
@@ -55,39 +62,141 @@
     "problem_class": "nonlinear_inverse_emission",
     "noise_model": "shot_poisson",
     "solution_space": "elemental_concentration_map",
-    "primitives": ["L.ablate.plasma", "S.emit.atomic", "L.disperse.spectral", "int.temporal"]
+    "primitives": [
+      "L.ablate.plasma",
+      "S.emit.atomic",
+      "L.disperse.spectral",
+      "int.temporal"
+    ]
   },
-
   "difficulty_delta": 5,
   "difficulty_tier": "challenging",
-
-  "mismatch_parameters": ["self_absorption", "matrix_effects", "plasma_temp_drift", "continuum_estimate", "shot_to_shot_variability"],
+  "mismatch_parameters": [
+    "self_absorption",
+    "matrix_effects",
+    "plasma_temp_drift",
+    "continuum_estimate",
+    "shot_to_shot_variability"
+  ],
   "error_metric": "concentration_NMSE",
   "error_metric_secondary": "LOD_ppm",
   "error_metric_tertiary": "classification_accuracy",
-
   "spec_range": {
     "center_spec": {
       "problem_class": "libs_elemental_mapping",
       "forward_operator": "libs_plasma_forward",
       "input_format": "spectral_cube",
-      "omega": {"H": 256, "W": 256, "N_lambda": 2048, "E_p_mJ": 50, "delay_us": 1, "gate_us": 10, "K": 5, "self_absorption": 0.0},
+      "omega": {
+        "H": 256,
+        "W": 256,
+        "N_lambda": 2048,
+        "E_p_mJ": 50,
+        "delay_us": 1,
+        "gate_us": 10,
+        "K": 5,
+        "self_absorption": 0.0
+      },
       "epsilon_fn_center": "NMSE 0.05"
     },
-    "allowed_forward_operators": ["libs_plasma_forward", "cf_libs_saha_boltzmann"],
-    "allowed_problem_classes": ["libs_elemental_mapping", "cf_libs_quantitative", "libs_classification"],
-    "allowed_omega_dimensions": ["H", "W", "N_lambda", "E_p_mJ", "delay_us", "gate_us", "K", "self_absorption", "matrix_effects", "plasma_temp_drift", "shot_to_shot_variability"],
+    "allowed_forward_operators": [
+      "libs_plasma_forward",
+      "cf_libs_saha_boltzmann"
+    ],
+    "allowed_problem_classes": [
+      "libs_elemental_mapping",
+      "cf_libs_quantitative",
+      "libs_classification"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "N_lambda",
+      "E_p_mJ",
+      "delay_us",
+      "gate_us",
+      "K",
+      "self_absorption",
+      "matrix_effects",
+      "plasma_temp_drift",
+      "shot_to_shot_variability"
+    ],
     "omega_bounds": {
-      "H": [32, 2048], "W": [32, 2048], "N_lambda": [512, 16384],
-      "E_p_mJ": [5, 500], "delay_us": [0.1, 100], "gate_us": [0.1, 100],
-      "K": [1, 30],
-      "self_absorption": [0.0, 0.5], "matrix_effects": [0.0, 0.3],
-      "plasma_temp_drift": [0.0, 0.3], "shot_to_shot_variability": [0.0, 0.3]
+      "H": [
+        32,
+        2048
+      ],
+      "W": [
+        32,
+        2048
+      ],
+      "N_lambda": [
+        512,
+        16384
+      ],
+      "E_p_mJ": [
+        5,
+        500
+      ],
+      "delay_us": [
+        0.1,
+        100
+      ],
+      "gate_us": [
+        0.1,
+        100
+      ],
+      "K": [
+        1,
+        30
+      ],
+      "self_absorption": [
+        0.0,
+        0.5
+      ],
+      "matrix_effects": [
+        0.0,
+        0.3
+      ],
+      "plasma_temp_drift": [
+        0.0,
+        0.3
+      ],
+      "shot_to_shot_variability": [
+        0.0,
+        0.3
+      ]
     },
-    "epsilon_bounds": {"nmse": [1e-3, 0.5]}
+    "epsilon_bounds": {
+      "nmse": [
+        0.001,
+        0.5
+      ]
+    }
   },
-
-  "p1_p10_tests": ["PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS"],
-  "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
-  "ipfs_cid": null
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": false,
+    "coupling_count_n_c": 0,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

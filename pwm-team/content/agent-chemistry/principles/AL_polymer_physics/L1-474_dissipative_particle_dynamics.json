@@ -6,6 +6,9 @@
   "domain": "Polymer Physics",
   "sub_domain": "Mesoscale soft-matter dynamics",
   "source_file": "AL_polymer_physics/474_dissipative_particle_dynamics.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
   "E": {
     "description": "Groot-Warren DPD: coarse-grained beads evolve under conservative (soft-repulsive), dissipative, and random pairwise forces; fluctuation-dissipation links gamma and sigma to k_B T.",
@@ -178,5 +181,12 @@
     "PASS",
     "PASS"
   ],
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": true,
+    "coupling_count_n_c": 1,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

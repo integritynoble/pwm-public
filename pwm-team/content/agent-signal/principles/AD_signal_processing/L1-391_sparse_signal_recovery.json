@@ -6,8 +6,10 @@
   "domain": "Signal Processing",
   "sub_domain": "L1-minimization and greedy sparse approximation",
   "source_file": "AD_signal_processing/391_sparse_signal_recovery.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence boilerplate. Physics grounded in Donoho-Elad 2003 uniqueness; Candes-Romberg-Tao 2006 robust recovery; Daubechies-Defrise-DeMol 2004 iterative thresholding; Elad 2010 Sparse and Redundant Representations book.",
-
   "E": {
     "description": "A signal x admits sparse representation alpha in some dictionary D such that x = D*alpha (synthesis model) or Omega*x is sparse (analysis model). Observations y = A*x + n are measured with a linear operator A. The task is to recover x via sparsity-constrained optimization.",
     "forward_model": "y = A * D * alpha + n;  ||alpha||_0 <= k or x such that ||Omega*x||_0 <= k",
@@ -21,15 +23,20 @@
       "Noise std sigma_n"
     ]
   },
-
   "G": {
     "dag": "L.project.generic -> L.synthesis.dictionary -> int.spatial",
-    "vertices": ["L.project.generic", "L.synthesis.dictionary", "int.spatial"],
-    "arcs": ["L.project.generic -> L.synthesis.dictionary", "L.synthesis.dictionary -> int.spatial"],
+    "vertices": [
+      "L.project.generic",
+      "L.synthesis.dictionary",
+      "int.spatial"
+    ],
+    "arcs": [
+      "L.project.generic -> L.synthesis.dictionary",
+      "L.synthesis.dictionary -> int.spatial"
+    ],
     "L_DAG": 2.7,
     "n_c": 0
   },
-
   "W": {
     "existence": true,
     "uniqueness": "when ||alpha||_0 < 1/2 * (1 + 1/mu(AD))",
@@ -39,14 +46,12 @@
     "condition_number_mismatched": 500,
     "regime": "Unique sparsity under mutual-coherence or RIP bounds; relaxed L0->L1 equivalence under Donoho-Elad theorem. Mismatch: dictionary drift, non-exact sparsity, off-grid sparsity (basis mismatch)."
   },
-
   "C": {
     "solver_class": "OMP, MP, CoSaMP, BPDN/LASSO, FISTA, ISTA, HTP, IRLS, learned (LISTA, ALISTA)",
     "convergence_rate_q": 2.0,
     "error_bound": "||x - x_hat||_2 <= C1 sigma sqrt(k log N / M) + C2 ||x - x_k||_1 / sqrt(k)",
     "complexity": "OMP: O(k*M*N); FISTA: O(N*M) per iter with O(1/k^2) convergence"
   },
-
   "physics_fingerprint": {
     "carrier": "generic",
     "sensing_mechanism": "sparse_synthesis",
@@ -54,38 +59,122 @@
     "problem_class": "sparse_linear_inverse",
     "noise_model": "gaussian",
     "solution_space": "sparse_vector",
-    "primitives": ["L.project.generic", "L.synthesis.dictionary", "int.spatial"]
+    "primitives": [
+      "L.project.generic",
+      "L.synthesis.dictionary",
+      "int.spatial"
+    ]
   },
-
   "difficulty_delta": 3,
   "difficulty_tier": "standard",
-
-  "mismatch_parameters": ["dictionary_coherence", "sparsity_overestimation", "basis_mismatch", "off_grid_source", "noise_level"],
+  "mismatch_parameters": [
+    "dictionary_coherence",
+    "sparsity_overestimation",
+    "basis_mismatch",
+    "off_grid_source",
+    "noise_level"
+  ],
   "error_metric": "NMSE",
   "error_metric_secondary": "support_recovery_rate",
   "error_metric_tertiary": "sparsity_estimate_error",
-
   "spec_range": {
     "center_spec": {
       "problem_class": "synthesis_sparse",
       "forward_operator": "dct_sparse",
       "input_format": "measurement_plus_dictionary",
-      "omega": {"N": 1024, "M": 512, "k": 50, "mu": 0.1, "sigma_n": 0.01, "basis_mismatch": 0.0, "off_grid": 0.0},
+      "omega": {
+        "N": 1024,
+        "M": 512,
+        "k": 50,
+        "mu": 0.1,
+        "sigma_n": 0.01,
+        "basis_mismatch": 0.0,
+        "off_grid": 0.0
+      },
       "epsilon_fn_center": "NMSE 1e-3"
     },
-    "allowed_forward_operators": ["dct_sparse", "wavelet_sparse", "learned_dictionary", "gabor_sparse"],
-    "allowed_problem_classes": ["synthesis_sparse", "analysis_sparse", "cosparse_model"],
-    "allowed_omega_dimensions": ["N", "M", "k", "mu", "sigma_n", "basis_mismatch", "off_grid", "dictionary_type"],
+    "allowed_forward_operators": [
+      "dct_sparse",
+      "wavelet_sparse",
+      "learned_dictionary",
+      "gabor_sparse"
+    ],
+    "allowed_problem_classes": [
+      "synthesis_sparse",
+      "analysis_sparse",
+      "cosparse_model"
+    ],
+    "allowed_omega_dimensions": [
+      "N",
+      "M",
+      "k",
+      "mu",
+      "sigma_n",
+      "basis_mismatch",
+      "off_grid",
+      "dictionary_type"
+    ],
     "omega_bounds": {
-      "N": [128, 16384], "M": [32, 16384],
-      "k": [1, 2000], "mu": [0.01, 0.8],
-      "sigma_n": [0.0, 0.1], "basis_mismatch": [0.0, 0.5],
-      "off_grid": [0.0, 1.0]
+      "N": [
+        128,
+        16384
+      ],
+      "M": [
+        32,
+        16384
+      ],
+      "k": [
+        1,
+        2000
+      ],
+      "mu": [
+        0.01,
+        0.8
+      ],
+      "sigma_n": [
+        0.0,
+        0.1
+      ],
+      "basis_mismatch": [
+        0.0,
+        0.5
+      ],
+      "off_grid": [
+        0.0,
+        1.0
+      ]
     },
-    "epsilon_bounds": {"nmse": [1e-5, 1.0]}
+    "epsilon_bounds": {
+      "nmse": [
+        1e-05,
+        1.0
+      ]
+    }
   },
-
-  "p1_p10_tests": ["PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS"],
-  "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
-  "ipfs_cid": null
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": false,
+    "coupling_count_n_c": 0,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

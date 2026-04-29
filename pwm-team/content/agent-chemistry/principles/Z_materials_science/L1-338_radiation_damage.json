@@ -6,6 +6,9 @@
   "domain": "Materials Science",
   "sub_domain": "Atomic-scale defect production",
   "source_file": "Z_materials_science/338_radiation_damage.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
   "E": {
     "description": "Primary knock-on atom (PKA) cascade: MD simulation of collision cascades produces Frenkel pairs and clusters; cluster evolution handled by cluster dynamics (CD) or rate theory.",
@@ -142,5 +145,12 @@
     "PASS",
     "PASS"
   ],
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": false,
+    "coupling_count_n_c": 0,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

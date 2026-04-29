@@ -6,6 +6,9 @@
   "domain": "Polymer Physics",
   "sub_domain": "Entangled melt dynamics",
   "source_file": "AL_polymer_physics/476_reptation_theory.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
   "E": {
     "description": "Doi-Edwards tube model: each chain reptates through a tube of entanglements with disengagement time tau_d ~ N^3.4; linear viscoelastic response G(t), G'(omega), G''(omega) follows double-reptation with contour-length fluctuations (CLF) and constraint release (CR).",
@@ -155,5 +158,12 @@
     "PASS",
     "PASS"
   ],
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": false,
+    "coupling_count_n_c": 0,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

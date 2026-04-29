@@ -6,6 +6,9 @@
   "domain": "Microscopy",
   "sub_domain": "Scattering-only contrast via annular condenser",
   "source_file": "A_microscopy/019_darkfield.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical domain literature for this specific principle.",
   "E": {
     "description": "Darkfield Microscopy (oblique-illumination scattering imaging): oblique scattering produces the measurement through a 3-node primitive DAG L.oblique_illumination -> L.scatter -> int.temporal, with time-integrated exposure and additive Gaussian thermal/electronic noise. Recovery is posed as a linear inverse problem that inverts the forward operator to estimate the scene-side 2D intensity. Difficulty tier delta=1 with effective condition number kappa_eff~5; calibration-level mismatch (condenser_angle_error, stray_light, specimen_absorption) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
@@ -172,5 +175,12 @@
     "PASS",
     "PASS"
   ],
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": false,
+    "coupling_count_n_c": 0,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

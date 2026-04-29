@@ -2,12 +2,14 @@
   "artifact_id": "L1-138",
   "layer": "L1",
   "principle_number": "138",
-  "title": "CARS — Coherent Anti-Stokes Raman Scattering",
+  "title": "CARS \u2014 Coherent Anti-Stokes Raman Scattering",
   "domain": "Spectroscopy",
   "sub_domain": "Third-order nonlinear coherent vibrational microscopy",
   "source_file": "L_spectroscopy/138_cars.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence boilerplate. Physics grounded in Zumbusch-Holtom-Xie 1999 CARS microscopy; Evans-Xie 2008 Annu. Rev. Anal. Chem.; Cheng-Xie 2015 comparison with SRS; Krafft et al. 2011 multiplex CARS.",
-
   "E": {
     "description": "Two synchronized picosecond pulses (pump omega_p, Stokes omega_s) beat at the vibrational frequency Omega = omega_p - omega_s, driving coherent molecular vibrations; a third photon (often same as pump) probes the coherence, yielding an anti-Stokes signal at omega_AS = 2*omega_p - omega_s. Signal is chi^(3)-driven, scales as I_p^2 * I_s.",
     "forward_model": "I_CARS(r, Omega) ~ |chi_R^(3)(Omega) * N(r) + chi_NR^(3)|^2 * I_p^2(r) * I_s(r)",
@@ -22,15 +24,20 @@
       "Pulse intensity I_p, I_s (MW peak)"
     ]
   },
-
   "G": {
     "dag": "L.beat.twocolor -> S.nonlinear.chi3 -> int.temporal",
-    "vertices": ["L.beat.twocolor", "S.nonlinear.chi3", "int.temporal"],
-    "arcs": ["L.beat.twocolor -> S.nonlinear.chi3", "S.nonlinear.chi3 -> int.temporal"],
+    "vertices": [
+      "L.beat.twocolor",
+      "S.nonlinear.chi3",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.beat.twocolor -> S.nonlinear.chi3",
+      "S.nonlinear.chi3 -> int.temporal"
+    ],
     "L_DAG": 3.0,
     "n_c": 0
   },
-
   "W": {
     "existence": true,
     "uniqueness": "for known chi_NR; blind case ill-posed due to |.|^2 phase ambiguity",
@@ -40,14 +47,12 @@
     "condition_number_mismatched": 600,
     "regime": "Well-posed for multiplex CARS with full spectrum + max-entropy phase retrieval; ill-posed for narrowband CARS contaminated by chi_NR (distortive interference with Lorentzian chi_R)."
   },
-
   "C": {
     "solver_class": "CLS (single-frequency), KK (Kramers-Kronig) phase retrieval, max-entropy (Vartiainen 1992), learned CARS-Net, MCR-ALS",
     "convergence_rate_q": 2.0,
     "error_bound": "Concentration error saturates by chi_NR interference; KK-phase retrieval bounded by BW / Omega_range",
     "complexity": "KK O(H*W*N_omega * log(N_omega)); max-entropy O(H*W*iter*N_omega); learned single forward"
   },
-
   "physics_fingerprint": {
     "carrier": "photon",
     "sensing_mechanism": "coherent_nonlinear",
@@ -55,38 +60,130 @@
     "problem_class": "nonlinear_inverse_spectral",
     "noise_model": "shot_poisson_coherent",
     "solution_space": "concentration_map",
-    "primitives": ["L.beat.twocolor", "S.nonlinear.chi3", "int.temporal"]
+    "primitives": [
+      "L.beat.twocolor",
+      "S.nonlinear.chi3",
+      "int.temporal"
+    ]
   },
-
   "difficulty_delta": 5,
   "difficulty_tier": "challenging",
-
-  "mismatch_parameters": ["nonres_ratio_rho", "pulse_energy_fluct", "frequency_drift_cm1", "focal_volume_error", "detection_bandwidth"],
+  "mismatch_parameters": [
+    "nonres_ratio_rho",
+    "pulse_energy_fluct",
+    "frequency_drift_cm1",
+    "focal_volume_error",
+    "detection_bandwidth"
+  ],
   "error_metric": "concentration_NMSE",
   "error_metric_secondary": "SNR_dB",
   "error_metric_tertiary": "chemical_specificity_score",
-
   "spec_range": {
     "center_spec": {
       "problem_class": "multiplex_cars",
       "forward_operator": "cars_chi3_forward",
       "input_format": "multiplex_cube_plus_library",
-      "omega": {"H": 256, "W": 256, "N_omega": 300, "lambda_p_nm": 800, "lambda_s_nm": 1064, "rho_NR": 0.3, "pulse_energy_fluct": 0.05},
+      "omega": {
+        "H": 256,
+        "W": 256,
+        "N_omega": 300,
+        "lambda_p_nm": 800,
+        "lambda_s_nm": 1064,
+        "rho_NR": 0.3,
+        "pulse_energy_fluct": 0.05
+      },
       "epsilon_fn_center": "NMSE 2e-2"
     },
-    "allowed_forward_operators": ["cars_chi3_forward", "single_freq_cars", "broadband_cars"],
-    "allowed_problem_classes": ["multiplex_cars", "single_freq_cars", "blind_chi_R"],
-    "allowed_omega_dimensions": ["H", "W", "N_omega", "lambda_p_nm", "lambda_s_nm", "rho_NR", "pulse_energy_fluct", "frequency_drift_cm1", "focal_volume_error"],
+    "allowed_forward_operators": [
+      "cars_chi3_forward",
+      "single_freq_cars",
+      "broadband_cars"
+    ],
+    "allowed_problem_classes": [
+      "multiplex_cars",
+      "single_freq_cars",
+      "blind_chi_R"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "N_omega",
+      "lambda_p_nm",
+      "lambda_s_nm",
+      "rho_NR",
+      "pulse_energy_fluct",
+      "frequency_drift_cm1",
+      "focal_volume_error"
+    ],
     "omega_bounds": {
-      "H": [64, 1024], "W": [64, 1024], "N_omega": [1, 2048],
-      "lambda_p_nm": [750, 1100], "lambda_s_nm": [1000, 1300],
-      "rho_NR": [0.0, 5.0], "pulse_energy_fluct": [0.0, 0.3],
-      "frequency_drift_cm1": [0.0, 20.0], "focal_volume_error": [0.0, 0.2]
+      "H": [
+        64,
+        1024
+      ],
+      "W": [
+        64,
+        1024
+      ],
+      "N_omega": [
+        1,
+        2048
+      ],
+      "lambda_p_nm": [
+        750,
+        1100
+      ],
+      "lambda_s_nm": [
+        1000,
+        1300
+      ],
+      "rho_NR": [
+        0.0,
+        5.0
+      ],
+      "pulse_energy_fluct": [
+        0.0,
+        0.3
+      ],
+      "frequency_drift_cm1": [
+        0.0,
+        20.0
+      ],
+      "focal_volume_error": [
+        0.0,
+        0.2
+      ]
     },
-    "epsilon_bounds": {"nmse": [1e-3, 0.5]}
+    "epsilon_bounds": {
+      "nmse": [
+        0.001,
+        0.5
+      ]
+    }
   },
-
-  "p1_p10_tests": ["PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS"],
-  "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
-  "ipfs_cid": null
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": false,
+    "coupling_count_n_c": 0,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

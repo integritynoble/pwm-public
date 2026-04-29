@@ -6,6 +6,9 @@
   "domain": "Robotics",
   "sub_domain": "Robot dynamics",
   "source_file": "AI_robotics/449_inverse_dynamics.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
     "description": "Inverse Dynamics: Inverse dynamics: compute joint torques required to achieve desired trajectory; used for computed torque control and parameter identification. The forward operator produces the measurement through a 3-node primitive DAG (M.rnea.recursive_newton_euler\u2026); recovery is posed as a linear_inverse problem. Difficulty tier delta=3 with effective condition number kappa_eff~50; acceleration_estimation_noise, friction_unmodeled_dynamics set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
@@ -137,5 +140,12 @@
     "PASS",
     "PASS"
   ],
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": false,
+    "coupling_count_n_c": 0,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

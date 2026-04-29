@@ -2,13 +2,15 @@
   "artifact_id": "L1-072",
   "layer": "L1",
   "principle_number": "072",
-  "title": "Coherent Diffraction Imaging (CDI) — lensless phase retrieval",
+  "title": "Coherent Diffraction Imaging (CDI) \u2014 lensless phase retrieval",
   "domain": "Coherent Imaging",
   "sub_domain": "Single-shot lensless diffraction",
   "source_file": "D_coherent_imaging/072_cdi.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "reference_mine_example": "papers/Proof-of-Solution/mine_example/lensless.md",
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is extracted from mine_example/lensless.md and canonical CDI literature (Fienup, Miao, Elser).",
-
   "E": {
     "description": "A coherent beam illuminates an isolated object in free space; the far-field detector records the squared magnitude of its Fourier transform. Image recovery is the phase-retrieval problem: given only |F{O}|, recover O using a finite-support constraint (oversampling sigma >= 2 per dim) and non-negativity / atomicity priors.",
     "forward_model": "I(k) = |F{O(r)}|^2 + n(k),  O(r) supported on S subset Omega",
@@ -22,10 +24,14 @@
       "beam stop region (masked center of detector)"
     ]
   },
-
   "G": {
     "dag": "M.support_mask -> F.fourier -> L.modulus_squared -> int.spatial",
-    "vertices": ["M.support_mask", "F.fourier", "L.modulus_squared", "int.spatial"],
+    "vertices": [
+      "M.support_mask",
+      "F.fourier",
+      "L.modulus_squared",
+      "int.spatial"
+    ],
     "arcs": [
       "M.support_mask -> F.fourier",
       "F.fourier -> L.modulus_squared",
@@ -34,7 +40,6 @@
     "L_DAG": 3.5,
     "n_c": 1
   },
-
   "W": {
     "existence": true,
     "uniqueness": true,
@@ -43,14 +48,12 @@
     "condition_number_effective": 100,
     "regime": "Strongly non-convex phaseless recovery. Hayes ambiguity (global phase, conjugate flip, sub-pixel translation) resolved by support compactness. Oversampling sigma >= 2 in each dimension is necessary; beam-stop inpainting and partial coherence further degrade conditioning."
   },
-
   "C": {
     "solver_class": "projection iterations (HIO, ER, RAAR, CF), Shrinkwrap, ADMM-CDI, Wirtinger-flow, learned (PRCGAN, CDI-Net)",
     "convergence_rate_q": 1.2,
     "error_bound": "||O_hat - O||_2 <= C1 * sigma_noise / sqrt(photon_count) + C2 * (1 - sigma_oversample / 2); R-factor convergence is the empirical stopping rule",
     "complexity": "O(H * W * log(H*W)) per iteration"
   },
-
   "physics_fingerprint": {
     "carrier": "photon",
     "sensing_mechanism": "coherent_diffraction",
@@ -58,37 +61,124 @@
     "problem_class": "nonlinear_inverse",
     "noise_model": "shot_poisson",
     "solution_space": "complex_2D",
-    "primitives": ["M.support_mask", "F.fourier", "L.modulus_squared", "int.spatial"]
+    "primitives": [
+      "M.support_mask",
+      "F.fourier",
+      "L.modulus_squared",
+      "int.spatial"
+    ]
   },
-
   "difficulty_delta": 5,
   "difficulty_tier": "challenging",
-
-  "mismatch_parameters": ["support_mask_error", "beam_stop_radius", "partial_coherence", "detector_gain", "background"],
+  "mismatch_parameters": [
+    "support_mask_error",
+    "beam_stop_radius",
+    "partial_coherence",
+    "detector_gain",
+    "background"
+  ],
   "error_metric": "PSNR_dB",
   "error_metric_secondary": "R_factor",
-
   "spec_range": {
     "center_spec": {
       "problem_class": "phase_retrieval_cdi",
       "forward_operator": "far_field_intensity",
       "input_format": "diffraction_intensity_plus_support_prior",
-      "omega": {"H": 512, "W": 512, "oversampling_sigma": 3.0, "photon_count": 1000, "beam_stop_radius_px": 10, "partial_coherence": 1.0, "support_mask_error": 0.0},
+      "omega": {
+        "H": 512,
+        "W": 512,
+        "oversampling_sigma": 3.0,
+        "photon_count": 1000,
+        "beam_stop_radius_px": 10,
+        "partial_coherence": 1.0,
+        "support_mask_error": 0.0
+      },
       "epsilon_fn_center": "25.0 dB PSNR"
     },
-    "allowed_forward_operators": ["far_field_intensity", "fresnel_intensity"],
-    "allowed_problem_classes": ["phase_retrieval_cdi", "xfel_sps", "holo_cdi"],
-    "allowed_omega_dimensions": ["H", "W", "oversampling_sigma", "photon_count", "beam_stop_radius_px", "partial_coherence", "support_mask_error", "background"],
+    "allowed_forward_operators": [
+      "far_field_intensity",
+      "fresnel_intensity"
+    ],
+    "allowed_problem_classes": [
+      "phase_retrieval_cdi",
+      "xfel_sps",
+      "holo_cdi"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "oversampling_sigma",
+      "photon_count",
+      "beam_stop_radius_px",
+      "partial_coherence",
+      "support_mask_error",
+      "background"
+    ],
     "omega_bounds": {
-      "H": [128, 4096], "W": [128, 4096], "oversampling_sigma": [2.0, 8.0],
-      "photon_count": [10, 100000], "beam_stop_radius_px": [0, 50],
-      "partial_coherence": [0.70, 1.0], "support_mask_error": [0.0, 0.3],
-      "background": [0.0, 0.05]
+      "H": [
+        128,
+        4096
+      ],
+      "W": [
+        128,
+        4096
+      ],
+      "oversampling_sigma": [
+        2.0,
+        8.0
+      ],
+      "photon_count": [
+        10,
+        100000
+      ],
+      "beam_stop_radius_px": [
+        0,
+        50
+      ],
+      "partial_coherence": [
+        0.7,
+        1.0
+      ],
+      "support_mask_error": [
+        0.0,
+        0.3
+      ],
+      "background": [
+        0.0,
+        0.05
+      ]
     },
-    "epsilon_bounds": {"psnr_db": [12.0, 38.0]}
+    "epsilon_bounds": {
+      "psnr_db": [
+        12.0,
+        38.0
+      ]
+    }
   },
-
-  "p1_p10_tests": ["PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS"],
-  "s1_s4_gates": ["PASS", "PASS", "PASS", "PASS"],
-  "ipfs_cid": null
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": true,
+    "coupling_count_n_c": 1,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

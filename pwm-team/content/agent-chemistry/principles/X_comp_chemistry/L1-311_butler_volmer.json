@@ -6,6 +6,9 @@
   "domain": "Computational Chemistry",
   "sub_domain": "Electrode charge-transfer kinetics",
   "source_file": "X_computational_chemistry/311_butler_volmer.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
   "E": {
     "description": "Butler-Volmer current-overpotential: i = i_0 * (exp(alpha_a*F*eta/RT) - exp(-alpha_c*F*eta/RT)); describes electron-transfer rate at electrode.",
@@ -141,5 +144,12 @@
     "PASS",
     "PASS"
   ],
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": false,
+    "coupling_count_n_c": 0,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

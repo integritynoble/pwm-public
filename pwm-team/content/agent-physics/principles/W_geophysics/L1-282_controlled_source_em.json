@@ -6,6 +6,9 @@
   "domain": "Geophysics",
   "sub_domain": "Marine CSEM for hydrocarbon reservoirs",
   "source_file": "W_geophysics/282_controlled_source_em.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
     "description": "Controlled-Source EM (CSEM) \u2014 resistivity for hydrocarbons forward model.",
@@ -157,5 +160,12 @@
     "PASS",
     "PASS"
   ],
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": false,
+    "coupling_count_n_c": 0,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

@@ -6,8 +6,10 @@
   "domain": "Spectroscopy",
   "sub_domain": "Zeeman-split spin-state spectroscopy",
   "source_file": "L_spectroscopy/146_nmr.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence boilerplate. Physics grounded in Levitt 2008 Spin Dynamics; Keeler 2010 Understanding NMR Spectroscopy; Ernst-Bodenhausen-Wokaun 1987 Principles of NMR in One and Two Dimensions.",
-
   "E": {
     "description": "Atomic nuclei with spin I>0 in a static magnetic field B0 precess at the Larmor frequency omega_0 = gamma * B0. Radio-frequency pulses tip the magnetization; free-induction decay (FID) is Fourier-transformed to yield a chemical-shift spectrum; chemical shift delta = (omega_0 - omega_ref)/omega_ref encodes molecular environment.",
     "forward_model": "y(t) = sum_k A_k * exp(-t/T2_k + j*omega_k*t + j*phi_k);  spectrum S(omega) = FT[y(t)]",
@@ -22,15 +24,20 @@
       "B0 shim (inhomogeneity) and B1 calibration"
     ]
   },
-
   "G": {
     "dag": "L.precess.zeeman -> L.synthesis.harmonic -> int.temporal",
-    "vertices": ["L.precess.zeeman", "L.synthesis.harmonic", "int.temporal"],
-    "arcs": ["L.precess.zeeman -> L.synthesis.harmonic", "L.synthesis.harmonic -> int.temporal"],
+    "vertices": [
+      "L.precess.zeeman",
+      "L.synthesis.harmonic",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.precess.zeeman -> L.synthesis.harmonic",
+      "L.synthesis.harmonic -> int.temporal"
+    ],
     "L_DAG": 3.0,
     "n_c": 0
   },
-
   "W": {
     "existence": true,
     "uniqueness": "peak assignment unique when delta-lines resolved (sufficient B0 and low B0-inhomogeneity)",
@@ -40,14 +47,12 @@
     "condition_number_mismatched": 500,
     "regime": "Linear inverse via FFT; peak overlap in crowded spectra is dominant ill-posedness source. Mismatch: B0 shim drift, B1 miscalibration, phase drift."
   },
-
   "C": {
     "solver_class": "FFT, peak picking + Voigt fitting, DOSY processing, 2D COSY/HSQC/HMBC deconvolution, non-uniform sampling reconstruction (CS-NMR), learned (DeepNMR)",
     "convergence_rate_q": 2.0,
     "error_bound": "Chemical-shift uncertainty ~ 1/(N * SNR); integral accuracy tied to baseline",
     "complexity": "FFT O(N log N); peak fit O(K*N*iter); 2D NMR O(N1*N2*log)"
   },
-
   "physics_fingerprint": {
     "carrier": "RF",
     "sensing_mechanism": "zeeman_precession",
@@ -55,39 +60,130 @@
     "problem_class": "parametric_spectral_estimation",
     "noise_model": "complex_gaussian",
     "solution_space": "chemical_shift_spectrum",
-    "primitives": ["L.precess.zeeman", "L.synthesis.harmonic", "int.temporal"]
+    "primitives": [
+      "L.precess.zeeman",
+      "L.synthesis.harmonic",
+      "int.temporal"
+    ]
   },
-
   "difficulty_delta": 3,
   "difficulty_tier": "standard",
-
-  "mismatch_parameters": ["b0_inhomogeneity", "b1_miscalibration", "phase_distortion", "baseline_roll", "solvent_suppression_residual"],
+  "mismatch_parameters": [
+    "b0_inhomogeneity",
+    "b1_miscalibration",
+    "phase_distortion",
+    "baseline_roll",
+    "solvent_suppression_residual"
+  ],
   "error_metric": "chemical_shift_RMSE_ppm",
   "error_metric_secondary": "integral_NMSE",
   "error_metric_tertiary": "structure_elucidation_accuracy",
-
   "spec_range": {
     "center_spec": {
       "problem_class": "1d_1h_nmr_peak_picking",
       "forward_operator": "nmr_fid_forward",
       "input_format": "fid_time_domain",
-      "omega": {"N": 32768, "SNR_dB": 30, "B0_MHz": 500, "K": 10, "b0_inhomogeneity_hz": 1.0, "phase_distortion": 0.0},
+      "omega": {
+        "N": 32768,
+        "SNR_dB": 30,
+        "B0_MHz": 500,
+        "K": 10,
+        "b0_inhomogeneity_hz": 1.0,
+        "phase_distortion": 0.0
+      },
       "epsilon_fn_center": "0.002 ppm RMSE"
     },
-    "allowed_forward_operators": ["nmr_fid_forward", "nmr_2d_nus_forward", "nmr_cpmg_forward"],
-    "allowed_problem_classes": ["1d_1h_nmr_peak_picking", "2d_cosy_deconvolution", "mixture_deconvolution", "non_uniform_sampling_cs"],
-    "allowed_omega_dimensions": ["N", "SNR_dB", "B0_MHz", "K", "b0_inhomogeneity_hz", "b1_miscalibration", "phase_distortion", "baseline_roll", "solvent_suppression_residual"],
+    "allowed_forward_operators": [
+      "nmr_fid_forward",
+      "nmr_2d_nus_forward",
+      "nmr_cpmg_forward"
+    ],
+    "allowed_problem_classes": [
+      "1d_1h_nmr_peak_picking",
+      "2d_cosy_deconvolution",
+      "mixture_deconvolution",
+      "non_uniform_sampling_cs"
+    ],
+    "allowed_omega_dimensions": [
+      "N",
+      "SNR_dB",
+      "B0_MHz",
+      "K",
+      "b0_inhomogeneity_hz",
+      "b1_miscalibration",
+      "phase_distortion",
+      "baseline_roll",
+      "solvent_suppression_residual"
+    ],
     "omega_bounds": {
-      "N": [1024, 262144], "SNR_dB": [-5, 50],
-      "B0_MHz": [60, 1200], "K": [1, 200],
-      "b0_inhomogeneity_hz": [0.0, 20], "b1_miscalibration": [0.0, 0.3],
-      "phase_distortion": [0.0, 0.5], "baseline_roll": [0.0, 0.2],
-      "solvent_suppression_residual": [0.0, 0.1]
+      "N": [
+        1024,
+        262144
+      ],
+      "SNR_dB": [
+        -5,
+        50
+      ],
+      "B0_MHz": [
+        60,
+        1200
+      ],
+      "K": [
+        1,
+        200
+      ],
+      "b0_inhomogeneity_hz": [
+        0.0,
+        20
+      ],
+      "b1_miscalibration": [
+        0.0,
+        0.3
+      ],
+      "phase_distortion": [
+        0.0,
+        0.5
+      ],
+      "baseline_roll": [
+        0.0,
+        0.2
+      ],
+      "solvent_suppression_residual": [
+        0.0,
+        0.1
+      ]
     },
-    "epsilon_bounds": {"rmse_ppm": [0.0001, 0.1]}
+    "epsilon_bounds": {
+      "rmse_ppm": [
+        0.0001,
+        0.1
+      ]
+    }
   },
-
-  "p1_p10_tests": ["PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS"],
-  "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
-  "ipfs_cid": null
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": false,
+    "coupling_count_n_c": 0,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

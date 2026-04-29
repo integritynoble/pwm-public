@@ -6,8 +6,10 @@
   "domain": "Signal Processing",
   "sub_domain": "Statistical independence-based demixing",
   "source_file": "AD_signal_processing/388_blind_source_separation.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence boilerplate. Physics grounded in Comon 1994 ICA; Hyvarinen-Oja 2000 FastICA; Belouchrani 1997 SOBI; Zibulevsky-Pearlmutter 2001 sparse BSS; Smaragdis 1998 freq-domain ICA.",
-
   "E": {
     "description": "N independent sources s_k[t] are linearly mixed by an unknown channel matrix A in R^{M x N} producing M observed sensor signals y[t] = A*s[t]. The goal is to recover both A and s up to scale and permutation ambiguity using only statistical assumptions (non-Gaussianity, non-stationarity, sparsity, or temporal structure).",
     "forward_model": "y[t] = A * s[t] + n[t];  A unknown, s components statistically independent",
@@ -21,15 +23,18 @@
       "Reverberation / convolutive channel order L_A (= 1 for instantaneous BSS)"
     ]
   },
-
   "G": {
     "dag": "L.mix.linear -> int.temporal",
-    "vertices": ["L.mix.linear", "int.temporal"],
-    "arcs": ["L.mix.linear -> int.temporal"],
+    "vertices": [
+      "L.mix.linear",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.mix.linear -> int.temporal"
+    ],
     "L_DAG": 2.2,
     "n_c": 0
   },
-
   "W": {
     "existence": true,
     "uniqueness": "up to permutation and scale",
@@ -39,14 +44,12 @@
     "condition_number_mismatched": 500,
     "regime": "Identifiable when at most one source is Gaussian (Darmois-Skitovich theorem). Convolutive BSS requires additional constraint (temporal coloration or higher statistics). Underdetermined (N > M) requires sparsity prior."
   },
-
   "C": {
     "solver_class": "FastICA (deflation, symmetric), Infomax, JADE, SOBI (second-order blind), AMUSE, non-negative (NMF), deep (Conv-TasNet, DPRNN for audio)",
     "convergence_rate_q": 2.0,
     "error_bound": "Inter-source interference SIR = |a_ii|^2 / sum_{j!=i}|a_ij|^2; CRLB-like bound for ICA: SIR -> 20*log10(sqrt(T/(N-1))) dB",
     "complexity": "FastICA: O(T*N^2) per iteration; JADE: O(N^4); SOBI: O(N*L^2) for L time lags"
   },
-
   "physics_fingerprint": {
     "carrier": "acoustic",
     "sensing_mechanism": "linear_mixing",
@@ -54,37 +57,126 @@
     "problem_class": "bilinear_blind_factorization",
     "noise_model": "gaussian",
     "solution_space": "independent_components",
-    "primitives": ["L.mix.linear", "int.temporal"]
+    "primitives": [
+      "L.mix.linear",
+      "int.temporal"
+    ]
   },
-
   "difficulty_delta": 5,
   "difficulty_tier": "challenging",
-
-  "mismatch_parameters": ["mixing_conditioning", "gaussianity", "reverberation", "N_vs_M", "non_stationarity"],
+  "mismatch_parameters": [
+    "mixing_conditioning",
+    "gaussianity",
+    "reverberation",
+    "N_vs_M",
+    "non_stationarity"
+  ],
   "error_metric": "SIR_dB",
   "error_metric_secondary": "permutation_recovery_rate",
   "error_metric_tertiary": "STOI (for speech)",
-
   "spec_range": {
     "center_spec": {
       "problem_class": "instantaneous_ica",
       "forward_operator": "linear_mixing_determined",
       "input_format": "mixtures_only",
-      "omega": {"N": 3, "M": 3, "T": 10000, "SNR_dB": 30, "kappa_A": 10, "reverberation_ms": 0, "gaussianity": 0.0},
+      "omega": {
+        "N": 3,
+        "M": 3,
+        "T": 10000,
+        "SNR_dB": 30,
+        "kappa_A": 10,
+        "reverberation_ms": 0,
+        "gaussianity": 0.0
+      },
       "epsilon_fn_center": "25.0 dB SIR"
     },
-    "allowed_forward_operators": ["linear_mixing_determined", "linear_mixing_overdetermined", "convolutive_mixing", "underdetermined_mixing"],
-    "allowed_problem_classes": ["instantaneous_ica", "convolutive_bss", "nmf_bss", "speech_separation"],
-    "allowed_omega_dimensions": ["N", "M", "T", "SNR_dB", "kappa_A", "reverberation_ms", "gaussianity", "non_stationarity"],
+    "allowed_forward_operators": [
+      "linear_mixing_determined",
+      "linear_mixing_overdetermined",
+      "convolutive_mixing",
+      "underdetermined_mixing"
+    ],
+    "allowed_problem_classes": [
+      "instantaneous_ica",
+      "convolutive_bss",
+      "nmf_bss",
+      "speech_separation"
+    ],
+    "allowed_omega_dimensions": [
+      "N",
+      "M",
+      "T",
+      "SNR_dB",
+      "kappa_A",
+      "reverberation_ms",
+      "gaussianity",
+      "non_stationarity"
+    ],
     "omega_bounds": {
-      "N": [2, 20], "M": [2, 20], "T": [500, 200000],
-      "SNR_dB": [-10, 40], "kappa_A": [1, 1000],
-      "reverberation_ms": [0, 500], "gaussianity": [0.0, 1.0], "non_stationarity": [0.0, 1.0]
+      "N": [
+        2,
+        20
+      ],
+      "M": [
+        2,
+        20
+      ],
+      "T": [
+        500,
+        200000
+      ],
+      "SNR_dB": [
+        -10,
+        40
+      ],
+      "kappa_A": [
+        1,
+        1000
+      ],
+      "reverberation_ms": [
+        0,
+        500
+      ],
+      "gaussianity": [
+        0.0,
+        1.0
+      ],
+      "non_stationarity": [
+        0.0,
+        1.0
+      ]
     },
-    "epsilon_bounds": {"sir_db": [0.0, 40.0]}
+    "epsilon_bounds": {
+      "sir_db": [
+        0.0,
+        40.0
+      ]
+    }
   },
-
-  "p1_p10_tests": ["PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS"],
-  "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
-  "ipfs_cid": null
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": false,
+    "coupling_count_n_c": 0,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

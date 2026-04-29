@@ -6,6 +6,9 @@
   "domain": "Microscopy",
   "sub_domain": "Parallelized pinhole confocal imaging",
   "source_file": "A_microscopy/022_spinning_disk.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical domain literature for this specific principle.",
   "E": {
     "description": "Spinning Disk Confocal (Nipkow) Microscopy: confocal pinhole array produces the measurement through a 3-node primitive DAG K.psf.confocal -> S.scan.nipkow -> int.temporal, with time-integrated exposure and Poisson signal noise + Gaussian read noise. Recovery is posed as a linear inverse problem that inverts the forward operator to estimate the scene-side 3D intensity. Difficulty tier delta=3 with effective condition number kappa_eff~7; calibration-level mismatch (disk_pattern_registration, pinhole_crosstalk, disk_speed_jitter) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
@@ -179,5 +182,12 @@
     "PASS",
     "PASS"
   ],
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": false,
+    "coupling_count_n_c": 0,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

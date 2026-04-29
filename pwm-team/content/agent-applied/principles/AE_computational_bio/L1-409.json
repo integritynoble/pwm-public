@@ -6,6 +6,9 @@
   "domain": "Computational Biology",
   "sub_domain": "Molecular evolution",
   "source_file": "AE_computational_bio/409_phylogenetic_likelihood.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
     "description": "Phylogenetic Likelihood Inference: Phylogenetic maximum likelihood: reconstruct evolutionary tree topology and branch lengths from DNA/protein alignment. The forward operator produces the measurement through a 3-node primitive DAG (M.felsenstein.pruning_algorithm\u2026); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=5 with effective condition number kappa_eff~2000; model_misspecification_substitution, long_branch_attraction set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
@@ -138,5 +141,12 @@
     "PASS",
     "PASS"
   ],
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": true,
+    "coupling_count_n_c": 2,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

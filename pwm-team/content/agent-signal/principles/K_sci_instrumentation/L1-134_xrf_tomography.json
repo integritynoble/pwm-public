@@ -2,12 +2,14 @@
   "artifact_id": "L1-134",
   "layer": "L1",
   "principle_number": "134",
-  "title": "XRF Tomography — X-ray Fluorescence CT",
+  "title": "XRF Tomography \u2014 X-ray Fluorescence CT",
   "domain": "Scientific Instrumentation",
   "sub_domain": "Elemental 3D tomography via fluorescence detection",
   "source_file": "K_scientific_instrumentation/134_xrf_tomography.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence boilerplate. Physics grounded in Boisseau-Grodzins 1987 XRF-CT seminal work; de Jonge-Vogt 2010 review; Bleuet et al. 2009 synchrotron XRF-CT; Kemner 2013 trace-metal imaging.",
-
   "E": {
     "description": "A pencil or focused X-ray beam (synchrotron or microfocus source) excites K/L fluorescence of elements; fluorescent photons emitted isotropically are collected via energy-dispersive detector. Pencil-beam raster + rotation yields projections of elemental concentration; CT inversion reconstructs 3D elemental maps at ~1-10 um resolution.",
     "forward_model": "I_fluor(theta, t, E_k) = eta_det * omega_k * exp(-integral_self_abs) * c_k(r) * integral_exc dl",
@@ -22,15 +24,22 @@
       "Scatter background (Compton + Rayleigh)"
     ]
   },
-
   "G": {
     "dag": "L.absorb.innerShell -> S.emit.fluor -> L.project.pencilbeam -> int.spatial",
-    "vertices": ["L.absorb.innerShell", "S.emit.fluor", "L.project.pencilbeam", "int.spatial"],
-    "arcs": ["L.absorb.innerShell -> S.emit.fluor", "S.emit.fluor -> L.project.pencilbeam", "L.project.pencilbeam -> int.spatial"],
+    "vertices": [
+      "L.absorb.innerShell",
+      "S.emit.fluor",
+      "L.project.pencilbeam",
+      "int.spatial"
+    ],
+    "arcs": [
+      "L.absorb.innerShell -> S.emit.fluor",
+      "S.emit.fluor -> L.project.pencilbeam",
+      "L.project.pencilbeam -> int.spatial"
+    ],
     "L_DAG": 3.0,
     "n_c": 0
   },
-
   "W": {
     "existence": true,
     "uniqueness": "unique at full-angle, low-Z, thin samples; thick high-Z samples suffer self-absorption nonlinearity",
@@ -40,14 +49,12 @@
     "condition_number_mismatched": 1000,
     "regime": "Linear at low concentration; self-absorption breaks linearity (must be corrected iteratively). Limited-angle geometry adds ill-posedness."
   },
-
   "C": {
     "solver_class": "FBP-with-attenuation, iterative SART with self-absorption correction, ML-EM, learned XRF-Net",
     "convergence_rate_q": 2.0,
     "error_bound": "c_k uncertainty ~ sigma/sqrt(N_counts); self-absorption systematic 5-20%",
     "complexity": "FBP O(N^2 log); iterative O(iter * N_view * N_voxel)"
   },
-
   "physics_fingerprint": {
     "carrier": "photon",
     "sensing_mechanism": "xray_fluorescence_yield",
@@ -55,40 +62,140 @@
     "problem_class": "linear_tomographic_inverse",
     "noise_model": "shot_poisson",
     "solution_space": "3d_elemental_concentration",
-    "primitives": ["L.absorb.innerShell", "S.emit.fluor", "L.project.pencilbeam", "int.spatial"]
+    "primitives": [
+      "L.absorb.innerShell",
+      "S.emit.fluor",
+      "L.project.pencilbeam",
+      "int.spatial"
+    ]
   },
-
   "difficulty_delta": 3,
   "difficulty_tier": "standard",
-
-  "mismatch_parameters": ["self_absorption", "scatter_background", "pileup_correction", "beam_position_jitter", "detector_live_time"],
+  "mismatch_parameters": [
+    "self_absorption",
+    "scatter_background",
+    "pileup_correction",
+    "beam_position_jitter",
+    "detector_live_time"
+  ],
   "error_metric": "concentration_NMSE",
   "error_metric_secondary": "spatial_resolution_um",
   "error_metric_tertiary": "trace_element_LOD_ppm",
-
   "spec_range": {
     "center_spec": {
       "problem_class": "xrf_tomography",
       "forward_operator": "xrf_ct_forward",
       "input_format": "projection_sinogram",
-      "omega": {"H": 500, "W": 500, "N_view": 360, "pixel_um": 1, "E_exc_keV": 20, "K": 10, "self_absorption": 0.1},
+      "omega": {
+        "H": 500,
+        "W": 500,
+        "N_view": 360,
+        "pixel_um": 1,
+        "E_exc_keV": 20,
+        "K": 10,
+        "self_absorption": 0.1
+      },
       "epsilon_fn_center": "NMSE 0.02"
     },
-    "allowed_forward_operators": ["xrf_ct_forward", "conxrf_tomo"],
-    "allowed_problem_classes": ["xrf_tomography", "xrf_2d_mapping", "confocal_xrf"],
-    "allowed_omega_dimensions": ["H", "W", "N_view", "pixel_um", "E_exc_keV", "K", "self_absorption", "scatter_background", "pileup_correction", "beam_position_jitter", "detector_live_time"],
+    "allowed_forward_operators": [
+      "xrf_ct_forward",
+      "conxrf_tomo"
+    ],
+    "allowed_problem_classes": [
+      "xrf_tomography",
+      "xrf_2d_mapping",
+      "confocal_xrf"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "N_view",
+      "pixel_um",
+      "E_exc_keV",
+      "K",
+      "self_absorption",
+      "scatter_background",
+      "pileup_correction",
+      "beam_position_jitter",
+      "detector_live_time"
+    ],
     "omega_bounds": {
-      "H": [64, 2048], "W": [64, 2048], "N_view": [10, 1000],
-      "pixel_um": [0.1, 100], "E_exc_keV": [5, 50],
-      "K": [1, 30],
-      "self_absorption": [0.0, 0.8], "scatter_background": [0.0, 0.3],
-      "pileup_correction": [0.0, 0.2], "beam_position_jitter": [0.0, 2],
-      "detector_live_time": [0.1, 1.0]
+      "H": [
+        64,
+        2048
+      ],
+      "W": [
+        64,
+        2048
+      ],
+      "N_view": [
+        10,
+        1000
+      ],
+      "pixel_um": [
+        0.1,
+        100
+      ],
+      "E_exc_keV": [
+        5,
+        50
+      ],
+      "K": [
+        1,
+        30
+      ],
+      "self_absorption": [
+        0.0,
+        0.8
+      ],
+      "scatter_background": [
+        0.0,
+        0.3
+      ],
+      "pileup_correction": [
+        0.0,
+        0.2
+      ],
+      "beam_position_jitter": [
+        0.0,
+        2
+      ],
+      "detector_live_time": [
+        0.1,
+        1.0
+      ]
     },
-    "epsilon_bounds": {"nmse": [1e-3, 0.5]}
+    "epsilon_bounds": {
+      "nmse": [
+        0.001,
+        0.5
+      ]
+    }
   },
-
-  "p1_p10_tests": ["PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS"],
-  "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
-  "ipfs_cid": null
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": false,
+    "coupling_count_n_c": 0,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

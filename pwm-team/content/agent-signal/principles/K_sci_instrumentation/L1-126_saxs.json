@@ -2,19 +2,21 @@
   "artifact_id": "L1-126",
   "layer": "L1",
   "principle_number": "126",
-  "title": "SAXS — Small-Angle X-ray Scattering",
+  "title": "SAXS \u2014 Small-Angle X-ray Scattering",
   "domain": "Scientific Instrumentation",
   "sub_domain": "Nanoscale structural scattering (1-100 nm)",
   "source_file": "K_scientific_instrumentation/126_saxs.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence boilerplate. Physics grounded in Glatter-Kratky 1982 Small-Angle X-ray Scattering textbook; Svergun 2013 biology SAXS; Feigin-Svergun 1987 structure analysis; Trewhella et al. 2017 BioSAXS validation.",
-
   "E": {
-    "description": "X-rays scatter elastically at small momentum transfer q = 4*pi*sin(theta)/lambda < 0.5 Å^-1 from inhomogeneities ~ 2*pi/q nm. Radially integrated intensity I(q) encodes pair-distance distribution function P(r) via Fourier transform (Fourier-Bessel). For biomolecules, provides radius of gyration Rg and maximum dimension Dmax.",
+    "description": "X-rays scatter elastically at small momentum transfer q = 4*pi*sin(theta)/lambda < 0.5 \u00c5^-1 from inhomogeneities ~ 2*pi/q nm. Radially integrated intensity I(q) encodes pair-distance distribution function P(r) via Fourier transform (Fourier-Bessel). For biomolecules, provides radius of gyration Rg and maximum dimension Dmax.",
     "forward_model": "I(q) = P(q) * Delta_rho^2 * V^2 + background;   P(q) = FT[P(r) * r]",
     "world_state_x": "Electron-density fluctuations, pair-distance distribution P(r)",
     "observation_y": "1D intensity I(q) over q-range, or 2D detector image",
     "physical_parameters_theta": [
-      "Wavelength lambda (1-1.5 Å typical)",
+      "Wavelength lambda (1-1.5 \u00c5 typical)",
       "Sample-to-detector distance (1-5 m)",
       "q-range [q_min, q_max]",
       "Concentration and molecular weight",
@@ -22,15 +24,20 @@
       "Polydispersity, aggregation"
     ]
   },
-
   "G": {
     "dag": "L.scatter.elastic -> L.project.q -> int.angular",
-    "vertices": ["L.scatter.elastic", "L.project.q", "int.angular"],
-    "arcs": ["L.scatter.elastic -> L.project.q", "L.project.q -> int.angular"],
+    "vertices": [
+      "L.scatter.elastic",
+      "L.project.q",
+      "int.angular"
+    ],
+    "arcs": [
+      "L.scatter.elastic -> L.project.q",
+      "L.project.q -> int.angular"
+    ],
     "L_DAG": 2.7,
     "n_c": 0
   },
-
   "W": {
     "existence": true,
     "uniqueness": "Rg, Dmax unique up to buffer matching; 3D shape ambiguous (envelope only)",
@@ -40,14 +47,12 @@
     "condition_number_mismatched": 400,
     "regime": "Inverse Fourier transform from I(q) to P(r) is ill-posed (ATSAS-GNOM uses regularization); shape reconstruction requires ab-initio bead models. Mismatch: aggregation, polydispersity, buffer mismatch."
   },
-
   "C": {
     "solver_class": "Guinier fit (Rg), GNOM (indirect FT), DAMMIN/DAMMIF (bead ab-initio), EOM (ensemble models), learned (BIFT, SAX-ML)",
     "convergence_rate_q": 2.0,
     "error_bound": "Rg precision ~ 0.5-1% at good SNR; chi^2_red <= 1.5 required for model acceptance",
     "complexity": "Guinier O(N_q); GNOM O(N_r * N_q); DAMMIF O(iter * N_beads * N_q)"
   },
-
   "physics_fingerprint": {
     "carrier": "photon",
     "sensing_mechanism": "xray_small_angle_scatter",
@@ -55,39 +60,134 @@
     "problem_class": "inverse_fourier_scatter",
     "noise_model": "shot_poisson",
     "solution_space": "pair_distribution_or_envelope",
-    "primitives": ["L.scatter.elastic", "L.project.q", "int.angular"]
+    "primitives": [
+      "L.scatter.elastic",
+      "L.project.q",
+      "int.angular"
+    ]
   },
-
   "difficulty_delta": 3,
   "difficulty_tier": "standard",
-
-  "mismatch_parameters": ["aggregation_fraction", "polydispersity", "buffer_mismatch", "beam_damage", "q_range_truncation"],
+  "mismatch_parameters": [
+    "aggregation_fraction",
+    "polydispersity",
+    "buffer_mismatch",
+    "beam_damage",
+    "q_range_truncation"
+  ],
   "error_metric": "Rg_RMSE_nm",
   "error_metric_secondary": "chi2_reduced",
   "error_metric_tertiary": "Dmax_error_nm",
-
   "spec_range": {
     "center_spec": {
       "problem_class": "biosaxs_globular_protein",
       "forward_operator": "saxs_iq_forward",
       "input_format": "scattering_curve_plus_buffer",
-      "omega": {"N_q": 400, "q_min": 0.01, "q_max": 0.5, "Rg_nm": 2.0, "concentration_mg_ml": 1.0, "aggregation_fraction": 0.0},
+      "omega": {
+        "N_q": 400,
+        "q_min": 0.01,
+        "q_max": 0.5,
+        "Rg_nm": 2.0,
+        "concentration_mg_ml": 1.0,
+        "aggregation_fraction": 0.0
+      },
       "epsilon_fn_center": "0.05 nm Rg RMSE"
     },
-    "allowed_forward_operators": ["saxs_iq_forward", "waxs_iq_forward"],
-    "allowed_problem_classes": ["biosaxs_globular_protein", "biosaxs_imp_flexible", "saxs_nanoparticle", "waxs_fiber"],
-    "allowed_omega_dimensions": ["N_q", "q_min", "q_max", "Rg_nm", "concentration_mg_ml", "aggregation_fraction", "polydispersity", "buffer_mismatch", "beam_damage", "q_range_truncation"],
+    "allowed_forward_operators": [
+      "saxs_iq_forward",
+      "waxs_iq_forward"
+    ],
+    "allowed_problem_classes": [
+      "biosaxs_globular_protein",
+      "biosaxs_imp_flexible",
+      "saxs_nanoparticle",
+      "waxs_fiber"
+    ],
+    "allowed_omega_dimensions": [
+      "N_q",
+      "q_min",
+      "q_max",
+      "Rg_nm",
+      "concentration_mg_ml",
+      "aggregation_fraction",
+      "polydispersity",
+      "buffer_mismatch",
+      "beam_damage",
+      "q_range_truncation"
+    ],
     "omega_bounds": {
-      "N_q": [50, 2000], "q_min": [0.001, 0.1], "q_max": [0.1, 1.0],
-      "Rg_nm": [0.5, 50], "concentration_mg_ml": [0.1, 20],
-      "aggregation_fraction": [0.0, 0.5], "polydispersity": [0.0, 0.5],
-      "buffer_mismatch": [0.0, 0.3], "beam_damage": [0.0, 0.5],
-      "q_range_truncation": [0.0, 0.5]
+      "N_q": [
+        50,
+        2000
+      ],
+      "q_min": [
+        0.001,
+        0.1
+      ],
+      "q_max": [
+        0.1,
+        1.0
+      ],
+      "Rg_nm": [
+        0.5,
+        50
+      ],
+      "concentration_mg_ml": [
+        0.1,
+        20
+      ],
+      "aggregation_fraction": [
+        0.0,
+        0.5
+      ],
+      "polydispersity": [
+        0.0,
+        0.5
+      ],
+      "buffer_mismatch": [
+        0.0,
+        0.3
+      ],
+      "beam_damage": [
+        0.0,
+        0.5
+      ],
+      "q_range_truncation": [
+        0.0,
+        0.5
+      ]
     },
-    "epsilon_bounds": {"rg_rmse_nm": [0.01, 1.0]}
+    "epsilon_bounds": {
+      "rg_rmse_nm": [
+        0.01,
+        1.0
+      ]
+    }
   },
-
-  "p1_p10_tests": ["PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS"],
-  "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
-  "ipfs_cid": null
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": false,
+    "coupling_count_n_c": 0,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

@@ -6,6 +6,9 @@
   "domain": "Computational Chemistry",
   "sub_domain": "Empirical force-field dynamics",
   "source_file": "X_computational_chemistry/299_classical_md.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
   "E": {
     "description": "Classical MD: Newtonian dynamics of atoms under empirical force field U(R) = sum bonded + non-bonded (LJ + Coulomb) + many-body (AMBER, CHARMM, OPLS, ReaxFF).",
@@ -146,5 +149,12 @@
     "PASS",
     "PASS"
   ],
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": false,
+    "coupling_count_n_c": 0,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

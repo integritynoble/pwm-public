@@ -6,6 +6,9 @@
   "domain": "Quantum Mechanics",
   "sub_domain": "Full Hilbert space spectra",
   "source_file": "Y_quantum_mechanics/323_exact_diagonalization.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
   "E": {
     "description": "Build H in Fock basis; Lanczos/Arnoldi for lowest eigenstates; exact for small systems (up to ~30 sites/qubits).",
@@ -133,5 +136,12 @@
     "PASS",
     "PASS"
   ],
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": false,
+    "coupling_count_n_c": 0,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

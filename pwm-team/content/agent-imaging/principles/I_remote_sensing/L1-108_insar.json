@@ -6,6 +6,9 @@
   "domain": "Remote Sensing",
   "sub_domain": "Coherent SAR interferometry",
   "source_file": "I_remote_sensing/108_insar.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical remote-sensing literature for this principle.",
   "E": {
     "description": "Interferometric SAR (InSAR) \u2014 deformation + DEM: insar coherent interferometry produces the measurement through a 5-node primitive DAG L.emit.chirp -> S.scan.platform -> L.interferometric_phase -> L.phase_unwrap -> int.spatial, with time-integrated exposure and multiplicative speckle (Rayleigh amplitude / exponential intensity). Recovery is posed as a non-convex inverse problem that inverts the forward operator to estimate the scene-side 2D deformation or DEM. Difficulty tier delta=5 with effective condition number kappa_eff~25; calibration-level mismatch (atmospheric_phase_screen, baseline_error, temporal_decorrelation) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
@@ -194,5 +197,12 @@
     "PASS",
     "PASS"
   ],
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": false,
+    "coupling_count_n_c": 0,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

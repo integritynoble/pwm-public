@@ -6,6 +6,9 @@
   "domain": "Semiconductor Physics",
   "sub_domain": "Nanoscale quantum transport",
   "source_file": "AN_semiconductor/491_quantum_transport_negf.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
   "E": {
     "description": "Keldysh-Kadanoff-Baym NEGF: retarded G^R, advanced G^A, lesser G^< Green's functions; self-energies Sigma^R, Sigma^< for contacts and scattering; Landauer current.",
@@ -146,5 +149,12 @@
     "PASS",
     "PASS"
   ],
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": true,
+    "coupling_count_n_c": 2,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

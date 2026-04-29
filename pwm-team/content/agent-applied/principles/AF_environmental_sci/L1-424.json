@@ -6,6 +6,9 @@
   "domain": "Environmental Science",
   "sub_domain": "Carbon cycle",
   "source_file": "AF_environmental_sci/424_carbon_cycle.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
     "description": "Carbon Cycle Biogeochemical Inversion: Carbon cycle inversion: estimate surface CO2 fluxes (NEE, ocean uptake) from atmospheric CO2 observations. The forward operator produces the measurement through a 3-node primitive DAG (M.agcm.tracer_transport\u2026); recovery is posed as a linear_inverse problem. Difficulty tier delta=5 with effective condition number kappa_eff~2000; transport_model_error, prior_uncertainty_specification set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
@@ -138,5 +141,12 @@
     "PASS",
     "PASS"
   ],
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": true,
+    "coupling_count_n_c": 1,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

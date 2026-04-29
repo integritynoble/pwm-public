@@ -6,6 +6,9 @@
   "domain": "Scanning Probe",
   "sub_domain": "Sub-diffraction optical microscopy via near-field aperture",
   "source_file": "P_scanning_probe/164_nsom.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
   "E": {
     "description": "Near-Field Scanning Optical Microscopy (NSOM/SNOM): near field scanning optical produces the measurement through a 4-node primitive DAG L.aperture_near_field -> L.evanescent_coupling -> S.scan.raster -> int.spatial, with spatially-projected accumulation and photon-shot-noise-limited (Poisson counting). Recovery is posed as a linear inverse problem that inverts the forward operator to estimate the scene-side 2D intensity. Difficulty tier delta=5 with effective condition number kappa_eff~18; calibration-level mismatch (tip_sample_distance, aperture_contamination, vibrational_noise) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
@@ -181,5 +184,12 @@
     "PASS",
     "PASS"
   ],
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": false,
+    "coupling_count_n_c": 0,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

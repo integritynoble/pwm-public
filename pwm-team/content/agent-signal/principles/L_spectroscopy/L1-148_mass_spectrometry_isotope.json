@@ -6,8 +6,10 @@
   "domain": "Spectroscopy",
   "sub_domain": "High-precision stable-isotope measurement",
   "source_file": "L_spectroscopy/148_mass_spectrometry_isotope.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence boilerplate. Physics grounded in Brenna et al. 1998 IRMS review; Coplen 2011 IUPAC delta-scale conventions; Bowen-West-Hoogewerff 2005 continuous-flow IRMS; Laursen et al. 2013 elemental analyzer IRMS.",
-
   "E": {
     "description": "Sample gases (CO2, N2, SO2, H2O, etc.) are introduced into a magnetic-sector or multi-collector MS; isotopologues are separated by m/z and simultaneously collected on Faraday cups; the isotope ratio R_sample = (heavy/light) is compared to a reference to yield delta notation: delta = (R_sample/R_ref - 1) * 1000 permil.",
     "forward_model": "R_obs = R_true * (1 + sigma_contamination + sigma_drift + sigma_memory);  delta = (R_obs/R_ref - 1)*1e3",
@@ -22,15 +24,18 @@
       "H3+ correction for H isotopes"
     ]
   },
-
   "G": {
     "dag": "L.disperse.mass -> int.temporal",
-    "vertices": ["L.disperse.mass", "int.temporal"],
-    "arcs": ["L.disperse.mass -> int.temporal"],
+    "vertices": [
+      "L.disperse.mass",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.disperse.mass -> int.temporal"
+    ],
     "L_DAG": 2.0,
     "n_c": 0
   },
-
   "W": {
     "existence": true,
     "uniqueness": "isotope ratio unique under linear detector response",
@@ -40,14 +45,12 @@
     "condition_number_mismatched": 200,
     "regime": "Ratio-metric measurements are self-correcting for flow/pressure drifts; amplifier nonlinearity and peak tailing are dominant error sources at 0.01-0.1 permil level."
   },
-
   "C": {
     "solver_class": "Ratio averaging, drift correction, standard-bracketing, linearity calibration, memory-effect deconvolution",
     "convergence_rate_q": 2.0,
     "error_bound": "Permil-level precision ~ 0.01-0.1 permil (ppm-level); limited by counting statistics at low current",
     "complexity": "Nearly O(N_measurements) per sample"
   },
-
   "physics_fingerprint": {
     "carrier": "ion",
     "sensing_mechanism": "magnetic_sector_ms",
@@ -55,37 +58,118 @@
     "problem_class": "ratio_estimation",
     "noise_model": "gaussian_plus_drift",
     "solution_space": "isotope_ratio_scalar",
-    "primitives": ["L.disperse.mass", "int.temporal"]
+    "primitives": [
+      "L.disperse.mass",
+      "int.temporal"
+    ]
   },
-
   "difficulty_delta": 2,
   "difficulty_tier": "standard",
-
-  "mismatch_parameters": ["memory_effect", "amplifier_nonlinearity", "peak_tailing", "flow_drift", "sample_size_mismatch"],
+  "mismatch_parameters": [
+    "memory_effect",
+    "amplifier_nonlinearity",
+    "peak_tailing",
+    "flow_drift",
+    "sample_size_mismatch"
+  ],
   "error_metric": "delta_RMSE_permil",
   "error_metric_secondary": "precision_permil",
   "error_metric_tertiary": "accuracy_vs_standard",
-
   "spec_range": {
     "center_spec": {
       "problem_class": "bulk_irms_delta",
       "forward_operator": "sector_irms_forward",
       "input_format": "faraday_voltage_traces",
-      "omega": {"N_replicate": 6, "isotope_pair": "13C12C", "mass_pair": [45, 44], "memory_effect": 0.001, "amp_nonlinearity": 1e-5, "peak_tailing": 1e-4},
+      "omega": {
+        "N_replicate": 6,
+        "isotope_pair": "13C12C",
+        "mass_pair": [
+          45,
+          44
+        ],
+        "memory_effect": 0.001,
+        "amp_nonlinearity": 1e-05,
+        "peak_tailing": 0.0001
+      },
       "epsilon_fn_center": "0.05 permil RMSE"
     },
-    "allowed_forward_operators": ["sector_irms_forward", "multi_collector_icpms_forward", "cavity_ringdown_isotope"],
-    "allowed_problem_classes": ["bulk_irms_delta", "compound_specific_cs_irms", "clumped_isotopes"],
-    "allowed_omega_dimensions": ["N_replicate", "isotope_pair", "mass_pair", "memory_effect", "amp_nonlinearity", "peak_tailing", "flow_drift", "sample_size_mismatch"],
+    "allowed_forward_operators": [
+      "sector_irms_forward",
+      "multi_collector_icpms_forward",
+      "cavity_ringdown_isotope"
+    ],
+    "allowed_problem_classes": [
+      "bulk_irms_delta",
+      "compound_specific_cs_irms",
+      "clumped_isotopes"
+    ],
+    "allowed_omega_dimensions": [
+      "N_replicate",
+      "isotope_pair",
+      "mass_pair",
+      "memory_effect",
+      "amp_nonlinearity",
+      "peak_tailing",
+      "flow_drift",
+      "sample_size_mismatch"
+    ],
     "omega_bounds": {
-      "N_replicate": [1, 100], "memory_effect": [0.0, 0.1],
-      "amp_nonlinearity": [0.0, 1e-3], "peak_tailing": [0.0, 1e-2],
-      "flow_drift": [0.0, 0.05], "sample_size_mismatch": [0.0, 0.5]
+      "N_replicate": [
+        1,
+        100
+      ],
+      "memory_effect": [
+        0.0,
+        0.1
+      ],
+      "amp_nonlinearity": [
+        0.0,
+        0.001
+      ],
+      "peak_tailing": [
+        0.0,
+        0.01
+      ],
+      "flow_drift": [
+        0.0,
+        0.05
+      ],
+      "sample_size_mismatch": [
+        0.0,
+        0.5
+      ]
     },
-    "epsilon_bounds": {"rmse_permil": [0.005, 10]}
+    "epsilon_bounds": {
+      "rmse_permil": [
+        0.005,
+        10
+      ]
+    }
   },
-
-  "p1_p10_tests": ["PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS"],
-  "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
-  "ipfs_cid": null
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": false,
+    "coupling_count_n_c": 0,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

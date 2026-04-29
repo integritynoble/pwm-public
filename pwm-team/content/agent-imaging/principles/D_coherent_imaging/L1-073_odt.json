@@ -2,12 +2,14 @@
   "artifact_id": "L1-073",
   "layer": "L1",
   "principle_number": "073",
-  "title": "Optical Diffraction Tomography (ODT) — 3D refractive-index imaging",
+  "title": "Optical Diffraction Tomography (ODT) \u2014 3D refractive-index imaging",
   "domain": "Coherent Imaging",
   "sub_domain": "Multi-angle coherent tomography",
   "source_file": "D_coherent_imaging/073_odt.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical ODT literature (Wolf 1969 diffraction tomography theorem; Kamilov et al. learned reconstruction).",
-
   "E": {
     "description": "ODT illuminates a weakly scattering 3D object with coherent plane waves at multiple angles; for each angle the complex scattered field is measured holographically. Under first Born / Rytov approximations, each scattered field is a 2D slice of the 3D Fourier transform of the refractive-index contrast on a cap of the Ewald sphere. Rotating the illumination fills the 3D k-space volume (up to the missing cone).",
     "forward_model": "U_s(k_x, k_y; theta) = i * k / (2 * sqrt(k^2 - |k_perp|^2)) * F{n(r) - n_0}(k_perp, k_z(theta)) + n_noise",
@@ -21,10 +23,14 @@
       "partial coherence parameter"
     ]
   },
-
   "G": {
     "dag": "S.scan.angular -> F.propagation.helmholtz -> L.projection.ewald_cap -> int.angular",
-    "vertices": ["S.scan.angular", "F.propagation.helmholtz", "L.projection.ewald_cap", "int.angular"],
+    "vertices": [
+      "S.scan.angular",
+      "F.propagation.helmholtz",
+      "L.projection.ewald_cap",
+      "int.angular"
+    ],
     "arcs": [
       "S.scan.angular -> F.propagation.helmholtz",
       "F.propagation.helmholtz -> L.projection.ewald_cap",
@@ -33,7 +39,6 @@
     "L_DAG": 3.8,
     "n_c": 1
   },
-
   "W": {
     "existence": true,
     "uniqueness": true,
@@ -42,14 +47,12 @@
     "condition_number_effective": 60,
     "regime": "Ill-posed along the missing-cone axis (cone of k-space unreachable by finite-NA illumination). Regularized inversion (TV, deep priors) fills the cone with smoothness assumptions. Non-linear Beyond-Born solvers (LS-LT, SEAGLE) handle multiple scattering but become strongly non-convex."
   },
-
   "C": {
     "solver_class": "FBP-ODT (filtered backprojection over Ewald cap), Rytov inversion, TV-regularized ADMM, Multi-slice (beam-propagation), DeepODT / UNet-ODT",
     "convergence_rate_q": 2.0,
     "error_bound": "||n_hat - n||_2 <= C1 * sigma_noise / sqrt(K) + C2 * delta_missing_cone; missing-cone artifacts dominate at NA < 0.8",
     "complexity": "O(K * H * W * log(H*W)) for linear Born-Rytov; O(K * H * W * D) per iteration for multi-slice non-linear"
   },
-
   "physics_fingerprint": {
     "carrier": "photon",
     "sensing_mechanism": "multi_angle_coherent_holography",
@@ -57,38 +60,144 @@
     "problem_class": "linear_inverse",
     "noise_model": "gaussian",
     "solution_space": "3D_refractive_index",
-    "primitives": ["S.scan.angular", "F.propagation.helmholtz", "L.projection.ewald_cap", "int.angular"]
+    "primitives": [
+      "S.scan.angular",
+      "F.propagation.helmholtz",
+      "L.projection.ewald_cap",
+      "int.angular"
+    ]
   },
-
   "difficulty_delta": 5,
   "difficulty_tier": "challenging",
-
-  "mismatch_parameters": ["illumination_angle_error", "wavelength_drift", "n0_medium_error", "aberration_zernike", "limited_angle_range"],
+  "mismatch_parameters": [
+    "illumination_angle_error",
+    "wavelength_drift",
+    "n0_medium_error",
+    "aberration_zernike",
+    "limited_angle_range"
+  ],
   "error_metric": "3D_PSNR_dB",
   "error_metric_secondary": "refractive_index_L2",
   "error_metric_tertiary": "resolution_nm_missing_cone",
-
   "spec_range": {
     "center_spec": {
       "problem_class": "3d_refractive_index_recovery",
       "forward_operator": "rytov_ewald_cap",
       "input_format": "K_complex_fields_plus_angle_list",
-      "omega": {"H": 512, "W": 512, "D": 128, "K_angles": 90, "NA_illum": 1.0, "wavelength_nm": 532, "n_0": 1.33, "delta_n_max": 0.02, "illumination_angle_error": 0.0},
+      "omega": {
+        "H": 512,
+        "W": 512,
+        "D": 128,
+        "K_angles": 90,
+        "NA_illum": 1.0,
+        "wavelength_nm": 532,
+        "n_0": 1.33,
+        "delta_n_max": 0.02,
+        "illumination_angle_error": 0.0
+      },
       "epsilon_fn_center": "27.0 dB 3D PSNR"
     },
-    "allowed_forward_operators": ["rytov_ewald_cap", "first_born_ewald", "multi_slice_beam_propagation", "scattering_beyond_born"],
-    "allowed_problem_classes": ["3d_refractive_index_recovery", "odt_beyond_born", "tomographic_phase_imaging"],
-    "allowed_omega_dimensions": ["H", "W", "D", "K_angles", "NA_illum", "wavelength_nm", "n_0", "delta_n_max", "illumination_angle_error", "aberration_zernike", "limited_angle_range"],
+    "allowed_forward_operators": [
+      "rytov_ewald_cap",
+      "first_born_ewald",
+      "multi_slice_beam_propagation",
+      "scattering_beyond_born"
+    ],
+    "allowed_problem_classes": [
+      "3d_refractive_index_recovery",
+      "odt_beyond_born",
+      "tomographic_phase_imaging"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "D",
+      "K_angles",
+      "NA_illum",
+      "wavelength_nm",
+      "n_0",
+      "delta_n_max",
+      "illumination_angle_error",
+      "aberration_zernike",
+      "limited_angle_range"
+    ],
     "omega_bounds": {
-      "H": [128, 2048], "W": [128, 2048], "D": [32, 512], "K_angles": [30, 360],
-      "NA_illum": [0.4, 1.4], "wavelength_nm": [400, 800], "n_0": [1.0, 1.5],
-      "delta_n_max": [0.001, 0.1], "illumination_angle_error": [0.0, 2.0],
-      "aberration_zernike": [0.0, 0.5], "limited_angle_range": [90, 360]
+      "H": [
+        128,
+        2048
+      ],
+      "W": [
+        128,
+        2048
+      ],
+      "D": [
+        32,
+        512
+      ],
+      "K_angles": [
+        30,
+        360
+      ],
+      "NA_illum": [
+        0.4,
+        1.4
+      ],
+      "wavelength_nm": [
+        400,
+        800
+      ],
+      "n_0": [
+        1.0,
+        1.5
+      ],
+      "delta_n_max": [
+        0.001,
+        0.1
+      ],
+      "illumination_angle_error": [
+        0.0,
+        2.0
+      ],
+      "aberration_zernike": [
+        0.0,
+        0.5
+      ],
+      "limited_angle_range": [
+        90,
+        360
+      ]
     },
-    "epsilon_bounds": {"psnr_db": [15.0, 38.0]}
+    "epsilon_bounds": {
+      "psnr_db": [
+        15.0,
+        38.0
+      ]
+    }
   },
-
-  "p1_p10_tests": ["PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS"],
-  "s1_s4_gates": ["PASS", "PASS", "PASS", "PASS"],
-  "ipfs_cid": null
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": true,
+    "coupling_count_n_c": 1,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

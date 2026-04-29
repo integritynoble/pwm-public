@@ -6,6 +6,9 @@
   "domain": "Materials Science",
   "sub_domain": "Mesoscale plasticity",
   "source_file": "Z_materials_science/330_dislocation_dynamics.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
   "E": {
     "description": "Discrete dislocation dynamics (DDD): dislocations are 3D curves interacting via elastic fields; each node evolves by a mobility law v = M * f_PK where f_PK is Peach-Koehler force.",
@@ -146,5 +149,12 @@
     "PASS",
     "PASS"
   ],
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": false,
+    "coupling_count_n_c": 0,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

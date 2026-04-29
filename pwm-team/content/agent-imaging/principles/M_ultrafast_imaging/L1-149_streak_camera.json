@@ -6,6 +6,9 @@
   "domain": "Ultrafast Imaging",
   "sub_domain": "1D time-resolved photoelectron streaking",
   "source_file": "M_ultrafast_imaging/149_streak_camera.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
   "E": {
     "description": "Streak Camera \u2014 picosecond 1D time-resolved imaging: streak tube time resolved produces the measurement through a 4-node primitive DAG L.photocathode -> L.sweep_voltage -> D.streaked_phosphor -> int.temporal, with time-integrated exposure and photon-shot-noise-limited (Poisson counting). Recovery is posed as a linear inverse problem that inverts the forward operator to estimate the scene-side 1D time trace. Difficulty tier delta=5 with effective condition number kappa_eff~12; calibration-level mismatch (sweep_nonlinearity, photocathode_jitter, space_charge) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
@@ -173,5 +176,12 @@
     "PASS",
     "PASS"
   ],
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": false,
+    "coupling_count_n_c": 0,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

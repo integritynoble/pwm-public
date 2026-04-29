@@ -6,6 +6,9 @@
   "domain": "Remote Sensing",
   "sub_domain": "Atmospheric Doppler reflectivity + velocity",
   "source_file": "I_remote_sensing/105_weather_radar.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical remote-sensing literature for this principle.",
   "E": {
     "description": "Doppler Weather Radar: doppler radar produces the measurement through a 4-node primitive DAG L.emit.pulse -> L.volume_scatter -> L.doppler_frequency_shift -> int.temporal, with time-integrated exposure and additive Gaussian thermal/electronic noise. Recovery is posed as a linear inverse problem that inverts the forward operator to estimate the scene-side 3D reflectivity velocity. Difficulty tier delta=3 with effective condition number kappa_eff~9; calibration-level mismatch (beam_blockage, AP_propagation, aliasing) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
@@ -181,5 +184,12 @@
     "PASS",
     "PASS"
   ],
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": false,
+    "coupling_count_n_c": 0,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

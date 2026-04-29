@@ -6,6 +6,9 @@
   "domain": "Semiconductor Physics",
   "sub_domain": "Schottky barrier transport",
   "source_file": "AN_semiconductor/495_thermionic_emission.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
   "E": {
     "description": "Richardson-Dushman thermionic current: J_s = A* T^2 exp(-q*phi_B/k_B*T); combined with tunneling (field-enhanced) for modern Schottky contacts.",
@@ -150,5 +153,12 @@
     "PASS",
     "PASS"
   ],
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": false,
+    "coupling_count_n_c": 0,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

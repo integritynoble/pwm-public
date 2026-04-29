@@ -6,9 +6,11 @@
   "domain": "Compressive Imaging",
   "sub_domain": "Structured-illumination single-pixel",
   "source_file": "B_compressive_imaging/026_spc.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "reference_mine_example": "papers/Proof-of-Solution/mine_example/spc.md",
   "source_data_quality_note": "The source MD at B_compressive_imaging/026_spc.md contains the widefield-fluorescence template (genesis fan-out artifact). Physics below is extracted from the canonical mine_example/spc.md reference.",
-
   "E": {
     "description": "SPC: a DMD (digital micromirror device) imposes a sequence of Hadamard-style binary +/-1 patterns on the incoming optical field, and a single photodetector integrates the pattern-weighted irradiance; m scalar measurements permit recovery of the H*W image when m/n ~ 0.25 and the image is sparse.",
     "forward_model": "y_k = <phi_k, x> + n_k,  Phi from Hadamard basis at sampling ratio m/n",
@@ -21,10 +23,14 @@
       "DMD timing, duty cycle"
     ]
   },
-
   "G": {
     "dag": "S.pattern.hadamard -> L.inner_product -> int.temporal -> D.scalar",
-    "vertices": ["S.pattern.hadamard", "L.inner_product", "int.temporal", "D.scalar"],
+    "vertices": [
+      "S.pattern.hadamard",
+      "L.inner_product",
+      "int.temporal",
+      "D.scalar"
+    ],
     "arcs": [
       "S.pattern.hadamard -> L.inner_product",
       "L.inner_product -> int.temporal",
@@ -33,7 +39,6 @@
     "L_DAG": 3.0,
     "n_c": 0
   },
-
   "W": {
     "existence": true,
     "uniqueness": true,
@@ -42,14 +47,12 @@
     "condition_number_effective": 30,
     "regime": "Hadamard measurement at 25% sampling satisfies RIP for sparse recovery; Gate-1 minimum compression ratio ~5%. Residual-based calibration fails for SPC (undetermined self-consistency); TV-based objective required for gain-drift and illumination-non-uniformity correction."
   },
-
   "C": {
     "solver_class": "FISTA-TV, ISTA-Net, LISTA, or learned deep unrolling",
     "convergence_rate_q": 2.0,
     "error_bound": "||x_hat - x||_2 <= C1 * sigma / sqrt(m) + C2 * ||x - x_s||_1",
     "complexity": "O(n * log n) per iteration (fast Hadamard transform)"
   },
-
   "physics_fingerprint": {
     "carrier": "photon",
     "sensing_mechanism": "structured_illumination",
@@ -57,38 +60,103 @@
     "problem_class": "linear_inverse",
     "noise_model": "gaussian",
     "solution_space": "2D_spatial",
-    "primitives": ["S.pattern.hadamard", "L.inner_product", "int.temporal", "D.scalar"]
+    "primitives": [
+      "S.pattern.hadamard",
+      "L.inner_product",
+      "int.temporal",
+      "D.scalar"
+    ]
   },
-
   "difficulty_delta": 3,
   "difficulty_tier": "standard",
-
-  "mismatch_parameters": ["gain_alpha", "illum_sigma"],
+  "mismatch_parameters": [
+    "gain_alpha",
+    "illum_sigma"
+  ],
   "error_metric": "PSNR_dB",
   "error_metric_secondary": "SSIM",
-
   "spec_range": {
     "center_spec": {
       "problem_class": "spc_reconstruction",
       "forward_operator": "spc_hadamard",
       "input_format": "measurement_plus_pattern_set",
-      "omega": {"n_pixels": 4096, "sampling_ratio": 0.25, "noise_level": 0.01, "gain_alpha": 0.0, "illum_sigma": 0.0},
+      "omega": {
+        "n_pixels": 4096,
+        "sampling_ratio": 0.25,
+        "noise_level": 0.01,
+        "gain_alpha": 0.0,
+        "illum_sigma": 0.0
+      },
       "epsilon_fn_center": "27.0 dB PSNR"
     },
-    "allowed_forward_operators": ["spc_hadamard", "spc_walsh"],
-    "allowed_problem_classes": ["spc_reconstruction", "sparse_recovery"],
-    "allowed_omega_dimensions": ["n_pixels", "sampling_ratio", "noise_level", "gain_alpha", "illum_sigma"],
+    "allowed_forward_operators": [
+      "spc_hadamard",
+      "spc_walsh"
+    ],
+    "allowed_problem_classes": [
+      "spc_reconstruction",
+      "sparse_recovery"
+    ],
+    "allowed_omega_dimensions": [
+      "n_pixels",
+      "sampling_ratio",
+      "noise_level",
+      "gain_alpha",
+      "illum_sigma"
+    ],
     "omega_bounds": {
-      "n_pixels": [1024, 65536],
-      "sampling_ratio": [0.05, 0.50],
-      "noise_level": [0.001, 0.05],
-      "gain_alpha": [0.0, 0.003],
-      "illum_sigma": [0.0, 15.0]
+      "n_pixels": [
+        1024,
+        65536
+      ],
+      "sampling_ratio": [
+        0.05,
+        0.5
+      ],
+      "noise_level": [
+        0.001,
+        0.05
+      ],
+      "gain_alpha": [
+        0.0,
+        0.003
+      ],
+      "illum_sigma": [
+        0.0,
+        15.0
+      ]
     },
-    "epsilon_bounds": {"psnr_db": [18.0, 40.0]}
+    "epsilon_bounds": {
+      "psnr_db": [
+        18.0,
+        40.0
+      ]
+    }
   },
-
-  "p1_p10_tests": ["PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS","PASS"],
-  "s1_s4_gates": ["PASS", "PASS", "PASS", "PASS"],
-  "ipfs_cid": null
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": false,
+    "coupling_count_n_c": 0,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }

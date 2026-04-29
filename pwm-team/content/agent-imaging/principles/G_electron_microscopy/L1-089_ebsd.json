@@ -6,6 +6,9 @@
   "domain": "Electron Microscopy",
   "sub_domain": "Kikuchi-pattern crystal orientation",
   "source_file": "G_electron_microscopy/089_ebsd.md",
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical electron-microscopy literature for this principle.",
   "E": {
     "description": "Electron Backscatter Diffraction (EBSD) \u2014 crystallographic orientation mapping: kikuchi diffraction pattern produces the measurement through a 4-node primitive DAG L.excitation.electron_beam -> L.diffraction_kikuchi -> L.pattern_match -> int.angular, with multi-angle tomographic integration and photon-shot-noise-limited (Poisson counting). Recovery is posed as a non-convex inverse problem that inverts the forward operator to estimate the scene-side euler angle field. Difficulty tier delta=5 with effective condition number kappa_eff~25; calibration-level mismatch (pattern_center_drift, band_contrast_degradation, grain_boundary_ambiguity) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
@@ -168,5 +171,12 @@
     "PASS",
     "PASS"
   ],
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "v3_metadata": {
+    "is_standalone_multiphysics": false,
+    "coupling_count_n_c": 0,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }
