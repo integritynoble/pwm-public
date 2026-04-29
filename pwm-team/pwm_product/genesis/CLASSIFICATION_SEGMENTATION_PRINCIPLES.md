@@ -321,6 +321,223 @@ the L4 acceptance check.
 
 ---
 
+## Honest critique: do they REALLY satisfy S1-S4?
+
+The "conditionally ✓" verdicts above are technically correct but
+gloss over a deeper structural difference. PWM was designed for
+**analytical** gate satisfaction, and the substitutes I gave for
+classification / segmentation are **statistical / empirical**. Those
+substitutes are real and rigorous, but they are a weaker class of
+certificate.
+
+### Where the analytical-vs-statistical split shows up
+
+| Aspect | CASSI / CT / MRI (canonical) | Generic classification / segmentation |
+|---|---|---|
+| E | Closed-form analytical operator (Radon, integral equation, mask × shift) | Empirical distribution `p(x\|c)` defined by dataset |
+| S1 | Provable from the operator's signature | Provable (tensor shapes are a-priori) |
+| S2 | **Theorem** (RIP, sparsity, mask quality) | **Empirical claim** (no two class-conditionals overlap; depends on dataset) |
+| S3 | **Theorem** (Cèa, regularization theory) | **Empirical claim** (ERM converges; rate depends on architecture + smoothness assumptions) |
+| S4 | **Analytical** (`‖f̂−f‖ ≤ C₁σ/√m + C₂‖f−f_s‖₁`) | **Distributional** (Hoeffding / PAC-Bayes / conformal — needs an iid sample) |
+
+This isn't just notation. The CASSI principle's W block guarantees
+recovery is unique under sparsity priors **regardless of any
+dataset** — it's a theorem about the operator. The generic
+classification principle's W block guarantees uniqueness **only on
+the empirical distribution observed so far** — it's a property of
+the training set.
+
+A reviewer evaluating the two manifests should see this difference.
+A staked Principle that promises analytical S1-S4 is a stronger
+claim than one that promises statistical S1-S4*.
+
+### Four ways to handle the gap
+
+**Option 1 — Reject. These aren't PWM principles.**
+
+Classification / segmentation as generic CV tasks live in MLPerf,
+Papers With Code, OpenAI Evals. Don't pollute PWM with them. PWM
+stays rigorous; the framework's value is precisely that every
+Principle has analytical S1-S4 certificates.
+
+- Pro: preserves PWM's analytical brand.
+- Con: excludes a huge research area; PillCam-SPECTRA can't be a
+  PWM L3 anchor under this rule.
+
+**Option 2 — Add a meta-layer (`L0_meta`) for data-driven principles.**
+
+Define a meta-Principle at a layer ABOVE L1:
+
+```
+L0_meta: "Discrete-output supervised learning under iid sampling
+          with bounded-VC hypothesis class"
+
+  E:    R(c, θ, φ) defined empirically by a held-out distribution
+  S1:   tensor-shape consistency (analytical)
+  S2*:  empirical Bayes-irreducibility (measurable on dev set)
+  S3*:  ERM convergence q ≥ 0.5 (theorem, but conditional on
+        data smoothness assumptions)
+  S4*:  VC / PAC-Bayes / conformal certificates
+        (computable; assumption-bounded)
+```
+
+Specific tasks become L1 instances of `L0_meta`. The `*` is honest
+notation: these are **statistical** gate satisfactions, not
+analytical.
+
+- Pro: makes the difference explicit; lets PWM cover both worlds.
+- Con: requires a protocol revision (`pwm_overview2.md`); reviewers
+  see two grades of certificate.
+
+**Option 3 — Recast medical / scientific segmentation as physics-inverse.**
+
+This is the cleanest path **for the work that actually matters in
+this codebase** (PillCam-SPECTRA, MRI segmentation, materials-
+microstructure segmentation, etc.). Re-frame the problem: the L1
+isn't "label-tensor inference" — it's **physical-property estimation
+that happens to discretize at the end.**
+
+For PillCam-SPECTRA, the principled cast is two L1 principles in
+sequence:
+
+```
+L1-PHYS-GI-001a  "GI Tissue Optical-Property Reconstruction
+                  from Wireless Capsule Multispectral Imaging"
+
+  E (analytical forward model):
+     x[i,j,λ]  =  ∫ Φ_LED(λ) · exp(-μ_a(tissue, λ)·d) · BRDF(tissue, λ)  dΩ
+                + scattering(μ_s, g)
+                + sensor_response(φ)
+                + n[i,j,λ]
+
+     World state: per-pixel optical properties — hemoglobin
+     concentration cHb[i,j], oxygen saturation SO₂[i,j], scattering
+     anisotropy g[i,j], tissue depth d[i,j].
+
+     Observation: the multispectral capsule frame x.
+
+  S1: ✓ analytical (radiative transfer is dimensionally consistent)
+  S2: ✓ analytical under known regularity conditions on optical
+        properties (smoothness + boundary continuity in tissue)
+  S3: ✓ analytical (Levenberg-Marquardt + Monte Carlo unfolding;
+        published convergence rates from biomedical-optics literature)
+  S4: ✓ analytical (Cramér-Rao bounds on cHb / SO₂ recovery;
+        Wasserman & DeWeese 2007 + follow-ups)
+
+
+L1-PHYS-GI-001b  "GI Tissue Class Inference from Optical Properties"
+
+  E: deterministic threshold function over (cHb, SO₂, g, d):
+     bleeding   ↔ cHb high, SO₂ varies, μ_s elevated
+     AVM        ↔ vascular density anomaly
+     polyp      ↔ tissue depth + cHb signature
+     normal     ↔ baseline
+  S1-S4: trivially satisfied for piecewise-deterministic
+         classifiers over continuous physical state
+```
+
+The Director's MDPI paper's **Monte Carlo–guided hemoglobin prior**
+is exactly the analytical operator for `L1-PHYS-GI-001a`. The
+"multi-task AI pipeline" (Module 1/2/3) implements the inverse of
+THIS operator, not a generic image-classification operator.
+Recasting in this form makes PillCam-SPECTRA a properly-grounded
+PWM Principle with **analytical** S1-S4, the same standard as CASSI.
+
+- Pro: preserves analytical rigor; PillCam-SPECTRA becomes a
+  textbook PWM Principle; the segmentation labels (bleeding /
+  polyp / normal) are derived from physically meaningful
+  intermediate state.
+- Con: requires more rigorous physical modeling than "FCN on
+  labels"; doesn't help generic CV tasks (CIFAR-10 has no
+  underlying physics).
+
+**Option 4 — Construct an implicit operator via a generative model.**
+
+A trained class-conditional diffusion model defines an explicit
+(if complex) `render(c, θ, φ) = sample_diffusion(noise_seed,
+conditioning=c, ...)`. The forward operator is now a learned
+function — analytical in the sense that it's a fixed neural network,
+just with a learned parameter set rather than a hand-derived one.
+
+S1-S4 can then be evaluated against this learned operator:
+- S1: the diffusion model's input/output tensor shapes are explicit
+- S2: well-posedness of inverting `render` (recover c from a sample)
+      becomes a property of the score function — measurable
+- S3: classifier-free guidance + class-conditional denoising has
+      known convergence rates
+- S4: bounds on inversion error available
+      (denoising-diffusion-implicit / posterior-sampling literature)
+
+- Pro: brings even non-physical tasks (CIFAR-10) into a partially-
+  analytical frame. The forward "operator" is at least an explicit
+  function, even if learned.
+- Con: S2-S4 quality depends on the diffusion model's quality; a bad
+  diffusion model gives a bad Principle; reviewers must inspect the
+  model card alongside the manifest.
+
+### Recommendation
+
+For PWM as a protocol, **Option 3 is the canonical path** for
+science-domain tasks (medical imaging, materials, biology,
+spectroscopy). It's also what the Director's research already does
+implicitly — the MDPI paper's Monte Carlo physics prior is exactly
+the analytical forward operator. Make this explicit in the L1
+manifest and segmentation becomes a textbook PWM Principle.
+
+For non-physics-domain classification (CIFAR, ImageNet),
+**Option 1 + Option 4 in combination**: don't make these PWM
+Principles; if a contributor must, register them under an explicit
+`L0_meta` layer (Option 2) with `*`-marked statistical gate
+satisfaction so reviewers know the difference.
+
+For PillCam-SPECTRA / GI_Multi_Task specifically, the Principle
+should be:
+
+| Don't | Do |
+|---|---|
+| `L1-SEG-GI-001` (generic segmentation; statistical gates marked `*`) | `L1-PHYS-GI-001a` (optical-property recovery; analytical gates) + `L1-PHYS-GI-001b` (threshold classifier on optical properties; trivially satisfied) |
+
+This connects the PWM-flagship paper's "GI L3 anchor" cleanly to the
+canonical PWM framework — the same standard of rigor as CASSI / CT /
+MRI — and gives the MDPI paper's physics-informed multi-task
+pipeline a principled home. The segmentation isn't an afterthought
+fitted into a non-physics framework; it's the natural readout of an
+underlying physics-inverse problem the paper has already solved.
+
+### What needs to land in `pwm_overview2.md`
+
+A revision of the canonical Principle spec should add:
+
+1. **A "discrete-output extension" subsection** explicitly handling
+   the substitutions: `κ → Δ` (class separation), `mesh resolution →
+   1/sqrt(n_train)`, `conservation laws → softmax-simplex closure +
+   permutation invariance`.
+
+2. **A `gate_class` field** in the L1 manifest that takes one of:
+   - `"analytical"` (CASSI, CT, MRI, etc. — all four S-gates proved)
+   - `"physical_with_discrete_readout"` (Option 3 — analytical
+     gates on the physics core; trivial classifier on top)
+   - `"data_driven_statistical"` (Options 2 / 4 — gates marked
+     with `*`, statistical certificates required)
+
+3. **Stricter reward differentiation**: analytical-gate Principles
+   earn full reward share; `data_driven_statistical` Principles
+   earn at most a configurable fraction (e.g., 50%). This
+   incentivizes the Option-3 recast where it's possible.
+
+4. **Reviewer checklist** — manifest reviewers must verify:
+   for `analytical`, the operator is closed-form; for
+   `physical_with_discrete_readout`, the threshold function is
+   continuous in the physical state; for `data_driven_statistical`,
+   the certificates are computed and the assumptions are listed.
+
+Until `pwm_overview2.md` lands, contributors should follow Option 3
+where physics is available and Option 2's `L0_meta` framing where
+it isn't — and explicitly mark the gate class in the manifest's
+`notes` field.
+
+---
+
 ## How this compares to the canonical L1-003 (CASSI) gate satisfaction
 
 | Aspect | L1-003 CASSI (continuous inverse) | L1-CLS-001 / L1-SEG-001 (discrete inverse) |
