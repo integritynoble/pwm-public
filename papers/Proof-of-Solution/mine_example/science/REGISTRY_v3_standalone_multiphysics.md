@@ -41,8 +41,8 @@ But standalone multi-physics Principles cut across domains — they're genuinely
 |---|---|---|---|---|---|---|
 | L1-503 | Quantitative Susceptibility Mapping (QSM) | `C_medical_imaging/` | MR (radio_wave) ⊗ Maxwell magnetostatic | 2 | 7.4 | **Authored** (genesis-eligible) |
 | L1-504 | Quantitative Photoacoustic Tomography (qPAT) | `C_medical_imaging/` | optical diffusion ⊗ thermoelastic Grüneisen ⊗ acoustic wave | 2 | 8.5 | **Authored** (genesis-eligible) |
-| L1-505 | Pharmacokinetic Dynamic PET (PK-PET) | `C_medical_imaging/` | photon transport ⊗ ODE tracer kinetics | 2 | ~6-8 | Pending |
-| L1-506 | Hyperpolarized 13C Metabolic MRI | `C_medical_imaging/` | DNP ⊗ chemical exchange ⊗ MR | 3 | ~8-10 | Pending |
+| L1-505 | Pharmacokinetic Dynamic PET (PK-PET) | `C_medical_imaging/` | photon transport (annihilation) ⊗ compartmental ODE kinetics | 2 | 8.3 | **Authored** (genesis-eligible) |
+| L1-506 | Hyperpolarized 13C Metabolic MRI | `C_medical_imaging/` | DNP ⊗ chemical exchange ODE ⊗ chemical-shift MR | 3 | 10.4 | **Authored** (genesis-eligible) |
 | L1-507 | Joint MEG-EEG Source Imaging | `C_medical_imaging/` | Maxwell magnetostatic ⊗ Poisson electrostatic | 2 | ~7-9 | Pending |
 | L1-508 | Optical Coherence Elastography (OCE) | `C_medical_imaging/` | OCT ⊗ tissue mechanics | 2 | ~6-8 | Pending |
 | L1-509 | Photoacoustic-Ultrasound Dual-mode (PAUS) | `C_medical_imaging/` | qPAT ⊗ ultrasound | 2 | ~7-9 | Pending |
@@ -103,5 +103,7 @@ Without this registry, the cross-cutting nature of standalone multi-physics is i
 |---|---|
 | 2026-04-29 | Director asked to reorganize `papers/Proof-of-Solution/mine_example/science/`. Chose Option I (minimal): keep per-domain organization; add this cross-cutting registry. Avoids breaking symlinks, preserves domain-expertise organization, makes multi-physics discoverable. First entry: L1-503 QSM (authored). |
 | 2026-04-29 | L1-504 qPAT authored — joint optical diffusion + thermoelastic Grüneisen + acoustic wave; n_c=2; L_DAG=8.5; d_principle ~ 0.42 from L1-041 PAT (Distinct). Status: Authored. |
+| 2026-04-29 | L1-505 PK-PET authored — joint photon transport + compartmental ODE tracer kinetics; n_c=2; L_DAG=8.3; d_principle ~ 0.55 from L1-033 PET (Distinct). Status: Authored. Path B target reached. |
+| 2026-04-29 | L1-506 HP-13C MRI authored — joint DNP + chemical-exchange ODE + chemical-shift MR readout; n_c=3; L_DAG=10.4; d_principle ~ 0.60 from L1-044 MRS (Distinct). Status: Authored. Path B complete (4 medical imaging v3 standalone Principles in genesis). |
 | _TBD_ | Path A genesis batch complete (Director's pick); registry reflects all Authored entries. |
 | _TBD_ | Mainnet deploy at Step 7; this registry becomes the on-chain catalog of v3 standalone genesis Principles. |

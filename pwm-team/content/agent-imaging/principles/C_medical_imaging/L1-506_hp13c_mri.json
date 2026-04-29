@@ -1,0 +1,247 @@
+{
+  "artifact_id": "L1-506",
+  "layer": "L1",
+  "principle_number": "506",
+  "title": "Hyperpolarized 13C Metabolic MRI",
+  "domain": "Medical Imaging",
+  "sub_domain": "Real-time metabolic kinetic imaging via dynamic nuclear polarization (multi-physics joint inverse)",
+  "source_file": "C_medical_imaging/506_hp13c_mri.md",
+  "source_data_quality_note": "v3 standalone multi-physics genesis Principle. Joint forward operator couples three physics regimes: (1) dynamic nuclear polarization (DNP) — hyperpolarization transfer producing >10000x signal enhancement on 13C-labeled substrates; (2) chemical-exchange ODE kinetics — enzymatic conversion between metabolite pools (e.g., pyruvate -> lactate via LDH; pyruvate -> alanine via ALT; pyruvate -> bicarbonate via PDH); (3) chemical-shift-resolved MR readout — spectral encoding of distinct metabolites at their characteristic Larmor frequencies. Recovers spatially-resolved metabolic rate constants (k_PL, k_PA, k_PB)(r) and T1 relaxation times from time-resolved chemical-shift-resolved k-space data. Distinct from L1-044 MRS (steady-state spectroscopy without kinetics) and L1-030 MRI (single-frequency, no chemical exchange) by primitive set, solution_space (kinetic rate constants vs static metabolite concentrations), and forward operator scope. Authored under the standalone-as-default v3 design (see pwm-team/pwm_product/genesis/PWM_V3_STANDALONE_VS_COMPOSITE.md).",
+
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [
+    "L1-044 (MRS — chemical-shift-resolved spectroscopy component, informational, n_c=0)",
+    "L1-030 (MRI — Fourier encoding component, informational)",
+    "L1-505 (PK-PET — sibling kinetic-imaging principle in nuclear medicine, n_c=2)"
+  ],
+
+  "E": {
+    "description": "Hyperpolarized 13C Metabolic MRI: joint multi-physics forward couples (i) DNP polarization transfer where 13C nuclear-spin polarization P(t) is enhanced by >10000x in a polarizer (3 T, 1.4 K, 100 mW microwave irradiation transferring electron polarization to nuclei) then dissolved and injected, with subsequent T1 decay (~30-60 s in vivo); (ii) chemical-exchange ODE kinetics where injected 13C-pyruvate is enzymatically converted to 13C-lactate (via LDH, rate k_PL), 13C-alanine (via ALT, rate k_PA), and 13C-bicarbonate (via PDH, rate k_PB), with each pool experiencing characteristic T1 decay; (iii) chemical-shift-resolved MR readout where spectrally-distinct metabolites (pyruvate ~171 ppm, lactate ~183 ppm, alanine ~178 ppm, bicarbonate ~163 ppm at 13C Larmor frequency) are encoded via spectral-spatial RF pulses, EPI/spiral readouts, or balanced SSFP. The forward DAG has 9 primitives with three coupling constraints (n_c = 3): (i) DNP polarization decay -> available metabolite signal magnitude (T1-weighted); (ii) chemical-exchange ODE -> multi-pool MR signal magnitude (rate-constant-weighted); (iii) T1 relaxation -> time-decay of all metabolite pools (per-pool T1). Recovery is posed as the joint inverse problem that recovers (k_PL, k_PA, k_PB, T1_pyr, T1_lac, T1_ala, T1_bic)(r) from time-resolved chemical-shift-resolved k-space data {S_pyr(k, t), S_lac(k, t), S_ala(k, t), S_bic(k, t)}. Difficulty tier delta = 5 with raw condition number kappa ~ 280 (limited by hyperpolarization decay window ~60-120s and SNR per metabolite) and effective kappa_eff ~ 50 after rate-constant-aware spatiotemporal regularization. Mismatch parameters: dnp_polarization_loss, b1_inhomogeneity, t1_uncertainty, injection_bolus_uncertainty, partial_volume_effect, susceptibility_artifact. Additive Gaussian thermal noise sets the data-fidelity floor; T1 decay sets the irreversible signal floor. See forward_model field for the closed-form joint imaging equation.",
+    "forward_model": "Initial conditions: M_pyr(t=0) = M_0 * P_DNP * exp(-T_inject/T1_pyr_polarizer); M_lac(0) = M_ala(0) = M_bic(0) = 0; ODE system: dM_pyr/dt = -k_PL*M_pyr - k_PA*M_pyr - k_PB*M_pyr - M_pyr/T1_pyr + R_inject(t); dM_lac/dt = +k_PL*M_pyr - M_lac/T1_lac; dM_ala/dt = +k_PA*M_pyr - M_ala/T1_ala; dM_bic/dt = +k_PB*M_pyr - M_bic/T1_bic; chemical-shift-resolved acquisition: S_m(k, t) = integral M_m(r, t) * exp(-i*2*pi*k*r) * exp(-i*omega_m*TE) dr + n(k, t); jointly invert {S_m(k, t)} -> (k_PL, k_PA, k_PB, T1_per_pool)(r) given injection bolus, M_0*P_DNP, omega_m chemical shifts",
+    "world_state_x": "Spatially-resolved metabolic rate constants (k_PL, k_PA, k_PB)(r) [1/s] for pyruvate-to-lactate, pyruvate-to-alanine, pyruvate-to-bicarbonate conversion; plus per-pool T1 relaxation times (T1_pyr, T1_lac, T1_ala, T1_bic)(r) [s]. Range: k_PL in tumor 0.02-0.10 1/s, normal tissue 0.005-0.02 1/s; T1 ranges 25-60 s for free metabolites in vivo at 3T.",
+    "observation_y": "4D chemical-shift-resolved k-space data {S_pyr(k, t), S_lac(k, t), S_ala(k, t), S_bic(k, t)} with t = N_frames temporal samples (typically 10-40 frames over 60-180 s post-injection) and k = (k_x, k_y, k_z) spatial frequencies. Injection bolus profile R_inject(t) and DNP polarization fraction P_DNP are calibrated inputs (typically P_DNP ~ 0.20-0.40, ~10000x enhancement over thermal equilibrium).",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "Z",
+      "N_frames",
+      "frame_duration_s",
+      "B0_field_T",
+      "voxel_size_mm",
+      "N_metabolites",
+      "P_DNP",
+      "SNR_dB",
+      "dnp_polarization_loss",
+      "b1_inhomogeneity",
+      "t1_uncertainty",
+      "injection_bolus_uncertainty",
+      "partial_volume_effect",
+      "susceptibility_artifact"
+    ]
+  },
+
+  "G": {
+    "dag": "L.dnp_polarization -> L.injection_bolus -> L.chemical_exchange_ode -> L.bloch_dynamics -> L.rf_excitation -> L.spectral_spatial_encoding -> L.gradient_readout -> int.spectral -> int.temporal",
+    "vertices": [
+      "L.dnp_polarization",
+      "L.injection_bolus",
+      "L.chemical_exchange_ode",
+      "L.bloch_dynamics",
+      "L.rf_excitation",
+      "L.spectral_spatial_encoding",
+      "L.gradient_readout",
+      "int.spectral",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.dnp_polarization -> L.injection_bolus",
+      "L.injection_bolus -> L.chemical_exchange_ode",
+      "L.chemical_exchange_ode -> L.bloch_dynamics",
+      "L.bloch_dynamics -> L.rf_excitation",
+      "L.rf_excitation -> L.spectral_spatial_encoding",
+      "L.spectral_spatial_encoding -> L.gradient_readout",
+      "L.gradient_readout -> int.spectral",
+      "int.spectral -> int.temporal"
+    ],
+    "L_DAG": 10.4,
+    "n_c": 3,
+    "coupling_constraints": [
+      "dnp_to_signal_magnitude: M_m(t) magnitude is hyperpolarization-weighted with P_DNP * exp(-T_inject/T1_pyr_polarizer); coupling between DNP physics and MR signal is non-renewable (T1 decay irreversible)",
+      "chemical_exchange_to_multi_pool_signal: dM_m/dt = +k_in*M_source - (k_out + 1/T1)*M_m — rate-constant-weighted coupling between metabolite pools through ODE system; LDH, ALT, PDH enzyme dynamics coupled into one matrix-form ODE",
+      "t1_relaxation_to_time_decay: each metabolite pool decays at its own T1; per-pool relaxation couples the temporal sampling rate to the irreducible signal floor and limits the kinetic-imaging window to ~60-120 s post-injection"
+    ]
+  },
+
+  "W": {
+    "existence": true,
+    "uniqueness": "conditional",
+    "stability": "conditional",
+    "condition_number_kappa": 280,
+    "condition_number_effective": 50,
+    "regime": "Existence of recovered metabolic rate-constant maps (k_PL, k_PA, k_PB)(r) and per-pool T1 maps is guaranteed within the declared Omega bounds. Uniqueness holds when at least 3 metabolite pools are sampled with sufficient temporal resolution (frame duration <= 5 s) and SNR per metabolite > 10 dB; degenerate cases (all rate constants near zero, or T1 << acquisition window) require regularization. Stability is moderately conditioned (kappa_eff ~ 50 after rate-constant-aware spatiotemporal regularization) — dnp_polarization_loss dominates absolute rate-constant scaling; injection_bolus_uncertainty dominates K_1-equivalent bias; t1_uncertainty contributes a per-pool scaling factor; partial_volume_effect dominates small-structure quantitation. Joint Hadamard well-posedness for the coupled DNP-chemical-exchange-MR forward is established by Bahrami et al. (2014), Larson et al. (2018), Maidens-Gordon-Arcak (2016 control-theoretic identifiability), and Brindle (2015 review on hyperpolarized MR imaging principles)."
+  },
+
+  "C": {
+    "solver_class": "linear-operator + convex optimisation [least-squares ODE fitting + Tikhonov-regularized k-space inversion; HypMet two-step pipeline; joint reconstruction-kinetics ML] | nonlinear-least-squares [Levenberg-Marquardt for kinetics + IFFT for spatial] | linear-operator + deep neural prior [HypNet, KineticNet]",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Data-fidelity bound: ||k_hat - k||_2 <= C1 * sigma_noise / sqrt(N_frames * N_metabolites * SNR_per_pool). DNP-and-T1-induced bias adds + C2 * |dnp_polarization_loss| + C3 * |injection_bolus_uncertainty| + C4 * |t1_uncertainty| + C5 * ||k - k_s||_1 (best s-sparse / piecewise-smooth approximation residual). Joint reconstruction-kinetics ML achieves q=2 (O(1/k^2)) under temporal regularization; two-step methods (HypMet) achieve q=1 linear convergence with model-bias floor. Deep-prior variants achieve faster initial convergence with bounded systematic bias. epsilon_fn captures monotone quality degradation across declared Omega.",
+    "complexity": "O(H * W * Z * N_frames * N_metabolites * log(H * W * Z)) per iteration via FFT-based spectral-spatial encoding + ODE forward pass; learned variants O(H W Z N_frames N_metabolites * F_theta_cost) per forward pass"
+  },
+
+  "physics_fingerprint": {
+    "carrier": "spin_13C_hyperpolarized",
+    "sensing_mechanism": "dnp_with_chemical_exchange_and_chemical_shift_mri",
+    "integration_axis": "spectral_temporal_spatial",
+    "problem_class": "nonlinear_inverse_4d",
+    "noise_model": "gaussian",
+    "solution_space": "4D_metabolic_rate_constant_map",
+    "primitives": [
+      "L.dnp_polarization",
+      "L.injection_bolus",
+      "L.chemical_exchange_ode",
+      "L.bloch_dynamics",
+      "L.rf_excitation",
+      "L.spectral_spatial_encoding",
+      "L.gradient_readout",
+      "int.spectral",
+      "int.temporal"
+    ]
+  },
+
+  "difficulty_delta": 5,
+  "difficulty_tier": "advanced",
+  "mismatch_parameters": [
+    "dnp_polarization_loss",
+    "b1_inhomogeneity",
+    "t1_uncertainty",
+    "injection_bolus_uncertainty",
+    "partial_volume_effect",
+    "susceptibility_artifact"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "RMSE_per_rate_constant",
+
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "hp13c_pyruvate_3pool",
+      "forward_operator": "hp13c_joint_forward",
+      "input_format": "chemical_shift_resolved_dynamic_kspace",
+      "omega": {
+        "H": 64,
+        "W": 64,
+        "Z": 16,
+        "N_frames": 20,
+        "frame_duration_s": 3.0,
+        "B0_field_T": 3.0,
+        "voxel_size_mm": 5.0,
+        "N_metabolites": 3,
+        "P_DNP": 0.30,
+        "SNR_dB": 18,
+        "dnp_polarization_loss": 0.0,
+        "b1_inhomogeneity": 0.0,
+        "t1_uncertainty": 0.0,
+        "injection_bolus_uncertainty": 0.0,
+        "partial_volume_effect": 0.0,
+        "susceptibility_artifact": 0.0
+      },
+      "epsilon_fn_center": "22.0"
+    },
+    "allowed_forward_operators": [
+      "hp13c_joint_forward",
+      "hp13c_two_step_forward",
+      "hp13c_direct_kinetic_forward",
+      "hp13c_spectral_spatial_forward",
+      "hp13c_balanced_ssfp_forward"
+    ],
+    "allowed_problem_classes": [
+      "hp13c_pyruvate_3pool",
+      "hp13c_pyruvate_4pool",
+      "hp13c_alpha_kg_glutamate",
+      "hp13c_acetate_metabolism",
+      "hp13c_fumarate_apoptosis"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "Z",
+      "N_frames",
+      "frame_duration_s",
+      "B0_field_T",
+      "voxel_size_mm",
+      "N_metabolites",
+      "P_DNP",
+      "SNR_dB",
+      "dnp_polarization_loss",
+      "b1_inhomogeneity",
+      "t1_uncertainty",
+      "injection_bolus_uncertainty",
+      "partial_volume_effect",
+      "susceptibility_artifact"
+    ],
+    "omega_bounds": {
+      "H": [32, 256],
+      "W": [32, 256],
+      "Z": [8, 64],
+      "N_frames": [5, 60],
+      "frame_duration_s": [1.0, 10.0],
+      "B0_field_T": [1.5, 7.0],
+      "voxel_size_mm": [2.0, 15.0],
+      "N_metabolites": [2, 6],
+      "P_DNP": [0.05, 0.50],
+      "SNR_dB": [5.0, 35.0],
+      "dnp_polarization_loss": [0.0, 0.4],
+      "b1_inhomogeneity": [0.0, 0.3],
+      "t1_uncertainty": [0.0, 0.3],
+      "injection_bolus_uncertainty": [0.0, 0.3],
+      "partial_volume_effect": [0.0, 0.4],
+      "susceptibility_artifact": [0.0, 0.3]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [5.0, 40.0]
+    }
+  },
+
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null,
+
+  "v3_metadata": {
+    "is_standalone_multiphysics": true,
+    "coupling_count_n_c": 3,
+    "joint_well_posedness_references": [
+      "Ardenkjaer-Larsen JH, Fridlund B, Gram A, Hansson G, Hansson L, Lerche MH, Servin R, Thaning M, Golman K (2003) Increase in signal-to-noise ratio of >10,000 times in liquid-state NMR. Proc Natl Acad Sci USA 100(18):10158-10163.",
+      "Day SE et al. (2007) Detecting tumor response to treatment using hyperpolarized 13C magnetic resonance imaging and spectroscopy. Nat Med 13(11):1382-1387.",
+      "Kurhanewicz J et al. (2011) Analysis of cancer metabolism by imaging hyperpolarized nuclei: prospects for translation to clinical research. Neoplasia 13(2):81-97.",
+      "Hurd RE, Yen YF, Chen A, Ardenkjaer-Larsen JH (2012) Hyperpolarized 13C metabolic imaging using dissolution dynamic nuclear polarization. J Magn Reson Imaging 36(6):1314-1328.",
+      "Bahrami N, Swisher CL, Von Morze C, Vigneron DB, Larson PEZ (2014) Kinetic and perfusion modeling of hyperpolarized 13C pyruvate and urea in cancer with arbitrary RF flip angles. Quant Imaging Med Surg 4(1):24-32.",
+      "Brindle KM (2015) Imaging metabolism with hyperpolarized 13C-labeled cell substrates. J Am Chem Soc 137(20):6418-6427.",
+      "Maidens J, Gordon JW, Arcak M, Larson PEZ (2016) Optimizing flip angles for metabolic rate estimation in hyperpolarized carbon-13 MRI. IEEE Trans Med Imaging 35(11):2403-2412.",
+      "Larson PEZ, Chen HY, Gordon JW, Korn N, Maidens J, Arcak M, Tang S, Criekinge M, Carvajal L, Mammoli D, Bok R, Aggarwal R, Ferrone M, Slater JB, Nelson SJ, Kurhanewicz J, Vigneron DB (2018) Investigation of analysis methods for hyperpolarized 13C-pyruvate metabolic MRI in prostate cancer patients. NMR Biomed 31(11):e3997.",
+      "Chen HY et al. (2020) Hyperpolarized 13C MRI metabolic biomarker for predicting response to androgen receptor pathway inhibitors in prostate cancer. Sci Rep 10:11488."
+    ],
+    "distinctness_audit": {
+      "closest_existing_principle": "L1-044 MRS",
+      "d_principle_estimate": 0.60,
+      "advisory_label": "Distinct",
+      "rationale": "L1-044 MRS performs steady-state proton or 13C spectroscopy without kinetics — sensing_mechanism = mri_chemical_shift_encoding; problem_class = forward / linear_inverse; solution_space = 1D/2D/3D metabolite concentration map at thermal equilibrium SNR; n_c = 0. L1-506 HP-13C adds (a) DNP hyperpolarization providing >10000x signal enhancement enabling kinetic imaging, (b) chemical-exchange ODE kinetics recovering rate constants (k_PL, k_PA, k_PB), and (c) 4D temporal evolution coupled with multi-pool MR readout — sensing_mechanism = dnp_with_chemical_exchange_and_chemical_shift_mri; problem_class = nonlinear_inverse_4d; solution_space = 4D_metabolic_rate_constant_map; n_c = 3. Adds three new primitives (L.dnp_polarization, L.injection_bolus, L.chemical_exchange_ode). Jaccard distance over (sensing_mechanism, problem_class, solution_space, primitives) ~ 0.60 — solidly Distinct under v1 advisory thresholds (>= 0.30). The 4D temporal dimension and the recovery of metabolic rate constants (rather than steady-state concentrations) make this a fundamentally different inversion target."
+    },
+    "clinical_context": "Active translational research, early clinical: hyperpolarized 13C-pyruvate MRI is the prototype application. k_PL (pyruvate-to-lactate via LDH) is elevated in cancer (Warburg effect), making it a metabolic biomarker for tumor response to treatment. Active programs at UCSF (Vigneron, Kurhanewicz, Larson labs), Sloan Kettering, Cambridge (Brindle lab), and several other major academic centers including UTSW. Other 13C-substrates: 13C-fumarate (apoptosis/necrosis), 13C-alpha-ketoglutarate (TCA cycle), 13C-acetate (cardiac metabolism), 13C-glutamine (amino-acid metabolism). Specialized hardware required (DNP polarizer ~$2-5M plus dedicated MR coil). Clinical trials in prostate, glioma, and breast cancer. Imaging window 60-120 s post-injection."
+  }
+}
