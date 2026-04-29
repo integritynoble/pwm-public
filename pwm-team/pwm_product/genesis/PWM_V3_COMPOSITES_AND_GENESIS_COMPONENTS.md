@@ -1,9 +1,15 @@
 # Why v3 composites cannot be cleanly genesis-included — and the eight forward-model exemplars to plan around
 
+> **⚠️ SUPERSEDED IN PART by `PWM_V3_STANDALONE_VS_COMPOSITE.md` (commit on 2026-04-29).**
+>
+> This doc concluded that all 8 v3 composite exemplars must defer to v3 deploy because the v1 contracts can't express multi-parent royalty splits. That conclusion is correct **for genuine composites**, but the follow-up doc shows that **6 of 8 exemplars** (multi-messenger astronomy, FSI, multi-scale materials, climate attribution, earthquake-tsunami, genome-protein-metabolism sub-chain) can be **authored as standalone v1-analytical or v2-PWDR Principles** under v1's existing L_DAG framework — and added to the genesis batch directly.
+>
+> The component-coverage audit and the deferral recommendation for the 2 genuine composites (CT+EHR diagnosis, drug-target-disease triplet) remain valid. Read both docs together; the standalone-vs-composite framing is the canonical recommendation.
+
 **Date:** 2026-04-29
 **Owner:** Director
 **Audience:** PWM contract authors, deploy planners, Principle authors, governance reviewers
-**Status:** decision document — defer composites to v3 deploy, ensure components are genesis-complete pre-mainnet
+**Status:** decision document — partially superseded by `PWM_V3_STANDALONE_VS_COMPOSITE.md`; component-coverage audit and 2-of-8 composite deferrals remain authoritative
 **Cross-references:**
 - `papers/Proof-of-Solution/pwm_overview1.md` (v1 base spec — `parentHash` is `bytes32`, royalty splits in `PWMReward`)
 - `papers/Proof-of-Solution/pwm_overview3.md` § 5 (composite Principle definition + reward formula)
