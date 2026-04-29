@@ -1,0 +1,237 @@
+{
+  "artifact_id": "L1-504",
+  "layer": "L1",
+  "principle_number": "504",
+  "title": "Quantitative Photoacoustic Tomography (qPAT)",
+  "domain": "Medical Imaging",
+  "sub_domain": "Quantitative multi-spectral chromophore recovery (multi-physics joint inverse)",
+  "source_file": "C_medical_imaging/504_qpat.md",
+  "source_data_quality_note": "v3 standalone multi-physics genesis Principle. Joint forward operator couples three physics regimes: (1) optical radiative transfer / diffusion (light fluence in scattering tissue), (2) thermoelastic source generation (Grueneisen-coupled energy absorption -> initial pressure), (3) acoustic wave propagation (initial pressure -> detected ultrasound). Recovers tissue optical absorption coefficient mu_a(r, lambda) at multiple wavelengths from measured pressure waveforms. Distinct from L1-041 PAT (acoustic-only with absorption as input) by primitive set, solution_space (3D-spectral chromophore vs 3D pressure), and forward operator scope. Authored under the standalone-as-default v3 design (see pwm-team/pwm_product/genesis/PWM_V3_STANDALONE_VS_COMPOSITE.md).",
+
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [
+    "L1-040 (DOT — diffuse optical tomography component, informational)",
+    "L1-041 (PAT — acoustic-only variant, d_principle ~ 0.42)",
+    "L1-032 (ultrasound — acoustic propagation primitive, informational)"
+  ],
+
+  "E": {
+    "description": "Quantitative Photoacoustic Tomography (qPAT): joint multi-physics forward couples optical radiative transfer / diffusion (light fluence Phi(r, lambda) under tissue scattering and absorption), Grueneisen-coupled thermoelastic source generation (initial pressure p_0 = Gamma * mu_a * Phi), and acoustic wave propagation (p(r, t) from p_0(r) under tissue speed-of-sound c(r)). The forward DAG has 8 primitives with two coupling constraints (n_c = 2): (i) light-fluence to energy-absorption multiplicative coupling H = mu_a * Phi, position-dependent and saturating at high absorption; (ii) thermoelastic-source to acoustic-wave causal coupling p_0 -> p, governed by the homogeneous wave equation in tissue. Recovery is posed as the joint inverse problem that recovers mu_a(r, lambda) (and optionally mu_s'(r) via multi-illumination) from measured p(r, t) across N_wavelengths. Multi-spectral acquisition disambiguates chromophore concentrations (oxy-hemoglobin, deoxy-hemoglobin, melanin, lipid, water, contrast agents). Difficulty tier delta = 5 with raw condition number kappa ~ 300 (limited by acoustic bandwidth and high-absorption non-uniqueness) and effective kappa_eff ~ 40 after model-based two-step or one-step Bal-Uhlmann reconstruction. Mismatch parameters: mu_s_prime_uncertainty, gruneisen_uncertainty, acoustic_speed_heterogeneity, transducer_position_error, light_fluence_inhomogeneity, background_absorption_drift. Additive Gaussian thermal noise sets the data-fidelity floor. See forward_model field for the closed-form joint imaging equation.",
+    "forward_model": "Phi(r, lambda) = integral G_optical(r, r'; mu_a, mu_s', lambda) * S(r', lambda) dr'; H(r, lambda) = mu_a(r, lambda) * Phi(r, lambda); p_0(r) = Gamma * sum_lambda H(r, lambda); p(r_d, t) = integral G_acoustic(r_d, r'; c) * p_0(r') dr'; jointly invert p(r_d, t) -> mu_a(r, lambda) given mu_s', Gamma, c, illumination S",
+    "world_state_x": "3D multi-spectral tissue optical absorption coefficient mu_a(r, lambda) [1/cm], from which chromophore concentrations (HbO2, Hb, water, lipid, melanin, contrast agents) are decomposed via spectral linear unmixing. Range: 0.05-50 1/cm depending on chromophore.",
+    "observation_y": "Multi-wavelength time-resolved pressure waveforms p(r_d, t, lambda) at transducer positions r_d; multi-spectral illumination S(r, lambda) is calibrated input.",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "Z",
+      "N_wavelengths",
+      "lambda_range_nm",
+      "voxel_size_mm",
+      "speed_of_sound_mps",
+      "transducer_bandwidth_MHz",
+      "SNR_dB",
+      "mu_s_prime_uncertainty",
+      "gruneisen_uncertainty",
+      "acoustic_speed_heterogeneity",
+      "transducer_position_error",
+      "light_fluence_inhomogeneity",
+      "background_absorption_drift"
+    ]
+  },
+
+  "G": {
+    "dag": "L.optical_source -> L.optical_diffusion -> L.beer_lambert -> L.thermoelastic_grueneisen -> L.acoustic_wave_propagation -> L.transducer_detection -> int.temporal -> int.spectral",
+    "vertices": [
+      "L.optical_source",
+      "L.optical_diffusion",
+      "L.beer_lambert",
+      "L.thermoelastic_grueneisen",
+      "L.acoustic_wave_propagation",
+      "L.transducer_detection",
+      "int.temporal",
+      "int.spectral"
+    ],
+    "arcs": [
+      "L.optical_source -> L.optical_diffusion",
+      "L.optical_diffusion -> L.beer_lambert",
+      "L.beer_lambert -> L.thermoelastic_grueneisen",
+      "L.thermoelastic_grueneisen -> L.acoustic_wave_propagation",
+      "L.acoustic_wave_propagation -> L.transducer_detection",
+      "L.transducer_detection -> int.temporal",
+      "int.temporal -> int.spectral"
+    ],
+    "L_DAG": 8.5,
+    "n_c": 2,
+    "coupling_constraints": [
+      "fluence_to_absorption: H = mu_a * Phi — multiplicative coupling between optical fluence and absorption coefficient; position-dependent; saturating at high absorption (the canonical qPAT non-uniqueness in single-illumination two-step inversion)",
+      "thermoelastic_to_acoustic: p_0 = Gamma * H -> p(r,t) via homogeneous wave equation — causal time-domain coupling; Grueneisen Gamma varies with tissue type and temperature (~0.2 in water, ~0.7 in lipid)"
+    ]
+  },
+
+  "W": {
+    "existence": true,
+    "uniqueness": "conditional",
+    "stability": "conditional",
+    "condition_number_kappa": 300,
+    "condition_number_effective": 40,
+    "regime": "Existence of recovered 3D multi-spectral absorption coefficient mu_a(r, lambda) is guaranteed within the declared Omega bounds. Uniqueness holds under multi-illumination or multi-wavelength acquisition (Bal-Uhlmann 2010; Bal-Ren 2011); single-illumination single-wavelength qPAT is non-unique due to the multiplicative H = mu_a * Phi coupling and is excluded from the spec range. Stability is moderately conditioned (kappa_eff ~ 40 after model-based reconstruction) — acoustic bandwidth dominates spatial resolution; mu_s_prime_uncertainty dominates absorption-coefficient bias; gruneisen_uncertainty contributes a scaling factor. Joint Hadamard well-posedness for the coupled optical-thermoelastic-acoustic forward is established by Cox-Arridge-Beard (2009), Bal-Uhlmann (2010), Bal-Ren (2011), Tarvainen et al. (2013), and Cox-Tarvainen-Arridge (2014). See joint_well_posedness_references."
+  },
+
+  "C": {
+    "solver_class": "linear-operator + convex optimisation [two-step: UBP + GN-IR for mu_a; one-step: Bal-Uhlmann joint inversion] | gradient-based MCMC [Bayesian qPAT, Tarvainen]| linear-operator + deep neural prior [DAS-Net, J-Net]",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Data-fidelity bound: ||mu_a_hat - mu_a||_2 <= C1 * sigma_noise / sqrt(N_wavelengths * N_transducers * N_time_samples). Multiplicative-coupling-induced bias adds + C2 * |mu_s_prime_uncertainty| + C3 * |gruneisen_uncertainty| + C4 * |acoustic_speed_heterogeneity| + C5 * ||mu_a - mu_a_s||_1 (best s-sparse / piecewise-smooth approximation residual). Two-step inversion: q=1 (linear) for acoustic step, q=2 (quadratic) for optical step under L1-edge prior. One-step Bal-Uhlmann inversion: q=2 quadratic under multi-illumination data. Deep-prior variants achieve faster initial convergence with bounded systematic bias. epsilon_fn captures monotone quality degradation across declared Omega.",
+    "complexity": "O(H * W * Z * N_wavelengths * (transducer_count * time_samples)^(2/3)) per iteration via k-Wave time-domain forward / adjoint; frequency-domain variants O(H W Z N_wavelengths log(H W Z)); learned variants O(H W Z N_wavelengths * F_theta_cost) per forward pass"
+  },
+
+  "physics_fingerprint": {
+    "carrier": "photon_to_acoustic",
+    "sensing_mechanism": "thermoelastic_with_optical_diffusion",
+    "integration_axis": "spectral_temporal_spatial",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "3D_spectral_chromophore_quantitative",
+    "primitives": [
+      "L.optical_source",
+      "L.optical_diffusion",
+      "L.beer_lambert",
+      "L.thermoelastic_grueneisen",
+      "L.acoustic_wave_propagation",
+      "L.transducer_detection",
+      "int.temporal",
+      "int.spectral"
+    ]
+  },
+
+  "difficulty_delta": 5,
+  "difficulty_tier": "advanced",
+  "mismatch_parameters": [
+    "mu_s_prime_uncertainty",
+    "gruneisen_uncertainty",
+    "acoustic_speed_heterogeneity",
+    "transducer_position_error",
+    "light_fluence_inhomogeneity",
+    "background_absorption_drift"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "RMSE_per_chromophore",
+
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "qpat",
+      "forward_operator": "qpat_joint_forward",
+      "input_format": "multi_wavelength_time_resolved_pressure",
+      "omega": {
+        "H": 256,
+        "W": 256,
+        "Z": 64,
+        "N_wavelengths": 5,
+        "lambda_range_nm": [700, 900],
+        "voxel_size_mm": 0.2,
+        "speed_of_sound_mps": 1500.0,
+        "transducer_bandwidth_MHz": 5.0,
+        "SNR_dB": 22,
+        "mu_s_prime_uncertainty": 0.0,
+        "gruneisen_uncertainty": 0.0,
+        "acoustic_speed_heterogeneity": 0.0,
+        "transducer_position_error": 0.0,
+        "light_fluence_inhomogeneity": 0.0,
+        "background_absorption_drift": 0.0
+      },
+      "epsilon_fn_center": "26.0"
+    },
+    "allowed_forward_operators": [
+      "qpat_joint_forward",
+      "qpat_two_step_forward",
+      "qpat_multi_illumination_forward",
+      "qpat_diffusion_approx_forward",
+      "qpat_radiative_transfer_forward"
+    ],
+    "allowed_problem_classes": [
+      "qpat",
+      "qpat_multi_wavelength",
+      "qpat_multi_illumination",
+      "qpat_chromophore_unmixing"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "Z",
+      "N_wavelengths",
+      "lambda_range_nm",
+      "voxel_size_mm",
+      "speed_of_sound_mps",
+      "transducer_bandwidth_MHz",
+      "SNR_dB",
+      "mu_s_prime_uncertainty",
+      "gruneisen_uncertainty",
+      "acoustic_speed_heterogeneity",
+      "transducer_position_error",
+      "light_fluence_inhomogeneity",
+      "background_absorption_drift"
+    ],
+    "omega_bounds": {
+      "H": [128, 512],
+      "W": [128, 512],
+      "Z": [32, 256],
+      "N_wavelengths": [2, 16],
+      "lambda_range_nm": [600, 1100],
+      "voxel_size_mm": [0.05, 1.0],
+      "speed_of_sound_mps": [1400.0, 1600.0],
+      "transducer_bandwidth_MHz": [1.0, 30.0],
+      "SNR_dB": [5.0, 40.0],
+      "mu_s_prime_uncertainty": [0.0, 0.3],
+      "gruneisen_uncertainty": [0.0, 0.3],
+      "acoustic_speed_heterogeneity": [0.0, 0.1],
+      "transducer_position_error": [0.0, 0.2],
+      "light_fluence_inhomogeneity": [0.0, 0.4],
+      "background_absorption_drift": [0.0, 0.2]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [8.0, 45.0]
+    }
+  },
+
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null,
+
+  "v3_metadata": {
+    "is_standalone_multiphysics": true,
+    "coupling_count_n_c": 2,
+    "joint_well_posedness_references": [
+      "Cox BT, Arridge SR, Beard PC (2009) Quantitative spectroscopic photoacoustic imaging: A review. J Biomed Opt 17(6):061202.",
+      "Bal G, Uhlmann G (2010) Inverse diffusion theory of photoacoustics. Inverse Problems 26(8):085010.",
+      "Bal G, Ren K (2011) Multi-source quantitative photoacoustic tomography in a diffusive regime. Inverse Problems 27(7):075003.",
+      "Tarvainen T, Pulkkinen A, Cox BT, Kaipio JP, Arridge SR (2013) Bayesian image reconstruction in quantitative photoacoustic tomography. IEEE Trans Med Imaging 32(12):2287-2298.",
+      "Cox BT, Tarvainen T, Arridge SR (2014) Multiple illumination quantitative photoacoustic tomography using transport and diffusion models. Contemp Math 615:1-12.",
+      "Buchmann J, Guggenheim JA, Zhang E, Beard PC, Cox BT (2017) Quantitative PA tomography of deep tissue in the limit of weak scattering. Phys Med Biol 62(20):8295-8311.",
+      "Yao J, Wang LV (2018) Recent progress in photoacoustic molecular imaging. Curr Opin Chem Biol 45:104-112.",
+      "Hauptmann A, Cox BT (2020) Deep learning in photoacoustic tomography: current approaches and future directions. J Biomed Opt 25(11):112903."
+    ],
+    "distinctness_audit": {
+      "closest_existing_principle": "L1-041 PAT",
+      "d_principle_estimate": 0.42,
+      "advisory_label": "Distinct",
+      "rationale": "L1-041 PAT uses sensing_mechanism = photoacoustic_pa with primitives focused on the acoustic forward (treats absorption A(r) as input) and solution_space = 3D pressure / activity. L1-504 qPAT uses sensing_mechanism = thermoelastic_with_optical_diffusion with primitives spanning optical (L.optical_diffusion, L.beer_lambert), thermoelastic (L.thermoelastic_grueneisen), and acoustic (L.acoustic_wave_propagation, L.transducer_detection); solution_space = 3D_spectral_chromophore_quantitative (recovers mu_a(r, lambda) and chromophore concentrations). Jaccard distance over (sensing_mechanism, solution_space, primitives) ~ 0.42 — solidly Distinct under v1 advisory thresholds (>= 0.30). Adds three new primitives (L.optical_diffusion, L.beer_lambert, L.thermoelastic_grueneisen) and the multiplicative non-linear coupling H = mu_a * Phi that is absent from L1-041's linear acoustic forward."
+    },
+    "clinical_context": "Active research / early clinical: multi-spectral qPAT recovers oxygen saturation maps (sO2), total hemoglobin, lipid/water fraction, and exogenous contrast-agent uptake. Applications in oncology (tumor angiogenesis, hypoxia mapping, treatment response), vascular imaging (peripheral artery disease, stroke), lymph-node mapping (breast cancer staging), preclinical small-animal imaging. UTSW imaging research has active photoacoustic programs. Commercial systems: iThera Medical MSOT inSight/Acuity, FUJIFILM-VisualSonics Vevo LAZR. Imaging depth typically 1-5 cm depending on wavelength."
+  }
+}
