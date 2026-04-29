@@ -37,6 +37,14 @@ Your domains and source folders:
 For each source file, produce three JSON files:
 
 ### L1-NNN.json (Principle — quadruple P = (E, G, W, C))
+
+**v2/v3 forward-compat fields** (optional; safe to populate at v1-genesis-time even before v2 contracts deploy — v1 PWMRegistry only sees the manifest hash, not its content):
+
+- `gate_class` — one of `"analytical"` | `"physical_with_discrete_readout"` | `"data_driven_statistical"`. Default for current genesis is `"analytical"`. See `pwm_overview2.md` § 2.
+- `gate_substitutions` — `null` for `analytical`; structured object for the other two classes (see `pwm_overview2.md` § 4).
+- `related_principles` — informational citations to component / parent / sibling Principles. Does NOT trigger royalty splits — purely for provenance discoverability. List as strings of form `"L1-XXX (description, optional d_principle estimate)"`.
+- `v3_metadata` — present only for v3 standalone multi-physics Principles. Fields: `is_standalone_multiphysics: true`, `coupling_count_n_c`, `joint_well_posedness_references` (literature list), `distinctness_audit` (closest-existing-principle + d_principle estimate + advisory label), `clinical_context` (free-form). See `pwm_overview3.md` § 5.0 and `PWM_V3_STANDALONE_VS_COMPOSITE.md`.
+
 ```json
 {
   "artifact_id": "L1-NNN",
@@ -46,6 +54,10 @@ For each source file, produce three JSON files:
   "domain": "...",
   "sub_domain": "...",
   "source_file": "filename.md",
+
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [],
 
   "E": {
     "description": "Forward model operator E: X -> Y",
@@ -104,9 +116,19 @@ For each source file, produce three JSON files:
 
   "p1_p10_tests": ["PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS"],
   "s1_s4_gates": ["PASS", "PASS", "PASS", "PASS"],
-  "ipfs_cid": null
+  "ipfs_cid": null,
+
+  "v3_metadata": {
+    "is_standalone_multiphysics": false,
+    "coupling_count_n_c": 0,
+    "joint_well_posedness_references": [],
+    "distinctness_audit": null,
+    "clinical_context": null
+  }
 }
 ```
+
+**Reference for v3 standalone multi-physics:** see `pwm-team/content/agent-imaging/principles/C_medical_imaging/L1-503_qsm.json` for a worked example with `n_c = 2`, joint MR + Maxwell magnetostatic forward, and full `v3_metadata` block populated.
 
 ### L2-NNN.json (Spec — six-tuple S = (Omega, E, B, I, O, epsilon))
 ```json
@@ -196,6 +218,10 @@ For each source file, produce three JSON files:
 - [ ] forward_model in L1 E matches E in L2 six_tuple
 - [ ] difficulty_delta consistent with L_DAG complexity
 - [ ] P1-P10 physics validity tests all PASS
+- [ ] gate_class field present and accurate (`"analytical"` for single-physics or standalone multi-physics; `"physical_with_discrete_readout"` for analytical-core + threshold-readout; `"data_driven_statistical"` for VC/PAC-Bayes-gated)
+- [ ] If `n_c > 0` (multi-physics coupling), `v3_metadata.is_standalone_multiphysics = true` and `coupling_count_n_c` matches `G.n_c`
+- [ ] If standalone multi-physics, `v3_metadata.distinctness_audit` populated with closest existing genesis Principle + d_principle estimate (must be ≥ 0.30 for distinct staking advisory)
+- [ ] `related_principles` lists component / parent / sibling Principles where applicable (informational only — no royalty implication)
 
 ## Reference: already-completed examples
 - CASSI: L1-003.json, L2-003.json (in genesis/l1/, genesis/l2/)
