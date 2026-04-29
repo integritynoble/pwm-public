@@ -172,20 +172,21 @@ fractional.
 If PWM grew to 10,000+ Principles across the full breadth of
 computational science + ML, the distribution would likely be:
 
-| `gate_class` | Estimated share | Domains |
-|---|---|---|
-| `analytical` | ~30% | Imaging (current 400), PDE, signals, scientific computation, formal CS (theorem proving, code gen, optimization, SAT) |
-| `physical_with_discrete_readout` | ~50% | Most medical AI, materials science classification, genomics, biology, drug discovery, astronomy classification — anywhere the labels reduce to physical state |
-| `data_driven_statistical` | ~20% | Pure NLP, recommendations, aesthetics, cultural / linguistic tasks, subjective preference |
+| `gate_class` | Original projection | Revised projection (under standalone-as-default) | Domains |
+|---|---|---|---|
+| `analytical` | ~30% | **~40%** | Imaging (current 400), PDE, signals, scientific computation, formal CS (theorem proving, code gen, optimization, SAT), **plus standalone multi-physics** (FSI, multi-scale materials, climate attribution, multi-messenger astronomy, QSM, qPAT, joint MEG-EEG, etc. — see `PWM_V3_STANDALONE_VS_COMPOSITE.md` and `PWM_V3_MEDICAL_IMAGING_CANDIDATES.md`) |
+| `physical_with_discrete_readout` | ~50% | **~45%** | Most medical AI with thresholdable physics (PillCam-SPECTRA, crystal-XRD classification, tissue-density classification), materials microstructure classification, cell-type from RNA-seq, galaxy morphology classification |
+| `data_driven_statistical` | ~20% | **~15%** | Pure NLP, recommendations, aesthetics, cultural / linguistic tasks, subjective preference |
+| Composites (separate axis — fraction of all Principles registered as `L1_COMPOSITE`) | implicit | ~5-10% | Explicit-credit fusion with multi-parent royalty; the minority form, used when contributor wants on-chain upstream royalty flow |
 
-PWM stays "physics / math-grounded" for **80% of the catalog** if
-Option 3 (physics-recast) is properly incentivized. The remaining 20%
-gets honest `*`-marked statistical gates and lower reward.
+The revision reflects the design refinement in `PWM_V3_STANDALONE_VS_COMPOSITE.md`: standalone multi-physics Principles register as v1-analytical with `n_c > 0` in their L_DAG breakdown. This absorbs methods like FSI, qPAT, QSM, and multi-scale materials into the analytical bucket rather than forcing them into the composite framework.
+
+PWM stays "physics / math-grounded" for **~85% of the catalog** under the revised projection — slightly higher than the original ~80% because standalone multi-physics is admitted under analytical.
 
 This is the right balance: the protocol covers most of computational
 science + ML without diluting its analytical brand, and the reward
 mechanism naturally pushes contributors toward the cleanest available
-gate class.
+gate class. The composite form remains for the explicit-credit minority — used when contributors specifically want on-chain royalty flow to upstream authors.
 
 ---
 
