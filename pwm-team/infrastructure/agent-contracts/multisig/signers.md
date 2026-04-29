@@ -21,13 +21,59 @@ before deploying PWMGovernance to Base mainnet.
 
 ## Onboarding checklist (per signer)
 
-For each of the 5 signers, complete before deploy:
+For each of the 5 signers, complete before deploy. Cross off items
+as each signer hits them; the file is the source of truth.
 
+### Signer #1 (Director — Hardware #1)
 - [ ] Hardware wallet acquired and initialized fresh (not re-used)
 - [ ] Recovery seed stored in 2 geographically separated locations
-- [ ] Address verified on-device (display matches address recorded above)
-- [ ] $0.10 of test ETH sent + signed back (proves device works end-to-end)
-- [ ] Emergency contact info (in case signer becomes unreachable) recorded out-of-band
+- [ ] Derived address #0 on path `m/44'/60'/0'/0/0` and verified on the
+      device's own screen (NOT just the desktop app)
+- [ ] Address recorded in the table above
+- [ ] Self-sent ≥ 1 tx on Base Sepolia (any value, even 0 wei) —
+      records the tx hash in your local notes for proof-of-custody
+- [ ] `python scripts/proof_of_custody.py <signer-1-address>` exits 0
+
+### Signer #2 (Director — Hardware #2, off-site backup)
+- [ ] Hardware wallet acquired and initialized fresh
+- [ ] Recovery seed stored in 2 separate locations from Signer #1's seed
+- [ ] Derived address #0; verified on-device
+- [ ] Address recorded in the table above
+- [ ] Self-sent ≥ 1 tx on Base Sepolia
+- [ ] `python scripts/proof_of_custody.py <signer-2-address>` exits 0
+
+### Signer #3 (Trusted technical collaborator)
+- [ ] Identity confirmed (Director knows this person and has high
+      confidence in their long-term availability + key custody)
+- [ ] Hardware wallet acquired
+- [ ] Address derived + verified on-device + recorded in the table above
+- [ ] Self-sent ≥ 1 tx on Base Sepolia
+- [ ] Emergency contact info recorded out-of-band
+- [ ] `python scripts/proof_of_custody.py <signer-3-address>` exits 0
+
+### Signer #4 (Second trusted collaborator)
+- [ ] Identity confirmed
+- [ ] Hardware wallet acquired
+- [ ] Address derived + verified + recorded
+- [ ] Self-sent ≥ 1 tx on Base Sepolia
+- [ ] Emergency contact info recorded out-of-band
+- [ ] `python scripts/proof_of_custody.py <signer-4-address>` exits 0
+
+### Signer #5 (Cold-storage backup)
+- [ ] Hardware/paper wallet generated air-gapped
+- [ ] Recovery material physically secured (safe-deposit box / fire-rated home safe)
+- [ ] Address recorded in the table above
+- [ ] Self-sent ≥ 1 tx on Base Sepolia (single touchpoint to confirm
+      the key works; then return device to cold storage)
+- [ ] `python scripts/proof_of_custody.py <signer-5-address>` exits 0
+
+### Final verification (Director runs after all 5 signers complete)
+- [ ] All 5 addresses populated in the table above (no `0x____` placeholders)
+- [ ] `python scripts/verify_signers_md.py` exits 0 — confirms 5
+      addresses, none equals deployer/testnet-founder, all have
+      proof-of-custody on Base Sepolia
+- [ ] Director commits + pushes the populated `signers.md`
+- [ ] CPU commits `STEP_6__founder-roster-locked.READY.json`
 
 ## Emergency procedures
 
