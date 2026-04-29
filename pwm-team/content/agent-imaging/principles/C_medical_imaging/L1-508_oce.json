@@ -1,0 +1,246 @@
+{
+  "artifact_id": "L1-508",
+  "layer": "L1",
+  "principle_number": "508",
+  "title": "Optical Coherence Elastography (OCE)",
+  "domain": "Medical Imaging",
+  "sub_domain": "Sub-resolution displacement-tracked tissue mechanical property recovery (multi-physics joint inverse)",
+  "source_file": "C_medical_imaging/508_oce.md",
+  "source_data_quality_note": "v3 standalone multi-physics genesis Principle. Joint forward operator couples (i) optical coherence tomography (OCT) signal acquisition with (ii) tissue mechanical wave propagation under applied loading. Recovers spatially-resolved tissue mechanical properties (Young's modulus E(r), shear modulus mu(r), Lame parameters) at micrometer resolution by tracking sub-resolution displacements u(r, t) in OCT phase signal under static, dynamic, or wave-mode loading. Distinct from L1-042 OCT (intensity-based reflectivity recovery) and L1-047 elastography (US/MR-based at millimeter resolution) by primitive set, sensing_mechanism, and the displacement-tracking coupling. Authored under the standalone-as-default v3 design (see pwm-team/pwm_product/genesis/PWM_V3_STANDALONE_VS_COMPOSITE.md).",
+
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [
+    "L1-042 (OCT — coherence-based reflectivity acquisition component, informational)",
+    "L1-047 (Elastography — sibling tissue-stiffness imaging at coarser scale, d_principle ~ 0.45)",
+    "L1-207 (Linear elasticity — wave propagation primitive, informational)",
+    "L1-055 (MRE — sibling MR-based elastography, n_c ~ 0 in current genesis)"
+  ],
+
+  "E": {
+    "description": "Optical Coherence Elastography (OCE): joint multi-physics forward couples (i) OCT signal acquisition where complex amplitude A(r) at depth z is recovered via low-coherence interferometry (spectral-domain or swept-source); (ii) sub-resolution displacement tracking where applied loading f_load(r, t) (compression, indentation, acoustic radiation force, or surface waves) produces displacement field u(r, t) that shifts the local scatter profile R(r - u(r, t)); (iii) tissue mechanical wave propagation governed by the linear elasticity wave equation rho * d2u/dt2 = grad . (sigma) + f_body, with constitutive law sigma = 2 mu epsilon + lambda tr(epsilon) I where epsilon is the symmetric strain tensor. The forward DAG has 8 primitives with two coupling constraints (n_c = 2): (i) Lagrangian-Eulerian displacement coupling — the deformation field u(r, t) shifts the OCT scatter profile, with phase difference Delta-phi = 2*k*u/n_g coupling phase-sensitive OCT signal to displacement; (ii) loading-to-displacement coupling — applied f_load produces u via the elasticity wave equation, with shear-wave speed c_s = sqrt(mu/rho) carrying shear-modulus information through the wave equation. Recovery is posed as the joint inverse problem that recovers (mu, lambda)(r) (or equivalently Young's modulus E(r) and Poisson ratio nu(r)) from time-resolved OCT phase data {Delta-phi(r, t)} given known applied loading f_load(r, t). Difficulty tier delta = 5 with raw condition number kappa ~ 250 (limited by OCT phase noise floor and wavelength-dependent decorrelation) and effective kappa_eff ~ 35 after physics-informed wave-equation regularization. Mismatch parameters: oct_phase_noise, scatter_decorrelation, loading_calibration_error, tissue_anisotropy, density_uncertainty, boundary_condition_uncertainty. Additive Gaussian phase noise sets the data-fidelity floor. See forward_model field for the closed-form joint imaging equation.",
+    "forward_model": "OCT signal: A(r, t) = sqrt(R(r - u(r, t))) * exp(i * 2*k*z + i*phi_0); phase difference Delta-phi(r, t1, t2) = 2*k*[u_z(r, t2) - u_z(r, t1)] / n_g; elasticity wave: rho * d2u/dt2 = grad . sigma + f_body; sigma = 2 mu epsilon + lambda tr(epsilon) I; jointly invert {Delta-phi(r, t)} -> (mu, lambda)(r) given f_load(r, t), rho, boundary conditions",
+    "world_state_x": "Spatially-resolved tissue mechanical properties: Lame parameters (mu, lambda)(r) [Pa] or equivalently Young's modulus E(r) and Poisson ratio nu(r). Range: corneal mu ~ 50-500 kPa; cancerous tissue 20-100 kPa stiffer than healthy stroma; vocal-fold superficial layer ~ 1-10 kPa; arterial wall ~ 50-1000 kPa.",
+    "observation_y": "Time-resolved OCT phase difference {Delta-phi(r, t1, t2)} or full complex OCT signal {A(r, t)} acquired during applied loading sequence f_load(r, t).",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "Z",
+      "N_frames",
+      "axial_resolution_um",
+      "lateral_resolution_um",
+      "loading_mode",
+      "loading_amplitude",
+      "loading_frequency_Hz",
+      "wavelength_nm",
+      "SNR_dB",
+      "oct_phase_noise",
+      "scatter_decorrelation",
+      "loading_calibration_error",
+      "tissue_anisotropy",
+      "density_uncertainty",
+      "boundary_condition_uncertainty"
+    ]
+  },
+
+  "G": {
+    "dag": "L.oct_acquisition -> L.phase_extraction -> L.displacement_tracking -> L.elasticity_wave -> L.constitutive_law -> L.applied_loading -> int.spatial -> int.temporal",
+    "vertices": [
+      "L.oct_acquisition",
+      "L.phase_extraction",
+      "L.displacement_tracking",
+      "L.elasticity_wave",
+      "L.constitutive_law",
+      "L.applied_loading",
+      "int.spatial",
+      "int.temporal"
+    ],
+    "arcs": [
+      "L.applied_loading -> L.elasticity_wave",
+      "L.constitutive_law -> L.elasticity_wave",
+      "L.elasticity_wave -> L.displacement_tracking",
+      "L.oct_acquisition -> L.phase_extraction",
+      "L.phase_extraction -> L.displacement_tracking",
+      "L.displacement_tracking -> int.spatial",
+      "int.spatial -> int.temporal"
+    ],
+    "L_DAG": 8.4,
+    "n_c": 2,
+    "coupling_constraints": [
+      "lagrangian_to_eulerian: displacement field u(r, t) shifts OCT scatter profile R(r - u(r, t)); phase coupling Delta-phi = 2*k*u_z/n_g connects OCT phase signal to mechanical displacement (Doppler-like)",
+      "loading_to_displacement: applied f_load(r, t) produces u(r, t) via elasticity wave equation with shear-wave speed c_s = sqrt(mu/rho) carrying shear-modulus information; this is the coupling that makes OCE a multi-physics inverse rather than a pure OCT or pure mechanics problem"
+    ]
+  },
+
+  "W": {
+    "existence": true,
+    "uniqueness": "conditional",
+    "stability": "conditional",
+    "condition_number_kappa": 250,
+    "condition_number_effective": 35,
+    "regime": "Existence of recovered Lame parameter maps (mu, lambda)(r) is guaranteed within the declared Omega bounds. Uniqueness holds for shear-wave-mode loading at multiple frequencies (2D-3D shear-wave dispersion analysis); compression-mode and surface-wave OCE are conditionally unique requiring boundary-condition specification and density assumption. Stability is moderately conditioned (kappa_eff ~ 35 after physics-informed wave-equation regularization) — oct_phase_noise dominates displacement-tracking precision; tissue_anisotropy contributes off-diagonal Lame-tensor bias; density_uncertainty contributes a scaling factor of order rho^(-1/2). Joint Hadamard well-posedness for the coupled OCT-elasticity forward is established by Schmitt 1998 (foundational), Wang-Kirkpatrick-Hinds 2007 (phase-sensitive OCE), Kennedy-Wijesinghe-Sampson 2014 (compression OCE), Larin-Sampson 2017 (review), Kirby et al. 2017 (shear-wave OCE methods), and Wijesinghe et al. 2019 (computational OCE)."
+  },
+
+  "C": {
+    "solver_class": "linear-operator + convex optimisation [physics-informed displacement-to-stiffness inversion; Helmholtz-equation regularized shear-wave inversion; finite-element-method forward + iterative gradient descent] | nonlinear-least-squares [Levenberg-Marquardt for parametric stiffness models] | linear-operator + deep neural prior [OCE-Net, ElastoNet]",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Data-fidelity bound: ||(mu, lambda)_hat - (mu, lambda)||_2 <= C1 * sigma_phase_noise * lambda_optical / (4*pi*n_g) / sqrt(N_frames). Wave-equation-induced bias adds + C2 * |loading_calibration_error| + C3 * |tissue_anisotropy| + C4 * |density_uncertainty| + C5 * ||(mu, lambda) - (mu, lambda)_s||_1 (best s-sparse / piecewise-smooth approximation residual). Helmholtz-regularized shear-wave inversion achieves q=2 (O(1/k^2)) under L2 prior; FEM-iterative methods achieve q=1 to q=2 depending on initialization. Deep-prior variants achieve faster initial convergence with bounded systematic bias. epsilon_fn captures monotone quality degradation across declared Omega.",
+    "complexity": "O(H * W * Z * N_frames * (axial_resolution_um)^(-1)) per iteration via FFT-based phase extraction + FEM-based wave-equation forward; learned variants O(H W Z N_frames * F_theta_cost) per forward pass"
+  },
+
+  "physics_fingerprint": {
+    "carrier": "photon_with_mechanical_load",
+    "sensing_mechanism": "phase_sensitive_oct_with_elasticity_wave",
+    "integration_axis": "spatial_temporal",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "3D_lame_parameter_map",
+    "primitives": [
+      "L.oct_acquisition",
+      "L.phase_extraction",
+      "L.displacement_tracking",
+      "L.elasticity_wave",
+      "L.constitutive_law",
+      "L.applied_loading",
+      "int.spatial",
+      "int.temporal"
+    ]
+  },
+
+  "difficulty_delta": 5,
+  "difficulty_tier": "advanced",
+  "mismatch_parameters": [
+    "oct_phase_noise",
+    "scatter_decorrelation",
+    "loading_calibration_error",
+    "tissue_anisotropy",
+    "density_uncertainty",
+    "boundary_condition_uncertainty"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "RMSE_log_modulus",
+
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "oce_shear_wave",
+      "forward_operator": "oce_joint_forward",
+      "input_format": "phase_resolved_oct_under_loading",
+      "omega": {
+        "H": 512,
+        "W": 512,
+        "Z": 256,
+        "N_frames": 100,
+        "axial_resolution_um": 10,
+        "lateral_resolution_um": 15,
+        "loading_mode": "shear_wave",
+        "loading_amplitude": 1.0e-7,
+        "loading_frequency_Hz": 1000,
+        "wavelength_nm": 1300,
+        "SNR_dB": 25,
+        "oct_phase_noise": 0.0,
+        "scatter_decorrelation": 0.0,
+        "loading_calibration_error": 0.0,
+        "tissue_anisotropy": 0.0,
+        "density_uncertainty": 0.0,
+        "boundary_condition_uncertainty": 0.0
+      },
+      "epsilon_fn_center": "24.0"
+    },
+    "allowed_forward_operators": [
+      "oce_joint_forward",
+      "oce_compression_forward",
+      "oce_shear_wave_forward",
+      "oce_arf_forward",
+      "oce_surface_wave_forward"
+    ],
+    "allowed_problem_classes": [
+      "oce_shear_wave",
+      "oce_compression",
+      "oce_acoustic_radiation_force",
+      "oce_surface_wave",
+      "oce_natural_frequency"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "Z",
+      "N_frames",
+      "axial_resolution_um",
+      "lateral_resolution_um",
+      "loading_mode",
+      "loading_amplitude",
+      "loading_frequency_Hz",
+      "wavelength_nm",
+      "SNR_dB",
+      "oct_phase_noise",
+      "scatter_decorrelation",
+      "loading_calibration_error",
+      "tissue_anisotropy",
+      "density_uncertainty",
+      "boundary_condition_uncertainty"
+    ],
+    "omega_bounds": {
+      "H": [128, 2048],
+      "W": [128, 2048],
+      "Z": [64, 1024],
+      "N_frames": [10, 1000],
+      "axial_resolution_um": [1, 50],
+      "lateral_resolution_um": [2, 50],
+      "loading_amplitude": [1.0e-9, 1.0e-4],
+      "loading_frequency_Hz": [10, 20000],
+      "wavelength_nm": [800, 1700],
+      "SNR_dB": [5.0, 40.0],
+      "oct_phase_noise": [0.0, 0.3],
+      "scatter_decorrelation": [0.0, 0.4],
+      "loading_calibration_error": [0.0, 0.3],
+      "tissue_anisotropy": [0.0, 0.4],
+      "density_uncertainty": [0.0, 0.2],
+      "boundary_condition_uncertainty": [0.0, 0.3]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [8.0, 42.0]
+    }
+  },
+
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null,
+
+  "v3_metadata": {
+    "is_standalone_multiphysics": true,
+    "coupling_count_n_c": 2,
+    "joint_well_posedness_references": [
+      "Schmitt JM (1998) OCT elastography: imaging microscopic deformation and strain of tissue. Opt Express 3(6):199-211.",
+      "Wang RK, Kirkpatrick S, Hinds M (2007) Phase-sensitive optical coherence elastography for mapping tissue microstrains in real time. Appl Phys Lett 90(16):164105.",
+      "Kennedy BF, Wijesinghe P, Sampson DD (2014) The emergence of optical elastography in biomedicine. Nat Photon 8:743-755.",
+      "Larin KV, Sampson DD (2017) Optical coherence elastography: OCT at work in tissue biomechanics. Biomed Opt Express 8(2):1172-1202.",
+      "Kirby MA, Pelivanov I, Song S, Ambrozinski L, Yoon SJ, Gao L, Li D, Shen TT, Wang RK, O'Donnell M (2017) Optical coherence elastography in ophthalmology. J Biomed Opt 22(12):121720.",
+      "Mulligan JA, Untracht GR, Chandrasekaran SN, Brown CN, Adie SG (2016) Emerging approaches for high-resolution imaging of tissue biomechanics with optical coherence elastography. IEEE J Sel Top Quantum Electron 22(3):246-265.",
+      "Wijesinghe P, Sampson DD, Kennedy BF (2019) Computational optical palpation: a finite-element approach to micro-scale tactile imaging using a compliant sensor. J R Soc Interface 16(159):20190187.",
+      "Zvietcovich F, Larin KV (2022) Wave-based optical coherence elastography: the 10-year perspective. Prog Biomed Eng 4(1):012007."
+    ],
+    "distinctness_audit": {
+      "closest_existing_principle": "L1-042 OCT and L1-047 elastography (tie)",
+      "d_principle_estimate": 0.45,
+      "advisory_label": "Distinct",
+      "rationale": "L1-042 OCT recovers reflectivity / scatter-amplitude profile R(r) from coherence-domain detection; sensing_mechanism = oct_spectral_domain; n_c = 0; solution_space = 3D tissue reflectivity. L1-047 elastography (general) recovers stiffness at coarser scale via US or MR; sensing_mechanism = ultrasound_or_mri_based; coarser spatial resolution. L1-508 OCE recovers Lame-parameter maps (mu, lambda)(r) at micrometer resolution via the joint OCT + tissue-mechanics coupling — sensing_mechanism = phase_sensitive_oct_with_elasticity_wave; n_c = 2 (Lagrangian-Eulerian coupling + loading-to-displacement); adds L.elasticity_wave, L.constitutive_law, L.applied_loading primitives. Solution_space is 3D_lame_parameter_map, distinct from both L1-042's 3D reflectivity and L1-047's coarse-scale stiffness map. Jaccard distance over (sensing_mechanism, solution_space, primitives) ~ 0.45 from each parent — solidly Distinct under v1 advisory thresholds (>= 0.30)."
+    },
+    "clinical_context": "Emerging clinical and translational research: ophthalmology (corneal biomechanics — keratoconus screening, LASIK candidate evaluation, glaucoma), dermatology (skin cancer staging, lesion margin assessment), oncology (small-tumor stiffness mapping, breast lesion characterization), interventional cardiology (atherosclerotic plaque vulnerability assessment via intravascular OCE). Spatial resolution 10-50 micrometers — much finer than US elastography (~1 mm) or MRE (~3 mm). Active commercial development: Heidelberg, Optopol, Carl Zeiss Meditec working on integrated OCE add-ons to existing OCT platforms."
+  }
+}

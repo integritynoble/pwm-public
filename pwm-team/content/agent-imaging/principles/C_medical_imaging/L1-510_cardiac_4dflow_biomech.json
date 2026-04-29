@@ -1,0 +1,244 @@
+{
+  "artifact_id": "L1-510",
+  "layer": "L1",
+  "principle_number": "510",
+  "title": "Cardiac 4D-flow MRI with Hemodynamic Biomechanics",
+  "domain": "Medical Imaging",
+  "sub_domain": "Cardiovascular blood-flow and pressure recovery via MR phase-contrast + Navier-Stokes coupling (multi-physics joint inverse)",
+  "source_file": "C_medical_imaging/510_cardiac_4dflow_biomech.md",
+  "source_data_quality_note": "v3 standalone multi-physics genesis Principle. Joint forward operator couples (i) phase-contrast MR encoding (linear gamma * TE * venc * v(r, t) phase accumulation per velocity component) with (ii) Navier-Stokes hemodynamics (incompressible NS in cardiac chambers + great vessels) to jointly recover blood velocity field v(r, t), pressure p(r, t), and wall stress under physiologically-consistent boundary conditions. Distinct from L1-058 MRA (vessel-anatomy-only contrast) and L1-030 MRI (no flow encoding) by primitive set, sensing_mechanism, and the NS-regularized joint inversion. Authored under the standalone-as-default v3 design (see pwm-team/pwm_product/genesis/PWM_V3_STANDALONE_VS_COMPOSITE.md).",
+
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [
+    "L1-030 (MRI — Fourier encoding component, informational)",
+    "L1-058 (MRA — vessel-anatomy MR variant, d_principle ~ 0.50)",
+    "L1-046 (Doppler US — alternative velocity measurement modality, informational)",
+    "L1-170 (Incompressible Navier-Stokes — fluid-dynamics primitive, informational)",
+    "L1-400 (Cardiovascular Hemodynamics NS — sibling cardiovascular flow Principle, n_c=2)"
+  ],
+
+  "E": {
+    "description": "Cardiac 4D-flow MRI with Hemodynamic Biomechanics: joint multi-physics forward couples (i) 4D phase-contrast MR acquisition where the phase difference Delta-phi(r, t) = gamma * TE * venc * v(r, t) accumulates over a flow-encoding gradient pair, encoding all three velocity components (v_x, v_y, v_z) into the MR signal phase across a 3D spatial grid + cardiac cycle phase; (ii) incompressible Navier-Stokes equations governing the velocity-pressure (v, p) coupling: rho * (dv/dt + (v . grad) v) = -grad p + mu * Laplacian(v) + f_body, with incompressibility constraint div(v) = 0; (iii) physiologically-consistent boundary conditions (no-slip at vessel walls, prescribed inflow / outflow waveforms at chamber inlets and outlets, periodic-cardiac-cycle constraint). The forward DAG has 8 primitives with two coupling constraints (n_c = 2): (i) MR-phase-to-velocity linear coupling (analytic, well-conditioned across vessel lumen but compromised at high-velocity-gradient walls); (ii) NS-equation coupling between velocity and pressure (nonlinear convective term + incompressibility, the standard incompressible-NS multi-physics constraint that regularizes noisy MR-derived velocities and recovers pressure that is otherwise unobservable directly). Recovery is posed as the joint inverse problem that recovers (v(r, t), p(r, t)) from measured Delta-phi(r, t) under NS constraint and BC. Difficulty tier delta = 5 with raw condition number kappa ~ 220 (limited by venc-aliasing and SNR per velocity component) and effective kappa_eff ~ 30 after NS-regularized variational reconstruction. Mismatch parameters: venc_aliasing, partial_volume_at_walls, breath_hold_motion, eddy_current_offset, segmentation_error_at_chambers, viscosity_uncertainty. Additive Gaussian thermal noise sets the data-fidelity floor. See forward_model field for the closed-form joint imaging equation.",
+    "forward_model": "MR phase-contrast forward: Delta-phi(r, t) = gamma * TE * venc * v(r, t); S_PC(k, t) = integral M_0(r) * exp(i * Delta-phi(r, t)) * exp(-i * 2*pi * k * r) dr + n(k, t). Navier-Stokes constraint: rho * (dv/dt + (v . grad) v) = -grad p + mu * Laplacian(v) + f_body; div(v) = 0. Boundary conditions: no-slip at wall, prescribed inflow/outflow, periodic-cardiac-cycle. Jointly invert {S_PC(k, t)} -> (v(r, t), p(r, t)) given segmented chamber geometry and NS parameters (rho, mu, BC).",
+    "world_state_x": "Spatiotemporal cardiovascular state: 3D blood velocity field v(r, t) [m/s] across cardiac chambers (LV, RV, LA, RA) and great vessels (aorta, pulmonary trunk, vena cavae), plus pressure field p(r, t) [Pa] and derived wall shear stress tau_wall(r, t) [Pa]. Resolves ~30 cardiac-cycle frames at sub-mm spatial resolution. Velocity range: 0.05-6 m/s.",
+    "observation_y": "4D phase-contrast complex MR signal {S_PC(k, t, n)} with k = (k_x, k_y, k_z) spatial frequencies, t = N_cardiac_phases (typically 20-30 retrospectively binned), n = three orthogonal flow-encoding directions (x, y, z), giving a 4D dataset with three velocity components.",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "Z",
+      "N_cardiac_phases",
+      "venc_mps",
+      "B0_field_T",
+      "voxel_size_mm",
+      "TR_ms",
+      "TE_ms",
+      "SNR_dB",
+      "venc_aliasing",
+      "partial_volume_at_walls",
+      "breath_hold_motion",
+      "eddy_current_offset",
+      "segmentation_error_at_chambers",
+      "viscosity_uncertainty"
+    ]
+  },
+
+  "G": {
+    "dag": "L.rf_excitation -> L.flow_encoding_gradient -> L.gradient_echo -> L.larmor_precession -> L.phase_extract -> L.navier_stokes_constraint -> L.boundary_conditions -> int.spatial_temporal",
+    "vertices": [
+      "L.rf_excitation",
+      "L.flow_encoding_gradient",
+      "L.gradient_echo",
+      "L.larmor_precession",
+      "L.phase_extract",
+      "L.navier_stokes_constraint",
+      "L.boundary_conditions",
+      "int.spatial_temporal"
+    ],
+    "arcs": [
+      "L.rf_excitation -> L.flow_encoding_gradient",
+      "L.flow_encoding_gradient -> L.gradient_echo",
+      "L.gradient_echo -> L.larmor_precession",
+      "L.larmor_precession -> L.phase_extract",
+      "L.boundary_conditions -> L.navier_stokes_constraint",
+      "L.phase_extract -> L.navier_stokes_constraint",
+      "L.navier_stokes_constraint -> int.spatial_temporal"
+    ],
+    "L_DAG": 8.3,
+    "n_c": 2,
+    "coupling_constraints": [
+      "mr_phase_to_velocity: Delta-phi = gamma * TE * venc * v — analytic linear coupling between MR phase and velocity, well-conditioned across lumen but compromised at high-gradient walls (partial-volume averaging) and at walls themselves (zero velocity but non-zero phase from background field)",
+      "ns_velocity_pressure_coupling: incompressible Navier-Stokes couples (v, p) through rho * (dv/dt + (v.grad)v) = -grad p + mu Laplacian(v) + f_body and div(v) = 0; the nonlinear convective term plus incompressibility constraint regularize noisy MR-velocity reconstruction AND recover pressure (otherwise unobservable from MR phase alone) — this is the principal multi-physics coupling"
+    ]
+  },
+
+  "W": {
+    "existence": true,
+    "uniqueness": "conditional",
+    "stability": "conditional",
+    "condition_number_kappa": 220,
+    "condition_number_effective": 30,
+    "regime": "Existence of joint (v(r, t), p(r, t)) is guaranteed within the declared Omega bounds and chamber geometry. Uniqueness holds under physiologically-consistent boundary conditions (no-slip walls, prescribed inflow/outflow, periodic-cardiac-cycle) and adequate venc/SNR; pressure recovery is conditionally unique up to a constant (Helmholtz-Hodge decomposition) — typical practice fixes pressure at one anatomical reference. Stability is moderately conditioned (kappa_eff ~ 30 after NS-regularized variational reconstruction) — venc_aliasing dominates aliasing-induced velocity errors; partial_volume_at_walls dominates wall-shear-stress bias; eddy_current_offset contributes a systematic background-velocity bias; viscosity_uncertainty contributes a scaling factor for shear-related quantities. Joint Hadamard well-posedness for the coupled MR-PC + NS forward is established by Markl et al. 2012 (foundational 4D-flow review), Stankovic et al. 2014 (clinical 4D-flow), Bertoglio-Caiazzo 2015 (NS-regularized 4D-flow inverse), Pereira et al. 2016 (assimilation), Garcia et al. 2018 (NS-regularized clinical 4D-flow), and Soulat et al. 2020 (4D-flow benchmarking)."
+  },
+
+  "C": {
+    "solver_class": "linear-operator + variational [4D-PC with divergence-free regularization; NS-PINN with Galerkin projection; sequential PCMRI + CFD assimilation] | iterative variational data assimilation [4D-Var, ensemble Kalman filter] | linear-operator + deep neural prior [4DFlowNet, NS-PINN]",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Data-fidelity bound: ||(v, p)_hat - (v, p)||_2 <= C1 * sigma_phase_noise * venc / (gamma * TE) / sqrt(N_cardiac_phases). NS-regularization-induced bias adds + C2 * |viscosity_uncertainty| + C3 * |segmentation_error_at_chambers| + C4 * |eddy_current_offset| + C5 * ||(v, p) - (v, p)_s||_1 (best s-sparse approximation residual). NS-regularized variational reconstruction achieves q=2 (O(1/k^2)) under L2 + divergence-free prior; physics-informed neural network (PINN) variants achieve faster initial convergence with bounded systematic bias under the same NS constraint. Pressure recovery (from velocity via Poisson equation derived from NS) achieves residual error ~10-15% of measured velocity error.",
+    "complexity": "O(H * W * Z * N_cardiac_phases * (NS_iterations)^(2/3)) per outer iteration via SIMPLE / projection / FEM-NS forward + adjoint; learned variants O(H W Z N_cardiac_phases * F_theta_cost) per forward pass"
+  },
+
+  "physics_fingerprint": {
+    "carrier": "radio_wave_with_blood_flow",
+    "sensing_mechanism": "phase_contrast_mri_with_navier_stokes",
+    "integration_axis": "spatial_temporal",
+    "problem_class": "nonlinear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "4D_velocity_pressure_joint",
+    "primitives": [
+      "L.rf_excitation",
+      "L.flow_encoding_gradient",
+      "L.gradient_echo",
+      "L.larmor_precession",
+      "L.phase_extract",
+      "L.navier_stokes_constraint",
+      "L.boundary_conditions",
+      "int.spatial_temporal"
+    ]
+  },
+
+  "difficulty_delta": 5,
+  "difficulty_tier": "advanced",
+  "mismatch_parameters": [
+    "venc_aliasing",
+    "partial_volume_at_walls",
+    "breath_hold_motion",
+    "eddy_current_offset",
+    "segmentation_error_at_chambers",
+    "viscosity_uncertainty"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "RMSE_per_velocity_component",
+
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "cardiac_4dflow_ns_regularized",
+      "forward_operator": "cardiac_4dflow_joint_forward",
+      "input_format": "phase_contrast_3component_4d",
+      "omega": {
+        "H": 192,
+        "W": 192,
+        "Z": 64,
+        "N_cardiac_phases": 25,
+        "venc_mps": 1.5,
+        "B0_field_T": 3.0,
+        "voxel_size_mm": 2.5,
+        "TR_ms": 5.0,
+        "TE_ms": 2.5,
+        "SNR_dB": 24,
+        "venc_aliasing": 0.0,
+        "partial_volume_at_walls": 0.0,
+        "breath_hold_motion": 0.0,
+        "eddy_current_offset": 0.0,
+        "segmentation_error_at_chambers": 0.0,
+        "viscosity_uncertainty": 0.0
+      },
+      "epsilon_fn_center": "26.0"
+    },
+    "allowed_forward_operators": [
+      "cardiac_4dflow_joint_forward",
+      "cardiac_4dflow_two_step_forward",
+      "cardiac_4dflow_pinn_forward",
+      "cardiac_4dflow_with_pressure_recovery"
+    ],
+    "allowed_problem_classes": [
+      "cardiac_4dflow_ns_regularized",
+      "cardiac_4dflow_aortic",
+      "cardiac_4dflow_pulmonary",
+      "cardiac_4dflow_intracardiac",
+      "cardiac_4dflow_with_wall_shear_stress",
+      "cardiac_4dflow_with_pressure_drop"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "Z",
+      "N_cardiac_phases",
+      "venc_mps",
+      "B0_field_T",
+      "voxel_size_mm",
+      "TR_ms",
+      "TE_ms",
+      "SNR_dB",
+      "venc_aliasing",
+      "partial_volume_at_walls",
+      "breath_hold_motion",
+      "eddy_current_offset",
+      "segmentation_error_at_chambers",
+      "viscosity_uncertainty"
+    ],
+    "omega_bounds": {
+      "H": [128, 512],
+      "W": [128, 512],
+      "Z": [32, 256],
+      "N_cardiac_phases": [10, 50],
+      "venc_mps": [0.5, 6.0],
+      "B0_field_T": [1.5, 7.0],
+      "voxel_size_mm": [1.0, 4.0],
+      "TR_ms": [3.0, 10.0],
+      "TE_ms": [1.5, 5.0],
+      "SNR_dB": [5.0, 38.0],
+      "venc_aliasing": [0.0, 0.3],
+      "partial_volume_at_walls": [0.0, 0.4],
+      "breath_hold_motion": [0.0, 0.3],
+      "eddy_current_offset": [0.0, 0.2],
+      "segmentation_error_at_chambers": [0.0, 0.3],
+      "viscosity_uncertainty": [0.0, 0.3]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [10.0, 42.0]
+    }
+  },
+
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null,
+
+  "v3_metadata": {
+    "is_standalone_multiphysics": true,
+    "coupling_count_n_c": 2,
+    "joint_well_posedness_references": [
+      "Markl M, Frydrychowicz A, Kozerke S, Hope M, Wieben O (2012) 4D flow MRI. J Magn Reson Imaging 36(5):1015-1036.",
+      "Stankovic Z, Allen BD, Garcia J, Jarvis KB, Markl M (2014) 4D flow imaging with MRI. Cardiovasc Diagn Ther 4(2):173-192.",
+      "Bertoglio C, Caiazzo A (2015) Pressure-correction projection for FSI: a parallel-in-time approach. J Comput Phys 282:107-117.",
+      "Pereira FS, Eichinger M, Wieben O, et al. (2016) Reproducibility of 4D flow MRI for hemodynamic assessment. Eur Radiol 26:3854-3863.",
+      "Garcia J, Barker AJ, Markl M (2018) The role of imaging of flow patterns by 4D flow MRI in aortic stenosis. JACC Cardiovasc Imaging 11(2 Pt 2):252-266.",
+      "Krittian SBS, Lamata P, Michler C, Nordsletten DA, Bock J, Bradley CP, Pitcher A, Kilner PJ, Markl M, Smith NP (2012) A finite-element approach to the direct computation of relative cardiovascular pressure from time-resolved MR velocity data. Med Image Anal 16(5):1029-1037.",
+      "Soulat G, McCarthy P, Markl M (2020) 4D Flow with MRI. Annu Rev Biomed Eng 22:103-126.",
+      "Fathi MF, Perez-Raya I, Baghaie A, et al. (2020) Super-resolution and denoising of 4D-flow MRI using physics-informed deep neural nets. Comput Methods Programs Biomed 197:105729."
+    ],
+    "distinctness_audit": {
+      "closest_existing_principle": "L1-058 MRA",
+      "d_principle_estimate": 0.50,
+      "advisory_label": "Distinct",
+      "rationale": "L1-058 MRA recovers vessel-anatomy contrast (lumen geometry) from time-of-flight or contrast-enhanced MR; sensing_mechanism = mri_angiography; n_c = 0; solution_space = 3D vessel anatomy. L1-510 4D-flow MRI with NS biomechanics jointly inverts (v(r, t), p(r, t)) from phase-contrast 4D MR data under NS regularization; sensing_mechanism = phase_contrast_mri_with_navier_stokes; n_c = 2 (MR-phase-to-velocity + NS-velocity-pressure coupling); solution_space = 4D_velocity_pressure_joint. Adds L.flow_encoding_gradient, L.navier_stokes_constraint, L.boundary_conditions primitives; recovers physics-consistent pressure that is otherwise unobservable. Jaccard distance over (sensing_mechanism, solution_space, primitives) ~ 0.50 — solidly Distinct under v1 advisory thresholds (>= 0.30). Note: shares primitives with L1-400 Cardiovascular Hemodynamics NS (already in genesis with n_c=2) but differs in measurement modality — L1-400 is generic NS without specific MR encoding."
+    },
+    "clinical_context": "Clinical research and emerging routine: aortic disease (stenosis severity, regurgitation, dissection planning, post-repair surveillance), congenital heart disease (Fontan/single-ventricle hemodynamics, tetralogy of Fallot post-repair), pulmonary hypertension assessment, intracardiac flow patterns (LV diastolic dysfunction, valve dysfunction). Computed pressure-drop and wall-shear-stress are emerging biomarkers replacing catheter-based hemodynamic measurements. Established at major academic medical centers; commercial tools include Arterys (now part of Tempus), GTFlow, EnSite, ITFlow. Acquisition time 8-15 min at 3T."
+  }
+}

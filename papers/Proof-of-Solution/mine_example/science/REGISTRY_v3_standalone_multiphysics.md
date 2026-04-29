@@ -43,10 +43,10 @@ But standalone multi-physics Principles cut across domains — they're genuinely
 | L1-504 | Quantitative Photoacoustic Tomography (qPAT) | `C_medical_imaging/` | optical diffusion ⊗ thermoelastic Grüneisen ⊗ acoustic wave | 2 | 8.5 | **Authored** (genesis-eligible) |
 | L1-505 | Pharmacokinetic Dynamic PET (PK-PET) | `C_medical_imaging/` | photon transport (annihilation) ⊗ compartmental ODE kinetics | 2 | 8.3 | **Authored** (genesis-eligible) |
 | L1-506 | Hyperpolarized 13C Metabolic MRI | `C_medical_imaging/` | DNP ⊗ chemical exchange ODE ⊗ chemical-shift MR | 3 | 10.4 | **Authored** (genesis-eligible) |
-| L1-507 | Joint MEG-EEG Source Imaging | `C_medical_imaging/` | Maxwell magnetostatic ⊗ Poisson electrostatic | 2 | ~7-9 | Pending |
-| L1-508 | Optical Coherence Elastography (OCE) | `C_medical_imaging/` | OCT ⊗ tissue mechanics | 2 | ~6-8 | Pending |
-| L1-509 | Photoacoustic-Ultrasound Dual-mode (PAUS) | `C_medical_imaging/` | qPAT ⊗ ultrasound | 2 | ~7-9 | Pending |
-| L1-510 | Cardiac 4D-flow MRI with hemodynamic biomechanics | `C_medical_imaging/` | MR phase-contrast ⊗ Navier-Stokes | 2 | ~7-9 | Pending |
+| L1-507 | Joint MEG-EEG Source Imaging | `C_medical_imaging/` | Maxwell magnetostatic ⊗ Poisson electrostatic ⊗ head volume conductor | 2 | 10.0 | **Authored** (genesis-eligible) |
+| L1-508 | Optical Coherence Elastography (OCE) | `C_medical_imaging/` | phase-sensitive OCT ⊗ linear elasticity wave ⊗ applied loading | 2 | 8.4 | **Authored** (genesis-eligible) |
+| L1-509 | Photoacoustic-Ultrasound Dual-mode (PAUS) | `C_medical_imaging/` | qPAT chain ⊗ pulse-echo ultrasound | 2 | 9.5 | **Authored** (genesis-eligible) |
+| L1-510 | Cardiac 4D-flow MRI with hemodynamic biomechanics | `C_medical_imaging/` | MR phase-contrast ⊗ incompressible Navier-Stokes ⊗ physiological BC | 2 | 8.3 | **Authored** (genesis-eligible) |
 | _TBD_ | Fluid-Structure Interaction (FSI) | `R_fluid_dynamics/` or `T_structural_mechanics/` | Navier-Stokes ⊗ linear elasticity | 2 | ~6-8 | Candidate — see `PWM_V3_STANDALONE_VS_COMPOSITE.md` |
 | _TBD_ | Multi-scale materials simulation | `Z_materials_science/` | DFT ⊗ MD ⊗ continuum mechanics | 4 | ~9-11 | Candidate |
 | _TBD_ | Climate-system attribution | `AF_environmental_sci/` | atmosphere ⊗ ocean ⊗ ice ⊗ biosphere | 6 | ~10-12 | Candidate |
@@ -105,5 +105,9 @@ Without this registry, the cross-cutting nature of standalone multi-physics is i
 | 2026-04-29 | L1-504 qPAT authored — joint optical diffusion + thermoelastic Grüneisen + acoustic wave; n_c=2; L_DAG=8.5; d_principle ~ 0.42 from L1-041 PAT (Distinct). Status: Authored. |
 | 2026-04-29 | L1-505 PK-PET authored — joint photon transport + compartmental ODE tracer kinetics; n_c=2; L_DAG=8.3; d_principle ~ 0.55 from L1-033 PET (Distinct). Status: Authored. Path B target reached. |
 | 2026-04-29 | L1-506 HP-13C MRI authored — joint DNP + chemical-exchange ODE + chemical-shift MR readout; n_c=3; L_DAG=10.4; d_principle ~ 0.60 from L1-044 MRS (Distinct). Status: Authored. Path B complete (4 medical imaging v3 standalone Principles in genesis). |
+| 2026-04-29 | L1-507 Joint MEG-EEG Source Imaging authored — Maxwell magnetostatic + Poisson electrostatic + shared head volume conductor; n_c=2; L_DAG=10.0; d_principle ~ 0.50 from L1-067 MEG and L1-068 EEG (Distinct from each parent). Status: Authored. |
+| 2026-04-29 | L1-508 Optical Coherence Elastography (OCE) authored — phase-sensitive OCT + linear elasticity wave + applied loading; n_c=2; L_DAG=8.4; d_principle ~ 0.45 from L1-042 OCT and L1-047 elastography (Distinct). Status: Authored. |
+| 2026-04-29 | L1-509 PAUS dual-mode authored — qPAT chain + pulse-echo US with shared tissue acoustic; n_c=2; L_DAG=9.5; d_principle ~ 0.40 from L1-504 qPAT and L1-032 US (Distinct). Status: Authored. |
+| 2026-04-29 | L1-510 Cardiac 4D-flow MRI with biomechanics authored — MR phase-contrast + incompressible Navier-Stokes + physiological BC; n_c=2; L_DAG=8.3; d_principle ~ 0.50 from L1-058 MRA (Distinct). Status: Authored. **Path C complete: all 8 medical imaging v3 standalone candidates from PWM_V3_MEDICAL_IMAGING_CANDIDATES.md are now in genesis.** |
 | _TBD_ | Path A genesis batch complete (Director's pick); registry reflects all Authored entries. |
 | _TBD_ | Mainnet deploy at Step 7; this registry becomes the on-chain catalog of v3 standalone genesis Principles. |
