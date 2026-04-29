@@ -90,6 +90,40 @@ For the Base mainnet deploy itself, **Option A is the only safe
 path**: pass the 5 hardware-wallet addresses to PWMGovernance at
 construction time. This is set-once per the contract's constructor.
 
+## Deployer funding (Step 7)
+
+Mainnet deploy gas fees come from the **deployer wallet** — the same
+private key used for the Sepolia testnet deploy
+(`addresses.json[testnet].deployer`). It must hold ≥ 0.012 ETH on
+**Base L2 mainnet** before runbook step 1 of the mainnet deploy day.
+
+Actual estimated cost is ~$0.04 of Base gas; the 0.012-ETH (~$30 at
+$2500/ETH) recommendation includes a 1000× safety buffer for gas
+spikes during congestion. Recommended actual transfer: **~$50 worth**
+(roughly 0.02 ETH at current price) to absorb both gas spikes and
+follow-on admin transactions.
+
+Funding flow:
+
+1. Buy ~$50 of ETH on Coinbase / Kraken / similar exchange.
+2. If bought as L1 (Ethereum mainnet) ETH:
+   - Bridge to Base via [https://bridge.base.org/](https://bridge.base.org/)
+     (Base's official canonical bridge).
+   - L1 gas to bridge: ~$1. Bridge time: 10-15 minutes.
+3. If bought directly on Base (Coinbase Wallet / similar): skip step 2.
+4. Send the resulting Base ETH to the deployer address (read from
+   `addresses.json[testnet].deployer`).
+5. Verify with:
+   ```
+   python scripts/check_deployer_balance.py --network base
+   ```
+   Exit 0 + "OK" line = ready to deploy.
+
+This script also reports USD-equivalent via CoinGecko so the
+funding amount is easy to sanity-check.
+
+---
+
 ## Hardware-wallet setup recommendation
 
 Per the Stream-4 row in `MAINNET_DEPLOY_PLAN.md`, threshold 3-of-5
