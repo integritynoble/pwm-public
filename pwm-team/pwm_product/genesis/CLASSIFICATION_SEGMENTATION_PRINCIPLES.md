@@ -67,14 +67,21 @@ pixel-wise Dice/IoU concentration for segmentation).
   },
   "W": {
     "existence": true,
-    "uniqueness": "almost-surely-unique under class-manifold separability",
-    "stability": "Bayes-optimal error rate bounded by class overlap; Lipschitz under bounded sensor noise",
-    "regime": "K classes, noise σ, manifold separation Δ; identifiability when Δ ≥ c·σ for c depending on K"
+    "uniqueness_condition": "Bayes-irreducibility — posterior p(c|x) has unique mode for Lebesgue-a.e. x; equivalent to no two class-conditionals being identical on a positive-measure set",
+    "stability_condition": "Lipschitz in x with constant L_post depending on class separation Δ and noise σ",
+    "regime": "K classes, Gaussian sensor noise σ, class-manifold separation Δ; well-posed iff Δ ≥ c·σ for c = c(K). Boundary samples (Δ ≈ σ) admit irreducible Bayes error and are treated as distributional uncertainty, not Hadamard violation.",
+    "S2_status": "conditionally_satisfied"
   },
   "C": {
-    "solver_class": "ERM with cross-entropy loss; deep CNN / ViT / linear-probe-on-foundation-model",
-    "error_bound": "test_error ≤ Bayes_error + O(√(VC_dim/n_train))  (generalization)",
-    "convergence_rate_q": 1.0
+    "solver_class": "ERM with cross-entropy loss; deep neural network (CNN / ViT / linear-probe-on-foundation-model)",
+    "convergence_rate_q": 0.5,
+    "convergence_rate_q_realizable": 1.0,
+    "convergence_h": "h = 1/sqrt(n_train)",
+    "error_bound_VC": "excess_risk(ĥ_n) ≤ C · sqrt(VC_dim · log(n_train) / n_train)",
+    "error_bound_PAC_Bayes": "pop_err(ĥ_n) ≤ train_err + sqrt((KL(posterior || prior) + log(2·sqrt(n)/δ)) / (2(n-1)))",
+    "error_bound_conformal": "P[c_true ∈ ĉ_set(x)] ≥ 1 − α (marginal coverage, computable post-hoc)",
+    "S3_status": "satisfied",
+    "S4_status": "satisfied — VC + PAC-Bayes + conformal certificates all computable from (dataset, trained model)"
   },
   "physics_fingerprint": {
     "carrier": "photon",
@@ -119,13 +126,21 @@ pixel-wise Dice/IoU concentration for segmentation).
   },
   "W": {
     "existence": true,
-    "uniqueness": "unique up to label-symmetry; pixel-wise identifiability under bounded noise + class separability",
-    "stability": "per-pixel Lipschitz; boundary regions sensitive to noise — well-posed in the interior of regions"
+    "uniqueness_condition": "per-pixel Bayes-irreducibility — posterior p(L[i,j] | x, neighbors) has unique mode for Lebesgue-a.e. x in the interior of regions",
+    "stability_condition": "per-pixel Lipschitz with class-separation-dependent constant; boundary regions admit distributional discontinuities (sharp class transitions) — treated as standard distributional relaxation, NOT Hadamard violation",
+    "regime": "K classes per pixel, sensor noise σ, class-manifold separation Δ; well-posed in the interior of regions iff Δ ≥ c·σ. Boundary pixels: irreducible Bayes error scaling with edge length / image area.",
+    "S2_status": "conditionally_satisfied"
   },
   "C": {
-    "solver_class": "FCN/U-Net/DeepLab/SAM-class with per-pixel cross-entropy + Dice loss",
-    "error_bound": "mIoU ≥ Bayes-mIoU − O(√(VC_dim/n_train))",
-    "convergence_rate_q": 1.0
+    "solver_class": "FCN / U-Net / DeepLab / SAM-class with per-pixel cross-entropy + Dice loss",
+    "convergence_rate_q": 0.5,
+    "convergence_rate_q_realizable": 1.0,
+    "convergence_h": "h = 1/sqrt(n_train_pixels)  (pixel-wise) or 1/sqrt(n_train_images)",
+    "error_bound_per_pixel_VC": "per_pixel_excess_risk ≤ C · sqrt(VC_dim · log(n) / n)",
+    "error_bound_mIoU": "|empirical_mIoU − Bayes_mIoU| ≤ C · sqrt(log(K/δ) / n_test)  (McDiarmid concentration; mIoU is a smooth function of the K×K confusion matrix; changing one prediction changes mIoU by O(1/n_pixel))",
+    "error_bound_conformal_mask": "P[L_true ⊆ L̂_set(x)] ≥ 1 − α (mask-set conformal coverage, computable post-hoc)",
+    "S3_status": "satisfied",
+    "S4_status": "satisfied — pixel-wise VC + mIoU McDiarmid + conformal-mask certificates"
   }
 }
 ```
@@ -133,6 +148,197 @@ pixel-wise Dice/IoU concentration for segmentation).
 `n_c = 1` reflects the spatial-coupling cross-edge in the DAG: the
 neighbor-aggregation primitive `K.spatial_aggregate` shares state
 with itself across pixels (it's not a pure feed-forward chain).
+
+---
+
+## What R actually is (rigorous form)
+
+The one-line `forward_model` strings in the templates above are
+shorthand. Here are the explicit generative processes they encode.
+
+### Classification — class-conditional data-generating process
+
+```
+c       ~ p(c)                         (class prior)
+θ       ~ p(θ | c)                     (class-conditional latent: pose, instance, scene)
+x_clean = render(c, θ, φ)              (deterministic given (c, θ, φ))
+x       = x_clean + n,  n ~ N(0, σ²I)  (sensor + noise)
+```
+
+`render` does NOT need a closed analytical form. For natural-image
+benchmarks it's specified implicitly by the empirical distribution of
+the training/benchmark dataset — `render` is "nature's renderer"
+sampled by the dataset. For synthetic benchmarks (e.g., dSprites,
+CLEVR), it's a literal graphics engine.
+
+For PWM purposes the specification of R reduces to:
+**dataset registry** (defines `p(x | c)`) + **noise model** (defines
+`n` distribution).
+
+### Segmentation — per-pixel class-conditional appearance + spatial coupling
+
+```
+L                 ~ p(L) = MRF/CRF prior over {1,…,K}^{H×W}
+                          (smoothness within regions, boundaries between)
+θ_neighbor[i,j]   = (texture patch, illumination, geometry context for (i,j))
+x_clean[i,j]      = appearance(L[i,j], θ_neighbor[i,j], φ)
+x[i,j]            = x_clean[i,j] + n[i,j]
+```
+
+`θ_neighbor[i,j]` couples adjacent pixels — that's the `n_c = 1`
+cross-edge in the L1 DAG. The MRF prior `p(L)` is what makes "the
+cat's leg pixels are mostly cat" preferred over salt-and-pepper class
+noise. Concretely realized by the dataset's labeled masks (defines
+the empirical distribution of label tensors) plus an explicit
+smoothness prior used at inference time.
+
+---
+
+## Do these satisfy S2 / S3 / S4?
+
+| Gate | Classification | Segmentation |
+|---|---|---|
+| **S2** Hadamard well-posedness | **Conditionally ✓** (Bayes-irreducibility + σ < Δ regime) | **Conditionally ✓** (per-pixel Bayes-irreducibility; boundaries admit distributional discontinuities) |
+| **S3** Convergent solver exists | ✓ | ✓ |
+| **S4** Bounded error certificate | ✓ | ✓ |
+
+### S2 — Well-posedness (Hadamard)
+
+**Existence.** The MAP estimator `ĉ = argmax_c p(c|x)` is well-defined
+for any x — c ∈ {1,…,K} is finite, so argmax always exists. Same for
+per-pixel `L̂[i,j]`. Unconditionally ✓.
+
+**Uniqueness.** Unique iff `p(c|x)` has a unique mode. Equivalently:
+for almost every x, no two classes share posterior probability —
+the **Bayes-irreducibility condition**:
+
+```
+For Lebesgue-a.e. x:   argmax_c  p(x|c) p(c)   is a singleton.
+```
+
+This holds when class-conditional distributions don't perfectly
+overlap on a positive-measure set. Fails on fundamentally ambiguous
+samples (e.g., a 28×28 binary image that's both a "1" and a "7" with
+positive probability).
+
+For segmentation: per-pixel Bayes-irreducibility. **Boundaries are a
+known soft-failure** — sharp class transitions are discontinuities in
+the posterior and so technically violate Hadamard's continuous-
+dependence condition, but they're treated as standard distributional
+relaxations (the same way CASSI treats spectral edges).
+
+**Continuity.** When class-conditional likelihoods are continuous in
+x, the posterior is continuous in x — small noise → small posterior
+change. ✓ when σ is small relative to class separation Δ; **fails**
+near decision boundaries where Δ ≈ σ.
+
+**Net S2 verdict:** satisfied in the regime where `Δ > c·σ` (class
+separation exceeds c standard deviations of noise; c depends on K).
+The L1 manifest's `W.regime` field encodes this. Boundary samples
+generate **irreducible Bayes error** rather than violating the gate.
+
+### S3 — Convergent solver exists
+
+For supervised tasks "convergence" means the learned classifier
+converges to the Bayes-optimal one as training data grows. Natural
+`h = 1/sqrt(n_train)`.
+
+**Classification.** ERM with cross-entropy + bounded-VC-dimension
+classifier achieves:
+
+```
+excess_risk(ĥ_n)  =  E[L(ĥ_n)] − L*  ≤  C · sqrt(VC_dim · log(n) / n)
+```
+
+This is the standard Vapnik-Chervonenkis bound (1971; refined by
+Bartlett et al.). Convergence rate `q = 1/2` in `h = 1/sqrt(n)`.
+Faster rates (`q = 1`) under realizable / margin / Tsybakov noise
+conditions.
+
+For deep networks: results by Schmidt-Hieber (2020) and
+Bartlett-Foster-Telgarsky (2017) give similar O(1/sqrt(n)) bounds for
+ReLU networks under Sobolev-smoothness assumptions on the
+class-conditional distributions.
+
+**Segmentation.** Per-pixel ERM gives the same per-pixel bound;
+McDiarmid concentration on mIoU (since changing one pixel prediction
+changes mIoU by O(1/n_pixel)) gives mIoU concentration around the
+Bayes-optimal value at the same O(1/sqrt(n)) rate.
+
+`q = 0.5` (or `1.0` under margin assumptions) ✓.
+
+### S4 — Bounded error certificate
+
+Three classes of computable, certified bounds — each yields an
+explicit `e(h) ≤ C h^α`.
+
+**(a) Held-out test bound (classification + segmentation):**
+
+```
+|test_err − population_err|  ≤  sqrt(log(2/δ) / (2 n_test))   w.p. ≥ 1 − δ
+```
+
+Hoeffding inequality. No architecture dependence; just needs an iid
+held-out set.
+
+**(b) PAC-Bayes (for trained networks):**
+
+```
+pop_err(ĥ_n)  ≤  train_err  +  sqrt( (KL(posterior || prior) + log(2 sqrt(n)/δ)) / (2(n−1)) )
+```
+
+McAllester (1999); Catoni (2007). Computable for any specific
+architecture + training procedure (the KL term is the cost of
+deviating from a chosen prior).
+
+**(c) Conformal prediction (set-valued certificate):**
+
+For classification:
+```
+P[ c_true ∈ ĉ_set(x) ]  ≥  1 − α   (marginal coverage)
+```
+
+For segmentation, the analogue is **conformal mask sets**:
+```
+P[ L_true ⊆ L̂_set(x) ]  ≥  1 − α   (per-pixel or per-region coverage)
+```
+
+Computable post-hoc on a calibration set. Always honest (no
+distribution assumptions beyond exchangeability).
+
+For mIoU specifically (segmentation), McDiarmid gives:
+
+```
+|empirical_mIoU − Bayes_mIoU|  ≤  C · sqrt( log(K/δ) / n_test )
+```
+
+where the constant absorbs the Lipschitz constant of mIoU as a
+function of the K×K confusion matrix.
+
+**Net S4 verdict:** satisfied for both tasks. Multiple
+complementary certificates available; pick one (or stack them) for
+the L4 acceptance check.
+
+---
+
+## How this compares to the canonical L1-003 (CASSI) gate satisfaction
+
+| Aspect | L1-003 CASSI (continuous inverse) | L1-CLS-001 / L1-SEG-001 (discrete inverse) |
+|---|---|---|
+| Forward model E | analytical (`y = ∑ C·shift(x_b)`) | empirical (dataset-defined `p(x\|c)`) + noise model |
+| Uniqueness condition | sparsity prior + RIP-like mask | Bayes-irreducibility (no two class-conditionals identical a.e.) |
+| Stability bound | condition number κ (bounded by mask quality) | class-manifold separation Δ vs noise σ |
+| Convergence "h" | mesh / iteration count | 1/sqrt(n_train) |
+| Error bound C | Cèa-style: `‖f̂ − f‖₂ ≤ C₁σ/√m + C₂‖f − f_s‖₁` | VC / PAC-Bayes / conformal: `excess_risk ≤ C·sqrt(d·log(n)/n)` |
+| P1 (conservation) | mass / energy / momentum | softmax-simplex closure + label-permutation invariance |
+
+The structural parallel is exact. The discrete-output extension
+just substitutes the right asymptotic regime (n_train instead of
+mesh resolution) and the right stability quantifier (Δ instead of
+κ). Future PWM revision (`pwm_overview2.md`) should add a
+"discrete-output extension" subsection codifying these substitutions
+so each new classification/segmentation Principle doesn't have to
+re-derive them.
 
 ---
 
