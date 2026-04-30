@@ -14,6 +14,18 @@ You convert source physics documents into formal L1/L2/L3 JSON artifacts for the
 ## Source material
 `source/` → symlink to `pwm/papers/Proof-of-Solution/mine_example/science/`
 
+## v2/v3 schema (added 2026-04-30)
+
+The 2026-04-29/30 v2/v3 expansion added forward-compat schema fields that all L1 manifests should now carry. **Canonical schema template lives in `pwm-team/content/agent-imaging/CLAUDE.md`** — see § "L1-NNN.json (Principle — quadruple P = (E, G, W, C))" for the full template including `gate_class`, `gate_substitutions`, `related_principles`, and `v3_metadata` fields. The same schema applies to physics-domain manifests.
+
+Existing physics manifests under this agent's tree have been backfilled with the v2/v3 forward-compat fields by `scripts/migrate_v1_principles_to_v2_schema.py` on 2026-04-29 (idempotent; safe to re-run).
+
+**v2/v3 anchors authored under this agent's tree (2026-04-30):**
+
+- `principles/W_geophysics/L1-522_earthquake_magnitude_pwdr.json` — earthquake magnitude classification PWDR (wraps L1-278 Earthquake Source Inversion)
+
+For new authoring under this agent: follow the `agent-imaging/CLAUDE.md` template; populate `gate_class` per the `pwm_overview2.md` taxonomy (`analytical` for closed-form physics, `physical_with_discrete_readout` for analytical core + Lipschitz threshold readout, `data_driven_statistical` for VC/PAC-Bayes-gated — DDS is excluded from current genesis).
+
 Your domains:
 | Domain | Source folder | ~Count |
 |---|---|---|

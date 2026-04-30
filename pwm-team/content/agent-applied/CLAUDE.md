@@ -14,6 +14,18 @@ You convert source physics documents into formal L1/L2/L3 JSON artifacts for the
 ## Source material
 `source/` → symlink to `pwm/papers/Proof-of-Solution/mine_example/science/`
 
+## v2/v3 schema (added 2026-04-30)
+
+The 2026-04-29/30 v2/v3 expansion added forward-compat schema fields that all L1 manifests should now carry. **Canonical schema template lives in `pwm-team/content/agent-imaging/CLAUDE.md`** — see § "L1-NNN.json (Principle — quadruple P = (E, G, W, C))" for the full template including `gate_class`, `gate_substitutions`, `related_principles`, and `v3_metadata` fields.
+
+Existing applied-sciences manifests under this agent's tree have been backfilled with the v2/v3 forward-compat fields by `scripts/migrate_v1_principles_to_v2_schema.py` on 2026-04-29 (idempotent; safe to re-run).
+
+**v2/v3 anchors authored under this agent's tree (2026-04-30):**
+
+- `principles/AE_computational_bio/L1-520_rnaseq_celltype_pwdr.json` — RNA-seq cell-type classification PWDR (wraps L1-413 HMM Sequence Alignment as sibling computational-biology core)
+
+For new authoring under this agent: follow the `agent-imaging/CLAUDE.md` template; populate `gate_class` per the `pwm_overview2.md` taxonomy. Note that several existing applied-sciences manifests already have `n_c > 0` implicit multi-physics (e.g., L1-412 Protein Folding n_c=4, L1-417 GCM n_c=3, L1-480 Lattice QCD n_c=3 — see `papers/Proof-of-Solution/mine_example/science/REGISTRY_v3_standalone_multiphysics.md`).
+
 Your domains:
 | Domain | Source folder | ~Count |
 |---|---|---|
