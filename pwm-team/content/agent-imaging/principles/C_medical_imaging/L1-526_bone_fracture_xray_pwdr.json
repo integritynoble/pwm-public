@@ -1,0 +1,78 @@
+{
+  "artifact_id": "L1-526",
+  "layer": "L1",
+  "principle_number": "526",
+  "title": "Bone Fracture Detection from Radiograph (PWDR)",
+  "domain": "Medical Imaging",
+  "sub_domain": "Cortical bone discontinuity recovery from X-ray with fracture categorical readout",
+  "source_file": "C_medical_imaging/526_bone_fracture_xray_pwdr.md",
+  "source_data_quality_note": "v2 PWDR Principle. Wraps L1-031 X-ray radiography with deterministic threshold rules on cortical-disruption + fragment-displacement to assign fracture categorical labels {none, hairline, complete, displaced, comminuted, intra-articular}. Universal in emergency / orthopedic radiology. UTSW Emergency Department + Orthopedic Surgery Department high-volume use.",
+
+  "gate_class": "physical_with_discrete_readout",
+  "gate_substitutions": {"kappa_substitute": null, "h_substitute": null, "conservation_substitute": "softmax simplex closure on fracture-severity ordinal {none, hairline, complete_non_displaced, displaced, comminuted, intra_articular_complex}"},
+  "discrete_readout": {
+    "threshold_function": "Fracture(radiograph) = step on cortical-disruption-line presence + displacement-mm + fragment-count: hairline if cortical lucency width < 1 mm; complete if discontinuity through cortex; displaced if displacement > 2 mm or angulation > 10 degrees; comminuted if fragment count >= 3; intra_articular if fracture line crosses joint surface. AO/OTA classification overlay applied per Müller AO Foundation 1996.",
+    "lipschitz_constant": 0.05,
+    "underlying_physical_state": "cortical bone edge geometric reconstruction + per-bone fragment mask + joint-surface relationship recovered from L1-031 X-ray radiograph (multi-view: AP / lateral / oblique)",
+    "physics_core_principle": "L1-031",
+    "label_set_severity": ["none", "hairline", "complete_non_displaced", "displaced", "comminuted", "intra_articular_complex"],
+    "label_set_AO_OTA": ["31-A1", "31-A2", "31-A3", "31-B1", "31-B2", "31-B3", "31-C1", "31-C2", "31-C3"],
+    "threshold_continuity_proof": "Cortical-disruption-width and displacement are continuous on bone-edge geometric reconstruction; per-class boundaries form measure-zero hyperplanes at width = {0, 1 mm} and displacement = {0, 2 mm}. Smoothed-grading globally Lipschitz with constant ~0.05 per percentage-point of cortical-edge detection error."
+  },
+  "related_principles": [
+    "L1-031 (X-ray radiography — radiograph attenuation analytical core, physics_core_principle)",
+    "L1-029 (CT — gold-standard sibling for complex fractures, informational)",
+    "L1-037 (DEXA — sibling bone density modality, informational)"
+  ],
+
+  "E": {
+    "description": "Bone Fracture Detection (PWDR): wraps L1-031 with established orthopedic / emergency radiology grading rules. Stage 1 (analytical, from L1-031): from multi-view radiograph (AP, lateral, oblique), recover cortical bone edge map, fragment segmentation, displacement vectors, joint-surface relationships. Stage 2 (deterministic threshold): apply width / displacement / fragment-count thresholds; AO/OTA class overlay; severity bins. Difficulty tier delta = 3.",
+    "forward_model": "Stage 1 (L1-031): radiograph -> {cortical_edge_map, fragment_masks, displacement_vectors, joint_surface}. Stage 2: severity = step(cortical_disruption_width, displacement, fragment_count); AO_OTA = decision_tree(anatomic_location, severity, articular_involvement).",
+    "world_state_x": "Per-radiograph categorical fracture label (severity + AO/OTA classification + anatomic location).",
+    "observation_y": "Multi-view radiograph (AP +/- lateral +/- oblique; typically 2500x3000 pixel digital radiograph at 100-200 micrometer pixel pitch).",
+    "physical_parameters_theta": ["H", "W", "pixel_resolution_um", "kVp", "mAs", "anatomic_region", "view_count", "SNR_dB", "rotation_artifact", "overlapping_structures", "growth_plate_confounder", "soft_tissue_swelling_obscuring", "manual_radiologist_disagreement"]
+  },
+
+  "G": {
+    "dag": "L.xray_source -> L.attenuation_projection -> L.cortical_edge_detection -> L.fragment_segmentation -> L.fracture_classifier -> int.spatial",
+    "vertices": ["L.xray_source", "L.attenuation_projection", "L.cortical_edge_detection", "L.fragment_segmentation", "L.fracture_classifier", "int.spatial"],
+    "arcs": ["L.xray_source -> L.attenuation_projection", "L.attenuation_projection -> L.cortical_edge_detection", "L.attenuation_projection -> L.fragment_segmentation", "L.cortical_edge_detection -> L.fracture_classifier", "L.fragment_segmentation -> L.fracture_classifier", "L.fracture_classifier -> int.spatial"],
+    "L_DAG": 4.6,
+    "n_c": 1,
+    "coupling_constraints": ["edge_to_fragment: cortical edge geometry and fragment segmentation share underlying radiograph; coupled processing enforces topological consistency between bone fragments and disruption lines"]
+  },
+  "W": {"existence": true, "uniqueness": "conditional", "stability": "conditional", "condition_number_kappa": 60, "condition_number_effective": 14, "regime": "Existence inherited from L1-031. Uniqueness conditional on adequate views. Stability dominated by overlapping_structures and growth_plate_confounder (pediatric). Joint Hadamard well-posedness established by Müller AO 1996 (foundational classification), Lindsey 2018 (deep learning fracture detection benchmark), Rajpurkar 2017 (CheXNet), Olczak 2017 (Stockholm fracture deep learning)."},
+  "C": {"solver_class": "linear-operator + edge-detection [Canny / learned] + categorical-readout [AO/OTA classifier] | end-to-end deep neural [Aidoc Bone, Gleamer BoneView] with explicit physics-informed cortical-edge regularization", "convergence_rate_q": 2.0, "error_bound": "Inherits L1-031 reconstruction. Misclassification probability bound: Pr(severity_hat != severity_true) <= C * |edge_displacement_error| / d(features, severity_boundary).", "complexity": "O(H * W * N_views) for stage 1; O(N_fragments) for stage 2"},
+  "physics_fingerprint": {"carrier": "x_ray", "sensing_mechanism": "radiograph_with_fracture_classifier", "integration_axis": "spatial", "problem_class": "linear_inverse_with_categorical_readout", "noise_model": "poisson", "solution_space": "1D_fracture_class_with_AO_OTA", "primitives": ["L.xray_source", "L.attenuation_projection", "L.cortical_edge_detection", "L.fragment_segmentation", "L.fracture_classifier", "int.spatial"]},
+  "difficulty_delta": 3, "difficulty_tier": "standard",
+  "mismatch_parameters": ["rotation_artifact", "overlapping_structures", "growth_plate_confounder", "soft_tissue_swelling_obscuring", "manual_radiologist_disagreement"],
+  "error_metric": "categorical_accuracy", "error_metric_secondary": "sensitivity_for_displaced",
+
+  "spec_range": {
+    "center_spec": {"problem_class": "fracture_xray_pwdr", "forward_operator": "fracture_pwdr_forward", "input_format": "multi_view_radiograph_with_fracture_label", "omega": {"H": 2500, "W": 3000, "pixel_resolution_um": 100, "kVp": 65, "mAs": 6, "anatomic_region": "wrist", "view_count": 2, "SNR_dB": 30, "rotation_artifact": 0.0, "overlapping_structures": 0.0, "growth_plate_confounder": 0.0, "soft_tissue_swelling_obscuring": 0.0, "manual_radiologist_disagreement": 0.0}, "epsilon_fn_center": "0.85_accuracy"},
+    "allowed_forward_operators": ["fracture_pwdr_forward", "fracture_AO_OTA_pwdr_forward", "fracture_pediatric_pwdr_forward"],
+    "allowed_problem_classes": ["fracture_xray_pwdr", "fracture_AO_OTA_grading_pwdr", "fracture_pediatric_pwdr"],
+    "allowed_omega_dimensions": ["H", "W", "pixel_resolution_um", "kVp", "mAs", "anatomic_region", "view_count", "SNR_dB", "rotation_artifact", "overlapping_structures", "growth_plate_confounder", "soft_tissue_swelling_obscuring", "manual_radiologist_disagreement"],
+    "omega_bounds": {"H": [1024, 4096], "W": [1024, 4096], "view_count": [1, 4]},
+    "epsilon_bounds": {"categorical_accuracy": [0.50, 0.99]}
+  },
+
+  "p1_p10_tests": ["PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS"],
+  "s1_s4_gates": ["PASS", "PASS", "PASS", "PASS"],
+  "ipfs_cid": null,
+  "recast_attempted": {"considered": true, "recast_path": "Original framing: 'Detect fracture on radiograph + classify severity'. Option-3 recast: 'Recover cortical edge + fragment segmentation via L1-031; apply width/displacement/fragment-count thresholds + AO/OTA decision tree'. Feasible because bone fractures have well-defined geometric forward model on radiograph.", "reason_rejected": null},
+
+  "v3_metadata": {
+    "is_standalone_multiphysics": false,
+    "coupling_count_n_c": 1,
+    "joint_well_posedness_references": [
+      "Müller ME et al. (1996) The Comprehensive Classification of Fractures of Long Bones (AO/OTA). Springer.",
+      "Lindsey R et al. (2018) Deep neural network improves fracture detection by clinicians. PNAS 115(45):11591-11596.",
+      "Rajpurkar P et al. (2017) CheXNet: radiologist-level pneumonia detection on chest X-rays. arXiv:1711.05225.",
+      "Olczak J et al. (2017) Artificial intelligence for analyzing orthopedic trauma radiographs. Acta Orthop 88(6):581-586.",
+      "Tiulpin A et al. (2018) Automatic knee osteoarthritis diagnosis from plain radiographs: a deep learning-based approach. Sci Rep 8:1727."
+    ],
+    "distinctness_audit": {"closest_existing_principle": "L1-031 X-ray radiography", "d_principle_estimate": 0.40, "advisory_label": "Distinct (parent-child PWDR pattern)", "rationale": "L1-031 recovers continuous attenuation; L1-526 wraps with fracture detection + AO/OTA classifier. Different solution_space (1D fracture class vs 2D attenuation); adds L.cortical_edge_detection, L.fragment_segmentation, L.fracture_classifier primitives."},
+    "clinical_context": "Universal in emergency / trauma / orthopedic radiology. UTSW Emergency Department + Orthopedic Surgery Department. FDA-cleared autonomous AI: Aidoc Bone, Gleamer BoneView, Annalise.ai, RBfracture, Imagen OsteoDetect. AO/OTA classification is the international standard for fracture documentation and surgical planning."
+  }
+}

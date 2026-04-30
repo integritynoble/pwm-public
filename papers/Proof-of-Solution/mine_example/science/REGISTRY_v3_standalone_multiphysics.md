@@ -67,6 +67,12 @@ These are paired analytical-core + PWDR-wrapper Principles per the v2 design in 
 | L1-523 | L1-031 (existing X-ray radiography) | Pneumothorax Detection from Chest X-ray | `C_medical_imaging/` | severity {none, small <15%, moderate 15-30%, large >30%, tension} per Light index 1985 | **Authored** |
 | L1-524 | L1-029 (existing CT, dynamic-perfusion mode) | Stroke Ischemic Core / Penumbra Classification (CTP) | `C_medical_imaging/` | triage {no_intervention, IV_thrombolytic, MT_candidate, extended_window_LVO} per DAWN/DEFUSE-3 | **Authored** |
 | L1-525 | L1-029 (existing CT, CTPA mode) | Pulmonary Embolism Detection from CTPA | `C_medical_imaging/` | severity {no_PE, isolated_subsegmental, segmental, lobar, central, saddle} + RV-strain per ESC 2019 | **Authored** |
+| L1-526 | L1-031 (existing X-ray radiography) | Bone Fracture Detection | `C_medical_imaging/` | severity {none, hairline, complete, displaced, comminuted, intra-articular} + AO/OTA classification | **Authored** |
+| L1-527 | L1-031 (existing X-ray radiography) | Knee/Hip OA Kellgren-Lawrence Grading | `C_medical_imaging/` | KL {0, 1, 2, 3, 4} per Kellgren-Lawrence 1957 | **Authored** |
+| L1-528 | L1-388 (existing Blind Source Separation) | ECG Arrhythmia Classification | `AD_signal_processing/` | AAMI EC57 {N, S, V, F, Q} per beat | **Authored** |
+| L1-529 | L1-049 (existing fundus) | Glaucoma Optic-Disc Cupping | `C_medical_imaging/` | {normal, suspect, glaucoma_likely, advanced} per ICO 2016 + ISNT-rule | **Authored** |
+| L1-530 | L1-042 (existing OCT) | AMD OCT Grading | `C_medical_imaging/` | {no_AMD, early, intermediate, late_dry_GA, late_wet_CNV} per AREDS / Beckman | **Authored** |
+| L1-531 | L1-068 (existing EEG) | EEG Seizure Detection | `C_medical_imaging/` | seizure type per ILAE 2017 + status epilepticus per Trinka 2015 | **Authored** |
 | _TBD_ | Fluid-Structure Interaction (FSI) | `R_fluid_dynamics/` or `T_structural_mechanics/` | Navier-Stokes ⊗ linear elasticity | 2 | ~6-8 | Candidate — see `PWM_V3_STANDALONE_VS_COMPOSITE.md` |
 | _TBD_ | Multi-scale materials simulation | `Z_materials_science/` | DFT ⊗ MD ⊗ continuum mechanics | 4 | ~9-11 | Candidate |
 | _TBD_ | Climate-system attribution | `AF_environmental_sci/` | atmosphere ⊗ ocean ⊗ ice ⊗ biosphere | 6 | ~10-12 | Candidate |
@@ -142,5 +148,11 @@ Without this registry, the cross-cutting nature of standalone multi-physics is i
 | 2026-04-30 | Round 4: L1-523 Pneumothorax Detection from Chest X-ray PWDR authored (UTSW Emergency / Trauma Center; FDA-cleared autonomous AI Aidoc/Lunit/Annalise/Qure.ai; n_c=1, L_DAG=4.6). Wraps existing L1-031 X-ray radiography. |
 | 2026-04-30 | Round 4: L1-524 Stroke CTP Triage PWDR authored (UTSW Stroke Center Level-1; DAWN/DEFUSE-3 trial criteria; commercial RAPID/Olea/Brainomix; n_c=2, L_DAG=7.3). Wraps existing L1-029 CT in dynamic-perfusion mode. |
 | 2026-04-30 | Round 4: L1-525 Pulmonary Embolism CTPA PWDR authored (UTSW Emergency + Pulmonary Hypertension Program; ESC 2019 / AHA 2011 guidelines; commercial Aidoc/RapidAI/Avicenna; n_c=1, L_DAG=7.0). Wraps existing L1-029 CT in CTPA mode. **Round 4 complete: 15 v2 PWDR Principles + 2 newly-authored analytical cores in genesis. Total v2 entries: 17. Genesis count: 525 L1 manifests.** |
+| 2026-04-30 | Round 5: L1-526 Bone Fracture PWDR (UTSW Emergency / Orthopedic Surgery; AO/OTA classification; commercial Aidoc Bone, Gleamer BoneView, RBfracture, OsteoDetect; n_c=1, L_DAG=4.6). Wraps L1-031. |
+| 2026-04-30 | Round 5: L1-527 Knee/Hip OA Kellgren-Lawrence PWDR (UTSW Orthopedic + Rheumatology; KL 1957 international standard; n_c=1, L_DAG=4.6). Wraps L1-031. |
+| 2026-04-30 | Round 5: L1-528 ECG Arrhythmia AAMI PWDR (UTSW Cardiology + ICU; AAMI EC57 standard; commercial Apple Watch ECG, KardiaMobile, Zio Patch; n_c=1, L_DAG=5.9). Wraps L1-388 BSS as sibling biomedical-signal-processing core. |
+| 2026-04-30 | Round 6: L1-529 Glaucoma Optic-Disc Cupping PWDR (UTSW Ophthalmology glaucoma clinic; ICO 2016 + DDLS guidelines; n_c=1, L_DAG=5.6). Wraps L1-049 fundus. |
+| 2026-04-30 | Round 6: L1-530 AMD OCT Grading PWDR (UTSW Ophthalmology retina clinic; AREDS / Beckman 2013 classification; commercial DeepMind retinal AI, Heidelberg AnyDrusen, NotalVision; n_c=1, L_DAG=5.6). Wraps L1-042 OCT. |
+| 2026-04-30 | Round 6: L1-531 EEG Seizure Detection PWDR (UTSW Comprehensive Epilepsy Center Level-4; ILAE 2017 Operational Classification + Trinka 2015 status epilepticus; commercial Persyst, Natus, BioSerenity, NeuroPace RNS; n_c=1, L_DAG=6.0). Wraps L1-068 EEG. **Rounds 5+6 complete: 21 v2 PWDR Principles + 2 newly-authored analytical cores in genesis. Total v2 entries: 23. Genesis count: 531 L1 manifests.** |
 | _TBD_ | Path A genesis batch complete (Director's pick); registry reflects all Authored entries. |
 | _TBD_ | Mainnet deploy at Step 7; this registry becomes the on-chain catalog of v3 standalone genesis Principles. |

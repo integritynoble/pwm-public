@@ -1,0 +1,78 @@
+{
+  "artifact_id": "L1-528",
+  "layer": "L1",
+  "principle_number": "528",
+  "title": "ECG Arrhythmia Classification (PWDR)",
+  "domain": "Signal Processing",
+  "sub_domain": "Cardiac electrical signal feature recovery with arrhythmia categorical readout",
+  "source_file": "AD_signal_processing/528_ecg_arrhythmia_pwdr.md",
+  "source_data_quality_note": "v2 PWDR Principle. Wraps L1-388 Blind Source Separation (existing in v1 genesis as the closest sibling biomedical-signal-processing core; ECG processing involves separating cardiac signal from baseline drift + noise; future dedicated ECG-feature-recovery core could be authored separately). Threshold function applies AAMI ANSI/AAMI EC57 standard arrhythmia classes per beat: {N normal, S supraventricular ectopic, V ventricular ectopic, F fusion, Q unclassifiable / paced}. Universal in cardiology, cardiac monitoring, FDA-cleared wearable ECG (Apple Watch, KardiaMobile, Zio Patch). UTSW Cardiology Department + ICU monitoring use.",
+
+  "gate_class": "physical_with_discrete_readout",
+  "gate_substitutions": {"kappa_substitute": null, "h_substitute": null, "conservation_substitute": "softmax simplex closure on AAMI EC57 arrhythmia categorical {N, S, V, F, Q}"},
+  "discrete_readout": {
+    "threshold_function": "Per-beat: AAMI_class = step on (RR_interval, QRS_morphology_template_distance, P_wave_presence, QRS_width_ms): N (normal sinus) if RR within 60-100 bpm + normal QRS template + P-wave preceding; S (supraventricular ectopic) if RR < 80% prior + abnormal P-wave or no P-wave; V (ventricular ectopic) if QRS_width > 120 ms + abnormal QRS template + no preceding P; F (fusion) if QRS template intermediate; Q (unclassifiable) if pacemaker spikes or unreadable.",
+    "lipschitz_constant": 0.05,
+    "underlying_physical_state": "ECG signal feature recovery: R-peak detection (timing), QRS morphology template distance, P-wave detection / classification, beat-to-beat RR interval — recovered from blind-source-separated ECG signal via L1-388",
+    "physics_core_principle": "L1-388",
+    "label_set_AAMI": ["N_normal", "S_supraventricular_ectopic", "V_ventricular_ectopic", "F_fusion", "Q_unclassifiable_paced"],
+    "label_set_clinical": ["NSR", "atrial_fibrillation", "atrial_flutter", "PVC", "VT", "SVT", "AV_block", "bradycardia", "tachycardia"],
+    "threshold_continuity_proof": "RR interval and QRS width are continuous on R-peak / QRS-onset detection; class boundaries form measure-zero hyperplanes at threshold values. Smoothed-classification globally Lipschitz with constant ~0.05 per millisecond of detection error."
+  },
+  "related_principles": [
+    "L1-388 (Blind Source Separation — sibling biomedical-signal-processing core, physics_core_principle; note imperfect fit, dedicated ECG-feature-recovery core would be ideal)",
+    "L1-068 (EEG — sibling neuro-electrical signal modality, informational)",
+    "L1-067 (MEG — sibling magnetic neural signal, informational)"
+  ],
+
+  "E": {
+    "description": "ECG Arrhythmia Classification (PWDR): wraps L1-388-style biomedical signal processing with established AAMI EC57 standard arrhythmia rules. Stage 1 (analytical, sibling to L1-388): from multi-lead or single-lead ECG, separate cardiac signal from baseline drift + powerline interference + EMG via blind source separation (ICA / NMF / wavelet); detect R-peaks via Pan-Tompkins or learned filter; extract per-beat features (RR interval, QRS morphology template, P-wave presence, QRS width, ST elevation/depression). Stage 2 (deterministic threshold): apply AAMI EC57 decision rules to classify each beat. Difficulty tier delta = 3.",
+    "forward_model": "Stage 1 (sibling to L1-388): raw_ECG -> separated_cardiac + features {R_peak_times, QRS_morphology, P_wave, RR}. Stage 2: AAMI_class = step(features per AAMI EC57 thresholds).",
+    "world_state_x": "Per-beat AAMI class (N/S/V/F/Q); optionally per-recording clinical rhythm classification (NSR/AF/AFL/etc.).",
+    "observation_y": "ECG signal: 1-12 leads, typically 250-500 Hz sampling, 5-second to 24-hour duration.",
+    "physical_parameters_theta": ["N_leads", "sampling_rate_Hz", "duration_seconds", "voltage_resolution_uV", "SNR_dB", "lead_placement_error", "baseline_wander", "powerline_interference_60Hz", "muscle_artifact", "motion_artifact_wearable", "manual_cardiologist_disagreement"]
+  },
+
+  "G": {
+    "dag": "L.ecg_acquisition -> L.bandpass_filter -> L.blind_source_separation -> L.r_peak_detection -> L.qrs_feature_extraction -> L.aami_threshold_classifier -> int.temporal",
+    "vertices": ["L.ecg_acquisition", "L.bandpass_filter", "L.blind_source_separation", "L.r_peak_detection", "L.qrs_feature_extraction", "L.aami_threshold_classifier", "int.temporal"],
+    "arcs": ["L.ecg_acquisition -> L.bandpass_filter", "L.bandpass_filter -> L.blind_source_separation", "L.blind_source_separation -> L.r_peak_detection", "L.r_peak_detection -> L.qrs_feature_extraction", "L.qrs_feature_extraction -> L.aami_threshold_classifier", "L.aami_threshold_classifier -> int.temporal"],
+    "L_DAG": 5.9,
+    "n_c": 1,
+    "coupling_constraints": ["features_to_class: RR + QRS morphology + P-wave features are jointly observed and jointly determine AAMI class via decision tree"]
+  },
+  "W": {"existence": true, "uniqueness": "conditional", "stability": "conditional", "condition_number_kappa": 80, "condition_number_effective": 16, "regime": "Existence inherited from L1-388. Uniqueness conditional on adequate SNR (typical 20-30 dB) and clean lead placement. Stability dominated by motion_artifact_wearable for consumer ECG. Joint Hadamard well-posedness established by Pan-Tompkins 1985 (foundational R-peak detection), AAMI 1998 EC57 standard, Hannun 2019 (deep-learning ECG arrhythmia detection at cardiologist level), Attia 2019 (Apple Heart Study), Perez 2019 (smartwatch AF screening)."},
+  "C": {"solver_class": "linear-operator + signal-processing [Pan-Tompkins R-peak + ICA / wavelet template] + categorical-readout [AAMI EC57 classifier] | end-to-end deep neural [DeepECG, Hannun-Andrew Stanford CNN]", "convergence_rate_q": 1.0, "error_bound": "Inherits L1-388 separation accuracy. Misclassification probability bound: Pr(AAMI_hat != AAMI_true) <= C * |feature_error| / d(features, AAMI_boundary).", "complexity": "O(N_samples * log(N_samples)) for stage 1 + O(N_beats) for stage 2"},
+  "physics_fingerprint": {"carrier": "biopotential", "sensing_mechanism": "ecg_with_aami_classifier", "integration_axis": "temporal", "problem_class": "linear_inverse_with_categorical_readout", "noise_model": "gaussian", "solution_space": "1D_arrhythmia_class_per_beat", "primitives": ["L.ecg_acquisition", "L.bandpass_filter", "L.blind_source_separation", "L.r_peak_detection", "L.qrs_feature_extraction", "L.aami_threshold_classifier", "int.temporal"]},
+  "difficulty_delta": 3, "difficulty_tier": "standard",
+  "mismatch_parameters": ["lead_placement_error", "baseline_wander", "powerline_interference_60Hz", "muscle_artifact", "motion_artifact_wearable", "manual_cardiologist_disagreement"],
+  "error_metric": "categorical_accuracy", "error_metric_secondary": "F1_per_AAMI_class",
+
+  "spec_range": {
+    "center_spec": {"problem_class": "ecg_aami_pwdr", "forward_operator": "ecg_aami_pwdr_forward", "input_format": "ecg_signal_with_per_beat_label", "omega": {"N_leads": 12, "sampling_rate_Hz": 500, "duration_seconds": 10, "voltage_resolution_uV": 5, "SNR_dB": 25, "lead_placement_error": 0.0, "baseline_wander": 0.0, "powerline_interference_60Hz": 0.0, "muscle_artifact": 0.0, "motion_artifact_wearable": 0.0, "manual_cardiologist_disagreement": 0.0}, "epsilon_fn_center": "0.85_accuracy"},
+    "allowed_forward_operators": ["ecg_aami_pwdr_forward", "ecg_clinical_rhythm_pwdr_forward", "ecg_holter_pwdr_forward", "ecg_wearable_pwdr_forward"],
+    "allowed_problem_classes": ["ecg_aami_pwdr", "ecg_clinical_rhythm_pwdr", "ecg_arrhythmia_continuous_pwdr"],
+    "allowed_omega_dimensions": ["N_leads", "sampling_rate_Hz", "duration_seconds", "voltage_resolution_uV", "SNR_dB", "lead_placement_error", "baseline_wander", "powerline_interference_60Hz", "muscle_artifact", "motion_artifact_wearable", "manual_cardiologist_disagreement"],
+    "omega_bounds": {"N_leads": [1, 12], "sampling_rate_Hz": [100, 1000], "duration_seconds": [5, 86400]},
+    "epsilon_bounds": {"categorical_accuracy": [0.50, 0.99]}
+  },
+
+  "p1_p10_tests": ["PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS"],
+  "s1_s4_gates": ["PASS", "PASS", "PASS", "PASS"],
+  "ipfs_cid": null,
+  "recast_attempted": {"considered": true, "recast_path": "Original: 'Classify ECG into arrhythmia types'. Recast: 'Recover R-peaks + QRS morphology + RR features via signal processing (L1-388 sibling); apply AAMI EC57 decision rules per beat'. Feasible because cardiac electrical activity has well-defined biopotential forward model and AAMI rules are deterministic.", "reason_rejected": null},
+
+  "v3_metadata": {
+    "is_standalone_multiphysics": false, "coupling_count_n_c": 1,
+    "joint_well_posedness_references": [
+      "Pan J, Tompkins WJ (1985) A real-time QRS detection algorithm. IEEE Trans Biomed Eng 32(3):230-236.",
+      "AAMI / ANSI EC57 (1998, revised 2012) Testing and reporting performance results of cardiac rhythm and ST segment measurement algorithms.",
+      "Hannun AY et al. (2019) Cardiologist-level arrhythmia detection and classification in ambulatory electrocardiograms using a deep neural network. Nat Med 25:65-69.",
+      "Attia ZI et al. (2019) An artificial intelligence-enabled ECG algorithm for the identification of patients with atrial fibrillation during sinus rhythm. Lancet 394(10201):861-867.",
+      "Perez MV et al. (2019) Large-scale assessment of a smartwatch to identify atrial fibrillation (Apple Heart Study). NEJM 381(20):1909-1917.",
+      "Moody GB, Mark RG (2001) The impact of the MIT-BIH Arrhythmia Database. IEEE Eng Med Biol Mag 20(3):45-50."
+    ],
+    "distinctness_audit": {"closest_existing_principle": "L1-388 Blind Source Separation", "d_principle_estimate": 0.50, "advisory_label": "Distinct (sibling-physics-core PWDR; future dedicated ECG core recommended)", "rationale": "L1-388 BSS recovers separated source signals from mixed observations. L1-528 specializes to ECG with cardiac-specific features (R-peak, QRS morphology, P-wave) and adds AAMI EC57 classification. Different solution_space (1D AAMI class per beat vs separated source signals); adds L.r_peak_detection, L.qrs_feature_extraction, L.aami_threshold_classifier primitives. d_principle ~ 0.50."},
+    "clinical_context": "Universal in cardiology — every ECG (clinical 12-lead, Holter, telemetry, wearable) is reviewed for arrhythmia. AAMI EC57 is the FDA-recognized testing standard for arrhythmia detection algorithms. UTSW Cardiology Department + ICU monitoring. FDA-cleared autonomous AI: Apple Watch ECG, KardiaMobile (AliveCor), Zio Patch (iRhythm) — all PWDR-shaped. Deep learning systems (Hannun et al. 2019) achieve cardiologist-level performance on Stanford / Geisinger benchmarks."
+  }
+}
