@@ -1,0 +1,129 @@
+{
+  "artifact_id": "L1-524",
+  "layer": "L1",
+  "principle_number": "524",
+  "title": "Stroke Ischemic Core / Penumbra Classification from CT-Perfusion (PWDR)",
+  "domain": "Medical Imaging",
+  "sub_domain": "Cerebral hemodynamics recovery from dynamic CT-perfusion with mismatch-based stroke triage readout",
+  "source_file": "C_medical_imaging/524_stroke_ctp_pwdr.md",
+  "source_data_quality_note": "v2 physical_with_discrete_readout (PWDR) genesis Principle. Wraps L1-029 CT (existing in v1 genesis) with deterministic CT-perfusion threshold rules (CBV / CBF / Tmax) per RAPID / Olea Sphere / Siemens Syngo.via clinical-validation cohorts to assign stroke triage labels {no_lesion, ischemic_core, penumbra_at_risk, large_vessel_occlusion_candidate}. Universal in acute stroke imaging (DAWN, DEFUSE-3 trial criteria) — every Level-1 stroke center performs CTP-based mechanical thrombectomy triage. UTSW Stroke Center Level-1 designation.",
+
+  "gate_class": "physical_with_discrete_readout",
+  "gate_substitutions": {
+    "kappa_substitute": null,
+    "h_substitute": null,
+    "conservation_substitute": "softmax simplex closure on stroke-triage categorical readout {no_lesion, ischemic_core, penumbra, mismatch_eligible_LVO} per voxel and per region"
+  },
+  "discrete_readout": {
+    "threshold_function": "Per-voxel: ischemic_core = (rCBF < 0.30 of contralateral) OR (CBV < 2 mL/100g); penumbra = (Tmax > 6 s) AND NOT ischemic_core. Per-patient triage: mismatch_eligible_LVO = (penumbra_volume - core_volume > 15 mL) AND (penumbra/core ratio > 1.8) per DAWN/DEFUSE-3 criteria. Time window: thrombectomy candidate = onset 0-24 h with mismatch criteria. ASPECTS score: 10-point regional grading from non-contrast CT.",
+    "lipschitz_constant": 0.06,
+    "underlying_physical_state": "voxel-resolved cerebral hemodynamic parameters (CBF [mL/100g/min], CBV [mL/100g], MTT [s], Tmax [s]) recovered via deconvolution from time-series CT-perfusion data using L1-029 CT as the projection-reconstruction core",
+    "physics_core_principle": "L1-029",
+    "label_set_voxel": ["no_lesion", "ischemic_core", "penumbra_at_risk", "old_infarct"],
+    "label_set_triage": ["no_intervention", "IV_thrombolytic_only", "mechanical_thrombectomy_candidate", "extended_window_LVO_candidate"],
+    "threshold_continuity_proof": "CTP thresholds are step functions on continuous hemodynamic parameter values (rCBF, CBV, Tmax); per-class boundaries form measure-zero hyperplanes. Volume aggregation is Lipschitz (sum of indicator-thresholded continuous quantities). Smoothed-classification globally Lipschitz with constant ~0.06 per percentage-point of perfusion-parameter error."
+  },
+  "related_principles": [
+    "L1-029 (CT — projection / reconstruction analytical core, physics_core_principle)",
+    "L1-038 (CBCT — sibling cone-beam CT, informational)",
+    "L1-039 (X-ray angio — sibling vascular-imaging modality, informational)"
+  ],
+
+  "E": {
+    "description": "Stroke Ischemic Core / Penumbra Classification (PWDR): wraps L1-029 CT analytical core extended for dynamic perfusion imaging with established CTP threshold rules. Stage 1 (analytical, from L1-029 + dynamic deconvolution): from time-series CTP acquisition (typically 60-90 frames over 50-70 seconds following IV iodinated contrast bolus), recover voxel-resolved hemodynamic parameter maps via SVD-based deconvolution against arterial input function: CBF (cerebral blood flow), CBV (cerebral blood volume), MTT (mean transit time), Tmax (time to maximum residue function). Stage 2 (deterministic threshold): apply RAPID / Olea / Syngo.via thresholds to identify ischemic core (rCBF<0.30 or CBV<2) and penumbra (Tmax>6s); compute volumes; classify into mechanical thrombectomy triage. Difficulty tier delta = 5. Mismatch parameters: AIF_selection_uncertainty, motion_during_acquisition, partial_volume_at_arteries, contrast_bolus_timing, deconvolution_regularization, threshold_calibration_vendor_difference.",
+    "forward_model": "Stage 1 (L1-029 + temporal deconvolution): {y_proj(t)} -> mu_attenuation(r, t); deconvolution(C(r, t), AIF(t)) -> R(r, t) residue function -> CBF, CBV, MTT, Tmax. Stage 2: ischemic_core_mask = (rCBF<0.30) | (CBV<2); penumbra_mask = (Tmax>6) & ~core_mask; triage = mismatch-volume rules per DAWN/DEFUSE-3.",
+    "world_state_x": "Per-patient triage label + per-voxel categorical map (core / penumbra / no-lesion) + ischemic core volume [mL] + penumbra volume [mL] + mismatch ratio.",
+    "observation_y": "Dynamic CT-perfusion volume series (typically 512x512 in-plane, 8-32 z-slices, 60-90 time frames, 1-3 second temporal resolution).",
+    "physical_parameters_theta": ["H", "W", "Z", "N_time_frames", "frame_period_s", "voxel_size_mm", "kVp", "mAs", "contrast_dose_mL", "AIF_selection_uncertainty", "motion_during_acquisition", "partial_volume_at_arteries", "contrast_bolus_timing", "deconvolution_regularization", "threshold_calibration_vendor_difference"]
+  },
+
+  "G": {
+    "dag": "L.xray_source -> L.attenuation_projection -> L.dynamic_reconstruction -> L.deconvolution_aif -> L.cbf_cbv_mtt_tmax -> L.ctp_threshold_classifier -> int.spatial_temporal",
+    "vertices": ["L.xray_source", "L.attenuation_projection", "L.dynamic_reconstruction", "L.deconvolution_aif", "L.cbf_cbv_mtt_tmax", "L.ctp_threshold_classifier", "int.spatial_temporal"],
+    "arcs": ["L.xray_source -> L.attenuation_projection", "L.attenuation_projection -> L.dynamic_reconstruction", "L.dynamic_reconstruction -> L.deconvolution_aif", "L.deconvolution_aif -> L.cbf_cbv_mtt_tmax", "L.cbf_cbv_mtt_tmax -> L.ctp_threshold_classifier", "L.ctp_threshold_classifier -> int.spatial_temporal"],
+    "L_DAG": 7.3,
+    "n_c": 2,
+    "coupling_constraints": [
+      "temporal_dynamics: time-series CT projections couple to per-voxel attenuation evolution C(r, t); deconvolution against AIF(t) recovers residue function R(r, t)",
+      "perfusion_parameters: CBF, CBV, MTT, Tmax are jointly derived from R(r, t) via central volume principle CBV = CBF * MTT and Tmax = argmax R(r, t)"
+    ]
+  },
+
+  "W": {
+    "existence": true,
+    "uniqueness": "conditional",
+    "stability": "conditional",
+    "condition_number_kappa": 200,
+    "condition_number_effective": 30,
+    "regime": "Existence inherited from L1-029. Uniqueness conditional on AIF selection (manual or automated) and temporal sampling adequacy. Stability conditional with deconvolution_regularization dominant for noise sensitivity; threshold_calibration_vendor_difference contributes inter-vendor bias (~20% volume estimation difference between RAPID and Olea). Joint Hadamard well-posedness for the coupled dynamic-CTP + perfusion-threshold forward established by Ostergaard 1996 (foundational SVD deconvolution), Konstas 2009 (CTP technical review), Wintermark 2006 (perfusion thresholds), Albers 2018 (DEFUSE-3 trial), Nogueira 2018 (DAWN trial), Goyal 2016 (HERMES meta-analysis)."
+  },
+
+  "C": {
+    "solver_class": "linear-operator + convex optimisation [L1-029 reconstruction + SVD/oSVD deconvolution + threshold] | end-to-end deep neural [DeepStroke, RAPID Vision, Brainomix e-Stroke] with explicit physics-informed perfusion-parameter regularization",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Inherits L1-029 reconstruction bound + deconvolution noise propagation: ||{CBF, CBV, MTT, Tmax}_hat - true||_2 <= C1 * sigma_noise_per_voxel * sqrt(N_time_frames). Volume estimation bound: |V_core_hat - V_core| <= C2 * |threshold_uncertainty| * voxel_volume. Misclassification rate ~5-10% in clinical validation.",
+    "complexity": "O(H * W * Z * N_time_frames * log(N_time_frames)) per iteration; deep neural variants O(H W Z N_time_frames * F_theta_cost)"
+  },
+
+  "physics_fingerprint": {
+    "carrier": "x_ray",
+    "sensing_mechanism": "ct_perfusion_with_stroke_triage_threshold",
+    "integration_axis": "spatial_temporal",
+    "problem_class": "linear_inverse_with_categorical_readout",
+    "noise_model": "poisson",
+    "solution_space": "1D_stroke_triage_label",
+    "primitives": ["L.xray_source", "L.attenuation_projection", "L.dynamic_reconstruction", "L.deconvolution_aif", "L.cbf_cbv_mtt_tmax", "L.ctp_threshold_classifier", "int.spatial_temporal"]
+  },
+
+  "difficulty_delta": 5,
+  "difficulty_tier": "advanced",
+  "mismatch_parameters": ["AIF_selection_uncertainty", "motion_during_acquisition", "partial_volume_at_arteries", "contrast_bolus_timing", "deconvolution_regularization", "threshold_calibration_vendor_difference"],
+  "error_metric": "categorical_accuracy",
+  "error_metric_secondary": "RMSE_core_volume_mL",
+
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "stroke_ctp_triage_pwdr",
+      "forward_operator": "ctp_stroke_pwdr_forward",
+      "input_format": "dynamic_ctp_volume_with_triage_label",
+      "omega": {"H": 512, "W": 512, "Z": 32, "N_time_frames": 60, "frame_period_s": 1.5, "voxel_size_mm": 0.7, "kVp": 80, "mAs": 100, "contrast_dose_mL": 50, "AIF_selection_uncertainty": 0.0, "motion_during_acquisition": 0.0, "partial_volume_at_arteries": 0.0, "contrast_bolus_timing": 0.0, "deconvolution_regularization": 0.0, "threshold_calibration_vendor_difference": 0.0},
+      "epsilon_fn_center": "0.85_accuracy"
+    },
+    "allowed_forward_operators": ["ctp_stroke_pwdr_forward", "ctp_rapid_pwdr_forward", "ctp_olea_pwdr_forward", "ctp_dawn_defuse3_pwdr_forward"],
+    "allowed_problem_classes": ["stroke_ctp_triage_pwdr", "stroke_ischemic_core_pwdr", "stroke_penumbra_pwdr", "stroke_thrombectomy_eligibility_pwdr"],
+    "allowed_omega_dimensions": ["H", "W", "Z", "N_time_frames", "frame_period_s", "voxel_size_mm", "kVp", "mAs", "contrast_dose_mL", "AIF_selection_uncertainty", "motion_during_acquisition", "partial_volume_at_arteries", "contrast_bolus_timing", "deconvolution_regularization", "threshold_calibration_vendor_difference"],
+    "omega_bounds": {"H": [256, 1024], "W": [256, 1024], "Z": [8, 80], "N_time_frames": [20, 120], "frame_period_s": [1.0, 3.0]},
+    "epsilon_bounds": {"categorical_accuracy": [0.50, 0.99]}
+  },
+
+  "p1_p10_tests": ["PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS"],
+  "s1_s4_gates": ["PASS", "PASS", "PASS", "PASS"],
+  "ipfs_cid": null,
+
+  "recast_attempted": {
+    "considered": true,
+    "recast_path": "Original framing: 'Classify stroke patients into thrombectomy candidates from CTP'. Option-3 recast: 'Recover voxel-resolved CBF/CBV/MTT/Tmax via dynamic CT + deconvolution; apply RAPID / Olea / Syngo.via thresholds for core / penumbra; compute mismatch volumes per DAWN/DEFUSE-3'. Feasible because cerebral perfusion has well-defined indicator-dilution forward model and triage rules are deterministic from recovered hemodynamic parameters.",
+    "reason_rejected": null
+  },
+
+  "v3_metadata": {
+    "is_standalone_multiphysics": false,
+    "coupling_count_n_c": 2,
+    "joint_well_posedness_references": [
+      "Ostergaard L et al. (1996) High resolution measurement of cerebral blood flow using intravascular tracer bolus passages. Part I: Mathematical approach and statistical analysis. Magn Reson Med 36(5):715-725.",
+      "Konstas AA et al. (2009) Theoretic basis and technical implementations of CT perfusion in acute ischemic stroke. AJNR Am J Neuroradiol 30(4):662-668.",
+      "Wintermark M et al. (2006) Perfusion-CT assessment of infarct core and penumbra: receiver operating characteristic curve analysis in 130 patients suspected of acute hemispheric stroke. Stroke 37(4):979-985.",
+      "Albers GW et al. (2018) Thrombectomy for stroke at 6 to 16 hours with selection by perfusion imaging (DEFUSE 3). NEJM 378(8):708-718.",
+      "Nogueira RG et al. (2018) Thrombectomy 6 to 24 hours after stroke with a mismatch between deficit and infarct (DAWN). NEJM 378(1):11-21.",
+      "Goyal M et al. (2016) Endovascular thrombectomy after large-vessel ischaemic stroke: a meta-analysis of individual patient data from five randomised trials (HERMES). Lancet 387(10029):1723-1731.",
+      "Bivard A et al. (2014) Defining the extent of irreversible brain ischemia using perfusion computed tomography. Cerebrovasc Dis 37(2):87-94."
+    ],
+    "distinctness_audit": {
+      "closest_existing_principle": "L1-029 CT",
+      "d_principle_estimate": 0.55,
+      "advisory_label": "Distinct (parent-child PWDR pattern with temporal extension)",
+      "rationale": "L1-029 CT recovers static 3D attenuation; L1-524 extends to 4D dynamic CTP with deconvolution and adds stroke-triage threshold rules. Different solution_space (1D triage label + per-voxel core/penumbra map vs 3D static attenuation); adds L.dynamic_reconstruction, L.deconvolution_aif, L.cbf_cbv_mtt_tmax, L.ctp_threshold_classifier primitives plus n_c = 2 (vs L1-029's n_c = 0)."
+    },
+    "clinical_context": "Universal in acute stroke care at every Level-1 stroke center globally. Mechanical thrombectomy is the standard of care for large-vessel occlusion (LVO) ischemic stroke; CTP-based triage extends the treatment window to 6-24 hours per DAWN/DEFUSE-3 trial criteria. UTSW Stroke Center holds Level-1 designation. Commercial systems: RAPID (iSchemaView, FDA-cleared), Olea Sphere, Siemens Syngo.via, GE CT Perfusion 4D, Brainomix e-Stroke — all are PWDR-shaped systems. PWDR formulation gives physics-grounded explainability: triage decisions derive from explicit perfusion-parameter thresholds tied to clinical-trial validation cohorts."
+  }
+}
