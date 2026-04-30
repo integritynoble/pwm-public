@@ -1,0 +1,158 @@
+{
+  "artifact_id": "L1-515",
+  "layer": "L1",
+  "principle_number": "515",
+  "title": "Mammographic Breast Density Classification BI-RADS (PWDR)",
+  "domain": "Medical Imaging",
+  "sub_domain": "Mammographic glandular-tissue density reconstruction with BI-RADS density category readout",
+  "source_file": "C_medical_imaging/515_mammographic_density_pwdr.md",
+  "source_data_quality_note": "v2 physical_with_discrete_readout (PWDR) genesis Principle. Wraps L1-036 mammography (analytical core) with the deterministic BI-RADS Atlas (5th edition) density-category rule on volumetric glandular-tissue fraction. Universal clinical use — every screening mammogram in the United States since 2014 is graded with a BI-RADS density category by federal mammography quality standards (MQSA). UTSW Simmons Cancer Center runs high-volume breast-imaging; aligns with standard-of-care.",
+
+  "gate_class": "physical_with_discrete_readout",
+  "gate_substitutions": {
+    "kappa_substitute": null,
+    "h_substitute": null,
+    "conservation_substitute": "softmax simplex closure on BI-RADS density category {A=almost_entirely_fatty, B=scattered_fibroglandular, C=heterogeneously_dense, D=extremely_dense} ordinal readout"
+  },
+  "discrete_readout": {
+    "threshold_function": "BI-RADS_density(breast) = category_k such that volumetric_glandular_fraction(breast) in [tau_k, tau_{k+1}); tau_thresholds per ACR BI-RADS Atlas 5th edition (2013): A: <25%, B: 25-50%, C: 50-75%, D: >75%; secondary thresholds incorporate spatial-distribution heterogeneity (heterogeneously dense vs homogeneously dense) per Volpara/Quantra automated software validation.",
+    "lipschitz_constant": 0.04,
+    "underlying_physical_state": "volumetric breast composition map: glandular-tissue fraction g(r) per voxel and integrated VBD = integral g(r) dV / volume_breast, recovered from full-field digital mammography (FFDM) or digital breast tomosynthesis (DBT) projections via L1-036 mammography analytical core",
+    "physics_core_principle": "L1-036",
+    "label_set": ["A_almost_entirely_fatty", "B_scattered_fibroglandular", "C_heterogeneously_dense", "D_extremely_dense"],
+    "threshold_continuity_proof": "Volumetric breast density is a continuous-valued integrated functional of the recovered glandular-fraction map g(r). BI-RADS category boundaries at 25%/50%/75% are step functions; smoothed-grading is globally Lipschitz with constant ~0.04 per percentage-point of VBD. Inherits stability from L1-036 mammography reconstruction."
+  },
+  "related_principles": [
+    "L1-036 (mammography — full-field digital mammography analytical core, physics_core_principle)",
+    "L1-063 (DBT — digital breast tomosynthesis sibling, informational)",
+    "L1-038 (CBCT — cone-beam-CT sibling, informational)"
+  ],
+
+  "E": {
+    "description": "Mammographic Breast Density Classification (PWDR): wraps L1-036 mammography analytical core with the ACR BI-RADS Atlas 5th edition density-grading rule. Stage 1 (analytical, from L1-036): reconstruct breast tissue composition g(r) (glandular-tissue volume fraction per voxel) from FFDM cranio-caudal + medio-lateral-oblique views via dual-energy decomposition or single-energy calibration with reference to fat/fibroglandular calibration phantoms. Compute volumetric breast density VBD = integral g(r) dV / volume_breast. Stage 2 (deterministic threshold): apply BI-RADS thresholds at 25%/50%/75% to assign category {A, B, C, D}; secondary spatial-heterogeneity rule discriminates heterogeneously vs homogeneously dense in C and D categories. Difficulty tier delta = 3 inherited from L1-036. Mismatch parameters: compression_thickness_calibration_error, exposure_factor_drift, calibration_phantom_uncertainty, age_related_density_shift, automated_vs_radiologist_disagreement.",
+    "forward_model": "Stage 1 (L1-036): {y_projection_CC, y_projection_MLO} -> g(r) volumetric glandular fraction. Stage 2 (BI-RADS): VBD = integral g(r) dV; category = step(VBD at [25%, 50%, 75%]) per BI-RADS Atlas 5th edition.",
+    "world_state_x": "Per-breast BI-RADS density category in {A, B, C, D}; optionally continuous-valued VBD for surveillance follow-up.",
+    "observation_y": "Standard 4-view screening mammogram (left + right cranio-caudal + medio-lateral-oblique projections); typically 3000x4000 pixel FFDM detector at 70-100 micrometer pixel pitch.",
+    "physical_parameters_theta": [
+      "H_proj", "W_proj", "pixel_size_um", "kVp", "mAs",
+      "compression_thickness_mm", "anode_target_material", "filter_material",
+      "SNR_dB", "compression_thickness_calibration_error", "exposure_factor_drift",
+      "calibration_phantom_uncertainty", "age_related_density_shift",
+      "automated_vs_radiologist_disagreement"
+    ]
+  },
+
+  "G": {
+    "dag": "L.xray_source -> L.attenuation_projection -> L.dual_energy_decomposition -> L.glandular_fraction_recovery -> L.vbd_aggregation -> L.birads_threshold_classifier -> int.spatial",
+    "vertices": [
+      "L.xray_source", "L.attenuation_projection", "L.dual_energy_decomposition",
+      "L.glandular_fraction_recovery", "L.vbd_aggregation", "L.birads_threshold_classifier", "int.spatial"
+    ],
+    "arcs": [
+      "L.xray_source -> L.attenuation_projection",
+      "L.attenuation_projection -> L.dual_energy_decomposition",
+      "L.dual_energy_decomposition -> L.glandular_fraction_recovery",
+      "L.glandular_fraction_recovery -> L.vbd_aggregation",
+      "L.vbd_aggregation -> L.birads_threshold_classifier",
+      "L.birads_threshold_classifier -> int.spatial"
+    ],
+    "L_DAG": 5.8,
+    "n_c": 1,
+    "coupling_constraints": [
+      "fraction_to_vbd: per-voxel glandular fraction integrates over breast volume to yield single VBD scalar; coupling between local tissue composition and aggregated breast-level density"
+    ]
+  },
+
+  "W": {
+    "existence": true,
+    "uniqueness": "conditional",
+    "stability": "conditional",
+    "condition_number_kappa": 60,
+    "condition_number_effective": 12,
+    "regime": "Existence and uniqueness inherited from L1-036 mammography. Stability inherits L1-036's well-conditioned reconstruction plus a small additive contribution from compression_thickness_calibration_error (dominant systematic bias source) and age_related_density_shift. Joint Hadamard well-posedness for the coupled mammography + BI-RADS threshold forward established by Sickles E et al. (2013 BI-RADS Atlas 5th ed), Highnam R et al. (2010 Volpara volumetric density), Hartman K et al. (2013 Quantra), Yaffe MJ (2008 review of mammographic density), Boyd NF et al. (2007 density and breast cancer risk), and Pertuz S et al. (2014 automated density estimation comparison)."
+  },
+
+  "C": {
+    "solver_class": "linear-operator + convex optimisation [L1-036 reconstruction] + categorical-readout [BI-RADS threshold] | end-to-end deep neural [DenseNet, ResNet50-Density] with explicit physics-informed glandular-fraction regularization",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Inherits L1-036 reconstruction bound; classification stage adds C_thresh * |VBD_error| / d(VBD, tau_boundary). Achieves q=2 convergence on reconstruction; classification stage inherits with additive calibration floor.",
+    "complexity": "O(H_proj * W_proj * N_views) for stage 1 reconstruction (inherited); O(N_voxels) for VBD aggregation + O(1) for BI-RADS threshold; total stage-1-dominated"
+  },
+
+  "physics_fingerprint": {
+    "carrier": "x_ray",
+    "sensing_mechanism": "mammography_with_birads_density_grading",
+    "integration_axis": "spatial",
+    "problem_class": "linear_inverse_with_categorical_readout",
+    "noise_model": "poisson",
+    "solution_space": "1D_birads_density_category",
+    "primitives": [
+      "L.xray_source", "L.attenuation_projection", "L.dual_energy_decomposition",
+      "L.glandular_fraction_recovery", "L.vbd_aggregation", "L.birads_threshold_classifier", "int.spatial"
+    ]
+  },
+
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "compression_thickness_calibration_error", "exposure_factor_drift",
+    "calibration_phantom_uncertainty", "age_related_density_shift",
+    "automated_vs_radiologist_disagreement"
+  ],
+  "error_metric": "categorical_accuracy",
+  "error_metric_secondary": "weighted_kappa_birads",
+
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "mammographic_birads_density_pwdr",
+      "forward_operator": "mammography_birads_pwdr_forward",
+      "input_format": "ffdm_4view_with_density_label",
+      "omega": {
+        "H_proj": 3500, "W_proj": 2800, "pixel_size_um": 85,
+        "kVp": 30, "mAs": 100, "compression_thickness_mm": 50,
+        "anode_target_material": "Mo", "filter_material": "Mo",
+        "SNR_dB": 32, "compression_thickness_calibration_error": 0.0,
+        "exposure_factor_drift": 0.0, "calibration_phantom_uncertainty": 0.0,
+        "age_related_density_shift": 0.0,
+        "automated_vs_radiologist_disagreement": 0.0
+      },
+      "epsilon_fn_center": "0.85_accuracy"
+    },
+    "allowed_forward_operators": ["mammography_birads_pwdr_forward", "dbt_birads_pwdr_forward", "ffdm_volpara_forward", "ffdm_quantra_forward"],
+    "allowed_problem_classes": ["mammographic_birads_density_pwdr", "mammographic_4cat_density_pwdr", "mammographic_continuous_vbd"],
+    "allowed_omega_dimensions": ["H_proj", "W_proj", "pixel_size_um", "kVp", "mAs", "compression_thickness_mm", "anode_target_material", "filter_material", "SNR_dB", "compression_thickness_calibration_error", "exposure_factor_drift", "calibration_phantom_uncertainty", "age_related_density_shift", "automated_vs_radiologist_disagreement"],
+    "omega_bounds": {"H_proj": [1024, 5500], "W_proj": [1024, 4500], "pixel_size_um": [50, 200], "kVp": [25, 35], "compression_thickness_mm": [20, 90]},
+    "epsilon_bounds": {"categorical_accuracy": [0.50, 0.99]}
+  },
+
+  "p1_p10_tests": ["PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS"],
+  "s1_s4_gates": ["PASS", "PASS", "PASS", "PASS"],
+  "ipfs_cid": null,
+
+  "recast_attempted": {
+    "considered": true,
+    "recast_path": "Original framing: 'Classify mammograms into BI-RADS density categories' (would be data_driven_statistical CNN). Option-3 recast: 'Reconstruct volumetric glandular-tissue fraction g(r) via dual-energy mammography decomposition; compute VBD; apply BI-RADS Atlas 5th edition thresholds at 25%/50%/75%'. Feasible because breast composition has a well-defined dual-energy x-ray forward model and BI-RADS categories are deterministic functions of recovered VBD.",
+    "reason_rejected": null
+  },
+
+  "v3_metadata": {
+    "is_standalone_multiphysics": false,
+    "coupling_count_n_c": 1,
+    "joint_well_posedness_references": [
+      "Sickles EA, D'Orsi CJ, Bassett LW et al. (2013) ACR BI-RADS Mammography. ACR BI-RADS Atlas, Breast Imaging Reporting and Data System, 5th ed.",
+      "Highnam R, Brady M, Yaffe MJ, Karssemeijer N, Harvey J (2010) Robust breast composition measurement — VolparaDensity. IWDM 2010, LNCS 6136:342-349.",
+      "Hartman K, Highnam R, Warren R, Jackson V (2013) Volumetric assessment of breast tissue composition from FFDM images: feasibility of a model-based approach. IWDM 2008.",
+      "Yaffe MJ (2008) Mammographic density. Measurement of mammographic density. Breast Cancer Res 10(3):209.",
+      "Boyd NF, Guo H, Martin LJ et al. (2007) Mammographic density and the risk and detection of breast cancer. NEJM 356(3):227-236.",
+      "Pertuz S, McDonald ES, Weinstein SP, Conant EF, Kontos D (2014) Fully automated quantitative estimation of volumetric breast density from digital breast tomosynthesis images. Radiology 279(1):65-74.",
+      "Wanders JOP et al. (2017) Volumetric breast density and breast cancer risk: comparison of two automated methods. Breast Cancer Res 19:67."
+    ],
+    "distinctness_audit": {
+      "closest_existing_principle": "L1-036 mammography",
+      "d_principle_estimate": 0.40,
+      "advisory_label": "Distinct (parent-child PWDR pattern)",
+      "rationale": "L1-036 mammography recovers projection / volumetric tissue contrast; L1-515 wraps with BI-RADS density-grading rule. Different solution_space (1D BI-RADS density category vs 2D mammographic projection); adds L.dual_energy_decomposition, L.glandular_fraction_recovery, L.vbd_aggregation, L.birads_threshold_classifier primitives."
+    },
+    "clinical_context": "Universal clinical use — every screening mammogram in the United States since 2014 is graded with a BI-RADS density category, mandated by federal Mammography Quality Standards Act (MQSA). Density category influences supplemental screening decisions: women with category C or D ('dense breasts') have higher breast cancer risk and reduced mammography sensitivity, often qualifying for supplemental screening US or MR. UTSW Simmons Cancer Center runs the largest breast-imaging program in North Texas; aligns directly with FDA-mandated standard-of-care. Commercial automated systems: Volpara, Quantra (FDA-cleared); deep-learning variants (DenseNet density classifier) also FDA-cleared. PWDR formulation provides physics-grounded explainability: density category is derived from explicit volumetric glandular fraction, not black-box CNN."
+  }
+}

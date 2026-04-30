@@ -1,0 +1,156 @@
+{
+  "artifact_id": "L1-514",
+  "layer": "L1",
+  "principle_number": "514",
+  "title": "Chest CT Pneumonia/COVID Severity Classification (PWDR)",
+  "domain": "Medical Imaging",
+  "sub_domain": "Lung tissue density reconstruction with pneumonia/COVID severity-grade categorical readout",
+  "source_file": "C_medical_imaging/514_chest_ct_severity_pwdr.md",
+  "source_data_quality_note": "v2 physical_with_discrete_readout (PWDR) genesis Principle. Wraps L1-029 CT (analytical core) with a deterministic threshold function on lobe-segmented ground-glass-opacity / consolidation / crazy-paving fractions to yield CO-RADS / Total Severity Score (TSS) categorical grades. Universal clinical method during pneumonia surveillance (community-acquired pneumonia, hospital-acquired, ventilator-associated, COVID-19 acute and post-acute). Validated and accepted globally including UTSW.",
+
+  "gate_class": "physical_with_discrete_readout",
+  "gate_substitutions": {
+    "kappa_substitute": null,
+    "h_substitute": null,
+    "conservation_substitute": "softmax simplex closure on TSS-grade {0=normal, 1=<5%, 2=5-25%, 3=26-50%, 4=51-75%, 5=>75%} or CO-RADS {1-5} ordinal readout"
+  },
+  "discrete_readout": {
+    "threshold_function": "Total Severity Score TSS(lung) = sum_lobe TSS_lobe where TSS_lobe = grade_k such that GGO_consolidation_fraction_lobe in [tau_k, tau_{k+1}); tau_thresholds = [0%, 5%, 25%, 50%, 75%] per Pan/Yang 2020 + Francone 2020. CO-RADS(lung) = 1-5 categorical likelihood per Prokop 2020 Dutch radiology consensus, mapped from morphological pattern features (peripheral vs central distribution, multifocal vs unifocal, GGO vs consolidation predominance, crazy-paving presence).",
+    "lipschitz_constant": 0.05,
+    "underlying_physical_state": "lung tissue density distribution mu_attenuation(r) [HU] reconstructed from CT projections via L1-029 CT; lobe-segmented GGO/consolidation/normal fractions per region; morphological pattern descriptors",
+    "physics_core_principle": "L1-029",
+    "label_set_tss": ["TSS_0_normal", "TSS_1_<5%", "TSS_2_5-25%", "TSS_3_26-50%", "TSS_4_51-75%", "TSS_5_>75%"],
+    "label_set_corads": ["CO-RADS_1_very_low", "CO-RADS_2_low", "CO-RADS_3_indeterminate", "CO-RADS_4_high", "CO-RADS_5_very_high"],
+    "threshold_continuity_proof": "TSS-grade is a step function on per-lobe involvement-fraction (continuous in [0,1]); each tau_k boundary is a measure-zero hyperplane. Smoothed-grading is globally Lipschitz with constant ~0.05 per percentage-point of involvement fraction. Inherits underlying-state stability from L1-029 CT."
+  },
+  "related_principles": [
+    "L1-029 (CT — tissue-density reconstruction analytical core, physics_core_principle)",
+    "L1-038 (CBCT — sibling cone-beam CT, informational)",
+    "L1-054 (photon_counting_CT — sibling spectral CT, informational)"
+  ],
+
+  "E": {
+    "description": "Chest CT Severity Classification (PWDR): wraps L1-029 CT analytical core with the international Pan/Francone Total Severity Score and Dutch CO-RADS clinical-grading rules. Stage 1 (analytical, from L1-029): reconstruct lung tissue density mu_attenuation(r) [HU] from CT projections; segment lobes and identify abnormal regions per Hounsfield-density thresholds (-700 to -400 HU = ground-glass opacity GGO; -100 to 50 HU = consolidation; -700 to -800 + interlobular septal thickening = crazy-paving). Stage 2 (deterministic threshold): aggregate per-lobe involvement fractions to per-lobe TSS sub-scores; sum across 5 lobes for total TSS in [0, 25]; apply morphological-pattern rules to yield CO-RADS likelihood category. The threshold function is piecewise-constant on per-lobe involvement fractions and locally Lipschitz-continuous on the underlying density reconstruction. Difficulty tier delta = 3 inherited from L1-029. Mismatch parameters: kV_calibration_drift, slice_thickness_anisotropy, motion_blur_breath_hold, contrast_enhancement_state, lobe_segmentation_error, threshold_calibration_uncertainty.",
+    "forward_model": "Stage 1 (L1-029): {y_projection(theta, s)} -> mu_attenuation(r). Stage 2 (TSS / CO-RADS): GGO_fraction_lobe = volume(mu in GGO_HU_range) / volume_lobe; TSS_lobe = step(GGO_fraction_lobe at tau_thresholds); TSS_total = sum_lobe TSS_lobe; CO-RADS = morphological_classifier(GGO_distribution, consolidation_distribution, crazy_paving_presence, peripheral_vs_central_ratio).",
+    "world_state_x": "Per-patient TSS in [0, 25] and CO-RADS in {1, 2, 3, 4, 5}; optionally per-lobe TSS sub-scores.",
+    "observation_y": "Standard non-contrast or contrast-enhanced chest CT volume (typically 512x512 in-plane, 100-500 axial slices, 1-3 mm slice thickness).",
+    "physical_parameters_theta": [
+      "H", "W", "Z", "slice_thickness_mm", "voxel_size_mm",
+      "kVp", "mAs", "SNR_dB", "kV_calibration_drift",
+      "slice_thickness_anisotropy", "motion_blur_breath_hold",
+      "contrast_enhancement_state", "lobe_segmentation_error",
+      "threshold_calibration_uncertainty"
+    ]
+  },
+
+  "G": {
+    "dag": "L.xray_source -> L.attenuation_projection -> L.filtered_back_projection -> L.lobe_segmentation -> L.density_thresholding -> L.tss_classifier -> int.spatial",
+    "vertices": [
+      "L.xray_source", "L.attenuation_projection", "L.filtered_back_projection",
+      "L.lobe_segmentation", "L.density_thresholding", "L.tss_classifier", "int.spatial"
+    ],
+    "arcs": [
+      "L.xray_source -> L.attenuation_projection",
+      "L.attenuation_projection -> L.filtered_back_projection",
+      "L.filtered_back_projection -> L.lobe_segmentation",
+      "L.filtered_back_projection -> L.density_thresholding",
+      "L.lobe_segmentation -> L.tss_classifier",
+      "L.density_thresholding -> L.tss_classifier",
+      "L.tss_classifier -> int.spatial"
+    ],
+    "L_DAG": 5.7,
+    "n_c": 1,
+    "coupling_constraints": [
+      "lobe_to_density: lobe-segmentation and density-thresholding share the same reconstructed CT volume; coupled processing enforces topological consistency (involvement fractions are evaluated within anatomically-defined lobe boundaries)"
+    ]
+  },
+
+  "W": {
+    "existence": true,
+    "uniqueness": "conditional",
+    "stability": "conditional",
+    "condition_number_kappa": 50,
+    "condition_number_effective": 12,
+    "regime": "Existence and uniqueness inherited from L1-029 CT. Stability inherits L1-029's well-conditioned reconstruction plus a small additive contribution from threshold_calibration_uncertainty. Joint Hadamard well-posedness for the coupled CT-reconstruction + TSS/CO-RADS forward established by Pan F et al. (2020, foundational TSS), Francone M et al. (2020 TSS validation), Prokop M et al. (2020 CO-RADS Dutch consensus), Inui S et al. (2020 multicenter TSS), Liu Z et al. (2021 deep-learning TSS automation), and Lessmann N et al. (2021 multicentre CO-RADS validation)."
+  },
+
+  "C": {
+    "solver_class": "linear-operator + convex optimisation [L1-029 FBP + lobe segmentation] + categorical-readout [TSS/CO-RADS rule] | end-to-end deep neural [DeepSARS, COVNet, COVID-Net] with explicit physics-informed lobe-segmentation regularization",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Inherits L1-029 reconstruction bound; classification stage adds C_thresh * |involvement_fraction_error| / d(fraction, tau_boundary). Achieves q=2 convergence on reconstruction, classification stage inherits with grader-calibration floor.",
+    "complexity": "O(H * W * Z * log(N)) for stage 1 (inherited from L1-029); O(N_lobes * N_HU_classes) for stage 2 thresholding; total stage-1-dominated"
+  },
+
+  "physics_fingerprint": {
+    "carrier": "x_ray",
+    "sensing_mechanism": "ct_attenuation_with_tss_corads_grading",
+    "integration_axis": "spatial",
+    "problem_class": "linear_inverse_with_categorical_readout",
+    "noise_model": "poisson",
+    "solution_space": "1D_severity_grade",
+    "primitives": [
+      "L.xray_source", "L.attenuation_projection", "L.filtered_back_projection",
+      "L.lobe_segmentation", "L.density_thresholding", "L.tss_classifier", "int.spatial"
+    ]
+  },
+
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "kV_calibration_drift", "slice_thickness_anisotropy", "motion_blur_breath_hold",
+    "contrast_enhancement_state", "lobe_segmentation_error", "threshold_calibration_uncertainty"
+  ],
+  "error_metric": "categorical_accuracy",
+  "error_metric_secondary": "weighted_kappa_severity",
+
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "chest_ct_tss_pwdr",
+      "forward_operator": "ct_severity_pwdr_forward",
+      "input_format": "chest_ct_volume_with_severity_grade",
+      "omega": {
+        "H": 512, "W": 512, "Z": 200, "slice_thickness_mm": 1.5,
+        "voxel_size_mm": 0.7, "kVp": 120, "mAs": 200, "SNR_dB": 30,
+        "kV_calibration_drift": 0.0, "slice_thickness_anisotropy": 0.0,
+        "motion_blur_breath_hold": 0.0, "contrast_enhancement_state": 0.0,
+        "lobe_segmentation_error": 0.0, "threshold_calibration_uncertainty": 0.0
+      },
+      "epsilon_fn_center": "0.85_accuracy"
+    },
+    "allowed_forward_operators": ["ct_severity_pwdr_forward", "ct_corads_pwdr_forward", "ct_lobe_tss_pwdr_forward"],
+    "allowed_problem_classes": ["chest_ct_tss_pwdr", "chest_ct_corads_pwdr", "chest_ct_per_lobe_tss_pwdr", "chest_ct_pneumonia_severity_pwdr"],
+    "allowed_omega_dimensions": ["H", "W", "Z", "slice_thickness_mm", "voxel_size_mm", "kVp", "mAs", "SNR_dB", "kV_calibration_drift", "slice_thickness_anisotropy", "motion_blur_breath_hold", "contrast_enhancement_state", "lobe_segmentation_error", "threshold_calibration_uncertainty"],
+    "omega_bounds": {"H": [256, 1024], "W": [256, 1024], "Z": [50, 1000], "slice_thickness_mm": [0.5, 5.0], "kVp": [80, 140]},
+    "epsilon_bounds": {"categorical_accuracy": [0.50, 0.99]}
+  },
+
+  "p1_p10_tests": ["PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS"],
+  "s1_s4_gates": ["PASS", "PASS", "PASS", "PASS"],
+  "ipfs_cid": null,
+
+  "recast_attempted": {
+    "considered": true,
+    "recast_path": "Original framing: 'Classify chest CT into severity grades' (would be data_driven_statistical CNN). Option-3 recast: 'Reconstruct lung tissue density via L1-029 CT; segment lobes and identify GGO/consolidation per Hounsfield-density thresholds; apply Pan/Francone TSS or Prokop CO-RADS rules to involvement fractions'. Feasible because lung density has a well-defined CT forward model and TSS/CO-RADS are deterministic clinical-rule functions of recovered density distributions.",
+    "reason_rejected": null
+  },
+
+  "v3_metadata": {
+    "is_standalone_multiphysics": false,
+    "coupling_count_n_c": 1,
+    "joint_well_posedness_references": [
+      "Pan F et al. (2020) Time course of lung changes at chest CT during recovery from coronavirus disease 2019 (COVID-19). Radiology 295(3):715-721.",
+      "Francone M et al. (2020) Chest CT score in COVID-19 patients: correlation with disease severity and short-term prognosis. Eur Radiol 30(12):6808-6817.",
+      "Prokop M et al. (2020) CO-RADS: a categorical CT assessment scheme for patients suspected of having COVID-19 — definition and evaluation. Radiology 296(2):E97-E104.",
+      "Inui S et al. (2020) Chest CT findings in cases from the cruise ship 'Diamond Princess' with coronavirus disease 2019. Radiol Cardiothorac Imaging 2(2):e200110.",
+      "Liu Z et al. (2021) An automatic and effective method to identify pneumonia type and severity from chest CT scans. Comput Methods Programs Biomed 207:106177.",
+      "Lessmann N et al. (2021) Automated assessment of CO-RADS and chest CT severity scores in patients with suspected COVID-19 using artificial intelligence. Radiology 298(1):E18-E28."
+    ],
+    "distinctness_audit": {
+      "closest_existing_principle": "L1-029 CT",
+      "d_principle_estimate": 0.40,
+      "advisory_label": "Distinct (parent-child PWDR pattern)",
+      "rationale": "L1-029 CT recovers tissue attenuation distribution mu(r); L1-514 wraps with TSS / CO-RADS grading rules. Different solution_space (1D severity grade vs 3D density volume); adds L.lobe_segmentation, L.density_thresholding, L.tss_classifier primitives."
+    },
+    "clinical_context": "Universal clinical use during pneumonia surveillance — community-acquired pneumonia, hospital-acquired pneumonia, ventilator-associated pneumonia, and importantly COVID-19 acute disease and post-acute sequelae. CO-RADS adopted across European radiology departments since 2020; TSS used globally for severity stratification and prognosis. UTSW Department of Radiology participates in pneumonia and COVID-19 imaging research. PWDR formulation gives physics-grounded explainability: severity is derived from explicit involvement fractions of recovered lung density, not black-box scoring."
+  }
+}

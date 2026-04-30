@@ -47,6 +47,17 @@ But standalone multi-physics Principles cut across domains — they're genuinely
 | L1-508 | Optical Coherence Elastography (OCE) | `C_medical_imaging/` | phase-sensitive OCT ⊗ linear elasticity wave ⊗ applied loading | 2 | 8.4 | **Authored** (genesis-eligible) |
 | L1-509 | Photoacoustic-Ultrasound Dual-mode (PAUS) | `C_medical_imaging/` | qPAT chain ⊗ pulse-echo ultrasound | 2 | 9.5 | **Authored** (genesis-eligible) |
 | L1-510 | Cardiac 4D-flow MRI with hemodynamic biomechanics | `C_medical_imaging/` | MR phase-contrast ⊗ incompressible Navier-Stokes ⊗ physiological BC | 2 | 8.3 | **Authored** (genesis-eligible) |
+
+## v2 PWDR Principles (gate_class: physical_with_discrete_readout)
+
+These are paired analytical-core + PWDR-wrapper Principles per the v2 design in `pwm_overview2.md` § 4-7 and the canonical Option-3 recast pattern. Each PWDR wraps an analytical core (either pre-existing in v1 genesis or newly-authored alongside) with a deterministic threshold function on recovered physical state.
+
+| L1 ID (PWDR) | L1 ID (analytical core) | Name | Primary domain folder | Threshold readout | Status |
+|---|---|---|---|---|---|
+| L1-512 | L1-511 (newly authored) | PillCam-SPECTRA Bleeding-Region Detection | `C_medical_imaging/` | mucosal-region categorical {normal, bleeding, polyp, suspected_neoplasia, mucosal_inflammation} | **Authored** |
+| L1-513 | L1-049 (existing fundus) | Diabetic Retinopathy ETDRS Grading | `C_medical_imaging/` | ETDRS severity {none, mild_NPDR, moderate_NPDR, severe_NPDR, PDR} | **Authored** |
+| L1-514 | L1-029 (existing CT) | Chest CT Pneumonia/COVID Severity (TSS / CO-RADS) | `C_medical_imaging/` | TSS [0-25] + CO-RADS {1-5} | **Authored** |
+| L1-515 | L1-036 (existing mammography) | Mammographic Breast Density BI-RADS | `C_medical_imaging/` | BI-RADS density category {A, B, C, D} | **Authored** |
 | _TBD_ | Fluid-Structure Interaction (FSI) | `R_fluid_dynamics/` or `T_structural_mechanics/` | Navier-Stokes ⊗ linear elasticity | 2 | ~6-8 | Candidate — see `PWM_V3_STANDALONE_VS_COMPOSITE.md` |
 | _TBD_ | Multi-scale materials simulation | `Z_materials_science/` | DFT ⊗ MD ⊗ continuum mechanics | 4 | ~9-11 | Candidate |
 | _TBD_ | Climate-system attribution | `AF_environmental_sci/` | atmosphere ⊗ ocean ⊗ ice ⊗ biosphere | 6 | ~10-12 | Candidate |
@@ -109,5 +120,9 @@ Without this registry, the cross-cutting nature of standalone multi-physics is i
 | 2026-04-29 | L1-508 Optical Coherence Elastography (OCE) authored — phase-sensitive OCT + linear elasticity wave + applied loading; n_c=2; L_DAG=8.4; d_principle ~ 0.45 from L1-042 OCT and L1-047 elastography (Distinct). Status: Authored. |
 | 2026-04-29 | L1-509 PAUS dual-mode authored — qPAT chain + pulse-echo US with shared tissue acoustic; n_c=2; L_DAG=9.5; d_principle ~ 0.40 from L1-504 qPAT and L1-032 US (Distinct). Status: Authored. |
 | 2026-04-29 | L1-510 Cardiac 4D-flow MRI with biomechanics authored — MR phase-contrast + incompressible Navier-Stokes + physiological BC; n_c=2; L_DAG=8.3; d_principle ~ 0.50 from L1-058 MRA (Distinct). Status: Authored. **Path C complete: all 8 medical imaging v3 standalone candidates from PWM_V3_MEDICAL_IMAGING_CANDIDATES.md are now in genesis.** |
+| 2026-04-30 | Director requested expanding genesis to include v2 PWDR Principles at higher ratio. First v2 batch authored: L1-511 PillCam-SPECTRA optical core (analytical, n_c=1, L_DAG=4.9) + L1-512 PWDR wrapper (n_c=1, L_DAG=6.9, links L1-511 as physics_core). UTSW GI imaging context. |
+| 2026-04-30 | L1-513 Diabetic Retinopathy ETDRS Grading PWDR authored (UTSW Ophthalmology; FDA-cleared autonomous AI; n_c=1, L_DAG=5.0). Wraps existing L1-049 fundus core. |
+| 2026-04-30 | L1-514 Chest CT Pneumonia/COVID Severity PWDR authored (UTSW Radiology; universal pneumonia/COVID grading; n_c=1, L_DAG=5.7). Wraps existing L1-029 CT core. |
+| 2026-04-30 | L1-515 Mammographic Breast Density BI-RADS PWDR authored (UTSW Simmons Cancer Center; MQSA-mandated; n_c=1, L_DAG=5.8). Wraps existing L1-036 mammography core. **First v2 PWDR batch in genesis: 4 universally-deployed UTSW-relevant PWDR Principles + 1 newly-authored analytical core.** |
 | _TBD_ | Path A genesis batch complete (Director's pick); registry reflects all Authored entries. |
 | _TBD_ | Mainnet deploy at Step 7; this registry becomes the on-chain catalog of v3 standalone genesis Principles. |

@@ -1,0 +1,199 @@
+{
+  "artifact_id": "L1-511",
+  "layer": "L1",
+  "principle_number": "511",
+  "title": "PillCam-SPECTRA Optical-Property Recovery (analytical core)",
+  "domain": "Medical Imaging",
+  "sub_domain": "Capsule-endoscopic multispectral diffuse-reflectance optical-property recovery",
+  "source_file": "C_medical_imaging/511_pillcam_spectra_optical.md",
+  "source_data_quality_note": "Analytical core for the PillCam-SPECTRA pair (paired with L1-512 PWDR wrapper). Recovers spatial-spectral tissue optical properties (mu_a, mu_s')(r, lambda) at GI mucosal surfaces from multispectral diffuse-reflectance capsule frames. Single-physics analytical Principle; serves as physics_core_principle for the v2 physical_with_discrete_readout wrapper L1-512. Distinct from L1-040 DOT (transmission tomography geometry, cm-scale tissue) by capsule reflectance geometry (mm-scale, single-side acquisition, integrated source-detector). Per pwm-team/pwm_product/genesis/CLASSIFICATION_SEGMENTATION_PRINCIPLES.md and PWM_V2_GENESIS_INCLUSION.md (the canonical v2 pilot pair).",
+
+  "gate_class": "analytical",
+  "gate_substitutions": null,
+  "related_principles": [
+    "L1-040 (DOT — transmission diffuse optics in bulk tissue, d_principle ~ 0.40)",
+    "L1-048 (fiber_endoscopy — sibling endoscopic geometry, informational)",
+    "L1-512 (PillCam-SPECTRA bleeding-region PWDR wrapper — discrete-readout child)"
+  ],
+
+  "E": {
+    "description": "PillCam-SPECTRA Optical-Property Recovery: analytical forward model for capsule-endoscopic multispectral diffuse reflectance. Light source at capsule LED illuminates GI mucosa at N wavelengths (typically 5-12 in 400-1000 nm range), CMOS camera captures backscattered light. Diffuse reflectance R(mu_a, mu_s', g, rho) follows the modified Beer-Lambert / spatially-resolved diffusion approximation in turbid tissue, where rho is the source-detector separation (~5 mm in PillCam form factor). Recovery is posed as the spectral-spatial inverse problem that recovers (mu_a, mu_s')(r, lambda) and derived chromophore concentrations (HbO2, Hb, water, lipid, melanin) from N_wavelengths frames. The forward DAG has 6 primitives with one coupling constraint (n_c = 1): the multiplicative coupling between absorption coefficient mu_a and detected intensity through diffuse reflectance fluence — same canonical coupling that qPAT exhibits in its first stage, but without the thermoelastic-acoustic transduction. Difficulty tier delta = 3 (standard) given established diffuse-reflectance theory and well-conditioned multispectral acquisition. Mismatch parameters: capsule_to_mucosa_distance, scattering_anisotropy_g, mucosal_curvature, illumination_uniformity, motion_blur, capsule_orientation_drift. Gaussian thermal noise sets the data-fidelity floor.",
+    "forward_model": "I_back(r, lambda) = I_0(lambda) * R_diffuse(mu_a(r, lambda), mu_s'(r, lambda), g, rho) + n; R_diffuse from spatially-resolved diffusion equation (Farrell 1992) or Monte Carlo radiative transfer (MCML); chromophore decomposition: mu_a(r, lambda) = sum_chrom [c_chrom(r) * epsilon_chrom(lambda)]; jointly invert {I_back(r, lambda)}_lambda -> (c_HbO2, c_Hb, c_water, c_lipid, c_melanin)(r) given source spectrum I_0, capsule geometry rho, scattering anisotropy g",
+    "world_state_x": "Spatial-spectral mucosal optical state: (mu_a(r, lambda), mu_s'(r, lambda)) over the field-of-view of a single PillCam frame (~30-50 mm^2 mucosal patch at 1-3 mm working distance), with chromophore concentrations as the derived clinical quantity. Range: mucosal mu_a 0.1-5 cm^-1; mu_s' 5-30 cm^-1; HbO2 fraction 0.6-0.95.",
+    "observation_y": "Multispectral capsule frame: I_back(x, y, lambda) for N_wavelengths (typically 5-12), single CMOS exposure per band; total frame size 256x256 to 1024x1024 pixels.",
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "N_wavelengths",
+      "lambda_range_nm",
+      "source_detector_distance_mm",
+      "working_distance_mm",
+      "scattering_anisotropy_g",
+      "SNR_dB",
+      "capsule_to_mucosa_distance",
+      "mucosal_curvature",
+      "illumination_uniformity",
+      "motion_blur",
+      "capsule_orientation_drift"
+    ]
+  },
+
+  "G": {
+    "dag": "L.optical_source -> L.diffuse_reflectance -> L.beer_lambert -> L.detector_response -> int.spatial -> int.spectral",
+    "vertices": [
+      "L.optical_source",
+      "L.diffuse_reflectance",
+      "L.beer_lambert",
+      "L.detector_response",
+      "int.spatial",
+      "int.spectral"
+    ],
+    "arcs": [
+      "L.optical_source -> L.diffuse_reflectance",
+      "L.diffuse_reflectance -> L.beer_lambert",
+      "L.beer_lambert -> L.detector_response",
+      "L.detector_response -> int.spatial",
+      "int.spatial -> int.spectral"
+    ],
+    "L_DAG": 4.9,
+    "n_c": 1,
+    "coupling_constraints": [
+      "fluence_to_absorption: detected backscatter intensity is multiplicatively coupled to mu_a through the diffuse-reflectance fluence kernel R_diffuse(mu_a, mu_s', rho) — same multiplicative coupling that qPAT exhibits, but without the subsequent thermoelastic-acoustic transduction"
+    ]
+  },
+
+  "W": {
+    "existence": true,
+    "uniqueness": "conditional",
+    "stability": "conditional",
+    "condition_number_kappa": 80,
+    "condition_number_effective": 15,
+    "regime": "Existence of recovered chromophore concentrations is guaranteed within the declared Omega bounds. Uniqueness holds under multi-wavelength acquisition with N_wavelengths >= 5 (sufficient to resolve the typical chromophore basis); single-wavelength acquisition is non-unique (cannot decompose mu_a into chromophore components). Stability is well-conditioned (kappa_eff ~ 15) — capsule_to_mucosa_distance dominates absolute-concentration bias; mucosal_curvature contributes a geometric-correction factor; scattering_anisotropy_g uncertainty contributes a scaling factor of order ~10%. Joint Hadamard well-posedness for the diffuse-reflectance forward is established by Farrell-Patterson-Wilson 1992 (foundational), Wang-Jacques 1995 (MCML), Yudovsky-Pilon 2010 (multispectral inverse), Bjorgan-Milanic-Randeberg 2014 (hyperspectral classification), and Calin-Parasca-Savastru 2014 (medical hyperspectral)."
+  },
+
+  "C": {
+    "solver_class": "linear-operator + convex optimisation [least-squares chromophore unmixing; Tikhonov-regularized spatial reconstruction] | analytical [closed-form per-pixel diffuse-reflectance lookup] | linear-operator + deep neural prior [SpectraNet, MicroDiffOptNet]",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Data-fidelity bound: ||c_hat - c||_2 <= C1 * sigma_noise / sqrt(N_wavelengths * SNR_per_band). Diffuse-reflectance-induced bias adds + C2 * |capsule_to_mucosa_distance| + C3 * |scattering_anisotropy_g| + C4 * |mucosal_curvature| + C5 * ||c - c_s||_1 (best s-sparse approximation residual under chromophore-basis prior). Closed-form per-pixel inversion achieves q=2 (O(1/k^2)) for chromophore unmixing; spatial reconstruction is well-conditioned at the per-pixel level. Deep-prior variants achieve faster initial convergence with bounded systematic bias.",
+    "complexity": "O(H * W * N_wavelengths * N_chromophores) per frame via per-pixel closed-form inversion + spatial smoothing; learned variants O(H W * F_theta_cost)"
+  },
+
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "diffuse_reflectance_capsule",
+    "integration_axis": "spectral_spatial",
+    "problem_class": "linear_inverse",
+    "noise_model": "gaussian",
+    "solution_space": "2D_chromophore_concentration",
+    "primitives": [
+      "L.optical_source",
+      "L.diffuse_reflectance",
+      "L.beer_lambert",
+      "L.detector_response",
+      "int.spatial",
+      "int.spectral"
+    ]
+  },
+
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "capsule_to_mucosa_distance",
+    "mucosal_curvature",
+    "illumination_uniformity",
+    "motion_blur",
+    "capsule_orientation_drift"
+  ],
+  "error_metric": "PSNR_dB",
+  "error_metric_secondary": "RMSE_per_chromophore",
+
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "pillcam_spectra_optical_recovery",
+      "forward_operator": "diffuse_reflectance_capsule_forward",
+      "input_format": "multispectral_capsule_frame",
+      "omega": {
+        "H": 256,
+        "W": 256,
+        "N_wavelengths": 8,
+        "lambda_range_nm": [400, 950],
+        "source_detector_distance_mm": 5.0,
+        "working_distance_mm": 2.0,
+        "scattering_anisotropy_g": 0.85,
+        "SNR_dB": 26,
+        "capsule_to_mucosa_distance": 0.0,
+        "mucosal_curvature": 0.0,
+        "illumination_uniformity": 0.0,
+        "motion_blur": 0.0,
+        "capsule_orientation_drift": 0.0
+      },
+      "epsilon_fn_center": "28.0"
+    },
+    "allowed_forward_operators": [
+      "diffuse_reflectance_capsule_forward",
+      "monte_carlo_capsule_forward",
+      "diffusion_approximation_forward"
+    ],
+    "allowed_problem_classes": [
+      "pillcam_spectra_optical_recovery",
+      "pillcam_spectra_chromophore_unmixing",
+      "pillcam_spectra_spatial_perfusion"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "N_wavelengths",
+      "lambda_range_nm",
+      "source_detector_distance_mm",
+      "working_distance_mm",
+      "scattering_anisotropy_g",
+      "SNR_dB",
+      "capsule_to_mucosa_distance",
+      "mucosal_curvature",
+      "illumination_uniformity",
+      "motion_blur",
+      "capsule_orientation_drift"
+    ],
+    "omega_bounds": {
+      "H": [128, 1024],
+      "W": [128, 1024],
+      "N_wavelengths": [3, 16],
+      "source_detector_distance_mm": [3.0, 12.0],
+      "working_distance_mm": [0.5, 5.0],
+      "scattering_anisotropy_g": [0.7, 0.95],
+      "SNR_dB": [10.0, 38.0],
+      "capsule_to_mucosa_distance": [0.0, 0.4],
+      "mucosal_curvature": [0.0, 0.3],
+      "illumination_uniformity": [0.0, 0.4],
+      "motion_blur": [0.0, 0.3],
+      "capsule_orientation_drift": [0.0, 0.4]
+    },
+    "epsilon_bounds": {
+      "psnr_db": [10.0, 45.0]
+    }
+  },
+
+  "p1_p10_tests": ["PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS"],
+  "s1_s4_gates": ["PASS", "PASS", "PASS", "PASS"],
+  "ipfs_cid": null,
+
+  "v3_metadata": {
+    "is_standalone_multiphysics": false,
+    "coupling_count_n_c": 1,
+    "joint_well_posedness_references": [
+      "Farrell TJ, Patterson MS, Wilson B (1992) A diffusion theory model of spatially resolved, steady-state diffuse reflectance for the noninvasive determination of tissue optical properties in vivo. Med Phys 19(4):879-888.",
+      "Wang LH, Jacques SL, Zheng L (1995) MCML — Monte Carlo modeling of light transport in multi-layered tissues. Comput Methods Programs Biomed 47(2):131-146.",
+      "Yudovsky D, Pilon L (2010) Rapid and accurate estimation of blood saturation, melanin content, and epidermis thickness from spectral diffuse reflectance. Appl Opt 49(10):1707-1719.",
+      "Bjorgan A, Milanic M, Randeberg LL (2014) Estimation of skin optical parameters for real-time hyperspectral imaging applications. J Biomed Opt 19(6):066003.",
+      "Calin MA, Parasca SV, Savastru R, Manea D (2014) Hyperspectral imaging in the medical field: present and future. Appl Spectrosc Rev 49(6):435-447.",
+      "Akarcay HG et al. (2014) Optical capsule for in vivo gastrointestinal imaging: Monte Carlo simulation. Biomed Opt Express 5(2):412-426."
+    ],
+    "distinctness_audit": {
+      "closest_existing_principle": "L1-040 DOT",
+      "d_principle_estimate": 0.40,
+      "advisory_label": "Distinct",
+      "rationale": "L1-040 DOT (Diffuse Optical Tomography) inverts transmission-geometry diffuse-reflectance through bulk tissue (cm-scale, multi-source-multi-detector, full tomographic acquisition); sensing_mechanism = diffuse_optical_tomography; solution_space = 3D tissue optical map. L1-511 PillCam-SPECTRA inverts capsule-reflectance geometry (mm-scale, single-side source-detector pair, single-frame acquisition); sensing_mechanism = diffuse_reflectance_capsule; solution_space = 2D mucosal chromophore concentration map. Different geometric primitive (L.diffuse_reflectance vs L.diffuse_tomography), different solution dimensionality (2D mucosal patch vs 3D bulk), different scale (mm vs cm). Jaccard distance over (sensing_mechanism, solution_space, primitives) ~ 0.40 — Distinct under v1 advisory thresholds (>= 0.30). Note: this Principle serves as the analytical core that the PWDR wrapper L1-512 references via its physics_core_principle field — establishing the v2 pattern."
+    },
+    "clinical_context": "Capsule endoscopy is established for small-bowel obstructed bleeding evaluation (Crohn's, NSAID enteropathy, occult bleeding). Multispectral / hyperspectral PillCam variants (PillCam-SPECTRA prototype) extend diagnostic value: chromophore mapping of mucosal HbO2, Hb, water — basis for enhanced detection of bleeding sites, polyps, vascular anomalies, dysplasia. Director's GI_Multi_Task active research project aligns directly. Currently pre-clinical to early clinical; commercial systems include Medtronic PillCam SB3 / Crohn's, Olympus Endocapsule 10, Intromedic MiroCam — multispectral / hyperspectral upgrades pending."
+  }
+}
