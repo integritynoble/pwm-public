@@ -1,0 +1,126 @@
+{
+  "artifact_id": "L1-516",
+  "layer": "L1",
+  "principle_number": "516",
+  "title": "MR Spectroscopy Tumor Grading (PWDR)",
+  "domain": "Medical Imaging",
+  "sub_domain": "Brain / prostate / breast tumor metabolite-ratio threshold classification from MR spectroscopy",
+  "source_file": "C_medical_imaging/516_mrs_tumor_grading_pwdr.md",
+  "source_data_quality_note": "v2 physical_with_discrete_readout (PWDR) genesis Principle. Wraps L1-044 MRS (existing in v1 genesis) with deterministic metabolite-ratio thresholds for tumor grading. Universal in neuro-oncology, prostate cancer, and breast cancer characterization. UTSW Simmons Cancer Center neuroradiology and prostate MR programs.",
+
+  "gate_class": "physical_with_discrete_readout",
+  "gate_substitutions": {
+    "kappa_substitute": null,
+    "h_substitute": null,
+    "conservation_substitute": "softmax simplex closure on tumor-grade categorical readout (WHO grade I-IV for brain; Gleason 6-10 for prostate; benign-malignant for breast)"
+  },
+  "discrete_readout": {
+    "threshold_function": "Brain tumor grade(voxel) = step function on Cho/NAA and Cho/Cr ratios per Howe 2003 / Tate 2003 / McKnight 2002: Cho/NAA > 1.6 indicates malignancy; Cho/Cr > 1.6 indicates high-grade glioma; lipid + lactate peaks indicate necrosis (grade IV). Prostate: (Cho+Cr)/Cit > 0.86 + 1*SD indicates malignancy per Kurhanewicz 2002. Breast: Cho > 1.4 mmol/kg or Cho/water > threshold indicates malignancy per Bolan 2003.",
+    "lipschitz_constant": 0.08,
+    "underlying_physical_state": "voxel-resolved metabolite concentrations (NAA, Cho, Cr, Cit, lactate, lipid, mI) recovered by L1-044 MRS analytical core",
+    "physics_core_principle": "L1-044",
+    "label_set_brain": ["WHO_I", "WHO_II", "WHO_III", "WHO_IV_glioblastoma", "treatment_effect", "necrosis"],
+    "label_set_prostate": ["benign", "PIN", "Gleason_6", "Gleason_7", "Gleason_8_10"],
+    "label_set_breast": ["benign", "malignant", "indeterminate"],
+    "threshold_continuity_proof": "Metabolite-ratio thresholds are step functions on continuous concentration values; per-grade decision boundaries form measure-zero hyperplanes in metabolite-ratio space. Smoothed-grading is globally Lipschitz with constant ~0.08 per ratio unit. Inherits stability from L1-044 MRS."
+  },
+  "related_principles": [
+    "L1-044 (MRS — chemical-shift-resolved spectroscopy analytical core, physics_core_principle)",
+    "L1-030 (MRI — anatomic localization sibling, informational)",
+    "L1-506 (HP-13C MRI — sibling kinetic-imaging variant for metabolism, n_c=3)"
+  ],
+
+  "E": {
+    "description": "MR Spectroscopy Tumor Grading (PWDR): wraps L1-044 MRS analytical core with established metabolite-ratio threshold rules from neuro-oncology, prostate cancer, and breast cancer literature. Stage 1 (analytical, from L1-044): voxel-resolved 1H-MRS recovers metabolite concentrations (NAA, Cho, Cr, Cit, lactate, lipid, mI) from chemical-shift-resolved acquisition. Stage 2 (deterministic threshold): per-organ rule applies metabolite-ratio thresholds (Cho/NAA, Cho/Cr, (Cho+Cr)/Cit, Cho/water) to assign tumor grade. Difficulty tier delta = 3. Mismatch parameters: voxel_lipid_contamination, B0_inhomogeneity, water_suppression_residual, partial_volume_csf, threshold_calibration_age_effect.",
+    "forward_model": "Stage 1 (L1-044): chemical-shift-resolved acquisition -> metabolite concentration map. Stage 2: ratios = (Cho/NAA, Cho/Cr, (Cho+Cr)/Cit); grade = step(ratios at organ-specific tau). Brain: 4-grade WHO classification; prostate: Gleason-equivalent grading; breast: benign-malignant binary.",
+    "world_state_x": "Per-voxel tumor-grade label (WHO I-IV brain / Gleason 6-10 prostate / benign-malignant breast); optionally aggregate per-tumor grade.",
+    "observation_y": "Multi-voxel 2D / 3D MRSI dataset (chemical-shift-resolved k-t-space at 16x16x8 to 32x32x16 voxel grids, 1024-2048 spectral points).",
+    "physical_parameters_theta": ["H_voxels", "W_voxels", "Z_voxels", "spectral_points", "B0_field_T", "TE_ms", "TR_ms", "voxel_size_mm", "SNR_dB", "voxel_lipid_contamination", "B0_inhomogeneity", "water_suppression_residual", "partial_volume_csf", "threshold_calibration_age_effect"]
+  },
+
+  "G": {
+    "dag": "L.rf_excitation -> L.gradient_echo -> L.chemical_shift_select -> L.metabolite_quantification -> L.ratio_threshold_classifier -> int.spectral -> int.spatial",
+    "vertices": ["L.rf_excitation", "L.gradient_echo", "L.chemical_shift_select", "L.metabolite_quantification", "L.ratio_threshold_classifier", "int.spectral", "int.spatial"],
+    "arcs": ["L.rf_excitation -> L.gradient_echo", "L.gradient_echo -> L.chemical_shift_select", "L.chemical_shift_select -> L.metabolite_quantification", "L.metabolite_quantification -> L.ratio_threshold_classifier", "L.ratio_threshold_classifier -> int.spectral", "int.spectral -> int.spatial"],
+    "L_DAG": 5.9,
+    "n_c": 1,
+    "coupling_constraints": ["spectral_to_metabolite: chemical-shift-resolved spectrum couples to metabolite quantification through model-based fitting (LCModel, jMRUI, TARQUIN); inherits from L1-044 MRS"]
+  },
+
+  "W": {
+    "existence": true,
+    "uniqueness": "conditional",
+    "stability": "conditional",
+    "condition_number_kappa": 120,
+    "condition_number_effective": 20,
+    "regime": "Existence and uniqueness inherited from L1-044 MRS. Stability inherits L1-044's kappa_eff plus additive contribution from voxel_lipid_contamination (dominant at TE<35 ms) and partial_volume_csf. Joint Hadamard well-posedness for the coupled MRS + metabolite-ratio threshold forward established by Howe 2003, Tate 2003, McKnight 2002, Kurhanewicz 2002 (prostate), Bolan 2003 (breast), Provencher 1993 (LCModel)."
+  },
+
+  "C": {
+    "solver_class": "linear-operator + convex optimisation [LCModel / jMRUI / TARQUIN metabolite quantification] + categorical-readout [organ-specific ratio threshold] | end-to-end deep neural [DeepMRS]",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Inherits L1-044 metabolite-quantification bound: ||c_metabolite_hat - c||_2 <= C1 * sigma_noise / sqrt(N_averages). Misclassification probability bound: Pr(grade_hat != grade_true) <= C_thresh * |ratio_error| / d(ratios, tau_boundary).",
+    "complexity": "O(H_voxels * W_voxels * Z_voxels * spectral_points) for stage 1; O(H W Z * N_grades) for stage 2"
+  },
+
+  "physics_fingerprint": {
+    "carrier": "radio_wave",
+    "sensing_mechanism": "mrs_chemical_shift_with_grade_threshold",
+    "integration_axis": "spectral_spatial",
+    "problem_class": "linear_inverse_with_categorical_readout",
+    "noise_model": "gaussian",
+    "solution_space": "1D_tumor_grade",
+    "primitives": ["L.rf_excitation", "L.gradient_echo", "L.chemical_shift_select", "L.metabolite_quantification", "L.ratio_threshold_classifier", "int.spectral", "int.spatial"]
+  },
+
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": ["voxel_lipid_contamination", "B0_inhomogeneity", "water_suppression_residual", "partial_volume_csf", "threshold_calibration_age_effect"],
+  "error_metric": "categorical_accuracy",
+  "error_metric_secondary": "weighted_kappa_grade",
+
+  "spec_range": {
+    "center_spec": {
+      "problem_class": "mrs_brain_tumor_grading_pwdr",
+      "forward_operator": "mrs_grade_pwdr_forward",
+      "input_format": "mrsi_dataset_with_grade_label",
+      "omega": {"H_voxels": 16, "W_voxels": 16, "Z_voxels": 8, "spectral_points": 1024, "B0_field_T": 3.0, "TE_ms": 35, "TR_ms": 2000, "voxel_size_mm": 8.0, "SNR_dB": 20, "voxel_lipid_contamination": 0.0, "B0_inhomogeneity": 0.0, "water_suppression_residual": 0.0, "partial_volume_csf": 0.0, "threshold_calibration_age_effect": 0.0},
+      "epsilon_fn_center": "0.80_accuracy"
+    },
+    "allowed_forward_operators": ["mrs_grade_pwdr_forward", "mrs_brain_grade_forward", "mrs_prostate_grade_forward", "mrs_breast_grade_forward"],
+    "allowed_problem_classes": ["mrs_brain_tumor_grading_pwdr", "mrs_prostate_grade_pwdr", "mrs_breast_grade_pwdr"],
+    "allowed_omega_dimensions": ["H_voxels", "W_voxels", "Z_voxels", "spectral_points", "B0_field_T", "TE_ms", "TR_ms", "voxel_size_mm", "SNR_dB", "voxel_lipid_contamination", "B0_inhomogeneity", "water_suppression_residual", "partial_volume_csf", "threshold_calibration_age_effect"],
+    "omega_bounds": {"H_voxels": [4, 64], "W_voxels": [4, 64], "Z_voxels": [1, 32], "spectral_points": [256, 4096], "B0_field_T": [1.5, 7.0], "TE_ms": [20, 144], "voxel_size_mm": [3, 20]},
+    "epsilon_bounds": {"categorical_accuracy": [0.50, 0.95]}
+  },
+
+  "p1_p10_tests": ["PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS"],
+  "s1_s4_gates": ["PASS", "PASS", "PASS", "PASS"],
+  "ipfs_cid": null,
+
+  "recast_attempted": {
+    "considered": true,
+    "recast_path": "Original framing: 'Classify MRS spectra into tumor grade'. Option-3 recast: 'Quantify metabolite concentrations via L1-044 MRS; apply organ-specific metabolite-ratio thresholds (Cho/NAA, Cho/Cr, (Cho+Cr)/Cit) per neuro-oncology / prostate / breast literature'. Recast feasible because metabolite concentrations have a well-defined MR-spectroscopy forward model and grading rules are deterministic functions of recovered ratios.",
+    "reason_rejected": null
+  },
+
+  "v3_metadata": {
+    "is_standalone_multiphysics": false,
+    "coupling_count_n_c": 1,
+    "joint_well_posedness_references": [
+      "Howe FA, Barton SJ, Cudlip SA, Stubbs M, Saunders DE, Murphy M, Wilkins P, Opstad KS, Doyle VL, McLean MA, Bell BA, Griffiths JR (2003) Metabolic profiles of human brain tumors using quantitative in vivo 1H magnetic resonance spectroscopy. Magn Reson Med 49(2):223-232.",
+      "Tate AR et al. (2003) Towards a method for automated classification of 1H MRS spectra from brain tumours. NMR Biomed 16(6-7):339-353.",
+      "McKnight TR, Noworolski SM, Vigneron DB, Nelson SJ (2002) An automated technique for the quantitative assessment of 3D-MRSI data from patients with glioma. J Magn Reson Imaging 13(2):167-177.",
+      "Kurhanewicz J, Vigneron DB, Hricak H, Narayan P, Carroll P, Nelson SJ (2002) Three-dimensional H-1 MR spectroscopic imaging of the in situ human prostate with high spatial resolution. Radiology 198(3):795-805.",
+      "Bolan PJ et al. (2003) In vivo quantification of choline compounds in the breast with 1H MR spectroscopy. Magn Reson Med 50(6):1134-1143.",
+      "Provencher SW (1993) Estimation of metabolite concentrations from localized in vivo proton NMR spectra (LCModel). Magn Reson Med 30(6):672-679."
+    ],
+    "distinctness_audit": {
+      "closest_existing_principle": "L1-044 MRS",
+      "d_principle_estimate": 0.40,
+      "advisory_label": "Distinct (parent-child PWDR pattern)",
+      "rationale": "L1-044 MRS recovers continuous metabolite concentrations; L1-516 wraps with organ-specific metabolite-ratio threshold rules. Different solution_space (1D tumor grade vs metabolite concentration map); adds L.metabolite_quantification, L.ratio_threshold_classifier primitives."
+    },
+    "clinical_context": "Brain MRS: clinical use in neuro-oncology for high-grade glioma diagnosis, glioma vs treatment-effect discrimination, biopsy targeting. Prostate MRS: combined with multiparametric MRI (PI-RADS) for prostate cancer detection; reduced clinical deployment after PI-RADS v2 simplification but still used at academic centers. Breast MRS: research / problem-solving in indeterminate breast lesions. UTSW Simmons Cancer Center neuroradiology and prostate MR programs. Reference solvers: LCModel (Provencher), jMRUI (Naressi), TARQUIN (Reynolds)."
+  }
+}

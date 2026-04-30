@@ -58,6 +58,9 @@ These are paired analytical-core + PWDR-wrapper Principles per the v2 design in 
 | L1-513 | L1-049 (existing fundus) | Diabetic Retinopathy ETDRS Grading | `C_medical_imaging/` | ETDRS severity {none, mild_NPDR, moderate_NPDR, severe_NPDR, PDR} | **Authored** |
 | L1-514 | L1-029 (existing CT) | Chest CT Pneumonia/COVID Severity (TSS / CO-RADS) | `C_medical_imaging/` | TSS [0-25] + CO-RADS {1-5} | **Authored** |
 | L1-515 | L1-036 (existing mammography) | Mammographic Breast Density BI-RADS | `C_medical_imaging/` | BI-RADS density category {A, B, C, D} | **Authored** |
+| L1-516 | L1-044 (existing MRS) | MRS Tumor Grading | `C_medical_imaging/` | brain WHO I-IV / prostate Gleason / breast benign-malignant | **Authored** |
+| L1-517 | L1-049 (existing fundus, sibling reflectance core) | Dermoscopy Skin Lesion Malignancy | `C_medical_imaging/` | {benign nevus, atypical, suspected_melanoma, BCC, SCC, seborrheic_keratosis, actinic_keratosis} | **Authored** |
+| L1-519 | L1-518 (newly authored XRD core) | XRD Crystal Space-Group Classification | `Z_materials_science/` | 230 space groups (or coarser: 7 crystal systems / 14 Bravais / 32 point groups) | **Authored** |
 | _TBD_ | Fluid-Structure Interaction (FSI) | `R_fluid_dynamics/` or `T_structural_mechanics/` | Navier-Stokes ⊗ linear elasticity | 2 | ~6-8 | Candidate — see `PWM_V3_STANDALONE_VS_COMPOSITE.md` |
 | _TBD_ | Multi-scale materials simulation | `Z_materials_science/` | DFT ⊗ MD ⊗ continuum mechanics | 4 | ~9-11 | Candidate |
 | _TBD_ | Climate-system attribution | `AF_environmental_sci/` | atmosphere ⊗ ocean ⊗ ice ⊗ biosphere | 6 | ~10-12 | Candidate |
@@ -124,5 +127,8 @@ Without this registry, the cross-cutting nature of standalone multi-physics is i
 | 2026-04-30 | L1-513 Diabetic Retinopathy ETDRS Grading PWDR authored (UTSW Ophthalmology; FDA-cleared autonomous AI; n_c=1, L_DAG=5.0). Wraps existing L1-049 fundus core. |
 | 2026-04-30 | L1-514 Chest CT Pneumonia/COVID Severity PWDR authored (UTSW Radiology; universal pneumonia/COVID grading; n_c=1, L_DAG=5.7). Wraps existing L1-029 CT core. |
 | 2026-04-30 | L1-515 Mammographic Breast Density BI-RADS PWDR authored (UTSW Simmons Cancer Center; MQSA-mandated; n_c=1, L_DAG=5.8). Wraps existing L1-036 mammography core. **First v2 PWDR batch in genesis: 4 universally-deployed UTSW-relevant PWDR Principles + 1 newly-authored analytical core.** |
+| 2026-04-30 | Round 2: L1-516 MRS Tumor Grading PWDR authored (n_c=1, L_DAG=5.9) wrapping existing L1-044 MRS — universal in neuro-oncology, prostate, breast cancer characterization. UTSW Simmons. |
+| 2026-04-30 | Round 2: L1-517 Dermoscopy Skin Lesion Malignancy PWDR authored (n_c=1, L_DAG=4.9) wrapping L1-049 fundus as sibling reflectance-imaging core — ABCDE / 7-point / Menzies clinical rules. UTSW Dermatology. |
+| 2026-04-30 | Round 2: L1-518 XRD analytical core authored (NEW, n_c=1, L_DAG=6.8) plus L1-519 XRD Space-Group Classification PWDR authored (n_c=1, L_DAG=6.8) — International Tables Vol A 230 space groups. Universal in materials science, structural chemistry, pharma polymorph identification. **Round 2 complete: 9 v2 PWDR Principles + 2 newly-authored analytical cores in genesis after this round.** |
 | _TBD_ | Path A genesis batch complete (Director's pick); registry reflects all Authored entries. |
 | _TBD_ | Mainnet deploy at Step 7; this registry becomes the on-chain catalog of v3 standalone genesis Principles. |
