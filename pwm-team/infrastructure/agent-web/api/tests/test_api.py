@@ -80,6 +80,13 @@ def seeded_env(tmp_path, monkeypatch):
          "A_k": 3 * 10**18, "A_kjb": 10**18, "remainingAfter": 100},
         ctx,
     )
+    # Simulate the indexer's genesis-JSON enrichment step: stamp the
+    # seeded benchmark row with its off-chain artifact_id so that
+    # `/api/benchmarks/L3-001` (artifact-id form) can resolve the chain row.
+    conn.execute(
+        "UPDATE artifacts SET artifact_id = ? WHERE hash = ?",
+        ("L3-001", "0x" + "bb" * 32),
+    )
     conn.commit()
     conn.close()
 
@@ -193,6 +200,40 @@ def test_benchmarks_list(seeded_env):
     assert body["chain"][0]["principle_id"] == "1"
     assert body["chain"][0]["rho"] == "1"
     assert body["chain"][0]["registered"] is True
+
+
+def test_benchmark_detail_by_hash(seeded_env):
+    """Hash-form URL resolves the chain row and surfaces the leaderboard."""
+    client, refs = seeded_env
+    r = client.get(f"/api/benchmarks/{refs['bench_hash']}")
+    assert r.status_code == 200
+    body = r.json()
+    assert body["chain"] is not None
+    assert body["chain"]["hash"] == refs["bench_hash"]
+    assert len(body["leaderboard"]) == 1
+    assert body["leaderboard"][0]["cert_hash"] == refs["cert_hash"]
+
+
+def test_benchmark_detail_by_artifact_id(seeded_env):
+    """Regression for artifact-id-form URL: `/api/benchmarks/L3-001` must
+    resolve to the same on-chain row as the hash-form URL and return the
+    leaderboard. Prior to the fix this returned `chain: null` and an empty
+    leaderboard because the resolver only handled refs starting with `0x`.
+    """
+    client, refs = seeded_env
+    r = client.get("/api/benchmarks/L3-001")
+    assert r.status_code == 200
+    body = r.json()
+    # Genesis side wired up:
+    assert body["genesis"] is not None
+    assert body["genesis"]["artifact_id"] == "L3-001"
+    # Chain side now resolves via the artifact_id column:
+    assert body["chain"] is not None, "artifact-id URL must surface chain row"
+    assert body["chain"]["hash"] == refs["bench_hash"]
+    assert body["chain"]["artifact_id"] == "L3-001"
+    # Leaderboard is non-empty (the seeded cert):
+    assert len(body["leaderboard"]) == 1
+    assert body["leaderboard"][0]["cert_hash"] == refs["cert_hash"]
 
 
 def test_health_counts_include_minting(seeded_env):

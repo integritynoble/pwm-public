@@ -240,7 +240,20 @@ def benchmark_detail(benchmark_ref: str):
     genesis_entry = genesis.by_artifact_id(benchmark_ref) or None
     conn = store.get_conn()
     try:
-        chain_row = store.get_artifact(conn, benchmark_ref) if benchmark_ref.startswith("0x") else None
+        # Resolve the on-chain row in this order:
+        #   1. The ref is already a 0x… hash → look up by hash.
+        #   2. The ref is an artifact_id (e.g. "L3-003") → look up by the
+        #      artifact_id column (populated by the indexer's genesis-JSON
+        #      enrichment step).
+        #   3. The matching genesis JSON carries an explicit `chain_hash`
+        #      → look up by that hash. Forward-compatible with future
+        #      genesis-JSON enrichment that records the on-chain hash.
+        if benchmark_ref.startswith("0x"):
+            chain_row = store.get_artifact(conn, benchmark_ref)
+        else:
+            chain_row = store.get_artifact_by_artifact_id(conn, benchmark_ref)
+            if chain_row is None and genesis_entry and genesis_entry.get("chain_hash"):
+                chain_row = store.get_artifact(conn, genesis_entry["chain_hash"])
         chain_hash = (chain_row or {}).get("hash")
         leaderboard = []
         pool = None

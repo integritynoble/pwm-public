@@ -53,6 +53,17 @@ def get_artifact(conn: sqlite3.Connection, artifact_hash: str) -> dict | None:
     return dict(r) if r else None
 
 
+def get_artifact_by_artifact_id(conn: sqlite3.Connection, artifact_id: str) -> dict | None:
+    """Resolve a `Lk-NNN` artifact_id to its on-chain row.
+
+    Counterpart to `get_artifact` for off-chain identifiers like "L3-003".
+    Returns None if no row carries that artifact_id (the indexer populates the
+    column from genesis-JSON enrichment; a fresh DB will have it null).
+    """
+    r = conn.execute("SELECT * FROM artifacts WHERE artifact_id = ?", (artifact_id,)).fetchone()
+    return dict(r) if r else None
+
+
 def certificates_for_benchmark(conn: sqlite3.Connection, benchmark_hash: str) -> list[dict]:
     rows = conn.execute(
         """
