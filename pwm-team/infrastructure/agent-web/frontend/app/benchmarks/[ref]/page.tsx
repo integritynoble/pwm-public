@@ -138,7 +138,16 @@ export default async function BenchmarkDetail({ params }: { params: Promise<{ re
           <div className="pwm-card overflow-x-auto">
             <table className="pwm-table">
               <thead>
-                <tr><th>Rank</th><th>Cert</th><th>Submitter</th><th>Q</th><th>Status</th><th>Draw</th></tr>
+                <tr>
+                  <th>Rank</th>
+                  <th>Cert</th>
+                  <th>Solver</th>
+                  <th>PSNR</th>
+                  <th>Submitter</th>
+                  <th>Q</th>
+                  <th>Status</th>
+                  <th>Draw</th>
+                </tr>
               </thead>
               <tbody>
                 {data.leaderboard.map((c: any, i: number) => (
@@ -146,6 +155,14 @@ export default async function BenchmarkDetail({ params }: { params: Promise<{ re
                     <td>{c.draw_rank ?? `#${i + 1}?`}</td>
                     <td className="font-mono">
                       <Link className="pwm-link" href={`/cert/${c.cert_hash}`}>{shortAddr(c.cert_hash)}</Link>
+                    </td>
+                    <td>
+                      {c.solver_label ?? <span className="text-pwm-muted italic">—</span>}
+                    </td>
+                    <td className="font-mono">
+                      {c.psnr_db != null
+                        ? `${Number(c.psnr_db).toFixed(1)} dB`
+                        : <span className="text-pwm-muted italic">—</span>}
                     </td>
                     <td className="font-mono">{shortAddr(c.submitter)}</td>
                     <td>{c.q_int}</td>

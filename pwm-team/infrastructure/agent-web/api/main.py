@@ -1,4 +1,6 @@
-"""PWM REST API — read-only chain+genesis view.
+"""PWM REST API — read-only chain+genesis view (plus a single write-side
+endpoint at POST /api/cert-meta/{cert_hash} for off-chain enrichment of
+certificate metadata: solver name + PSNR-as-dB).
 
 Run directly:  uvicorn api.main:app --host 0.0.0.0 --port 8000
 """
@@ -6,11 +8,13 @@ from __future__ import annotations
 
 import json
 import os
+import time
 from pathlib import Path
 from typing import Any
 
 from fastapi import FastAPI, HTTPException, Response
 from fastapi.middleware.cors import CORSMiddleware
+from pydantic import BaseModel, Field
 
 from . import bounties, demos, genesis, matching, store
 
@@ -317,6 +321,90 @@ def leaderboard(benchmark_hash: str):
     try:
         rows = store.certificates_for_benchmark(conn, benchmark_hash)[:10]
         return _cached({"benchmark_hash": benchmark_hash.lower(), "entries": rows})
+    finally:
+        conn.close()
+
+
+# ---------- write path: certificate-meta enrichment ----------
+
+class CertMetaPayload(BaseModel):
+    """Off-chain enrichment of an on-chain L4 certificate.
+
+    The on-chain CertificateSubmitted event carries only
+    (certHash, benchmarkHash, submitter, Q_int). This payload adds the
+    human-meaningful labels — solver name, PSNR-as-dB — that the leaderboard
+    UI displays alongside the cert hash.
+    """
+    solver_label: str = Field(..., min_length=1, max_length=64,
+                              description="e.g. 'MST-L', 'EfficientSCI', 'GAP-TV (ref)'")
+    psnr_db: float | None = Field(None, ge=0.0, le=200.0,
+                                  description="PSNR in dB; e.g. 34.13")
+    runtime_sec: float | None = Field(None, ge=0.0,
+                                      description="solver runtime in seconds")
+    framework: str | None = Field(None, max_length=128,
+                                  description="e.g. 'PyTorch 2.1 + CUDA 12.1'")
+    meta_url: str | None = Field(None, max_length=512,
+                                 description="optional pointer to full meta.json (IPFS / GCS / etc.)")
+
+
+_CERT_HASH_RE_LEN = 66  # 0x + 64 hex chars
+
+
+@app.post("/api/cert-meta/{cert_hash}")
+def upsert_cert_meta(cert_hash: str, payload: CertMetaPayload):
+    """Upsert off-chain enrichment for a previously-submitted certificate.
+
+    Auth model: the cert hash itself is proof of submission. Anyone with
+    it can post; lying about solver_label or psnr_db doesn't change the
+    on-chain Q_int / rank / reward (those are determined by
+    PWMCertificate.submit() and PWMReward.distribute()).
+
+    Rejects cert hashes not yet in the indexer DB — must already be on-chain
+    AND indexed before enrichment can land.
+
+    Rate-limit at the reverse-proxy layer (~10 req/min/IP is plenty).
+    """
+    cert_hash = cert_hash.lower().strip()
+    if not cert_hash.startswith("0x") or len(cert_hash) != _CERT_HASH_RE_LEN:
+        raise HTTPException(
+            status_code=400,
+            detail="cert_hash must be 0x-prefixed 64-hex (32 bytes)",
+        )
+    try:
+        bytes.fromhex(cert_hash[2:])
+    except ValueError:
+        raise HTTPException(status_code=400, detail="cert_hash is not valid hex")
+
+    conn = store.get_writable_conn()
+    try:
+        submitter = store.certificate_submitter(conn, cert_hash)
+        if submitter is None:
+            raise HTTPException(
+                status_code=404,
+                detail=(
+                    f"cert {cert_hash} not in indexer DB — either not yet on-chain "
+                    "or the indexer hasn't caught up. Wait 1-2 min and retry."
+                ),
+            )
+        store.upsert_cert_meta_via_api(
+            conn,
+            cert_hash=cert_hash,
+            solver_label=payload.solver_label,
+            psnr_db=payload.psnr_db,
+            runtime_sec=payload.runtime_sec,
+            framework=payload.framework,
+            meta_url=payload.meta_url,
+            posted_at=int(time.time()),
+            posted_by=submitter,
+        )
+        conn.commit()
+        return {
+            "ok": True,
+            "cert_hash": cert_hash,
+            "submitter": submitter,
+            "solver_label": payload.solver_label,
+            "psnr_db": payload.psnr_db,
+        }
     finally:
         conn.close()
 

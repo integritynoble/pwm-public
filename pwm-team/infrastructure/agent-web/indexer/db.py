@@ -106,6 +106,34 @@ def set_certificate_status(
     )
 
 
+def upsert_cert_meta(conn: sqlite3.Connection, **row) -> None:
+    """Off-chain enrichment posted by miners — solver label + PSNR dB.
+
+    Last-write-wins on cert_hash; the cert hash itself is the proof of
+    submission so anyone with it can post the meta. Lying doesn't change
+    the on-chain Q_int / rank / reward.
+    """
+    conn.execute(
+        """
+        INSERT INTO cert_meta(cert_hash, solver_label, psnr_db,
+                              runtime_sec, framework, meta_url,
+                              posted_at, posted_by)
+        VALUES(:cert_hash, :solver_label, :psnr_db,
+               :runtime_sec, :framework, :meta_url,
+               :posted_at, :posted_by)
+        ON CONFLICT(cert_hash) DO UPDATE SET
+            solver_label = excluded.solver_label,
+            psnr_db      = excluded.psnr_db,
+            runtime_sec  = excluded.runtime_sec,
+            framework    = excluded.framework,
+            meta_url     = excluded.meta_url,
+            posted_at    = excluded.posted_at,
+            posted_by    = excluded.posted_by
+        """,
+        row,
+    )
+
+
 def insert_draw(conn: sqlite3.Connection, **row) -> None:
     conn.execute(
         """

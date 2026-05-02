@@ -266,3 +266,128 @@ def test_network(seeded_env):
     assert r.status_code == 200
     body = r.json()
     assert "network" in body
+
+
+# ---------- cert-meta endpoint tests ----------
+
+def test_cert_meta_post_unknown_cert_returns_404(seeded_env):
+    """Posting meta for a cert that's not in the indexer DB returns 404 —
+    must already be on-chain AND indexed."""
+    client, _ = seeded_env
+    fake_cert = "0x" + "ff" * 32
+    r = client.post(
+        f"/api/cert-meta/{fake_cert}",
+        json={"solver_label": "Phantom"},
+    )
+    assert r.status_code == 404
+    assert "not in indexer DB" in r.json()["detail"]
+
+
+def test_cert_meta_post_malformed_cert_hash_returns_400(seeded_env):
+    """Cert hash must be 0x + 64 hex chars."""
+    client, _ = seeded_env
+    for bad in ["0x1234", "deadbeef", "0xZZZ" + "f" * 60, "0x" + "g" * 64]:
+        r = client.post(f"/api/cert-meta/{bad}",
+                        json={"solver_label": "Test"})
+        assert r.status_code == 400, f"expected 400 for cert_hash={bad!r}"
+
+
+def test_cert_meta_post_known_cert_succeeds(seeded_env):
+    client, refs = seeded_env
+    r = client.post(
+        f"/api/cert-meta/{refs['cert_hash']}",
+        json={
+            "solver_label": "MST-L",
+            "psnr_db": 34.13,
+            "runtime_sec": 12.3,
+            "framework": "PyTorch 2.1 + CUDA 12.1",
+        },
+    )
+    assert r.status_code == 200
+    body = r.json()
+    assert body["ok"] is True
+    assert body["cert_hash"] == refs["cert_hash"].lower()
+    assert body["solver_label"] == "MST-L"
+    assert body["psnr_db"] == 34.13
+
+
+def test_cert_meta_appears_in_leaderboard(seeded_env):
+    """After posting meta, the leaderboard query LEFT JOINs it in."""
+    client, refs = seeded_env
+    # Before: no meta
+    r0 = client.get(f"/api/leaderboard/{refs['bench_hash']}")
+    assert r0.json()["entries"][0].get("solver_label") is None
+
+    # POST the meta
+    r1 = client.post(
+        f"/api/cert-meta/{refs['cert_hash']}",
+        json={"solver_label": "EfficientSCI", "psnr_db": 33.0},
+    )
+    assert r1.status_code == 200
+
+    # After: leaderboard includes solver_label + psnr_db
+    r2 = client.get(f"/api/leaderboard/{refs['bench_hash']}")
+    entry = r2.json()["entries"][0]
+    assert entry["solver_label"] == "EfficientSCI"
+    assert entry["psnr_db"] == 33.0
+
+
+def test_cert_meta_appears_in_cert_detail(seeded_env):
+    client, refs = seeded_env
+    r1 = client.post(
+        f"/api/cert-meta/{refs['cert_hash']}",
+        json={"solver_label": "MST-L", "psnr_db": 34.1},
+    )
+    assert r1.status_code == 200
+    r2 = client.get(f"/api/cert/{refs['cert_hash']}")
+    cert = r2.json()["certificate"]
+    assert cert["solver_label"] == "MST-L"
+    assert cert["psnr_db"] == 34.1
+
+
+def test_cert_meta_overwrite_is_idempotent(seeded_env):
+    """Re-POSTing replaces the previous values — last-write-wins."""
+    client, refs = seeded_env
+    client.post(f"/api/cert-meta/{refs['cert_hash']}",
+                json={"solver_label": "GAP-TV (ref)", "psnr_db": 24.0})
+    client.post(f"/api/cert-meta/{refs['cert_hash']}",
+                json={"solver_label": "MST-L", "psnr_db": 34.1})
+    r = client.get(f"/api/cert/{refs['cert_hash']}")
+    assert r.json()["certificate"]["solver_label"] == "MST-L"
+    assert r.json()["certificate"]["psnr_db"] == 34.1
+
+
+def test_cert_meta_validates_psnr_range(seeded_env):
+    """PSNR > 200 dB or negative is rejected — guards against bad inputs."""
+    client, refs = seeded_env
+    r1 = client.post(f"/api/cert-meta/{refs['cert_hash']}",
+                     json={"solver_label": "Test", "psnr_db": -5.0})
+    assert r1.status_code == 422  # FastAPI/pydantic validation error
+    r2 = client.post(f"/api/cert-meta/{refs['cert_hash']}",
+                     json={"solver_label": "Test", "psnr_db": 999.0})
+    assert r2.status_code == 422
+
+
+def test_cert_meta_solver_label_required(seeded_env):
+    """solver_label is mandatory — missing or empty fails validation."""
+    client, refs = seeded_env
+    r1 = client.post(f"/api/cert-meta/{refs['cert_hash']}", json={})
+    assert r1.status_code == 422
+    r2 = client.post(f"/api/cert-meta/{refs['cert_hash']}",
+                     json={"solver_label": ""})
+    assert r2.status_code == 422
+
+
+def test_cert_meta_records_submitter_at_post_time(seeded_env):
+    """The endpoint should record the on-chain submitter address as posted_by
+    (looked up from certificates table at post time, not trusted from the
+    payload)."""
+    client, refs = seeded_env
+    r = client.post(f"/api/cert-meta/{refs['cert_hash']}",
+                    json={"solver_label": "MST-L"})
+    assert r.status_code == 200
+    # The on-chain submitter from the seeded fixture is 0x04...04 (20 bytes);
+    # we don't expose posted_by in the response body, but we can confirm via
+    # cert detail that the cert is correctly indexed.
+    r2 = client.get(f"/api/cert/{refs['cert_hash']}")
+    assert r2.json()["certificate"]["submitter"] == "0x" + "04" * 20

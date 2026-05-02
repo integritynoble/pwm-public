@@ -144,3 +144,21 @@ CREATE TABLE IF NOT EXISTS stakes (
 CREATE INDEX IF NOT EXISTS idx_stakes_artifact ON stakes(artifact_hash);
 CREATE INDEX IF NOT EXISTS idx_stakes_staker ON stakes(staker);
 CREATE INDEX IF NOT EXISTS idx_stakes_kind ON stakes(event_kind);
+
+-- Off-chain enrichment of certificates: solver name + PSNR-as-dB,
+-- POSTed by miners after submission. NOT on-chain — the chain stores only
+-- (cert_hash, benchmark_hash, submitter, q_int) via CertificateSubmitted.
+-- Pure additive: a missing row is non-fatal for the leaderboard (LEFT JOIN
+-- in store.certificates_for_benchmark).
+CREATE TABLE IF NOT EXISTS cert_meta (
+    cert_hash      TEXT PRIMARY KEY
+                       REFERENCES certificates(cert_hash) ON DELETE CASCADE,
+    solver_label   TEXT,         -- e.g. "MST-L", "EfficientSCI", "GAP-TV (ref)"
+    psnr_db        REAL,         -- e.g. 34.13
+    runtime_sec    REAL,         -- e.g. 12.3
+    framework      TEXT,         -- e.g. "PyTorch 2.1 + CUDA 12.1"
+    meta_url       TEXT,         -- optional: IPFS CID / GCS path / etc.
+    posted_at      INTEGER NOT NULL,
+    posted_by      TEXT          -- recorded copy of certificates.submitter at post time
+);
+CREATE INDEX IF NOT EXISTS idx_cert_meta_solver ON cert_meta(solver_label);

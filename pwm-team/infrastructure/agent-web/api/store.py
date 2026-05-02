@@ -56,9 +56,12 @@ def get_artifact(conn: sqlite3.Connection, artifact_hash: str) -> dict | None:
 def certificates_for_benchmark(conn: sqlite3.Connection, benchmark_hash: str) -> list[dict]:
     rows = conn.execute(
         """
-        SELECT c.*, d.rank AS draw_rank, d.draw_amount
+        SELECT c.*, d.rank AS draw_rank, d.draw_amount,
+               m.solver_label, m.psnr_db, m.runtime_sec, m.framework,
+               m.meta_url, m.posted_at AS meta_posted_at
           FROM certificates c
-          LEFT JOIN draws d ON d.cert_hash = c.cert_hash
+          LEFT JOIN draws     d ON d.cert_hash = c.cert_hash
+          LEFT JOIN cert_meta m ON m.cert_hash = c.cert_hash
          WHERE c.benchmark_hash = ?
          ORDER BY (CASE WHEN d.rank IS NULL THEN 9999 ELSE d.rank END) ASC,
                   c.q_int DESC
@@ -78,15 +81,96 @@ def certificate(conn: sqlite3.Connection, cert_hash: str) -> dict | None:
                d.settled_at,
                r.ac_addr, r.ac_amount,
                r.cp_addr, r.cp_amount,
-               r.treasury_amount
+               r.treasury_amount,
+               m.solver_label, m.psnr_db, m.runtime_sec, m.framework,
+               m.meta_url, m.posted_at AS meta_posted_at
           FROM certificates c
           LEFT JOIN draws     d ON d.cert_hash = c.cert_hash
           LEFT JOIN royalties r ON r.cert_hash = c.cert_hash
+          LEFT JOIN cert_meta m ON m.cert_hash = c.cert_hash
          WHERE c.cert_hash = ?
         """,
         (cert_hash.lower(),),
     ).fetchone()
     return dict(r) if r else None
+
+
+# ---------- write path: cert meta enrichment ----------
+
+def upsert_cert_meta_via_api(
+    conn: sqlite3.Connection,
+    *,
+    cert_hash: str,
+    solver_label: str,
+    psnr_db: float | None,
+    runtime_sec: float | None,
+    framework: str | None,
+    meta_url: str | None,
+    posted_at: int,
+    posted_by: str,
+) -> None:
+    """Inserts/updates a row in cert_meta. Caller has already validated that
+    cert_hash exists in certificates (i.e. is on-chain via the indexer).
+
+    NOTE: this opens a writable connection on the same DB the indexer uses.
+    Both writers (indexer + API) coexist via SQLite's WAL journal mode set
+    in indexer/db.py."""
+    conn.execute(
+        """
+        INSERT INTO cert_meta(cert_hash, solver_label, psnr_db,
+                              runtime_sec, framework, meta_url,
+                              posted_at, posted_by)
+        VALUES(:cert_hash, :solver_label, :psnr_db,
+               :runtime_sec, :framework, :meta_url,
+               :posted_at, :posted_by)
+        ON CONFLICT(cert_hash) DO UPDATE SET
+            solver_label = excluded.solver_label,
+            psnr_db      = excluded.psnr_db,
+            runtime_sec  = excluded.runtime_sec,
+            framework    = excluded.framework,
+            meta_url     = excluded.meta_url,
+            posted_at    = excluded.posted_at,
+            posted_by    = excluded.posted_by
+        """,
+        {
+            "cert_hash": cert_hash,
+            "solver_label": solver_label,
+            "psnr_db": psnr_db,
+            "runtime_sec": runtime_sec,
+            "framework": framework,
+            "meta_url": meta_url,
+            "posted_at": posted_at,
+            "posted_by": posted_by,
+        },
+    )
+
+
+def certificate_submitter(conn: sqlite3.Connection, cert_hash: str) -> str | None:
+    """Lookup helper for the cert-meta endpoint: returns the on-chain
+    submitter address, or None if the cert isn't in the indexer DB."""
+    r = conn.execute(
+        "SELECT submitter FROM certificates WHERE cert_hash = ?",
+        (cert_hash.lower(),),
+    ).fetchone()
+    return r["submitter"] if r else None
+
+
+def get_writable_conn() -> sqlite3.Connection:
+    """Return a writable connection (read/write) — the regular get_conn() is
+    read-only after the indexer has populated the DB. Used only by the
+    cert-meta POST endpoint."""
+    path = _db_path()
+    path.parent.mkdir(parents=True, exist_ok=True)
+    conn = sqlite3.connect(path)
+    conn.row_factory = sqlite3.Row
+    conn.execute("PRAGMA journal_mode = WAL")
+    conn.execute("PRAGMA foreign_keys = ON")
+    # Ensure schema exists (idempotent IF NOT EXISTS).
+    schema = Path(__file__).resolve().parents[1] / "indexer" / "schema.sql"
+    if schema.exists():
+        conn.executescript(schema.read_text())
+        conn.commit()
+    return conn
 
 
 def recent_draws(conn: sqlite3.Connection, limit: int = 10) -> list[dict]:
