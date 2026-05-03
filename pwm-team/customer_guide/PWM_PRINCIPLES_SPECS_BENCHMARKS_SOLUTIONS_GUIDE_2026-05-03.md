@@ -42,8 +42,8 @@ consumption frictionless and producer entry well-defined.
 ### For consumers (zero-cost, no wallet needed)
 
 ```bash
-git clone git@github.com:integritynoble/pwm.git
-cd pwm
+git clone https://github.com/integritynoble/pwm-public.git
+cd pwm-public
 python3 -m venv .venv && source .venv/bin/activate
 pip install -e pwm-team/infrastructure/agent-cli   # pwm-node CLI
 ```
@@ -441,7 +441,7 @@ get 15%/10%/5% respectively. The principle's treasury T_k gets 15%.
 
 1. Pick an unauthored anchor from `PWM_V3_MEDICAL_IMAGING_CANDIDATES.md`
 2. Author L1/L2/L3 manifests following the schema
-3. Submit PR to `integritynoble/pwm`
+3. Submit PR to `integritynoble/pwm-public`
 4. Pass the verifier-agent triple-review (S1-S4 gates)
 5. Manifests get registered on-chain at next genesis-extension event
 6. Receive Bounty #7 Tier B reward (~2,000 PWM per anchor) on first

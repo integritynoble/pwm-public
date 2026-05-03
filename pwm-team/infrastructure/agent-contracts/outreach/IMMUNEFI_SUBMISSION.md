@@ -20,7 +20,7 @@ via the Immunefi portal.
 | Category | Scientific contribution / Public goods / Protocol infrastructure |
 | Website | https://pwm-explorer.fly.dev/ |
 | Alt site | https://pwm-explorer-dsag.onrender.com |
-| Repo | https://github.com/integritynoble/pwm (private; read access on request) |
+| Repo | https://github.com/integritynoble/pwm-public |
 | Launch status | **Testnet live, mainnet in Q3 2026** |
 | Active from | Mainnet deploy day (TBD) |
 | Max payout (USD) | Starts at $10,000; scales with TVL (see Scale table) |
@@ -166,7 +166,7 @@ to look at PWM in its first month.
 | Security issues | [director email — TBD fill in] |
 | Operational issues | [director email — TBD fill in] |
 | General inquiries | [director email — TBD fill in] |
-| GitHub | https://github.com/integritynoble/pwm |
+| GitHub | https://github.com/integritynoble/pwm-public |
 
 ## Additional assets for researchers
 

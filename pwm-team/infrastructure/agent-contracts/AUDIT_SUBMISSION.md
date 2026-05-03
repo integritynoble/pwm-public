@@ -22,7 +22,7 @@ Physics World Model (PWM) is a decentralized protocol for incentivized physics r
 
 ### Repository
 
-- **GitHub:** https://github.com/integritynoble/pwm
+- **GitHub:** https://github.com/integritynoble/pwm-public
 - **Contract path:** `pwm-team/infrastructure/agent-contracts/contracts/`
 - **Test path:** `pwm-team/infrastructure/agent-contracts/test/`
 
@@ -456,12 +456,13 @@ SCOPE
 
 REPOSITORY
 
-- GitHub: https://github.com/integritynoble/pwm  (currently private; we will
-  grant read access to Code4rena staff upon engagement, or provide a
-  public snapshot at the `audit-v2` tag)
+- GitHub: https://github.com/integritynoble/pwm-public (public mirror)
+  Internal source repo (private, frozen-scope commit access on request):
+  https://github.com/integritynoble/pwm
 - Path: pwm-team/infrastructure/agent-contracts/contracts/
 - Scope commit: `348ec2d6dc4dda1f6618f83b60f6d6d6f6a1eed9` (tag `audit-v2`)
-  — frozen snapshot for the duration of the contest
+  — frozen snapshot in the private repo; we will re-tag the same content
+  in the public repo for contest convenience.
 - Submission package (this document): pwm-team/infrastructure/agent-contracts/AUDIT_SUBMISSION.md
 
 BUDGET
@@ -489,7 +490,7 @@ We look forward to discussing scope, timeline, and pricing.
 Best regards,
 Chengshuai Yang
 Physics World Model (PWM)
-https://github.com/integritynoble/pwm
+https://github.com/integritynoble/pwm-public
 ```
 
 ### 10b. Sherlock Submission Email
@@ -532,12 +533,15 @@ CONTRACTS
 
 REPOSITORY
 
-- GitHub: https://github.com/integritynoble/pwm  (currently private; we will
-  grant read access to Sherlock staff upon engagement, or provide a
-  public snapshot at the `audit-v2` tag)
+- GitHub: https://github.com/integritynoble/pwm-public (public mirror of the
+  contracts + tests; cleanest entry point for review)
+  Internal source: https://github.com/integritynoble/pwm (private; we will
+  grant read access to Sherlock staff upon engagement so the exact
+  frozen-scope SHA can be verified)
 - Path: pwm-team/infrastructure/agent-contracts/contracts/
 - Scope commit: `348ec2d6dc4dda1f6618f83b60f6d6d6f6a1eed9` (tag `audit-v2`)
-  — frozen snapshot for the duration of the contest
+  — frozen snapshot in the private source repo; will be re-tagged at the
+  corresponding content in pwm-public for contest convenience
 - Submission package (this document): pwm-team/infrastructure/agent-contracts/AUDIT_SUBMISSION.md
 
 BUDGET
@@ -556,7 +560,7 @@ schedule and pricing for this scope.
 Best regards,
 Chengshuai Yang
 Physics World Model (PWM)
-https://github.com/integritynoble/pwm
+https://github.com/integritynoble/pwm-public
 ```
 
 ---

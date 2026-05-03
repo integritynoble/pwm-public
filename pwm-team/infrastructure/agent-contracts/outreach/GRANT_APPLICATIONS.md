@@ -21,7 +21,7 @@ A decentralized protocol for incentivized physics research that converts verifia
 
 ### Website / repo
 - Web explorer (reference impl): https://pwm-explorer-dsag.onrender.com and https://pwm-explorer.fly.dev/
-- Code: https://github.com/integritynoble/pwm (currently private; read access granted on request)
+- Code: https://github.com/integritynoble/pwm-public
 - Protocol paper: `papers/Proof-of-Solution/pwm_overview1.md` in the repo
 
 ### What are you building and why?
@@ -116,7 +116,7 @@ PWM is a 7-contract protocol for turning verifiable scientific contribution into
 ### Team / credentials
 - Chengshuai Yang — founder, sole primary developer
 - Protocol spec: `papers/Proof-of-Solution/pwm_overview1.md`
-- Code: https://github.com/integritynoble/pwm (private; access granted on request)
+- Code: https://github.com/integritynoble/pwm-public
 
 ### KPIs to measure success
 - # of L4 certificates submitted on OP mainnet within 90 days: target 500+
