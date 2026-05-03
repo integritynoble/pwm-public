@@ -111,41 +111,50 @@ def main(argv: list[str] | None = None) -> int:
     sys.path.insert(0, str(repo / "public"))
     sys.path.insert(0, str(repo / "public" / "packages" / "pwm_core"))
 
+    # Use the canonical InverseNet-paper-validated EfficientSCI integration in
+    # `pwm_core.recon.cacti_solvers.efficient_sci_cacti`. This loads the
+    # original Wang et al. CVPR 2023 model from `public/repos/EfficientSCI/`
+    # with weights at `public/checkpoint/EfficientSCI/efficientsci_base.pth`,
+    # producing ~35-37 dB on the SCI Video Benchmark. The earlier route via
+    # `algorithm_base.cacti.solvers.run_best_quality` → `pwm_core.recon.efficientsci`
+    # was a parallel rewrite that didn't reach paper-grade PSNR (~4 dB) due
+    # to input-normalization mismatches.
     try:
-        from algorithm_base.cacti.solvers import run_best_quality
+        from pwm_core.recon.cacti_solvers import efficient_sci_cacti
     except ImportError as e:
-        print(f"FATAL: cannot import algorithm_base.cacti.solvers: {e}",
+        print(f"FATAL: cannot import pwm_core.recon.cacti_solvers: {e}",
               file=sys.stderr)
         return 2
 
+    import numpy as np
     y, masks = _load_snapshot(args.input)
     n_frames = int(masks.shape[0])
 
-    cfg = {
-        "masks": masks,
-        "n_frames": n_frames,
-        "variant": args.variant,
-    }
+    # `efficient_sci_cacti` expects mask shape (H, W, T); InverseNet/demo
+    # snapshots store masks as (T, H, W).
+    mask_HWT = np.transpose(masks, (1, 2, 0)).astype(np.float32)
 
     t0 = time.time()
     try:
-        video_hat = run_best_quality(y, operator=None, cfg=cfg)
+        video_HWT = efficient_sci_cacti(
+            y.astype(np.float32),
+            mask_HWT,
+            device="cpu",
+            variant=args.variant,
+        )
     except FileNotFoundError as e:
-        # missing pretrained weights — emit a clear error rather than
-        # silently producing a random-init forward pass
         print(
             "FATAL: EfficientSCI pretrained weights missing. Expected at:\n"
-            "  public/packages/pwm_core/weights/efficientsci/"
-            f"efficientsci_{args.variant}.pth\n"
+            f"  public/checkpoint/EfficientSCI/efficientsci_{args.variant}.pth\n"
             f"Underlying error: {e}",
             file=sys.stderr,
         )
         return 3
     elapsed = time.time() - t0
 
-    import numpy as np
-    video_hat = np.asarray(video_hat, dtype=np.float32)
-
+    # `efficient_sci_cacti` returns (H, W, T); transpose back to the wrapper's
+    # documented (T, H, W) so the saved solution matches downstream readers.
+    video_hat = np.transpose(video_HWT, (2, 0, 1)).astype(np.float32)
     np.savez_compressed(args.output / "solution.npz", video=video_hat)
 
     psnr = _ground_truth_psnr(video_hat, args.input)

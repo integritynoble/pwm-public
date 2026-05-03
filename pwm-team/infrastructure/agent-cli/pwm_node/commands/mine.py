@@ -317,8 +317,28 @@ def run(args: argparse.Namespace) -> int:
         if isinstance(gv, dict):
             gate_verdicts = gv
     except ImportError:
-        print("[pwm-node mine] pwm_scoring not installed — using mock Q=0.85 for skeleton test")
+        # pwm_scoring not installed. Try to derive Q from the wrapper's
+        # meta.json (psnr_db_vs_ground_truth). Falls back to the mock
+        # 0.85 if no usable PSNR is present. The mapping
+        # Q = min(PSNR_dB / 100, 1.0) is a placeholder until the
+        # protocol-canonical scoring engine ships; it preserves rank
+        # ordering by signal quality and yields a distinct certHash per
+        # solver, which the strict-duplicate-hash check requires.
         Q = 0.85
+        meta_path = output_dir / "meta.json"
+        if meta_path.is_file():
+            try:
+                wrapper_meta = json.loads(meta_path.read_text())
+                psnr = wrapper_meta.get("psnr_db_vs_ground_truth")
+                if isinstance(psnr, (int, float)) and psnr > 0:
+                    Q = min(float(psnr) / 100.0, 1.0)
+                    print(f"[pwm-node mine] pwm_scoring not installed — derived Q={Q:.4f} from wrapper PSNR={psnr} dB")
+                else:
+                    print(f"[pwm-node mine] pwm_scoring not installed — using mock Q=0.85 (no PSNR in {meta_path.name})")
+            except (json.JSONDecodeError, OSError) as e:
+                print(f"[pwm-node mine] pwm_scoring not installed — using mock Q=0.85 (could not read {meta_path.name}: {e})")
+        else:
+            print("[pwm-node mine] pwm_scoring not installed — using mock Q=0.85 for skeleton test")
     except Exception as e:
         print(f"[pwm-node mine] scoring error: {e}")
         return 1
