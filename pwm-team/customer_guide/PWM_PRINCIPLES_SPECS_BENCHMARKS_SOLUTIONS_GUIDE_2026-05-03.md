@@ -3,7 +3,38 @@
 **Date:** 2026-05-03
 **Audience:** Researchers, students, industry teams, regulators, external developers, founders
 **Network:** Ethereum Sepolia testnet (chainId 11155111) for examples; Base mainnet flow identical, just swap `--network testnet` → `--network base`
-**Related:** `PWM_TESTNET_TESTING_GUIDE_2026-05-02.md`, `PWM_TESTNET_MINE_WALKTHROUGH_USAGE_2026-05-03.md`, `PWM_OPTION_C_HANDOFF_GPU_SUBMISSION_2026-05-02.md`
+**Canonical public repo:** `https://github.com/integritynoble/pwm-public`
+**Web explorer:** `https://explorer.pwm.platformai.org`
+**Related (in this repo):** [`PWM_PRINCIPLE_CONTRIBUTION_GUIDE.md`](#cross-references-inside-this-public-repo)
+
+---
+
+## About this guide and the repo
+
+This document is the canonical user-facing reference for PWM. It ships
+in the public repo at `https://github.com/integritynoble/pwm-public`,
+and every path shown below (e.g., `pwm-team/customer_guide/...`,
+`pwm-team/pwm_product/...`, `pwm-team/infrastructure/...`,
+`pwm-team/content/...`, `scripts/...`, `public/...`) is relative to
+the root of that repo. So:
+
+```bash
+git clone https://github.com/integritynoble/pwm-public.git
+cd pwm-public
+ls pwm-team/customer_guide/     # → this guide lives here
+```
+
+If you're reading this on GitHub, every code-blocked path is
+clickable in the file tree. If you're reading it after a local clone,
+the same paths work in your shell.
+
+> **Note for internal reviewers:** some cross-referenced design docs
+> (`PWM_TESTNET_TESTING_GUIDE_2026-05-02.md`, `PWM_OPTION_C_HANDOFF_GPU_SUBMISSION_2026-05-02.md`,
+> etc.) live in the founding-team's private coordination tree and
+> aren't mirrored to the public repo. Where this guide references them,
+> the public-repo reader can safely treat them as "additional internal
+> design notes — not required for any user-facing workflow." Everything
+> a customer needs is in this guide + the contribution guide.
 
 ---
 
@@ -45,28 +76,30 @@ consumption frictionless and producer entry well-defined.
 git clone https://github.com/integritynoble/pwm-public.git
 cd pwm-public
 python3 -m venv .venv && source .venv/bin/activate
-pip install -e pwm-team/infrastructure/agent-cli   # pwm-node CLI
+pip install -e pwm-team/infrastructure/agent-cli   # installs the `pwm-node` CLI
 ```
 
 That's it. Browse with `pwm-node --network testnet benchmarks` or
-`https://explorer.pwm.platformai.org`.
+visit `https://explorer.pwm.platformai.org`.
 
 ### For producers (need a funded wallet for any on-chain action)
 
-Add to consumer setup:
+Add to the consumer setup above:
 
 ```bash
-# Funded testnet wallet (free Sepolia ETH from a faucet):
-#   https://sepoliafaucet.com
-#   https://www.alchemy.com/faucets/ethereum-sepolia
-#   https://faucet.quicknode.com/ethereum/sepolia
+# 1. Funded testnet wallet (free Sepolia ETH from a faucet):
+#      https://sepoliafaucet.com
+#      https://www.alchemy.com/faucets/ethereum-sepolia
+#      https://faucet.quicknode.com/ethereum/sepolia
 export PWM_PRIVATE_KEY=0x<your-Sepolia-key>
 export SEPOLIA_RPC_URL=https://ethereum-sepolia-rpc.publicnode.com
 export PWM_RPC_URL=$SEPOLIA_RPC_URL
 
-# For miners running deep-learning solvers (MST-L, EfficientSCI, etc.):
-pip install -e public/packages/pwm_core
-pip install torch torchvision --index-url https://download.pytorch.org/whl/cu128  # adjust CUDA version
+# 2. For miners running deep-learning solvers (MST-L, EfficientSCI, etc.):
+pip install -e public/packages/pwm_core   # path inside the pwm-public repo
+pip install torch torchvision --index-url https://download.pytorch.org/whl/cu128
+# (adjust the cu128 wheel suffix to match your local CUDA version; CPU-only
+#  also works for development, just slower)
 ```
 
 ---
@@ -447,13 +480,21 @@ get 15%/10%/5% respectively. The principle's treasury T_k gets 15%.
 6. Receive Bounty #7 Tier B reward (~2,000 PWM per anchor) on first
    external L4 submission
 
-### Journey E — Founder mining the leaderboard (today)
+### Journey E — Founder or external miner populating the leaderboard
 
-1. Set up GPU machine per `PWM_OPTION_C_HANDOFF_GPU_SUBMISSION_2026-05-02.md`
-2. Run `bash scripts/testnet_mine_walkthrough.sh`
-3. Both CASSI and CACTI cert hashes appear on the leaderboard
-4. After 7 days, finalize each cert
-5. Cite cert hashes in CZI EOSS / NSF POSE applications
+1. Set up a Linux box with NVIDIA + CUDA + Python 3.10+ (CPU works
+   too, just slower)
+2. Clone the repo: `git clone https://github.com/integritynoble/pwm-public.git && cd pwm-public`
+3. Install: `pip install -e pwm-team/infrastructure/agent-cli`
+4. Set env: `export PWM_PRIVATE_KEY=0x<funded-Sepolia-key>` and
+   `export SEPOLIA_RPC_URL=https://ethereum-sepolia-rpc.publicnode.com`
+5. Run `bash scripts/testnet_mine_walkthrough.sh`
+6. Both CASSI and CACTI cert hashes appear on the leaderboard within
+   ~1-2 minutes of the on-chain confirmation
+7. After 7 days (challenge-period clean), finalize each cert with
+   `pwm-node finalize <cert_hash>`
+8. Cite cert hashes wherever — papers, FDA submissions, grant
+   applications
 
 ---
 
@@ -500,17 +541,42 @@ get 15%/10%/5% respectively. The principle's treasury T_k gets 15%.
 
 ## Cross-references
 
-- `pwm-team/coordination/PWM_TESTNET_TESTING_GUIDE_2026-05-02.md` — testnet basics + 4 testing paths
-- `pwm-team/coordination/PWM_TESTNET_MINE_WALKTHROUGH_USAGE_2026-05-03.md` — full lifecycle walkthrough script usage
-- `pwm-team/coordination/PWM_OPTION_C_HANDOFF_GPU_SUBMISSION_2026-05-02.md` — GPU machine setup for deep-learning solvers
-- `pwm-team/coordination/PWM_TESTNET_TESTING_DEPTH_2026-05-02.md` — strategic posture on testnet testing
-- `pwm-team/coordination/MAINNET_BLOCKERS_2026-04-30.md` — what's blocking Base mainnet deploy
-- `pwm-team/infrastructure/agent-cli/README.md` — full pwm-node CLI docs
+### Inside this public repo (pwm-public)
+
+User-facing content that ships with the repo and that every reader of
+this guide can open directly:
+
+- `pwm-team/customer_guide/plan.md` — current customer-experience roadmap (Phase 1 / 2 / 3)
+- `pwm-team/coordination/PWM_PRINCIPLE_CONTRIBUTION_GUIDE.md` — full flow for authoring a NEW Principle (claim board, manifest schema, PR template)
+- `pwm-team/coordination/agent-coord/interfaces/bounties/INDEX.md` — Reserve-bounty roster (8 bounties, ~1.24M PWM allocated)
+- `pwm-team/coordination/agent-coord/interfaces/bounties/07-claims.md` — FCFS claim board (open to general L1/L2/L3 contributions, not just Bounty #7 Tier B)
+- `pwm-team/infrastructure/agent-cli/README.md` — full `pwm-node` CLI docs
 - `pwm-team/pwm_product/reference_solvers/` — reference solvers (CASSI GAP-TV, CASSI MST-L, CACTI PnP-ADMM, CACTI EfficientSCI)
 - `pwm-team/pwm_product/genesis/l1/`, `l2/`, `l3/` — canonical genesis manifests
-- `pwm-team/content/agent-{imaging,physics,chemistry,applied,signal}/principles/` — domain-organized full catalog (531 Principles)
-- `https://explorer.pwm.platformai.org/` — public web frontend
-- `https://sepolia.etherscan.io/address/0x2375217dd8FeC420707D53C75C86e2258FBaab65` — PWMRegistry on Sepolia
+- `pwm-team/content/agent-{imaging,physics,chemistry,applied,signal}/principles/` — domain-organized full catalog (~1599 manifests, 531 first-class Principles)
+- `scripts/testnet_mine_walkthrough.sh` — one-command full lifecycle for both CASSI and CACTI on Sepolia
+- `scripts/register_genesis.py` — canonical on-chain registration tool (used both by founders and external contributors)
+
+### External resources
+
+- `https://explorer.pwm.platformai.org/` — public web frontend (browse, match, view leaderboards)
+- `https://sepolia.etherscan.io/address/0x2375217dd8FeC420707D53C75C86e2258FBaab65` — PWMRegistry contract on Sepolia (canonical artifact registry)
+- `https://sepolia.etherscan.io/address/0x8963b60454EC1D9F65eE3cbF7aBC5D1220C3dB08` — PWMCertificate contract on Sepolia (where mining txns land)
+
+### Internal-only design notes (NOT mirrored to the public repo)
+
+These docs live in the founding-team's private coordination tree.
+Listed here for cross-session continuity only; public-repo readers
+don't need any of them — everything customer-facing is in the guide
+above plus `PWM_PRINCIPLE_CONTRIBUTION_GUIDE.md`.
+
+- `PWM_TESTNET_TESTING_GUIDE_2026-05-02.md` — testnet basics + 4 testing paths
+- `PWM_TESTNET_MINE_WALKTHROUGH_USAGE_2026-05-03.md` — walkthrough-script usage notes
+- `PWM_OPTION_C_HANDOFF_GPU_SUBMISSION_2026-05-02.md` — GPU machine setup procedure
+- `PWM_TESTNET_TESTING_DEPTH_2026-05-02.md` — strategic posture on testnet testing depth
+- `PWM_LEADERBOARD_DISPLAY_DESIGN_2026-05-03.md` — design rationale for the SOTA / Reference / Delta header
+- `PWM_HUMAN_READABLE_IDS_AND_CONTRIBUTION_FLOW_2026-05-03.md` — design rationale for slugs + claim board
+- `MAINNET_BLOCKERS_2026-04-30.md` — what's blocking Base mainnet deploy
 
 ---
 
