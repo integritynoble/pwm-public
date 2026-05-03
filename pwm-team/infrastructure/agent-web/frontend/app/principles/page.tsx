@@ -84,8 +84,8 @@ export default async function PrinciplesPage({
           <table className="pwm-table">
             <thead>
               <tr>
-                <th>ID</th>
                 <th>Title</th>
+                <th>ID</th>
                 <th>Domain</th>
                 <th>δ</th>
                 <th>L_DAG</th>
@@ -96,12 +96,14 @@ export default async function PrinciplesPage({
             <tbody>
               {filtered.map((p) => (
                 <tr key={p.artifact_id} className="hover:bg-slate-900/50">
-                  <td className="font-mono">
+                  <td>
                     <Link className="pwm-link" href={`/principles/${p.artifact_id}`}>
-                      {p.artifact_id}
+                      {p.title}
                     </Link>
                   </td>
-                  <td>{p.title}</td>
+                  <td className="font-mono text-pwm-muted text-xs">
+                    {p.artifact_id}
+                  </td>
                   <td>
                     <span className="pwm-pill">{p.domain}</span>
                   </td>

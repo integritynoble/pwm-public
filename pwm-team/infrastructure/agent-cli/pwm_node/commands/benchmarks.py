@@ -47,16 +47,17 @@ def run(args: argparse.Namespace) -> int:
         print("[pwm-node benchmarks] filter matched zero artifacts.")
         return 0
 
-    # Print concise table
-    header = f"{'ID':<10} {'Domain':<22} {'Tier':<10} {'Title':<52} {'Verification':<20}"
+    # Title-first table per customer-guide plan task 2.9 — customers
+    # scan by the human-readable name, not the numeric ID.
+    header = f"{'Title':<52} {'ID':<10} {'Domain':<22} {'Tier':<10} {'Verification':<20}"
     print(header)
     print("-" * len(header))
     for a in arts:
+        title = (a.get("title", "?"))[:52]
         aid = a.get("artifact_id", "?")
         dom = (a.get("domain", "?"))[:22]
         tier = a.get("difficulty_tier", "?")[:10]
-        title = (a.get("title", "?"))[:52]
         verif = a.get("verification_status", "draft")[:20]
-        print(f"{aid:<10} {dom:<22} {tier:<10} {title:<52} {verif:<20}")
+        print(f"{title:<52} {aid:<10} {dom:<22} {tier:<10} {verif:<20}")
 
     return 0

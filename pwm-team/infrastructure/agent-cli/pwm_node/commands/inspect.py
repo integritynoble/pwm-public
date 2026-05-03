@@ -46,8 +46,16 @@ def run(args: argparse.Namespace) -> int:
         return 3
 
     artifact, layer = hit
-    print(f"=== {artifact.get('artifact_id')} ({layer.upper()}) ===")
-    print(f"Title:        {artifact.get('title', '?')}")
+    title = artifact.get("title", "?")
+    aid = artifact.get("artifact_id", "?")
+    slug = artifact.get("display_slug")
+    # Title-first inline header (per customer-guide plan task 2.8); the
+    # labelled lines below are kept for parser-friendliness.
+    print(f"{title} ({aid})")
+    if slug:
+        print(f"  slug: {slug}")
+    print(f"=== {aid} ({layer.upper()}) ===")
+    print(f"Title:        {title}")
     print(f"Domain:       {artifact.get('domain', '?')}")
     if artifact.get("sub_domain"):
         print(f"Sub-domain:   {artifact.get('sub_domain')}")

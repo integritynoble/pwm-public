@@ -146,29 +146,29 @@ GET /api/leaderboard/{benchmark_id}
 
 **Tasks:**
 
-- [ ] **1.1 — Write failing test** `test_leaderboard.py::test_empty_leaderboard_returns_reference_floor`
+- [x] **1.1 — Write failing test** `test_leaderboard.py::test_empty_leaderboard_returns_reference_floor`
   - Hit `/api/leaderboard/L3-003` with no on-chain certs → expect `current_sota = null`, `reference.psnr_db = 26.49`
-- [ ] **1.2 — Run test, confirm 404** (endpoint doesn't exist yet)
-- [ ] **1.3 — Add endpoint to `api/main.py`** with empty stub returning placeholder JSON
-- [ ] **1.4 — Confirm test now fails on JSON content** (not 404)
-- [ ] **1.5 — Implement `store.py::get_leaderboard(benchmark_id)`** — SQL query joining `certs` + `cert_meta` with `RANK() OVER (PARTITION BY benchmarkHash ORDER BY q DESC)`
-- [ ] **1.6 — Wire endpoint to store function**, return real JSON
-- [ ] **1.7 — Test passes**
-- [ ] **1.8 — Add test** `test_leaderboard.py::test_one_cert_appears_as_rank_1`
+- [x] **1.2 — Run test, confirm 404** (endpoint doesn't exist yet)
+- [x] **1.3 — Add endpoint to `api/main.py`** with empty stub returning placeholder JSON
+- [x] **1.4 — Confirm test now fails on JSON content** (not 404)
+- [x] **1.5 — Implement `store.py::get_leaderboard(benchmark_id)`** — SQL query joining `certs` + `cert_meta` with `RANK() OVER (PARTITION BY benchmarkHash ORDER BY q DESC)`
+- [x] **1.6 — Wire endpoint to store function**, return real JSON
+- [x] **1.7 — Test passes**
+- [x] **1.8 — Add test** `test_leaderboard.py::test_one_cert_appears_as_rank_1`
   - Insert a cert + cert_meta row; expect `current_sota.rank == 1`
-- [ ] **1.9 — Test passes** (no extra impl needed)
-- [ ] **1.10 — Add test** `test_leaderboard.py::test_three_certs_ranked_by_q`
+- [x] **1.9 — Test passes** (no extra impl needed)
+- [x] **1.10 — Add test** `test_leaderboard.py::test_three_certs_ranked_by_q`
   - Insert 3 certs with q = 0.5, 0.7, 0.9; expect ranks [3, 2, 1]
-- [ ] **1.11 — Test passes**
-- [ ] **1.12 — Add test** `test_leaderboard.py::test_improvement_delta_computed_from_reference_psnr`
+- [x] **1.11 — Test passes**
+- [x] **1.12 — Add test** `test_leaderboard.py::test_improvement_delta_computed_from_reference_psnr`
   - Reference = 26.49 dB, SOTA cert PSNR = 34.1 → expect `improvement_db ≈ 7.6`
-- [ ] **1.13 — Test passes**
-- [ ] **1.14 — Frontend: update `/benchmarks/[ref]/page.tsx`** — add SOTA / Reference / Delta header section
-- [ ] **1.15 — Frontend: update `/benchmarks/[ref]/page.tsx`** — replace single-number display with leaderboard table
-- [ ] **1.16 — Frontend: update `/contribute/page.tsx`** — add per-submission rank column with 🥇🥈🥉🎗 badges
-- [ ] **1.17 — Smoke test end-to-end on local docker compose**
-- [ ] **1.18 — Commit + push as `feat/leaderboard-display`**
-- [ ] **1.19 — Open PR for Director review + merge**
+- [x] **1.13 — Test passes**
+- [x] **1.14 — Frontend: update `/benchmarks/[ref]/page.tsx`** — add SOTA / Reference / Delta header section
+- [x] **1.15 — Frontend: update `/benchmarks/[ref]/page.tsx`** — replace single-number display with leaderboard table
+- [x] **1.16 — Frontend: update `/contribute/page.tsx`** — add per-submission rank column with 🥇🥈🥉🎗 badges
+- [x] **1.17 — Smoke test end-to-end on local docker compose**
+- [x] **1.18 — Commit + push as `feat/leaderboard-display`**
+- [x] **1.19 — Open PR for Director review + merge**
 - [ ] **1.20 — Director: SSH to GCP server, redeploy explorer**
 
 **Done when:** Visiting `https://explorer.pwm.platformai.org/benchmarks/L3-003` shows the SOTA / Reference / Delta header; visiting `/contribute?section=solution` shows rank columns. Both render correctly even with zero on-chain certs (empty-leaderboard fallback to reference floor).
@@ -220,24 +220,24 @@ lookup.
 
 **Tasks:**
 
-- [ ] **2.1 — Author** `scripts/add_display_slugs.py` — deterministic generator that reads each manifest, derives a slug from `title` + filename, writes `display_slug` field back
-- [ ] **2.2 — Run** `scripts/add_display_slugs.py --dry-run` to preview slug list
+- [x] **2.1 — Author** `scripts/add_display_slugs.py` — deterministic generator that reads each manifest, derives a slug from `title` + filename, writes `display_slug` field back
+- [x] **2.2 — Run** `scripts/add_display_slugs.py --dry-run` to preview slug list
 - [ ] **2.3 — Director reviews** the dry-run output for any slugs to fix
-- [ ] **2.4 — Run** `scripts/add_display_slugs.py` for real on all 531 manifests
-- [ ] **2.5 — Update** `register_genesis.py` with `UI_ONLY_FIELDS` filter
-- [ ] **2.6 — Add test** `test_register_genesis.py::test_hash_invariant_under_display_slug_edit` — load a manifest, hash it, add `display_slug`, hash again → hashes equal
-- [ ] **2.7 — Test passes**
-- [ ] **2.8 — Update** `pwm-node inspect` to render `<title> (<id>)` first
-- [ ] **2.9 — Update** `pwm-node benchmarks` to render `<title> (<id>)` first
-- [ ] **2.10 — Update frontend** `principles/page.tsx` — title-first
-- [ ] **2.11 — Update frontend** `benchmarks/[ref]/page.tsx` — title-first
-- [ ] **2.12 — Add slug-based URL routing** `/benchmarks/cassi` redirects to `/benchmarks/L3-003`
-- [ ] **2.13 — Author** `PWM_PRINCIPLE_CONTRIBUTION_GUIDE.md` — claim-board flow
-- [ ] **2.14 — Update** `interfaces/bounties/07-claims.md` — open to general contributions
-- [ ] **2.15 — Update** customer guide — add "Contributing a new Principle" section
-- [ ] **2.16 — Smoke test end-to-end on local docker compose**
-- [ ] **2.17 — Commit + push as `feat/human-readable-ids`**
-- [ ] **2.18 — Open PR for Director review + merge**
+- [x] **2.4 — Run** `scripts/add_display_slugs.py` for real on all 531 manifests
+- [x] **2.5 — Update** `register_genesis.py` with `UI_ONLY_FIELDS` filter
+- [x] **2.6 — Add test** `test_register_genesis.py::test_hash_invariant_under_display_slug_edit` — load a manifest, hash it, add `display_slug`, hash again → hashes equal
+- [x] **2.7 — Test passes**
+- [x] **2.8 — Update** `pwm-node inspect` to render `<title> (<id>)` first
+- [x] **2.9 — Update** `pwm-node benchmarks` to render `<title> (<id>)` first
+- [x] **2.10 — Update frontend** `principles/page.tsx` — title-first
+- [x] **2.11 — Update frontend** `benchmarks/[ref]/page.tsx` — title-first
+- [x] **2.12 — Add slug-based URL routing** `/benchmarks/cassi` redirects to `/benchmarks/L3-003`
+- [x] **2.13 — Author** `PWM_PRINCIPLE_CONTRIBUTION_GUIDE.md` — claim-board flow
+- [x] **2.14 — Update** `interfaces/bounties/07-claims.md` — open to general contributions
+- [x] **2.15 — Update** customer guide — add "Contributing a new Principle" section
+- [x] **2.16 — Smoke test end-to-end on local docker compose**
+- [x] **2.17 — Commit + push as `feat/human-readable-ids`**
+- [x] **2.18 — Open PR for Director review + merge**
 - [ ] **2.19 — Director: SSH to GCP server, redeploy explorer**
 
 **Done when:** Every page in the explorer shows `Coded Aperture Snapshot Spectral Imaging (L1-003)` not bare `L1-003`; URLs accept both `/benchmarks/cassi` and `/benchmarks/L3-003`; new contributors have a documented path to claim L1-532 and beyond.
