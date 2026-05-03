@@ -456,13 +456,16 @@ SCOPE
 
 REPOSITORY
 
-- GitHub: https://github.com/integritynoble/pwm-public (public mirror)
+- GitHub: https://github.com/integritynoble/pwm-public (consumer-facing
+  mirror — currently private during pre-mainnet preparation; flips to
+  public at mainnet launch day. We will grant read access to the
+  Code4rena audit team upon engagement.)
   Internal source repo (private, frozen-scope commit access on request):
   https://github.com/integritynoble/pwm
 - Path: pwm-team/infrastructure/agent-contracts/contracts/
 - Scope commit: `348ec2d6dc4dda1f6618f83b60f6d6d6f6a1eed9` (tag `audit-v2`)
-  — frozen snapshot in the private repo; we will re-tag the same content
-  in the public repo for contest convenience.
+  — frozen snapshot in the private source repo; will be re-tagged at
+  the corresponding content in pwm-public for contest convenience.
 - Submission package (this document): pwm-team/infrastructure/agent-contracts/AUDIT_SUBMISSION.md
 
 BUDGET
@@ -533,15 +536,17 @@ CONTRACTS
 
 REPOSITORY
 
-- GitHub: https://github.com/integritynoble/pwm-public (public mirror of the
-  contracts + tests; cleanest entry point for review)
-  Internal source: https://github.com/integritynoble/pwm (private; we will
-  grant read access to Sherlock staff upon engagement so the exact
-  frozen-scope SHA can be verified)
+- GitHub: https://github.com/integritynoble/pwm-public (consumer-facing
+  mirror of the contracts + tests; currently private during pre-mainnet
+  preparation; flips to public at mainnet launch day. We will grant
+  read access to the Sherlock audit team upon engagement.)
+  Internal source: https://github.com/integritynoble/pwm (private; we
+  will grant read access to Sherlock staff upon engagement so the exact
+  frozen-scope SHA can be verified.)
 - Path: pwm-team/infrastructure/agent-contracts/contracts/
 - Scope commit: `348ec2d6dc4dda1f6618f83b60f6d6d6f6a1eed9` (tag `audit-v2`)
   — frozen snapshot in the private source repo; will be re-tagged at the
-  corresponding content in pwm-public for contest convenience
+  corresponding content in pwm-public for contest convenience.
 - Submission package (this document): pwm-team/infrastructure/agent-contracts/AUDIT_SUBMISSION.md
 
 BUDGET
