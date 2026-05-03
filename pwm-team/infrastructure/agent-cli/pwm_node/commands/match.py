@@ -262,11 +262,17 @@ def run(args: argparse.Namespace) -> int:
               "Run scripts/generate_benchmark_cards.py first.", file=sys.stderr)
         return 1
 
-    prompt_tokens = _tokenize(args.prompt or "")
+    # Accept the prompt either as `--prompt "..."` or as a positional form
+    # `pwm-node match "compressive sensing"` / `pwm-node match compressive sensing`.
+    # The flag takes precedence when both are provided.
+    positional_prompt = " ".join(getattr(args, "prompt_words", []) or [])
+    prompt_text = args.prompt or positional_prompt
+    prompt_tokens = _tokenize(prompt_text)
     if not prompt_tokens and not any([args.domain, args.modality, args.h, args.w,
                                        args.noise is not None]):
-        print("[pwm-node match] need --prompt or at least one structured filter "
-              "(--domain / --modality / --h / --w / --noise).", file=sys.stderr)
+        print("[pwm-node match] need a prompt (positional or --prompt) or at least "
+              "one structured filter (--domain / --modality / --h / --w / --noise).",
+              file=sys.stderr)
         return 1
 
     scored: list[tuple[float, dict, list[str], str | None]] = []

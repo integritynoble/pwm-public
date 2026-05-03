@@ -40,9 +40,16 @@ def build_parser() -> argparse.ArgumentParser:
     default_root = _repo_root_default()
     default_genesis = default_root / "pwm-team" / "pwm_product" / "genesis"
 
+    from pwm_node import __version__
+
     p = argparse.ArgumentParser(
         prog="pwm-node",
         description="PWM protocol CLI — discover benchmarks, verify solvers, mine certificates.",
+    )
+    p.add_argument(
+        "--version",
+        action="version",
+        version=f"pwm-node {__version__}",
     )
     p.add_argument(
         "--network",
@@ -123,6 +130,15 @@ def build_parser() -> argparse.ArgumentParser:
         help="Match a free-text prompt or structured filters to benchmarks (faceted, no LLM).",
     )
     matp.add_argument("--prompt", help="Free-text description of your data / problem.")
+    # Also accept a positional form: `pwm-node match "compressive sensing"`
+    # or unquoted `pwm-node match compressive sensing`. Joined with a space
+    # and used only when --prompt is not given.
+    matp.add_argument(
+        "prompt_words",
+        nargs="*",
+        metavar="PROMPT",
+        help="Free-text description as a positional argument (alternative to --prompt).",
+    )
     matp.add_argument("--domain", help="L1 domain filter (e.g. imaging, spectroscopy).")
     matp.add_argument("--modality", help="Benchmark_type filter (e.g. snapshot, tomography).")
     matp.add_argument("--h", type=int, help="Preferred image height.")
