@@ -328,6 +328,45 @@ def cert_detail(cert_hash: str):
         conn.close()
 
 
+def _resolve_benchmark_ref(conn, benchmark_ref: str):
+    """Convert a customer-facing benchmark reference to (chain_hash, artifact_id, genesis_entry).
+
+    Accepts:
+      - on-chain hex hash (0x…)        → look up by hash
+      - artifact_id (L3-003)           → look up by artifact_id column
+      - display_slug (cassi)           → resolve via genesis lookup, then artifact_id
+
+    Returns (chain_hash, artifact_id, genesis_entry) where any field may be None.
+    """
+    chain_row = None
+    artifact_id: str | None = None
+    genesis_entry: dict | None = None
+
+    if benchmark_ref.startswith("0x"):
+        chain_row = store.get_artifact(conn, benchmark_ref)
+        artifact_id = (chain_row or {}).get("artifact_id")
+        if artifact_id:
+            genesis_entry = genesis.by_artifact_id(artifact_id)
+    else:
+        # Try artifact_id first (L3-003), then slug (cassi).
+        chain_row = store.get_artifact_by_artifact_id(conn, benchmark_ref)
+        artifact_id = benchmark_ref
+        genesis_entry = genesis.by_artifact_id(benchmark_ref)
+        if genesis_entry is None:
+            # Slug path: resolve cassi → L3-003 → look up chain row by artifact_id.
+            slug_hit = genesis.by_slug(benchmark_ref, layer="l3")
+            if slug_hit:
+                genesis_entry = slug_hit
+                artifact_id = slug_hit.get("artifact_id") or benchmark_ref
+                if chain_row is None:
+                    chain_row = store.get_artifact_by_artifact_id(conn, artifact_id)
+        if chain_row is None and genesis_entry and genesis_entry.get("chain_hash"):
+            chain_row = store.get_artifact(conn, genesis_entry["chain_hash"])
+
+    chain_hash = (chain_row or {}).get("hash")
+    return chain_hash, artifact_id, genesis_entry
+
+
 @app.get("/api/leaderboard/{benchmark_ref}")
 def leaderboard(benchmark_ref: str):
     """Leaderboard for one benchmark, enriched with metadata for UI display.
@@ -360,29 +399,8 @@ def leaderboard(benchmark_ref: str):
     """
     conn = store.get_conn()
     try:
-        # Resolve hash from artifact_id if needed (mirrors benchmark_detail).
-        chain_hash: str | None = None
-        artifact_id: str | None = None
-        title: str | None = None
-        genesis_entry: dict | None = None
-
-        if benchmark_ref.startswith("0x"):
-            chain_hash = benchmark_ref.lower()
-            chain_row = store.get_artifact(conn, chain_hash)
-            artifact_id = (chain_row or {}).get("artifact_id")
-            if artifact_id:
-                genesis_entry = genesis.by_artifact_id(artifact_id)
-        else:
-            chain_row = store.get_artifact_by_artifact_id(conn, benchmark_ref)
-            artifact_id = benchmark_ref
-            genesis_entry = genesis.by_artifact_id(benchmark_ref)
-            if chain_row is None and genesis_entry and genesis_entry.get("chain_hash"):
-                chain_row = store.get_artifact(conn, genesis_entry["chain_hash"])
-            if chain_row:
-                chain_hash = chain_row.get("hash")
-
-        if genesis_entry:
-            title = genesis_entry.get("title")
+        chain_hash, artifact_id, genesis_entry = _resolve_benchmark_ref(conn, benchmark_ref)
+        title = genesis_entry.get("title") if genesis_entry else None
 
         rows: list[dict] = []
         if chain_hash:

@@ -83,6 +83,43 @@ def by_artifact_id(artifact_id: str) -> dict | None:
     return None
 
 
+def by_slug(slug: str, layer: str | None = None) -> dict | None:
+    """Resolve a manifest by its `display_slug` field.
+
+    Used by URL-routing: `/benchmarks/cassi` → look up the L3 manifest with
+    display_slug="cassi" → return its artifact_id "L3-003" → resolve the
+    chain row.
+
+    If `layer` is given (l1, l2, or l3), only search that layer; otherwise
+    search L3 first (the most-common consumer-facing layer), then L2, then L1.
+    """
+    if not slug:
+        return None
+    layers = (layer,) if layer else ("l3", "l2", "l1")
+    for la in layers:
+        for item in load_all().get(la, []):
+            if item.get("display_slug") == slug:
+                return item
+    return None
+
+
+def resolve_ref(ref: str, prefer_layer: str | None = None) -> dict | None:
+    """Universal benchmark/spec/principle resolver.
+
+    Tries in order:
+      1. exact artifact_id match (L1-003, L2-003, L3-003)
+      2. exact display_slug match (cassi, cacti)
+
+    Used by API endpoints that accept either form of reference.
+    """
+    if not ref:
+        return None
+    hit = by_artifact_id(ref)
+    if hit is not None:
+        return hit
+    return by_slug(ref, layer=prefer_layer)
+
+
 def specs_for_principle(l1_id: str) -> list[dict]:
     return [s for s in specs() if s.get("parent_l1") == l1_id]
 

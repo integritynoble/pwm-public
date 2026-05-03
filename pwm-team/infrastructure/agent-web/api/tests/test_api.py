@@ -113,6 +113,7 @@ def seeded_env(tmp_path, monkeypatch):
     (genesis_root / "l3" / "L3-001.json").write_text(json.dumps({
         "artifact_id": "L3-001", "parent_l2": "L2-001",
         "title": "Test Benchmark",
+        "display_slug": "test-bench",
         "ibenchmark": {"rho": 1, "epsilon": 30.0, "omega_tier": {"H": 128}},
     }))
     monkeypatch.setenv("PWM_GENESIS_DIR", str(genesis_root))
@@ -326,6 +327,19 @@ def test_leaderboard_returns_enriched_payload(seeded_env):
     assert len(ranks) == 1
     assert ranks[0]["rank"] == 1
     assert ranks[0]["cert_hash"] == refs["cert_hash"]
+
+
+def test_leaderboard_with_slug_resolves_to_artifact_id(seeded_env):
+    """Customers see /benchmarks/cassi or /benchmarks/test-bench in URLs.
+    The leaderboard endpoint must accept slug form too.
+    """
+    client, refs = seeded_env
+    r = client.get("/api/leaderboard/test-bench")
+    assert r.status_code == 200
+    body = r.json()
+    assert body.get("benchmark_id") == "L3-001"
+    assert body.get("benchmark_title") == "Test Benchmark"
+    assert len(body["entries"]) == 1
 
 
 def test_leaderboard_with_artifact_id_resolves_chain_hash(seeded_env):
