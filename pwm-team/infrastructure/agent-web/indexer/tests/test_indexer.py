@@ -236,6 +236,107 @@ def test_schema_is_idempotent(tmp_path):
     c.close()
 
 
+# ---------- RPC-behind-head retry behavior ----------
+
+def test_rpc_behind_head_fingerprint_matches_publicnode():
+    """publicnode.com phrasing is the most common — must match."""
+    from indexer.main import _is_rpc_behind_head
+
+    class FakeExc(Exception):
+        pass
+
+    msg = "{'code': -32602, 'message': 'block range extends beyond current head block'}"
+    assert _is_rpc_behind_head(FakeExc(msg)) is True
+
+
+def test_rpc_behind_head_fingerprint_matches_alchemy_phrasing():
+    from indexer.main import _is_rpc_behind_head
+    msg = "block out of range"
+    assert _is_rpc_behind_head(Exception(msg)) is True
+
+
+def test_rpc_behind_head_fingerprint_matches_infura_phrasing():
+    from indexer.main import _is_rpc_behind_head
+    assert _is_rpc_behind_head(Exception("header not found at block 999999")) is True
+
+
+def test_rpc_behind_head_fingerprint_does_NOT_match_unrelated_errors():
+    """Generic errors should NOT be classified as 'behind head' — they
+    take the existing halve-and-retry path."""
+    from indexer.main import _is_rpc_behind_head
+    assert _is_rpc_behind_head(Exception("Connection refused")) is False
+    assert _is_rpc_behind_head(Exception("rate limit exceeded")) is False
+    assert _is_rpc_behind_head(Exception("query returned more than 10000 results")) is False
+
+
+def test_rpc_behind_head_case_insensitive():
+    from indexer.main import _is_rpc_behind_head
+    assert _is_rpc_behind_head(Exception("BLOCK RANGE EXTENDS BEYOND CURRENT HEAD")) is True
+
+
+def test_safe_backfill_swallows_rpc_behind_head_in_poll_loop():
+    """When _backfill raises _RPCBehindHead during the poll loop,
+    _safe_backfill must NOT propagate (so the run loop keeps going)."""
+    from indexer.main import Indexer, _RPCBehindHead
+
+    # Build a minimal Indexer-shaped object without going through __init__
+    # (which would try to connect to RPC). We just need _safe_backfill +
+    # a mock _backfill.
+    indexer = Indexer.__new__(Indexer)
+
+    class _FakeCfg:
+        poll_interval_seconds = 0  # don't actually sleep in tests
+
+    indexer.cfg = _FakeCfg()
+
+    def boom(_from, _to):
+        raise _RPCBehindHead("test: RPC behind")
+
+    indexer._backfill = boom  # type: ignore[assignment]
+    result = indexer._safe_backfill(100, 110, initial=False)
+    assert result is None  # signaled "no progress made", run loop retries
+
+
+def test_safe_backfill_swallows_generic_error_in_poll_loop():
+    """Same fail-soft behavior for unexpected errors — never crash the
+    indexer thread mid-poll."""
+    from indexer.main import Indexer
+
+    indexer = Indexer.__new__(Indexer)
+
+    class _FakeCfg:
+        poll_interval_seconds = 0
+
+    indexer.cfg = _FakeCfg()
+
+    def boom(_from, _to):
+        raise RuntimeError("RPC went away")
+
+    indexer._backfill = boom  # type: ignore[assignment]
+    result = indexer._safe_backfill(100, 110, initial=False)
+    assert result is None
+
+
+def test_safe_backfill_re_raises_on_initial_run():
+    """Initial backfill SHOULD fail-fast — config errors during startup
+    are easier to fix when surfaced loudly."""
+    from indexer.main import Indexer
+
+    indexer = Indexer.__new__(Indexer)
+
+    class _FakeCfg:
+        poll_interval_seconds = 0
+
+    indexer.cfg = _FakeCfg()
+
+    def boom(_from, _to):
+        raise RuntimeError("config error")
+
+    indexer._backfill = boom  # type: ignore[assignment]
+    with pytest.raises(RuntimeError, match="config error"):
+        indexer._safe_backfill(100, 110, initial=True)
+
+
 def test_check_cli_collect(tmp_path):
     """`indexer.check.collect` reports counts for every declared table."""
     from indexer import check
