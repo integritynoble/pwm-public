@@ -5,7 +5,7 @@ import { api, type Demo } from '@/lib/api';
 import { shortAddr, weiToPwm } from '@/lib/format';
 import { StatusBadge } from '@/components/Badges';
 
-const PUBLIC_REPO = 'https://github.com/integritynoble/Physics_World_Model/blob/master';
+const PUBLIC_REPO = 'https://github.com/integritynoble/pwm-public/blob/main';
 
 export async function generateMetadata({
   params,
@@ -497,8 +497,8 @@ function GetThisBenchmarkSection({
             Run the reference solver locally
           </h3>
           <pre className="bg-slate-950 border border-slate-800 rounded px-3 py-2 text-xs overflow-x-auto">
-{`git clone https://github.com/integritynoble/Physics_World_Model.git
-cd Physics_World_Model
+{`git clone https://github.com/integritynoble/pwm-public.git
+cd pwm-public
 ${first.meta.how_to_run}
 cat /tmp/out/meta.json`}
           </pre>

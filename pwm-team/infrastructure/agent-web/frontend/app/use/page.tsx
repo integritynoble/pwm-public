@@ -245,8 +245,8 @@ export default async function UseSolutionPage() {
           For CASSI/L3-003 it looks like:
         </p>
         <pre className="bg-slate-950 border border-slate-800 rounded px-3 py-3 text-xs overflow-x-auto max-w-3xl">
-{`git clone https://github.com/integritynoble/Physics_World_Model.git
-cd Physics_World_Model
+{`git clone https://github.com/integritynoble/pwm-public.git
+cd pwm-public
 python3 pwm-team/pwm_product/reference_solvers/cassi/cassi_gap_tv.py \\
     --input  pwm-team/pwm_product/demos/cassi/sample_01 \\
     --output /tmp/out
