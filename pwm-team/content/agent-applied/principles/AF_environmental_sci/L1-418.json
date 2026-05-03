@@ -11,7 +11,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Numerical Weather Prediction Data Assimilation: 4D-Var data assimilation: find optimal initial conditions minimizing misfit to observations over assimilation window. The forward operator produces the measurement through a 3-node primitive DAG (M.nwp.primitive_equations\u2026); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=10 with effective condition number kappa_eff~100000.0; model_error_during_window, observation_bias_correction_error set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "Numerical Weather Prediction Data Assimilation: 4D-Var data assimilation: find optimal initial conditions minimizing misfit to observations over assimilation window. The forward operator produces the measurement through a 3-node primitive DAG (M.nwp.primitive_equations…); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=10 with effective condition number kappa_eff~100000.0; model_error_during_window, observation_bias_correction_error set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "J(x0) = 0.5*(x0-x_b) ** T B^{-1} (x0-x_b) + 0.5*sum_t (H_t M_t(x0) - y_t) ** T R_t^{-1} (H_t M_t(x0) - y_t)",
     "world_state_x": "atmospheric initial state x0 (T, u, v, q, ps) at analysis time",
     "observation_y": "conventional + satellite observations y_t over 6-12 hour window",
@@ -148,5 +148,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "numerical-weather-prediction-data-assimilation"
 }

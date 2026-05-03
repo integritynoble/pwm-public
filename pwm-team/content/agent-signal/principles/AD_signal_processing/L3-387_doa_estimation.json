@@ -5,67 +5,159 @@
   "parent_l1": "L1-387",
   "title": "DoA Estimation Benchmark Suite (synthetic ULA + measured array)",
   "benchmark_type": "combined_P_and_I",
-
   "dataset_registry": {
     "primary": "Synthetic 8/16/32-element ULA with configurable K, SNR, T (sparse-land protocol)",
     "secondary": "Duraiswami-O'Donovan measured 8-mic array; LOCATA acoustic-DoA challenge",
     "tertiary": "MIMO radar measured snapshots (AoA ground truth from motion-capture)",
     "construction_method": "Monte-Carlo 500 trials at each Omega; inject calibration errors drawn from Normal(0, sigma_calib)",
-    "num_dev_instances_per_tier": 20, "holdout_instances_per_tier": 10
+    "num_dev_instances_per_tier": 20,
+    "holdout_instances_per_tier": 10
   },
-
   "ibenchmarks": [
     {
-      "tier": "T1_nominal", "rho": 1,
-      "omega_tier": {"L": 8, "K": 2, "T": 100, "SNR_dB": 10, "d_over_lambda": 0.5, "calib_phase_err_deg": 0.0},
-      "epsilon": 0.5, "d_ibench": 0.15,
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "L": 8,
+        "K": 2,
+        "T": 100,
+        "SNR_dB": 10,
+        "d_over_lambda": 0.5,
+        "calib_phase_err_deg": 0.0
+      },
+      "epsilon": 0.5,
+      "d_ibench": 0.15,
       "baselines": [
-        {"name": "MVDR",   "rmse_deg": 1.2, "Q": 0.60},
-        {"name": "MUSIC",  "rmse_deg": 0.30, "Q": 0.92},
-        {"name": "ESPRIT", "rmse_deg": 0.28, "Q": 0.94}
+        {
+          "name": "MVDR",
+          "rmse_deg": 1.2,
+          "Q": 0.6
+        },
+        {
+          "name": "MUSIC",
+          "rmse_deg": 0.3,
+          "Q": 0.92
+        },
+        {
+          "name": "ESPRIT",
+          "rmse_deg": 0.28,
+          "Q": 0.94
+        }
       ]
     },
     {
-      "tier": "T2_low_snap", "rho": 3,
-      "omega_tier": {"L": 8, "K": 2, "T": 20, "SNR_dB": 5, "d_over_lambda": 0.5, "calib_phase_err_deg": 2.0},
-      "epsilon": 1.5, "d_ibench": 0.28,
+      "tier": "T2_low_snap",
+      "rho": 3,
+      "omega_tier": {
+        "L": 8,
+        "K": 2,
+        "T": 20,
+        "SNR_dB": 5,
+        "d_over_lambda": 0.5,
+        "calib_phase_err_deg": 2.0
+      },
+      "epsilon": 1.5,
+      "d_ibench": 0.28,
       "baselines": [
-        {"name": "MVDR",   "rmse_deg": 3.0,  "Q": 0.42},
-        {"name": "MUSIC",  "rmse_deg": 1.2,  "Q": 0.72},
-        {"name": "L1-SVD", "rmse_deg": 1.4,  "Q": 0.70}
+        {
+          "name": "MVDR",
+          "rmse_deg": 3.0,
+          "Q": 0.42
+        },
+        {
+          "name": "MUSIC",
+          "rmse_deg": 1.2,
+          "Q": 0.72
+        },
+        {
+          "name": "L1-SVD",
+          "rmse_deg": 1.4,
+          "Q": 0.7
+        }
       ]
     },
     {
-      "tier": "T3_coherent", "rho": 5,
-      "omega_tier": {"L": 16, "K": 4, "T": 50, "SNR_dB": 0, "correlation": 0.8, "calib_phase_err_deg": 5.0},
-      "epsilon": 3.0, "d_ibench": 0.52,
+      "tier": "T3_coherent",
+      "rho": 5,
+      "omega_tier": {
+        "L": 16,
+        "K": 4,
+        "T": 50,
+        "SNR_dB": 0,
+        "correlation": 0.8,
+        "calib_phase_err_deg": 5.0
+      },
+      "epsilon": 3.0,
+      "d_ibench": 0.52,
       "baselines": [
-        {"name": "MUSIC",        "rmse_deg": 4.5, "Q": 0.38},
-        {"name": "SmoothedMUSIC","rmse_deg": 2.8, "Q": 0.62}
+        {
+          "name": "MUSIC",
+          "rmse_deg": 4.5,
+          "Q": 0.38
+        },
+        {
+          "name": "SmoothedMUSIC",
+          "rmse_deg": 2.8,
+          "Q": 0.62
+        }
       ]
     },
     {
-      "tier": "T4_calib_blind", "rho": 10,
-      "omega_tier": {"L": 32, "K": 8, "T": 200, "SNR_dB": -5, "d_over_lambda": 0.5, "calib_phase_err_deg": 15.0, "position_err_lambda": 0.05},
-      "epsilon": 6.0, "d_ibench": 0.74,
+      "tier": "T4_calib_blind",
+      "rho": 10,
+      "omega_tier": {
+        "L": 32,
+        "K": 8,
+        "T": 200,
+        "SNR_dB": -5,
+        "d_over_lambda": 0.5,
+        "calib_phase_err_deg": 15.0,
+        "position_err_lambda": 0.05
+      },
+      "epsilon": 6.0,
+      "d_ibench": 0.74,
       "baselines": [
-        {"name": "SmoothedMUSIC","rmse_deg": 8.0, "Q": 0.28},
-        {"name": "L1-SVD",       "rmse_deg": 6.5, "Q": 0.48}
+        {
+          "name": "SmoothedMUSIC",
+          "rmse_deg": 8.0,
+          "Q": 0.28
+        },
+        {
+          "name": "L1-SVD",
+          "rmse_deg": 6.5,
+          "Q": 0.48
+        }
       ]
     }
   ],
-
   "p_benchmark": {
     "rho": 50,
-    "dataset_p_benchmark": {"name": "Synthetic + LOCATA + MIMO-radar union", "num_dev_instances": 500, "num_holdout_instances": 200},
+    "dataset_p_benchmark": {
+      "name": "Synthetic + LOCATA + MIMO-radar union",
+      "num_dev_instances": 500,
+      "num_holdout_instances": 200
+    },
     "baselines": [
-      {"name": "MVDR",   "overall_Q": 0.48},
-      {"name": "MUSIC",  "overall_Q": 0.68},
-      {"name": "ESPRIT", "overall_Q": 0.70},
-      {"name": "L1-SVD", "overall_Q": 0.66}
+      {
+        "name": "MVDR",
+        "overall_Q": 0.48
+      },
+      {
+        "name": "MUSIC",
+        "overall_Q": 0.68
+      },
+      {
+        "name": "ESPRIT",
+        "overall_Q": 0.7
+      },
+      {
+        "name": "L1-SVD",
+        "overall_Q": 0.66
+      }
     ]
   },
-
   "hardness_rule_check": "SATISFIED — MUSIC fails at T3_coherent (correlation=0.8) with RMSE 4.5 > epsilon_fn ~ 3.0.",
-  "ipfs_cid": null, "ground_truth_cid": null
+  "ipfs_cid": null,
+  "ground_truth_cid": null,
+  "display_slug": "doa-estimation"
 }

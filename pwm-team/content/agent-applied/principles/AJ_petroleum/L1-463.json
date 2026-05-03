@@ -11,7 +11,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Seismic Rock Physics (Gassmann): Gassmann fluid substitution: predict seismic velocity changes from one fluid to another using Gassmann equations. The forward operator produces the measurement through a 3-node primitive DAG (M.gassmann.fluid_substitution\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=5 with effective condition number kappa_eff~100; clay_mineral_uncertainty, patchy_saturation_effect set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "Seismic Rock Physics (Gassmann): Gassmann fluid substitution: predict seismic velocity changes from one fluid to another using Gassmann equations. The forward operator produces the measurement through a 3-node primitive DAG (M.gassmann.fluid_substitution…); recovery is posed as a parameter_estimation problem. Difficulty tier delta=5 with effective condition number kappa_eff~100; clay_mineral_uncertainty, patchy_saturation_effect set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "K_sat = K_dry + (1-K_dry/K_0) ** 2 / (phi/K_fl + (1-phi)/K_0 - K_dry/K_0 ** 2)",
     "world_state_x": "saturated bulk modulus K_sat and shear modulus G_sat = G_dry for brine/oil/gas",
     "observation_y": "seismic P-wave velocity Vp and S-wave velocity Vs measurements from well log",
@@ -149,5 +149,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "seismic-rock-physics"
 }

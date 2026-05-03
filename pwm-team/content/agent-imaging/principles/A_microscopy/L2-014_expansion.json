@@ -2,7 +2,7 @@
   "artifact_id": "L2-014",
   "layer": "L2",
   "parent_l1": "L1-014",
-  "title": "Expansion Microscopy (ExM) \u2014 physical hydrogel expansion Mismatch-Only Spec",
+  "title": "Expansion Microscopy (ExM) — physical hydrogel expansion Mismatch-Only Spec",
   "spec_type": "mismatch_only",
   "six_tuple": {
     "omega": {
@@ -148,5 +148,6 @@
     "PASS",
     "PASS"
   ],
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "display_slug": "expansion"
 }

@@ -2,7 +2,7 @@
   "artifact_id": "L1-185",
   "layer": "L1",
   "principle_number": "185",
-  "title": "Eulerian-Lagrangian \u2014 dispersed-phase particle tracking",
+  "title": "Eulerian-Lagrangian — dispersed-phase particle tracking",
   "domain": "Fluid Dynamics",
   "sub_domain": "Euler-Lagrange DPM / two-way coupling",
   "source_file": "R_fluid_dynamics/185_eulerian_lagrangian.md",
@@ -11,7 +11,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Eulerian-Lagrangian \u2014 dispersed-phase particle tracking forward model.",
+    "description": "Eulerian-Lagrangian — dispersed-phase particle tracking forward model.",
     "forward_model": "dx_p/dt = u_p; dm_p u_p/dt = F_drag + F_lift + F_grav + ...",
     "world_state_x": "particle trajectories + dispersed-phase volume fraction",
     "observation_y": "PTV + laser sheet imaging",
@@ -181,5 +181,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "eulerian-lagrangian"
 }

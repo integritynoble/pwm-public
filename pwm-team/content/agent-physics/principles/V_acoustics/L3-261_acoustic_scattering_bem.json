@@ -3,7 +3,7 @@
   "layer": "L3",
   "parent_l2": "L2-261",
   "parent_l1": "L1-261",
-  "title": "Acoustic Scattering \u2014 boundary element method (BEM) Benchmark Suite",
+  "title": "Acoustic Scattering — boundary element method (BEM) Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "canonical Acoustics dataset for this principle",
@@ -242,7 +242,7 @@
       }
     ]
   },
-  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind Omega corner under max mismatch.",
+  "hardness_rule_check": "SATISFIED — top baseline fails at T4_blind Omega corner under max mismatch.",
   "anti_overfitting_mechanisms": {
     "M1_random_instantiation": "generator/instantiate.py uses G(SHA256(h_sub || k)) seeded per submission.",
     "M2_convergence_scoring": "convergence/check_convergence.py verifies declared q-rate across mesh refinements.",
@@ -252,5 +252,6 @@
     "M6_gate_checks": "S1-S4 gate checks embedded with thresholds.yaml."
   },
   "ipfs_cid": null,
-  "ground_truth_cid": null
+  "ground_truth_cid": null,
+  "display_slug": "acoustic-scattering-bem"
 }

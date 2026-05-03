@@ -3,7 +3,7 @@
   "layer": "L2",
   "parent_l1": "L1-404",
   "principle_ref": "sha256:<L1-404_principle_hash>",
-  "title": "Pharmacodynamics Dose-Response Inversion \u2014 Nominal + Mismatch Specs",
+  "title": "Pharmacodynamics Dose-Response Inversion — Nominal + Mismatch Specs",
   "spec_type": "nominal_and_mismatch",
   "six_tuple": {
     "omega": {
@@ -114,5 +114,6 @@
     "S3": "Solver convergence proven for stated solver class.",
     "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
   },
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "display_slug": "pharmacodynamics-dose-response-inversion-nominal-mismatch-specs"
 }

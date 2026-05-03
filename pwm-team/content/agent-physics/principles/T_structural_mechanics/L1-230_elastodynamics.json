@@ -2,7 +2,7 @@
   "artifact_id": "L1-230",
   "layer": "L1",
   "principle_number": "230",
-  "title": "Elastodynamics \u2014 dynamic wave propagation in solids",
+  "title": "Elastodynamics — dynamic wave propagation in solids",
   "domain": "Structural Mechanics",
   "sub_domain": "Elastic wave equation (P/S waves)",
   "source_file": "T_structural_mechanics/230_elastodynamics.md",
@@ -11,7 +11,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Elastodynamics \u2014 dynamic wave propagation in solids forward model.",
+    "description": "Elastodynamics — dynamic wave propagation in solids forward model.",
     "forward_model": "rho * d^2 u/dt^2 = div(C : eps(u)) + f; c_P = sqrt((lambda+2mu)/rho), c_S = sqrt(mu/rho)",
     "world_state_x": "3D displacement field u(x,t) including P and S wave components",
     "observation_y": "accelerometer arrays",
@@ -183,5 +183,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "elastodynamics"
 }

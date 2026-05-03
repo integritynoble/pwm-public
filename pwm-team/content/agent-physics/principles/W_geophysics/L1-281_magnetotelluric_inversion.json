@@ -2,7 +2,7 @@
   "artifact_id": "L1-281",
   "layer": "L1",
   "principle_number": "281",
-  "title": "Magnetotelluric Inversion \u2014 resistivity imaging",
+  "title": "Magnetotelluric Inversion — resistivity imaging",
   "domain": "Geophysics",
   "sub_domain": "Deep-Earth resistivity via natural-source EM",
   "source_file": "W_geophysics/281_magnetotelluric_inversion.md",
@@ -11,7 +11,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Magnetotelluric Inversion \u2014 resistivity imaging forward model.",
+    "description": "Magnetotelluric Inversion — resistivity imaging forward model.",
     "forward_model": "Z(omega) = E_t / H_t; impedance tensor depends on 3D sigma distribution",
     "world_state_x": "3D electrical resistivity rho(x,y,z)",
     "observation_y": "MT impedance tensor Z(omega) + tipper at N_stations",
@@ -197,5 +197,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "magnetotelluric-inversion"
 }

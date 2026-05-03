@@ -2,7 +2,7 @@
   "artifact_id": "L1-154",
   "layer": "L1",
   "principle_number": "154",
-  "title": "Quantum Illumination \u2014 entanglement-enhanced target detection",
+  "title": "Quantum Illumination — entanglement-enhanced target detection",
   "domain": "Quantum Imaging",
   "sub_domain": "Two-mode squeezing for target detection below shot-noise",
   "source_file": "N_quantum_imaging/154_quantum_illumination.md",
@@ -11,7 +11,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
   "E": {
-    "description": "Quantum Illumination \u2014 entanglement-enhanced target detection: entanglement detection produces the measurement through a 4-node primitive DAG L.entangled_photon_source -> L.signal_probe_return -> L.joint_detection -> int.temporal, with time-integrated exposure and photon-shot-noise-limited (Poisson counting). Recovery is posed as a non-convex inverse problem that inverts the forward operator to estimate the scene-side binary detection map. Difficulty tier delta=10 with effective condition number kappa_eff~35; calibration-level mismatch (loss_and_noise_decoherence, phase_drift, mode_mismatch) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
+    "description": "Quantum Illumination — entanglement-enhanced target detection: entanglement detection produces the measurement through a 4-node primitive DAG L.entangled_photon_source -> L.signal_probe_return -> L.joint_detection -> int.temporal, with time-integrated exposure and photon-shot-noise-limited (Poisson counting). Recovery is posed as a non-convex inverse problem that inverts the forward operator to estimate the scene-side binary detection map. Difficulty tier delta=10 with effective condition number kappa_eff~35; calibration-level mismatch (loss_and_noise_decoherence, phase_drift, mode_mismatch) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
     "forward_model": "P_detect(target) via joint measurement of idler and return; 6 dB advantage over classical at low transmissivity",
     "world_state_x": "Principle-specific quantity of interest",
     "observation_y": "Detector output at declared geometry",
@@ -184,5 +184,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "quantum-illumination"
 }

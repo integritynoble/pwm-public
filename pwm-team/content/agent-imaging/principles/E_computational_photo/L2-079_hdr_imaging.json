@@ -4,14 +4,48 @@
   "parent_l1": "L1-079",
   "title": "HDR Multi-Exposure Fusion Mismatch-Only Spec",
   "spec_type": "mismatch_only",
-
   "six_tuple": {
     "omega": {
-      "H": [256, 4096], "W": [256, 4096], "K_exposures": [2, 9],
-      "exposure_stops": [1.0, 4.0], "bit_depth": [8, 14],
-      "crf_calibration_error": [0.0, 0.05], "motion_ghosting": [0.0, 0.5],
-      "under_coverage": [0.0, 0.30], "vignetting_residual": [0.0, 0.10],
-      "white_balance_drift": [0.0, 0.10]
+      "H": [
+        256,
+        4096
+      ],
+      "W": [
+        256,
+        4096
+      ],
+      "K_exposures": [
+        2,
+        9
+      ],
+      "exposure_stops": [
+        1.0,
+        4.0
+      ],
+      "bit_depth": [
+        8,
+        14
+      ],
+      "crf_calibration_error": [
+        0.0,
+        0.05
+      ],
+      "motion_ghosting": [
+        0.0,
+        0.5
+      ],
+      "under_coverage": [
+        0.0,
+        0.3
+      ],
+      "vignetting_residual": [
+        0.0,
+        0.1
+      ],
+      "white_balance_drift": [
+        0.0,
+        0.1
+      ]
     },
     "E": {
       "forward": "y_k = clip(g(t_k * E) + n_k, 0, 2^B - 1); motion induces ghost offsets; crf_error perturbs g",
@@ -19,38 +53,107 @@
       "primitive_chain": "S.scan.exposure -> L.apply.crf -> D.saturate -> int.temporal",
       "inverse": "recover HDR irradiance E from K LDR brackets"
     },
-    "B": {"nonnegative_irradiance": true, "crf_monotone": true, "bounded_dynamic_range": true},
-    "I": {"strategy": "mertens_init_plus_crf_ml"},
-    "O": ["HDR_PSNR_mu_dB", "HDR_VDP_2", "PU_encoded_SSIM", "residual_norm"],
+    "B": {
+      "nonnegative_irradiance": true,
+      "crf_monotone": true,
+      "bounded_dynamic_range": true
+    },
+    "I": {
+      "strategy": "mertens_init_plus_crf_ml"
+    },
+    "O": [
+      "HDR_PSNR_mu_dB",
+      "HDR_VDP_2",
+      "PU_encoded_SSIM",
+      "residual_norm"
+    ],
     "epsilon_fn": "32.0 + 3.0 * log2(K_exposures / 2) + 2.0 * (bit_depth - 8) - 20.0 * motion_ghosting - 15.0 * under_coverage / 0.30"
   },
-
   "protocol_fields": {
-    "input_format": {"ldr_frames": "float32(K, H, W, 3)", "exposure_times": "float32(K)"},
-    "output_format": {"hdr_image": "float32(H, W, 3)"},
+    "input_format": {
+      "ldr_frames": "float32(K, H, W, 3)",
+      "exposure_times": "float32(K)"
+    },
+    "output_format": {
+      "hdr_image": "float32(H, W, 3)"
+    },
     "baselines": [
-      {"name": "Debevec-Malik", "method_sig": "A+O", "expected_hdr_psnr_mu": 38.0},
-      {"name": "Mertens-Fusion","method_sig": "A+O", "expected_hdr_psnr_mu": 40.5},
-      {"name": "HDR-CNN",       "method_sig": "L+N", "expected_hdr_psnr_mu": 44.0},
-      {"name": "DeepHDR-GAN",   "method_sig": "L+N", "expected_hdr_psnr_mu": 45.5}
+      {
+        "name": "Debevec-Malik",
+        "method_sig": "A+O",
+        "expected_hdr_psnr_mu": 38.0
+      },
+      {
+        "name": "Mertens-Fusion",
+        "method_sig": "A+O",
+        "expected_hdr_psnr_mu": 40.5
+      },
+      {
+        "name": "HDR-CNN",
+        "method_sig": "L+N",
+        "expected_hdr_psnr_mu": 44.0
+      },
+      {
+        "name": "DeepHDR-GAN",
+        "method_sig": "L+N",
+        "expected_hdr_psnr_mu": 45.5
+      }
     ]
   },
-
   "ibenchmark_range": {
     "center_ibenchmark": {
       "rho": 1,
-      "omega_tier": {"H": 1080, "W": 1920, "K_exposures": 3, "exposure_stops": 2.0, "bit_depth": 12, "crf_calibration_error": 0.0, "motion_ghosting": 0.0, "under_coverage": 0.0},
+      "omega_tier": {
+        "H": 1080,
+        "W": 1920,
+        "K_exposures": 3,
+        "exposure_stops": 2.0,
+        "bit_depth": 12,
+        "crf_calibration_error": 0.0,
+        "motion_ghosting": 0.0,
+        "under_coverage": 0.0
+      },
       "epsilon": 42.0
     },
     "tier_bounds": {
-      "H": [256, 2160], "W": [256, 3840], "K_exposures": [2, 7],
-      "exposure_stops": [1.0, 3.0], "bit_depth": [8, 12],
-      "motion_ghosting": [0.0, 0.5], "under_coverage": [0.0, 0.30]
+      "H": [
+        256,
+        2160
+      ],
+      "W": [
+        256,
+        3840
+      ],
+      "K_exposures": [
+        2,
+        7
+      ],
+      "exposure_stops": [
+        1.0,
+        3.0
+      ],
+      "bit_depth": [
+        8,
+        12
+      ],
+      "motion_ghosting": [
+        0.0,
+        0.5
+      ],
+      "under_coverage": [
+        0.0,
+        0.3
+      ]
     },
-    "proximity_threshold": 0.10
+    "proximity_threshold": 0.1
   },
-
   "d_spec": 0.42,
-  "s1_s4_gates": ["PASS", "PASS", "PASS", "PASS"],
-  "ipfs_cid": null
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null,
+  "display_slug": "hdr-imaging"
 }

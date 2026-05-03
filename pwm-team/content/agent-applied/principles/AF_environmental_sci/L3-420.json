@@ -3,7 +3,7 @@
   "layer": "L3",
   "parent_l2": "L2-420",
   "parent_l1": "L1-420",
-  "title": "Sea Ice Thermodynamic-Dynamic Inversion \u2014 Benchmark Suite",
+  "title": "Sea Ice Thermodynamic-Dynamic Inversion — Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "NSIDC_DMSP_SSM_I_SSMIS_passive_MW",
@@ -251,5 +251,6 @@
     "M6_gate_checks": "gates/check_s{1,2,3,4}.py embedded with thresholds.yaml."
   },
   "ipfs_cid": null,
-  "ground_truth_cid": null
+  "ground_truth_cid": null,
+  "display_slug": "sea-ice-thermodynamic-dynamic-inversion-benchmark-suite"
 }

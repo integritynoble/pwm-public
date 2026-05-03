@@ -2,7 +2,7 @@
   "artifact_id": "L1-203",
   "layer": "L1",
   "principle_number": "203",
-  "title": "Thermoelectric Transport \u2014 coupled Seebeck-Peltier",
+  "title": "Thermoelectric Transport — coupled Seebeck-Peltier",
   "domain": "Heat Transfer",
   "sub_domain": "ZT figure-of-merit inversion",
   "source_file": "S_heat_transfer/203_thermoelectric.md",
@@ -11,7 +11,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Thermoelectric Transport \u2014 coupled Seebeck-Peltier forward model.",
+    "description": "Thermoelectric Transport — coupled Seebeck-Peltier forward model.",
     "forward_model": "J = sigma(E - alpha grad T); q = Pi J - kappa grad T; coupled continuity + heat",
     "world_state_x": "electrical conductivity sigma, Seebeck alpha, thermal conductivity kappa => ZT",
     "observation_y": "voltage + temperature gradient at N_probe points across test specimen",
@@ -176,5 +176,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "thermoelectric"
 }

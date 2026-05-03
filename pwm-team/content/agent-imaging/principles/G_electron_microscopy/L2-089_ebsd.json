@@ -2,7 +2,7 @@
   "artifact_id": "L2-089",
   "layer": "L2",
   "parent_l1": "L1-089",
-  "title": "Electron Backscatter Diffraction (EBSD) \u2014 crystallographic orientation mapping Mismatch-Only Spec",
+  "title": "Electron Backscatter Diffraction (EBSD) — crystallographic orientation mapping Mismatch-Only Spec",
   "spec_type": "mismatch_only",
   "six_tuple": {
     "omega": {
@@ -139,5 +139,6 @@
     "PASS",
     "PASS"
   ],
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "display_slug": "ebsd"
 }

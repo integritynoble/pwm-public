@@ -5,12 +5,32 @@
   "principle_ref": "sha256:<L1-386_principle_hash>",
   "title": "Compressed Sensing Canonical Spec (Gaussian matrix + Lp recovery)",
   "spec_type": "mismatch_only",
-
   "six_tuple": {
     "omega": {
-      "N": [256, 16384], "M": [32, 12288],
-      "k": [5, 2000], "sigma_n": [0.001, 0.1],
-      "coherence": [0.01, 0.5], "basis_mismatch": [0.0, 0.3]
+      "N": [
+        256,
+        16384
+      ],
+      "M": [
+        32,
+        12288
+      ],
+      "k": [
+        5,
+        2000
+      ],
+      "sigma_n": [
+        0.001,
+        0.1
+      ],
+      "coherence": [
+        0.01,
+        0.5
+      ],
+      "basis_mismatch": [
+        0.0,
+        0.3
+      ]
     },
     "E": {
       "forward": "y = A*x + n; A ~ N(0, 1/M) i.i.d. Gaussian",
@@ -18,44 +38,101 @@
       "primitive_chain": "L.project.random -> int.spatial",
       "inverse": "recover k-sparse x in R^N from M measurements y"
     },
-    "B": {"sparsity_prior": "||x||_0 <= k", "bounded_signal_energy": "||x||_2 <= 1"},
-    "I": {"strategy": "zero_init"},
-    "O": ["NMSE", "support_recovery_rate", "SNR_dB", "residual_norm", "convergence_curve"],
+    "B": {
+      "sparsity_prior": "||x||_0 <= k",
+      "bounded_signal_energy": "||x||_2 <= 1"
+    },
+    "I": {
+      "strategy": "zero_init"
+    },
+    "O": [
+      "NMSE",
+      "support_recovery_rate",
+      "SNR_dB",
+      "residual_norm",
+      "convergence_curve"
+    ],
     "epsilon_fn": "1e-3 * max(1, k / (M / (2 * log(N/k))))"
   },
-
   "protocol_fields": {
-    "input_format": {"measurements": "float32(M)", "sensing_matrix": "float32(M, N)"},
-    "output_format": {"signal": "float32(N)"},
+    "input_format": {
+      "measurements": "float32(M)",
+      "sensing_matrix": "float32(M, N)"
+    },
+    "output_format": {
+      "signal": "float32(N)"
+    },
     "baselines": [
-      {"name": "OMP",      "method_sig": "L+O", "expected_nmse": 5e-3},
-      {"name": "LASSO",    "method_sig": "L+O", "expected_nmse": 3e-3},
-      {"name": "FISTA",    "method_sig": "L+O", "expected_nmse": 2.5e-3},
-      {"name": "AMP",      "method_sig": "L+O", "expected_nmse": 1e-3},
-      {"name": "LISTA",    "method_sig": "L+N", "expected_nmse": 8e-4}
+      {
+        "name": "OMP",
+        "method_sig": "L+O",
+        "expected_nmse": 0.005
+      },
+      {
+        "name": "LASSO",
+        "method_sig": "L+O",
+        "expected_nmse": 0.003
+      },
+      {
+        "name": "FISTA",
+        "method_sig": "L+O",
+        "expected_nmse": 0.0025
+      },
+      {
+        "name": "AMP",
+        "method_sig": "L+O",
+        "expected_nmse": 0.001
+      },
+      {
+        "name": "LISTA",
+        "method_sig": "L+N",
+        "expected_nmse": 0.0008
+      }
     ]
   },
-
   "ibenchmark_range": {
     "center_ibenchmark": {
       "rho": 1,
-      "omega_tier": {"N": 1024, "M": 256, "k": 40, "sigma_n": 0.01, "coherence": 0.05, "basis_mismatch": 0.0},
-      "epsilon": 1e-3
+      "omega_tier": {
+        "N": 1024,
+        "M": 256,
+        "k": 40,
+        "sigma_n": 0.01,
+        "coherence": 0.05,
+        "basis_mismatch": 0.0
+      },
+      "epsilon": 0.001
     },
-    "tier_bounds": {"N": [256, 4096], "M": [32, 3072], "k": [5, 500]},
-    "proximity_threshold": 0.10
+    "tier_bounds": {
+      "N": [
+        256,
+        4096
+      ],
+      "M": [
+        32,
+        3072
+      ],
+      "k": [
+        5,
+        500
+      ]
+    },
+    "proximity_threshold": 0.1
   },
-
-  "d_spec": 0.50,
+  "d_spec": 0.5,
   "d_spec_notes": "Distance from 391 sparse recovery ~= 0.20 (Similar, shares sparsity prior and L1-min). Distance from partial-DFT spec would be ~= 0.35.",
-
-  "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
   "s1_s4_justifications": {
     "S1": "Dimensions: A in R^{M x N}, x in R^N, y in R^M consistent.",
     "S2": "RIP holds for Gaussian A with M >= c*k*log(N/k); recovery unique within delta_2k sphere.",
     "S3": "OMP terminates in k steps; FISTA O(1/k^2); AMP fixed-point via state evolution.",
     "S4": "epsilon_fn defined for all Omega in bounds; LASSO fails at measurement_ratio=0.05 endpoint (hardness holds)."
   },
-
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "display_slug": "compressed-sensing"
 }

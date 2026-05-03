@@ -2,7 +2,7 @@
   "artifact_id": "L2-016",
   "layer": "L2",
   "parent_l1": "L1-016",
-  "title": "Image Scanning Microscopy (ISM) \u2014 pixel reassignment super-resolution Mismatch-Only Spec",
+  "title": "Image Scanning Microscopy (ISM) — pixel reassignment super-resolution Mismatch-Only Spec",
   "spec_type": "mismatch_only",
   "six_tuple": {
     "omega": {
@@ -149,5 +149,6 @@
     "PASS",
     "PASS"
   ],
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "display_slug": "ism"
 }

@@ -7,7 +7,6 @@
   "sub_domain": "Pulmonary vascular contrast-enhanced reconstruction with embolism location + RV-strain severity readout",
   "source_file": "C_medical_imaging/525_pulmonary_embolism_ctpa_pwdr.md",
   "source_data_quality_note": "v2 physical_with_discrete_readout (PWDR) genesis Principle. Wraps L1-029 CT (existing in v1 genesis, extended for contrast-enhanced angiography acquisition; sibling L1-039 X-ray angio also informational) with deterministic threshold rules on intraluminal filling defect + RV/LV ratio + Mastora obstruction index to assign categorical PE severity {no_PE, isolated_subsegmental, segmental, lobar, central, saddle}. Universal in emergency / inpatient radiology — CTPA is the gold-standard PE imaging test. UTSW Emergency Department + Pulmonary Hypertension Program high-volume use.",
-
   "gate_class": "physical_with_discrete_readout",
   "gate_substitutions": {
     "kappa_substitute": null,
@@ -19,8 +18,20 @@
     "lipschitz_constant": 0.05,
     "underlying_physical_state": "voxel-resolved iodinated-contrast distribution in pulmonary arteries + cardiac chamber dimensions recovered from L1-029 CT (CTPA acquisition: peak pulmonary-arterial-contrast timing, typically 18-24 seconds post-injection)",
     "physics_core_principle": "L1-029",
-    "label_set_anatomic": ["no_PE", "isolated_subsegmental", "segmental", "lobar", "central_main", "saddle"],
-    "label_set_severity": ["low_risk", "intermediate_low_risk", "intermediate_high_risk", "high_risk_massive"],
+    "label_set_anatomic": [
+      "no_PE",
+      "isolated_subsegmental",
+      "segmental",
+      "lobar",
+      "central_main",
+      "saddle"
+    ],
+    "label_set_severity": [
+      "low_risk",
+      "intermediate_low_risk",
+      "intermediate_high_risk",
+      "high_risk_massive"
+    ],
     "threshold_continuity_proof": "Anatomic-location classification is a step function on filling-defect location (segmental tree topology); each location boundary is a measure-zero hyperplane. RV/LV ratio and obstruction index are continuous on chamber-diameter and clot-burden estimates. Smoothed-grading globally Lipschitz with constant ~0.05 per percentage-point of contrast-filling-defect detection error."
   },
   "related_principles": [
@@ -29,24 +40,55 @@
     "L1-058 (MRA — sibling MR vessel modality, informational)",
     "L1-510 (Cardiac 4D-flow MRI — sibling cardiac-chamber assessment, informational)"
   ],
-
   "E": {
     "description": "Pulmonary Embolism Detection from CTPA (PWDR): wraps L1-029 CT analytical core (in CTPA acquisition mode) with established radiology grading rules. Stage 1 (analytical, from L1-029): from contrast-enhanced volumetric CT acquired during peak pulmonary-arterial enhancement (timing bolus or test bolus protocol), recover voxel-resolved iodinated-contrast distribution in pulmonary vasculature; segment pulmonary arterial tree (down to subsegmental level); detect intraluminal filling defects; measure RV and LV chamber diameters at maximum dimension. Stage 2 (deterministic threshold): classify defect location into anatomic level; compute Mastora / Qanadli obstruction index; assess RV strain via RV/LV ratio; determine severity tier per ESC 2019 / AHA 2011 risk stratification. Difficulty tier delta = 5. Mismatch parameters: contrast_bolus_timing, motion_during_breath_hold, partial_volume_at_subsegmental, beam_hardening_artifact, AI_threshold_calibration, RV_LV_measurement_axis.",
     "forward_model": "Stage 1 (L1-029, CTPA): {y_proj} -> mu_attenuation(r); pulmonary_artery_segmentation(r) -> tree_structure; contrast_filling(branch) -> defect_indicator. Stage 2: anatomic_class = step(defect_location_in_tree); RV/LV_ratio = max_diameter_RV / max_diameter_LV; severity = ESC 2019 risk_stratification(anatomic_class, RV/LV, troponin, hemodynamics).",
     "world_state_x": "Per-CTPA categorical labels: PE anatomic location, severity tier, RV strain present/absent.",
     "observation_y": "Volumetric chest CTPA (typically 512x512 in-plane, 200-400 axial slices, 0.625-1.5 mm slice thickness, contrast-enhanced).",
-    "physical_parameters_theta": ["H", "W", "Z", "slice_thickness_mm", "voxel_size_mm", "kVp", "mAs", "contrast_bolus_timing", "motion_during_breath_hold", "partial_volume_at_subsegmental", "beam_hardening_artifact", "AI_threshold_calibration", "RV_LV_measurement_axis"]
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "Z",
+      "slice_thickness_mm",
+      "voxel_size_mm",
+      "kVp",
+      "mAs",
+      "contrast_bolus_timing",
+      "motion_during_breath_hold",
+      "partial_volume_at_subsegmental",
+      "beam_hardening_artifact",
+      "AI_threshold_calibration",
+      "RV_LV_measurement_axis"
+    ]
   },
-
   "G": {
     "dag": "L.xray_source -> L.attenuation_projection -> L.dynamic_reconstruction -> L.pulmonary_artery_segmentation -> L.filling_defect_detection -> L.rv_lv_measurement -> L.pe_severity_classifier -> int.spatial",
-    "vertices": ["L.xray_source", "L.attenuation_projection", "L.dynamic_reconstruction", "L.pulmonary_artery_segmentation", "L.filling_defect_detection", "L.rv_lv_measurement", "L.pe_severity_classifier", "int.spatial"],
-    "arcs": ["L.xray_source -> L.attenuation_projection", "L.attenuation_projection -> L.dynamic_reconstruction", "L.dynamic_reconstruction -> L.pulmonary_artery_segmentation", "L.dynamic_reconstruction -> L.rv_lv_measurement", "L.pulmonary_artery_segmentation -> L.filling_defect_detection", "L.filling_defect_detection -> L.pe_severity_classifier", "L.rv_lv_measurement -> L.pe_severity_classifier", "L.pe_severity_classifier -> int.spatial"],
+    "vertices": [
+      "L.xray_source",
+      "L.attenuation_projection",
+      "L.dynamic_reconstruction",
+      "L.pulmonary_artery_segmentation",
+      "L.filling_defect_detection",
+      "L.rv_lv_measurement",
+      "L.pe_severity_classifier",
+      "int.spatial"
+    ],
+    "arcs": [
+      "L.xray_source -> L.attenuation_projection",
+      "L.attenuation_projection -> L.dynamic_reconstruction",
+      "L.dynamic_reconstruction -> L.pulmonary_artery_segmentation",
+      "L.dynamic_reconstruction -> L.rv_lv_measurement",
+      "L.pulmonary_artery_segmentation -> L.filling_defect_detection",
+      "L.filling_defect_detection -> L.pe_severity_classifier",
+      "L.rv_lv_measurement -> L.pe_severity_classifier",
+      "L.pe_severity_classifier -> int.spatial"
+    ],
     "L_DAG": 7.0,
     "n_c": 1,
-    "coupling_constraints": ["arterial_to_chamber: pulmonary arterial tree segmentation and cardiac chamber measurement share the same volumetric CTPA scan; coupled processing enforces anatomic consistency between vascular obstruction and downstream RV strain"]
+    "coupling_constraints": [
+      "arterial_to_chamber: pulmonary arterial tree segmentation and cardiac chamber measurement share the same volumetric CTPA scan; coupled processing enforces anatomic consistency between vascular obstruction and downstream RV strain"
+    ]
   },
-
   "W": {
     "existence": true,
     "uniqueness": "conditional",
@@ -55,14 +97,12 @@
     "condition_number_effective": 18,
     "regime": "Existence inherited from L1-029. Uniqueness conditional on adequate contrast bolus timing (peak pulmonary-arterial enhancement). Stability conditional with contrast_bolus_timing dominant for false-negative rate at subsegmental level (~15-25% miss rate for isolated subsegmental PE). Joint Hadamard well-posedness for the CTPA + PE-detection forward established by Wittram 2007 (foundational PE imaging review), Quanadli 2001 (Qanadli obstruction index), Mastora 2003 (Mastora score), Konstantinides 2019 (ESC 2019 PE guidelines), Jaff 2011 (AHA scientific statement), Stein 2006 (PIOPED II)."
   },
-
   "C": {
     "solver_class": "linear-operator + image-segmentation [L1-029 reconstruction + pulmonary artery tree segmentation + filling defect detection + RV/LV measurement] + categorical-readout [ESC 2019 severity classifier] | end-to-end deep neural [DeepEmbolus, Aidoc PE, RapidAI PE] with explicit physics-informed vascular regularization",
     "convergence_rate_q": 2.0,
     "error_bound": "Inherits L1-029 reconstruction bound. Misclassification probability bound: Pr(severity_hat != severity_true) <= C_thresh * |defect_detection_error| / d(features, severity_boundary). Subsegmental PE detection has highest false-negative rate (15-25%); central / lobar PE detection accuracy >95%.",
     "complexity": "O(H * W * Z * log(N)) for stage 1 reconstruction; O(N_arterial_branches) for stage 2 tree analysis"
   },
-
   "physics_fingerprint": {
     "carrier": "x_ray",
     "sensing_mechanism": "ctpa_with_pe_severity_threshold",
@@ -70,40 +110,126 @@
     "problem_class": "linear_inverse_with_categorical_readout",
     "noise_model": "poisson",
     "solution_space": "1D_pe_severity",
-    "primitives": ["L.xray_source", "L.attenuation_projection", "L.dynamic_reconstruction", "L.pulmonary_artery_segmentation", "L.filling_defect_detection", "L.rv_lv_measurement", "L.pe_severity_classifier", "int.spatial"]
+    "primitives": [
+      "L.xray_source",
+      "L.attenuation_projection",
+      "L.dynamic_reconstruction",
+      "L.pulmonary_artery_segmentation",
+      "L.filling_defect_detection",
+      "L.rv_lv_measurement",
+      "L.pe_severity_classifier",
+      "int.spatial"
+    ]
   },
-
   "difficulty_delta": 5,
   "difficulty_tier": "advanced",
-  "mismatch_parameters": ["contrast_bolus_timing", "motion_during_breath_hold", "partial_volume_at_subsegmental", "beam_hardening_artifact", "AI_threshold_calibration", "RV_LV_measurement_axis"],
+  "mismatch_parameters": [
+    "contrast_bolus_timing",
+    "motion_during_breath_hold",
+    "partial_volume_at_subsegmental",
+    "beam_hardening_artifact",
+    "AI_threshold_calibration",
+    "RV_LV_measurement_axis"
+  ],
   "error_metric": "categorical_accuracy",
   "error_metric_secondary": "sensitivity_for_central_lobar_PE",
-
   "spec_range": {
     "center_spec": {
       "problem_class": "pe_ctpa_severity_pwdr",
       "forward_operator": "ctpa_pe_pwdr_forward",
       "input_format": "ctpa_volume_with_pe_severity_label",
-      "omega": {"H": 512, "W": 512, "Z": 300, "slice_thickness_mm": 1.0, "voxel_size_mm": 0.7, "kVp": 100, "mAs": 250, "contrast_bolus_timing": 0.0, "motion_during_breath_hold": 0.0, "partial_volume_at_subsegmental": 0.0, "beam_hardening_artifact": 0.0, "AI_threshold_calibration": 0.0, "RV_LV_measurement_axis": 0.0},
+      "omega": {
+        "H": 512,
+        "W": 512,
+        "Z": 300,
+        "slice_thickness_mm": 1.0,
+        "voxel_size_mm": 0.7,
+        "kVp": 100,
+        "mAs": 250,
+        "contrast_bolus_timing": 0.0,
+        "motion_during_breath_hold": 0.0,
+        "partial_volume_at_subsegmental": 0.0,
+        "beam_hardening_artifact": 0.0,
+        "AI_threshold_calibration": 0.0,
+        "RV_LV_measurement_axis": 0.0
+      },
       "epsilon_fn_center": "0.85_accuracy"
     },
-    "allowed_forward_operators": ["ctpa_pe_pwdr_forward", "ctpa_pe_subsegmental_pwdr_forward", "ctpa_pe_with_rv_strain_pwdr_forward"],
-    "allowed_problem_classes": ["pe_ctpa_severity_pwdr", "pe_anatomic_location_pwdr", "pe_rv_strain_pwdr", "pe_obstruction_index_pwdr"],
-    "allowed_omega_dimensions": ["H", "W", "Z", "slice_thickness_mm", "voxel_size_mm", "kVp", "mAs", "contrast_bolus_timing", "motion_during_breath_hold", "partial_volume_at_subsegmental", "beam_hardening_artifact", "AI_threshold_calibration", "RV_LV_measurement_axis"],
-    "omega_bounds": {"H": [256, 1024], "W": [256, 1024], "Z": [100, 800], "slice_thickness_mm": [0.5, 3.0]},
-    "epsilon_bounds": {"categorical_accuracy": [0.50, 0.99]}
+    "allowed_forward_operators": [
+      "ctpa_pe_pwdr_forward",
+      "ctpa_pe_subsegmental_pwdr_forward",
+      "ctpa_pe_with_rv_strain_pwdr_forward"
+    ],
+    "allowed_problem_classes": [
+      "pe_ctpa_severity_pwdr",
+      "pe_anatomic_location_pwdr",
+      "pe_rv_strain_pwdr",
+      "pe_obstruction_index_pwdr"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "Z",
+      "slice_thickness_mm",
+      "voxel_size_mm",
+      "kVp",
+      "mAs",
+      "contrast_bolus_timing",
+      "motion_during_breath_hold",
+      "partial_volume_at_subsegmental",
+      "beam_hardening_artifact",
+      "AI_threshold_calibration",
+      "RV_LV_measurement_axis"
+    ],
+    "omega_bounds": {
+      "H": [
+        256,
+        1024
+      ],
+      "W": [
+        256,
+        1024
+      ],
+      "Z": [
+        100,
+        800
+      ],
+      "slice_thickness_mm": [
+        0.5,
+        3.0
+      ]
+    },
+    "epsilon_bounds": {
+      "categorical_accuracy": [
+        0.5,
+        0.99
+      ]
+    }
   },
-
-  "p1_p10_tests": ["PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS"],
-  "s1_s4_gates": ["PASS", "PASS", "PASS", "PASS"],
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
   "ipfs_cid": null,
-
   "recast_attempted": {
     "considered": true,
     "recast_path": "Original framing: 'Detect pulmonary embolism on CTPA + classify severity'. Option-3 recast: 'Recover pulmonary arterial tree + cardiac chamber dimensions via L1-029 CT (CTPA mode); detect filling defects; compute Mastora obstruction index + RV/LV ratio; apply ESC 2019 risk stratification rules'. Feasible because pulmonary vascular anatomy has well-defined CT contrast forward model and PE severity classification is deterministic from recovered features.",
     "reason_rejected": null
   },
-
   "v3_metadata": {
     "is_standalone_multiphysics": false,
     "coupling_count_n_c": 1,
@@ -123,5 +249,6 @@
       "rationale": "L1-029 CT recovers static 3D attenuation; L1-525 specializes to CTPA acquisition mode (peak pulmonary-arterial enhancement timing) and adds vascular-segmentation + chamber-measurement + severity-classification primitives. Different solution_space (1D PE severity vs 3D attenuation); adds L.pulmonary_artery_segmentation, L.filling_defect_detection, L.rv_lv_measurement, L.pe_severity_classifier primitives."
     },
     "clinical_context": "Universal in emergency / inpatient radiology — CTPA is the gold-standard imaging test for suspected pulmonary embolism. Annual incidence ~10/100,000; PE is the third leading cause of cardiovascular death after MI and stroke. ESC 2019 guidelines integrate CTPA findings with biomarkers (troponin, NT-proBNP) and hemodynamics for risk stratification. UTSW Emergency Department + Pulmonary Hypertension Program. Commercial systems: Aidoc PE, RapidAI PE, Lunit INSIGHT CXR (for chest X-ray screening before CTPA), Avicenna.AI CINA — all PWDR-shaped systems. PWDR formulation gives physics-grounded explainability: severity derives from explicit anatomic location + obstruction index + RV/LV ratio tied to ESC 2019 / AHA 2011 guidelines."
-  }
+  },
+  "display_slug": "pe-ctpa"
 }

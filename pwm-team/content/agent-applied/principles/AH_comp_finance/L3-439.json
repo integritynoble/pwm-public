@@ -3,7 +3,7 @@
   "layer": "L3",
   "parent_l2": "L2-439",
   "parent_l1": "L1-439",
-  "title": "Heston Stochastic Volatility Calibration \u2014 Benchmark Suite",
+  "title": "Heston Stochastic Volatility Calibration — Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "CBOE_SPX_options_2023",
@@ -255,5 +255,6 @@
     "M6_gate_checks": "gates/check_s{1,2,3,4}.py embedded with thresholds.yaml."
   },
   "ipfs_cid": null,
-  "ground_truth_cid": null
+  "ground_truth_cid": null,
+  "display_slug": "heston-stochastic-volatility-calibration-benchmark-suite"
 }

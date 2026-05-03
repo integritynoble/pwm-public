@@ -4,14 +4,52 @@
   "parent_l1": "L1-083",
   "title": "3DGS Novel-View Synthesis Mismatch-Only Spec",
   "spec_type": "mismatch_only",
-
   "six_tuple": {
     "omega": {
-      "H": [400, 4000], "W": [400, 4000], "K_views": [10, 1000],
-      "N_gaussians": [100000, 10000000], "L_SH": [0, 4],
-      "photon_count": [100, 10000], "pose_error_rad": [0.0, 0.1],
-      "per_frame_exposure_variation": [0.0, 0.5], "non_lambertian": [0.0, 0.5],
-      "N_budget_too_small": [0.0, 0.8], "motion_blur_per_frame": [0.0, 0.1]
+      "H": [
+        400,
+        4000
+      ],
+      "W": [
+        400,
+        4000
+      ],
+      "K_views": [
+        10,
+        1000
+      ],
+      "N_gaussians": [
+        100000,
+        10000000
+      ],
+      "L_SH": [
+        0,
+        4
+      ],
+      "photon_count": [
+        100,
+        10000
+      ],
+      "pose_error_rad": [
+        0.0,
+        0.1
+      ],
+      "per_frame_exposure_variation": [
+        0.0,
+        0.5
+      ],
+      "non_lambertian": [
+        0.0,
+        0.5
+      ],
+      "N_budget_too_small": [
+        0.0,
+        0.8
+      ],
+      "motion_blur_per_frame": [
+        0.0,
+        0.1
+      ]
     },
     "E": {
       "forward": "C(r) = sum_i T_i alpha_i_2d c_i over sorted Gaussians projected at pose T_k + pose_error",
@@ -19,40 +57,113 @@
       "primitive_chain": "S.scan.view -> L.project.gaussian -> L.alpha_composite -> int.depth",
       "inverse": "fit {mu_i, Sigma_i, c_i, alpha_i} to reproduce K training views"
     },
-    "B": {"psd_covariance": "Sigma_i positive-semidefinite", "opacity_bounded": "alpha_i in [0, 1]", "color_bounded": true},
-    "I": {"strategy": "sfm_point_cloud_init_plus_adaptive_densify_prune"},
-    "O": ["PSNR", "SSIM", "LPIPS", "frames_per_sec"],
+    "B": {
+      "psd_covariance": "Sigma_i positive-semidefinite",
+      "opacity_bounded": "alpha_i in [0, 1]",
+      "color_bounded": true
+    },
+    "I": {
+      "strategy": "sfm_point_cloud_init_plus_adaptive_densify_prune"
+    },
+    "O": [
+      "PSNR",
+      "SSIM",
+      "LPIPS",
+      "frames_per_sec"
+    ],
     "epsilon_fn": "23.0 + 2.5 * log2(K_views / 10) + 2.0 * log10(N_gaussians / 100000) - 25.0 * pose_error_rad - 10.0 * N_budget_too_small"
   },
-
   "protocol_fields": {
-    "input_format": {"images": "uint8(K, H, W, 3)", "extrinsics": "float32(K, 4, 4)", "intrinsics": "float32(3, 3)", "sfm_init": "float32(N_init, 3)"},
-    "output_format": {"gaussians": "dict: {mu (N,3), Sigma (N,3,3), color (N,3,L_SH), alpha (N,)}"},
+    "input_format": {
+      "images": "uint8(K, H, W, 3)",
+      "extrinsics": "float32(K, 4, 4)",
+      "intrinsics": "float32(3, 3)",
+      "sfm_init": "float32(N_init, 3)"
+    },
+    "output_format": {
+      "gaussians": "dict: {mu (N,3), Sigma (N,3,3), color (N,3,L_SH), alpha (N,)}"
+    },
     "baselines": [
-      {"name": "3DGS-original", "method_sig": "L+O", "expected_psnr": 30.5},
-      {"name": "Mip-Splatting", "method_sig": "L+O", "expected_psnr": 32.0},
-      {"name": "2DGS",          "method_sig": "L+O", "expected_psnr": 31.2},
-      {"name": "Compact-3DGS",  "method_sig": "L+N", "expected_psnr": 31.8}
+      {
+        "name": "3DGS-original",
+        "method_sig": "L+O",
+        "expected_psnr": 30.5
+      },
+      {
+        "name": "Mip-Splatting",
+        "method_sig": "L+O",
+        "expected_psnr": 32.0
+      },
+      {
+        "name": "2DGS",
+        "method_sig": "L+O",
+        "expected_psnr": 31.2
+      },
+      {
+        "name": "Compact-3DGS",
+        "method_sig": "L+N",
+        "expected_psnr": 31.8
+      }
     ]
   },
-
   "ibenchmark_range": {
     "center_ibenchmark": {
       "rho": 1,
-      "omega_tier": {"H": 1080, "W": 1920, "K_views": 200, "N_gaussians": 1000000, "L_SH": 3, "photon_count": 2000, "pose_error_rad": 0.0, "per_frame_exposure_variation": 0.0, "non_lambertian": 0.0, "N_budget_too_small": 0.0, "motion_blur_per_frame": 0.0},
+      "omega_tier": {
+        "H": 1080,
+        "W": 1920,
+        "K_views": 200,
+        "N_gaussians": 1000000,
+        "L_SH": 3,
+        "photon_count": 2000,
+        "pose_error_rad": 0.0,
+        "per_frame_exposure_variation": 0.0,
+        "non_lambertian": 0.0,
+        "N_budget_too_small": 0.0,
+        "motion_blur_per_frame": 0.0
+      },
       "epsilon": 31.0
     },
     "tier_bounds": {
-      "H": [400, 3000], "W": [400, 3000], "K_views": [20, 500],
-      "N_gaussians": [200000, 5000000], "pose_error_rad": [0.0, 0.1],
-      "non_lambertian": [0.0, 0.5], "N_budget_too_small": [0.0, 0.8]
+      "H": [
+        400,
+        3000
+      ],
+      "W": [
+        400,
+        3000
+      ],
+      "K_views": [
+        20,
+        500
+      ],
+      "N_gaussians": [
+        200000,
+        5000000
+      ],
+      "pose_error_rad": [
+        0.0,
+        0.1
+      ],
+      "non_lambertian": [
+        0.0,
+        0.5
+      ],
+      "N_budget_too_small": [
+        0.0,
+        0.8
+      ]
     },
-    "proximity_threshold": 0.10
+    "proximity_threshold": 0.1
   },
-
   "d_spec": 0.42,
   "d_spec_notes": "3DGS shares 'multi_view_photogrammetry + angular + nonlinear_inverse' fingerprint with NeRF (L1-082) but differs on solution_space (3D_explicit_primitives vs. 3D_implicit_field) and on omega_dim names (N_gaussians, L_SH vs. N_samp_per_ray). d_spec ~ 0.42 (Related band).",
-
-  "s1_s4_gates": ["PASS", "PASS", "PASS", "PASS"],
-  "ipfs_cid": null
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null,
+  "display_slug": "3d-gaussian-splatting"
 }

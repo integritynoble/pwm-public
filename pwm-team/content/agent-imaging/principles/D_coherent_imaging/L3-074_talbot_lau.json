@@ -5,7 +5,6 @@
   "parent_l1": "L1-074",
   "title": "Talbot-Lau 3-Grating Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
-
   "dataset_registry": {
     "primary": "PSI TOMCAT grating interferometry test set (small animal, breast tissue, lung nodules)",
     "secondary": "Siemens grating-based mammography prototype dataset",
@@ -13,50 +12,136 @@
     "construction_method": "Simulate 3-grating forward with polychromatic spectrum; inject grating drift + alignment tilt as mismatch; Poisson counting at declared photon_count",
     "num_dev_instances_per_tier": 20
   },
-
   "ibenchmarks": [
     {
-      "tier": "T1_nominal", "rho": 1,
-      "omega_tier": {"H": 1024, "W": 1024, "K_steps": 8, "V_center": 0.30, "photon_count_per_pixel": 10000, "grating_period_drift": 0.0, "alignment_tilt": 0.0},
-      "epsilon": 30.0, "d_ibench": 0.15,
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "H": 1024,
+        "W": 1024,
+        "K_steps": 8,
+        "V_center": 0.3,
+        "photon_count_per_pixel": 10000,
+        "grating_period_drift": 0.0,
+        "alignment_tilt": 0.0
+      },
+      "epsilon": 30.0,
+      "d_ibench": 0.15,
       "baselines": [
-        {"name": "Fourier-Demod",  "score": 28.5, "Q": 0.62},
-        {"name": "TV-ADMM-Talbot", "score": 31.5, "Q": 0.82},
-        {"name": "TalbotNet",      "score": 34.0, "Q": 0.93}
+        {
+          "name": "Fourier-Demod",
+          "score": 28.5,
+          "Q": 0.62
+        },
+        {
+          "name": "TV-ADMM-Talbot",
+          "score": 31.5,
+          "Q": 0.82
+        },
+        {
+          "name": "TalbotNet",
+          "score": 34.0,
+          "Q": 0.93
+        }
       ]
     },
     {
-      "tier": "T2_low", "rho": 3,
-      "omega_tier": {"H": 1024, "W": 1024, "K_steps": 5, "V_center": 0.22, "photon_count_per_pixel": 5000, "grating_period_drift": 0.01, "alignment_tilt": 0.005},
-      "epsilon": 27.0, "d_ibench": 0.30,
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "H": 1024,
+        "W": 1024,
+        "K_steps": 5,
+        "V_center": 0.22,
+        "photon_count_per_pixel": 5000,
+        "grating_period_drift": 0.01,
+        "alignment_tilt": 0.005
+      },
+      "epsilon": 27.0,
+      "d_ibench": 0.3,
       "baselines": [
-        {"name": "Fourier-Demod",  "score": 24.8, "Q": 0.42},
-        {"name": "TV-ADMM-Talbot", "score": 27.8, "Q": 0.58},
-        {"name": "TalbotNet",      "score": 30.5, "Q": 0.74}
+        {
+          "name": "Fourier-Demod",
+          "score": 24.8,
+          "Q": 0.42
+        },
+        {
+          "name": "TV-ADMM-Talbot",
+          "score": 27.8,
+          "Q": 0.58
+        },
+        {
+          "name": "TalbotNet",
+          "score": 30.5,
+          "Q": 0.74
+        }
       ]
     },
     {
-      "tier": "T3_moderate", "rho": 5,
-      "omega_tier": {"H": 2048, "W": 2048, "K_steps": 4, "V_center": 0.15, "photon_count_per_pixel": 2000, "grating_period_drift": 0.025, "alignment_tilt": 0.010},
-      "epsilon": 23.5, "d_ibench": 0.48,
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "H": 2048,
+        "W": 2048,
+        "K_steps": 4,
+        "V_center": 0.15,
+        "photon_count_per_pixel": 2000,
+        "grating_period_drift": 0.025,
+        "alignment_tilt": 0.01
+      },
+      "epsilon": 23.5,
+      "d_ibench": 0.48,
       "baselines": [
-        {"name": "Fourier-Demod",  "score": 20.5, "Q": 0.30},
-        {"name": "TV-ADMM-Talbot", "score": 23.8, "Q": 0.50},
-        {"name": "TalbotNet",      "score": 26.2, "Q": 0.64}
+        {
+          "name": "Fourier-Demod",
+          "score": 20.5,
+          "Q": 0.3
+        },
+        {
+          "name": "TV-ADMM-Talbot",
+          "score": 23.8,
+          "Q": 0.5
+        },
+        {
+          "name": "TalbotNet",
+          "score": 26.2,
+          "Q": 0.64
+        }
       ]
     },
     {
-      "tier": "T4_blind", "rho": 10,
-      "omega_tier": {"H": 4096, "W": 4096, "K_steps": 3, "V_center": 0.08, "photon_count_per_pixel": 500, "grating_period_drift": 0.05, "alignment_tilt": 0.02},
-      "epsilon": 19.0, "d_ibench": 0.72,
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "H": 4096,
+        "W": 4096,
+        "K_steps": 3,
+        "V_center": 0.08,
+        "photon_count_per_pixel": 500,
+        "grating_period_drift": 0.05,
+        "alignment_tilt": 0.02
+      },
+      "epsilon": 19.0,
+      "d_ibench": 0.72,
       "baselines": [
-        {"name": "Fourier-Demod",  "score": 15.2, "Q": 0.15},
-        {"name": "TV-ADMM-Talbot", "score": 18.5, "Q": 0.30},
-        {"name": "TalbotNet",      "score": 21.0, "Q": 0.46}
+        {
+          "name": "Fourier-Demod",
+          "score": 15.2,
+          "Q": 0.15
+        },
+        {
+          "name": "TV-ADMM-Talbot",
+          "score": 18.5,
+          "Q": 0.3
+        },
+        {
+          "name": "TalbotNet",
+          "score": 21.0,
+          "Q": 0.46
+        }
       ]
     }
   ],
-
   "p_benchmark": {
     "rho": 50,
     "dataset_p_benchmark": {
@@ -65,13 +150,22 @@
       "construction_method": "parametric Omega sampling; polychromatic spectrum modelled via NIST XCOM"
     },
     "baselines": [
-      {"name": "Fourier-Demod",  "overall_Q": 0.38},
-      {"name": "TV-ADMM-Talbot", "overall_Q": 0.57},
-      {"name": "TalbotNet",      "overall_Q": 0.70}
+      {
+        "name": "Fourier-Demod",
+        "overall_Q": 0.38
+      },
+      {
+        "name": "TV-ADMM-Talbot",
+        "overall_Q": 0.57
+      },
+      {
+        "name": "TalbotNet",
+        "overall_Q": 0.7
+      }
     ]
   },
-
   "hardness_rule_check": "SATISFIED — TalbotNet fails at T4_blind (V_center <= 0.08 + K_steps = 3 corner degrades phase extraction below epsilon).",
   "ipfs_cid": null,
-  "ground_truth_cid": null
+  "ground_truth_cid": null,
+  "display_slug": "talbot-lau"
 }

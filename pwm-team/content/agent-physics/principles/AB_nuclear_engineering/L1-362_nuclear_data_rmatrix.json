@@ -2,7 +2,7 @@
   "artifact_id": "L1-362",
   "layer": "L1",
   "principle_number": "362",
-  "title": "Nuclear Data \u2014 R-matrix resonance evaluation",
+  "title": "Nuclear Data — R-matrix resonance evaluation",
   "domain": "Nuclear Engineering",
   "sub_domain": "Resonance cross-section parameter inference",
   "source_file": "AB_nuclear_engineering/362_nuclear_data_rmatrix.md",
@@ -11,7 +11,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Nuclear Data \u2014 R-matrix resonance evaluation forward model.",
+    "description": "Nuclear Data — R-matrix resonance evaluation forward model.",
     "forward_model": "sigma(E) = pi/k^2 * sum_ell (2ell+1) * |1 - U_ell(E)|^2; U_ell from R-matrix",
     "world_state_x": "resonance parameters {E_r, Gamma_n, Gamma_gamma, J^pi} and background terms",
     "observation_y": "transmission / capture / fission cross-section measurements as function of energy",
@@ -176,5 +176,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "nuclear-data-rmatrix"
 }

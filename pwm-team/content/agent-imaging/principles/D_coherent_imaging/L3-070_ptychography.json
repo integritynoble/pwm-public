@@ -5,7 +5,6 @@
   "parent_l1": "L1-070",
   "title": "Ptychography Mismatch-Only Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
-
   "dataset_registry": {
     "primary": "APS Velociprobe ptychography test set (X-ray)",
     "secondary": "Lensless imaging lab synthetic + CSX beamline Simons data",
@@ -13,50 +12,140 @@
     "construction_method": "Simulate Fresnel propagation with oversampling >= 2; Poisson photon counting; random/regular scan grids at declared overlap_fraction",
     "num_dev_instances_per_tier": 20
   },
-
   "ibenchmarks": [
     {
-      "tier": "T1_nominal", "rho": 1,
-      "omega_tier": {"H": 512, "W": 512, "probe_size": 128, "J_scan": 400, "overlap_fraction": 0.70, "photon_count": 1000, "probe_position_error": 0.0, "partial_coherence": 1.0},
-      "epsilon": 30.0, "d_ibench": 0.14,
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "probe_size": 128,
+        "J_scan": 400,
+        "overlap_fraction": 0.7,
+        "photon_count": 1000,
+        "probe_position_error": 0.0,
+        "partial_coherence": 1.0
+      },
+      "epsilon": 30.0,
+      "d_ibench": 0.14,
       "baselines": [
-        {"name": "ePIE",        "score": 28.5, "Q": 0.65},
-        {"name": "ADMM-ptycho", "score": 31.0, "Q": 0.82},
-        {"name": "PtychoNN",    "score": 33.5, "Q": 0.94}
+        {
+          "name": "ePIE",
+          "score": 28.5,
+          "Q": 0.65
+        },
+        {
+          "name": "ADMM-ptycho",
+          "score": 31.0,
+          "Q": 0.82
+        },
+        {
+          "name": "PtychoNN",
+          "score": 33.5,
+          "Q": 0.94
+        }
       ]
     },
     {
-      "tier": "T2_low", "rho": 3,
-      "omega_tier": {"H": 512, "W": 512, "probe_size": 128, "J_scan": 300, "overlap_fraction": 0.60, "photon_count": 500, "probe_position_error": 0.3, "partial_coherence": 0.95},
-      "epsilon": 27.0, "d_ibench": 0.28,
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "probe_size": 128,
+        "J_scan": 300,
+        "overlap_fraction": 0.6,
+        "photon_count": 500,
+        "probe_position_error": 0.3,
+        "partial_coherence": 0.95
+      },
+      "epsilon": 27.0,
+      "d_ibench": 0.28,
       "baselines": [
-        {"name": "ePIE",        "score": 25.3, "Q": 0.45},
-        {"name": "ADMM-ptycho", "score": 27.8, "Q": 0.64},
-        {"name": "PtychoNN",    "score": 30.4, "Q": 0.80}
+        {
+          "name": "ePIE",
+          "score": 25.3,
+          "Q": 0.45
+        },
+        {
+          "name": "ADMM-ptycho",
+          "score": 27.8,
+          "Q": 0.64
+        },
+        {
+          "name": "PtychoNN",
+          "score": 30.4,
+          "Q": 0.8
+        }
       ]
     },
     {
-      "tier": "T3_moderate", "rho": 5,
-      "omega_tier": {"H": 1024, "W": 1024, "probe_size": 256, "J_scan": 800, "overlap_fraction": 0.50, "photon_count": 200, "probe_position_error": 0.8, "partial_coherence": 0.85},
-      "epsilon": 23.5, "d_ibench": 0.50,
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "H": 1024,
+        "W": 1024,
+        "probe_size": 256,
+        "J_scan": 800,
+        "overlap_fraction": 0.5,
+        "photon_count": 200,
+        "probe_position_error": 0.8,
+        "partial_coherence": 0.85
+      },
+      "epsilon": 23.5,
+      "d_ibench": 0.5,
       "baselines": [
-        {"name": "ePIE",        "score": 20.8, "Q": 0.32},
-        {"name": "ADMM-ptycho", "score": 23.1, "Q": 0.48},
-        {"name": "PtychoNN",    "score": 26.0, "Q": 0.64}
+        {
+          "name": "ePIE",
+          "score": 20.8,
+          "Q": 0.32
+        },
+        {
+          "name": "ADMM-ptycho",
+          "score": 23.1,
+          "Q": 0.48
+        },
+        {
+          "name": "PtychoNN",
+          "score": 26.0,
+          "Q": 0.64
+        }
       ]
     },
     {
-      "tier": "T4_blind", "rho": 10,
-      "omega_tier": {"H": 2048, "W": 2048, "probe_size": 256, "J_scan": 1500, "overlap_fraction": 0.35, "photon_count": 50, "probe_position_error": 2.0, "partial_coherence": 0.70},
-      "epsilon": 19.0, "d_ibench": 0.72,
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "H": 2048,
+        "W": 2048,
+        "probe_size": 256,
+        "J_scan": 1500,
+        "overlap_fraction": 0.35,
+        "photon_count": 50,
+        "probe_position_error": 2.0,
+        "partial_coherence": 0.7
+      },
+      "epsilon": 19.0,
+      "d_ibench": 0.72,
       "baselines": [
-        {"name": "ePIE",        "score": 15.8, "Q": 0.18},
-        {"name": "ADMM-ptycho", "score": 18.0, "Q": 0.30},
-        {"name": "PtychoNN",    "score": 20.5, "Q": 0.46}
+        {
+          "name": "ePIE",
+          "score": 15.8,
+          "Q": 0.18
+        },
+        {
+          "name": "ADMM-ptycho",
+          "score": 18.0,
+          "Q": 0.3
+        },
+        {
+          "name": "PtychoNN",
+          "score": 20.5,
+          "Q": 0.46
+        }
       ]
     }
   ],
-
   "p_benchmark": {
     "rho": 50,
     "dataset_p_benchmark": {
@@ -65,13 +154,22 @@
       "construction_method": "parametric Omega sampling; probe calibration artifacts via Zernike polynomial perturbations"
     },
     "baselines": [
-      {"name": "ePIE",        "overall_Q": 0.40},
-      {"name": "ADMM-ptycho", "overall_Q": 0.56},
-      {"name": "PtychoNN",    "overall_Q": 0.71}
+      {
+        "name": "ePIE",
+        "overall_Q": 0.4
+      },
+      {
+        "name": "ADMM-ptycho",
+        "overall_Q": 0.56
+      },
+      {
+        "name": "PtychoNN",
+        "overall_Q": 0.71
+      }
     ]
   },
-
   "hardness_rule_check": "SATISFIED — PtychoNN fails at T4_blind (20.5 dB < 19.0 epsilon - wait: 20.5 > 19.0 at tier but fails on S4_xlarge stratum of full P-bench where photon_count <= 50 and probe_position_error = 2px simultaneously).",
   "ipfs_cid": null,
-  "ground_truth_cid": null
+  "ground_truth_cid": null,
+  "display_slug": "ptychography"
 }

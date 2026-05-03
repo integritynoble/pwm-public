@@ -159,5 +159,6 @@
     "S3": "LS closed-form; MMSE closed-form given Rhh; OMP terminates in k; deep learned methods feed-forward.",
     "S4": "epsilon_fn evaluates; LS fails at alpha_p<<k/L_ch (hardness)."
   },
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "display_slug": "channel-estimation"
 }

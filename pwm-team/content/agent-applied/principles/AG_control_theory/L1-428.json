@@ -11,7 +11,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Extended Kalman Filter (EKF): EKF: extend Kalman filter to nonlinear systems by linearizing dynamics and measurement functions via Jacobians. The forward operator produces the measurement through a 3-node primitive DAG (S.ekf.jacobian_linearization\u2026); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=3 with effective condition number kappa_eff~100; strong_nonlinearity, bimodal_posterior set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "Extended Kalman Filter (EKF): EKF: extend Kalman filter to nonlinear systems by linearizing dynamics and measurement functions via Jacobians. The forward operator produces the measurement through a 3-node primitive DAG (S.ekf.jacobian_linearization…); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=3 with effective condition number kappa_eff~100; strong_nonlinearity, bimodal_posterior set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "x_{k+1} = f(x_k, u_k) + w_k; y_k = h(x_k) + v_k; F_k = df/dx|_{x_hat_k}, H_k = dh/dx|_{x_hat_k}",
     "world_state_x": "nonlinear state estimate x_hat_k and covariance P_k for nonlinear system",
     "observation_y": "nonlinear measurements {y_k} from sensors (GPS, IMU, bearing angles, etc.)",
@@ -148,5 +148,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "extended-kalman-filter"
 }

@@ -2,7 +2,7 @@
   "artifact_id": "L2-086",
   "layer": "L2",
   "parent_l1": "L1-086",
-  "title": "Electron Tomography \u2014 tilt-series 3D reconstruction Mismatch-Only Spec",
+  "title": "Electron Tomography — tilt-series 3D reconstruction Mismatch-Only Spec",
   "spec_type": "mismatch_only",
   "six_tuple": {
     "omega": {
@@ -165,5 +165,6 @@
     "PASS",
     "PASS"
   ],
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "display_slug": "electron-tomo"
 }

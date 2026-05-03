@@ -7,7 +7,6 @@
   "sub_domain": "Concurrent functional + anatomical imaging via dual-contrast acquisition (multi-physics joint inverse)",
   "source_file": "C_medical_imaging/509_paus.md",
   "source_data_quality_note": "v3 standalone multi-physics genesis Principle. Joint forward operator combines (i) quantitative photoacoustic tomography (qPAT — optical absorption + thermoelastic + acoustic chain, recovering chromophore concentrations) with (ii) pulse-echo ultrasound (acoustic Born / impedance contrast, recovering tissue echogenicity / impedance map). Same probe, same scan, dual contrast: PA for functional/molecular, US for anatomical/morphological. Joint inversion shares tissue speed-of-sound c(r) and density rho(r) between modalities, improving identifiability beyond either mode alone. Distinct from L1-041 PAT (acoustic-only photoacoustic), L1-504 qPAT (optical-thermoelastic-acoustic, no US), and L1-032 ultrasound (US-only) by the dual-contrast joint inversion. Authored under the standalone-as-default v3 design (see pwm-team/pwm_product/genesis/PWM_V3_STANDALONE_VS_COMPOSITE.md).",
-
   "gate_class": "analytical",
   "gate_substitutions": null,
   "related_principles": [
@@ -15,7 +14,6 @@
     "L1-032 (ultrasound — pulse-echo component, d_principle ~ 0.40)",
     "L1-041 (PAT — acoustic-only photoacoustic, informational)"
   ],
-
   "E": {
     "description": "Photoacoustic-Ultrasound Dual-mode Imaging (PAUS): joint multi-physics forward couples (i) qPAT chain — optical fluence Phi(r, lambda) by radiative transfer, energy absorption H = mu_a * Phi, thermoelastic source p_0 = Gamma * H, acoustic propagation p_PA(r_d, t) = integral G_acoustic(r_d, r'; c) * p_0(r') dr'; (ii) pulse-echo ultrasound — incident wave from US transmit produces backscatter from tissue impedance contrast Z(r) = rho(r) * c(r), with received signal y_US(r_d, t) = integral G_pulse_echo(r_d, r'; c, rho) * (delta-Z/Z)(r') dr' under the Born approximation; (iii) shared tissue model — both modalities depend on the same tissue speed-of-sound c(r) and density rho(r) maps, with PA additionally constrained by mu_s'(r) and qPAT-specific parameters. The forward DAG has 9 primitives with two coupling constraints (n_c = 2): (i) shared tissue speed-of-sound and density across both modalities (parameter coupling); (ii) spatially co-registered acquisition (geometric coupling — same transducer, same scan plane). Recovery is posed as the joint inverse problem that recovers (mu_a(r, lambda), Z(r), c(r), rho(r)) from joint measurement {p_PA(r_d, t, lambda), y_US(r_d, t)}. Difficulty tier delta = 5 with raw condition number kappa ~ 280 (limited by PA/US bandwidth mismatch and absorbing-region ambiguity) and effective kappa_eff ~ 40 after model-based joint reconstruction. Mismatch parameters: pa_us_synchronization_jitter, fluence_inhomogeneity, acoustic_speed_heterogeneity, acoustic_attenuation, transducer_bandwidth_difference_pa_vs_us, motion_during_acquisition. Additive Gaussian thermal noise sets the data-fidelity floor. See forward_model field for the closed-form joint imaging equation.",
     "forward_model": "PA chain: Phi = G_optical * S; H = mu_a * Phi; p_0 = Gamma * H; p_PA(r_d, t, lambda) = integral G_acoustic(r_d, r'; c) * p_0(r', lambda) dr' + n_PA. US chain: y_US(r_d, t) = integral G_pulse_echo(r_d, r'; c, rho) * (delta-Z/Z)(r') dr' + n_US. Joint inversion: recover (mu_a(r, lambda), Z(r), c(r), rho(r)) from joint {p_PA, y_US} given mu_s', Gamma, optical illumination S, US transmit beam.",
@@ -42,7 +40,6 @@
       "motion_during_acquisition"
     ]
   },
-
   "G": {
     "dag": "L.optical_source -> L.optical_diffusion -> L.beer_lambert -> L.thermoelastic_grueneisen -> L.acoustic_wave_propagation -> L.us_transmit_beam -> L.us_pulse_echo -> L.transducer_detection_dual -> int.spectral_temporal_spatial",
     "vertices": [
@@ -73,7 +70,6 @@
       "co_registered_acquisition: same physical transducer array detects both PA and US signals at spatially co-registered positions and synchronized time; geometric coupling allows direct joint reconstruction without registration error"
     ]
   },
-
   "W": {
     "existence": true,
     "uniqueness": "conditional",
@@ -82,14 +78,12 @@
     "condition_number_effective": 40,
     "regime": "Existence of recovered joint state (mu_a, Z, c, rho) is guaranteed within the declared Omega bounds. Uniqueness holds under multi-illumination + multi-wavelength PA acquisition combined with US transmit-receive at adequate SNR; single-wavelength single-illumination PAUS suffers the same multiplicative non-uniqueness as single-wavelength qPAT (excluded from the spec range). Stability is moderately conditioned (kappa_eff ~ 40 after joint model-based reconstruction) — pa_us_synchronization_jitter dominates registration error; fluence_inhomogeneity dominates qPAT-class chromophore bias; acoustic_attenuation dominates US-class deep-tissue contrast; transducer_bandwidth_difference_pa_vs_us contributes a frequency-dependent reconstruction artifact (PA typically lower-frequency band 0.5-10 MHz, US higher 5-20 MHz). Joint Hadamard well-posedness for the coupled qPAT + US Born forward is established by the qPAT references (Bal-Uhlmann 2010, Bal-Ren 2011) plus the dual-mode literature: Niederhauser et al. 2005 (combined OAT/US), Beard 2011 (review), Wang LV 2008 (multiscale photoacoustic), Mehrmohammadi et al. 2013 (PA-US clinical), Park et al. 2017 (PAUS guided interventions)."
   },
-
   "C": {
     "solver_class": "linear-operator + convex optimisation [joint qPAT + US ML reconstruction; alternating PA/US blocks with shared tissue model; FEM-based unified forward] | model-based iterative [k-Wave + Field II coupled solver] | linear-operator + deep neural prior [PAUS-Net dual-encoder]",
     "convergence_rate_q": 2.0,
     "error_bound": "Data-fidelity bound: ||(mu_a, Z, c, rho)_hat - (mu_a, Z, c, rho)||_2 <= C1 * sqrt(sigma_PA^2 + sigma_US^2) / sqrt(N_PA_wavelengths * N_US_modes * N_transducers * N_time_samples). Coupled-forward bias adds + C2 * |pa_us_synchronization_jitter| + C3 * |acoustic_attenuation| + C4 * |transducer_bandwidth_difference| + C5 * ||state - state_s||_1 (best s-sparse approximation residual). Joint reconstruction achieves q=2 (O(1/k^2)) under shared-tissue regularization; alternating PA/US blocks achieve q=1 with model-bias floor. Deep-prior dual-encoder variants achieve faster initial convergence with bounded systematic bias.",
     "complexity": "O(H * W * Z * (N_PA_wavelengths + N_US_modes) * (transducer_count * time_samples)^(2/3)) per iteration via k-Wave + Field II coupled time-domain forward / adjoint; learned dual-encoder variants O(H W Z * F_theta_cost) per forward pass"
   },
-
   "physics_fingerprint": {
     "carrier": "photon_acoustic_dual",
     "sensing_mechanism": "joint_thermoelastic_and_pulse_echo",
@@ -109,7 +103,6 @@
       "int.spectral_temporal_spatial"
     ]
   },
-
   "difficulty_delta": 5,
   "difficulty_tier": "advanced",
   "mismatch_parameters": [
@@ -122,7 +115,6 @@
   ],
   "error_metric": "PSNR_dB",
   "error_metric_secondary": "RMSE_per_modality",
-
   "spec_range": {
     "center_spec": {
       "problem_class": "paus_dual_contrast",
@@ -133,7 +125,10 @@
         "W": 256,
         "Z": 64,
         "N_PA_wavelengths": 5,
-        "lambda_range_nm": [700, 1064],
+        "lambda_range_nm": [
+          700,
+          1064
+        ],
         "N_US_modes": 2,
         "us_center_frequency_MHz": 7.5,
         "us_bandwidth_MHz": 5.0,
@@ -184,29 +179,82 @@
       "motion_during_acquisition"
     ],
     "omega_bounds": {
-      "H": [128, 512],
-      "W": [128, 512],
-      "Z": [32, 256],
-      "N_PA_wavelengths": [2, 16],
-      "N_US_modes": [1, 5],
-      "us_center_frequency_MHz": [1, 30],
-      "us_bandwidth_MHz": [1, 20],
-      "voxel_size_mm": [0.05, 1.0],
-      "speed_of_sound_mps": [1400, 1600],
-      "SNR_PA_dB": [5, 40],
-      "SNR_US_dB": [5, 45],
-      "pa_us_synchronization_jitter": [0.0, 0.3],
-      "fluence_inhomogeneity": [0.0, 0.4],
-      "acoustic_speed_heterogeneity": [0.0, 0.1],
-      "acoustic_attenuation": [0.0, 0.4],
-      "transducer_bandwidth_difference_pa_vs_us": [0.0, 0.5],
-      "motion_during_acquisition": [0.0, 0.3]
+      "H": [
+        128,
+        512
+      ],
+      "W": [
+        128,
+        512
+      ],
+      "Z": [
+        32,
+        256
+      ],
+      "N_PA_wavelengths": [
+        2,
+        16
+      ],
+      "N_US_modes": [
+        1,
+        5
+      ],
+      "us_center_frequency_MHz": [
+        1,
+        30
+      ],
+      "us_bandwidth_MHz": [
+        1,
+        20
+      ],
+      "voxel_size_mm": [
+        0.05,
+        1.0
+      ],
+      "speed_of_sound_mps": [
+        1400,
+        1600
+      ],
+      "SNR_PA_dB": [
+        5,
+        40
+      ],
+      "SNR_US_dB": [
+        5,
+        45
+      ],
+      "pa_us_synchronization_jitter": [
+        0.0,
+        0.3
+      ],
+      "fluence_inhomogeneity": [
+        0.0,
+        0.4
+      ],
+      "acoustic_speed_heterogeneity": [
+        0.0,
+        0.1
+      ],
+      "acoustic_attenuation": [
+        0.0,
+        0.4
+      ],
+      "transducer_bandwidth_difference_pa_vs_us": [
+        0.0,
+        0.5
+      ],
+      "motion_during_acquisition": [
+        0.0,
+        0.3
+      ]
     },
     "epsilon_bounds": {
-      "psnr_db": [8.0, 42.0]
+      "psnr_db": [
+        8.0,
+        42.0
+      ]
     }
   },
-
   "p1_p10_tests": [
     "PASS",
     "PASS",
@@ -226,7 +274,6 @@
     "PASS"
   ],
   "ipfs_cid": null,
-
   "v3_metadata": {
     "is_standalone_multiphysics": true,
     "coupling_count_n_c": 2,
@@ -242,10 +289,11 @@
     ],
     "distinctness_audit": {
       "closest_existing_principle": "L1-504 qPAT (just authored) and L1-032 US (tie)",
-      "d_principle_estimate": 0.40,
+      "d_principle_estimate": 0.4,
       "advisory_label": "Distinct",
       "rationale": "L1-504 qPAT recovers mu_a(r, lambda) from PA only; n_c = 2 (fluence-to-absorption + thermoelastic-to-acoustic); solution_space = 3D_spectral_chromophore_quantitative. L1-032 US recovers tissue impedance / echogenicity from pulse-echo only; n_c = 0; solution_space = 2D/3D acoustic. L1-509 PAUS jointly inverts both modalities with shared tissue speed-of-sound and density; n_c = 2 (shared tissue acoustic + co-registered acquisition); solution_space = 4D_dual_contrast_functional_anatomical (recovers chromophore concentrations AND impedance map AND tissue acoustic properties). Adds L.us_transmit_beam, L.us_pulse_echo, L.transducer_detection_dual primitives. Jaccard distance over (sensing_mechanism, solution_space, primitives) ~ 0.40 from each parent — Distinct under v1 advisory thresholds (>= 0.30). Note: this Principle directly cites L1-504 qPAT in the related_principles field — the qPAT chain is reused as a sub-component but not as a multi-parent royalty link (per standalone-as-default design)."
     },
     "clinical_context": "Active commercial and clinical research: real-time dual-contrast imaging in oncology (breast cancer staging — combining PA hemoglobin sO2 with US lesion morphology), vascular imaging (carotid plaque), thyroid imaging, lymph-node mapping, photoacoustic-guided biopsy, neonatal brain imaging, preclinical small-animal. Commercial platforms: iThera Medical MSOT inSight/Acuity, Verasonics Vantage with PA add-on, FUJIFILM-VisualSonics Vevo LAZR, Endra Nexus 128. Imaging depth 1-5 cm for PA, 5-20 cm for US — joint mode covers superficial to mid-depth pathology with both functional (PA) and anatomical (US) information."
-  }
+  },
+  "display_slug": "paus"
 }

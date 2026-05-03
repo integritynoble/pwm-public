@@ -11,7 +11,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Cosmological N-body (Large-Scale Structure): Cosmological N-body: evolve dark matter particles in expanding universe under gravity to form large-scale structure. The forward operator produces the measurement through a 3-node primitive DAG (F.fourier.pm_gravity\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=5 with effective condition number kappa_eff~10000.0; cosmological_parameter_uncertainty, baryonic_feedback_neglect set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "Cosmological N-body (Large-Scale Structure): Cosmological N-body: evolve dark matter particles in expanding universe under gravity to form large-scale structure. The forward operator produces the measurement through a 3-node primitive DAG (F.fourier.pm_gravity…); recovery is posed as a parameter_estimation problem. Difficulty tier delta=5 with effective condition number kappa_eff~10000.0; cosmological_parameter_uncertainty, baryonic_feedback_neglect set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "x'' + 2H x' = -nabla phi/a ** 2, nabla ** 2 phi = 4*pi*G*a ** 2*(rho - rho_bar)",
     "world_state_x": "dark matter density field delta(x) and velocity field v(x) in comoving coordinates",
     "observation_y": "galaxy catalog (angular positions, redshifts), weak lensing convergence maps",
@@ -150,5 +150,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "cosmological-n-body"
 }

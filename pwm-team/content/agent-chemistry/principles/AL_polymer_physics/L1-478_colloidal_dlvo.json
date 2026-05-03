@@ -46,7 +46,7 @@
     "stability": "conditional",
     "condition_number_kappa": 80,
     "condition_number_effective": 15,
-    "regime": "Well-posed when both V_vdW and V_EDL contribute; ill-conditioned when one dominates (high ionic strength \u2192 secondary minimum masking)."
+    "regime": "Well-posed when both V_vdW and V_EDL contribute; ill-conditioned when one dominates (high ionic strength → secondary minimum masking)."
   },
   "C": {
     "solver_class": "Nonlinear least squares (Levenberg-Marquardt); Bayesian MCMC for joint (A, psi, I) inversion",
@@ -159,5 +159,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "colloidal-dlvo"
 }

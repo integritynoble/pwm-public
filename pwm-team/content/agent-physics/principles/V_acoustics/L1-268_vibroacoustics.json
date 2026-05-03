@@ -2,7 +2,7 @@
   "artifact_id": "L1-268",
   "layer": "L1",
   "principle_number": "268",
-  "title": "Vibroacoustics \u2014 structure-acoustic coupling",
+  "title": "Vibroacoustics — structure-acoustic coupling",
   "domain": "Acoustics",
   "sub_domain": "FEM-BEM coupled vibro-acoustic",
   "source_file": "V_acoustics/268_vibroacoustics.md",
@@ -11,7 +11,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Vibroacoustics \u2014 structure-acoustic coupling forward model.",
+    "description": "Vibroacoustics — structure-acoustic coupling forward model.",
     "forward_model": "[K_s - omega^2 M_s, -C_sf; -omega^2 C_sf^T, K_f - omega^2 M_f] {u; p} = {f_s; f_f}",
     "world_state_x": "coupled structural displacement u and acoustic pressure p fields",
     "observation_y": "structural acceleration + radiated pressure at receiver set",
@@ -183,5 +183,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "vibroacoustics"
 }

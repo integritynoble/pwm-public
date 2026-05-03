@@ -4,15 +4,52 @@
   "parent_l1": "L1-096",
   "title": "Scanning LiDAR Mismatch-Only Spec",
   "spec_type": "mismatch_only",
-
   "six_tuple": {
     "omega": {
-      "N_ch": [16, 256], "f_scan_Hz": [5, 30],
-      "tau_pulse_ns": [0.5, 10], "lambda_nm": [850, 1550],
-      "max_range_m": [30, 500], "photon_count_per_beam": [10, 5000],
-      "atmospheric_extinction": [0.0, 2.0], "motion_distortion": [0.0, 0.5],
-      "retroreflector_saturation": [0.0, 0.2],
-      "crosstalk_neighbour_beams": [0.0, 0.05], "beam_walk_error": [0.0, 0.01]
+      "N_ch": [
+        16,
+        256
+      ],
+      "f_scan_Hz": [
+        5,
+        30
+      ],
+      "tau_pulse_ns": [
+        0.5,
+        10
+      ],
+      "lambda_nm": [
+        850,
+        1550
+      ],
+      "max_range_m": [
+        30,
+        500
+      ],
+      "photon_count_per_beam": [
+        10,
+        5000
+      ],
+      "atmospheric_extinction": [
+        0.0,
+        2.0
+      ],
+      "motion_distortion": [
+        0.0,
+        0.5
+      ],
+      "retroreflector_saturation": [
+        0.0,
+        0.2
+      ],
+      "crosstalk_neighbour_beams": [
+        0.0,
+        0.05
+      ],
+      "beam_walk_error": [
+        0.0,
+        0.01
+      ]
     },
     "E": {
       "forward": "r(t) = h_pulse(t - 2d/c) * alpha_atm + n_bg + n_shot; motion distorts the angular grid during scan",
@@ -20,41 +57,107 @@
       "primitive_chain": "S.emit.pulse -> L.reflect_scene -> D.timestamp -> int.angular",
       "inverse": "recover point cloud / depth map z(theta_h, theta_v) from pulse timestamps"
     },
-    "B": {"positive_distance": true, "bounded_range": "d <= max_range_m"},
-    "I": {"strategy": "matched_filter_plus_CFD_timing"},
-    "O": ["point_cloud_RMSE_m", "detection_recall_at_range", "outlier_fraction"],
+    "B": {
+      "positive_distance": true,
+      "bounded_range": "d <= max_range_m"
+    },
+    "I": {
+      "strategy": "matched_filter_plus_CFD_timing"
+    },
+    "O": [
+      "point_cloud_RMSE_m",
+      "detection_recall_at_range",
+      "outlier_fraction"
+    ],
     "epsilon_fn": "0.01 + 0.01 * tau_pulse_ns + 0.15 * atmospheric_extinction + 0.10 * motion_distortion - 0.02 * log10(photon_count_per_beam / 10)"
   },
-
   "protocol_fields": {
-    "input_format": {"histograms": "uint16(M_h, M_v, N_t)", "scan_params": "dict"},
-    "output_format": {"point_cloud": "float32(N_points, 4)  # x, y, z, intensity"},
+    "input_format": {
+      "histograms": "uint16(M_h, M_v, N_t)",
+      "scan_params": "dict"
+    },
+    "output_format": {
+      "point_cloud": "float32(N_points, 4)  # x, y, z, intensity"
+    },
     "baselines": [
-      {"name": "LeadingEdge-CFD", "method_sig": "A+O", "expected_rmse_m": 0.08},
-      {"name": "Matched-Filter",  "method_sig": "L+O", "expected_rmse_m": 0.05},
-      {"name": "DeepLidar",       "method_sig": "L+N", "expected_rmse_m": 0.035},
-      {"name": "RangeNet++",      "method_sig": "L+N", "expected_rmse_m": 0.04}
+      {
+        "name": "LeadingEdge-CFD",
+        "method_sig": "A+O",
+        "expected_rmse_m": 0.08
+      },
+      {
+        "name": "Matched-Filter",
+        "method_sig": "L+O",
+        "expected_rmse_m": 0.05
+      },
+      {
+        "name": "DeepLidar",
+        "method_sig": "L+N",
+        "expected_rmse_m": 0.035
+      },
+      {
+        "name": "RangeNet++",
+        "method_sig": "L+N",
+        "expected_rmse_m": 0.04
+      }
     ]
   },
-
   "ibenchmark_range": {
     "center_ibenchmark": {
       "rho": 1,
-      "omega_tier": {"N_ch": 64, "f_scan_Hz": 10, "tau_pulse_ns": 5, "lambda_nm": 905, "max_range_m": 200, "photon_count_per_beam": 500, "atmospheric_extinction": 0.0, "motion_distortion": 0.0, "retroreflector_saturation": 0.0},
+      "omega_tier": {
+        "N_ch": 64,
+        "f_scan_Hz": 10,
+        "tau_pulse_ns": 5,
+        "lambda_nm": 905,
+        "max_range_m": 200,
+        "photon_count_per_beam": 500,
+        "atmospheric_extinction": 0.0,
+        "motion_distortion": 0.0,
+        "retroreflector_saturation": 0.0
+      },
       "epsilon": 0.05
     },
     "tier_bounds": {
-      "N_ch": [16, 128], "f_scan_Hz": [5, 20],
-      "tau_pulse_ns": [1, 10], "max_range_m": [50, 300],
-      "photon_count_per_beam": [20, 2000],
-      "atmospheric_extinction": [0.0, 2.0], "motion_distortion": [0.0, 0.5]
+      "N_ch": [
+        16,
+        128
+      ],
+      "f_scan_Hz": [
+        5,
+        20
+      ],
+      "tau_pulse_ns": [
+        1,
+        10
+      ],
+      "max_range_m": [
+        50,
+        300
+      ],
+      "photon_count_per_beam": [
+        20,
+        2000
+      ],
+      "atmospheric_extinction": [
+        0.0,
+        2.0
+      ],
+      "motion_distortion": [
+        0.0,
+        0.5
+      ]
     },
-    "proximity_threshold": 0.10
+    "proximity_threshold": 0.1
   },
-
   "d_spec": 0.56,
   "d_spec_notes": "Distance from AMCW-ToF spec (L2-095) ~ 0.56 (Related) — shared carrier=photon, integration=temporal, solution=depth, but sensing_mechanism differs (pulsed_dtof_scan vs. amcw_modulated_illumination) and primitives are distinct.",
-
-  "s1_s4_gates": ["PASS", "PASS", "PASS", "PASS"],
-  "ipfs_cid": null
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null,
+  "display_slug": "lidar"
 }

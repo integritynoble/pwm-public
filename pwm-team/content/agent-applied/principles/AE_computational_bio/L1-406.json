@@ -11,7 +11,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "SEIR Epidemic with Exposed Compartment: SEIR model: adds exposed/latent compartment E accounting for incubation period before infectiousness. The forward operator produces the measurement through a 3-node primitive DAG (M.ode.seir_model\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~80; age_structure_neglect, spatial_heterogeneity set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "SEIR Epidemic with Exposed Compartment: SEIR model: adds exposed/latent compartment E accounting for incubation period before infectiousness. The forward operator produces the measurement through a 3-node primitive DAG (M.ode.seir_model…); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~80; age_structure_neglect, spatial_heterogeneity set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "dS/dt = -beta*S*I/N; dE/dt = beta*S*I/N - sigma*E; dI/dt = sigma*E - gamma*I; dR/dt = gamma*I",
     "world_state_x": "SEIR parameters (beta, sigma, gamma, R0) and incubation period 1/sigma",
     "observation_y": "daily incidence I_new(t) and possibly hospitalization or death counts",
@@ -148,5 +148,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "seir-epidemic-with-exposed-compartment"
 }

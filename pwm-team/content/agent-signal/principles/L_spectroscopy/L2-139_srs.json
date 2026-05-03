@@ -5,13 +5,44 @@
   "principle_ref": "sha256:<L1-139_principle_hash>",
   "title": "SRS Hyperspectral Unmixing Spec",
   "spec_type": "mismatch_only",
-
   "six_tuple": {
     "omega": {
-      "H": [64, 2048], "W": [64, 2048], "N_omega": [1, 500],
-      "tau_us": [1, 1000], "K": [1, 10],
-      "thermal_lensing": [0.0, 0.2], "xpm_artifact": [0.0, 0.2],
-      "rin_laser_noise": [1e-8, 1e-5], "focal_volume_error": [0.0, 0.2]
+      "H": [
+        64,
+        2048
+      ],
+      "W": [
+        64,
+        2048
+      ],
+      "N_omega": [
+        1,
+        500
+      ],
+      "tau_us": [
+        1,
+        1000
+      ],
+      "K": [
+        1,
+        10
+      ],
+      "thermal_lensing": [
+        0.0,
+        0.2
+      ],
+      "xpm_artifact": [
+        0.0,
+        0.2
+      ],
+      "rin_laser_noise": [
+        1e-08,
+        1e-05
+      ],
+      "focal_volume_error": [
+        0.0,
+        0.2
+      ]
     },
     "E": {
       "forward": "Delta_I / I = -sigma_SRS(Omega) * N(r) * I_s * L + artifact",
@@ -19,44 +50,101 @@
       "primitive_chain": "L.beat.twocolor -> S.nonlinear.chi3 -> L.modulate.highfreq -> int.temporal",
       "inverse": "recover N(r) from lock-in-demodulated SRS cube"
     },
-    "B": {"nonnegativity_N": true, "bounded_signal": true},
-    "I": {"strategy": "clsx_init"},
-    "O": ["concentration_NMSE", "SNR_dB", "imaging_speed_fps", "residual_norm"],
+    "B": {
+      "nonnegativity_N": true,
+      "bounded_signal": true
+    },
+    "I": {
+      "strategy": "clsx_init"
+    },
+    "O": [
+      "concentration_NMSE",
+      "SNR_dB",
+      "imaging_speed_fps",
+      "residual_norm"
+    ],
     "epsilon_fn": "5e-4 + 10 * rin_laser_noise + 0.01 * thermal_lensing + 0.02 * xpm_artifact"
   },
-
   "protocol_fields": {
-    "input_format": {"cube": "float32(H, W, N_omega)", "library": "float32(K, N_omega)"},
-    "output_format": {"concentrations": "float32(H, W, K)"},
+    "input_format": {
+      "cube": "float32(H, W, N_omega)",
+      "library": "float32(K, N_omega)"
+    },
+    "output_format": {
+      "concentrations": "float32(H, W, K)"
+    },
     "baselines": [
-      {"name": "CLS",       "method_sig": "L+O", "expected_nmse": 1e-3},
-      {"name": "NNLS",      "method_sig": "L+O", "expected_nmse": 8e-4},
-      {"name": "MCR-ALS",   "method_sig": "L+O", "expected_nmse": 7e-4},
-      {"name": "SF-deconv", "method_sig": "L+O", "expected_nmse": 6e-4},
-      {"name": "SRS-UNet",  "method_sig": "L+N", "expected_nmse": 4e-4}
+      {
+        "name": "CLS",
+        "method_sig": "L+O",
+        "expected_nmse": 0.001
+      },
+      {
+        "name": "NNLS",
+        "method_sig": "L+O",
+        "expected_nmse": 0.0008
+      },
+      {
+        "name": "MCR-ALS",
+        "method_sig": "L+O",
+        "expected_nmse": 0.0007
+      },
+      {
+        "name": "SF-deconv",
+        "method_sig": "L+O",
+        "expected_nmse": 0.0006
+      },
+      {
+        "name": "SRS-UNet",
+        "method_sig": "L+N",
+        "expected_nmse": 0.0004
+      }
     ]
   },
-
   "ibenchmark_range": {
     "center_ibenchmark": {
       "rho": 1,
-      "omega_tier": {"H": 256, "W": 256, "N_omega": 200, "tau_us": 10, "K": 4, "thermal_lensing": 0.0, "xpm_artifact": 0.0},
-      "epsilon": 1e-3
+      "omega_tier": {
+        "H": 256,
+        "W": 256,
+        "N_omega": 200,
+        "tau_us": 10,
+        "K": 4,
+        "thermal_lensing": 0.0,
+        "xpm_artifact": 0.0
+      },
+      "epsilon": 0.001
     },
-    "tier_bounds": {"H": [64, 1024], "tau_us": [1, 100], "K": [1, 8]},
-    "proximity_threshold": 0.10
+    "tier_bounds": {
+      "H": [
+        64,
+        1024
+      ],
+      "tau_us": [
+        1,
+        100
+      ],
+      "K": [
+        1,
+        8
+      ]
+    },
+    "proximity_threshold": 0.1
   },
-
   "d_spec": 0.25,
   "d_spec_notes": "Distance from 138 CARS ~= 0.20 (Similar — coherent Raman, SRS is linear/background-free). Distance from 137 Raman ~= 0.28 (Related).",
-
-  "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
   "s1_s4_justifications": {
     "S1": "Linear forward model; dims consistent.",
     "S2": "Linear in N ⇒ unique unmixing with full-rank library; kappa_eff ~ 10.",
     "S3": "CLS closed-form; NNLS active-set finite-termination.",
     "S4": "epsilon_fn defined; SRS-UNet fails at RIN=1e-5 + xpm=0.2 (hardness)."
   },
-
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "display_slug": "srs"
 }

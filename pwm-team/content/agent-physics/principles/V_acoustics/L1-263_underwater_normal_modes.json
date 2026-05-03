@@ -2,7 +2,7 @@
   "artifact_id": "L1-263",
   "layer": "L1",
   "principle_number": "263",
-  "title": "Underwater Normal Modes \u2014 modal propagation (KRAKEN)",
+  "title": "Underwater Normal Modes — modal propagation (KRAKEN)",
   "domain": "Acoustics",
   "sub_domain": "Shallow-water modal expansion",
   "source_file": "V_acoustics/263_underwater_normal_modes.md",
@@ -11,7 +11,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Underwater Normal Modes \u2014 modal propagation (KRAKEN) forward model.",
+    "description": "Underwater Normal Modes — modal propagation (KRAKEN) forward model.",
     "forward_model": "p(r,z) = sum_m Psi_m(z_s) Psi_m(z) * H_0(k_rm r) / sqrt(r); (d^2/dz^2 + k^2(z) - k_rm^2) Psi_m = 0",
     "world_state_x": "modal eigenvalues k_rm and eigenfunctions Psi_m(z) for the water column",
     "observation_y": "complex pressure at hydrophone positions for multiple frequencies",
@@ -174,5 +174,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "underwater-normal-modes"
 }

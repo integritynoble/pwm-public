@@ -2,7 +2,7 @@
   "artifact_id": "L1-356",
   "layer": "L1",
   "principle_number": "356",
-  "title": "Criticality Eigenvalue \u2014 k-effective calculation",
+  "title": "Criticality Eigenvalue — k-effective calculation",
   "domain": "Nuclear Engineering",
   "sub_domain": "k-eff generalized eigenvalue",
   "source_file": "AB_nuclear_engineering/356_criticality_eigenvalue.md",
@@ -11,7 +11,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Criticality Eigenvalue \u2014 k-effective calculation forward model.",
+    "description": "Criticality Eigenvalue — k-effective calculation forward model.",
     "forward_model": "L phi = (1/k) F phi; k = nu/k_inf * Sigma_f * phi integrated; power iteration",
     "world_state_x": "dominant eigenvalue k_eff and eigenfunction phi_fund(r)",
     "observation_y": "reactivity-meter data + flux shape measurements during startup/critical approach",
@@ -190,5 +190,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "criticality-eigenvalue"
 }

@@ -5,7 +5,6 @@
   "parent_l1": "L1-082",
   "title": "NeRF Novel-View Synthesis Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
-
   "dataset_registry": {
     "primary": "NeRF-Synthetic (lego, chair, ficus, hotdog, materials, mic, ship, drums)",
     "secondary": "LLFF real-world forward-facing scenes (fern, flower, fortress, ...)",
@@ -13,50 +12,144 @@
     "construction_method": "use ground-truth posed splits; inject pose_error / view dropout as mismatch",
     "num_dev_instances_per_tier": 20
   },
-
   "ibenchmarks": [
     {
-      "tier": "T1_nominal", "rho": 1,
-      "omega_tier": {"H": 800, "W": 800, "K_views": 100, "N_samp_per_ray": 192, "scene_bbox_m": 2.0, "photon_count": 1000, "pose_error_rad": 0.0, "under_view_coverage": 0.0, "non_lambertian": 0.0},
-      "epsilon": 30.0, "d_ibench": 0.14,
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "H": 800,
+        "W": 800,
+        "K_views": 100,
+        "N_samp_per_ray": 192,
+        "scene_bbox_m": 2.0,
+        "photon_count": 1000,
+        "pose_error_rad": 0.0,
+        "under_view_coverage": 0.0,
+        "non_lambertian": 0.0
+      },
+      "epsilon": 30.0,
+      "d_ibench": 0.14,
       "baselines": [
-        {"name": "NeRF-original", "score": 28.5, "Q": 0.58},
-        {"name": "Instant-NGP",   "score": 31.0, "Q": 0.75},
-        {"name": "ZipNeRF",       "score": 33.5, "Q": 0.92}
+        {
+          "name": "NeRF-original",
+          "score": 28.5,
+          "Q": 0.58
+        },
+        {
+          "name": "Instant-NGP",
+          "score": 31.0,
+          "Q": 0.75
+        },
+        {
+          "name": "ZipNeRF",
+          "score": 33.5,
+          "Q": 0.92
+        }
       ]
     },
     {
-      "tier": "T2_low", "rho": 3,
-      "omega_tier": {"H": 800, "W": 800, "K_views": 50, "N_samp_per_ray": 128, "scene_bbox_m": 5.0, "photon_count": 500, "pose_error_rad": 0.01, "under_view_coverage": 0.10, "non_lambertian": 0.10},
-      "epsilon": 26.5, "d_ibench": 0.28,
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "H": 800,
+        "W": 800,
+        "K_views": 50,
+        "N_samp_per_ray": 128,
+        "scene_bbox_m": 5.0,
+        "photon_count": 500,
+        "pose_error_rad": 0.01,
+        "under_view_coverage": 0.1,
+        "non_lambertian": 0.1
+      },
+      "epsilon": 26.5,
+      "d_ibench": 0.28,
       "baselines": [
-        {"name": "NeRF-original", "score": 24.5, "Q": 0.38},
-        {"name": "Instant-NGP",   "score": 27.2, "Q": 0.56},
-        {"name": "ZipNeRF",       "score": 29.8, "Q": 0.72}
+        {
+          "name": "NeRF-original",
+          "score": 24.5,
+          "Q": 0.38
+        },
+        {
+          "name": "Instant-NGP",
+          "score": 27.2,
+          "Q": 0.56
+        },
+        {
+          "name": "ZipNeRF",
+          "score": 29.8,
+          "Q": 0.72
+        }
       ]
     },
     {
-      "tier": "T3_moderate", "rho": 5,
-      "omega_tier": {"H": 1200, "W": 1200, "K_views": 30, "N_samp_per_ray": 96, "scene_bbox_m": 20.0, "photon_count": 300, "pose_error_rad": 0.03, "under_view_coverage": 0.25, "non_lambertian": 0.25},
-      "epsilon": 23.0, "d_ibench": 0.48,
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "H": 1200,
+        "W": 1200,
+        "K_views": 30,
+        "N_samp_per_ray": 96,
+        "scene_bbox_m": 20.0,
+        "photon_count": 300,
+        "pose_error_rad": 0.03,
+        "under_view_coverage": 0.25,
+        "non_lambertian": 0.25
+      },
+      "epsilon": 23.0,
+      "d_ibench": 0.48,
       "baselines": [
-        {"name": "NeRF-original", "score": 20.5, "Q": 0.25},
-        {"name": "Instant-NGP",   "score": 23.5, "Q": 0.52},
-        {"name": "ZipNeRF",       "score": 26.0, "Q": 0.64}
+        {
+          "name": "NeRF-original",
+          "score": 20.5,
+          "Q": 0.25
+        },
+        {
+          "name": "Instant-NGP",
+          "score": 23.5,
+          "Q": 0.52
+        },
+        {
+          "name": "ZipNeRF",
+          "score": 26.0,
+          "Q": 0.64
+        }
       ]
     },
     {
-      "tier": "T4_blind", "rho": 10,
-      "omega_tier": {"H": 2000, "W": 2000, "K_views": 15, "N_samp_per_ray": 64, "scene_bbox_m": 50.0, "photon_count": 150, "pose_error_rad": 0.1, "under_view_coverage": 0.5, "non_lambertian": 0.5},
-      "epsilon": 19.0, "d_ibench": 0.72,
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "H": 2000,
+        "W": 2000,
+        "K_views": 15,
+        "N_samp_per_ray": 64,
+        "scene_bbox_m": 50.0,
+        "photon_count": 150,
+        "pose_error_rad": 0.1,
+        "under_view_coverage": 0.5,
+        "non_lambertian": 0.5
+      },
+      "epsilon": 19.0,
+      "d_ibench": 0.72,
       "baselines": [
-        {"name": "NeRF-original", "score": 15.5, "Q": 0.12},
-        {"name": "Instant-NGP",   "score": 18.0, "Q": 0.30},
-        {"name": "ZipNeRF",       "score": 21.0, "Q": 0.48}
+        {
+          "name": "NeRF-original",
+          "score": 15.5,
+          "Q": 0.12
+        },
+        {
+          "name": "Instant-NGP",
+          "score": 18.0,
+          "Q": 0.3
+        },
+        {
+          "name": "ZipNeRF",
+          "score": 21.0,
+          "Q": 0.48
+        }
       ]
     }
   ],
-
   "p_benchmark": {
     "rho": 50,
     "dataset_p_benchmark": {
@@ -65,13 +158,22 @@
       "construction_method": "parametric (K_views, pose_error, under_view_coverage, non_lambertian) sweep"
     },
     "baselines": [
-      {"name": "NeRF-original", "overall_Q": 0.34},
-      {"name": "Instant-NGP",   "overall_Q": 0.55},
-      {"name": "ZipNeRF",       "overall_Q": 0.70}
+      {
+        "name": "NeRF-original",
+        "overall_Q": 0.34
+      },
+      {
+        "name": "Instant-NGP",
+        "overall_Q": 0.55
+      },
+      {
+        "name": "ZipNeRF",
+        "overall_Q": 0.7
+      }
     ]
   },
-
   "hardness_rule_check": "SATISFIED — ZipNeRF fails at T4_blind (pose_error=0.1 rad + K_views=15 + under_coverage=0.5 corner floods the scene with floaters).",
   "ipfs_cid": null,
-  "ground_truth_cid": null
+  "ground_truth_cid": null,
+  "display_slug": "nerf"
 }

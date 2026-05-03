@@ -2,7 +2,7 @@
   "artifact_id": "L1-194",
   "layer": "L1",
   "principle_number": "194",
-  "title": "Fluid-Structure Interaction (FSI) \u2014 coupled fluid + solid",
+  "title": "Fluid-Structure Interaction (FSI) — coupled fluid + solid",
   "domain": "Fluid Dynamics",
   "sub_domain": "Partitioned / monolithic FSI",
   "source_file": "R_fluid_dynamics/194_fsi.md",
@@ -11,7 +11,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Fluid-Structure Interaction (FSI) \u2014 coupled fluid + solid forward model.",
+    "description": "Fluid-Structure Interaction (FSI) — coupled fluid + solid forward model.",
     "forward_model": "NS in ALE frame + solid mechanics; interface BCs: u_f = u_s, sigma_f.n = sigma_s.n",
     "world_state_x": "fluid flow + solid deformation + common interface",
     "observation_y": "PIV + DIC + pressure sensors",
@@ -183,5 +183,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "fsi"
 }

@@ -2,7 +2,7 @@
   "artifact_id": "L2-088",
   "layer": "L2",
   "parent_l1": "L1-088",
-  "title": "4D-STEM \u2014 pixelated-detector scanning diffraction imaging Mismatch-Only Spec",
+  "title": "4D-STEM — pixelated-detector scanning diffraction imaging Mismatch-Only Spec",
   "spec_type": "mismatch_only",
   "six_tuple": {
     "omega": {
@@ -149,5 +149,6 @@
     "PASS",
     "PASS"
   ],
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "display_slug": "4dstem"
 }

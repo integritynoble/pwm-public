@@ -3,7 +3,7 @@
   "layer": "L2",
   "parent_l1": "L1-166",
   "principle_ref": "sha256:<L1-166_principle_hash>",
-  "title": "Stellar Coronagraphy PSF Subtraction \u2014 Nominal + Mismatch Specs",
+  "title": "Stellar Coronagraphy PSF Subtraction — Nominal + Mismatch Specs",
   "spec_type": "nominal_and_mismatch",
   "six_tuple": {
     "omega": {
@@ -127,5 +127,6 @@
     "S3": "Solver convergence proven for stated solver class.",
     "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
   },
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "display_slug": "stellar-coronagraphy-psf-subtraction-nominal-mismatch-specs"
 }

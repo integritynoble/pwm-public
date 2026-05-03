@@ -5,7 +5,6 @@
   "parent_l1": "L1-072",
   "title": "CDI Benchmark Suite (HIO / RAAR / Shrinkwrap / CDI-Net)",
   "benchmark_type": "combined_P_and_I",
-
   "dataset_registry": {
     "primary": "LCLS XFEL single-particle diffraction test set (Mimivirus, bacteriophage)",
     "secondary": "Synthetic lensless optical CDI (USAF-1951, gold nanoparticles)",
@@ -13,50 +12,132 @@
     "construction_method": "Fraunhofer propagation synthesis at declared oversampling; Poisson photon counting; binary compact support mask with declared shrinkwrap noise",
     "num_dev_instances_per_tier": 20
   },
-
   "ibenchmarks": [
     {
-      "tier": "T1_nominal", "rho": 1,
-      "omega_tier": {"H": 512, "W": 512, "oversampling_sigma": 3.0, "photon_count": 1000, "support_mask_error": 0.0, "partial_coherence": 1.0},
-      "epsilon": 25.0, "d_ibench": 0.14,
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "oversampling_sigma": 3.0,
+        "photon_count": 1000,
+        "support_mask_error": 0.0,
+        "partial_coherence": 1.0
+      },
+      "epsilon": 25.0,
+      "d_ibench": 0.14,
       "baselines": [
-        {"name": "HIO",             "score": 23.2, "Q": 0.55},
-        {"name": "Shrinkwrap+RAAR", "score": 27.5, "Q": 0.78},
-        {"name": "CDI-Net",         "score": 29.8, "Q": 0.90}
+        {
+          "name": "HIO",
+          "score": 23.2,
+          "Q": 0.55
+        },
+        {
+          "name": "Shrinkwrap+RAAR",
+          "score": 27.5,
+          "Q": 0.78
+        },
+        {
+          "name": "CDI-Net",
+          "score": 29.8,
+          "Q": 0.9
+        }
       ]
     },
     {
-      "tier": "T2_low", "rho": 3,
-      "omega_tier": {"H": 512, "W": 512, "oversampling_sigma": 2.5, "photon_count": 500, "support_mask_error": 0.05, "partial_coherence": 0.95},
-      "epsilon": 22.0, "d_ibench": 0.30,
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "oversampling_sigma": 2.5,
+        "photon_count": 500,
+        "support_mask_error": 0.05,
+        "partial_coherence": 0.95
+      },
+      "epsilon": 22.0,
+      "d_ibench": 0.3,
       "baselines": [
-        {"name": "HIO",             "score": 19.5, "Q": 0.38},
-        {"name": "Shrinkwrap+RAAR", "score": 23.4, "Q": 0.58},
-        {"name": "CDI-Net",         "score": 25.8, "Q": 0.72}
+        {
+          "name": "HIO",
+          "score": 19.5,
+          "Q": 0.38
+        },
+        {
+          "name": "Shrinkwrap+RAAR",
+          "score": 23.4,
+          "Q": 0.58
+        },
+        {
+          "name": "CDI-Net",
+          "score": 25.8,
+          "Q": 0.72
+        }
       ]
     },
     {
-      "tier": "T3_moderate", "rho": 5,
-      "omega_tier": {"H": 1024, "W": 1024, "oversampling_sigma": 2.2, "photon_count": 100, "support_mask_error": 0.15, "partial_coherence": 0.85},
-      "epsilon": 18.5, "d_ibench": 0.50,
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "H": 1024,
+        "W": 1024,
+        "oversampling_sigma": 2.2,
+        "photon_count": 100,
+        "support_mask_error": 0.15,
+        "partial_coherence": 0.85
+      },
+      "epsilon": 18.5,
+      "d_ibench": 0.5,
       "baselines": [
-        {"name": "HIO",             "score": 15.8, "Q": 0.22},
-        {"name": "Shrinkwrap+RAAR", "score": 19.2, "Q": 0.42},
-        {"name": "CDI-Net",         "score": 21.5, "Q": 0.56}
+        {
+          "name": "HIO",
+          "score": 15.8,
+          "Q": 0.22
+        },
+        {
+          "name": "Shrinkwrap+RAAR",
+          "score": 19.2,
+          "Q": 0.42
+        },
+        {
+          "name": "CDI-Net",
+          "score": 21.5,
+          "Q": 0.56
+        }
       ]
     },
     {
-      "tier": "T4_blind", "rho": 10,
-      "omega_tier": {"H": 2048, "W": 2048, "oversampling_sigma": 2.0, "photon_count": 20, "support_mask_error": 0.30, "partial_coherence": 0.70},
-      "epsilon": 14.5, "d_ibench": 0.72,
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "H": 2048,
+        "W": 2048,
+        "oversampling_sigma": 2.0,
+        "photon_count": 20,
+        "support_mask_error": 0.3,
+        "partial_coherence": 0.7
+      },
+      "epsilon": 14.5,
+      "d_ibench": 0.72,
       "baselines": [
-        {"name": "HIO",             "score": 12.0, "Q": 0.12},
-        {"name": "Shrinkwrap+RAAR", "score": 15.0, "Q": 0.26},
-        {"name": "CDI-Net",         "score": 17.2, "Q": 0.40}
+        {
+          "name": "HIO",
+          "score": 12.0,
+          "Q": 0.12
+        },
+        {
+          "name": "Shrinkwrap+RAAR",
+          "score": 15.0,
+          "Q": 0.26
+        },
+        {
+          "name": "CDI-Net",
+          "score": 17.2,
+          "Q": 0.4
+        }
       ]
     }
   ],
-
   "p_benchmark": {
     "rho": 50,
     "dataset_p_benchmark": {
@@ -65,13 +146,22 @@
       "construction_method": "parametric Omega sampling; shrinkwrap noise injection"
     },
     "baselines": [
-      {"name": "HIO",             "overall_Q": 0.35},
-      {"name": "Shrinkwrap+RAAR", "overall_Q": 0.55},
-      {"name": "CDI-Net",         "overall_Q": 0.68}
+      {
+        "name": "HIO",
+        "overall_Q": 0.35
+      },
+      {
+        "name": "Shrinkwrap+RAAR",
+        "overall_Q": 0.55
+      },
+      {
+        "name": "CDI-Net",
+        "overall_Q": 0.68
+      }
     ]
   },
-
   "hardness_rule_check": "SATISFIED — CDI-Net fails at T4_blind (17.2 dB > 14.5 tier epsilon OK, but fails S4_xlarge stratum in P-bench where oversampling=2.0 and photon_count<=20 co-occur).",
   "ipfs_cid": null,
-  "ground_truth_cid": null
+  "ground_truth_cid": null,
+  "display_slug": "cdi"
 }

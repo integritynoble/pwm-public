@@ -2,7 +2,7 @@
   "artifact_id": "L1-240",
   "layer": "L1",
   "principle_number": "240",
-  "title": "Fiber Optic \u2014 nonlinear Schrodinger pulse propagation",
+  "title": "Fiber Optic — nonlinear Schrodinger pulse propagation",
   "domain": "Electromagnetics",
   "sub_domain": "NLSE / GNLSE optical-fiber pulse dynamics",
   "source_file": "U_electromagnetics/240_fiber_optic.md",
@@ -11,7 +11,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Fiber Optic \u2014 nonlinear Schrodinger pulse propagation forward model.",
+    "description": "Fiber Optic — nonlinear Schrodinger pulse propagation forward model.",
     "forward_model": "dA/dz = i*sum_n (beta_n/n!) * (i*d/dt)^n A + i*gamma*|A|^2 A - alpha/2 * A + Raman term",
     "world_state_x": "complex pulse envelope A(z,t) through fiber",
     "observation_y": "OSA + oscilloscope measurements of pulse at output",
@@ -176,5 +176,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "fiber-optic"
 }

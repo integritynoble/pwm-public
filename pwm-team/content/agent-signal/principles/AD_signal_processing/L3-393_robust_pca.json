@@ -5,65 +5,159 @@
   "parent_l1": "L1-393",
   "title": "Robust PCA Benchmark Suite (video background + face + synthetic)",
   "benchmark_type": "combined_P_and_I",
-
   "dataset_registry": {
     "primary": "CDnet2014 video background subtraction (2012/14 IEEE change-detection challenge)",
     "secondary": "Yale Face Database B extended (shadow/specular corruption)",
     "tertiary": "Synthetic low-rank matrices corrupted by salt-and-pepper + Gaussian",
     "construction_method": "Generate L=U*V^T with rank r; add S with s_fraction non-zero entries ~ Laplace",
-    "num_dev_instances_per_tier": 20, "holdout_instances_per_tier": 10
+    "num_dev_instances_per_tier": 20,
+    "holdout_instances_per_tier": 10
   },
-
   "ibenchmarks": [
     {
-      "tier": "T1_clean_rank", "rho": 1,
-      "omega_tier": {"m": 500, "n": 500, "r": 10, "s_fraction": 0.05, "mu_0": 1.0, "sigma_n": 0.001},
-      "epsilon": 8e-5, "d_ibench": 0.13,
+      "tier": "T1_clean_rank",
+      "rho": 1,
+      "omega_tier": {
+        "m": 500,
+        "n": 500,
+        "r": 10,
+        "s_fraction": 0.05,
+        "mu_0": 1.0,
+        "sigma_n": 0.001
+      },
+      "epsilon": 8e-05,
+      "d_ibench": 0.13,
       "baselines": [
-        {"name": "IALM-PCP","rel_frob": 5e-5, "precision_S": 0.99, "Q": 0.92},
-        {"name": "AltProj", "rel_frob": 3e-5, "precision_S": 0.99, "Q": 0.96},
-        {"name": "DeepRPCA","rel_frob": 7e-5, "precision_S": 0.98, "Q": 0.88}
+        {
+          "name": "IALM-PCP",
+          "rel_frob": 5e-05,
+          "precision_S": 0.99,
+          "Q": 0.92
+        },
+        {
+          "name": "AltProj",
+          "rel_frob": 3e-05,
+          "precision_S": 0.99,
+          "Q": 0.96
+        },
+        {
+          "name": "DeepRPCA",
+          "rel_frob": 7e-05,
+          "precision_S": 0.98,
+          "Q": 0.88
+        }
       ]
     },
     {
-      "tier": "T2_moderate_corruption", "rho": 3,
-      "omega_tier": {"m": 500, "n": 500, "r": 20, "s_fraction": 0.2, "mu_0": 2.0, "sigma_n": 0.01},
-      "epsilon": 5e-4, "d_ibench": 0.28,
+      "tier": "T2_moderate_corruption",
+      "rho": 3,
+      "omega_tier": {
+        "m": 500,
+        "n": 500,
+        "r": 20,
+        "s_fraction": 0.2,
+        "mu_0": 2.0,
+        "sigma_n": 0.01
+      },
+      "epsilon": 0.0005,
+      "d_ibench": 0.28,
       "baselines": [
-        {"name": "IALM-PCP","rel_frob": 6e-4, "precision_S": 0.92, "Q": 0.72},
-        {"name": "AltProj", "rel_frob": 4e-4, "precision_S": 0.94, "Q": 0.78}
+        {
+          "name": "IALM-PCP",
+          "rel_frob": 0.0006,
+          "precision_S": 0.92,
+          "Q": 0.72
+        },
+        {
+          "name": "AltProj",
+          "rel_frob": 0.0004,
+          "precision_S": 0.94,
+          "Q": 0.78
+        }
       ]
     },
     {
-      "tier": "T3_heavy_corruption", "rho": 5,
-      "omega_tier": {"m": 2000, "n": 2000, "r": 50, "s_fraction": 0.35, "mu_0": 5.0, "sigma_n": 0.05},
-      "epsilon": 5e-3, "d_ibench": 0.52,
+      "tier": "T3_heavy_corruption",
+      "rho": 5,
+      "omega_tier": {
+        "m": 2000,
+        "n": 2000,
+        "r": 50,
+        "s_fraction": 0.35,
+        "mu_0": 5.0,
+        "sigma_n": 0.05
+      },
+      "epsilon": 0.005,
+      "d_ibench": 0.52,
       "baselines": [
-        {"name": "AltProj",  "rel_frob": 6e-3, "precision_S": 0.75, "Q": 0.48},
-        {"name": "DeepRPCA", "rel_frob": 5e-3, "precision_S": 0.78, "Q": 0.55}
+        {
+          "name": "AltProj",
+          "rel_frob": 0.006,
+          "precision_S": 0.75,
+          "Q": 0.48
+        },
+        {
+          "name": "DeepRPCA",
+          "rel_frob": 0.005,
+          "precision_S": 0.78,
+          "Q": 0.55
+        }
       ]
     },
     {
-      "tier": "T4_dense_outliers", "rho": 10,
-      "omega_tier": {"m": 5000, "n": 5000, "r": 200, "s_fraction": 0.5, "mu_0": 10.0, "sigma_n": 0.1, "column_corruption": 0.3},
-      "epsilon": 5e-2, "d_ibench": 0.75,
+      "tier": "T4_dense_outliers",
+      "rho": 10,
+      "omega_tier": {
+        "m": 5000,
+        "n": 5000,
+        "r": 200,
+        "s_fraction": 0.5,
+        "mu_0": 10.0,
+        "sigma_n": 0.1,
+        "column_corruption": 0.3
+      },
+      "epsilon": 0.05,
+      "d_ibench": 0.75,
       "baselines": [
-        {"name": "AltProj",  "rel_frob": 1e-1, "precision_S": 0.40, "Q": 0.22},
-        {"name": "DeepRPCA", "rel_frob": 7e-2, "precision_S": 0.55, "Q": 0.38}
+        {
+          "name": "AltProj",
+          "rel_frob": 0.1,
+          "precision_S": 0.4,
+          "Q": 0.22
+        },
+        {
+          "name": "DeepRPCA",
+          "rel_frob": 0.07,
+          "precision_S": 0.55,
+          "Q": 0.38
+        }
       ]
     }
   ],
-
   "p_benchmark": {
     "rho": 50,
-    "dataset_p_benchmark": {"name": "CDnet2014 + Yale-B + synthetic RPCA union", "num_dev_instances": 200, "num_holdout_instances": 100},
+    "dataset_p_benchmark": {
+      "name": "CDnet2014 + Yale-B + synthetic RPCA union",
+      "num_dev_instances": 200,
+      "num_holdout_instances": 100
+    },
     "baselines": [
-      {"name": "IALM-PCP","overall_Q": 0.58},
-      {"name": "AltProj", "overall_Q": 0.66},
-      {"name": "DeepRPCA","overall_Q": 0.64}
+      {
+        "name": "IALM-PCP",
+        "overall_Q": 0.58
+      },
+      {
+        "name": "AltProj",
+        "overall_Q": 0.66
+      },
+      {
+        "name": "DeepRPCA",
+        "overall_Q": 0.64
+      }
     ]
   },
-
   "hardness_rule_check": "SATISFIED — DeepRPCA fails at T4_dense_outliers (s_fraction=0.5, column_corruption=0.3): 0.07 > epsilon_fn ~ 0.05.",
-  "ipfs_cid": null, "ground_truth_cid": null
+  "ipfs_cid": null,
+  "ground_truth_cid": null,
+  "display_slug": "robust-pca"
 }

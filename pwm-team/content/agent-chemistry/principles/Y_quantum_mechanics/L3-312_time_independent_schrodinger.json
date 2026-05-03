@@ -3,12 +3,12 @@
   "layer": "L3",
   "parent_l2": "L2-312",
   "parent_l1": "L1-312",
-  "title": "Time-Independent Schr\u00f6dinger Equation Benchmark Suite",
+  "title": "Time-Independent Schrödinger Equation Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "NIST atomic spectra database",
     "secondary": "NIST Levels and Lines database",
-    "construction_method": "canonical ground truth + declared noise at tier Omega for Time-Independent Schr\u00f6dinger Equation",
+    "construction_method": "canonical ground truth + declared noise at tier Omega for Time-Independent Schrödinger Equation",
     "num_dev_instances_per_tier": 20,
     "holdout_instances_per_tier": 10
   },
@@ -22,7 +22,7 @@
         "box_size_A": 10,
         "potential_type": "harmonic"
       },
-      "dataset_description": "Time-Independent Schr\u00f6dinger Equation at rho=1.",
+      "dataset_description": "Time-Independent Schrödinger Equation at rho=1.",
       "epsilon": 0.01,
       "d_ibench": 0.15,
       "quality_thresholds": [
@@ -66,7 +66,7 @@
         "box_size_A": 50,
         "potential_type": "coulomb"
       },
-      "dataset_description": "Time-Independent Schr\u00f6dinger Equation at rho=3.",
+      "dataset_description": "Time-Independent Schrödinger Equation at rho=3.",
       "epsilon": 0.0115,
       "d_ibench": 0.32,
       "quality_thresholds": [
@@ -110,7 +110,7 @@
         "box_size_A": 200,
         "potential_type": "square_well"
       },
-      "dataset_description": "Time-Independent Schr\u00f6dinger Equation at rho=5.",
+      "dataset_description": "Time-Independent Schrödinger Equation at rho=5.",
       "epsilon": 0.014,
       "d_ibench": 0.51,
       "quality_thresholds": [
@@ -150,7 +150,7 @@
         "box_size_A": 1000,
         "potential_type": "double_well"
       },
-      "dataset_description": "Time-Independent Schr\u00f6dinger Equation at rho=10.",
+      "dataset_description": "Time-Independent Schrödinger Equation at rho=10.",
       "epsilon": 0.0185,
       "d_ibench": 0.72,
       "quality_thresholds": [
@@ -223,7 +223,7 @@
       }
     ]
   },
-  "hardness_rule_check": "SATISFIED \u2014 top baseline fails epsilon_fn at T4_blind Omega corner.",
+  "hardness_rule_check": "SATISFIED — top baseline fails epsilon_fn at T4_blind Omega corner.",
   "anti_overfitting_mechanisms": {
     "M1_random_instantiation": "seeded by benchmark hash; non-repeatable holdout",
     "M2_convergence_scoring": "verifies declared convergence rate across Omega",
@@ -233,5 +233,6 @@
     "M6_gate_checks": "S1-S4 gate checks enforced with thresholds.yaml"
   },
   "ipfs_cid": null,
-  "ground_truth_cid": null
+  "ground_truth_cid": null,
+  "display_slug": "time-independent-schrodinger"
 }

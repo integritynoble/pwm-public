@@ -11,7 +11,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Forward Dynamics: Forward dynamics: compute joint accelerations from applied torques and current state using Newton-Euler or Lagrangian mechanics. The forward operator produces the measurement through a 3-node primitive DAG (M.newton_euler.forward\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~80; inertia_parameter_uncertainty, friction_model_error set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "Forward Dynamics: Forward dynamics: compute joint accelerations from applied torques and current state using Newton-Euler or Lagrangian mechanics. The forward operator produces the measurement through a 3-node primitive DAG (M.newton_euler.forward…); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~80; inertia_parameter_uncertainty, friction_model_error set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "M(q)*q_ddot + C(q,q_dot)*q_dot + g(q) = tau; solve q_ddot = M^{-1}(tau - C*q_dot - g)",
     "world_state_x": "joint accelerations q_ddot(t) and integrated trajectory {q(t), q_dot(t)}",
     "observation_y": "applied joint torques tau(t) and joint states {q, q_dot}",
@@ -148,5 +148,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "forward-dynamics"
 }

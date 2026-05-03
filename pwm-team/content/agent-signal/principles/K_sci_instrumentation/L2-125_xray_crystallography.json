@@ -5,13 +5,40 @@
   "principle_ref": "sha256:<L1-125_principle_hash>",
   "title": "X-ray Crystallography SAD-Phasing Spec",
   "spec_type": "mismatch_only",
-
   "six_tuple": {
     "omega": {
-      "resolution_A": [0.8, 4.0], "N_refl": [100, 1000000],
-      "N_atoms": [10, 100000], "mosaicity_deg": [0.05, 2.0],
-      "radiation_damage": [0.0, 1.0], "twinning_fraction": [0.0, 0.5],
-      "absorption_anisotropy": [0.0, 0.3], "crystal_size_variability": [0.0, 0.5]
+      "resolution_A": [
+        0.8,
+        4.0
+      ],
+      "N_refl": [
+        100,
+        1000000
+      ],
+      "N_atoms": [
+        10,
+        100000
+      ],
+      "mosaicity_deg": [
+        0.05,
+        2.0
+      ],
+      "radiation_damage": [
+        0.0,
+        1.0
+      ],
+      "twinning_fraction": [
+        0.0,
+        0.5
+      ],
+      "absorption_anisotropy": [
+        0.0,
+        0.3
+      ],
+      "crystal_size_variability": [
+        0.0,
+        0.5
+      ]
     },
     "E": {
       "forward": "I(hkl) = |F|^2 * LP * abs_corr * n_Poisson; phases unknown (to be solved)",
@@ -19,44 +46,96 @@
       "primitive_chain": "L.diffract.bragg -> L.project.rescipocal -> int.angular",
       "inverse": "recover rho(x,y,z) via phasing + refinement"
     },
-    "B": {"unit_cell_periodicity": true, "space_group_symmetry": true, "nonnegativity_rho": true},
-    "I": {"strategy": "sad_init_plus_dm"},
-    "O": ["R_free", "atomic_coord_RMSD_angstrom", "R_merge", "CC_1_2"],
+    "B": {
+      "unit_cell_periodicity": true,
+      "space_group_symmetry": true,
+      "nonnegativity_rho": true
+    },
+    "I": {
+      "strategy": "sad_init_plus_dm"
+    },
+    "O": [
+      "R_free",
+      "atomic_coord_RMSD_angstrom",
+      "R_merge",
+      "CC_1_2"
+    ],
     "epsilon_fn": "0.18 + 0.05 * radiation_damage + 0.3 * twinning_fraction + 0.1 * mosaicity_deg / 2 + 0.08 * absorption_anisotropy"
   },
-
   "protocol_fields": {
-    "input_format": {"intensities_hkl": "float32(N_refl, 4)"},
-    "output_format": {"pdb": "atomic_coordinates", "R_factors": "float32(2)"},
+    "input_format": {
+      "intensities_hkl": "float32(N_refl, 4)"
+    },
+    "output_format": {
+      "pdb": "atomic_coordinates",
+      "R_factors": "float32(2)"
+    },
     "baselines": [
-      {"name": "SHELX-D",  "method_sig": "L+O", "expected_r_free": 0.25},
-      {"name": "Phaser-MR","method_sig": "L+O", "expected_r_free": 0.23},
-      {"name": "Phenix-refine","method_sig": "L+O", "expected_r_free": 0.20},
-      {"name": "CCP4-buccaneer","method_sig": "L+O", "expected_r_free": 0.22},
-      {"name": "AlphaFoldMR","method_sig": "L+N", "expected_r_free": 0.18}
+      {
+        "name": "SHELX-D",
+        "method_sig": "L+O",
+        "expected_r_free": 0.25
+      },
+      {
+        "name": "Phaser-MR",
+        "method_sig": "L+O",
+        "expected_r_free": 0.23
+      },
+      {
+        "name": "Phenix-refine",
+        "method_sig": "L+O",
+        "expected_r_free": 0.2
+      },
+      {
+        "name": "CCP4-buccaneer",
+        "method_sig": "L+O",
+        "expected_r_free": 0.22
+      },
+      {
+        "name": "AlphaFoldMR",
+        "method_sig": "L+N",
+        "expected_r_free": 0.18
+      }
     ]
   },
-
   "ibenchmark_range": {
     "center_ibenchmark": {
       "rho": 1,
-      "omega_tier": {"resolution_A": 2.0, "N_refl": 50000, "N_atoms": 1000, "mosaicity_deg": 0.3, "radiation_damage": 0.0},
+      "omega_tier": {
+        "resolution_A": 2.0,
+        "N_refl": 50000,
+        "N_atoms": 1000,
+        "mosaicity_deg": 0.3,
+        "radiation_damage": 0.0
+      },
       "epsilon": 0.22
     },
-    "tier_bounds": {"resolution_A": [1.0, 3.5], "N_atoms": [50, 30000]},
-    "proximity_threshold": 0.10
+    "tier_bounds": {
+      "resolution_A": [
+        1.0,
+        3.5
+      ],
+      "N_atoms": [
+        50,
+        30000
+      ]
+    },
+    "proximity_threshold": 0.1
   },
-
   "d_spec": 0.55,
   "d_spec_notes": "Unique — X-ray crystallography is distinct from other spectroscopies (d > 0.50). Distance from XFEL-serial spec ~= 0.30 (Similar, different dataset acquisition).",
-
-  "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
   "s1_s4_justifications": {
     "S1": "Reciprocal-lattice dim 3 per reflection; real-space rho at grid.",
     "S2": "Phase problem ill-posed without constraint; SAD/MAD / MR adds unique info.",
     "S3": "Direct methods probabilistic relations converge with extinction; refinement LS.",
     "S4": "epsilon_fn defined; AlphaFoldMR fails at twinning=0.5 or 4 Å (hardness)."
   },
-
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "display_slug": "xray-crystallography"
 }

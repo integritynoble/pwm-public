@@ -3,7 +3,7 @@
   "layer": "L2",
   "parent_l1": "L1-441",
   "principle_ref": "sha256:<L1-441_principle_hash>",
-  "title": "Monte Carlo Option Pricing \u2014 Nominal + Mismatch Specs",
+  "title": "Monte Carlo Option Pricing — Nominal + Mismatch Specs",
   "spec_type": "nominal_and_mismatch",
   "six_tuple": {
     "omega": {
@@ -113,5 +113,6 @@
     "S3": "Solver convergence proven for stated solver class.",
     "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
   },
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "display_slug": "monte-carlo-option-pricing-nominal-mismatch-specs"
 }

@@ -3,7 +3,7 @@
   "layer": "L3",
   "parent_l2": "L2-406",
   "parent_l1": "L1-406",
-  "title": "SEIR Epidemic with Exposed Compartment \u2014 Benchmark Suite",
+  "title": "SEIR Epidemic with Exposed Compartment — Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "WHO_COVID19_global_2020_2022",
@@ -255,5 +255,6 @@
     "M6_gate_checks": "gates/check_s{1,2,3,4}.py embedded with thresholds.yaml."
   },
   "ipfs_cid": null,
-  "ground_truth_cid": null
+  "ground_truth_cid": null,
+  "display_slug": "seir-epidemic-with-exposed-compartment-benchmark-suite"
 }

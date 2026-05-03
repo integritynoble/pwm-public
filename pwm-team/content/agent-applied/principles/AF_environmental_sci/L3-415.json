@@ -3,7 +3,7 @@
   "layer": "L3",
   "parent_l2": "L2-415",
   "parent_l1": "L1-415",
-  "title": "Advection-Dispersion Transport Inversion \u2014 Benchmark Suite",
+  "title": "Advection-Dispersion Transport Inversion — Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "MADE_site_tracer_test",
@@ -255,5 +255,6 @@
     "M6_gate_checks": "gates/check_s{1,2,3,4}.py embedded with thresholds.yaml."
   },
   "ipfs_cid": null,
-  "ground_truth_cid": null
+  "ground_truth_cid": null,
+  "display_slug": "advection-dispersion-transport-inversion-benchmark-suite"
 }

@@ -3,7 +3,7 @@
   "layer": "L3",
   "parent_l2": "L2-428",
   "parent_l1": "L1-428",
-  "title": "Extended Kalman Filter (EKF) \u2014 Benchmark Suite",
+  "title": "Extended Kalman Filter (EKF) — Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "range_bearing_tracking_benchmark",
@@ -257,5 +257,6 @@
     "M6_gate_checks": "gates/check_s{1,2,3,4}.py embedded with thresholds.yaml."
   },
   "ipfs_cid": null,
-  "ground_truth_cid": null
+  "ground_truth_cid": null,
+  "display_slug": "extended-kalman-filter-benchmark-suite"
 }

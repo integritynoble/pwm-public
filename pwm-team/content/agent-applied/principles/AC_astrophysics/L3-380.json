@@ -3,7 +3,7 @@
   "layer": "L3",
   "parent_l2": "L2-380",
   "parent_l1": "L1-380",
-  "title": "Exoplanet Transit Photometry Inversion \u2014 Benchmark Suite",
+  "title": "Exoplanet Transit Photometry Inversion — Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "TESS_short_cadence_archive",
@@ -255,5 +255,6 @@
     "M6_gate_checks": "gates/check_s{1,2,3,4}.py embedded with thresholds.yaml."
   },
   "ipfs_cid": null,
-  "ground_truth_cid": null
+  "ground_truth_cid": null,
+  "display_slug": "exoplanet-transit-photometry-inversion-benchmark-suite"
 }

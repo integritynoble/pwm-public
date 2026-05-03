@@ -5,67 +5,167 @@
   "parent_l1": "L1-386",
   "title": "Compressed Sensing Benchmark Suite (synthetic sparse + CS-MRI)",
   "benchmark_type": "combined_P_and_I",
-
   "dataset_registry": {
     "primary": "Synthetic k-sparse signals with Gaussian/Bernoulli matrices (sparse-land protocol)",
     "secondary": "CS-MRI (Lustig et al. 2007) — radial/Cartesian undersampled k-space",
     "tertiary": "OpenCV/ImageNet DCT-sparse patches (16x16)",
     "construction_method": "Generate i.i.d. N(0,1) support on k positions; scale ||x||_2=1; add noise; apply A",
-    "num_dev_instances_per_tier": 50, "holdout_instances_per_tier": 20
+    "num_dev_instances_per_tier": 50,
+    "holdout_instances_per_tier": 20
   },
-
   "ibenchmarks": [
     {
-      "tier": "T1_oversampled", "rho": 1,
-      "omega_tier": {"N": 1024, "M": 512, "k": 40, "sigma_n": 0.01, "coherence": 0.05},
-      "epsilon": 5e-4, "d_ibench": 0.14,
+      "tier": "T1_oversampled",
+      "rho": 1,
+      "omega_tier": {
+        "N": 1024,
+        "M": 512,
+        "k": 40,
+        "sigma_n": 0.01,
+        "coherence": 0.05
+      },
+      "epsilon": 0.0005,
+      "d_ibench": 0.14,
       "baselines": [
-        {"name": "OMP",  "nmse": 2e-4, "support_rate": 0.99, "Q": 0.90},
-        {"name": "FISTA","nmse": 1.5e-4,"support_rate": 0.98, "Q": 0.92},
-        {"name": "AMP",  "nmse": 8e-5, "support_rate": 1.00, "Q": 0.96}
+        {
+          "name": "OMP",
+          "nmse": 0.0002,
+          "support_rate": 0.99,
+          "Q": 0.9
+        },
+        {
+          "name": "FISTA",
+          "nmse": 0.00015,
+          "support_rate": 0.98,
+          "Q": 0.92
+        },
+        {
+          "name": "AMP",
+          "nmse": 8e-05,
+          "support_rate": 1.0,
+          "Q": 0.96
+        }
       ]
     },
     {
-      "tier": "T2_at_RIP_boundary", "rho": 3,
-      "omega_tier": {"N": 1024, "M": 256, "k": 40, "sigma_n": 0.01, "coherence": 0.1},
-      "epsilon": 1e-3, "d_ibench": 0.26,
+      "tier": "T2_at_RIP_boundary",
+      "rho": 3,
+      "omega_tier": {
+        "N": 1024,
+        "M": 256,
+        "k": 40,
+        "sigma_n": 0.01,
+        "coherence": 0.1
+      },
+      "epsilon": 0.001,
+      "d_ibench": 0.26,
       "baselines": [
-        {"name": "OMP",  "nmse": 5e-3,  "support_rate": 0.72, "Q": 0.58},
-        {"name": "FISTA","nmse": 2.5e-3,"support_rate": 0.88, "Q": 0.78},
-        {"name": "AMP",  "nmse": 1e-3,  "support_rate": 0.94, "Q": 0.88}
+        {
+          "name": "OMP",
+          "nmse": 0.005,
+          "support_rate": 0.72,
+          "Q": 0.58
+        },
+        {
+          "name": "FISTA",
+          "nmse": 0.0025,
+          "support_rate": 0.88,
+          "Q": 0.78
+        },
+        {
+          "name": "AMP",
+          "nmse": 0.001,
+          "support_rate": 0.94,
+          "Q": 0.88
+        }
       ]
     },
     {
-      "tier": "T3_undersampled", "rho": 5,
-      "omega_tier": {"N": 4096, "M": 512, "k": 200, "sigma_n": 0.02, "coherence": 0.2},
-      "epsilon": 5e-3, "d_ibench": 0.48,
+      "tier": "T3_undersampled",
+      "rho": 5,
+      "omega_tier": {
+        "N": 4096,
+        "M": 512,
+        "k": 200,
+        "sigma_n": 0.02,
+        "coherence": 0.2
+      },
+      "epsilon": 0.005,
+      "d_ibench": 0.48,
       "baselines": [
-        {"name": "OMP",  "nmse": 2e-2, "support_rate": 0.40, "Q": 0.28},
-        {"name": "FISTA","nmse": 8e-3, "support_rate": 0.65, "Q": 0.52},
-        {"name": "AMP",  "nmse": 5e-3, "support_rate": 0.80, "Q": 0.72}
+        {
+          "name": "OMP",
+          "nmse": 0.02,
+          "support_rate": 0.4,
+          "Q": 0.28
+        },
+        {
+          "name": "FISTA",
+          "nmse": 0.008,
+          "support_rate": 0.65,
+          "Q": 0.52
+        },
+        {
+          "name": "AMP",
+          "nmse": 0.005,
+          "support_rate": 0.8,
+          "Q": 0.72
+        }
       ]
     },
     {
-      "tier": "T4_basis_mismatch", "rho": 10,
-      "omega_tier": {"N": 16384, "M": 1024, "k": 1000, "sigma_n": 0.05, "coherence": 0.5, "basis_mismatch": 0.3},
-      "epsilon": 3e-2, "d_ibench": 0.76,
+      "tier": "T4_basis_mismatch",
+      "rho": 10,
+      "omega_tier": {
+        "N": 16384,
+        "M": 1024,
+        "k": 1000,
+        "sigma_n": 0.05,
+        "coherence": 0.5,
+        "basis_mismatch": 0.3
+      },
+      "epsilon": 0.03,
+      "d_ibench": 0.76,
       "baselines": [
-        {"name": "FISTA","nmse": 8e-2, "support_rate": 0.20, "Q": 0.18},
-        {"name": "AMP",  "nmse": 4e-2, "support_rate": 0.35, "Q": 0.40}
+        {
+          "name": "FISTA",
+          "nmse": 0.08,
+          "support_rate": 0.2,
+          "Q": 0.18
+        },
+        {
+          "name": "AMP",
+          "nmse": 0.04,
+          "support_rate": 0.35,
+          "Q": 0.4
+        }
       ]
     }
   ],
-
   "p_benchmark": {
     "rho": 50,
-    "dataset_p_benchmark": {"name": "Synthetic + CS-MRI union + DCT-patch", "num_dev_instances": 500, "num_holdout_instances": 200},
+    "dataset_p_benchmark": {
+      "name": "Synthetic + CS-MRI union + DCT-patch",
+      "num_dev_instances": 500,
+      "num_holdout_instances": 200
+    },
     "baselines": [
-      {"name": "OMP",   "overall_Q": 0.48},
-      {"name": "FISTA", "overall_Q": 0.64},
-      {"name": "AMP",   "overall_Q": 0.74}
+      {
+        "name": "OMP",
+        "overall_Q": 0.48
+      },
+      {
+        "name": "FISTA",
+        "overall_Q": 0.64
+      },
+      {
+        "name": "AMP",
+        "overall_Q": 0.74
+      }
     ]
   },
-
   "hardness_rule_check": "SATISFIED — AMP fails at T4_basis_mismatch (basis_mismatch=0.3, M/N=0.06, coherence=0.5): NMSE 4e-2 > epsilon_fn ~ 3.5e-2.",
-  "ipfs_cid": null, "ground_truth_cid": null
+  "ipfs_cid": null,
+  "ground_truth_cid": null,
+  "display_slug": "compressed-sensing"
 }

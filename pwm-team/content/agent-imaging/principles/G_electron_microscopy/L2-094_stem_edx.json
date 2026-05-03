@@ -2,7 +2,7 @@
   "artifact_id": "L2-094",
   "layer": "L2",
   "parent_l1": "L1-094",
-  "title": "STEM-EDX \u2014 X-ray energy-dispersive elemental mapping Mismatch-Only Spec",
+  "title": "STEM-EDX — X-ray energy-dispersive elemental mapping Mismatch-Only Spec",
   "spec_type": "mismatch_only",
   "six_tuple": {
     "omega": {
@@ -149,5 +149,6 @@
     "PASS",
     "PASS"
   ],
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "display_slug": "stem-edx"
 }

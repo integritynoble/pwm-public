@@ -5,12 +5,32 @@
   "principle_ref": "sha256:<L1-148_principle_hash>",
   "title": "IRMS delta-value Spec (bracketing family)",
   "spec_type": "mismatch_only",
-
   "six_tuple": {
     "omega": {
-      "N_replicate": [1, 100], "memory_effect": [0.0, 0.1],
-      "amp_nonlinearity": [0.0, 1e-3], "peak_tailing": [0.0, 1e-2],
-      "flow_drift": [0.0, 0.05], "sample_size_mismatch": [0.0, 0.5]
+      "N_replicate": [
+        1,
+        100
+      ],
+      "memory_effect": [
+        0.0,
+        0.1
+      ],
+      "amp_nonlinearity": [
+        0.0,
+        0.001
+      ],
+      "peak_tailing": [
+        0.0,
+        0.01
+      ],
+      "flow_drift": [
+        0.0,
+        0.05
+      ],
+      "sample_size_mismatch": [
+        0.0,
+        0.5
+      ]
     },
     "E": {
       "forward": "R_obs = R_true + memory_effect * (R_prev - R_true) + amp_nonlinearity * I + peak_tailing * neighbor",
@@ -18,44 +38,93 @@
       "primitive_chain": "L.disperse.mass -> int.temporal",
       "inverse": "recover R_true (or delta permil) from Faraday-cup voltages"
     },
-    "B": {"linear_amplifier_near_nominal": true, "ratio_scale_positive": true},
-    "I": {"strategy": "bracketed_standard_init"},
-    "O": ["delta_RMSE_permil", "precision_permil", "accuracy_vs_standard", "residual_norm"],
+    "B": {
+      "linear_amplifier_near_nominal": true,
+      "ratio_scale_positive": true
+    },
+    "I": {
+      "strategy": "bracketed_standard_init"
+    },
+    "O": [
+      "delta_RMSE_permil",
+      "precision_permil",
+      "accuracy_vs_standard",
+      "residual_norm"
+    ],
     "epsilon_fn": "0.01 + 5 * memory_effect + 1e4 * amp_nonlinearity + 50 * peak_tailing + 0.5 * flow_drift"
   },
-
   "protocol_fields": {
-    "input_format": {"faraday_mV": "float32(N_replicate, 2)"},
-    "output_format": {"delta_permil": "float32"},
+    "input_format": {
+      "faraday_mV": "float32(N_replicate, 2)"
+    },
+    "output_format": {
+      "delta_permil": "float32"
+    },
     "baselines": [
-      {"name": "AveragedRatio","method_sig": "L+O", "expected_rmse_permil": 0.1},
-      {"name": "Bracketing",   "method_sig": "L+O", "expected_rmse_permil": 0.05},
-      {"name": "MemoryCorr",   "method_sig": "L+O", "expected_rmse_permil": 0.03},
-      {"name": "LinearityCorr","method_sig": "L+O", "expected_rmse_permil": 0.04},
-      {"name": "MLModel-IRMS", "method_sig": "L+N", "expected_rmse_permil": 0.025}
+      {
+        "name": "AveragedRatio",
+        "method_sig": "L+O",
+        "expected_rmse_permil": 0.1
+      },
+      {
+        "name": "Bracketing",
+        "method_sig": "L+O",
+        "expected_rmse_permil": 0.05
+      },
+      {
+        "name": "MemoryCorr",
+        "method_sig": "L+O",
+        "expected_rmse_permil": 0.03
+      },
+      {
+        "name": "LinearityCorr",
+        "method_sig": "L+O",
+        "expected_rmse_permil": 0.04
+      },
+      {
+        "name": "MLModel-IRMS",
+        "method_sig": "L+N",
+        "expected_rmse_permil": 0.025
+      }
     ]
   },
-
   "ibenchmark_range": {
     "center_ibenchmark": {
       "rho": 1,
-      "omega_tier": {"N_replicate": 6, "memory_effect": 0.001, "amp_nonlinearity": 1e-5, "peak_tailing": 1e-4},
+      "omega_tier": {
+        "N_replicate": 6,
+        "memory_effect": 0.001,
+        "amp_nonlinearity": 1e-05,
+        "peak_tailing": 0.0001
+      },
       "epsilon": 0.05
     },
-    "tier_bounds": {"N_replicate": [1, 50], "memory_effect": [0, 0.05]},
-    "proximity_threshold": 0.10
+    "tier_bounds": {
+      "N_replicate": [
+        1,
+        50
+      ],
+      "memory_effect": [
+        0,
+        0.05
+      ]
+    },
+    "proximity_threshold": 0.1
   },
-
   "d_spec": 0.55,
   "d_spec_notes": "Distance from other mass-spec specs (SIMS/DESI) ~= 0.50 — IRMS is sharply focused on isotope ratios, not molecular ID.",
-
-  "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
   "s1_s4_justifications": {
     "S1": "Two Faraday voltages per replicate; ratio scalar.",
     "S2": "Ratio estimate unique and unbiased given calibration.",
     "S3": "Bracket-averaging O(1); memory deconvolution linear solve.",
     "S4": "epsilon_fn defined; MLModel-IRMS fails at memory=0.1 + nonlinearity=1e-3 (hardness)."
   },
-
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "display_slug": "mass-spectrometry-isotope"
 }

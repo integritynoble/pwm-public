@@ -2,7 +2,7 @@
   "artifact_id": "L1-192",
   "layer": "L1",
   "principle_number": "192",
-  "title": "Buckley-Leverett \u2014 two-phase displacement saturation",
+  "title": "Buckley-Leverett — two-phase displacement saturation",
   "domain": "Fluid Dynamics",
   "sub_domain": "Buckley-Leverett in petroleum reservoirs",
   "source_file": "R_fluid_dynamics/192_buckley_leverett.md",
@@ -11,7 +11,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Buckley-Leverett \u2014 two-phase displacement saturation forward model.",
+    "description": "Buckley-Leverett — two-phase displacement saturation forward model.",
     "forward_model": "d S_w/dt + d/dx (f_w(S_w)) = 0; f_w = lambda_w/(lambda_w + lambda_o)",
     "world_state_x": "saturation front S_w(x,t) with shock",
     "observation_y": "well production cuts + tracer profiles",
@@ -167,5 +167,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "buckley-leverett"
 }

@@ -45,7 +45,7 @@
     "stability": "conditional",
     "condition_number_kappa": 80,
     "condition_number_effective": 12,
-    "regime": "Well-posed away from breakdown; inversion of (phi_B, A*) ambiguous at single T \u2014 requires T-series."
+    "regime": "Well-posed away from breakdown; inversion of (phi_B, A*) ambiguous at single T — requires T-series."
   },
   "C": {
     "solver_class": "Richardson plot (log(J_s/T^2) vs 1/T); Bayesian joint fit across T",
@@ -160,5 +160,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "thermionic-emission"
 }

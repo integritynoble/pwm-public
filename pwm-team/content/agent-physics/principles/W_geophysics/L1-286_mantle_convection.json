@@ -2,7 +2,7 @@
   "artifact_id": "L1-286",
   "layer": "L1",
   "principle_number": "286",
-  "title": "Mantle Convection \u2014 high-Ra thermal convection",
+  "title": "Mantle Convection — high-Ra thermal convection",
   "domain": "Geophysics",
   "sub_domain": "Extended Boussinesq mantle flow",
   "source_file": "W_geophysics/286_mantle_convection.md",
@@ -11,7 +11,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Mantle Convection \u2014 high-Ra thermal convection forward model.",
+    "description": "Mantle Convection — high-Ra thermal convection forward model.",
     "forward_model": "Stokes: -grad p + div(eta * eps_dot) = Ra*T*g; energy: dT/dt + u.grad T = Laplacian T + H",
     "world_state_x": "mantle temperature T(x,t) + velocity u(x,t) + viscosity eta(T,p)",
     "observation_y": "present-day seismic tomography + heat flux + plate velocities",
@@ -197,5 +197,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "mantle-convection"
 }

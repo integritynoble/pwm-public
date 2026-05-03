@@ -42,7 +42,7 @@
     "stability": "conditional",
     "condition_number_kappa": 60,
     "condition_number_effective": 10,
-    "regime": "Well-posed; inversion of (n_c, C_2) from uniaxial alone is ill-conditioned \u2014 requires biaxial."
+    "regime": "Well-posed; inversion of (n_c, C_2) from uniaxial alone is ill-conditioned — requires biaxial."
   },
   "C": {
     "solver_class": "Nonlinear least squares LM; Bayesian hyperelastic fit",
@@ -147,5 +147,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "rubber-elasticity"
 }

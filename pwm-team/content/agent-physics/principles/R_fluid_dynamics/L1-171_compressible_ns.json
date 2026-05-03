@@ -2,7 +2,7 @@
   "artifact_id": "L1-171",
   "layer": "L1",
   "principle_number": "171",
-  "title": "Compressible Navier-Stokes \u2014 viscous shock/boundary-layer",
+  "title": "Compressible Navier-Stokes — viscous shock/boundary-layer",
   "domain": "Fluid Dynamics",
   "sub_domain": "Compressible NS with shocks",
   "source_file": "R_fluid_dynamics/171_compressible_ns.md",
@@ -11,7 +11,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Compressible Navier-Stokes \u2014 viscous shock/boundary-layer forward model.",
+    "description": "Compressible Navier-Stokes — viscous shock/boundary-layer forward model.",
     "forward_model": "d/dt rho + div(rho u) = 0; d/dt(rho u) + div(rho u u) = -grad p + div tau; d/dt(rho E) + div((rho E + p) u) = div(tau . u) - div q",
     "world_state_x": "rho, u, p, T fields including shock structure",
     "observation_y": "Schlieren + BOS + pressure/temperature probes",
@@ -200,5 +200,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "compressible-ns"
 }

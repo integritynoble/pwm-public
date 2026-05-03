@@ -3,7 +3,7 @@
   "layer": "L2",
   "parent_l1": "L1-167",
   "principle_ref": "sha256:<L1-167_principle_hash>",
-  "title": "Lucky Imaging Atmospheric Turbulence Recovery \u2014 Nominal + Mismatch Specs",
+  "title": "Lucky Imaging Atmospheric Turbulence Recovery — Nominal + Mismatch Specs",
   "spec_type": "nominal_and_mismatch",
   "six_tuple": {
     "omega": {
@@ -122,5 +122,6 @@
     "S3": "Solver convergence proven for stated solver class.",
     "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
   },
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "display_slug": "lucky-imaging-atmospheric-turbulence-recovery-nominal-mismatch-specs"
 }

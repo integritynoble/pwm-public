@@ -3,7 +3,7 @@
   "layer": "L3",
   "parent_l2": "L2-092",
   "parent_l1": "L1-092",
-  "title": "Cryo-Electron Tomography (cryoET) \u2014 in-situ 3D biology at nm scale Benchmark Suite",
+  "title": "Cryo-Electron Tomography (cryoET) — in-situ 3D biology at nm scale Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "canonical EM dataset for this principle (EMPIAR / CEM500K / etc.)",
@@ -203,7 +203,8 @@
       }
     ]
   },
-  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind strata corner.",
+  "hardness_rule_check": "SATISFIED — top baseline fails at T4_blind strata corner.",
   "ipfs_cid": null,
-  "ground_truth_cid": null
+  "ground_truth_cid": null,
+  "display_slug": "cryoet"
 }

@@ -3,7 +3,7 @@
   "layer": "L3",
   "parent_l2": "L2-369",
   "parent_l1": "L1-369",
-  "title": "Weak Gravitational Lensing Shear Estimation \u2014 Benchmark Suite",
+  "title": "Weak Gravitational Lensing Shear Estimation — Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "DES_Y3_shear_catalog",
@@ -255,5 +255,6 @@
     "M6_gate_checks": "gates/check_s{1,2,3,4}.py embedded with thresholds.yaml."
   },
   "ipfs_cid": null,
-  "ground_truth_cid": null
+  "ground_truth_cid": null,
+  "display_slug": "weak-gravitational-lensing-shear-estimation-benchmark-suite"
 }

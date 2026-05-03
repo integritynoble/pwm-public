@@ -4,15 +4,52 @@
   "parent_l1": "L1-097",
   "title": "Structured-Light Depth Mismatch-Only Spec",
   "spec_type": "mismatch_only",
-
   "six_tuple": {
     "omega": {
-      "H": [480, 4000], "W": [640, 4000], "W_p": [256, 4096],
-      "K_patterns": [4, 64], "baseline_mm": [30, 500],
-      "photon_count": [50, 10000],
-      "specular_fraction": [0.0, 0.5], "ambient_light": [0.0, 100000],
-      "projector_camera_pose_drift": [0.0, 0.002], "occlusion_fraction": [0.0, 0.3],
-      "subsurface_scattering": [0.0, 0.3]
+      "H": [
+        480,
+        4000
+      ],
+      "W": [
+        640,
+        4000
+      ],
+      "W_p": [
+        256,
+        4096
+      ],
+      "K_patterns": [
+        4,
+        64
+      ],
+      "baseline_mm": [
+        30,
+        500
+      ],
+      "photon_count": [
+        50,
+        10000
+      ],
+      "specular_fraction": [
+        0.0,
+        0.5
+      ],
+      "ambient_light": [
+        0.0,
+        100000
+      ],
+      "projector_camera_pose_drift": [
+        0.0,
+        0.002
+      ],
+      "occlusion_fraction": [
+        0.0,
+        0.3
+      ],
+      "subsurface_scattering": [
+        0.0,
+        0.3
+      ]
     },
     "E": {
       "forward": "I_k = rho * P_k(proj_col) * lambertian + I_ambient + n; specular and SSS add BRDF terms",
@@ -20,38 +57,101 @@
       "primitive_chain": "S.project.pattern -> L.reflect_lambertian -> L.triangulate -> int.spatial",
       "inverse": "recover depth d(u,v) from K coded pattern images"
     },
-    "B": {"positive_depth": "d > 0", "bounded_disparity": true},
-    "I": {"strategy": "gray_code_binary_decode_plus_phase_sub_pixel"},
-    "O": ["depth_RMSE_mm", "depth_MAE_mm", "decoded_pixel_fraction"],
+    "B": {
+      "positive_depth": "d > 0",
+      "bounded_disparity": true
+    },
+    "I": {
+      "strategy": "gray_code_binary_decode_plus_phase_sub_pixel"
+    },
+    "O": [
+      "depth_RMSE_mm",
+      "depth_MAE_mm",
+      "decoded_pixel_fraction"
+    ],
     "epsilon_fn": "0.2 + 0.8 * log10(ambient_light / 100 + 1) + 5.0 * specular_fraction + 2.0 * subsurface_scattering - 0.1 * log2(K_patterns / 4)"
   },
-
   "protocol_fields": {
-    "input_format": {"pattern_images": "uint16(K, H, W)", "calibration": "dict: {K_cam, K_proj, R, t}"},
-    "output_format": {"depth_map": "float32(H, W)", "decode_mask": "bool(H, W)"},
+    "input_format": {
+      "pattern_images": "uint16(K, H, W)",
+      "calibration": "dict: {K_cam, K_proj, R, t}"
+    },
+    "output_format": {
+      "depth_map": "float32(H, W)",
+      "decode_mask": "bool(H, W)"
+    },
     "baselines": [
-      {"name": "Gray-Phase-Decode", "method_sig": "A+O", "expected_rmse_mm": 0.8},
-      {"name": "Graph-Cut-Robust",  "method_sig": "L+O", "expected_rmse_mm": 0.6},
-      {"name": "DeepSL",            "method_sig": "L+N", "expected_rmse_mm": 0.35},
-      {"name": "ActiveStereoNet",   "method_sig": "L+N", "expected_rmse_mm": 0.45}
+      {
+        "name": "Gray-Phase-Decode",
+        "method_sig": "A+O",
+        "expected_rmse_mm": 0.8
+      },
+      {
+        "name": "Graph-Cut-Robust",
+        "method_sig": "L+O",
+        "expected_rmse_mm": 0.6
+      },
+      {
+        "name": "DeepSL",
+        "method_sig": "L+N",
+        "expected_rmse_mm": 0.35
+      },
+      {
+        "name": "ActiveStereoNet",
+        "method_sig": "L+N",
+        "expected_rmse_mm": 0.45
+      }
     ]
   },
-
   "ibenchmark_range": {
     "center_ibenchmark": {
       "rho": 1,
-      "omega_tier": {"H": 1080, "W": 1920, "W_p": 1024, "K_patterns": 24, "baseline_mm": 120, "photon_count": 500, "specular_fraction": 0.0, "ambient_light": 0.0, "projector_camera_pose_drift": 0.0, "occlusion_fraction": 0.0, "subsurface_scattering": 0.0},
+      "omega_tier": {
+        "H": 1080,
+        "W": 1920,
+        "W_p": 1024,
+        "K_patterns": 24,
+        "baseline_mm": 120,
+        "photon_count": 500,
+        "specular_fraction": 0.0,
+        "ambient_light": 0.0,
+        "projector_camera_pose_drift": 0.0,
+        "occlusion_fraction": 0.0,
+        "subsurface_scattering": 0.0
+      },
       "epsilon": 0.5
     },
     "tier_bounds": {
-      "H": [480, 2160], "W": [640, 3840],
-      "K_patterns": [8, 48], "specular_fraction": [0.0, 0.5],
-      "ambient_light": [0.0, 100000]
+      "H": [
+        480,
+        2160
+      ],
+      "W": [
+        640,
+        3840
+      ],
+      "K_patterns": [
+        8,
+        48
+      ],
+      "specular_fraction": [
+        0.0,
+        0.5
+      ],
+      "ambient_light": [
+        0.0,
+        100000
+      ]
     },
-    "proximity_threshold": 0.10
+    "proximity_threshold": 0.1
   },
-
   "d_spec": 0.62,
-  "s1_s4_gates": ["PASS", "PASS", "PASS", "PASS"],
-  "ipfs_cid": null
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null,
+  "display_slug": "structured-light"
 }

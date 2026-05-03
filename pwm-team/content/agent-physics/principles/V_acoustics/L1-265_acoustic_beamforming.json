@@ -2,7 +2,7 @@
   "artifact_id": "L1-265",
   "layer": "L1",
   "principle_number": "265",
-  "title": "Acoustic Beamforming \u2014 DOA & imaging from array",
+  "title": "Acoustic Beamforming — DOA & imaging from array",
   "domain": "Acoustics",
   "sub_domain": "Sensor-array DOA estimation",
   "source_file": "V_acoustics/265_acoustic_beamforming.md",
@@ -11,7 +11,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Acoustic Beamforming \u2014 DOA & imaging from array forward model.",
+    "description": "Acoustic Beamforming — DOA & imaging from array forward model.",
     "forward_model": "P(theta) = a(theta)^H R_xx a(theta); R_xx = E[x x^H] for mic-array snapshots x",
     "world_state_x": "angular power spectrum P(theta) and source positions theta_k",
     "observation_y": "N_mic array snapshots x[n] in C^{N_mic}",
@@ -174,5 +174,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "acoustic-beamforming"
 }

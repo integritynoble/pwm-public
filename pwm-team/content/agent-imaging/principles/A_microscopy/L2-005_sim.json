@@ -2,7 +2,7 @@
   "artifact_id": "L2-005",
   "layer": "L2",
   "parent_l1": "L1-005",
-  "title": "Structured Illumination Microscopy (SIM) \u2014 lateral 2x resolution Mismatch-Only Spec",
+  "title": "Structured Illumination Microscopy (SIM) — lateral 2x resolution Mismatch-Only Spec",
   "spec_type": "mismatch_only",
   "six_tuple": {
     "omega": {
@@ -157,5 +157,6 @@
     "PASS",
     "PASS"
   ],
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "display_slug": "sim"
 }

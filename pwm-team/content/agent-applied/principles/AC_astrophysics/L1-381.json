@@ -11,7 +11,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Type Ia Supernova Distance Standardization: SN Ia distance standardization: calibrate stretch-color-luminosity relation to minimize Hubble residuals and constrain H0. The forward operator produces the measurement through a 3-node primitive DAG (M.sed.salt2_template\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~15; Malmquist_bias, peculiar_velocity_field_km_s set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "Type Ia Supernova Distance Standardization: SN Ia distance standardization: calibrate stretch-color-luminosity relation to minimize Hubble residuals and constrain H0. The forward operator produces the measurement through a 3-node primitive DAG (M.sed.salt2_template…); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~15; Malmquist_bias, peculiar_velocity_field_km_s set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "mu = m_B - M + alpha*x1 - beta*c + delta_M; H0 from slope of mu vs. log10(z)",
     "world_state_x": "Hubble constant H0 and dark energy equation of state w",
     "observation_y": "Hubble diagram {mu_i vs. z_i} for N_SN type Ia supernovae",
@@ -149,5 +149,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "type-ia-supernova-distance-standardization"
 }

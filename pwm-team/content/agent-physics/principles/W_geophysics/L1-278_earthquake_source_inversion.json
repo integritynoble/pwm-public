@@ -2,7 +2,7 @@
   "artifact_id": "L1-278",
   "layer": "L1",
   "principle_number": "278",
-  "title": "Earthquake Source Inversion \u2014 finite-fault slip",
+  "title": "Earthquake Source Inversion — finite-fault slip",
   "domain": "Geophysics",
   "sub_domain": "Finite-fault slip from teleseismic + strong-motion",
   "source_file": "W_geophysics/278_earthquake_source_inversion.md",
@@ -11,7 +11,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Earthquake Source Inversion \u2014 finite-fault slip forward model.",
+    "description": "Earthquake Source Inversion — finite-fault slip forward model.",
     "forward_model": "u_obs(x_r, t) = int_fault G(x_r, x_s, t) * S(x_s, t) dA",
     "world_state_x": "slip distribution S(x,y,t) on assumed fault plane",
     "observation_y": "teleseismic + strong-motion + GPS / InSAR co-seismic",
@@ -174,5 +174,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "earthquake-source-inversion"
 }

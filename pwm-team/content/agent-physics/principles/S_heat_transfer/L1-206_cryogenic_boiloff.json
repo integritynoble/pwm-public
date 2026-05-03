@@ -2,7 +2,7 @@
   "artifact_id": "L1-206",
   "layer": "L1",
   "principle_number": "206",
-  "title": "Cryogenic Storage Boiloff \u2014 MLI heat-leak estimation",
+  "title": "Cryogenic Storage Boiloff — MLI heat-leak estimation",
   "domain": "Heat Transfer",
   "sub_domain": "Multi-layer insulation heat-leak inverse",
   "source_file": "S_heat_transfer/206_cryogenic_boiloff.md",
@@ -11,7 +11,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Cryogenic Storage Boiloff \u2014 MLI heat-leak estimation forward model.",
+    "description": "Cryogenic Storage Boiloff — MLI heat-leak estimation forward model.",
     "forward_model": "q_leak = q_rad + q_gas + q_solid; q_rad = sigma(T_h^4 - T_c^4)/((N-1)(2/eps - 1))",
     "world_state_x": "effective MLI heat leak q''_leak (W/m^2)",
     "observation_y": "boiloff gas flow-rate over time, tank temperature probes",
@@ -181,5 +181,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "cryogenic-boiloff"
 }

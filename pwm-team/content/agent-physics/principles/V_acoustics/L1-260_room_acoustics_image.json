@@ -2,7 +2,7 @@
   "artifact_id": "L1-260",
   "layer": "L1",
   "principle_number": "260",
-  "title": "Room Acoustics \u2014 image-source method (shoebox rooms)",
+  "title": "Room Acoustics — image-source method (shoebox rooms)",
   "domain": "Acoustics",
   "sub_domain": "Image-source mirror-reflection model",
   "source_file": "V_acoustics/260_room_acoustics_image.md",
@@ -11,7 +11,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Room Acoustics \u2014 image-source method (shoebox rooms) forward model.",
+    "description": "Room Acoustics — image-source method (shoebox rooms) forward model.",
     "forward_model": "h(t) = sum_{n,m,p} R_wall^order * delta(t - d_{nmp}/c) / (4*pi*d_{nmp})",
     "world_state_x": "room impulse response h(t) in a shoebox room with parallel walls",
     "observation_y": "microphone recording y(t) = x(t) * h(t) + n(t)",
@@ -181,5 +181,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "room-acoustics-image"
 }

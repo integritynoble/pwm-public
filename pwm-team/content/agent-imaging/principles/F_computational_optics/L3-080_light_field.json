@@ -5,7 +5,6 @@
   "parent_l1": "L1-080",
   "title": "Light-Field Decoding Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
-
   "dataset_registry": {
     "primary": "Lytro Illum captured LFs (30 scenes, 625x434 spatial x 15x15 angular)",
     "secondary": "HCI 4D LF benchmark (Wanner synthetic + real)",
@@ -13,50 +12,136 @@
     "construction_method": "MLA forward simulation with calibrated geometry; mla_rotation/offset injected as mismatch",
     "num_dev_instances_per_tier": 20
   },
-
   "ibenchmarks": [
     {
-      "tier": "T1_nominal", "rho": 1,
-      "omega_tier": {"H": 625, "W": 434, "U": 9, "V": 9, "photon_count": 1000, "mla_rotation": 0.0, "mla_offset": 0.0},
-      "epsilon": 32.0, "d_ibench": 0.14,
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "H": 625,
+        "W": 434,
+        "U": 9,
+        "V": 9,
+        "photon_count": 1000,
+        "mla_rotation": 0.0,
+        "mla_offset": 0.0
+      },
+      "epsilon": 32.0,
+      "d_ibench": 0.14,
       "baselines": [
-        {"name": "Shear-Sum-Refocus","score": 30.2, "Q": 0.60},
-        {"name": "EPI-Depth-Guided", "score": 32.8, "Q": 0.76},
-        {"name": "DistgLF",          "score": 36.5, "Q": 0.92}
+        {
+          "name": "Shear-Sum-Refocus",
+          "score": 30.2,
+          "Q": 0.6
+        },
+        {
+          "name": "EPI-Depth-Guided",
+          "score": 32.8,
+          "Q": 0.76
+        },
+        {
+          "name": "DistgLF",
+          "score": 36.5,
+          "Q": 0.92
+        }
       ]
     },
     {
-      "tier": "T2_low", "rho": 3,
-      "omega_tier": {"H": 625, "W": 434, "U": 7, "V": 7, "photon_count": 500, "mla_rotation": 0.01, "mla_offset": 0.3},
-      "epsilon": 29.0, "d_ibench": 0.28,
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "H": 625,
+        "W": 434,
+        "U": 7,
+        "V": 7,
+        "photon_count": 500,
+        "mla_rotation": 0.01,
+        "mla_offset": 0.3
+      },
+      "epsilon": 29.0,
+      "d_ibench": 0.28,
       "baselines": [
-        {"name": "Shear-Sum-Refocus","score": 26.8, "Q": 0.40},
-        {"name": "EPI-Depth-Guided", "score": 29.5, "Q": 0.58},
-        {"name": "DistgLF",          "score": 32.8, "Q": 0.75}
+        {
+          "name": "Shear-Sum-Refocus",
+          "score": 26.8,
+          "Q": 0.4
+        },
+        {
+          "name": "EPI-Depth-Guided",
+          "score": 29.5,
+          "Q": 0.58
+        },
+        {
+          "name": "DistgLF",
+          "score": 32.8,
+          "Q": 0.75
+        }
       ]
     },
     {
-      "tier": "T3_moderate", "rho": 5,
-      "omega_tier": {"H": 1024, "W": 1024, "U": 5, "V": 5, "photon_count": 200, "mla_rotation": 0.025, "mla_offset": 1.0},
-      "epsilon": 26.0, "d_ibench": 0.48,
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "H": 1024,
+        "W": 1024,
+        "U": 5,
+        "V": 5,
+        "photon_count": 200,
+        "mla_rotation": 0.025,
+        "mla_offset": 1.0
+      },
+      "epsilon": 26.0,
+      "d_ibench": 0.48,
       "baselines": [
-        {"name": "Shear-Sum-Refocus","score": 23.0, "Q": 0.28},
-        {"name": "EPI-Depth-Guided", "score": 26.2, "Q": 0.50},
-        {"name": "DistgLF",          "score": 28.8, "Q": 0.64}
+        {
+          "name": "Shear-Sum-Refocus",
+          "score": 23.0,
+          "Q": 0.28
+        },
+        {
+          "name": "EPI-Depth-Guided",
+          "score": 26.2,
+          "Q": 0.5
+        },
+        {
+          "name": "DistgLF",
+          "score": 28.8,
+          "Q": 0.64
+        }
       ]
     },
     {
-      "tier": "T4_blind", "rho": 10,
-      "omega_tier": {"H": 2048, "W": 2048, "U": 3, "V": 3, "photon_count": 80, "mla_rotation": 0.05, "mla_offset": 2.0},
-      "epsilon": 22.0, "d_ibench": 0.72,
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "H": 2048,
+        "W": 2048,
+        "U": 3,
+        "V": 3,
+        "photon_count": 80,
+        "mla_rotation": 0.05,
+        "mla_offset": 2.0
+      },
+      "epsilon": 22.0,
+      "d_ibench": 0.72,
       "baselines": [
-        {"name": "Shear-Sum-Refocus","score": 18.0, "Q": 0.14},
-        {"name": "EPI-Depth-Guided", "score": 21.0, "Q": 0.30},
-        {"name": "DistgLF",          "score": 23.5, "Q": 0.44}
+        {
+          "name": "Shear-Sum-Refocus",
+          "score": 18.0,
+          "Q": 0.14
+        },
+        {
+          "name": "EPI-Depth-Guided",
+          "score": 21.0,
+          "Q": 0.3
+        },
+        {
+          "name": "DistgLF",
+          "score": 23.5,
+          "Q": 0.44
+        }
       ]
     }
   ],
-
   "p_benchmark": {
     "rho": 50,
     "dataset_p_benchmark": {
@@ -65,13 +150,22 @@
       "construction_method": "parametric (U/V, photon_count, mla_rotation) sweep"
     },
     "baselines": [
-      {"name": "Shear-Sum-Refocus","overall_Q": 0.38},
-      {"name": "EPI-Depth-Guided", "overall_Q": 0.55},
-      {"name": "DistgLF",          "overall_Q": 0.70}
+      {
+        "name": "Shear-Sum-Refocus",
+        "overall_Q": 0.38
+      },
+      {
+        "name": "EPI-Depth-Guided",
+        "overall_Q": 0.55
+      },
+      {
+        "name": "DistgLF",
+        "overall_Q": 0.7
+      }
     ]
   },
-
   "hardness_rule_check": "SATISFIED — DistgLF fails at T4_blind (U=3 + low photons + mla_rotation=0.05 corner below angular-resolution bound).",
   "ipfs_cid": null,
-  "ground_truth_cid": null
+  "ground_truth_cid": null,
+  "display_slug": "light-field"
 }

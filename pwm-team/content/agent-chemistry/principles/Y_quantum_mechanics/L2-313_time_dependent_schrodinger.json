@@ -2,7 +2,7 @@
   "artifact_id": "L2-313",
   "layer": "L2",
   "parent_l1": "L1-313",
-  "title": "Time-Dependent Schr\u00f6dinger Equation Mismatch-Only Spec",
+  "title": "Time-Dependent Schrödinger Equation Mismatch-Only Spec",
   "spec_type": "mismatch_only",
   "six_tuple": {
     "omega": {
@@ -31,7 +31,7 @@
       "forward": "i*hbar*dpsi/dt = (H_0 + V_laser(t))*psi(t)",
       "operator": "TDSE_forward_mismatch",
       "primitive_chain": "E.hamiltonian_t -> E.laser_coupling -> M.time_integrate -> O.time_resolved",
-      "inverse": "recover constitutive parameters for Time-Dependent Schr\u00f6dinger Equation"
+      "inverse": "recover constitutive parameters for Time-Dependent Schrödinger Equation"
     },
     "B": {
       "domain_specific_priors": true
@@ -122,5 +122,6 @@
     "S3": "Solver class Split-operator Fourier (SOFT); Crank-Nicolson; TDDFT if many-electron provably converges at rate q=2.0; monotone residual decrease.",
     "S4": "epsilon_fn evaluates cleanly across 50 random Omega samples; hardness rule satisfied (top baseline fails at Omega corner)."
   },
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "display_slug": "time-dependent-schrodinger"
 }

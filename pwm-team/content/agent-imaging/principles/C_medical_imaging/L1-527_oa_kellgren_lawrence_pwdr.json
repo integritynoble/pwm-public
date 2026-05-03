@@ -7,16 +7,27 @@
   "sub_domain": "Joint-space-narrowing + osteophyte recovery from radiograph with KL-grade categorical readout",
   "source_file": "C_medical_imaging/527_oa_kellgren_lawrence_pwdr.md",
   "source_data_quality_note": "v2 PWDR Principle. Wraps L1-031 X-ray radiography with deterministic Kellgren-Lawrence 1957 grading rules to assign osteoarthritis severity {KL-0 normal, KL-1 doubtful, KL-2 minimal, KL-3 moderate, KL-4 severe}. Universal in orthopedic / rheumatology radiology. UTSW Orthopedic Surgery + Rheumatology programs.",
-
   "gate_class": "physical_with_discrete_readout",
-  "gate_substitutions": {"kappa_substitute": null, "h_substitute": null, "conservation_substitute": "softmax simplex closure on KL-grade ordinal {KL-0, KL-1, KL-2, KL-3, KL-4}"},
+  "gate_substitutions": {
+    "kappa_substitute": null,
+    "h_substitute": null,
+    "conservation_substitute": "softmax simplex closure on KL-grade ordinal {KL-0, KL-1, KL-2, KL-3, KL-4}"
+  },
   "discrete_readout": {
     "threshold_function": "Kellgren-Lawrence(radiograph) = step function on (joint_space_width_mm, osteophyte_count, subchondral_sclerosis, subchondral_cyst, deformity): KL-0 = normal joint; KL-1 = doubtful narrowing + possible osteophyte; KL-2 = definite osteophytes + possible JSN; KL-3 = multiple osteophytes + definite JSN + sclerosis + possible deformity; KL-4 = large osteophytes + marked JSN + severe sclerosis + definite deformity. Per Kellgren-Lawrence 1957 Atlas of Standard Radiographs of Arthritis.",
     "lipschitz_constant": 0.06,
     "underlying_physical_state": "joint-space width [mm], osteophyte morphology + count, subchondral bone density gradient, joint-line obliquity recovered from L1-031 weight-bearing radiograph (knee: AP standing + lateral; hip: AP pelvis)",
     "physics_core_principle": "L1-031",
-    "label_set_KL": ["KL_0_normal", "KL_1_doubtful", "KL_2_minimal", "KL_3_moderate", "KL_4_severe"],
-    "label_set_OARSI": ["OARSI_grade_0_to_3_per_compartment"],
+    "label_set_KL": [
+      "KL_0_normal",
+      "KL_1_doubtful",
+      "KL_2_minimal",
+      "KL_3_moderate",
+      "KL_4_severe"
+    ],
+    "label_set_OARSI": [
+      "OARSI_grade_0_to_3_per_compartment"
+    ],
     "threshold_continuity_proof": "Joint-space-width and osteophyte-count are continuous on bone-edge geometric reconstruction; KL-grade boundaries are step functions with measure-zero hyperplanes. Smoothed-grading globally Lipschitz with constant ~0.06 per percentage-point of feature-recovery error."
   },
   "related_principles": [
@@ -24,46 +35,183 @@
     "L1-029 (CT — sibling cross-sectional bone modality, informational)",
     "L1-030 (MRI — sibling cartilage assessment modality, informational)"
   ],
-
   "E": {
     "description": "Knee / Hip OA KL Grading (PWDR): wraps L1-031 with Kellgren-Lawrence 1957 grading rules. Stage 1 (analytical, from L1-031): from weight-bearing radiograph, recover joint-space width, osteophyte morphology, subchondral bone density, joint-line obliquity. Stage 2 (deterministic threshold): apply KL atlas decision tree; OARSI compartment grade overlay if requested. Difficulty tier delta = 3.",
     "forward_model": "Stage 1 (L1-031): radiograph -> {JSW, osteophyte_count, subchondral_sclerosis, deformity}. Stage 2: KL_grade = step(features at thresholds per Kellgren-Lawrence 1957 atlas).",
     "world_state_x": "Per-radiograph KL grade {0, 1, 2, 3, 4}; optionally per-compartment OARSI subgrades.",
     "observation_y": "Weight-bearing radiograph (knee: AP standing + lateral; hip: AP pelvis; typically 2500x3000 pixel digital radiograph).",
-    "physical_parameters_theta": ["H", "W", "pixel_resolution_um", "kVp", "mAs", "view", "weight_bearing_state", "SNR_dB", "rotation_artifact", "joint_positioning_error", "manual_grader_inter_rater_kappa", "early_OA_subtle_features", "incidental_chondrocalcinosis"]
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "pixel_resolution_um",
+      "kVp",
+      "mAs",
+      "view",
+      "weight_bearing_state",
+      "SNR_dB",
+      "rotation_artifact",
+      "joint_positioning_error",
+      "manual_grader_inter_rater_kappa",
+      "early_OA_subtle_features",
+      "incidental_chondrocalcinosis"
+    ]
   },
-
   "G": {
     "dag": "L.xray_source -> L.attenuation_projection -> L.joint_space_measurement -> L.osteophyte_detection -> L.kl_grade_classifier -> int.spatial",
-    "vertices": ["L.xray_source", "L.attenuation_projection", "L.joint_space_measurement", "L.osteophyte_detection", "L.kl_grade_classifier", "int.spatial"],
-    "arcs": ["L.xray_source -> L.attenuation_projection", "L.attenuation_projection -> L.joint_space_measurement", "L.attenuation_projection -> L.osteophyte_detection", "L.joint_space_measurement -> L.kl_grade_classifier", "L.osteophyte_detection -> L.kl_grade_classifier", "L.kl_grade_classifier -> int.spatial"],
+    "vertices": [
+      "L.xray_source",
+      "L.attenuation_projection",
+      "L.joint_space_measurement",
+      "L.osteophyte_detection",
+      "L.kl_grade_classifier",
+      "int.spatial"
+    ],
+    "arcs": [
+      "L.xray_source -> L.attenuation_projection",
+      "L.attenuation_projection -> L.joint_space_measurement",
+      "L.attenuation_projection -> L.osteophyte_detection",
+      "L.joint_space_measurement -> L.kl_grade_classifier",
+      "L.osteophyte_detection -> L.kl_grade_classifier",
+      "L.kl_grade_classifier -> int.spatial"
+    ],
     "L_DAG": 4.6,
     "n_c": 1,
-    "coupling_constraints": ["features_to_grade: joint-space and osteophyte features are jointly observed and jointly determine KL grade per the Kellgren-Lawrence atlas decision tree"]
+    "coupling_constraints": [
+      "features_to_grade: joint-space and osteophyte features are jointly observed and jointly determine KL grade per the Kellgren-Lawrence atlas decision tree"
+    ]
   },
-  "W": {"existence": true, "uniqueness": "conditional", "stability": "conditional", "condition_number_kappa": 60, "condition_number_effective": 14, "regime": "Existence inherited from L1-031. Uniqueness conditional on consistent weight-bearing positioning. Stability dominated by manual_grader_inter_rater_kappa (~0.55-0.75 typical). Joint Hadamard well-posedness established by Kellgren-Lawrence 1957 (foundational), Altman 1986 (ACR criteria), Tiulpin 2018 (deep learning KL grading benchmark), Norman 2019 (DeepKnee multi-task)."},
-  "C": {"solver_class": "linear-operator + image-segmentation [JSW measurement + osteophyte detection] + categorical-readout [KL atlas classifier] | end-to-end deep neural [DeepKnee, Tiulpin OA-CNN]", "convergence_rate_q": 2.0, "error_bound": "Inherits L1-031. Misclassification rate ~10-20% in inter-rater studies; KL is known for high inter-rater variability (one grade adjacent agreement ~95%).", "complexity": "O(H * W) for stage 1; O(1) for stage 2"},
-  "physics_fingerprint": {"carrier": "x_ray", "sensing_mechanism": "radiograph_with_kl_grading", "integration_axis": "spatial", "problem_class": "linear_inverse_with_categorical_readout", "noise_model": "poisson", "solution_space": "1D_kl_grade", "primitives": ["L.xray_source", "L.attenuation_projection", "L.joint_space_measurement", "L.osteophyte_detection", "L.kl_grade_classifier", "int.spatial"]},
-  "difficulty_delta": 3, "difficulty_tier": "standard",
-  "mismatch_parameters": ["rotation_artifact", "joint_positioning_error", "manual_grader_inter_rater_kappa", "early_OA_subtle_features", "incidental_chondrocalcinosis"],
-  "error_metric": "categorical_accuracy", "error_metric_secondary": "weighted_kappa_kl",
-
+  "W": {
+    "existence": true,
+    "uniqueness": "conditional",
+    "stability": "conditional",
+    "condition_number_kappa": 60,
+    "condition_number_effective": 14,
+    "regime": "Existence inherited from L1-031. Uniqueness conditional on consistent weight-bearing positioning. Stability dominated by manual_grader_inter_rater_kappa (~0.55-0.75 typical). Joint Hadamard well-posedness established by Kellgren-Lawrence 1957 (foundational), Altman 1986 (ACR criteria), Tiulpin 2018 (deep learning KL grading benchmark), Norman 2019 (DeepKnee multi-task)."
+  },
+  "C": {
+    "solver_class": "linear-operator + image-segmentation [JSW measurement + osteophyte detection] + categorical-readout [KL atlas classifier] | end-to-end deep neural [DeepKnee, Tiulpin OA-CNN]",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Inherits L1-031. Misclassification rate ~10-20% in inter-rater studies; KL is known for high inter-rater variability (one grade adjacent agreement ~95%).",
+    "complexity": "O(H * W) for stage 1; O(1) for stage 2"
+  },
+  "physics_fingerprint": {
+    "carrier": "x_ray",
+    "sensing_mechanism": "radiograph_with_kl_grading",
+    "integration_axis": "spatial",
+    "problem_class": "linear_inverse_with_categorical_readout",
+    "noise_model": "poisson",
+    "solution_space": "1D_kl_grade",
+    "primitives": [
+      "L.xray_source",
+      "L.attenuation_projection",
+      "L.joint_space_measurement",
+      "L.osteophyte_detection",
+      "L.kl_grade_classifier",
+      "int.spatial"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "rotation_artifact",
+    "joint_positioning_error",
+    "manual_grader_inter_rater_kappa",
+    "early_OA_subtle_features",
+    "incidental_chondrocalcinosis"
+  ],
+  "error_metric": "categorical_accuracy",
+  "error_metric_secondary": "weighted_kappa_kl",
   "spec_range": {
-    "center_spec": {"problem_class": "knee_oa_kl_pwdr", "forward_operator": "knee_oa_kl_pwdr_forward", "input_format": "weight_bearing_radiograph_with_kl_label", "omega": {"H": 2500, "W": 3000, "pixel_resolution_um": 100, "kVp": 70, "mAs": 8, "view": "AP_standing", "weight_bearing_state": "full_weight_bearing", "SNR_dB": 30, "rotation_artifact": 0.0, "joint_positioning_error": 0.0, "manual_grader_inter_rater_kappa": 0.0, "early_OA_subtle_features": 0.0, "incidental_chondrocalcinosis": 0.0}, "epsilon_fn_center": "0.75_accuracy"},
-    "allowed_forward_operators": ["knee_oa_kl_pwdr_forward", "hip_oa_kl_pwdr_forward", "oa_oarsi_pwdr_forward"],
-    "allowed_problem_classes": ["knee_oa_kl_pwdr", "hip_oa_kl_pwdr", "oa_oarsi_per_compartment_pwdr"],
-    "allowed_omega_dimensions": ["H", "W", "pixel_resolution_um", "kVp", "mAs", "view", "weight_bearing_state", "SNR_dB", "rotation_artifact", "joint_positioning_error", "manual_grader_inter_rater_kappa", "early_OA_subtle_features", "incidental_chondrocalcinosis"],
-    "omega_bounds": {"H": [1024, 4096], "W": [1024, 4096]},
-    "epsilon_bounds": {"categorical_accuracy": [0.40, 0.95]}
+    "center_spec": {
+      "problem_class": "knee_oa_kl_pwdr",
+      "forward_operator": "knee_oa_kl_pwdr_forward",
+      "input_format": "weight_bearing_radiograph_with_kl_label",
+      "omega": {
+        "H": 2500,
+        "W": 3000,
+        "pixel_resolution_um": 100,
+        "kVp": 70,
+        "mAs": 8,
+        "view": "AP_standing",
+        "weight_bearing_state": "full_weight_bearing",
+        "SNR_dB": 30,
+        "rotation_artifact": 0.0,
+        "joint_positioning_error": 0.0,
+        "manual_grader_inter_rater_kappa": 0.0,
+        "early_OA_subtle_features": 0.0,
+        "incidental_chondrocalcinosis": 0.0
+      },
+      "epsilon_fn_center": "0.75_accuracy"
+    },
+    "allowed_forward_operators": [
+      "knee_oa_kl_pwdr_forward",
+      "hip_oa_kl_pwdr_forward",
+      "oa_oarsi_pwdr_forward"
+    ],
+    "allowed_problem_classes": [
+      "knee_oa_kl_pwdr",
+      "hip_oa_kl_pwdr",
+      "oa_oarsi_per_compartment_pwdr"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "pixel_resolution_um",
+      "kVp",
+      "mAs",
+      "view",
+      "weight_bearing_state",
+      "SNR_dB",
+      "rotation_artifact",
+      "joint_positioning_error",
+      "manual_grader_inter_rater_kappa",
+      "early_OA_subtle_features",
+      "incidental_chondrocalcinosis"
+    ],
+    "omega_bounds": {
+      "H": [
+        1024,
+        4096
+      ],
+      "W": [
+        1024,
+        4096
+      ]
+    },
+    "epsilon_bounds": {
+      "categorical_accuracy": [
+        0.4,
+        0.95
+      ]
+    }
   },
-
-  "p1_p10_tests": ["PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS"],
-  "s1_s4_gates": ["PASS", "PASS", "PASS", "PASS"],
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
   "ipfs_cid": null,
-  "recast_attempted": {"considered": true, "recast_path": "Original: 'Grade osteoarthritis severity from radiograph'. Recast: 'Recover JSW + osteophyte + sclerosis features via L1-031; apply KL 1957 atlas decision tree'. Feasible because OA features have well-defined geometric forward model.", "reason_rejected": null},
-
+  "recast_attempted": {
+    "considered": true,
+    "recast_path": "Original: 'Grade osteoarthritis severity from radiograph'. Recast: 'Recover JSW + osteophyte + sclerosis features via L1-031; apply KL 1957 atlas decision tree'. Feasible because OA features have well-defined geometric forward model.",
+    "reason_rejected": null
+  },
   "v3_metadata": {
-    "is_standalone_multiphysics": false, "coupling_count_n_c": 1,
+    "is_standalone_multiphysics": false,
+    "coupling_count_n_c": 1,
     "joint_well_posedness_references": [
       "Kellgren JH, Lawrence JS (1957) Radiological assessment of osteoarthrosis. Ann Rheum Dis 16(4):494-502.",
       "Altman R et al. (1986) Development of criteria for the classification and reporting of osteoarthritis. Classification of osteoarthritis of the knee. Arthritis Rheum 29(8):1039-1049.",
@@ -71,7 +219,13 @@
       "Norman B, Pedoia V, Noworolski A, Link TM, Majumdar S (2019) Applying densely connected convolutional neural networks for staging osteoarthritis severity from plain radiographs. J Digit Imaging 32(3):471-477.",
       "Altman RD, Gold GE (2007) Atlas of individual radiographic features in osteoarthritis, revised. OARSI."
     ],
-    "distinctness_audit": {"closest_existing_principle": "L1-031 X-ray radiography", "d_principle_estimate": 0.40, "advisory_label": "Distinct (parent-child PWDR pattern)", "rationale": "L1-031 recovers attenuation; L1-527 wraps with KL grading. Different solution_space (1D KL grade vs 2D attenuation); adds L.joint_space_measurement, L.osteophyte_detection, L.kl_grade_classifier primitives."},
+    "distinctness_audit": {
+      "closest_existing_principle": "L1-031 X-ray radiography",
+      "d_principle_estimate": 0.4,
+      "advisory_label": "Distinct (parent-child PWDR pattern)",
+      "rationale": "L1-031 recovers attenuation; L1-527 wraps with KL grading. Different solution_space (1D KL grade vs 2D attenuation); adds L.joint_space_measurement, L.osteophyte_detection, L.kl_grade_classifier primitives."
+    },
     "clinical_context": "Universal in orthopedic / rheumatology radiology. KL grading is the international standard for OA severity in clinical trials and routine surveillance. UTSW Orthopedic Surgery (knee/hip arthroplasty referral) + Rheumatology programs. Deep learning systems achieve 0.83 quadratic-weighted-kappa vs radiologist consensus on OAI dataset."
-  }
+  },
+  "display_slug": "oa-kellgren-lawrence"
 }

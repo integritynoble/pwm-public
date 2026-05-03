@@ -6,7 +6,7 @@
   "title": "k.p Perturbation Theory Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
-    "primary": "Landolt-B\u00f6rnstein semiconductor parameters",
+    "primary": "Landolt-Börnstein semiconductor parameters",
     "secondary": "Vurgaftman-Meyer III-V parameter compilation",
     "construction_method": "canonical ground truth + declared noise at tier Omega for k.p Perturbation Theory",
     "num_dev_instances_per_tier": 20,
@@ -177,7 +177,7 @@
   "p_benchmark": {
     "rho": 50,
     "dataset_p_benchmark": {
-      "name": "Landolt-B\u00f6rnstein + Vurgaftman-Meyer library",
+      "name": "Landolt-Börnstein + Vurgaftman-Meyer library",
       "construction_method": "parametric Omega sampling over declared bounds; stratified by rho.",
       "num_dev_instances": 200,
       "num_holdout_instances": 100
@@ -219,7 +219,7 @@
       }
     ]
   },
-  "hardness_rule_check": "SATISFIED \u2014 top baseline fails epsilon_fn at T4_blind Omega corner.",
+  "hardness_rule_check": "SATISFIED — top baseline fails epsilon_fn at T4_blind Omega corner.",
   "anti_overfitting_mechanisms": {
     "M1_random_instantiation": "seeded by benchmark hash; non-repeatable holdout",
     "M2_convergence_scoring": "verifies declared convergence rate across Omega",
@@ -229,5 +229,6 @@
     "M6_gate_checks": "S1-S4 gate checks enforced with thresholds.yaml"
   },
   "ipfs_cid": null,
-  "ground_truth_cid": null
+  "ground_truth_cid": null,
+  "display_slug": "kp-perturbation"
 }

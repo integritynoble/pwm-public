@@ -7,7 +7,6 @@
   "sub_domain": "Earthquake source-parameter inversion with moment-magnitude / Richter-scale categorical readout",
   "source_file": "W_geophysics/522_earthquake_magnitude_pwdr.md",
   "source_data_quality_note": "v2 physical_with_discrete_readout (PWDR) genesis Principle. Wraps L1-278 Earthquake Source Inversion (existing in v1 genesis with n_c=1) with deterministic magnitude-scale formulas per Hanks-Kanamori 1979 (Mw) and Richter 1935 (ML). Universal in seismology, earthquake early-warning systems (USGS ShakeAlert, JMA EEW), and tsunami warning centers. Foundational classification used by every seismic-monitoring agency globally.",
-
   "gate_class": "physical_with_discrete_readout",
   "gate_substitutions": {
     "kappa_substitute": null,
@@ -19,8 +18,22 @@
     "lipschitz_constant": 0.07,
     "underlying_physical_state": "earthquake source parameters (M_0 seismic moment [dyne-cm], focal mechanism, fault dimensions, slip distribution, hypocenter location) recovered by L1-278 Earthquake Source Inversion analytical core",
     "physics_core_principle": "L1-278",
-    "label_set_categorical": ["micro", "minor", "light", "moderate", "strong", "major", "great"],
-    "label_set_warning": ["no_alert", "local_watch", "regional_watch", "basinwide_watch", "tsunami_warning"],
+    "label_set_categorical": [
+      "micro",
+      "minor",
+      "light",
+      "moderate",
+      "strong",
+      "major",
+      "great"
+    ],
+    "label_set_warning": [
+      "no_alert",
+      "local_watch",
+      "regional_watch",
+      "basinwide_watch",
+      "tsunami_warning"
+    ],
     "threshold_continuity_proof": "Hanks-Kanamori formula Mw = (2/3) log10(M_0) - 10.7 is logarithmic continuous on M_0 > 0; categorical bins are step functions on Mw with measure-zero hyperplane boundaries at Mw = {2, 4, 5, 6, 7, 8}. Smoothed-grading globally Lipschitz with constant ~0.07 per unit M_0 uncertainty (in log10 space)."
   },
   "related_principles": [
@@ -28,24 +41,50 @@
     "L1-273 (Full Waveform Inversion — sibling seismic forward, informational)",
     "L1-289 (Tsunami Propagation — sibling for cascade applications, informational)"
   ],
-
   "E": {
     "description": "Earthquake Magnitude Classification (PWDR): wraps L1-278 Earthquake Source Inversion analytical core with deterministic magnitude-scale formulas. Stage 1 (analytical, from L1-278): recover earthquake source parameters (seismic moment M_0, focal mechanism, fault dimensions L*W, average slip D, hypocenter location, origin time) from seismograph network observations via moment-tensor inversion or finite-fault inversion. Stage 2 (deterministic threshold): apply Hanks-Kanamori formula Mw = (2/3) * log10(M_0) - 10.7 to recover moment magnitude; classify into standard bins or compute alternative scales (ML, mb, Ms). Difficulty tier delta = 5 inherited from L1-278. Mismatch parameters: station_coverage_gap, near_field_truncation, hypocenter_localization_error, velocity_model_uncertainty, instrument_response_uncertainty, magnitude_scale_saturation.",
     "forward_model": "Stage 1 (L1-278): seismograph network -> moment-tensor inversion -> M_0, focal mechanism. Stage 2: Mw = (2/3) * log10(M_0) - 10.7; categorical = step(Mw at [2, 4, 5, 6, 7, 8]); tsunami_warning = step(Mw at [6.5, 7.0, 7.5]).",
     "world_state_x": "Per-event Mw value [Mw scale] and categorical magnitude class; for tsunami early-warning applications, per-event warning level.",
     "observation_y": "Multi-station seismogram waveforms (typically 10-200 stations at varying epicentral distances); broadband seismic records 0.01-50 Hz.",
-    "physical_parameters_theta": ["N_stations", "station_distance_km_range", "frequency_band_Hz", "sampling_rate_Hz", "SNR_dB", "station_coverage_gap", "near_field_truncation", "hypocenter_localization_error", "velocity_model_uncertainty", "instrument_response_uncertainty", "magnitude_scale_saturation"]
+    "physical_parameters_theta": [
+      "N_stations",
+      "station_distance_km_range",
+      "frequency_band_Hz",
+      "sampling_rate_Hz",
+      "SNR_dB",
+      "station_coverage_gap",
+      "near_field_truncation",
+      "hypocenter_localization_error",
+      "velocity_model_uncertainty",
+      "instrument_response_uncertainty",
+      "magnitude_scale_saturation"
+    ]
   },
-
   "G": {
     "dag": "L.seismograph_array -> L.waveform_acquisition -> L.moment_tensor_inversion -> L.fault_dimension_estimation -> L.magnitude_formula -> L.magnitude_threshold_classifier -> int.spatial",
-    "vertices": ["L.seismograph_array", "L.waveform_acquisition", "L.moment_tensor_inversion", "L.fault_dimension_estimation", "L.magnitude_formula", "L.magnitude_threshold_classifier", "int.spatial"],
-    "arcs": ["L.seismograph_array -> L.waveform_acquisition", "L.waveform_acquisition -> L.moment_tensor_inversion", "L.moment_tensor_inversion -> L.fault_dimension_estimation", "L.fault_dimension_estimation -> L.magnitude_formula", "L.magnitude_formula -> L.magnitude_threshold_classifier", "L.magnitude_threshold_classifier -> int.spatial"],
+    "vertices": [
+      "L.seismograph_array",
+      "L.waveform_acquisition",
+      "L.moment_tensor_inversion",
+      "L.fault_dimension_estimation",
+      "L.magnitude_formula",
+      "L.magnitude_threshold_classifier",
+      "int.spatial"
+    ],
+    "arcs": [
+      "L.seismograph_array -> L.waveform_acquisition",
+      "L.waveform_acquisition -> L.moment_tensor_inversion",
+      "L.moment_tensor_inversion -> L.fault_dimension_estimation",
+      "L.fault_dimension_estimation -> L.magnitude_formula",
+      "L.magnitude_formula -> L.magnitude_threshold_classifier",
+      "L.magnitude_threshold_classifier -> int.spatial"
+    ],
     "L_DAG": 6.3,
     "n_c": 1,
-    "coupling_constraints": ["source_to_magnitude: seismic moment M_0 from moment-tensor inversion is multiplicatively coupled to fault dimensions and slip via M_0 = mu * A * D (rigidity * area * displacement); inherits L1-278 multi-physics coupling"]
+    "coupling_constraints": [
+      "source_to_magnitude: seismic moment M_0 from moment-tensor inversion is multiplicatively coupled to fault dimensions and slip via M_0 = mu * A * D (rigidity * area * displacement); inherits L1-278 multi-physics coupling"
+    ]
   },
-
   "W": {
     "existence": true,
     "uniqueness": "conditional",
@@ -54,14 +93,12 @@
     "condition_number_effective": 30,
     "regime": "Existence inherited from L1-278. Uniqueness conditional on adequate station coverage (azimuthal gap < 180 degrees) and SNR > 10 dB. Stability dominated by velocity_model_uncertainty (~0.1-0.3 Mw bias) and magnitude_scale_saturation (ML saturates at ~7; Mw is preferred for great earthquakes). Joint Hadamard well-posedness for the source-inversion + magnitude-formula forward established by Hanks-Kanamori 1979 (foundational Mw formula), Richter 1935 (foundational ML), Kanamori 1977 (great-earthquake moment paradox), Aki-Richards 2002 (Quantitative Seismology textbook), Vallee 2013 (SCARDEC moment-tensor algorithm), Duputel et al. 2012 (W-phase moment-tensor inversion for tsunami warning)."
   },
-
   "C": {
     "solver_class": "linear-operator + convex optimisation [moment-tensor inversion, finite-fault slip inversion] + categorical-readout [magnitude scale + bin] | end-to-end deep neural [DeepShakeNet, MagNet] with explicit physics-informed source-inversion regularization",
     "convergence_rate_q": 1.0,
     "error_bound": "Inherits L1-278 source-inversion bound. Magnitude error: |Mw_hat - Mw| <= (2/3) * |log10(M_0_error / M_0)| / log(10). Misclassification probability bound: Pr(class_hat != class_true) <= C_thresh * |Mw_error| / d(Mw, bin_boundary). For Mw rounding error sigma ~ 0.1, classification error rate ~ 0.05-0.10.",
     "complexity": "O(N_stations * N_time_samples * N_focal_mechanism_grid) for grid-search moment tensor; faster O(N_stations * log(...)) for Bayesian inversion (e.g., SCARDEC)"
   },
-
   "physics_fingerprint": {
     "carrier": "elastic_wave",
     "sensing_mechanism": "seismograph_with_magnitude_classifier",
@@ -69,40 +106,128 @@
     "problem_class": "linear_inverse_with_categorical_readout",
     "noise_model": "gaussian",
     "solution_space": "1D_magnitude_scale_categorical",
-    "primitives": ["L.seismograph_array", "L.waveform_acquisition", "L.moment_tensor_inversion", "L.fault_dimension_estimation", "L.magnitude_formula", "L.magnitude_threshold_classifier", "int.spatial"]
+    "primitives": [
+      "L.seismograph_array",
+      "L.waveform_acquisition",
+      "L.moment_tensor_inversion",
+      "L.fault_dimension_estimation",
+      "L.magnitude_formula",
+      "L.magnitude_threshold_classifier",
+      "int.spatial"
+    ]
   },
-
   "difficulty_delta": 5,
   "difficulty_tier": "advanced",
-  "mismatch_parameters": ["station_coverage_gap", "near_field_truncation", "hypocenter_localization_error", "velocity_model_uncertainty", "instrument_response_uncertainty", "magnitude_scale_saturation"],
+  "mismatch_parameters": [
+    "station_coverage_gap",
+    "near_field_truncation",
+    "hypocenter_localization_error",
+    "velocity_model_uncertainty",
+    "instrument_response_uncertainty",
+    "magnitude_scale_saturation"
+  ],
   "error_metric": "categorical_accuracy",
   "error_metric_secondary": "RMSE_Mw",
-
   "spec_range": {
     "center_spec": {
       "problem_class": "earthquake_mw_pwdr",
       "forward_operator": "earthquake_magnitude_pwdr_forward",
       "input_format": "multistation_seismogram_with_magnitude_label",
-      "omega": {"N_stations": 30, "station_distance_km_range": [0, 1000], "frequency_band_Hz": [0.01, 25], "sampling_rate_Hz": 100, "SNR_dB": 25, "station_coverage_gap": 0.0, "near_field_truncation": 0.0, "hypocenter_localization_error": 0.0, "velocity_model_uncertainty": 0.0, "instrument_response_uncertainty": 0.0, "magnitude_scale_saturation": 0.0},
+      "omega": {
+        "N_stations": 30,
+        "station_distance_km_range": [
+          0,
+          1000
+        ],
+        "frequency_band_Hz": [
+          0.01,
+          25
+        ],
+        "sampling_rate_Hz": 100,
+        "SNR_dB": 25,
+        "station_coverage_gap": 0.0,
+        "near_field_truncation": 0.0,
+        "hypocenter_localization_error": 0.0,
+        "velocity_model_uncertainty": 0.0,
+        "instrument_response_uncertainty": 0.0,
+        "magnitude_scale_saturation": 0.0
+      },
       "epsilon_fn_center": "0.85_accuracy"
     },
-    "allowed_forward_operators": ["earthquake_magnitude_pwdr_forward", "moment_tensor_pwdr_forward", "tsunami_warning_pwdr_forward", "earthquake_early_warning_pwdr_forward"],
-    "allowed_problem_classes": ["earthquake_mw_pwdr", "earthquake_ml_pwdr", "earthquake_tsunami_warning_pwdr", "earthquake_early_warning_pwdr"],
-    "allowed_omega_dimensions": ["N_stations", "station_distance_km_range", "frequency_band_Hz", "sampling_rate_Hz", "SNR_dB", "station_coverage_gap", "near_field_truncation", "hypocenter_localization_error", "velocity_model_uncertainty", "instrument_response_uncertainty", "magnitude_scale_saturation"],
-    "omega_bounds": {"N_stations": [3, 500], "sampling_rate_Hz": [20, 500], "SNR_dB": [3, 50], "station_coverage_gap": [0.0, 0.6]},
-    "epsilon_bounds": {"categorical_accuracy": [0.50, 0.99]}
+    "allowed_forward_operators": [
+      "earthquake_magnitude_pwdr_forward",
+      "moment_tensor_pwdr_forward",
+      "tsunami_warning_pwdr_forward",
+      "earthquake_early_warning_pwdr_forward"
+    ],
+    "allowed_problem_classes": [
+      "earthquake_mw_pwdr",
+      "earthquake_ml_pwdr",
+      "earthquake_tsunami_warning_pwdr",
+      "earthquake_early_warning_pwdr"
+    ],
+    "allowed_omega_dimensions": [
+      "N_stations",
+      "station_distance_km_range",
+      "frequency_band_Hz",
+      "sampling_rate_Hz",
+      "SNR_dB",
+      "station_coverage_gap",
+      "near_field_truncation",
+      "hypocenter_localization_error",
+      "velocity_model_uncertainty",
+      "instrument_response_uncertainty",
+      "magnitude_scale_saturation"
+    ],
+    "omega_bounds": {
+      "N_stations": [
+        3,
+        500
+      ],
+      "sampling_rate_Hz": [
+        20,
+        500
+      ],
+      "SNR_dB": [
+        3,
+        50
+      ],
+      "station_coverage_gap": [
+        0.0,
+        0.6
+      ]
+    },
+    "epsilon_bounds": {
+      "categorical_accuracy": [
+        0.5,
+        0.99
+      ]
+    }
   },
-
-  "p1_p10_tests": ["PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS"],
-  "s1_s4_gates": ["PASS", "PASS", "PASS", "PASS"],
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
   "ipfs_cid": null,
-
   "recast_attempted": {
     "considered": true,
     "recast_path": "Original framing: 'Classify earthquake from seismograms into magnitude bins'. Option-3 recast: 'Recover seismic moment M_0 and source parameters via moment-tensor inversion (L1-278); apply Hanks-Kanamori formula Mw = (2/3) log10(M_0) - 10.7 + magnitude bins'. Feasible because seismic source has well-defined elastic-wave forward model and magnitude scales are deterministic functions of recovered M_0.",
     "reason_rejected": null
   },
-
   "v3_metadata": {
     "is_standalone_multiphysics": false,
     "coupling_count_n_c": 1,
@@ -117,10 +242,11 @@
     ],
     "distinctness_audit": {
       "closest_existing_principle": "L1-278 Earthquake Source Inversion",
-      "d_principle_estimate": 0.40,
+      "d_principle_estimate": 0.4,
       "advisory_label": "Distinct (parent-child PWDR pattern)",
       "rationale": "L1-278 recovers continuous source parameters (M_0, focal mechanism, fault dimensions); L1-522 wraps with magnitude-scale formula and categorical bins. Different solution_space (1D magnitude scale + bin vs continuous source-parameter ensemble); adds L.magnitude_formula and L.magnitude_threshold_classifier primitives."
     },
     "clinical_context": "Universal use: every operational earthquake-monitoring agency globally — USGS National Earthquake Information Center, JMA Japan, EMSC Europe, GFZ Potsdam, ISC International. Earthquake early-warning systems: USGS ShakeAlert (US West Coast since 2018), JMA EEW (Japan since 2007), MyShake. Tsunami warning centers (Pacific Tsunami Warning Center, JMA, ATWC) trigger on Mw thresholds. Reference solvers: SCARDEC (Vallee), W-phase (Duputel-Rivera-Kanamori), GMT for deconvolution. PWDR formulation gives physics-grounded explainability: magnitude is derived from explicit seismic moment recovery, not black-box waveform classifier."
-  }
+  },
+  "display_slug": "earthquake-magnitude"
 }

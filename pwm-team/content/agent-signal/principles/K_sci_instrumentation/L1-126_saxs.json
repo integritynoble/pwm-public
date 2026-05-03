@@ -2,7 +2,7 @@
   "artifact_id": "L1-126",
   "layer": "L1",
   "principle_number": "126",
-  "title": "SAXS \u2014 Small-Angle X-ray Scattering",
+  "title": "SAXS — Small-Angle X-ray Scattering",
   "domain": "Scientific Instrumentation",
   "sub_domain": "Nanoscale structural scattering (1-100 nm)",
   "source_file": "K_scientific_instrumentation/126_saxs.md",
@@ -11,12 +11,12 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence boilerplate. Physics grounded in Glatter-Kratky 1982 Small-Angle X-ray Scattering textbook; Svergun 2013 biology SAXS; Feigin-Svergun 1987 structure analysis; Trewhella et al. 2017 BioSAXS validation.",
   "E": {
-    "description": "X-rays scatter elastically at small momentum transfer q = 4*pi*sin(theta)/lambda < 0.5 \u00c5^-1 from inhomogeneities ~ 2*pi/q nm. Radially integrated intensity I(q) encodes pair-distance distribution function P(r) via Fourier transform (Fourier-Bessel). For biomolecules, provides radius of gyration Rg and maximum dimension Dmax.",
+    "description": "X-rays scatter elastically at small momentum transfer q = 4*pi*sin(theta)/lambda < 0.5 Å^-1 from inhomogeneities ~ 2*pi/q nm. Radially integrated intensity I(q) encodes pair-distance distribution function P(r) via Fourier transform (Fourier-Bessel). For biomolecules, provides radius of gyration Rg and maximum dimension Dmax.",
     "forward_model": "I(q) = P(q) * Delta_rho^2 * V^2 + background;   P(q) = FT[P(r) * r]",
     "world_state_x": "Electron-density fluctuations, pair-distance distribution P(r)",
     "observation_y": "1D intensity I(q) over q-range, or 2D detector image",
     "physical_parameters_theta": [
-      "Wavelength lambda (1-1.5 \u00c5 typical)",
+      "Wavelength lambda (1-1.5 Å typical)",
       "Sample-to-detector distance (1-5 m)",
       "q-range [q_min, q_max]",
       "Concentration and molecular weight",
@@ -189,5 +189,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "saxs"
 }

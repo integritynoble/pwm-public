@@ -2,7 +2,7 @@
   "artifact_id": "L1-270",
   "layer": "L1",
   "principle_number": "270",
-  "title": "Aeroacoustics \u2014 Lighthill analogy (jet/airframe noise)",
+  "title": "Aeroacoustics — Lighthill analogy (jet/airframe noise)",
   "domain": "Acoustics",
   "sub_domain": "Lighthill source-term aeroacoustic prediction",
   "source_file": "V_acoustics/270_aeroacoustics_lighthill.md",
@@ -11,7 +11,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Aeroacoustics \u2014 Lighthill analogy (jet/airframe noise) forward model.",
+    "description": "Aeroacoustics — Lighthill analogy (jet/airframe noise) forward model.",
     "forward_model": "[1/c0^2 d^2/dt^2 - Laplacian] c0^2 rho' = d^2 T_ij/dx_i dx_j; T_ij = rho u_i u_j + (p' - c0^2 rho')delta_ij - tau_ij",
     "world_state_x": "far-field pressure spectrum and SPL map from turbulent source region",
     "observation_y": "far-field microphone array time/frequency data",
@@ -190,5 +190,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "aeroacoustics-lighthill"
 }

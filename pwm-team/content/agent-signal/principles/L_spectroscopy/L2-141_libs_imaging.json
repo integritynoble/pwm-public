@@ -5,14 +5,52 @@
   "principle_ref": "sha256:<L1-141_principle_hash>",
   "title": "LIBS Elemental-Mapping Spec (matrix-effect mismatch family)",
   "spec_type": "mismatch_only",
-
   "six_tuple": {
     "omega": {
-      "H": [32, 2048], "W": [32, 2048], "N_lambda": [512, 16384],
-      "E_p_mJ": [5, 500], "delay_us": [0.1, 100], "gate_us": [0.1, 100],
-      "K": [1, 30],
-      "self_absorption": [0.0, 0.5], "matrix_effects": [0.0, 0.3],
-      "plasma_temp_drift": [0.0, 0.3], "shot_to_shot_variability": [0.0, 0.3]
+      "H": [
+        32,
+        2048
+      ],
+      "W": [
+        32,
+        2048
+      ],
+      "N_lambda": [
+        512,
+        16384
+      ],
+      "E_p_mJ": [
+        5,
+        500
+      ],
+      "delay_us": [
+        0.1,
+        100
+      ],
+      "gate_us": [
+        0.1,
+        100
+      ],
+      "K": [
+        1,
+        30
+      ],
+      "self_absorption": [
+        0.0,
+        0.5
+      ],
+      "matrix_effects": [
+        0.0,
+        0.3
+      ],
+      "plasma_temp_drift": [
+        0.0,
+        0.3
+      ],
+      "shot_to_shot_variability": [
+        0.0,
+        0.3
+      ]
     },
     "E": {
       "forward": "y(r, lambda) = LIBS_plasma_forward(c(r), T(r), self-abs, matrix)",
@@ -20,44 +58,98 @@
       "primitive_chain": "L.ablate.plasma -> S.emit.atomic -> L.disperse.spectral -> int.temporal",
       "inverse": "recover elemental concentrations c(r) in R^{HxWxK}"
     },
-    "B": {"nonnegativity_c": true, "sum_le_100pct": "sum_k c_k <= 1", "LTE_assumption": true},
-    "I": {"strategy": "cf_libs_init"},
-    "O": ["concentration_NMSE", "LOD_ppm", "classification_accuracy", "residual_norm"],
+    "B": {
+      "nonnegativity_c": true,
+      "sum_le_100pct": "sum_k c_k <= 1",
+      "LTE_assumption": true
+    },
+    "I": {
+      "strategy": "cf_libs_init"
+    },
+    "O": [
+      "concentration_NMSE",
+      "LOD_ppm",
+      "classification_accuracy",
+      "residual_norm"
+    ],
     "epsilon_fn": "0.02 + 0.1 * self_absorption + 0.2 * matrix_effects + 0.15 * plasma_temp_drift + 0.1 * shot_to_shot_variability"
   },
-
   "protocol_fields": {
-    "input_format": {"cube": "uint16(H, W, N_lambda)", "line_library": "float32(K, N_lines)"},
-    "output_format": {"concentrations": "float32(H, W, K)"},
+    "input_format": {
+      "cube": "uint16(H, W, N_lambda)",
+      "line_library": "float32(K, N_lines)"
+    },
+    "output_format": {
+      "concentrations": "float32(H, W, K)"
+    },
     "baselines": [
-      {"name": "LinRegress", "method_sig": "L+O", "expected_nmse": 0.08},
-      {"name": "PLS",        "method_sig": "L+O", "expected_nmse": 0.05},
-      {"name": "CF-LIBS",    "method_sig": "L+O", "expected_nmse": 0.07},
-      {"name": "RF-classify","method_sig": "L+O", "expected_accuracy": 0.92},
-      {"name": "LIBSNet",    "method_sig": "L+N", "expected_nmse": 0.03}
+      {
+        "name": "LinRegress",
+        "method_sig": "L+O",
+        "expected_nmse": 0.08
+      },
+      {
+        "name": "PLS",
+        "method_sig": "L+O",
+        "expected_nmse": 0.05
+      },
+      {
+        "name": "CF-LIBS",
+        "method_sig": "L+O",
+        "expected_nmse": 0.07
+      },
+      {
+        "name": "RF-classify",
+        "method_sig": "L+O",
+        "expected_accuracy": 0.92
+      },
+      {
+        "name": "LIBSNet",
+        "method_sig": "L+N",
+        "expected_nmse": 0.03
+      }
     ]
   },
-
   "ibenchmark_range": {
     "center_ibenchmark": {
       "rho": 1,
-      "omega_tier": {"H": 256, "W": 256, "N_lambda": 2048, "E_p_mJ": 50, "K": 5, "self_absorption": 0.0, "matrix_effects": 0.0},
+      "omega_tier": {
+        "H": 256,
+        "W": 256,
+        "N_lambda": 2048,
+        "E_p_mJ": 50,
+        "K": 5,
+        "self_absorption": 0.0,
+        "matrix_effects": 0.0
+      },
       "epsilon": 0.05
     },
-    "tier_bounds": {"H": [64, 1024], "K": [1, 15]},
-    "proximity_threshold": 0.10
+    "tier_bounds": {
+      "H": [
+        64,
+        1024
+      ],
+      "K": [
+        1,
+        15
+      ]
+    },
+    "proximity_threshold": 0.1
   },
-
-  "d_spec": 0.60,
+  "d_spec": 0.6,
   "d_spec_notes": "Distance from Raman/IR spectroscopies ~= 0.55 (Novel — plasma emission vs. vibrational). LIBS is uniquely destructive and nonlinear.",
-
-  "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
   "s1_s4_justifications": {
     "S1": "Line-library dim K x N_lines matches spectral bins.",
     "S2": "CF-LIBS unique under LTE; LinReg unique per-line when self-abs absent.",
     "S3": "PLS / CF-LIBS iterative convergence; LIBSNet feed-forward.",
     "S4": "epsilon_fn defined; LIBSNet fails at self_abs=0.5 + matrix=0.3 (hardness)."
   },
-
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "display_slug": "libs-imaging"
 }

@@ -2,7 +2,7 @@
   "artifact_id": "L1-030",
   "layer": "L1",
   "principle_number": "030",
-  "title": "Magnetic Resonance Imaging (MRI) \u2014 proton-density / T1 / T2 contrast",
+  "title": "Magnetic Resonance Imaging (MRI) — proton-density / T1 / T2 contrast",
   "domain": "Medical Imaging",
   "sub_domain": "Non-ionizing proton NMR imaging",
   "source_file": "C_medical_imaging/030_mri.md",
@@ -11,7 +11,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical medical-imaging literature for this principle.",
   "E": {
-    "description": "Magnetic Resonance Imaging (MRI) \u2014 proton-density / T1 / T2 contrast: mri fourier encoding produces the measurement through a 4-node primitive DAG L.rf_excitation -> L.gradient_encoding -> L.fourier_kspace -> int.temporal, with spatially-projected accumulation and additive Gaussian thermal/electronic noise. Recovery is posed as a linear inverse problem that inverts the forward operator to estimate the scene-side 3D proton density. Difficulty tier delta=5 with effective condition number kappa_eff~15; calibration-level mismatch (B0_inhomogeneity, motion, undersampling) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
+    "description": "Magnetic Resonance Imaging (MRI) — proton-density / T1 / T2 contrast: mri fourier encoding produces the measurement through a 4-node primitive DAG L.rf_excitation -> L.gradient_encoding -> L.fourier_kspace -> int.temporal, with spatially-projected accumulation and additive Gaussian thermal/electronic noise. Recovery is posed as a linear inverse problem that inverts the forward operator to estimate the scene-side 3D proton density. Difficulty tier delta=5 with effective condition number kappa_eff~15; calibration-level mismatch (B0_inhomogeneity, motion, undersampling) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
     "forward_model": "s(k) = integral rho(r) * coil(r) exp(-2*pi*i k . r) dr + n; invert k-space + coil combine",
     "world_state_x": "Patient-side quantity of interest (attenuation / activity / perfusion / stiffness etc.)",
     "observation_y": "Clinical sensor output at declared resolution + noise",
@@ -207,5 +207,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "mri"
 }

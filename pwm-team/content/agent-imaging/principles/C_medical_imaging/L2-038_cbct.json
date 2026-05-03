@@ -2,7 +2,7 @@
   "artifact_id": "L2-038",
   "layer": "L2",
   "parent_l1": "L1-038",
-  "title": "Cone-Beam CT (CBCT) \u2014 dental / interventional Mismatch-Only Spec",
+  "title": "Cone-Beam CT (CBCT) — dental / interventional Mismatch-Only Spec",
   "spec_type": "mismatch_only",
   "six_tuple": {
     "omega": {
@@ -163,5 +163,6 @@
     "PASS",
     "PASS"
   ],
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "display_slug": "cbct"
 }

@@ -3,7 +3,7 @@
   "layer": "L3",
   "parent_l2": "L2-038",
   "parent_l1": "L1-038",
-  "title": "Cone-Beam CT (CBCT) \u2014 dental / interventional Benchmark Suite",
+  "title": "Cone-Beam CT (CBCT) — dental / interventional Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "canonical clinical/public dataset for this modality",
@@ -183,7 +183,8 @@
       }
     ]
   },
-  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind strata corner.",
+  "hardness_rule_check": "SATISFIED — top baseline fails at T4_blind strata corner.",
   "ipfs_cid": null,
-  "ground_truth_cid": null
+  "ground_truth_cid": null,
+  "display_slug": "cbct"
 }

@@ -2,7 +2,7 @@
   "artifact_id": "L1-255",
   "layer": "L1",
   "principle_number": "255",
-  "title": "Microwave Imaging \u2014 permittivity imaging for biomed/NDE",
+  "title": "Microwave Imaging — permittivity imaging for biomed/NDE",
   "domain": "Electromagnetics",
   "sub_domain": "Microwave tomography (biomedical/NDT)",
   "source_file": "U_electromagnetics/255_microwave_imaging.md",
@@ -11,7 +11,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Microwave Imaging \u2014 permittivity imaging for biomed/NDE forward model.",
+    "description": "Microwave Imaging — permittivity imaging for biomed/NDE forward model.",
     "forward_model": "E_scat(r_m) = int k_b^2 * contrast(r') * G_b(r_m, r') * E_total(r') dr'",
     "world_state_x": "complex permittivity contrast (eps_r(x) + j*sigma(x)/omega*eps_0)",
     "observation_y": "multistatic S-parameters at N_antennas x N_freqs",
@@ -188,5 +188,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "microwave-imaging"
 }

@@ -11,7 +11,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Arps Decline Curve Analysis: Arps decline curve analysis: fit exponential/hyperbolic/harmonic decline to production history to forecast EUR. The forward operator produces the measurement through a 3-node primitive DAG (M.arps.hyperbolic_decline\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~10; rate_interference_from_offset_wells, compression_uplift_events set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "Arps Decline Curve Analysis: Arps decline curve analysis: fit exponential/hyperbolic/harmonic decline to production history to forecast EUR. The forward operator produces the measurement through a 3-node primitive DAG (M.arps.hyperbolic_decline…); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~10; rate_interference_from_offset_wells, compression_uplift_events set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "q(t) = q_i / (1 + b*D_i*t)^{1/b} (hyperbolic); b=0 exponential, b=1 harmonic",
     "world_state_x": "decline parameters (q_i, D_i, b) and EUR (estimated ultimate recovery)",
     "observation_y": "monthly production rate time series {q(t_k)} for k=1..N_months",
@@ -48,7 +48,7 @@
   "C": {
     "solver_class": "statistical [Levenberg_Marquardt_NLS or Bayesian_decline_curve]",
     "convergence_rate_q": 2.0,
-    "error_bound": "Data-fidelity bound: EUR uncertainty \u00b120% for conventional wells with 2+ years history. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~10. Mismatch-induced bias + C2 * |rate_interference_from_offset_wells|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "error_bound": "Data-fidelity bound: EUR uncertainty ±20% for conventional wells with 2+ years history. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~10. Mismatch-induced bias + C2 * |rate_interference_from_offset_wells|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
     "complexity": "O(N_months * N_params) for nonlinear regression per iteration"
   },
   "physics_fingerprint": {
@@ -148,5 +148,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "arps-decline-curve-analysis"
 }

@@ -11,7 +11,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "CMB Power Spectrum Parameter Estimation: CMB parameter estimation: infer cosmological parameters from CMB temperature and polarization power spectra via Boltzmann code. The forward operator produces the measurement through a 3-node primitive DAG (S.boltzmann.transfer\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=5 with effective condition number kappa_eff~200; foreground_contamination, beam_uncertainty_percent set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "CMB Power Spectrum Parameter Estimation: CMB parameter estimation: infer cosmological parameters from CMB temperature and polarization power spectra via Boltzmann code. The forward operator produces the measurement through a 3-node primitive DAG (S.boltzmann.transfer…); recovery is posed as a parameter_estimation problem. Difficulty tier delta=5 with effective condition number kappa_eff~200; foreground_contamination, beam_uncertainty_percent set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "C_l^{TT,EE,TE}(theta) from CAMB/CLASS Boltzmann solver; chi2 = sum_l (2l+1)/2 [C_l ** obs/C_l ** th - 1 - ln(C_l ** obs/C_l ** th)]",
     "world_state_x": "cosmological parameter vector theta = (Omega_b, Omega_c, h, A_s, n_s, tau)",
     "observation_y": "CMB angular power spectra C_l^{TT,EE,TE,BB} from l=2 to l_max",
@@ -148,5 +148,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "cmb-power-spectrum-parameter-estimation"
 }

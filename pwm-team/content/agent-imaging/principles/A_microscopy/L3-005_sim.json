@@ -3,7 +3,7 @@
   "layer": "L3",
   "parent_l2": "L2-005",
   "parent_l1": "L1-005",
-  "title": "Structured Illumination Microscopy (SIM) \u2014 lateral 2x resolution Benchmark Suite",
+  "title": "Structured Illumination Microscopy (SIM) — lateral 2x resolution Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "principle-appropriate canonical dataset (domain-standard)",
@@ -175,7 +175,8 @@
       }
     ]
   },
-  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind strata with simultaneous worst-case mismatch + low photon corner.",
+  "hardness_rule_check": "SATISFIED — top baseline fails at T4_blind strata with simultaneous worst-case mismatch + low photon corner.",
   "ipfs_cid": null,
-  "ground_truth_cid": null
+  "ground_truth_cid": null,
+  "display_slug": "sim"
 }

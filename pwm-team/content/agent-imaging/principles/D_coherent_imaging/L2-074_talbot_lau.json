@@ -4,14 +4,52 @@
   "parent_l1": "L1-074",
   "title": "Talbot-Lau 3-Grating Mismatch-Only Spec",
   "spec_type": "mismatch_only",
-
   "six_tuple": {
     "omega": {
-      "H": [256, 4096], "W": [256, 4096], "K_steps": [3, 16],
-      "grating_period_um": [1.0, 10.0], "E_mean_keV": [10.0, 120.0],
-      "V_center": [0.05, 0.60], "photon_count_per_pixel": [100, 1000000],
-      "grating_period_drift": [0.0, 0.05], "alignment_tilt": [0.0, 0.02],
-      "phase_step_jitter": [0.0, 0.1], "source_coherence_loss": [0.0, 0.5]
+      "H": [
+        256,
+        4096
+      ],
+      "W": [
+        256,
+        4096
+      ],
+      "K_steps": [
+        3,
+        16
+      ],
+      "grating_period_um": [
+        1.0,
+        10.0
+      ],
+      "E_mean_keV": [
+        10.0,
+        120.0
+      ],
+      "V_center": [
+        0.05,
+        0.6
+      ],
+      "photon_count_per_pixel": [
+        100,
+        1000000
+      ],
+      "grating_period_drift": [
+        0.0,
+        0.05
+      ],
+      "alignment_tilt": [
+        0.0,
+        0.02
+      ],
+      "phase_step_jitter": [
+        0.0,
+        0.1
+      ],
+      "source_coherence_loss": [
+        0.0,
+        0.5
+      ]
     },
     "E": {
       "forward": "I_k = a_0 + a_1 * cos(2*pi*k/K + phi); Fourier analysis over k produces (A, phi, V)",
@@ -19,40 +57,112 @@
       "primitive_chain": "K.transmit.grating -> F.propagation.fresnel -> L.modulation.analyzer -> int.spatial",
       "inverse": "recover (A(x,y), phi(x,y), V(x,y)) from K phase-stepped frames"
     },
-    "B": {"bounded_modulation": "|a_1| <= a_0", "nonnegative_visibility": "V in [0,1]"},
-    "I": {"strategy": "fourier_k_bin_analysis"},
-    "O": ["phase_PSNR_dB", "darkfield_SNR", "absorption_PSNR_dB", "residual_norm"],
+    "B": {
+      "bounded_modulation": "|a_1| <= a_0",
+      "nonnegative_visibility": "V in [0,1]"
+    },
+    "I": {
+      "strategy": "fourier_k_bin_analysis"
+    },
+    "O": [
+      "phase_PSNR_dB",
+      "darkfield_SNR",
+      "absorption_PSNR_dB",
+      "residual_norm"
+    ],
     "epsilon_fn": "22.0 + 2.5 * log10(photon_count_per_pixel / 100) + 15.0 * V_center - 20.0 * alignment_tilt / 0.02"
   },
-
   "protocol_fields": {
-    "input_format": {"phase_stepped_frames": "float32(K_steps, H, W)", "geometry_params": "dict"},
-    "output_format": {"absorption": "float32(H, W)", "phase": "float32(H, W)", "darkfield": "float32(H, W)"},
+    "input_format": {
+      "phase_stepped_frames": "float32(K_steps, H, W)",
+      "geometry_params": "dict"
+    },
+    "output_format": {
+      "absorption": "float32(H, W)",
+      "phase": "float32(H, W)",
+      "darkfield": "float32(H, W)"
+    },
     "baselines": [
-      {"name": "Fourier-Demod", "method_sig": "L+O", "expected_phase_psnr": 28.0},
-      {"name": "WLS-Fit",       "method_sig": "L+O", "expected_phase_psnr": 29.5},
-      {"name": "TV-ADMM-Talbot","method_sig": "L+O", "expected_phase_psnr": 31.0},
-      {"name": "TalbotNet",     "method_sig": "L+N", "expected_phase_psnr": 33.5}
+      {
+        "name": "Fourier-Demod",
+        "method_sig": "L+O",
+        "expected_phase_psnr": 28.0
+      },
+      {
+        "name": "WLS-Fit",
+        "method_sig": "L+O",
+        "expected_phase_psnr": 29.5
+      },
+      {
+        "name": "TV-ADMM-Talbot",
+        "method_sig": "L+O",
+        "expected_phase_psnr": 31.0
+      },
+      {
+        "name": "TalbotNet",
+        "method_sig": "L+N",
+        "expected_phase_psnr": 33.5
+      }
     ]
   },
-
   "ibenchmark_range": {
     "center_ibenchmark": {
       "rho": 1,
-      "omega_tier": {"H": 1024, "W": 1024, "K_steps": 8, "grating_period_um": 4.8, "E_mean_keV": 40.0, "V_center": 0.30, "photon_count_per_pixel": 10000, "grating_period_drift": 0.0, "alignment_tilt": 0.0, "phase_step_jitter": 0.0, "source_coherence_loss": 0.0},
+      "omega_tier": {
+        "H": 1024,
+        "W": 1024,
+        "K_steps": 8,
+        "grating_period_um": 4.8,
+        "E_mean_keV": 40.0,
+        "V_center": 0.3,
+        "photon_count_per_pixel": 10000,
+        "grating_period_drift": 0.0,
+        "alignment_tilt": 0.0,
+        "phase_step_jitter": 0.0,
+        "source_coherence_loss": 0.0
+      },
       "epsilon": 30.0
     },
     "tier_bounds": {
-      "H": [256, 2048], "W": [256, 2048], "K_steps": [3, 16],
-      "grating_period_um": [2.0, 8.0], "E_mean_keV": [20.0, 100.0],
-      "V_center": [0.10, 0.60], "photon_count_per_pixel": [500, 100000]
+      "H": [
+        256,
+        2048
+      ],
+      "W": [
+        256,
+        2048
+      ],
+      "K_steps": [
+        3,
+        16
+      ],
+      "grating_period_um": [
+        2.0,
+        8.0
+      ],
+      "E_mean_keV": [
+        20.0,
+        100.0
+      ],
+      "V_center": [
+        0.1,
+        0.6
+      ],
+      "photon_count_per_pixel": [
+        500,
+        100000
+      ]
     },
-    "proximity_threshold": 0.10
+    "proximity_threshold": 0.1
   },
-
   "d_spec": 0.68,
   "d_spec_notes": "Talbot-Lau uses X-ray carrier (not photon-optical), grating primitives (not coded aperture), and triplet output (A/phi/V vs. single image). d_spec > 0.65 from all other D_coherent specs (Novel band).",
-
-  "s1_s4_gates": ["PASS", "PASS", "PASS", "PASS"],
-  "ipfs_cid": null
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null,
+  "display_slug": "talbot-lau"
 }

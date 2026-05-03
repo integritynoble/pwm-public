@@ -117,8 +117,32 @@ def _load_abi(repo_root: Path, contract_name: str) -> list:
     return raw if isinstance(raw, list) else raw.get("abi", [])
 
 
+# UI-only fields excluded from canonical-JSON hashing. Adding a slug or
+# rebuilding the title for display purposes must NOT change the on-chain
+# artifact hash — otherwise existing registrations would orphan and
+# `pwm-node mine` would fail with "benchmark not registered". Keep this
+# set small and only extend it for fields that are pure presentation.
+UI_ONLY_FIELDS = frozenset({
+    "display_slug",
+    "display_color",
+    "ui_metadata",
+})
+
+
+def _canonical_for_hashing(obj: dict) -> dict:
+    """Strip UI-only fields before computing the canonical hash.
+
+    The chain stores keccak256(canonical_json(manifest)). Manifests authored
+    after 2026-05-03 may include human-readable display fields that DID NOT
+    exist when earlier artifacts were registered. To keep hash-invariance
+    across schema additions, we filter those fields out before hashing.
+    """
+    return {k: v for k, v in obj.items() if k not in UI_ONLY_FIELDS}
+
+
 def _canonical_json(obj: Any) -> bytes:
-    return json.dumps(obj, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    filtered = _canonical_for_hashing(obj) if isinstance(obj, dict) else obj
+    return json.dumps(filtered, sort_keys=True, separators=(",", ":")).encode("utf-8")
 
 
 def _artifact_hash(obj: dict, w3) -> str:

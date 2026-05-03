@@ -2,7 +2,7 @@
   "artifact_id": "L2-029",
   "layer": "L2",
   "parent_l1": "L1-029",
-  "title": "Computed Tomography (CT) \u2014 fan/cone-beam X-ray reconstruction Mismatch-Only Spec",
+  "title": "Computed Tomography (CT) — fan/cone-beam X-ray reconstruction Mismatch-Only Spec",
   "spec_type": "mismatch_only",
   "six_tuple": {
     "omega": {
@@ -179,5 +179,6 @@
     "PASS",
     "PASS"
   ],
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "display_slug": "ct"
 }

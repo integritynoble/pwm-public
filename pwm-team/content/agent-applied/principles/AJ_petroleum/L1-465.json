@@ -11,7 +11,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Well Productivity Index Inversion: Pressure transient analysis: infer permeability, skin factor, and reservoir boundaries from buildup/drawdown tests. The forward operator produces the measurement through a 3-node primitive DAG (M.darcy.radial_flow\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~25; wellbore_storage_distortion, variable_rate_history set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "Well Productivity Index Inversion: Pressure transient analysis: infer permeability, skin factor, and reservoir boundaries from buildup/drawdown tests. The forward operator produces the measurement through a 3-node primitive DAG (M.darcy.radial_flow…); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~25; wellbore_storage_distortion, variable_rate_history set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "p_ws(dt) = p* - (162.6*q*mu*B / (k*h)) * log10(dt + tp) - log10(tp) (Horner plot)",
     "world_state_x": "reservoir permeability k (mD), skin factor S, boundary distances",
     "observation_y": "wellbore pressure p_ws(dt) during buildup/drawdown for N_points data points",
@@ -48,7 +48,7 @@
   "C": {
     "solver_class": "classical [Horner_semilog_analysis or derivative_log_log (Bourdet_derivative)]",
     "convergence_rate_q": 2.0,
-    "error_bound": "Data-fidelity bound: k estimate within 20% for clean buildup; skin within \u00b11 unit. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~25. Mismatch-induced bias + C2 * |wellbore_storage_distortion|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "error_bound": "Data-fidelity bound: k estimate within 20% for clean buildup; skin within ±1 unit. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~25. Mismatch-induced bias + C2 * |wellbore_storage_distortion|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
     "complexity": "O(N_points) for derivative calculation per iteration"
   },
   "physics_fingerprint": {
@@ -148,5 +148,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "well-productivity-index-inversion"
 }

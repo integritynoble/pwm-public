@@ -5,7 +5,6 @@
   "parent_l1": "L1-003",
   "title": "CASSI Mismatch-Only Benchmark Suite (P-benchmark + 4 I-benchmark tiers)",
   "benchmark_type": "combined_P_and_I",
-
   "dataset_registry": {
     "primary": "KAIST hyperspectral 30 (2017)",
     "secondary": "CAVE multispectral dataset",
@@ -14,7 +13,6 @@
     "num_dev_instances_per_tier": 20,
     "holdout_instances_per_tier": 10
   },
-
   "ibenchmarks": [
     {
       "tier": "T1_nominal",
@@ -35,14 +33,44 @@
       "epsilon": 28.0,
       "d_ibench": 0.15,
       "quality_thresholds": [
-        {"Q": 0.55, "tier": "Standard"},
-        {"Q": 0.75, "tier": "Strong"},
-        {"Q": 0.90, "tier": "Excellent"}
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        },
+        {
+          "Q": 0.9,
+          "tier": "Excellent"
+        }
       ],
       "baselines": [
-        {"name": "GAP-TV",     "metric": "PSNR_dB", "score": 26.0, "SSIM": 0.79, "SAM_deg": 8.2, "Q": 0.62},
-        {"name": "ADMM-CASSI", "metric": "PSNR_dB", "score": 28.5, "SSIM": 0.85, "SAM_deg": 6.4, "Q": 0.76},
-        {"name": "PnP-HSICNN", "metric": "PSNR_dB", "score": 31.8, "SSIM": 0.90, "SAM_deg": 5.1, "Q": 0.89}
+        {
+          "name": "GAP-TV",
+          "metric": "PSNR_dB",
+          "score": 26.0,
+          "SSIM": 0.79,
+          "SAM_deg": 8.2,
+          "Q": 0.62
+        },
+        {
+          "name": "ADMM-CASSI",
+          "metric": "PSNR_dB",
+          "score": 28.5,
+          "SSIM": 0.85,
+          "SAM_deg": 6.4,
+          "Q": 0.76
+        },
+        {
+          "name": "PnP-HSICNN",
+          "metric": "PSNR_dB",
+          "score": 31.8,
+          "SSIM": 0.9,
+          "SAM_deg": 5.1,
+          "Q": 0.89
+        }
       ]
     },
     {
@@ -64,13 +92,34 @@
       "epsilon": 25.5,
       "d_ibench": 0.32,
       "quality_thresholds": [
-        {"Q": 0.55, "tier": "Standard"},
-        {"Q": 0.75, "tier": "Strong"}
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        }
       ],
       "baselines": [
-        {"name": "GAP-TV",     "metric": "PSNR_dB", "score": 23.8, "Q": 0.48},
-        {"name": "ADMM-CASSI", "metric": "PSNR_dB", "score": 25.9, "Q": 0.58},
-        {"name": "PnP-HSICNN", "metric": "PSNR_dB", "score": 28.3, "Q": 0.74}
+        {
+          "name": "GAP-TV",
+          "metric": "PSNR_dB",
+          "score": 23.8,
+          "Q": 0.48
+        },
+        {
+          "name": "ADMM-CASSI",
+          "metric": "PSNR_dB",
+          "score": 25.9,
+          "Q": 0.58
+        },
+        {
+          "name": "PnP-HSICNN",
+          "metric": "PSNR_dB",
+          "score": 28.3,
+          "Q": 0.74
+        }
       ]
     },
     {
@@ -92,13 +141,34 @@
       "epsilon": 23.0,
       "d_ibench": 0.51,
       "quality_thresholds": [
-        {"Q": 0.55, "tier": "Standard"},
-        {"Q": 0.75, "tier": "Strong"}
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        },
+        {
+          "Q": 0.75,
+          "tier": "Strong"
+        }
       ],
       "baselines": [
-        {"name": "GAP-TV",     "metric": "PSNR_dB", "score": 21.5, "Q": 0.40},
-        {"name": "ADMM-CASSI", "metric": "PSNR_dB", "score": 23.2, "Q": 0.51},
-        {"name": "PnP-HSICNN", "metric": "PSNR_dB", "score": 25.4, "Q": 0.64}
+        {
+          "name": "GAP-TV",
+          "metric": "PSNR_dB",
+          "score": 21.5,
+          "Q": 0.4
+        },
+        {
+          "name": "ADMM-CASSI",
+          "metric": "PSNR_dB",
+          "score": 23.2,
+          "Q": 0.51
+        },
+        {
+          "name": "PnP-HSICNN",
+          "metric": "PSNR_dB",
+          "score": 25.4,
+          "Q": 0.64
+        }
       ]
     },
     {
@@ -120,16 +190,33 @@
       "epsilon": 21.5,
       "d_ibench": 0.72,
       "quality_thresholds": [
-        {"Q": 0.55, "tier": "Standard"}
+        {
+          "Q": 0.55,
+          "tier": "Standard"
+        }
       ],
       "baselines": [
-        {"name": "GAP-TV",     "metric": "PSNR_dB", "score": 19.2, "Q": 0.28},
-        {"name": "ADMM-CASSI", "metric": "PSNR_dB", "score": 20.8, "Q": 0.38},
-        {"name": "PnP-HSICNN", "metric": "PSNR_dB", "score": 22.5, "Q": 0.52}
+        {
+          "name": "GAP-TV",
+          "metric": "PSNR_dB",
+          "score": 19.2,
+          "Q": 0.28
+        },
+        {
+          "name": "ADMM-CASSI",
+          "metric": "PSNR_dB",
+          "score": 20.8,
+          "Q": 0.38
+        },
+        {
+          "name": "PnP-HSICNN",
+          "metric": "PSNR_dB",
+          "score": 22.5,
+          "Q": 0.52
+        }
       ]
     }
   ],
-
   "p_benchmark": {
     "rho": 50,
     "dataset_p_benchmark": {
@@ -141,10 +228,26 @@
     "tracks": {
       "track_A_stratified_worst_case": {
         "strata": [
-          {"name": "S1_small",   "H_W_range": "<= 256^2",          "rep_difficulty": "easy"},
-          {"name": "S2_medium",  "H_W_range": "256^2 < HW <= 512^2", "rep_difficulty": "standard"},
-          {"name": "S3_large",   "H_W_range": "512^2 < HW <= 1024^2","rep_difficulty": "hard"},
-          {"name": "S4_xlarge",  "H_W_range": "> 1024^2",           "rep_difficulty": "very_hard"}
+          {
+            "name": "S1_small",
+            "H_W_range": "<= 256^2",
+            "rep_difficulty": "easy"
+          },
+          {
+            "name": "S2_medium",
+            "H_W_range": "256^2 < HW <= 512^2",
+            "rep_difficulty": "standard"
+          },
+          {
+            "name": "S3_large",
+            "H_W_range": "512^2 < HW <= 1024^2",
+            "rep_difficulty": "hard"
+          },
+          {
+            "name": "S4_xlarge",
+            "H_W_range": "> 1024^2",
+            "rep_difficulty": "very_hard"
+          }
         ],
         "samples_per_stratum": 5,
         "pass_condition": "min_i(PSNR_i) / epsilon_fn(Omega_centroid_s) >= 1.0 for all 4 strata"
@@ -155,34 +258,75 @@
       },
       "track_C_mismatch_degradation": {
         "sweep_points": [
-          {"phi": 0.00, "disp_a1_error": 0.000, "mask_dx": 0.0, "mask_theta": 0.000},
-          {"phi": 0.25, "disp_a1_error": 0.0125,"mask_dx": 0.25,"mask_theta": 0.0375},
-          {"phi": 0.50, "disp_a1_error": 0.025, "mask_dx": 0.5, "mask_theta": 0.075},
-          {"phi": 0.75, "disp_a1_error": 0.0375,"mask_dx": 0.75,"mask_theta": 0.1125},
-          {"phi": 1.00, "disp_a1_error": 0.05,  "mask_dx": 1.0, "mask_theta": 0.15}
+          {
+            "phi": 0.0,
+            "disp_a1_error": 0.0,
+            "mask_dx": 0.0,
+            "mask_theta": 0.0
+          },
+          {
+            "phi": 0.25,
+            "disp_a1_error": 0.0125,
+            "mask_dx": 0.25,
+            "mask_theta": 0.0375
+          },
+          {
+            "phi": 0.5,
+            "disp_a1_error": 0.025,
+            "mask_dx": 0.5,
+            "mask_theta": 0.075
+          },
+          {
+            "phi": 0.75,
+            "disp_a1_error": 0.0375,
+            "mask_dx": 0.75,
+            "mask_theta": 0.1125
+          },
+          {
+            "phi": 1.0,
+            "disp_a1_error": 0.05,
+            "mask_dx": 1.0,
+            "mask_theta": 0.15
+          }
         ],
         "scenes_per_point": 10,
         "degradation_score": "(1/4) * sum_{i=1..4} [(Q_norm(phi_i) + Q_norm(phi_{i+1}))/2]"
       }
     },
     "baselines": [
-      {"name": "GAP-TV",     "track_A_Q": 0.35, "track_B_Q": 0.48, "track_C_Q": 0.55, "overall_Q": 0.46},
-      {"name": "ADMM-CASSI", "track_A_Q": 0.48, "track_B_Q": 0.62, "track_C_Q": 0.66, "overall_Q": 0.58},
-      {"name": "PnP-HSICNN", "track_A_Q": 0.62, "track_B_Q": 0.78, "track_C_Q": 0.71, "overall_Q": 0.70}
+      {
+        "name": "GAP-TV",
+        "track_A_Q": 0.35,
+        "track_B_Q": 0.48,
+        "track_C_Q": 0.55,
+        "overall_Q": 0.46
+      },
+      {
+        "name": "ADMM-CASSI",
+        "track_A_Q": 0.48,
+        "track_B_Q": 0.62,
+        "track_C_Q": 0.66,
+        "overall_Q": 0.58
+      },
+      {
+        "name": "PnP-HSICNN",
+        "track_A_Q": 0.62,
+        "track_B_Q": 0.78,
+        "track_C_Q": 0.71,
+        "overall_Q": 0.7
+      }
     ]
   },
-
   "hardness_rule_check": "No baseline passes epsilon_fn over the entire declared Omega (PnP-HSICNN fails at T4_blind: score 22.5 < epsilon_fn=23.8 at H=1024 hard corner). Hardness rule: SATISFIED.",
-
   "anti_overfitting_mechanisms": {
     "M1_random_instantiation": "generator/instantiate.py uses G(SHA256(h_sub || k)) seeded by benchmark hash.",
-    "M2_convergence_scoring":  "convergence/check_convergence.py verifies O(1/k^2) rate across spatial resolutions [64, 128, 256, 512].",
-    "M3_worst_case_eval":      "scoring/worst_case.py returns min score over 20 fixed dev scenes per tier.",
-    "M4_community_adversarial":"adversarial/submit_adversarial.py; adversarial submissions eligible for T_k.",
+    "M2_convergence_scoring": "convergence/check_convergence.py verifies O(1/k^2) rate across spatial resolutions [64, 128, 256, 512].",
+    "M3_worst_case_eval": "scoring/worst_case.py returns min score over 20 fixed dev scenes per tier.",
+    "M4_community_adversarial": "adversarial/submit_adversarial.py; adversarial submissions eligible for T_k.",
     "M5_method_sig_diversity": "Baselines span L+O (GAP-TV, ADMM) and L+N (PnP-HSICNN) method signatures; novelty bonus for T+N or deep unrolling.",
-    "M6_gate_checks":          "gates/check_s{1,2,3,4}.py embedded with thresholds.yaml."
+    "M6_gate_checks": "gates/check_s{1,2,3,4}.py embedded with thresholds.yaml."
   },
-
   "ipfs_cid": null,
-  "ground_truth_cid": null
+  "ground_truth_cid": null,
+  "display_slug": "cassi"
 }

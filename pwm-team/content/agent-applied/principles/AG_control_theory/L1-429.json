@@ -11,8 +11,8 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Unscented Kalman Filter (UKF): UKF: deterministic sigma-point approximation propagates Gaussian through nonlinear system to 3rd order accuracy. The forward operator produces the measurement through a 3-node primitive DAG (S.ukf.sigma_points_UT\u2026); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=3 with effective condition number kappa_eff~50; heavy_tail_distribution, rank_deficient_covariance set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
-    "forward_model": "Sigma points X_i = {x_hat, x_hat \u00b1 sqrt((n+kappa)*P)}; Y_i = h(X_i); y_hat = sum w_i Y_i",
+    "description": "Unscented Kalman Filter (UKF): UKF: deterministic sigma-point approximation propagates Gaussian through nonlinear system to 3rd order accuracy. The forward operator produces the measurement through a 3-node primitive DAG (S.ukf.sigma_points_UT…); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=3 with effective condition number kappa_eff~50; heavy_tail_distribution, rank_deficient_covariance set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "forward_model": "Sigma points X_i = {x_hat, x_hat ± sqrt((n+kappa)*P)}; Y_i = h(X_i); y_hat = sum w_i Y_i",
     "world_state_x": "nonlinear state estimate x_hat_k to 3rd order accuracy in moments",
     "observation_y": "nonlinear measurements {y_k}",
     "physical_parameters_theta": [
@@ -148,5 +148,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "unscented-kalman-filter"
 }

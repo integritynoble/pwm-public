@@ -11,7 +11,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Neutrino Oscillation Parameter Extraction: Neutrino oscillation fitting: extract PMNS mixing angles and mass-squared differences from appearance/disappearance spectra. The forward operator produces the measurement through a 3-node primitive DAG (M.pmns.mixing_matrix\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=5 with effective condition number kappa_eff~500; flux_normalization_uncertainty_percent, cross_section_model_error set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "Neutrino Oscillation Parameter Extraction: Neutrino oscillation fitting: extract PMNS mixing angles and mass-squared differences from appearance/disappearance spectra. The forward operator produces the measurement through a 3-node primitive DAG (M.pmns.mixing_matrix…); recovery is posed as a parameter_estimation problem. Difficulty tier delta=5 with effective condition number kappa_eff~500; flux_normalization_uncertainty_percent, cross_section_model_error set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "P(nu_alpha -> nu_beta) = |sum_i U_{alpha_i} e^{-i m_i ** 2 L/(2E)} U*_{beta_i}|^2",
     "world_state_x": "PMNS parameters (theta_12, theta_13, theta_23, delta_CP, Delta_m21 ** 2, Delta_m31 ** 2)",
     "observation_y": "measured neutrino event rates N_obs(E, L) in bins of neutrino energy E",
@@ -148,5 +148,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "neutrino-oscillation-parameter-extraction"
 }

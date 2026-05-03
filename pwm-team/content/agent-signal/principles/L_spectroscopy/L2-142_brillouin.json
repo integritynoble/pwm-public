@@ -5,14 +5,48 @@
   "principle_ref": "sha256:<L1-142_principle_hash>",
   "title": "Brillouin Microscopy Peak-Fitting Spec",
   "spec_type": "mismatch_only",
-
   "six_tuple": {
     "omega": {
-      "H": [32, 1024], "W": [32, 1024], "Z": [1, 256],
-      "N_f": [50, 1024], "tau_ms": [1, 10000],
-      "refractive_index_uncertainty": [0.0, 0.05],
-      "thermal_drift": [0.0, 0.1], "anisotropy": [0.0, 0.2],
-      "rayleigh_leakage": [0.0, 0.5], "spectrometer_drift": [0.0, 50]
+      "H": [
+        32,
+        1024
+      ],
+      "W": [
+        32,
+        1024
+      ],
+      "Z": [
+        1,
+        256
+      ],
+      "N_f": [
+        50,
+        1024
+      ],
+      "tau_ms": [
+        1,
+        10000
+      ],
+      "refractive_index_uncertainty": [
+        0.0,
+        0.05
+      ],
+      "thermal_drift": [
+        0.0,
+        0.1
+      ],
+      "anisotropy": [
+        0.0,
+        0.2
+      ],
+      "rayleigh_leakage": [
+        0.0,
+        0.5
+      ],
+      "spectrometer_drift": [
+        0.0,
+        50
+      ]
     },
     "E": {
       "forward": "I(r, f) = A_R*delta(f) + A_B*Lorentzian(f-f_B, Gamma_B) + n",
@@ -20,43 +54,92 @@
       "primitive_chain": "S.scatter.inelastic -> L.disperse.spectral -> int.temporal",
       "inverse": "estimate f_B(r) and Gamma_B(r) per voxel from spectral cube"
     },
-    "B": {"lorentzian_peak_shape": true, "f_B_range": "[2, 10] GHz"},
-    "I": {"strategy": "gaussian_init_peak"},
-    "O": ["frequency_RMSE_MHz", "modulus_NMSE", "imaging_speed_vox_s", "residual_norm"],
+    "B": {
+      "lorentzian_peak_shape": true,
+      "f_B_range": "[2, 10] GHz"
+    },
+    "I": {
+      "strategy": "gaussian_init_peak"
+    },
+    "O": [
+      "frequency_RMSE_MHz",
+      "modulus_NMSE",
+      "imaging_speed_vox_s",
+      "residual_norm"
+    ],
     "epsilon_fn": "5 + 0.1 * spectrometer_drift + 200 * thermal_drift + 50 * refractive_index_uncertainty + 50 * anisotropy"
   },
-
   "protocol_fields": {
-    "input_format": {"spectra": "uint16(H, W, Z, N_f)"},
-    "output_format": {"f_B": "float32(H, W, Z)", "Gamma_B": "float32(H, W, Z)"},
+    "input_format": {
+      "spectra": "uint16(H, W, Z, N_f)"
+    },
+    "output_format": {
+      "f_B": "float32(H, W, Z)",
+      "Gamma_B": "float32(H, W, Z)"
+    },
     "baselines": [
-      {"name": "Lorentzian-LS","method_sig": "L+O", "expected_rmse_mhz": 15},
-      {"name": "Voigt-LS",     "method_sig": "L+O", "expected_rmse_mhz": 12},
-      {"name": "Bayesian-peak","method_sig": "L+O", "expected_rmse_mhz": 10},
-      {"name": "BrillouinNet", "method_sig": "L+N", "expected_rmse_mhz": 8}
+      {
+        "name": "Lorentzian-LS",
+        "method_sig": "L+O",
+        "expected_rmse_mhz": 15
+      },
+      {
+        "name": "Voigt-LS",
+        "method_sig": "L+O",
+        "expected_rmse_mhz": 12
+      },
+      {
+        "name": "Bayesian-peak",
+        "method_sig": "L+O",
+        "expected_rmse_mhz": 10
+      },
+      {
+        "name": "BrillouinNet",
+        "method_sig": "L+N",
+        "expected_rmse_mhz": 8
+      }
     ]
   },
-
   "ibenchmark_range": {
     "center_ibenchmark": {
       "rho": 1,
-      "omega_tier": {"H": 128, "W": 128, "Z": 64, "N_f": 200, "tau_ms": 100, "thermal_drift": 0.0, "rayleigh_leakage": 0.0},
+      "omega_tier": {
+        "H": 128,
+        "W": 128,
+        "Z": 64,
+        "N_f": 200,
+        "tau_ms": 100,
+        "thermal_drift": 0.0,
+        "rayleigh_leakage": 0.0
+      },
       "epsilon": 15
     },
-    "tier_bounds": {"H": [32, 512], "tau_ms": [1, 1000]},
-    "proximity_threshold": 0.10
+    "tier_bounds": {
+      "H": [
+        32,
+        512
+      ],
+      "tau_ms": [
+        1,
+        1000
+      ]
+    },
+    "proximity_threshold": 0.1
   },
-
   "d_spec": 0.55,
   "d_spec_notes": "Novel vs. other spectroscopies — uniquely encodes mechanical (not chemical) properties. Distance from 137 Raman ~= 0.50.",
-
-  "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
   "s1_s4_justifications": {
     "S1": "Lorentzian parameters (f_B, Gamma_B, A) dim-3 per voxel.",
     "S2": "LS unique under single-Lorentzian model; multi-Lorentzian needs model-selection.",
     "S3": "Levenberg-Marquardt quadratic convergence; Bayesian MCMC sampling.",
     "S4": "epsilon_fn defined; BrillouinNet fails at rayleigh_leakage=0.5 + drift=50 MHz (hardness)."
   },
-
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "display_slug": "brillouin"
 }

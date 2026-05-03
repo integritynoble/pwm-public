@@ -11,7 +11,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Satellite Gravity Gradiometry (GOCE): GOCE gravity gradiometry: recover Earth gravity field spherical harmonic coefficients from gravity gradient tensor measurements. The forward operator produces the measurement through a 3-node primitive DAG (S.gravity.gradient_tensor\u2026); recovery is posed as a linear_inverse problem. Difficulty tier delta=5 with effective condition number kappa_eff~5000; calibration_bias_mE, non_gravitational_acceleration_residual set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "Satellite Gravity Gradiometry (GOCE): GOCE gravity gradiometry: recover Earth gravity field spherical harmonic coefficients from gravity gradient tensor measurements. The forward operator produces the measurement through a 3-node primitive DAG (S.gravity.gradient_tensor…); recovery is posed as a linear_inverse problem. Difficulty tier delta=5 with effective condition number kappa_eff~5000; calibration_bias_mE, non_gravitational_acceleration_residual set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "V_ij(r,theta,phi) = sum_{n,m} (R/r)^{n+3} * sum_m [C_nm F_nm + S_nm G_nm]; gradiometer measures V_xx, V_yy, V_zz, V_xz",
     "world_state_x": "Stokes coefficients C_nm, S_nm up to degree/order N_max",
     "observation_y": "gravity gradient tensor components [mE] along orbit arc",
@@ -148,5 +148,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "satellite-gravity-gradiometry"
 }

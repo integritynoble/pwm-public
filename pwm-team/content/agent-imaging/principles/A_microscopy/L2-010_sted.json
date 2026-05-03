@@ -2,7 +2,7 @@
   "artifact_id": "L2-010",
   "layer": "L2",
   "parent_l1": "L1-010",
-  "title": "Stimulated Emission Depletion (STED) \u2014 donut super-resolution Mismatch-Only Spec",
+  "title": "Stimulated Emission Depletion (STED) — donut super-resolution Mismatch-Only Spec",
   "spec_type": "mismatch_only",
   "six_tuple": {
     "omega": {
@@ -140,5 +140,6 @@
     "PASS",
     "PASS"
   ],
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "display_slug": "sted"
 }

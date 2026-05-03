@@ -2,7 +2,7 @@
   "artifact_id": "L1-209",
   "layer": "L1",
   "principle_number": "209",
-  "title": "Timoshenko Beam \u2014 shear-deformation thick-beam",
+  "title": "Timoshenko Beam — shear-deformation thick-beam",
   "domain": "Structural Mechanics",
   "sub_domain": "Thick-beam bending with shear",
   "source_file": "T_structural_mechanics/209_timoshenko_beam.md",
@@ -11,7 +11,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Timoshenko Beam \u2014 shear-deformation thick-beam forward model.",
+    "description": "Timoshenko Beam — shear-deformation thick-beam forward model.",
     "forward_model": "d/dx(kGA (dw/dx - phi)) + q = 0; d/dx(EI d phi/dx) + kGA (dw/dx - phi) = 0",
     "world_state_x": "deflection w(x) + rotation phi(x)",
     "observation_y": "LVDT + strain-gauge + inclinometer along beam",
@@ -176,5 +176,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "timoshenko-beam"
 }

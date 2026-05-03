@@ -3,7 +3,7 @@
   "layer": "L3",
   "parent_l2": "L2-167",
   "parent_l1": "L1-167",
-  "title": "Lucky Imaging Atmospheric Turbulence Recovery \u2014 Benchmark Suite",
+  "title": "Lucky Imaging Atmospheric Turbulence Recovery — Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "VLT_NACO_lucky_archive",
@@ -259,5 +259,6 @@
     "M6_gate_checks": "gates/check_s{1,2,3,4}.py embedded with thresholds.yaml."
   },
   "ipfs_cid": null,
-  "ground_truth_cid": null
+  "ground_truth_cid": null,
+  "display_slug": "lucky-imaging-atmospheric-turbulence-recovery-benchmark-suite"
 }

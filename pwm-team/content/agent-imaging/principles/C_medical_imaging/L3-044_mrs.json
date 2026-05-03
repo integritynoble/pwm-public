@@ -171,7 +171,8 @@
       }
     ]
   },
-  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind strata corner.",
+  "hardness_rule_check": "SATISFIED — top baseline fails at T4_blind strata corner.",
   "ipfs_cid": null,
-  "ground_truth_cid": null
+  "ground_truth_cid": null,
+  "display_slug": "mrs"
 }

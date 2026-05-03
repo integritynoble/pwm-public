@@ -2,7 +2,7 @@
   "artifact_id": "L2-085",
   "layer": "L2",
   "parent_l1": "L1-085",
-  "title": "Transmission Electron Microscopy (TEM) \u2014 thin-section contrast imaging Mismatch-Only Spec",
+  "title": "Transmission Electron Microscopy (TEM) — thin-section contrast imaging Mismatch-Only Spec",
   "spec_type": "mismatch_only",
   "six_tuple": {
     "omega": {
@@ -149,5 +149,6 @@
     "PASS",
     "PASS"
   ],
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "display_slug": "tem"
 }

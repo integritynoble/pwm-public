@@ -4,14 +4,44 @@
   "parent_l1": "L1-098",
   "title": "Photometric Stereo Mismatch-Only Spec",
   "spec_type": "mismatch_only",
-
   "six_tuple": {
     "omega": {
-      "H": [128, 2048], "W": [128, 2048],
-      "K_lights": [3, 96], "photon_count": [50, 10000],
-      "specular_fraction": [0.0, 0.50], "cast_shadow_fraction": [0.0, 0.40],
-      "ambient_residual": [0.0, 0.30], "light_direction_error": [0.0, 0.05],
-      "inter_reflections": [0.0, 0.30]
+      "H": [
+        128,
+        2048
+      ],
+      "W": [
+        128,
+        2048
+      ],
+      "K_lights": [
+        3,
+        96
+      ],
+      "photon_count": [
+        50,
+        10000
+      ],
+      "specular_fraction": [
+        0.0,
+        0.5
+      ],
+      "cast_shadow_fraction": [
+        0.0,
+        0.4
+      ],
+      "ambient_residual": [
+        0.0,
+        0.3
+      ],
+      "light_direction_error": [
+        0.0,
+        0.05
+      ],
+      "inter_reflections": [
+        0.0,
+        0.3
+      ]
     },
     "E": {
       "forward": "I_k = rho * max(0, n . L_k) * (1 - shadow) + ambient + n; specular highlights add outliers",
@@ -19,38 +49,101 @@
       "primitive_chain": "S.scan.light_direction -> L.reflect_lambertian -> L.normal_ls -> int.spatial",
       "inverse": "recover n(u,v), rho(u,v) and (optionally) z(u,v)"
     },
-    "B": {"unit_normals": "|n| = 1", "nonneg_albedo": "rho >= 0", "bounded_intensity": true},
-    "I": {"strategy": "woodham_least_squares_plus_shadow_mask"},
-    "O": ["normal_MAE_deg", "depth_RMSE_mm", "albedo_relative_error"],
+    "B": {
+      "unit_normals": "|n| = 1",
+      "nonneg_albedo": "rho >= 0",
+      "bounded_intensity": true
+    },
+    "I": {
+      "strategy": "woodham_least_squares_plus_shadow_mask"
+    },
+    "O": [
+      "normal_MAE_deg",
+      "depth_RMSE_mm",
+      "albedo_relative_error"
+    ],
     "epsilon_fn": "3.0 + 25.0 * specular_fraction + 20.0 * cast_shadow_fraction - 0.8 * log2(K_lights / 3) + 10.0 * light_direction_error / 0.05"
   },
-
   "protocol_fields": {
-    "input_format": {"images": "float32(K, H, W)", "light_directions": "float32(K, 3)"},
-    "output_format": {"normals": "float32(H, W, 3)", "albedo": "float32(H, W)", "depth_optional": "float32(H, W)"},
+    "input_format": {
+      "images": "float32(K, H, W)",
+      "light_directions": "float32(K, 3)"
+    },
+    "output_format": {
+      "normals": "float32(H, W, 3)",
+      "albedo": "float32(H, W)",
+      "depth_optional": "float32(H, W)"
+    },
     "baselines": [
-      {"name": "Woodham-LS",   "method_sig": "A+O", "expected_mae_deg": 12.0},
-      {"name": "Robust-PCA-3", "method_sig": "L+O", "expected_mae_deg": 9.0},
-      {"name": "PS-FCN",       "method_sig": "L+N", "expected_mae_deg": 6.5},
-      {"name": "CNN-PS",       "method_sig": "L+N", "expected_mae_deg": 5.8}
+      {
+        "name": "Woodham-LS",
+        "method_sig": "A+O",
+        "expected_mae_deg": 12.0
+      },
+      {
+        "name": "Robust-PCA-3",
+        "method_sig": "L+O",
+        "expected_mae_deg": 9.0
+      },
+      {
+        "name": "PS-FCN",
+        "method_sig": "L+N",
+        "expected_mae_deg": 6.5
+      },
+      {
+        "name": "CNN-PS",
+        "method_sig": "L+N",
+        "expected_mae_deg": 5.8
+      }
     ]
   },
-
   "ibenchmark_range": {
     "center_ibenchmark": {
       "rho": 1,
-      "omega_tier": {"H": 512, "W": 512, "K_lights": 10, "photon_count": 500, "specular_fraction": 0.0, "cast_shadow_fraction": 0.0, "ambient_residual": 0.0, "light_direction_error": 0.0, "inter_reflections": 0.0},
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "K_lights": 10,
+        "photon_count": 500,
+        "specular_fraction": 0.0,
+        "cast_shadow_fraction": 0.0,
+        "ambient_residual": 0.0,
+        "light_direction_error": 0.0,
+        "inter_reflections": 0.0
+      },
       "epsilon": 8.0
     },
     "tier_bounds": {
-      "H": [128, 1024], "W": [128, 1024],
-      "K_lights": [4, 48], "specular_fraction": [0.0, 0.50],
-      "cast_shadow_fraction": [0.0, 0.40]
+      "H": [
+        128,
+        1024
+      ],
+      "W": [
+        128,
+        1024
+      ],
+      "K_lights": [
+        4,
+        48
+      ],
+      "specular_fraction": [
+        0.0,
+        0.5
+      ],
+      "cast_shadow_fraction": [
+        0.0,
+        0.4
+      ]
     },
-    "proximity_threshold": 0.10
+    "proximity_threshold": 0.1
   },
-
   "d_spec": 0.55,
-  "s1_s4_gates": ["PASS", "PASS", "PASS", "PASS"],
-  "ipfs_cid": null
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null,
+  "display_slug": "photometric-stereo"
 }

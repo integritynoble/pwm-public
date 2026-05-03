@@ -3,7 +3,7 @@
   "layer": "L3",
   "parent_l2": "L2-029",
   "parent_l1": "L1-029",
-  "title": "Computed Tomography (CT) \u2014 fan/cone-beam X-ray reconstruction Benchmark Suite",
+  "title": "Computed Tomography (CT) — fan/cone-beam X-ray reconstruction Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "canonical clinical/public dataset for this modality",
@@ -207,7 +207,8 @@
       }
     ]
   },
-  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind strata corner.",
+  "hardness_rule_check": "SATISFIED — top baseline fails at T4_blind strata corner.",
   "ipfs_cid": null,
-  "ground_truth_cid": null
+  "ground_truth_cid": null,
+  "display_slug": "ct"
 }

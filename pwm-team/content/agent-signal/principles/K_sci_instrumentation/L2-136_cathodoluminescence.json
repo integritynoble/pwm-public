@@ -5,15 +5,52 @@
   "principle_ref": "sha256:<L1-136_principle_hash>",
   "title": "Cathodoluminescence Hyperspectral Mapping Spec",
   "spec_type": "mismatch_only",
-
   "six_tuple": {
     "omega": {
-      "H": [32, 2048], "W": [32, 2048], "N_lambda": [64, 2048],
-      "beam_energy_keV": [1, 30], "pixel_nm": [1, 500],
-      "K": [1, 20],
-      "carrier_diffusion_length": [1, 500], "beam_drift": [0.0, 0.2],
-      "electron_beam_damage": [0.0, 0.5], "pure_component_uncertainty": [0.0, 0.3],
-      "self_absorption": [0.0, 0.3]
+      "H": [
+        32,
+        2048
+      ],
+      "W": [
+        32,
+        2048
+      ],
+      "N_lambda": [
+        64,
+        2048
+      ],
+      "beam_energy_keV": [
+        1,
+        30
+      ],
+      "pixel_nm": [
+        1,
+        500
+      ],
+      "K": [
+        1,
+        20
+      ],
+      "carrier_diffusion_length": [
+        1,
+        500
+      ],
+      "beam_drift": [
+        0.0,
+        0.2
+      ],
+      "electron_beam_damage": [
+        0.0,
+        0.5
+      ],
+      "pure_component_uncertainty": [
+        0.0,
+        0.3
+      ],
+      "self_absorption": [
+        0.0,
+        0.3
+      ]
     },
     "E": {
       "forward": "I_CL(r, lambda) = S(lambda) * Q(r) * eta + diffusion_convolution + n",
@@ -21,43 +58,92 @@
       "primitive_chain": "L.absorb.eBeam -> S.emit.recombine -> L.disperse.spectral -> int.temporal",
       "inverse": "recover Q(r, k) in R^{HxWxK} from hyperspectral cube"
     },
-    "B": {"nonnegativity_Q": true, "smoothness_spectrum": true},
-    "I": {"strategy": "cls_init"},
-    "O": ["emission_center_NMSE", "spatial_resolution_nm", "SNR_dB", "residual_norm"],
+    "B": {
+      "nonnegativity_Q": true,
+      "smoothness_spectrum": true
+    },
+    "I": {
+      "strategy": "cls_init"
+    },
+    "O": [
+      "emission_center_NMSE",
+      "spatial_resolution_nm",
+      "SNR_dB",
+      "residual_norm"
+    ],
     "epsilon_fn": "2e-3 + 0.01 * electron_beam_damage + 0.05 * pure_component_uncertainty + 1e-5 * carrier_diffusion_length"
   },
-
   "protocol_fields": {
-    "input_format": {"cube": "float32(H, W, N_lambda)", "library": "float32(K, N_lambda)"},
-    "output_format": {"concentrations": "float32(H, W, K)"},
+    "input_format": {
+      "cube": "float32(H, W, N_lambda)",
+      "library": "float32(K, N_lambda)"
+    },
+    "output_format": {
+      "concentrations": "float32(H, W, K)"
+    },
     "baselines": [
-      {"name": "CLS",     "method_sig": "L+O", "expected_nmse": 6e-3},
-      {"name": "NMF",     "method_sig": "L+O", "expected_nmse": 4e-3},
-      {"name": "MCR-ALS", "method_sig": "L+O", "expected_nmse": 4e-3},
-      {"name": "CL-Net",  "method_sig": "L+N", "expected_nmse": 3e-3}
+      {
+        "name": "CLS",
+        "method_sig": "L+O",
+        "expected_nmse": 0.006
+      },
+      {
+        "name": "NMF",
+        "method_sig": "L+O",
+        "expected_nmse": 0.004
+      },
+      {
+        "name": "MCR-ALS",
+        "method_sig": "L+O",
+        "expected_nmse": 0.004
+      },
+      {
+        "name": "CL-Net",
+        "method_sig": "L+N",
+        "expected_nmse": 0.003
+      }
     ]
   },
-
   "ibenchmark_range": {
     "center_ibenchmark": {
       "rho": 1,
-      "omega_tier": {"H": 256, "W": 256, "N_lambda": 500, "beam_energy_keV": 10, "pixel_nm": 10, "K": 5, "carrier_diffusion_length": 50},
-      "epsilon": 5e-3
+      "omega_tier": {
+        "H": 256,
+        "W": 256,
+        "N_lambda": 500,
+        "beam_energy_keV": 10,
+        "pixel_nm": 10,
+        "K": 5,
+        "carrier_diffusion_length": 50
+      },
+      "epsilon": 0.005
     },
-    "tier_bounds": {"H": [64, 1024], "K": [1, 10]},
-    "proximity_threshold": 0.10
+    "tier_bounds": {
+      "H": [
+        64,
+        1024
+      ],
+      "K": [
+        1,
+        10
+      ]
+    },
+    "proximity_threshold": 0.1
   },
-
   "d_spec": 0.55,
   "d_spec_notes": "Distance from 137 Raman ~= 0.50 (different emission mechanism + carrier). Unique e-beam carrier.",
-
-  "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
   "s1_s4_justifications": {
     "S1": "Cube H x W x N_lambda; K library consistent.",
     "S2": "Linear in Q(r) at low-injection regime.",
     "S3": "NMF/MCR-ALS monotone descent; CL-Net feed-forward.",
     "S4": "epsilon_fn defined; CL-Net fails at beam_damage=0.5 + carrier_diff=500 nm (hardness)."
   },
-
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "display_slug": "cathodoluminescence"
 }

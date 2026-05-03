@@ -3,7 +3,7 @@
   "layer": "L3",
   "parent_l2": "L2-430",
   "parent_l1": "L1-430",
-  "title": "Particle Filter (Sequential Monte Carlo) \u2014 Benchmark Suite",
+  "title": "Particle Filter (Sequential Monte Carlo) — Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "SLAM_particle_filter_benchmark",
@@ -255,5 +255,6 @@
     "M6_gate_checks": "gates/check_s{1,2,3,4}.py embedded with thresholds.yaml."
   },
   "ipfs_cid": null,
-  "ground_truth_cid": null
+  "ground_truth_cid": null,
+  "display_slug": "particle-filter-benchmark-suite"
 }

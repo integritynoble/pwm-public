@@ -5,7 +5,6 @@
   "parent_l1": "L1-099",
   "title": "Flash-LiDAR SPAD-Array Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
-
   "dataset_registry": {
     "primary": "MIT photon-efficient imaging dataset (Shin et al. 2016) + NYU-SPAD subset",
     "secondary": "Middlebury-ToF hybrid captures (spad + kinect)",
@@ -13,50 +12,142 @@
     "construction_method": "simulate pulse + Poisson-sampled histograms at declared pulse/ambient/DCR",
     "num_dev_instances_per_tier": 20
   },
-
   "ibenchmarks": [
     {
-      "tier": "T1_nominal", "rho": 1,
-      "omega_tier": {"H": 640, "W": 480, "N_t": 1024, "tau_tdc_ps": 100, "photon_count_per_pixel": 20, "ambient_photon_rate": 0.0, "dark_count_rate": 100, "pile_up_saturation": 0.0},
-      "epsilon": 15.0, "d_ibench": 0.14,
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "H": 640,
+        "W": 480,
+        "N_t": 1024,
+        "tau_tdc_ps": 100,
+        "photon_count_per_pixel": 20,
+        "ambient_photon_rate": 0.0,
+        "dark_count_rate": 100,
+        "pile_up_saturation": 0.0
+      },
+      "epsilon": 15.0,
+      "d_ibench": 0.14,
       "baselines": [
-        {"name": "Argmax-CFD",         "rmse_mm": 20.0, "Q": 0.55},
-        {"name": "PhotonEfficientNet", "rmse_mm": 11.5, "Q": 0.82},
-        {"name": "DeepFlashLidar",     "rmse_mm": 9.8,  "Q": 0.92}
+        {
+          "name": "Argmax-CFD",
+          "rmse_mm": 20.0,
+          "Q": 0.55
+        },
+        {
+          "name": "PhotonEfficientNet",
+          "rmse_mm": 11.5,
+          "Q": 0.82
+        },
+        {
+          "name": "DeepFlashLidar",
+          "rmse_mm": 9.8,
+          "Q": 0.92
+        }
       ]
     },
     {
-      "tier": "T2_low_ambient", "rho": 3,
-      "omega_tier": {"H": 640, "W": 480, "N_t": 1024, "tau_tdc_ps": 100, "photon_count_per_pixel": 10, "ambient_photon_rate": 10000, "dark_count_rate": 300, "pile_up_saturation": 0.05},
-      "epsilon": 22.0, "d_ibench": 0.28,
+      "tier": "T2_low_ambient",
+      "rho": 3,
+      "omega_tier": {
+        "H": 640,
+        "W": 480,
+        "N_t": 1024,
+        "tau_tdc_ps": 100,
+        "photon_count_per_pixel": 10,
+        "ambient_photon_rate": 10000,
+        "dark_count_rate": 300,
+        "pile_up_saturation": 0.05
+      },
+      "epsilon": 22.0,
+      "d_ibench": 0.28,
       "baselines": [
-        {"name": "Argmax-CFD",         "rmse_mm": 32.0, "Q": 0.35},
-        {"name": "PhotonEfficientNet", "rmse_mm": 18.0, "Q": 0.68},
-        {"name": "DeepFlashLidar",     "rmse_mm": 14.5, "Q": 0.80}
+        {
+          "name": "Argmax-CFD",
+          "rmse_mm": 32.0,
+          "Q": 0.35
+        },
+        {
+          "name": "PhotonEfficientNet",
+          "rmse_mm": 18.0,
+          "Q": 0.68
+        },
+        {
+          "name": "DeepFlashLidar",
+          "rmse_mm": 14.5,
+          "Q": 0.8
+        }
       ]
     },
     {
-      "tier": "T3_daylight", "rho": 5,
-      "omega_tier": {"H": 1024, "W": 768, "N_t": 512, "tau_tdc_ps": 200, "photon_count_per_pixel": 5, "ambient_photon_rate": 100000, "dark_count_rate": 1000, "pile_up_saturation": 0.20, "walk_error": 0.1},
-      "epsilon": 35.0, "d_ibench": 0.48,
+      "tier": "T3_daylight",
+      "rho": 5,
+      "omega_tier": {
+        "H": 1024,
+        "W": 768,
+        "N_t": 512,
+        "tau_tdc_ps": 200,
+        "photon_count_per_pixel": 5,
+        "ambient_photon_rate": 100000,
+        "dark_count_rate": 1000,
+        "pile_up_saturation": 0.2,
+        "walk_error": 0.1
+      },
+      "epsilon": 35.0,
+      "d_ibench": 0.48,
       "baselines": [
-        {"name": "Argmax-CFD",         "rmse_mm": 60.0, "Q": 0.20},
-        {"name": "PhotonEfficientNet", "rmse_mm": 32.0, "Q": 0.55},
-        {"name": "DeepFlashLidar",     "rmse_mm": 25.0, "Q": 0.68}
+        {
+          "name": "Argmax-CFD",
+          "rmse_mm": 60.0,
+          "Q": 0.2
+        },
+        {
+          "name": "PhotonEfficientNet",
+          "rmse_mm": 32.0,
+          "Q": 0.55
+        },
+        {
+          "name": "DeepFlashLidar",
+          "rmse_mm": 25.0,
+          "Q": 0.68
+        }
       ]
     },
     {
-      "tier": "T4_photon_starved", "rho": 10,
-      "omega_tier": {"H": 1280, "W": 1280, "N_t": 256, "tau_tdc_ps": 500, "photon_count_per_pixel": 2, "ambient_photon_rate": 1000000, "dark_count_rate": 10000, "pile_up_saturation": 0.50, "walk_error": 0.2},
-      "epsilon": 80.0, "d_ibench": 0.72,
+      "tier": "T4_photon_starved",
+      "rho": 10,
+      "omega_tier": {
+        "H": 1280,
+        "W": 1280,
+        "N_t": 256,
+        "tau_tdc_ps": 500,
+        "photon_count_per_pixel": 2,
+        "ambient_photon_rate": 1000000,
+        "dark_count_rate": 10000,
+        "pile_up_saturation": 0.5,
+        "walk_error": 0.2
+      },
+      "epsilon": 80.0,
+      "d_ibench": 0.72,
       "baselines": [
-        {"name": "Argmax-CFD",         "rmse_mm": 180.0, "Q": 0.08},
-        {"name": "PhotonEfficientNet", "rmse_mm": 85.0,  "Q": 0.45},
-        {"name": "DeepFlashLidar",     "rmse_mm": 62.0,  "Q": 0.58}
+        {
+          "name": "Argmax-CFD",
+          "rmse_mm": 180.0,
+          "Q": 0.08
+        },
+        {
+          "name": "PhotonEfficientNet",
+          "rmse_mm": 85.0,
+          "Q": 0.45
+        },
+        {
+          "name": "DeepFlashLidar",
+          "rmse_mm": 62.0,
+          "Q": 0.58
+        }
       ]
     }
   ],
-
   "p_benchmark": {
     "rho": 50,
     "dataset_p_benchmark": {
@@ -65,13 +156,22 @@
       "construction_method": "parametric (photon_count, ambient, tau_tdc, walk_error) sweep"
     },
     "baselines": [
-      {"name": "Argmax-CFD",         "overall_Q": 0.30},
-      {"name": "PhotonEfficientNet", "overall_Q": 0.65},
-      {"name": "DeepFlashLidar",     "overall_Q": 0.75}
+      {
+        "name": "Argmax-CFD",
+        "overall_Q": 0.3
+      },
+      {
+        "name": "PhotonEfficientNet",
+        "overall_Q": 0.65
+      },
+      {
+        "name": "DeepFlashLidar",
+        "overall_Q": 0.75
+      }
     ]
   },
-
   "hardness_rule_check": "SATISFIED — DeepFlashLidar fails T4_photon_starved (1 MHz ambient + 2 photons/pixel signal + 50% pile-up corner exceeds reconstructable SNR floor).",
   "ipfs_cid": null,
-  "ground_truth_cid": null
+  "ground_truth_cid": null,
+  "display_slug": "flash-lidar"
 }

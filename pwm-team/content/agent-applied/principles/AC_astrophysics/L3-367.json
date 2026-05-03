@@ -3,7 +3,7 @@
   "layer": "L3",
   "parent_l2": "L2-367",
   "parent_l1": "L1-367",
-  "title": "CMB Gravitational Lensing Reconstruction \u2014 Benchmark Suite",
+  "title": "CMB Gravitational Lensing Reconstruction — Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "Planck_2018_lensing_map",
@@ -255,5 +255,6 @@
     "M6_gate_checks": "gates/check_s{1,2,3,4}.py embedded with thresholds.yaml."
   },
   "ipfs_cid": null,
-  "ground_truth_cid": null
+  "ground_truth_cid": null,
+  "display_slug": "cmb-gravitational-lensing-reconstruction-benchmark-suite"
 }

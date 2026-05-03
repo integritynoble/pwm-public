@@ -2,7 +2,7 @@
   "artifact_id": "L1-088",
   "layer": "L1",
   "principle_number": "088",
-  "title": "4D-STEM \u2014 pixelated-detector scanning diffraction imaging",
+  "title": "4D-STEM — pixelated-detector scanning diffraction imaging",
   "domain": "Electron Microscopy",
   "sub_domain": "Momentum-resolved electron ptychography",
   "source_file": "G_electron_microscopy/088_4dstem.md",
@@ -11,7 +11,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical electron-microscopy literature for this principle.",
   "E": {
-    "description": "4D-STEM \u2014 pixelated-detector scanning diffraction imaging: 4d stem diffraction produces the measurement through a 5-node primitive DAG L.illumination.convergent_probe -> S.scan.raster -> L.diffraction -> L.modulus_squared -> int.spatial, with multi-angle tomographic integration and photon-shot-noise-limited (Poisson counting). Recovery is posed as a non-convex inverse problem that inverts the forward operator to estimate the scene-side complex 2D. Difficulty tier delta=10 with effective condition number kappa_eff~40; calibration-level mismatch (probe_aberration, scan_distortion, detector_gain) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
+    "description": "4D-STEM — pixelated-detector scanning diffraction imaging: 4d stem diffraction produces the measurement through a 5-node primitive DAG L.illumination.convergent_probe -> S.scan.raster -> L.diffraction -> L.modulus_squared -> int.spatial, with multi-angle tomographic integration and photon-shot-noise-limited (Poisson counting). Recovery is posed as a non-convex inverse problem that inverts the forward operator to estimate the scene-side complex 2D. Difficulty tier delta=10 with effective condition number kappa_eff~40; calibration-level mismatch (probe_aberration, scan_distortion, detector_gain) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
     "forward_model": "I(q, r) = |F{Psi_probe(r' - r) * O(r')}|^2 + n, recover O(r) via ptychography",
     "world_state_x": "Scene parameter (density / orientation / spectrum / complex field depending on principle)",
     "observation_y": "Electron detector output at declared geometry + noise",
@@ -193,5 +193,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "4dstem"
 }

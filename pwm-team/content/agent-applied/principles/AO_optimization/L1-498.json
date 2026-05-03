@@ -11,7 +11,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Topology Optimization (SIMP): SIMP topology optimization: minimize structural compliance subject to volume fraction constraint using density-based penalization. The forward operator produces the measurement through a 4-node primitive DAG (F.filter.density\u2026); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=3 with effective condition number kappa_eff~200; load_direction_error, boundary_condition_uncertainty set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "Topology Optimization (SIMP): SIMP topology optimization: minimize structural compliance subject to volume fraction constraint using density-based penalization. The forward operator produces the measurement through a 4-node primitive DAG (F.filter.density…); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=3 with effective condition number kappa_eff~200; load_direction_error, boundary_condition_uncertainty set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "K(rho)*u = f, C = f ** T u, rho_e in [rho_min, 1], penalty p=3",
     "world_state_x": "density field rho in [0,1]^N_e, N_e finite elements",
     "observation_y": "compliance C = f ** T K(rho)^{-1} f (scalar objective)",
@@ -151,5 +151,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "topology-optimization"
 }

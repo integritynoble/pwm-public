@@ -3,7 +3,7 @@
   "layer": "L3",
   "parent_l2": "L2-444",
   "parent_l1": "L1-444",
-  "title": "Markowitz Mean-Variance Portfolio Optimization \u2014 Benchmark Suite",
+  "title": "Markowitz Mean-Variance Portfolio Optimization — Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "SP500_daily_returns_1993_2023",
@@ -255,5 +255,6 @@
     "M6_gate_checks": "gates/check_s{1,2,3,4}.py embedded with thresholds.yaml."
   },
   "ipfs_cid": null,
-  "ground_truth_cid": null
+  "ground_truth_cid": null,
+  "display_slug": "markowitz-mean-variance-portfolio-optimization-benchmark-suite"
 }

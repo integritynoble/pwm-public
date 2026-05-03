@@ -2,7 +2,7 @@
   "artifact_id": "L1-245",
   "layer": "L1",
   "principle_number": "245",
-  "title": "Thin Film Interference \u2014 transfer-matrix optical design",
+  "title": "Thin Film Interference — transfer-matrix optical design",
   "domain": "Electromagnetics",
   "sub_domain": "Layered-stack optical transfer-matrix",
   "source_file": "U_electromagnetics/245_thin_film.md",
@@ -11,7 +11,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Thin Film Interference \u2014 transfer-matrix optical design forward model.",
+    "description": "Thin Film Interference — transfer-matrix optical design forward model.",
     "forward_model": "M = prod_j M_j(n_j, d_j, lambda, theta); R = |r|^2, T = |t|^2",
     "world_state_x": "stack {n_j, d_j} -> spectral reflectance R(lambda) and transmittance T(lambda)",
     "observation_y": "spectrophotometer R, T data across lambda",
@@ -167,5 +167,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "thin-film"
 }

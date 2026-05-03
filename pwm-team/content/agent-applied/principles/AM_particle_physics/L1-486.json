@@ -11,7 +11,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Dark Matter Direct Detection Inversion: Dark matter direct detection: set limits on WIMP-nucleus cross section from observed recoil spectrum. The forward operator produces the measurement through a 3-node primitive DAG (M.recoil.wimp_nucleus\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=10 with effective condition number kappa_eff~1000; halo_model_uncertainty, nuclear_form_factor_uncertainty set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "Dark Matter Direct Detection Inversion: Dark matter direct detection: set limits on WIMP-nucleus cross section from observed recoil spectrum. The forward operator produces the measurement through a 3-node primitive DAG (M.recoil.wimp_nucleus…); recovery is posed as a parameter_estimation problem. Difficulty tier delta=10 with effective condition number kappa_eff~1000; halo_model_uncertainty, nuclear_form_factor_uncertainty set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "dR/dE_R = N_T * rho_DM / (m_DM * m_T) * integral_{v_min}^{inf} v*f(v) * d_sigma/d_E_R dv",
     "world_state_x": "WIMP mass m_DM and spin-independent cross section sigma_SI",
     "observation_y": "observed recoil event spectrum N_obs(E_R) in energy bins above threshold",
@@ -148,5 +148,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "dark-matter-direct-detection-inversion"
 }

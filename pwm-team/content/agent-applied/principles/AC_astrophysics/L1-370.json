@@ -11,7 +11,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Stellar Structure Inverse Problem: Stellar structure inversion: recover internal sound speed and density profiles from observed oscillation frequencies. The forward operator produces the measurement through a 3-node primitive DAG (S.helioseismic.kernel\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~50; surface_term_offset, mode_misidentification set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "Stellar Structure Inverse Problem: Stellar structure inversion: recover internal sound speed and density profiles from observed oscillation frequencies. The forward operator produces the measurement through a 3-node primitive DAG (S.helioseismic.kernel…); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~50; surface_term_offset, mode_misidentification set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "delta_nu_nl = integral K_nl(r) * delta_c ** 2(r)/c ** 2 dr + integral L_nl(r) * delta_rho(r)/rho dr",
     "world_state_x": "internal sound speed profile c(r) and density rho(r) from center to surface",
     "observation_y": "oscillation frequencies nu_nl for modes (n,l) from helioseismology/asteroseismology",
@@ -148,5 +148,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "stellar-structure-inverse-problem"
 }

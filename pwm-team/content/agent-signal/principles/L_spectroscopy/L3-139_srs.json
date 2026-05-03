@@ -154,7 +154,8 @@
       }
     ]
   },
-  "hardness_rule_check": "SATISFIED \u2014 SRS-UNet fails at T4_video_rate (N_omega=1, tau=1us, RIN=1e-5): 0.06 > epsilon_fn ~ 0.04.",
+  "hardness_rule_check": "SATISFIED — SRS-UNet fails at T4_video_rate (N_omega=1, tau=1us, RIN=1e-5): 0.06 > epsilon_fn ~ 0.04.",
   "ipfs_cid": null,
-  "ground_truth_cid": null
+  "ground_truth_cid": null,
+  "display_slug": "srs"
 }

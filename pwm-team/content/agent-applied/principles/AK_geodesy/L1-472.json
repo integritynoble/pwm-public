@@ -11,7 +11,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Hyperspectral Spectral Unmixing: Hyperspectral unmixing: estimate per-pixel endmember abundances from mixed pixel spectra assuming linear mixing model. The forward operator produces the measurement through a 3-node primitive DAG (M.mixing.linear_model\u2026); recovery is posed as a linear_inverse problem. Difficulty tier delta=3 with effective condition number kappa_eff~50; endmember_variability, nonlinear_mixing_fraction set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "Hyperspectral Spectral Unmixing: Hyperspectral unmixing: estimate per-pixel endmember abundances from mixed pixel spectra assuming linear mixing model. The forward operator produces the measurement through a 3-node primitive DAG (M.mixing.linear_model…); recovery is posed as a linear_inverse problem. Difficulty tier delta=3 with effective condition number kappa_eff~50; endmember_variability, nonlinear_mixing_fraction set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "y = M * a + n; M is endmember matrix [L x K], a is abundance vector [K x 1], sum(a) = 1, a >= 0",
     "world_state_x": "abundance fractions a_k(x,y) for K endmembers across H x W image",
     "observation_y": "hyperspectral image Y in R^{H x W x L} at L spectral bands",
@@ -148,5 +148,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "hyperspectral-spectral-unmixing"
 }

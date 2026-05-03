@@ -151,7 +151,8 @@
       }
     ]
   },
-  "hardness_rule_check": "SATISFIED \u2014 Topaz-ML3D fails at T4_challenging (N=10000, orientation=0.8, het=1.0): 12 \u00c5 > epsilon_fn ~ 9 \u00c5.",
+  "hardness_rule_check": "SATISFIED — Topaz-ML3D fails at T4_challenging (N=10000, orientation=0.8, het=1.0): 12 Å > epsilon_fn ~ 9 Å.",
   "ipfs_cid": null,
-  "ground_truth_cid": null
+  "ground_truth_cid": null,
+  "display_slug": "cryoem-spa"
 }

@@ -2,7 +2,7 @@
   "artifact_id": "L1-355",
   "layer": "L1",
   "principle_number": "355",
-  "title": "Neutron Diffusion \u2014 multi-group diffusion approximation",
+  "title": "Neutron Diffusion — multi-group diffusion approximation",
   "domain": "Nuclear Engineering",
   "sub_domain": "Multi-group diffusion (PWR / BWR core physics)",
   "source_file": "AB_nuclear_engineering/355_neutron_diffusion.md",
@@ -11,7 +11,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Neutron Diffusion \u2014 multi-group diffusion approximation forward model.",
+    "description": "Neutron Diffusion — multi-group diffusion approximation forward model.",
     "forward_model": "-grad D_g grad phi_g + Sigma_r_g phi_g = sum_{g'!=g} Sigma_s_{g'->g} phi_{g'} + chi_g/k * sum_g' nu_sigma_f_{g'} phi_{g'}",
     "world_state_x": "scalar flux phi_g(r) in each energy group g",
     "observation_y": "in-core detector response at selected flux map locations",
@@ -197,5 +197,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "neutron-diffusion"
 }

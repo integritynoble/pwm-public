@@ -7,7 +7,6 @@
   "sub_domain": "Crystal symmetry classification from XRD lattice + structure-factor recovery",
   "source_file": "Z_materials_science/519_xrd_space_group_pwdr.md",
   "source_data_quality_note": "v2 physical_with_discrete_readout (PWDR) genesis Principle. Wraps L1-518 XRD (newly authored alongside) with deterministic crystallographic-symmetry rules (Hermann-Mauguin notation, International Tables for Crystallography Vol A) to assign categorical space-group label from 230 possibilities. Universal in materials science, structural chemistry, pharma polymorph identification. UTSW structural biology programs.",
-
   "gate_class": "physical_with_discrete_readout",
   "gate_substitutions": {
     "kappa_substitute": null,
@@ -19,10 +18,24 @@
     "lipschitz_constant": 0.05,
     "underlying_physical_state": "lattice parameters (a, b, c, alpha, beta, gamma), atomic positions, and systematic-absence pattern recovered by L1-518 XRD analytical core",
     "physics_core_principle": "L1-518",
-    "label_set_crystal_system": ["triclinic", "monoclinic", "orthorhombic", "tetragonal", "trigonal", "hexagonal", "cubic"],
-    "label_set_bravais": ["14_Bravais_lattices"],
-    "label_set_point_group": ["32_point_groups"],
-    "label_set_space_group": ["230_space_groups_per_International_Tables_Vol_A"],
+    "label_set_crystal_system": [
+      "triclinic",
+      "monoclinic",
+      "orthorhombic",
+      "tetragonal",
+      "trigonal",
+      "hexagonal",
+      "cubic"
+    ],
+    "label_set_bravais": [
+      "14_Bravais_lattices"
+    ],
+    "label_set_point_group": [
+      "32_point_groups"
+    ],
+    "label_set_space_group": [
+      "230_space_groups_per_International_Tables_Vol_A"
+    ],
     "threshold_continuity_proof": "Crystal system membership is determined by lattice-parameter relations (a vs b vs c, angles vs 90/120 degrees); each relation defines a measure-zero hyperplane. Bravais centering and space-group decisions are determined by systematic absence patterns — discrete tests on intensity ratios. Smoothed-classification (interpolated when lattice-parameter ratios are near boundaries) is globally Lipschitz with constant ~0.05 per percentage-point of lattice-parameter uncertainty. Inherits stability from L1-518."
   },
   "related_principles": [
@@ -30,24 +43,50 @@
     "L1-031 (X-ray radiography — sibling X-ray modality, informational)",
     "L1-294 (DFT — sibling first-principles structure prediction, informational)"
   ],
-
   "E": {
     "description": "X-ray Diffraction Space-Group Classification (PWDR): wraps L1-518 XRD analytical core with the deterministic crystallographic-symmetry decision tree from International Tables for Crystallography Vol A. Stage 1 (analytical, from L1-518): recover lattice parameters (a, b, c, alpha, beta, gamma), atomic positions, and systematic-absence pattern. Stage 2 (deterministic threshold): apply hierarchical decision tree (crystal system -> Bravais lattice -> point group -> space group) to assign one of 230 space groups per Hermann-Mauguin notation. Difficulty tier delta = 5. Mismatch parameters: lattice_parameter_uncertainty, systematic_absence_threshold_uncertainty, twinning_artifact, modulation_or_superlattice, pseudosymmetry_ambiguity.",
     "forward_model": "Stage 1 (L1-518): I(2*theta) -> (a, b, c, alpha, beta, gamma, atomic_positions, F_hkl). Stage 2: crystal_system = lattice_parameter_decision(a, b, c, angles); Bravais = centering_decision(systematic_absences); point_group = Laue_class_decision(F_hkl symmetries) + Wilson_plot(centrosymmetry); space_group = systematic_absence_decision(specific axes) per International Tables Vol A.",
     "world_state_x": "Per-crystal categorical space-group label in {1, 2, ..., 230} (or coarser: crystal system in {triclinic, ..., cubic}, Bravais in 14 lattices, point group in 32 groups).",
     "observation_y": "Powder XRD pattern I(2*theta) or single-crystal {I_hkl} (same as L1-518 core).",
-    "physical_parameters_theta": ["lambda_angstrom", "two_theta_min", "two_theta_max", "two_theta_step", "instrumental_broadening", "lattice_parameter_uncertainty", "systematic_absence_threshold_uncertainty", "twinning_artifact", "modulation_or_superlattice", "pseudosymmetry_ambiguity"]
+    "physical_parameters_theta": [
+      "lambda_angstrom",
+      "two_theta_min",
+      "two_theta_max",
+      "two_theta_step",
+      "instrumental_broadening",
+      "lattice_parameter_uncertainty",
+      "systematic_absence_threshold_uncertainty",
+      "twinning_artifact",
+      "modulation_or_superlattice",
+      "pseudosymmetry_ambiguity"
+    ]
   },
-
   "G": {
     "dag": "L.xray_source -> L.bragg_diffraction -> L.structure_factor -> L.lattice_parameter_recovery -> L.systematic_absence_test -> L.space_group_decision_tree -> int.angular",
-    "vertices": ["L.xray_source", "L.bragg_diffraction", "L.structure_factor", "L.lattice_parameter_recovery", "L.systematic_absence_test", "L.space_group_decision_tree", "int.angular"],
-    "arcs": ["L.xray_source -> L.bragg_diffraction", "L.bragg_diffraction -> L.structure_factor", "L.structure_factor -> L.lattice_parameter_recovery", "L.structure_factor -> L.systematic_absence_test", "L.lattice_parameter_recovery -> L.space_group_decision_tree", "L.systematic_absence_test -> L.space_group_decision_tree", "L.space_group_decision_tree -> int.angular"],
+    "vertices": [
+      "L.xray_source",
+      "L.bragg_diffraction",
+      "L.structure_factor",
+      "L.lattice_parameter_recovery",
+      "L.systematic_absence_test",
+      "L.space_group_decision_tree",
+      "int.angular"
+    ],
+    "arcs": [
+      "L.xray_source -> L.bragg_diffraction",
+      "L.bragg_diffraction -> L.structure_factor",
+      "L.structure_factor -> L.lattice_parameter_recovery",
+      "L.structure_factor -> L.systematic_absence_test",
+      "L.lattice_parameter_recovery -> L.space_group_decision_tree",
+      "L.systematic_absence_test -> L.space_group_decision_tree",
+      "L.space_group_decision_tree -> int.angular"
+    ],
     "L_DAG": 6.8,
     "n_c": 1,
-    "coupling_constraints": ["lattice_to_symmetry: lattice parameters and systematic absences are jointly observed and jointly determine space-group membership; cannot separate fully (e.g., centrosymmetric vs non-centrosymmetric ambiguity in Laue class requires both lattice geometry and intensity statistics)"]
+    "coupling_constraints": [
+      "lattice_to_symmetry: lattice parameters and systematic absences are jointly observed and jointly determine space-group membership; cannot separate fully (e.g., centrosymmetric vs non-centrosymmetric ambiguity in Laue class requires both lattice geometry and intensity statistics)"
+    ]
   },
-
   "W": {
     "existence": true,
     "uniqueness": "conditional",
@@ -56,14 +95,12 @@
     "condition_number_effective": 100,
     "regime": "Existence and uniqueness inherited from L1-518 with additional constraint: pseudosymmetry can cause space-group ambiguity (e.g., P2_1/n vs Pn — distinguishing requires additional statistics or chemistry constraint). Stability inherits L1-518's high condition number plus additive systematic_absence_threshold_uncertainty. Joint Hadamard well-posedness for the space-group classification established by Hahn 2005 (International Tables Vol A), Cromer-Liberman 1970 (anomalous scattering for centrosymmetry tests), Le Bail 2005 (powder indexing), Kabsch 2010 (XDS for space-group determination), Spek 2003 (PLATON ADDSYM)."
   },
-
   "C": {
     "solver_class": "linear-operator + decision-tree [International Tables Vol A space-group decision tree] | direct methods + symmetry-search [Le Bail indexing + space-group enumeration] | linear-operator + deep neural prior [SpaceGroupNet]",
     "convergence_rate_q": 1.0,
     "error_bound": "Inherits L1-518 lattice-parameter recovery bound. Misclassification probability bound: Pr(SG_hat != SG_true) <= C_thresh * |lattice_parameter_error| / d(parameters, system_boundary). Pseudosymmetry-induced bias adds + C_pseudo * pseudosymmetry_ambiguity_score.",
     "complexity": "O(N_reflections * 230) for full space-group enumeration; faster via hierarchical decision tree O(N_reflections * log(230))"
   },
-
   "physics_fingerprint": {
     "carrier": "x_ray",
     "sensing_mechanism": "bragg_diffraction_with_space_group_classifier",
@@ -71,40 +108,120 @@
     "problem_class": "linear_inverse_with_categorical_readout",
     "noise_model": "poisson",
     "solution_space": "1D_space_group_label",
-    "primitives": ["L.xray_source", "L.bragg_diffraction", "L.structure_factor", "L.lattice_parameter_recovery", "L.systematic_absence_test", "L.space_group_decision_tree", "int.angular"]
+    "primitives": [
+      "L.xray_source",
+      "L.bragg_diffraction",
+      "L.structure_factor",
+      "L.lattice_parameter_recovery",
+      "L.systematic_absence_test",
+      "L.space_group_decision_tree",
+      "int.angular"
+    ]
   },
-
   "difficulty_delta": 5,
   "difficulty_tier": "advanced",
-  "mismatch_parameters": ["lattice_parameter_uncertainty", "systematic_absence_threshold_uncertainty", "twinning_artifact", "modulation_or_superlattice", "pseudosymmetry_ambiguity"],
+  "mismatch_parameters": [
+    "lattice_parameter_uncertainty",
+    "systematic_absence_threshold_uncertainty",
+    "twinning_artifact",
+    "modulation_or_superlattice",
+    "pseudosymmetry_ambiguity"
+  ],
   "error_metric": "categorical_accuracy",
   "error_metric_secondary": "top_3_accuracy",
-
   "spec_range": {
     "center_spec": {
       "problem_class": "xrd_space_group_pwdr",
       "forward_operator": "xrd_space_group_pwdr_forward",
       "input_format": "powder_xrd_pattern_with_space_group_label",
-      "omega": {"lambda_angstrom": 1.5418, "two_theta_min": 5, "two_theta_max": 120, "two_theta_step": 0.02, "instrumental_broadening": 0.05, "lattice_parameter_uncertainty": 0.0, "systematic_absence_threshold_uncertainty": 0.0, "twinning_artifact": 0.0, "modulation_or_superlattice": 0.0, "pseudosymmetry_ambiguity": 0.0},
+      "omega": {
+        "lambda_angstrom": 1.5418,
+        "two_theta_min": 5,
+        "two_theta_max": 120,
+        "two_theta_step": 0.02,
+        "instrumental_broadening": 0.05,
+        "lattice_parameter_uncertainty": 0.0,
+        "systematic_absence_threshold_uncertainty": 0.0,
+        "twinning_artifact": 0.0,
+        "modulation_or_superlattice": 0.0,
+        "pseudosymmetry_ambiguity": 0.0
+      },
       "epsilon_fn_center": "0.85_accuracy"
     },
-    "allowed_forward_operators": ["xrd_space_group_pwdr_forward", "xrd_crystal_system_pwdr_forward", "xrd_bravais_pwdr_forward", "xrd_point_group_pwdr_forward"],
-    "allowed_problem_classes": ["xrd_space_group_pwdr", "xrd_crystal_system_pwdr", "xrd_bravais_pwdr", "xrd_point_group_pwdr", "xrd_centrosymmetry_pwdr"],
-    "allowed_omega_dimensions": ["lambda_angstrom", "two_theta_min", "two_theta_max", "two_theta_step", "instrumental_broadening", "lattice_parameter_uncertainty", "systematic_absence_threshold_uncertainty", "twinning_artifact", "modulation_or_superlattice", "pseudosymmetry_ambiguity"],
-    "omega_bounds": {"lambda_angstrom": [0.4, 2.5], "two_theta_min": [1, 30], "two_theta_max": [60, 160], "instrumental_broadening": [0.01, 0.5]},
-    "epsilon_bounds": {"categorical_accuracy": [0.30, 0.99]}
+    "allowed_forward_operators": [
+      "xrd_space_group_pwdr_forward",
+      "xrd_crystal_system_pwdr_forward",
+      "xrd_bravais_pwdr_forward",
+      "xrd_point_group_pwdr_forward"
+    ],
+    "allowed_problem_classes": [
+      "xrd_space_group_pwdr",
+      "xrd_crystal_system_pwdr",
+      "xrd_bravais_pwdr",
+      "xrd_point_group_pwdr",
+      "xrd_centrosymmetry_pwdr"
+    ],
+    "allowed_omega_dimensions": [
+      "lambda_angstrom",
+      "two_theta_min",
+      "two_theta_max",
+      "two_theta_step",
+      "instrumental_broadening",
+      "lattice_parameter_uncertainty",
+      "systematic_absence_threshold_uncertainty",
+      "twinning_artifact",
+      "modulation_or_superlattice",
+      "pseudosymmetry_ambiguity"
+    ],
+    "omega_bounds": {
+      "lambda_angstrom": [
+        0.4,
+        2.5
+      ],
+      "two_theta_min": [
+        1,
+        30
+      ],
+      "two_theta_max": [
+        60,
+        160
+      ],
+      "instrumental_broadening": [
+        0.01,
+        0.5
+      ]
+    },
+    "epsilon_bounds": {
+      "categorical_accuracy": [
+        0.3,
+        0.99
+      ]
+    }
   },
-
-  "p1_p10_tests": ["PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS"],
-  "s1_s4_gates": ["PASS", "PASS", "PASS", "PASS"],
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
   "ipfs_cid": null,
-
   "recast_attempted": {
     "considered": true,
     "recast_path": "Original framing: 'Classify XRD pattern into space group' (would be data_driven_statistical CNN-based pattern classifier). Option-3 recast: 'Recover lattice parameters and systematic-absence pattern via L1-518 Rietveld refinement; apply International Tables Vol A decision tree to assign space group from 230 possibilities'. Feasible because crystal symmetry has a well-defined diffraction-physics forward model and space-group decision rules are deterministic functions of recovered lattice geometry and absence patterns.",
     "reason_rejected": null
   },
-
   "v3_metadata": {
     "is_standalone_multiphysics": false,
     "coupling_count_n_c": 1,
@@ -123,5 +240,6 @@
       "rationale": "L1-518 recovers continuous lattice parameters and structure factors; L1-519 wraps with International Tables decision tree to produce categorical space-group label. Different solution_space (1D space-group label vs continuous crystal-structure parameters); adds L.lattice_parameter_recovery, L.systematic_absence_test, L.space_group_decision_tree primitives."
     },
     "clinical_context": "Beyond materials science academic research, space-group classification is critical in pharma polymorph identification (different polymorphs can have different bioavailability, solubility, stability — FDA-relevant), cement / metal alloy quality control, semiconductor characterization, and forensic mineralogy. Universal standard databases: Cambridge Structural Database (CSD, organic + organometallic), Inorganic Crystal Structure Database (ICSD), Protein Data Bank (PDB) — all use space-group classification as primary indexing. Reference solvers: PLATON ADDSYM, FINDSYM, ISOTROPY for symmetry detection and validation. UTSW has structural biology programs benefiting from space-group classification automation."
-  }
+  },
+  "display_slug": "xrd-space-group"
 }

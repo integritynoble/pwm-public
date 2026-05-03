@@ -125,7 +125,7 @@
     "proximity_threshold": 0.1
   },
   "d_spec": 0.22,
-  "d_spec_notes": "Close to 386 CS (d~0.20 Similar) \u2014 shared sparsity prior, different projection type. Analysis-sparse spec would differ by d~0.28.",
+  "d_spec_notes": "Close to 386 CS (d~0.20 Similar) — shared sparsity prior, different projection type. Analysis-sparse spec would differ by d~0.28.",
   "s1_s4_gates": [
     "PASS",
     "PASS",
@@ -138,5 +138,6 @@
     "S3": "OMP terminates in k steps; BPDN solved by FISTA O(1/k^2); LISTA feed-forward.",
     "S4": "epsilon_fn evaluates; CoSaMP fails at basis_mismatch=0.5 (hardness)."
   },
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "display_slug": "sparse-signal-recovery"
 }

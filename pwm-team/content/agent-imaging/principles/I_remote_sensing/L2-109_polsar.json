@@ -2,7 +2,7 @@
   "artifact_id": "L2-109",
   "layer": "L2",
   "parent_l1": "L1-109",
-  "title": "Polarimetric SAR (PolSAR) \u2014 full-polarimetric decomposition Mismatch-Only Spec",
+  "title": "Polarimetric SAR (PolSAR) — full-polarimetric decomposition Mismatch-Only Spec",
   "spec_type": "mismatch_only",
   "six_tuple": {
     "omega": {
@@ -149,5 +149,6 @@
     "PASS",
     "PASS"
   ],
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "display_slug": "polsar"
 }

@@ -108,5 +108,6 @@
     "S3": "Solver class BerkeleyGW BSE; ExcitonSolver; Haydock iterative Lanczos provably converges at rate q=2.0; monotone residual decrease.",
     "S4": "epsilon_fn evaluates cleanly across 50 random Omega samples; hardness rule satisfied (top baseline fails at Omega corner)."
   },
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "display_slug": "bethe-salpeter"
 }

@@ -3,7 +3,7 @@
   "layer": "L3",
   "parent_l2": "L2-403",
   "parent_l1": "L1-403",
-  "title": "Physiologically Based PK (PBPK) \u2014 Benchmark Suite",
+  "title": "Physiologically Based PK (PBPK) — Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "CHEMBL_PBPK_validation_dataset",
@@ -255,5 +255,6 @@
     "M6_gate_checks": "gates/check_s{1,2,3,4}.py embedded with thresholds.yaml."
   },
   "ipfs_cid": null,
-  "ground_truth_cid": null
+  "ground_truth_cid": null,
+  "display_slug": "physiologically-based-pk-benchmark-suite"
 }

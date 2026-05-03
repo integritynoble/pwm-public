@@ -7,14 +7,12 @@
   "sub_domain": "Quantitative MR susceptibility recovery (multi-physics joint inverse)",
   "source_file": "C_medical_imaging/503_qsm.md",
   "source_data_quality_note": "v3 standalone multi-physics genesis Principle. Joint forward operator couples MR phase encoding (Larmor / Bloch) with Maxwell magnetostatic dipole-field perturbation; recovers tissue magnetic susceptibility chi(r) from measured GRE phase. Distinct from L1-059 SWI (phase-weighted display only) by sensing-mechanism primitives and by solution_space (quantitative susceptibility map vs phase-weighted image). Authored under the standalone-as-default v3 design (see pwm-team/pwm_product/genesis/PWM_V3_STANDALONE_VS_COMPOSITE.md).",
-
   "gate_class": "analytical",
   "gate_substitutions": null,
   "related_principles": [
     "L1-030 (MRI — RF/gradient encoding component, informational)",
     "L1-059 (SWI — phase-weighted variant, d_principle ~ 0.5)"
   ],
-
   "E": {
     "description": "Quantitative Susceptibility Mapping (QSM): joint multi-physics forward couples gradient-echo MR phase encoding (Larmor precession under static + perturbed field) with Maxwell magnetostatic dipole-field perturbation arising from spatially varying tissue magnetic susceptibility chi(r). The forward DAG has 7 primitives with two coupling constraints (n_c = 2): (i) phase-to-field linear coupling phi = gamma * TE * (B_z - B_0); (ii) field-to-susceptibility dipole convolution (B_z - B_0) = D_kernel(*) chi where D_kernel(k) = (1/3) - k_z^2/|k|^2 is the Lorentzian dipole response in k-space. Recovery is posed as the joint linear inverse problem that recovers chi(r) from measured complex GRE signal across multiple TE. Difficulty tier delta = 5 with raw condition number kappa ~ 240 (zero-cone singularity at the magic angle ~ 54.7 degrees) and effective kappa_eff ~ 30 after wave-cone regularization. Mismatch parameters: B0_inhomogeneity, brain_segmentation_error, phase_unwrap_error, dipole_kernel_truncation_error, background_field_removal_error. Additive Gaussian thermal/electronic noise sets the data-fidelity floor. See forward_model field for the closed-form joint imaging equation.",
     "forward_model": "phi(r) = gamma * TE * B_z(r); B_z(r) - B_0 = D_kernel(*) chi(r); jointly invert phi(r) -> chi(r) via dipole-convolution operator (k-space wave-cone regularization or model-based MEDI / TGV-QSM)",
@@ -37,7 +35,6 @@
       "background_field_removal_error"
     ]
   },
-
   "G": {
     "dag": "L.rf_excitation -> L.gradient_echo -> L.larmor_precession -> L.maxwell_magnetostatic -> L.dipole_convolution -> L.phase_extract -> int.spatial",
     "vertices": [
@@ -64,7 +61,6 @@
       "field_to_susceptibility: B_z - B_0 = D_kernel(*) chi — dipole-convolution coupling, ill-conditioned at magic angle (kappa raw ~ 240)"
     ]
   },
-
   "W": {
     "existence": true,
     "uniqueness": "conditional",
@@ -73,14 +69,12 @@
     "condition_number_effective": 30,
     "regime": "Existence of recovered 3D quantitative susceptibility chi(r) is guaranteed within the declared Omega bounds. Uniqueness holds on the wave-cone-supported subspace; modes inside the magic-angle zero cone are recovered only through priors (MEDI L1-edge, TGV second-order, deep-prior). Stability is moderately conditioned (kappa_eff ~ 30 after wave-cone regularization) — B0_inhomogeneity and background_field_removal_error dominate the stability cliff; phase_unwrap_error and dipole_kernel_truncation contribute higher-order bias terms. Joint Hadamard well-posedness for the coupled phase-field-susceptibility forward is established by Liu, de Rochefort, Wharton, Bilgic literature 2009-2018 (see references)."
   },
-
   "C": {
     "solver_class": "linear-operator + convex optimisation [MEDI, TKD, iLSQR, TGV-QSM] | linear-operator + deep neural prior [QSMnet, xQSM]",
     "convergence_rate_q": 2.0,
     "error_bound": "Data-fidelity bound: ||chi_hat - chi||_2 <= C1 * sigma_noise / sqrt(N_measurements * N_echoes). Wave-cone-regularization-induced bias adds + C2 * |zero_cone_mode_energy| + C3 * |B0_inhomogeneity| + C4 * ||chi - chi_s||_1 (best s-sparse / piecewise-smooth approximation residual). MEDI / TGV-QSM iterative solvers achieve q=2 (O(1/k^2)) near the MLE under L1-edge or TGV prior; deep-prior variants achieve faster initial convergence with bounded systematic bias. epsilon_fn captures monotone quality degradation across declared Omega.",
     "complexity": "O(H * W * Z * log(H * W * Z)) per iteration via FFT-based dipole-convolution forward / adjoint; learned variants O(H W Z * F_theta_cost) per forward pass"
   },
-
   "physics_fingerprint": {
     "carrier": "radio_wave",
     "sensing_mechanism": "mri_gre_phase_with_maxwell_magnetostatic",
@@ -98,7 +92,6 @@
       "int.spatial"
     ]
   },
-
   "difficulty_delta": 5,
   "difficulty_tier": "advanced",
   "mismatch_parameters": [
@@ -110,7 +103,6 @@
   ],
   "error_metric": "PSNR_dB",
   "error_metric_secondary": "RMSE_ppm",
-
   "spec_range": {
     "center_spec": {
       "problem_class": "qsm",
@@ -161,26 +153,70 @@
       "background_field_removal_error"
     ],
     "omega_bounds": {
-      "H": [128, 512],
-      "W": [128, 512],
-      "Z": [32, 256],
-      "N_echoes": [1, 12],
-      "TE_ms_min": [2.0, 15.0],
-      "TE_ms_max": [10.0, 80.0],
-      "B0_field_T": [1.5, 7.0],
-      "SNR_dB": [10.0, 40.0],
-      "voxel_size_mm": [0.5, 2.0],
-      "B0_inhomogeneity": [0.0, 0.3],
-      "brain_segmentation_error": [0.0, 0.2],
-      "phase_unwrap_error": [0.0, 0.3],
-      "dipole_kernel_truncation_error": [0.0, 0.2],
-      "background_field_removal_error": [0.0, 0.3]
+      "H": [
+        128,
+        512
+      ],
+      "W": [
+        128,
+        512
+      ],
+      "Z": [
+        32,
+        256
+      ],
+      "N_echoes": [
+        1,
+        12
+      ],
+      "TE_ms_min": [
+        2.0,
+        15.0
+      ],
+      "TE_ms_max": [
+        10.0,
+        80.0
+      ],
+      "B0_field_T": [
+        1.5,
+        7.0
+      ],
+      "SNR_dB": [
+        10.0,
+        40.0
+      ],
+      "voxel_size_mm": [
+        0.5,
+        2.0
+      ],
+      "B0_inhomogeneity": [
+        0.0,
+        0.3
+      ],
+      "brain_segmentation_error": [
+        0.0,
+        0.2
+      ],
+      "phase_unwrap_error": [
+        0.0,
+        0.3
+      ],
+      "dipole_kernel_truncation_error": [
+        0.0,
+        0.2
+      ],
+      "background_field_removal_error": [
+        0.0,
+        0.3
+      ]
     },
     "epsilon_bounds": {
-      "psnr_db": [10.0, 50.0]
+      "psnr_db": [
+        10.0,
+        50.0
+      ]
     }
   },
-
   "p1_p10_tests": [
     "PASS",
     "PASS",
@@ -200,7 +236,6 @@
     "PASS"
   ],
   "ipfs_cid": null,
-
   "v3_metadata": {
     "is_standalone_multiphysics": true,
     "coupling_count_n_c": 2,
@@ -214,10 +249,11 @@
     ],
     "distinctness_audit": {
       "closest_existing_principle": "L1-059 SWI",
-      "d_principle_estimate": 0.50,
+      "d_principle_estimate": 0.5,
       "advisory_label": "Distinct",
       "rationale": "L1-059 SWI uses sensing_mechanism = mri_fourier_encoding with primitives {L.rf_excitation, L.gradient_echo, L.phase_mask, int.spatial} and solution_space = 3D_susceptibility (phase-weighted display). L1-503 QSM uses sensing_mechanism = mri_gre_phase_with_maxwell_magnetostatic with primitives {L.rf_excitation, L.gradient_echo, L.larmor_precession, L.maxwell_magnetostatic, L.dipole_convolution, L.phase_extract, int.spatial} and solution_space = 3D_quantitative_susceptibility. Jaccard distance over (sensing_mechanism, solution_space, primitives) ~ 0.5 — solidly Distinct under v1 advisory thresholds (>= 0.30)."
     },
     "clinical_context": "Routine clinical imaging at academic medical centers. Sensitive to iron deposition (Parkinson's, Alzheimer's, MS), calcification (tumors, vascular), demyelination (MS lesions), brain microbleeds, deep-brain-stimulation electrode targeting. Typical scan time 5-8 min at 3T. Reconstruction time 30 s - 5 min depending on solver."
-  }
+  },
+  "display_slug": "qsm"
 }

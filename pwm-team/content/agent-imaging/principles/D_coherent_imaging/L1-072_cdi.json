@@ -2,7 +2,7 @@
   "artifact_id": "L1-072",
   "layer": "L1",
   "principle_number": "072",
-  "title": "Coherent Diffraction Imaging (CDI) \u2014 lensless phase retrieval",
+  "title": "Coherent Diffraction Imaging (CDI) — lensless phase retrieval",
   "domain": "Coherent Imaging",
   "sub_domain": "Single-shot lensless diffraction",
   "source_file": "D_coherent_imaging/072_cdi.md",
@@ -180,5 +180,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "cdi"
 }

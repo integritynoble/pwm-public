@@ -2,7 +2,7 @@
   "artifact_id": "L1-219",
   "layer": "L1",
   "principle_number": "219",
-  "title": "Creep Mechanics \u2014 high-temperature rate-dependent",
+  "title": "Creep Mechanics — high-temperature rate-dependent",
   "domain": "Structural Mechanics",
   "sub_domain": "Secondary/tertiary creep (Norton / Kachanov)",
   "source_file": "T_structural_mechanics/219_creep_mechanics.md",
@@ -11,7 +11,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Creep Mechanics \u2014 high-temperature rate-dependent forward model.",
+    "description": "Creep Mechanics — high-temperature rate-dependent forward model.",
     "forward_model": "dot eps_c = A * sigma^n * exp(-Q/RT) * f_damage",
     "world_state_x": "creep strain eps_c(x,t) + damage field d(x,t)",
     "observation_y": "extensometer + DIC creep strain vs time",
@@ -183,5 +183,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "creep-mechanics"
 }

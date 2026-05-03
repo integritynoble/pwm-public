@@ -4,13 +4,44 @@
   "parent_l1": "L1-075",
   "title": "DiffuserCam Mismatch-Only Spec",
   "spec_type": "mismatch_only",
-
   "six_tuple": {
     "omega": {
-      "H": [128, 2048], "W": [128, 2048], "psf_H": [64, 512], "psf_W": [64, 512],
-      "photon_count": [10, 10000], "psf_drift": [0.0, 0.1],
-      "mask_rotation": [0.0, 0.02], "chromatic_aberration": [0.0, 0.05],
-      "dark_offset": [0.0, 0.02]
+      "H": [
+        128,
+        2048
+      ],
+      "W": [
+        128,
+        2048
+      ],
+      "psf_H": [
+        64,
+        512
+      ],
+      "psf_W": [
+        64,
+        512
+      ],
+      "photon_count": [
+        10,
+        10000
+      ],
+      "psf_drift": [
+        0.0,
+        0.1
+      ],
+      "mask_rotation": [
+        0.0,
+        0.02
+      ],
+      "chromatic_aberration": [
+        0.0,
+        0.05
+      ],
+      "dark_offset": [
+        0.0,
+        0.02
+      ]
     },
     "E": {
       "forward": "y = C(x conv psf_diffuser_nominal + psf_drift) + n",
@@ -18,37 +49,100 @@
       "primitive_chain": "K.psf.caustic -> M.sensor_crop -> int.temporal",
       "inverse": "recover x from raw sensor image y given calibrated PSF"
     },
-    "B": {"nonnegativity": true, "bounded_intensity": "x in [0, 1]", "sparsity_in_TV": true},
-    "I": {"strategy": "wiener_init_plus_iterative_refinement"},
-    "O": ["PSNR", "SSIM", "residual_norm", "LPIPS"],
+    "B": {
+      "nonnegativity": true,
+      "bounded_intensity": "x in [0, 1]",
+      "sparsity_in_TV": true
+    },
+    "I": {
+      "strategy": "wiener_init_plus_iterative_refinement"
+    },
+    "O": [
+      "PSNR",
+      "SSIM",
+      "residual_norm",
+      "LPIPS"
+    ],
     "epsilon_fn": "20.0 + 3.0 * log10(photon_count / 10) - 15.0 * psf_drift"
   },
-
   "protocol_fields": {
-    "input_format": {"sensor_image": "float32(H', W')", "psf_calibrated": "float32(psf_H, psf_W)"},
-    "output_format": {"scene": "float32(H, W)"},
+    "input_format": {
+      "sensor_image": "float32(H', W')",
+      "psf_calibrated": "float32(psf_H, psf_W)"
+    },
+    "output_format": {
+      "scene": "float32(H, W)"
+    },
     "baselines": [
-      {"name": "Wiener",       "method_sig": "L+O", "expected_psnr": 22.0},
-      {"name": "FISTA-TV",     "method_sig": "L+O", "expected_psnr": 25.5},
-      {"name": "ADMM-Anderson","method_sig": "L+O", "expected_psnr": 27.0},
-      {"name": "Le-ADMM-U",    "method_sig": "L+N", "expected_psnr": 30.0}
+      {
+        "name": "Wiener",
+        "method_sig": "L+O",
+        "expected_psnr": 22.0
+      },
+      {
+        "name": "FISTA-TV",
+        "method_sig": "L+O",
+        "expected_psnr": 25.5
+      },
+      {
+        "name": "ADMM-Anderson",
+        "method_sig": "L+O",
+        "expected_psnr": 27.0
+      },
+      {
+        "name": "Le-ADMM-U",
+        "method_sig": "L+N",
+        "expected_psnr": 30.0
+      }
     ]
   },
-
   "ibenchmark_range": {
     "center_ibenchmark": {
       "rho": 1,
-      "omega_tier": {"H": 512, "W": 512, "psf_H": 256, "psf_W": 256, "photon_count": 1000, "psf_drift": 0.0, "mask_rotation": 0.0, "chromatic_aberration": 0.0, "dark_offset": 0.0},
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "psf_H": 256,
+        "psf_W": 256,
+        "photon_count": 1000,
+        "psf_drift": 0.0,
+        "mask_rotation": 0.0,
+        "chromatic_aberration": 0.0,
+        "dark_offset": 0.0
+      },
       "epsilon": 26.0
     },
     "tier_bounds": {
-      "H": [128, 1024], "W": [128, 1024], "photon_count": [50, 5000],
-      "psf_drift": [0.0, 0.1], "mask_rotation": [0.0, 0.02]
+      "H": [
+        128,
+        1024
+      ],
+      "W": [
+        128,
+        1024
+      ],
+      "photon_count": [
+        50,
+        5000
+      ],
+      "psf_drift": [
+        0.0,
+        0.1
+      ],
+      "mask_rotation": [
+        0.0,
+        0.02
+      ]
     },
-    "proximity_threshold": 0.10
+    "proximity_threshold": 0.1
   },
-
   "d_spec": 0.48,
-  "s1_s4_gates": ["PASS", "PASS", "PASS", "PASS"],
-  "ipfs_cid": null
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null,
+  "display_slug": "lensless-diffuser"
 }

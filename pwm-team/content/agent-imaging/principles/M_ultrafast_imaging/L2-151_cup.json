@@ -2,7 +2,7 @@
   "artifact_id": "L2-151",
   "layer": "L2",
   "parent_l1": "L1-151",
-  "title": "Compressed Ultrafast Photography (CUP) \u2014 trillion fps imaging Mismatch-Only Spec",
+  "title": "Compressed Ultrafast Photography (CUP) — trillion fps imaging Mismatch-Only Spec",
   "spec_type": "mismatch_only",
   "six_tuple": {
     "omega": {
@@ -128,5 +128,6 @@
     "PASS",
     "PASS"
   ],
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "display_slug": "cup"
 }

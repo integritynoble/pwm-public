@@ -5,19 +5,48 @@
   "principle_ref": "sha256:<L1-003_principle_hash>",
   "title": "CASSI Mismatch-Only Spec (KAIST benchmark family)",
   "spec_type": "mismatch_only",
-
   "six_tuple": {
     "omega": {
-      "H": [64, 2048],
-      "W": [64, 2048],
-      "N_bands": [8, 128],
-      "mask_density": [0.3, 0.7],
-      "noise_level": [0.001, 0.1],
-      "disp_a1_error": [0.0, 0.05],
-      "disp_alpha_error": [0.0, 0.30],
-      "mask_dx": [0.0, 1.0],
-      "mask_dy": [0.0, 1.0],
-      "mask_theta": [0.0, 0.15]
+      "H": [
+        64,
+        2048
+      ],
+      "W": [
+        64,
+        2048
+      ],
+      "N_bands": [
+        8,
+        128
+      ],
+      "mask_density": [
+        0.3,
+        0.7
+      ],
+      "noise_level": [
+        0.001,
+        0.1
+      ],
+      "disp_a1_error": [
+        0.0,
+        0.05
+      ],
+      "disp_alpha_error": [
+        0.0,
+        0.3
+      ],
+      "mask_dx": [
+        0.0,
+        1.0
+      ],
+      "mask_dy": [
+        0.0,
+        1.0
+      ],
+      "mask_theta": [
+        0.0,
+        0.15
+      ]
     },
     "E": {
       "forward": "y(x,y) = sum_lambda C(x,y) * f(x, y + a*lambda, lambda) + n(x,y)",
@@ -42,7 +71,6 @@
     ],
     "epsilon_fn": "25.0 + 2.0 * log2(H / 64) + 1.5 * log10(photon_count / 50)"
   },
-
   "protocol_fields": {
     "input_format": {
       "measurement": "float32(H, W + a*N_bands)",
@@ -52,13 +80,28 @@
       "spectral_cube": "float32(H, W, N_bands)"
     },
     "baselines": [
-      {"name": "GAP-TV",      "method_sig": "L+O", "expected_psnr": 24.5},
-      {"name": "ADMM-CASSI",  "method_sig": "L+O", "expected_psnr": 26.8},
-      {"name": "PnP-HSICNN",  "method_sig": "L+N", "expected_psnr": 30.2},
-      {"name": "DIP-Spectral","method_sig": "L+N", "expected_psnr": 23.0}
+      {
+        "name": "GAP-TV",
+        "method_sig": "L+O",
+        "expected_psnr": 24.5
+      },
+      {
+        "name": "ADMM-CASSI",
+        "method_sig": "L+O",
+        "expected_psnr": 26.8
+      },
+      {
+        "name": "PnP-HSICNN",
+        "method_sig": "L+N",
+        "expected_psnr": 30.2
+      },
+      {
+        "name": "DIP-Spectral",
+        "method_sig": "L+N",
+        "expected_psnr": 23.0
+      }
     ]
   },
-
   "ibenchmark_range": {
     "center_ibenchmark": {
       "rho": 1,
@@ -77,29 +120,59 @@
       "epsilon": 28.0
     },
     "tier_bounds": {
-      "H": [64, 1024],
-      "W": [64, 1024],
-      "N_bands": [16, 128],
-      "noise_level": [0.005, 0.1],
-      "disp_a1_error": [0.0, 0.05],
-      "disp_alpha_error": [0.0, 0.20],
-      "mask_dx": [0.0, 1.0],
-      "mask_dy": [0.0, 1.0],
-      "mask_theta": [0.0, 0.15]
+      "H": [
+        64,
+        1024
+      ],
+      "W": [
+        64,
+        1024
+      ],
+      "N_bands": [
+        16,
+        128
+      ],
+      "noise_level": [
+        0.005,
+        0.1
+      ],
+      "disp_a1_error": [
+        0.0,
+        0.05
+      ],
+      "disp_alpha_error": [
+        0.0,
+        0.2
+      ],
+      "mask_dx": [
+        0.0,
+        1.0
+      ],
+      "mask_dy": [
+        0.0,
+        1.0
+      ],
+      "mask_theta": [
+        0.0,
+        0.15
+      ]
     },
-    "proximity_threshold": 0.10
+    "proximity_threshold": 0.1
   },
-
   "d_spec": 0.45,
   "d_spec_notes": "Reference distance from the oracle-assisted CASSI spec is d_spec ~= 0.17 (Similar band); this spec is the canonical mismatch-only baseline and sits at the centroid of the CASSI spec family.",
-
-  "s1_s4_gates": ["PASS", "PASS", "PASS", "PASS"],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
   "s1_s4_justifications": {
     "S1": "Dimensions: mask C in {0,1}^{H x W} matches spatial grid; shear a*N_bands fits detector width budget; 4 DAG nodes are dimensionally consistent from cube to 2D snapshot.",
     "S2": "Binary random mask at 50% fill satisfies RIP-like conditions for N_bands <= 128; compound operator kappa_eff <= 200 across Omega with regularization.",
     "S3": "GAP-TV, ADMM, PnP all provably converge for CASSI with rate q=2.0; monotone decrease of residual norm confirmed empirically on KAIST benchmark.",
     "S4": "epsilon_fn evaluates across 50 random Omega samples without error; no baseline passes epsilon_fn everywhere (hardness rule satisfied)."
   },
-
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "display_slug": "cassi"
 }

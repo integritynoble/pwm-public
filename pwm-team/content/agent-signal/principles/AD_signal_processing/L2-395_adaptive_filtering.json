@@ -5,13 +5,36 @@
   "principle_ref": "sha256:<L1-395_principle_hash>",
   "title": "Adaptive Filtering Non-Stationary Spec (echo cancellation family)",
   "spec_type": "mismatch_only",
-
   "six_tuple": {
     "omega": {
-      "L": [4, 4096], "mu": [1e-5, 1.0],
-      "eigenspread": [1, 1000], "non_stationarity_rate": [0.0, 0.1],
-      "sigma_v": [1e-4, 1.0], "step_size_miscal": [0.0, 5.0],
-      "impulsive_noise_fraction": [0.0, 0.1]
+      "L": [
+        4,
+        4096
+      ],
+      "mu": [
+        1e-05,
+        1.0
+      ],
+      "eigenspread": [
+        1,
+        1000
+      ],
+      "non_stationarity_rate": [
+        0.0,
+        0.1
+      ],
+      "sigma_v": [
+        0.0001,
+        1.0
+      ],
+      "step_size_miscal": [
+        0.0,
+        5.0
+      ],
+      "impulsive_noise_fraction": [
+        0.0,
+        0.1
+      ]
     },
     "E": {
       "forward": "d[n] = h*[n]^T * x[n] + v[n]; h*[n] drifts at rate non_stationarity_rate",
@@ -19,44 +42,101 @@
       "primitive_chain": "L.project.reference -> int.temporal",
       "inverse": "adaptively estimate h_hat[n] to minimize E[|d[n] - h_hat^T x[n]|^2]"
     },
-    "B": {"bounded_input": "|x[n]| <= X_max", "bounded_filter_energy": "||h*||^2 <= H_max^2"},
-    "I": {"strategy": "zero_filter_init"},
-    "O": ["tracking_MSE_dB", "convergence_time_samples", "misadjustment_ratio", "ERLE"],
+    "B": {
+      "bounded_input": "|x[n]| <= X_max",
+      "bounded_filter_energy": "||h*||^2 <= H_max^2"
+    },
+    "I": {
+      "strategy": "zero_filter_init"
+    },
+    "O": [
+      "tracking_MSE_dB",
+      "convergence_time_samples",
+      "misadjustment_ratio",
+      "ERLE"
+    ],
     "epsilon_fn": "-30 + 10 * log10(eigenspread / 10) + 20 * log10(non_stationarity_rate / 0.01 + 1) + step_size_miscal * 3"
   },
-
   "protocol_fields": {
-    "input_format": {"reference": "float32(T)", "desired": "float32(T)"},
-    "output_format": {"filter_trajectory": "float32(T, L)", "error": "float32(T)"},
+    "input_format": {
+      "reference": "float32(T)",
+      "desired": "float32(T)"
+    },
+    "output_format": {
+      "filter_trajectory": "float32(T, L)",
+      "error": "float32(T)"
+    },
     "baselines": [
-      {"name": "LMS",       "method_sig": "L+O", "expected_mse_db": -25},
-      {"name": "NLMS",      "method_sig": "L+O", "expected_mse_db": -28},
-      {"name": "Sign-LMS",  "method_sig": "L+O", "expected_mse_db": -20},
-      {"name": "AP",        "method_sig": "L+O", "expected_mse_db": -30},
-      {"name": "RLS",       "method_sig": "L+O", "expected_mse_db": -35}
+      {
+        "name": "LMS",
+        "method_sig": "L+O",
+        "expected_mse_db": -25
+      },
+      {
+        "name": "NLMS",
+        "method_sig": "L+O",
+        "expected_mse_db": -28
+      },
+      {
+        "name": "Sign-LMS",
+        "method_sig": "L+O",
+        "expected_mse_db": -20
+      },
+      {
+        "name": "AP",
+        "method_sig": "L+O",
+        "expected_mse_db": -30
+      },
+      {
+        "name": "RLS",
+        "method_sig": "L+O",
+        "expected_mse_db": -35
+      }
     ]
   },
-
   "ibenchmark_range": {
     "center_ibenchmark": {
       "rho": 1,
-      "omega_tier": {"L": 32, "mu": 0.01, "eigenspread": 10, "non_stationarity_rate": 0.0, "sigma_v": 0.01, "step_size_miscal": 0.0},
+      "omega_tier": {
+        "L": 32,
+        "mu": 0.01,
+        "eigenspread": 10,
+        "non_stationarity_rate": 0.0,
+        "sigma_v": 0.01,
+        "step_size_miscal": 0.0
+      },
       "epsilon": -30
     },
-    "tier_bounds": {"L": [8, 1024], "mu": [1e-4, 0.1], "eigenspread": [1, 500]},
-    "proximity_threshold": 0.10
+    "tier_bounds": {
+      "L": [
+        8,
+        1024
+      ],
+      "mu": [
+        0.0001,
+        0.1
+      ],
+      "eigenspread": [
+        1,
+        500
+      ]
+    },
+    "proximity_threshold": 0.1
   },
-
   "d_spec": 0.55,
   "d_spec_notes": "Distance from RLS-spec ~= 0.25 (Similar, different step-size family). Distance from 389 channel estimation ~= 0.35 (Related — both linear regression on time series).",
-
-  "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
   "s1_s4_justifications": {
     "S1": "Dimensions: h* in R^L, x in R^L per sample, d scalar per sample.",
     "S2": "Persistent excitation guarantees Rxx > 0; LMS convergence in mean when mu < 2/lambda_max.",
     "S3": "LMS steady-state MSE proved by Widrow-Hoff; RLS converges geometrically.",
     "S4": "epsilon_fn defined; Sign-LMS fails at T4 (eigenspread=1000, non_stationary=0.1) (hardness)."
   },
-
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "display_slug": "adaptive-filtering"
 }

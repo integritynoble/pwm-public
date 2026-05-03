@@ -7,16 +7,34 @@
   "sub_domain": "Macular layer + drusen + fluid recovery from OCT with AREDS / AMD-stage categorical readout",
   "source_file": "C_medical_imaging/530_amd_oct_pwdr.md",
   "source_data_quality_note": "v2 PWDR Principle. Wraps L1-042 OCT (existing in v1 genesis) with deterministic AREDS clinical-classification + Beckman 2013 staging rules to assign AMD-stage labels {none, early, intermediate, late_dry_GA, late_wet_neovascular}. Universal in ophthalmology. AMD is the leading cause of blindness in adults > 50 in developed countries. UTSW Ophthalmology retinal clinic high-volume use.",
-
   "gate_class": "physical_with_discrete_readout",
-  "gate_substitutions": {"kappa_substitute": null, "h_substitute": null, "conservation_substitute": "softmax simplex closure on AMD-stage ordinal {no_AMD, early, intermediate, late_dry_GA, late_wet_CNV}"},
+  "gate_substitutions": {
+    "kappa_substitute": null,
+    "h_substitute": null,
+    "conservation_substitute": "softmax simplex closure on AMD-stage ordinal {no_AMD, early, intermediate, late_dry_GA, late_wet_CNV}"
+  },
   "discrete_readout": {
     "threshold_function": "AMD-stage(OCT) = step on (drusen_size_um, drusen_count, RPE_pigmentary_changes, GA_area_mm2, intraretinal_fluid_presence, subretinal_fluid_presence, PED_height_um): no_AMD if no drusen; early if small_drusen <= 63 um with limited count; intermediate if intermediate_drusen 63-125 um OR large_drusen > 125 um OR pigmentary changes; late_dry_GA if geographic_atrophy_area > 0; late_wet_CNV if intraretinal_fluid OR subretinal_fluid OR pigment epithelial detachment with CNV signature. Per AREDS 2001 + Beckman 2013 clinical classification.",
     "lipschitz_constant": 0.05,
     "underlying_physical_state": "OCT B-scan layer segmentation (RPE, BM, ELM, ONL, OPL, INL, IPL, GCL) + drusen detection + fluid pocket detection + GA boundary segmentation + PED height measurement recovered from L1-042 OCT volume",
     "physics_core_principle": "L1-042",
-    "label_set_AMD": ["no_AMD", "early_AMD", "intermediate_AMD", "late_dry_geographic_atrophy", "late_wet_neovascular"],
-    "label_set_lesion": ["drusen_small", "drusen_intermediate", "drusen_large", "GA", "subretinal_fluid", "intraretinal_fluid", "PED", "fibrosis"],
+    "label_set_AMD": [
+      "no_AMD",
+      "early_AMD",
+      "intermediate_AMD",
+      "late_dry_geographic_atrophy",
+      "late_wet_neovascular"
+    ],
+    "label_set_lesion": [
+      "drusen_small",
+      "drusen_intermediate",
+      "drusen_large",
+      "GA",
+      "subretinal_fluid",
+      "intraretinal_fluid",
+      "PED",
+      "fibrosis"
+    ],
     "threshold_continuity_proof": "Drusen size and GA area are continuous on layer-segmentation outputs; AMD-stage boundaries form measure-zero hyperplanes. Smoothed-classification globally Lipschitz with constant ~0.05 per percentage-point of segmentation error."
   },
   "related_principles": [
@@ -25,46 +43,193 @@
     "L1-050 (OCTA — sibling angiography, informational)",
     "L1-508 (OCE — sibling OCT-mechanics PWDR, informational)"
   ],
-
   "E": {
     "description": "AMD OCT Grading (PWDR): wraps L1-042 OCT with AREDS 2001 + Beckman 2013 clinical classification rules. Stage 1 (analytical, from L1-042): from spectral-domain or swept-source OCT macular volume, segment retinal layers (10-layer RNFL/GCL/IPL/INL/OPL/ONL/ELM/IS-OS/RPE/BM); detect drusen (sub-RPE deposits); detect fluid pockets (intraretinal cysts, subretinal fluid, pigment epithelial detachment); segment geographic atrophy boundary. Stage 2 (deterministic threshold): apply AREDS / Beckman criteria for AMD staging. Difficulty tier delta = 3.",
     "forward_model": "Stage 1 (L1-042): OCT B-scan -> {layer_boundaries, drusen_mask, fluid_mask, GA_mask, PED_height}. Stage 2: AMD_stage = step(features per AREDS 2001 + Beckman 2013).",
     "world_state_x": "Per-eye AMD stage {no_AMD, early, intermediate, late_dry_GA, late_wet_CNV}.",
     "observation_y": "Macular OCT volume (typically 512x512x128, 6mm x 6mm x 2mm; SD-OCT 5-7 micrometer axial resolution).",
-    "physical_parameters_theta": ["H", "W", "Z", "wavelength_nm", "axial_resolution_um", "lateral_resolution_um", "macular_centration", "SNR_dB", "media_opacity", "patient_motion", "shadowing_artifact", "vitreous_floater_artifact", "manual_grader_inter_rater_kappa"]
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "Z",
+      "wavelength_nm",
+      "axial_resolution_um",
+      "lateral_resolution_um",
+      "macular_centration",
+      "SNR_dB",
+      "media_opacity",
+      "patient_motion",
+      "shadowing_artifact",
+      "vitreous_floater_artifact",
+      "manual_grader_inter_rater_kappa"
+    ]
   },
-
   "G": {
     "dag": "L.oct_acquisition -> L.layer_segmentation -> L.drusen_detection -> L.fluid_detection -> L.ga_segmentation -> L.amd_stage_classifier -> int.spatial",
-    "vertices": ["L.oct_acquisition", "L.layer_segmentation", "L.drusen_detection", "L.fluid_detection", "L.ga_segmentation", "L.amd_stage_classifier", "int.spatial"],
-    "arcs": ["L.oct_acquisition -> L.layer_segmentation", "L.layer_segmentation -> L.drusen_detection", "L.layer_segmentation -> L.fluid_detection", "L.layer_segmentation -> L.ga_segmentation", "L.drusen_detection -> L.amd_stage_classifier", "L.fluid_detection -> L.amd_stage_classifier", "L.ga_segmentation -> L.amd_stage_classifier", "L.amd_stage_classifier -> int.spatial"],
+    "vertices": [
+      "L.oct_acquisition",
+      "L.layer_segmentation",
+      "L.drusen_detection",
+      "L.fluid_detection",
+      "L.ga_segmentation",
+      "L.amd_stage_classifier",
+      "int.spatial"
+    ],
+    "arcs": [
+      "L.oct_acquisition -> L.layer_segmentation",
+      "L.layer_segmentation -> L.drusen_detection",
+      "L.layer_segmentation -> L.fluid_detection",
+      "L.layer_segmentation -> L.ga_segmentation",
+      "L.drusen_detection -> L.amd_stage_classifier",
+      "L.fluid_detection -> L.amd_stage_classifier",
+      "L.ga_segmentation -> L.amd_stage_classifier",
+      "L.amd_stage_classifier -> int.spatial"
+    ],
     "L_DAG": 5.6,
     "n_c": 1,
-    "coupling_constraints": ["layer_to_lesion: retinal layer segmentation + drusen / fluid / GA detection share the OCT volume; coupled segmentation enforces topological consistency (drusen are sub-RPE, fluid is intraretinal or subretinal, GA is RPE-BM atrophy)"]
+    "coupling_constraints": [
+      "layer_to_lesion: retinal layer segmentation + drusen / fluid / GA detection share the OCT volume; coupled segmentation enforces topological consistency (drusen are sub-RPE, fluid is intraretinal or subretinal, GA is RPE-BM atrophy)"
+    ]
   },
-  "W": {"existence": true, "uniqueness": "conditional", "stability": "conditional", "condition_number_kappa": 80, "condition_number_effective": 16, "regime": "Existence inherited from L1-042. Uniqueness conditional on adequate OCT image quality (signal strength index > 6/10 typical). Stability dominated by patient_motion + shadowing_artifact. Joint Hadamard well-posedness established by AREDS Research Group 2001 (foundational), Beckman 2013 (consensus classification), Schmidt-Erfurth 2018 (OCT in AMD review), De Fauw 2018 (DeepMind referrable disease classification benchmark)."},
-  "C": {"solver_class": "linear-operator + image-segmentation [layer + drusen + fluid + GA segmentation U-Net] + categorical-readout [AREDS / Beckman classifier] | end-to-end deep neural [DeepMind retinal AI, Heidelberg AnyDrusen]", "convergence_rate_q": 2.0, "error_bound": "Inherits L1-042. Misclassification probability bound: Pr(stage_hat != stage_true) <= C * |feature_volumetric_error| / d(features, stage_threshold).", "complexity": "O(H * W * Z) for segmentation; O(1) for classification"},
-  "physics_fingerprint": {"carrier": "photon", "sensing_mechanism": "oct_with_amd_grading", "integration_axis": "spatial", "problem_class": "linear_inverse_with_categorical_readout", "noise_model": "gaussian", "solution_space": "1D_amd_stage", "primitives": ["L.oct_acquisition", "L.layer_segmentation", "L.drusen_detection", "L.fluid_detection", "L.ga_segmentation", "L.amd_stage_classifier", "int.spatial"]},
-  "difficulty_delta": 3, "difficulty_tier": "standard",
-  "mismatch_parameters": ["macular_centration", "media_opacity", "patient_motion", "shadowing_artifact", "vitreous_floater_artifact", "manual_grader_inter_rater_kappa"],
-  "error_metric": "categorical_accuracy", "error_metric_secondary": "sensitivity_for_referable_AMD",
-
+  "W": {
+    "existence": true,
+    "uniqueness": "conditional",
+    "stability": "conditional",
+    "condition_number_kappa": 80,
+    "condition_number_effective": 16,
+    "regime": "Existence inherited from L1-042. Uniqueness conditional on adequate OCT image quality (signal strength index > 6/10 typical). Stability dominated by patient_motion + shadowing_artifact. Joint Hadamard well-posedness established by AREDS Research Group 2001 (foundational), Beckman 2013 (consensus classification), Schmidt-Erfurth 2018 (OCT in AMD review), De Fauw 2018 (DeepMind referrable disease classification benchmark)."
+  },
+  "C": {
+    "solver_class": "linear-operator + image-segmentation [layer + drusen + fluid + GA segmentation U-Net] + categorical-readout [AREDS / Beckman classifier] | end-to-end deep neural [DeepMind retinal AI, Heidelberg AnyDrusen]",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Inherits L1-042. Misclassification probability bound: Pr(stage_hat != stage_true) <= C * |feature_volumetric_error| / d(features, stage_threshold).",
+    "complexity": "O(H * W * Z) for segmentation; O(1) for classification"
+  },
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "oct_with_amd_grading",
+    "integration_axis": "spatial",
+    "problem_class": "linear_inverse_with_categorical_readout",
+    "noise_model": "gaussian",
+    "solution_space": "1D_amd_stage",
+    "primitives": [
+      "L.oct_acquisition",
+      "L.layer_segmentation",
+      "L.drusen_detection",
+      "L.fluid_detection",
+      "L.ga_segmentation",
+      "L.amd_stage_classifier",
+      "int.spatial"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "macular_centration",
+    "media_opacity",
+    "patient_motion",
+    "shadowing_artifact",
+    "vitreous_floater_artifact",
+    "manual_grader_inter_rater_kappa"
+  ],
+  "error_metric": "categorical_accuracy",
+  "error_metric_secondary": "sensitivity_for_referable_AMD",
   "spec_range": {
-    "center_spec": {"problem_class": "amd_oct_pwdr", "forward_operator": "amd_oct_pwdr_forward", "input_format": "macular_oct_volume_with_amd_label", "omega": {"H": 512, "W": 512, "Z": 128, "wavelength_nm": 850, "axial_resolution_um": 5, "lateral_resolution_um": 15, "macular_centration": 0.0, "SNR_dB": 30, "media_opacity": 0.0, "patient_motion": 0.0, "shadowing_artifact": 0.0, "vitreous_floater_artifact": 0.0, "manual_grader_inter_rater_kappa": 0.0}, "epsilon_fn_center": "0.85_accuracy"},
-    "allowed_forward_operators": ["amd_oct_pwdr_forward", "amd_areds_pwdr_forward", "amd_beckman_pwdr_forward", "amd_with_octa_overlay_pwdr_forward"],
-    "allowed_problem_classes": ["amd_oct_pwdr", "amd_areds_simplified_pwdr", "amd_referable_screening_pwdr"],
-    "allowed_omega_dimensions": ["H", "W", "Z", "wavelength_nm", "axial_resolution_um", "lateral_resolution_um", "macular_centration", "SNR_dB", "media_opacity", "patient_motion", "shadowing_artifact", "vitreous_floater_artifact", "manual_grader_inter_rater_kappa"],
-    "omega_bounds": {"H": [128, 1024], "W": [128, 1024], "Z": [32, 512]},
-    "epsilon_bounds": {"categorical_accuracy": [0.50, 0.99]}
+    "center_spec": {
+      "problem_class": "amd_oct_pwdr",
+      "forward_operator": "amd_oct_pwdr_forward",
+      "input_format": "macular_oct_volume_with_amd_label",
+      "omega": {
+        "H": 512,
+        "W": 512,
+        "Z": 128,
+        "wavelength_nm": 850,
+        "axial_resolution_um": 5,
+        "lateral_resolution_um": 15,
+        "macular_centration": 0.0,
+        "SNR_dB": 30,
+        "media_opacity": 0.0,
+        "patient_motion": 0.0,
+        "shadowing_artifact": 0.0,
+        "vitreous_floater_artifact": 0.0,
+        "manual_grader_inter_rater_kappa": 0.0
+      },
+      "epsilon_fn_center": "0.85_accuracy"
+    },
+    "allowed_forward_operators": [
+      "amd_oct_pwdr_forward",
+      "amd_areds_pwdr_forward",
+      "amd_beckman_pwdr_forward",
+      "amd_with_octa_overlay_pwdr_forward"
+    ],
+    "allowed_problem_classes": [
+      "amd_oct_pwdr",
+      "amd_areds_simplified_pwdr",
+      "amd_referable_screening_pwdr"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "Z",
+      "wavelength_nm",
+      "axial_resolution_um",
+      "lateral_resolution_um",
+      "macular_centration",
+      "SNR_dB",
+      "media_opacity",
+      "patient_motion",
+      "shadowing_artifact",
+      "vitreous_floater_artifact",
+      "manual_grader_inter_rater_kappa"
+    ],
+    "omega_bounds": {
+      "H": [
+        128,
+        1024
+      ],
+      "W": [
+        128,
+        1024
+      ],
+      "Z": [
+        32,
+        512
+      ]
+    },
+    "epsilon_bounds": {
+      "categorical_accuracy": [
+        0.5,
+        0.99
+      ]
+    }
   },
-
-  "p1_p10_tests": ["PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS"],
-  "s1_s4_gates": ["PASS", "PASS", "PASS", "PASS"],
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
   "ipfs_cid": null,
-  "recast_attempted": {"considered": true, "recast_path": "Original: 'Classify OCT into AMD stages'. Recast: 'Segment retinal layers + drusen + fluid + GA via L1-042; apply AREDS / Beckman classification rules'. Feasible because retinal anatomy + AMD lesions have well-defined OCT forward model.", "reason_rejected": null},
-
+  "recast_attempted": {
+    "considered": true,
+    "recast_path": "Original: 'Classify OCT into AMD stages'. Recast: 'Segment retinal layers + drusen + fluid + GA via L1-042; apply AREDS / Beckman classification rules'. Feasible because retinal anatomy + AMD lesions have well-defined OCT forward model.",
+    "reason_rejected": null
+  },
   "v3_metadata": {
-    "is_standalone_multiphysics": false, "coupling_count_n_c": 1,
+    "is_standalone_multiphysics": false,
+    "coupling_count_n_c": 1,
     "joint_well_posedness_references": [
       "Age-Related Eye Disease Study Research Group (2001) The Age-Related Eye Disease Study system for classifying age-related macular degeneration from stereoscopic color fundus photographs: AREDS Report No. 6. Am J Ophthalmol 132(5):668-681.",
       "Ferris FL III et al. (2013) Clinical classification of age-related macular degeneration (Beckman Initiative). Ophthalmology 120(4):844-851.",
@@ -72,7 +237,13 @@
       "De Fauw J et al. (2018) Clinically applicable deep learning for diagnosis and referral in retinal disease. Nat Med 24:1342-1350.",
       "Schmidt-Erfurth U et al. (2018) Artificial intelligence in retina. Prog Retin Eye Res 67:1-29."
     ],
-    "distinctness_audit": {"closest_existing_principle": "L1-042 OCT", "d_principle_estimate": 0.40, "advisory_label": "Distinct (parent-child PWDR pattern)", "rationale": "L1-042 OCT recovers reflectivity volumes; L1-530 wraps with drusen + fluid + GA segmentation + AMD classifier. Different solution_space (1D AMD stage vs 3D reflectivity); adds L.layer_segmentation, L.drusen_detection, L.fluid_detection, L.ga_segmentation, L.amd_stage_classifier primitives."},
+    "distinctness_audit": {
+      "closest_existing_principle": "L1-042 OCT",
+      "d_principle_estimate": 0.4,
+      "advisory_label": "Distinct (parent-child PWDR pattern)",
+      "rationale": "L1-042 OCT recovers reflectivity volumes; L1-530 wraps with drusen + fluid + GA segmentation + AMD classifier. Different solution_space (1D AMD stage vs 3D reflectivity); adds L.layer_segmentation, L.drusen_detection, L.fluid_detection, L.ga_segmentation, L.amd_stage_classifier primitives."
+    },
     "clinical_context": "Universal in ophthalmology. AMD is the leading cause of blindness in adults > 50 in developed countries. AREDS / Beckman classification underpins anti-VEGF treatment decisions for wet AMD (ranibizumab, aflibercept, bevacizumab, brolucizumab, faricimab). UTSW Department of Ophthalmology retina clinic. FDA-cleared autonomous AI: DeepMind retinal AI (Moorfields collaboration), Heidelberg AnyDrusen, NotalVision Home OCT — all PWDR-shaped systems."
-  }
+  },
+  "display_slug": "amd-oct"
 }

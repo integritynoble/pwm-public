@@ -7,7 +7,6 @@
   "sub_domain": "Pleural-line and lung-edge recovery from chest radiograph with pneumothorax categorical readout",
   "source_file": "C_medical_imaging/523_pneumothorax_xray_pwdr.md",
   "source_data_quality_note": "v2 physical_with_discrete_readout (PWDR) genesis Principle. Wraps L1-031 X-ray radiography (existing in v1 genesis) with deterministic threshold rules on visceral-pleural-line detection and Light-index volumetric estimation to assign categorical pneumothorax labels {none, small, moderate, large, tension}. Universal in emergency / trauma / critical care radiology — every chest X-ray is reviewed for pneumothorax. UTSW Emergency Department + Trauma Center high-volume use.",
-
   "gate_class": "physical_with_discrete_readout",
   "gate_substitutions": {
     "kappa_substitute": null,
@@ -19,8 +18,18 @@
     "lipschitz_constant": 0.04,
     "underlying_physical_state": "lung-edge / visceral-pleural-line geometric reconstruction + per-hemithorax air-fraction map recovered from L1-031 X-ray radiograph (frontal +/- lateral views)",
     "physics_core_principle": "L1-031",
-    "label_set_severity": ["none", "small", "moderate", "large", "tension"],
-    "label_set_lateralization": ["right_only", "left_only", "bilateral"],
+    "label_set_severity": [
+      "none",
+      "small",
+      "moderate",
+      "large",
+      "tension"
+    ],
+    "label_set_lateralization": [
+      "right_only",
+      "left_only",
+      "bilateral"
+    ],
     "threshold_continuity_proof": "Light index is continuous on lung-radius ratio (cubic continuous transformation); category boundaries at collapse_pct={15, 30}% are measure-zero hyperplanes. Smoothed-grading globally Lipschitz with constant ~0.04 per percentage-point of pleural-line-detection error."
   },
   "related_principles": [
@@ -28,24 +37,50 @@
     "L1-029 (CT — gold-standard sibling for ambiguous cases, informational)",
     "L1-038 (CBCT — sibling rotational X-ray, informational)"
   ],
-
   "E": {
     "description": "Pneumothorax Detection from Chest X-ray (PWDR): wraps L1-031 X-ray radiography analytical core with established trauma / emergency-radiology grading rules. Stage 1 (analytical, from L1-031): from frontal (+/- lateral) chest radiograph, recover lung-edge geometric reconstruction (visceral pleural line, lateral chest wall border) and per-hemithorax air-attenuation distribution. Stage 2 (deterministic threshold): apply Light-index, Collins, or Rhea formulas to estimate percent collapse; classify into severity bins; flag tension features (mediastinal shift, depressed hemidiaphragm). Difficulty tier delta = 3. Mismatch parameters: rotation_artifact, expiratory_vs_inspiratory_state, supine_vs_upright_acquisition, skin_fold_pseudo_pneumothorax, bullous_disease_confounders, bilateral_severity_disagreement.",
     "forward_model": "Stage 1 (L1-031): chest radiograph -> {visceral_pleural_line(x,y), lung_attenuation(x,y), mediastinal_position}. Stage 2: Light_index = (1 - (R_collapsed/R_normal)^3) * 100; severity = step(Light_index at [0, 15, 30]); tension_flag = (mediastinal_shift_mm > 20) OR (depressed_hemidiaphragm).",
     "world_state_x": "Per-CXR categorical pneumothorax label (severity + lateralization); for tension flag, per-CXR boolean.",
     "observation_y": "Frontal chest radiograph (PA or AP, typically 2500x3000 pixel FFXR detector); optional lateral view.",
-    "physical_parameters_theta": ["H", "W", "pixel_resolution_um", "kVp", "mAs", "PA_or_AP", "SNR_dB", "rotation_artifact", "expiratory_vs_inspiratory_state", "supine_vs_upright_acquisition", "skin_fold_pseudo_pneumothorax", "bullous_disease_confounders", "bilateral_severity_disagreement"]
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "pixel_resolution_um",
+      "kVp",
+      "mAs",
+      "PA_or_AP",
+      "SNR_dB",
+      "rotation_artifact",
+      "expiratory_vs_inspiratory_state",
+      "supine_vs_upright_acquisition",
+      "skin_fold_pseudo_pneumothorax",
+      "bullous_disease_confounders",
+      "bilateral_severity_disagreement"
+    ]
   },
-
   "G": {
     "dag": "L.xray_source -> L.attenuation_projection -> L.pleural_line_detection -> L.light_index_estimation -> L.severity_threshold_classifier -> int.spatial",
-    "vertices": ["L.xray_source", "L.attenuation_projection", "L.pleural_line_detection", "L.light_index_estimation", "L.severity_threshold_classifier", "int.spatial"],
-    "arcs": ["L.xray_source -> L.attenuation_projection", "L.attenuation_projection -> L.pleural_line_detection", "L.pleural_line_detection -> L.light_index_estimation", "L.light_index_estimation -> L.severity_threshold_classifier", "L.severity_threshold_classifier -> int.spatial"],
+    "vertices": [
+      "L.xray_source",
+      "L.attenuation_projection",
+      "L.pleural_line_detection",
+      "L.light_index_estimation",
+      "L.severity_threshold_classifier",
+      "int.spatial"
+    ],
+    "arcs": [
+      "L.xray_source -> L.attenuation_projection",
+      "L.attenuation_projection -> L.pleural_line_detection",
+      "L.pleural_line_detection -> L.light_index_estimation",
+      "L.light_index_estimation -> L.severity_threshold_classifier",
+      "L.severity_threshold_classifier -> int.spatial"
+    ],
     "L_DAG": 4.6,
     "n_c": 1,
-    "coupling_constraints": ["pleural_line_to_lung_radius: visceral pleural line position couples to per-hemithorax lung radius; both are estimated jointly from the same radiograph"]
+    "coupling_constraints": [
+      "pleural_line_to_lung_radius: visceral pleural line position couples to per-hemithorax lung radius; both are estimated jointly from the same radiograph"
+    ]
   },
-
   "W": {
     "existence": true,
     "uniqueness": "conditional",
@@ -54,14 +89,12 @@
     "condition_number_effective": 14,
     "regime": "Existence inherited from L1-031. Uniqueness conditional on pneumothorax visibility; small pneumothoraces near lung apex can be missed in supine acquisitions (sensitivity drops 30-50% supine vs upright). Stability dominated by skin_fold_pseudo_pneumothorax and bullous_disease_confounders (the dominant false-positive sources in clinical practice). Joint Hadamard well-posedness for the pneumothorax-detection forward established by Light 1985 (foundational Light index), Collins 1995 (Collins method), Rhea 1982 (Rhea method), Roberts 2014 (ATLS guideline), Rajpurkar 2017 (CheXNet 14-pathology benchmark), Tang 2020 (ChestX-ray14)."
   },
-
   "C": {
     "solver_class": "linear-operator + image-segmentation [pleural-line edge detection + lung-radius estimation] + categorical-readout [Light-index threshold] | end-to-end deep neural [CheXNet, CheXpert, GoogleHealth pneumothorax model] with explicit physics-informed pleural-line regularization",
     "convergence_rate_q": 2.0,
     "error_bound": "Inherits L1-031 reconstruction bound. Misclassification probability bound: Pr(severity_hat != severity_true) <= C_thresh * |Light_index_error| / d(Light_index, tau_boundary). Pseudo-pneumothorax false-positive rate ~5-10% on supine portable films per literature.",
     "complexity": "O(H * W) per radiograph for stage 1; O(N_pleural_segments * N_radius_estimations) for stage 2; total stage-1-dominated"
   },
-
   "physics_fingerprint": {
     "carrier": "x_ray",
     "sensing_mechanism": "radiograph_with_pneumothorax_threshold",
@@ -69,40 +102,123 @@
     "problem_class": "linear_inverse_with_categorical_readout",
     "noise_model": "poisson",
     "solution_space": "1D_pneumothorax_severity",
-    "primitives": ["L.xray_source", "L.attenuation_projection", "L.pleural_line_detection", "L.light_index_estimation", "L.severity_threshold_classifier", "int.spatial"]
+    "primitives": [
+      "L.xray_source",
+      "L.attenuation_projection",
+      "L.pleural_line_detection",
+      "L.light_index_estimation",
+      "L.severity_threshold_classifier",
+      "int.spatial"
+    ]
   },
-
   "difficulty_delta": 3,
   "difficulty_tier": "standard",
-  "mismatch_parameters": ["rotation_artifact", "expiratory_vs_inspiratory_state", "supine_vs_upright_acquisition", "skin_fold_pseudo_pneumothorax", "bullous_disease_confounders", "bilateral_severity_disagreement"],
+  "mismatch_parameters": [
+    "rotation_artifact",
+    "expiratory_vs_inspiratory_state",
+    "supine_vs_upright_acquisition",
+    "skin_fold_pseudo_pneumothorax",
+    "bullous_disease_confounders",
+    "bilateral_severity_disagreement"
+  ],
   "error_metric": "categorical_accuracy",
   "error_metric_secondary": "sensitivity_for_tension",
-
   "spec_range": {
     "center_spec": {
       "problem_class": "pneumothorax_cxr_pwdr",
       "forward_operator": "cxr_pneumothorax_pwdr_forward",
       "input_format": "frontal_cxr_with_severity_label",
-      "omega": {"H": 2500, "W": 3000, "pixel_resolution_um": 100, "kVp": 110, "mAs": 4, "PA_or_AP": "PA", "SNR_dB": 30, "rotation_artifact": 0.0, "expiratory_vs_inspiratory_state": 0.0, "supine_vs_upright_acquisition": 0.0, "skin_fold_pseudo_pneumothorax": 0.0, "bullous_disease_confounders": 0.0, "bilateral_severity_disagreement": 0.0},
+      "omega": {
+        "H": 2500,
+        "W": 3000,
+        "pixel_resolution_um": 100,
+        "kVp": 110,
+        "mAs": 4,
+        "PA_or_AP": "PA",
+        "SNR_dB": 30,
+        "rotation_artifact": 0.0,
+        "expiratory_vs_inspiratory_state": 0.0,
+        "supine_vs_upright_acquisition": 0.0,
+        "skin_fold_pseudo_pneumothorax": 0.0,
+        "bullous_disease_confounders": 0.0,
+        "bilateral_severity_disagreement": 0.0
+      },
       "epsilon_fn_center": "0.85_accuracy"
     },
-    "allowed_forward_operators": ["cxr_pneumothorax_pwdr_forward", "cxr_pneumothorax_with_lateral_pwdr_forward", "cxr_pneumothorax_supine_pwdr_forward"],
-    "allowed_problem_classes": ["pneumothorax_cxr_pwdr", "pneumothorax_severity_grading_pwdr", "tension_pneumothorax_detection_pwdr"],
-    "allowed_omega_dimensions": ["H", "W", "pixel_resolution_um", "kVp", "mAs", "PA_or_AP", "SNR_dB", "rotation_artifact", "expiratory_vs_inspiratory_state", "supine_vs_upright_acquisition", "skin_fold_pseudo_pneumothorax", "bullous_disease_confounders", "bilateral_severity_disagreement"],
-    "omega_bounds": {"H": [1024, 4096], "W": [1024, 4096], "pixel_resolution_um": [50, 300], "kVp": [70, 130]},
-    "epsilon_bounds": {"categorical_accuracy": [0.50, 0.99]}
+    "allowed_forward_operators": [
+      "cxr_pneumothorax_pwdr_forward",
+      "cxr_pneumothorax_with_lateral_pwdr_forward",
+      "cxr_pneumothorax_supine_pwdr_forward"
+    ],
+    "allowed_problem_classes": [
+      "pneumothorax_cxr_pwdr",
+      "pneumothorax_severity_grading_pwdr",
+      "tension_pneumothorax_detection_pwdr"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "pixel_resolution_um",
+      "kVp",
+      "mAs",
+      "PA_or_AP",
+      "SNR_dB",
+      "rotation_artifact",
+      "expiratory_vs_inspiratory_state",
+      "supine_vs_upright_acquisition",
+      "skin_fold_pseudo_pneumothorax",
+      "bullous_disease_confounders",
+      "bilateral_severity_disagreement"
+    ],
+    "omega_bounds": {
+      "H": [
+        1024,
+        4096
+      ],
+      "W": [
+        1024,
+        4096
+      ],
+      "pixel_resolution_um": [
+        50,
+        300
+      ],
+      "kVp": [
+        70,
+        130
+      ]
+    },
+    "epsilon_bounds": {
+      "categorical_accuracy": [
+        0.5,
+        0.99
+      ]
+    }
   },
-
-  "p1_p10_tests": ["PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS"],
-  "s1_s4_gates": ["PASS", "PASS", "PASS", "PASS"],
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
   "ipfs_cid": null,
-
   "recast_attempted": {
     "considered": true,
     "recast_path": "Original framing: 'Classify chest X-ray into pneumothorax+severity'. Option-3 recast: 'Recover visceral-pleural-line + lung-edge geometry via L1-031 X-ray radiography; apply Light-index / Collins / Rhea formulas to estimate percent collapse; threshold-classify into severity bins'. Feasible because pneumothorax has well-defined geometric forward model on chest radiograph and severity scales are deterministic.",
     "reason_rejected": null
   },
-
   "v3_metadata": {
     "is_standalone_multiphysics": false,
     "coupling_count_n_c": 1,
@@ -116,10 +232,11 @@
     ],
     "distinctness_audit": {
       "closest_existing_principle": "L1-031 X-ray radiography",
-      "d_principle_estimate": 0.40,
+      "d_principle_estimate": 0.4,
       "advisory_label": "Distinct (parent-child PWDR pattern)",
       "rationale": "L1-031 recovers continuous attenuation map; L1-523 wraps with pneumothorax detection rule. Different solution_space (1D pneumothorax severity vs 2D attenuation); adds L.pleural_line_detection, L.light_index_estimation, L.severity_threshold_classifier primitives."
     },
     "clinical_context": "Universal use in emergency / trauma / critical care radiology. Every chest X-ray reviewed for pneumothorax (specifically post-line-placement, post-procedural, trauma, mechanical ventilation). Tension pneumothorax is a life-threatening emergency requiring immediate decompression. UTSW Emergency Department + Trauma Center high-volume use. FDA-cleared autonomous AI: Aidoc PNX, Lunit INSIGHT CXR, Annalise CXR, Qure.ai qXR — all PWDR-shaped systems. Deep learning systems (CheXNet, CheXpert) achieve radiologist-level detection on benchmark datasets."
-  }
+  },
+  "display_slug": "pneumothorax-cxr"
 }

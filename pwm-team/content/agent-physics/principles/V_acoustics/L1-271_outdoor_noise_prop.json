@@ -2,7 +2,7 @@
   "artifact_id": "L1-271",
   "layer": "L1",
   "principle_number": "271",
-  "title": "Outdoor Noise Propagation \u2014 atmospheric refraction + ground effect",
+  "title": "Outdoor Noise Propagation — atmospheric refraction + ground effect",
   "domain": "Acoustics",
   "sub_domain": "Outdoor sound propagation (ISO 9613 / PE)",
   "source_file": "V_acoustics/271_outdoor_noise_prop.md",
@@ -11,7 +11,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Outdoor Noise Propagation \u2014 atmospheric refraction + ground effect forward model.",
+    "description": "Outdoor Noise Propagation — atmospheric refraction + ground effect forward model.",
     "forward_model": "L_p(r) = L_W - 20 log10(r) - A_atm(r,f,T,RH) - A_gr - A_barrier + A_refraction",
     "world_state_x": "outdoor noise map L_p(x,y,z) including refraction + ground + barrier effects",
     "observation_y": "far-field SPL measurements at monitoring stations",
@@ -186,5 +186,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "outdoor-noise-prop"
 }

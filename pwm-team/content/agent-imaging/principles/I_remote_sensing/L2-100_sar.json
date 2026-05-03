@@ -2,7 +2,7 @@
   "artifact_id": "L2-100",
   "layer": "L2",
   "parent_l1": "L1-100",
-  "title": "Synthetic Aperture Radar (SAR) \u2014 range-Doppler coherent imaging Mismatch-Only Spec",
+  "title": "Synthetic Aperture Radar (SAR) — range-Doppler coherent imaging Mismatch-Only Spec",
   "spec_type": "mismatch_only",
   "six_tuple": {
     "omega": {
@@ -162,5 +162,6 @@
     "PASS",
     "PASS"
   ],
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "display_slug": "sar"
 }

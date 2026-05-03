@@ -3,7 +3,7 @@
   "layer": "L2",
   "parent_l1": "L1-469",
   "principle_ref": "sha256:<L1-469_principle_hash>",
-  "title": "LiDAR Point Cloud 3D Mapping \u2014 Nominal + Mismatch Specs",
+  "title": "LiDAR Point Cloud 3D Mapping — Nominal + Mismatch Specs",
   "spec_type": "nominal_and_mismatch",
   "six_tuple": {
     "omega": {
@@ -31,8 +31,8 @@
       "inverse": "recover 3D surface elevation model DEM(x from point cloud (X"
     },
     "B": {
-      "boresight_plausibility": "angles within \u00b15 deg",
-      "lever_arm": "within \u00b110 cm"
+      "boresight_plausibility": "angles within ±5 deg",
+      "lever_arm": "within ±10 cm"
     },
     "I": {
       "strategy": "zero_init"
@@ -113,5 +113,6 @@
     "S3": "Solver convergence proven for stated solver class.",
     "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
   },
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "display_slug": "lidar-point-cloud-3d-mapping-nominal-mismatch-specs"
 }

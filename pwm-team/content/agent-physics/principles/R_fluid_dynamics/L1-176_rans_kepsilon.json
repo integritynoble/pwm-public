@@ -2,7 +2,7 @@
   "artifact_id": "L1-176",
   "layer": "L1",
   "principle_number": "176",
-  "title": "RANS k-epsilon \u2014 turbulence closure",
+  "title": "RANS k-epsilon — turbulence closure",
   "domain": "Fluid Dynamics",
   "sub_domain": "Standard k-epsilon RANS",
   "source_file": "R_fluid_dynamics/176_rans_kepsilon.md",
@@ -11,7 +11,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "RANS k-epsilon \u2014 turbulence closure forward model.",
+    "description": "RANS k-epsilon — turbulence closure forward model.",
     "forward_model": "Reynolds-averaged NS with nu_t = C_mu k^2/eps; transport eqs for k and eps",
     "world_state_x": "mean velocity + turbulent kinetic energy k + dissipation eps",
     "observation_y": "PIV mean + hot-wire turbulence stats",
@@ -183,5 +183,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "rans-kepsilon"
 }

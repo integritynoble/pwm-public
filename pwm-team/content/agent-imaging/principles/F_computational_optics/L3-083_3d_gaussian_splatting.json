@@ -5,7 +5,6 @@
   "parent_l1": "L1-083",
   "title": "3DGS Novel-View Synthesis Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
-
   "dataset_registry": {
     "primary": "Mip-NeRF-360 outdoor / indoor test splits (bicycle, garden, stump, treehill, room, kitchen, counter, bonsai)",
     "secondary": "Tanks & Temples (train/truck/playground/m60/meetingroom)",
@@ -13,50 +12,140 @@
     "construction_method": "use published SfM-init + pose splits; inject pose_error + view dropout as mismatch",
     "num_dev_instances_per_tier": 20
   },
-
   "ibenchmarks": [
     {
-      "tier": "T1_nominal", "rho": 1,
-      "omega_tier": {"H": 1080, "W": 1920, "K_views": 200, "N_gaussians": 1000000, "L_SH": 3, "photon_count": 2000, "pose_error_rad": 0.0, "N_budget_too_small": 0.0},
-      "epsilon": 31.0, "d_ibench": 0.14,
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "H": 1080,
+        "W": 1920,
+        "K_views": 200,
+        "N_gaussians": 1000000,
+        "L_SH": 3,
+        "photon_count": 2000,
+        "pose_error_rad": 0.0,
+        "N_budget_too_small": 0.0
+      },
+      "epsilon": 31.0,
+      "d_ibench": 0.14,
       "baselines": [
-        {"name": "3DGS-original", "score": 30.8, "Q": 0.65},
-        {"name": "Mip-Splatting", "score": 32.5, "Q": 0.82},
-        {"name": "2DGS",          "score": 31.5, "Q": 0.75}
+        {
+          "name": "3DGS-original",
+          "score": 30.8,
+          "Q": 0.65
+        },
+        {
+          "name": "Mip-Splatting",
+          "score": 32.5,
+          "Q": 0.82
+        },
+        {
+          "name": "2DGS",
+          "score": 31.5,
+          "Q": 0.75
+        }
       ]
     },
     {
-      "tier": "T2_low", "rho": 3,
-      "omega_tier": {"H": 1080, "W": 1920, "K_views": 100, "N_gaussians": 500000, "L_SH": 2, "photon_count": 1000, "pose_error_rad": 0.01, "N_budget_too_small": 0.1},
-      "epsilon": 28.5, "d_ibench": 0.28,
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "H": 1080,
+        "W": 1920,
+        "K_views": 100,
+        "N_gaussians": 500000,
+        "L_SH": 2,
+        "photon_count": 1000,
+        "pose_error_rad": 0.01,
+        "N_budget_too_small": 0.1
+      },
+      "epsilon": 28.5,
+      "d_ibench": 0.28,
       "baselines": [
-        {"name": "3DGS-original", "score": 26.5, "Q": 0.40},
-        {"name": "Mip-Splatting", "score": 28.8, "Q": 0.58},
-        {"name": "2DGS",          "score": 27.8, "Q": 0.52}
+        {
+          "name": "3DGS-original",
+          "score": 26.5,
+          "Q": 0.4
+        },
+        {
+          "name": "Mip-Splatting",
+          "score": 28.8,
+          "Q": 0.58
+        },
+        {
+          "name": "2DGS",
+          "score": 27.8,
+          "Q": 0.52
+        }
       ]
     },
     {
-      "tier": "T3_moderate", "rho": 5,
-      "omega_tier": {"H": 1600, "W": 2400, "K_views": 50, "N_gaussians": 300000, "L_SH": 1, "photon_count": 500, "pose_error_rad": 0.03, "N_budget_too_small": 0.3},
-      "epsilon": 25.0, "d_ibench": 0.48,
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "H": 1600,
+        "W": 2400,
+        "K_views": 50,
+        "N_gaussians": 300000,
+        "L_SH": 1,
+        "photon_count": 500,
+        "pose_error_rad": 0.03,
+        "N_budget_too_small": 0.3
+      },
+      "epsilon": 25.0,
+      "d_ibench": 0.48,
       "baselines": [
-        {"name": "3DGS-original", "score": 22.0, "Q": 0.25},
-        {"name": "Mip-Splatting", "score": 25.5, "Q": 0.52},
-        {"name": "2DGS",          "score": 24.8, "Q": 0.46}
+        {
+          "name": "3DGS-original",
+          "score": 22.0,
+          "Q": 0.25
+        },
+        {
+          "name": "Mip-Splatting",
+          "score": 25.5,
+          "Q": 0.52
+        },
+        {
+          "name": "2DGS",
+          "score": 24.8,
+          "Q": 0.46
+        }
       ]
     },
     {
-      "tier": "T4_blind", "rho": 10,
-      "omega_tier": {"H": 3000, "W": 3000, "K_views": 20, "N_gaussians": 200000, "L_SH": 0, "photon_count": 200, "pose_error_rad": 0.1, "N_budget_too_small": 0.8},
-      "epsilon": 20.5, "d_ibench": 0.72,
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "H": 3000,
+        "W": 3000,
+        "K_views": 20,
+        "N_gaussians": 200000,
+        "L_SH": 0,
+        "photon_count": 200,
+        "pose_error_rad": 0.1,
+        "N_budget_too_small": 0.8
+      },
+      "epsilon": 20.5,
+      "d_ibench": 0.72,
       "baselines": [
-        {"name": "3DGS-original", "score": 16.5, "Q": 0.12},
-        {"name": "Mip-Splatting", "score": 20.0, "Q": 0.28},
-        {"name": "2DGS",          "score": 19.0, "Q": 0.22}
+        {
+          "name": "3DGS-original",
+          "score": 16.5,
+          "Q": 0.12
+        },
+        {
+          "name": "Mip-Splatting",
+          "score": 20.0,
+          "Q": 0.28
+        },
+        {
+          "name": "2DGS",
+          "score": 19.0,
+          "Q": 0.22
+        }
       ]
     }
   ],
-
   "p_benchmark": {
     "rho": 50,
     "dataset_p_benchmark": {
@@ -65,13 +154,22 @@
       "construction_method": "parametric (K_views, N_gaussians, pose_error, N_budget) sweep"
     },
     "baselines": [
-      {"name": "3DGS-original", "overall_Q": 0.40},
-      {"name": "Mip-Splatting", "overall_Q": 0.60},
-      {"name": "2DGS",          "overall_Q": 0.55}
+      {
+        "name": "3DGS-original",
+        "overall_Q": 0.4
+      },
+      {
+        "name": "Mip-Splatting",
+        "overall_Q": 0.6
+      },
+      {
+        "name": "2DGS",
+        "overall_Q": 0.55
+      }
     ]
   },
-
   "hardness_rule_check": "SATISFIED — Mip-Splatting fails T4_blind (K=20 + N_budget_too_small=0.8 + pose_error=0.1 rad; under-densified scene cannot cover view gaps).",
   "ipfs_cid": null,
-  "ground_truth_cid": null
+  "ground_truth_cid": null,
+  "display_slug": "3d-gaussian-splatting"
 }

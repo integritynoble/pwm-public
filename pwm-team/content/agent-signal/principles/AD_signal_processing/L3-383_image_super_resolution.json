@@ -5,66 +5,157 @@
   "parent_l1": "L1-383",
   "title": "Image Super-Resolution Benchmark Suite (DIV2K + Set5/14 + RealSR)",
   "benchmark_type": "combined_P_and_I",
-
   "dataset_registry": {
     "primary": "DIV2K (Agustsson-Timofte NTIRE 2017) — 800 train/100 val 2K images",
     "secondary": "Set5, Set14, BSDS100, Urban100, Manga109",
     "tertiary": "RealSR (Cai et al. 2019) — real LR/HR pairs",
     "construction_method": "DIV2K crops 256x256 LR; add bicubic/Gaussian/unknown kernel, noise, JPEG",
-    "num_dev_instances_per_tier": 20, "holdout_instances_per_tier": 10
+    "num_dev_instances_per_tier": 20,
+    "holdout_instances_per_tier": 10
   },
-
   "ibenchmarks": [
     {
-      "tier": "T1_nominal_bicubic", "rho": 1,
-      "omega_tier": {"H": 256, "W": 256, "s": 4, "noise_level": 0.0, "jpeg_q": 100, "kernel_type_error": 0.0},
-      "epsilon": 28.0, "d_ibench": 0.14,
+      "tier": "T1_nominal_bicubic",
+      "rho": 1,
+      "omega_tier": {
+        "H": 256,
+        "W": 256,
+        "s": 4,
+        "noise_level": 0.0,
+        "jpeg_q": 100,
+        "kernel_type_error": 0.0
+      },
+      "epsilon": 28.0,
+      "d_ibench": 0.14,
       "baselines": [
-        {"name": "Bicubic", "score": 24.0, "SSIM": 0.69, "Q": 0.48},
-        {"name": "EDSR",    "score": 30.5, "SSIM": 0.87, "Q": 0.85},
-        {"name": "RCAN",    "score": 31.8, "SSIM": 0.89, "Q": 0.92}
+        {
+          "name": "Bicubic",
+          "score": 24.0,
+          "SSIM": 0.69,
+          "Q": 0.48
+        },
+        {
+          "name": "EDSR",
+          "score": 30.5,
+          "SSIM": 0.87,
+          "Q": 0.85
+        },
+        {
+          "name": "RCAN",
+          "score": 31.8,
+          "SSIM": 0.89,
+          "Q": 0.92
+        }
       ]
     },
     {
-      "tier": "T2_noisy", "rho": 3,
-      "omega_tier": {"H": 256, "W": 256, "s": 4, "noise_level": 0.02, "jpeg_q": 90, "kernel_type_error": 0.1},
-      "epsilon": 26.0, "d_ibench": 0.26,
+      "tier": "T2_noisy",
+      "rho": 3,
+      "omega_tier": {
+        "H": 256,
+        "W": 256,
+        "s": 4,
+        "noise_level": 0.02,
+        "jpeg_q": 90,
+        "kernel_type_error": 0.1
+      },
+      "epsilon": 26.0,
+      "d_ibench": 0.26,
       "baselines": [
-        {"name": "Bicubic", "score": 22.5, "Q": 0.38},
-        {"name": "EDSR",    "score": 27.0, "Q": 0.62},
-        {"name": "Real-ESRGAN", "score": 27.5, "Q": 0.70}
+        {
+          "name": "Bicubic",
+          "score": 22.5,
+          "Q": 0.38
+        },
+        {
+          "name": "EDSR",
+          "score": 27.0,
+          "Q": 0.62
+        },
+        {
+          "name": "Real-ESRGAN",
+          "score": 27.5,
+          "Q": 0.7
+        }
       ]
     },
     {
-      "tier": "T3_heavy_compress", "rho": 5,
-      "omega_tier": {"H": 256, "W": 256, "s": 4, "noise_level": 0.04, "jpeg_q": 50, "kernel_type_error": 0.25},
-      "epsilon": 23.5, "d_ibench": 0.50,
+      "tier": "T3_heavy_compress",
+      "rho": 5,
+      "omega_tier": {
+        "H": 256,
+        "W": 256,
+        "s": 4,
+        "noise_level": 0.04,
+        "jpeg_q": 50,
+        "kernel_type_error": 0.25
+      },
+      "epsilon": 23.5,
+      "d_ibench": 0.5,
       "baselines": [
-        {"name": "EDSR",        "score": 24.0, "Q": 0.42},
-        {"name": "Real-ESRGAN", "score": 25.5, "Q": 0.58}
+        {
+          "name": "EDSR",
+          "score": 24.0,
+          "Q": 0.42
+        },
+        {
+          "name": "Real-ESRGAN",
+          "score": 25.5,
+          "Q": 0.58
+        }
       ]
     },
     {
-      "tier": "T4_blind_real", "rho": 10,
-      "omega_tier": {"H": 256, "W": 256, "s": 8, "noise_level": 0.08, "jpeg_q": 30, "kernel_type_error": 0.5},
-      "epsilon": 20.0, "d_ibench": 0.74,
+      "tier": "T4_blind_real",
+      "rho": 10,
+      "omega_tier": {
+        "H": 256,
+        "W": 256,
+        "s": 8,
+        "noise_level": 0.08,
+        "jpeg_q": 30,
+        "kernel_type_error": 0.5
+      },
+      "epsilon": 20.0,
+      "d_ibench": 0.74,
       "baselines": [
-        {"name": "EDSR",        "score": 19.5, "Q": 0.18},
-        {"name": "Real-ESRGAN", "score": 21.8, "Q": 0.42}
+        {
+          "name": "EDSR",
+          "score": 19.5,
+          "Q": 0.18
+        },
+        {
+          "name": "Real-ESRGAN",
+          "score": 21.8,
+          "Q": 0.42
+        }
       ]
     }
   ],
-
   "p_benchmark": {
     "rho": 50,
-    "dataset_p_benchmark": {"name": "DIV2K + Set5/14 + Urban100 + RealSR union", "num_dev_instances": 200, "num_holdout_instances": 100},
+    "dataset_p_benchmark": {
+      "name": "DIV2K + Set5/14 + Urban100 + RealSR union",
+      "num_dev_instances": 200,
+      "num_holdout_instances": 100
+    },
     "baselines": [
-      {"name": "Bicubic", "overall_Q": 0.32},
-      {"name": "EDSR", "overall_Q": 0.60},
-      {"name": "Real-ESRGAN", "overall_Q": 0.68}
+      {
+        "name": "Bicubic",
+        "overall_Q": 0.32
+      },
+      {
+        "name": "EDSR",
+        "overall_Q": 0.6
+      },
+      {
+        "name": "Real-ESRGAN",
+        "overall_Q": 0.68
+      }
     ]
   },
-
   "hardness_rule_check": "SATISFIED — Real-ESRGAN fails at T4_blind_real (s=8, noise=0.08, kernel_type_error=0.5): 21.8 dB < epsilon_fn =~ 22.0 dB at the corner.",
-  "ipfs_cid": null, "ground_truth_cid": null
+  "ipfs_cid": null,
+  "ground_truth_cid": null,
+  "display_slug": "image-super-resolution"
 }

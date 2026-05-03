@@ -5,7 +5,6 @@
   "parent_l1": "L1-076",
   "title": "Multi-Focus Fusion Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
-
   "dataset_registry": {
     "primary": "Lytro multi-focus dataset (MFI-WHU)",
     "secondary": "Middlebury stereo/panorama test set + MatterPort indoor",
@@ -13,50 +12,132 @@
     "construction_method": "K focus-varied frames per scene; ground-truth = sharpest-gradient pixel per (u,v) across stack",
     "num_dev_instances_per_tier": 20
   },
-
   "ibenchmarks": [
     {
-      "tier": "T1_nominal", "rho": 1,
-      "omega_tier": {"H": 1024, "W": 1024, "K_frames": 5, "parallax_px": 0.0, "motion_ghosting": 0.0, "registration_error": 0.0},
-      "epsilon": 30.0, "d_ibench": 0.14,
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "H": 1024,
+        "W": 1024,
+        "K_frames": 5,
+        "parallax_px": 0.0,
+        "motion_ghosting": 0.0,
+        "registration_error": 0.0
+      },
+      "epsilon": 30.0,
+      "d_ibench": 0.14,
       "baselines": [
-        {"name": "Laplacian-Pyramid", "score": 27.5, "Q": 0.62},
-        {"name": "SML-focus-stack",   "score": 29.8, "Q": 0.78},
-        {"name": "U2Fusion",          "score": 33.5, "Q": 0.92}
+        {
+          "name": "Laplacian-Pyramid",
+          "score": 27.5,
+          "Q": 0.62
+        },
+        {
+          "name": "SML-focus-stack",
+          "score": 29.8,
+          "Q": 0.78
+        },
+        {
+          "name": "U2Fusion",
+          "score": 33.5,
+          "Q": 0.92
+        }
       ]
     },
     {
-      "tier": "T2_low", "rho": 3,
-      "omega_tier": {"H": 1024, "W": 1024, "K_frames": 4, "parallax_px": 3.0, "motion_ghosting": 0.05, "registration_error": 0.5},
-      "epsilon": 27.0, "d_ibench": 0.28,
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "H": 1024,
+        "W": 1024,
+        "K_frames": 4,
+        "parallax_px": 3.0,
+        "motion_ghosting": 0.05,
+        "registration_error": 0.5
+      },
+      "epsilon": 27.0,
+      "d_ibench": 0.28,
       "baselines": [
-        {"name": "Laplacian-Pyramid", "score": 24.5, "Q": 0.42},
-        {"name": "SML-focus-stack",   "score": 26.8, "Q": 0.58},
-        {"name": "U2Fusion",          "score": 30.2, "Q": 0.76}
+        {
+          "name": "Laplacian-Pyramid",
+          "score": 24.5,
+          "Q": 0.42
+        },
+        {
+          "name": "SML-focus-stack",
+          "score": 26.8,
+          "Q": 0.58
+        },
+        {
+          "name": "U2Fusion",
+          "score": 30.2,
+          "Q": 0.76
+        }
       ]
     },
     {
-      "tier": "T3_moderate", "rho": 5,
-      "omega_tier": {"H": 2048, "W": 2048, "K_frames": 3, "parallax_px": 10.0, "motion_ghosting": 0.15, "registration_error": 2.0},
-      "epsilon": 24.0, "d_ibench": 0.48,
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "H": 2048,
+        "W": 2048,
+        "K_frames": 3,
+        "parallax_px": 10.0,
+        "motion_ghosting": 0.15,
+        "registration_error": 2.0
+      },
+      "epsilon": 24.0,
+      "d_ibench": 0.48,
       "baselines": [
-        {"name": "Laplacian-Pyramid", "score": 21.0, "Q": 0.28},
-        {"name": "SML-focus-stack",   "score": 23.5, "Q": 0.44},
-        {"name": "U2Fusion",          "score": 26.8, "Q": 0.62}
+        {
+          "name": "Laplacian-Pyramid",
+          "score": 21.0,
+          "Q": 0.28
+        },
+        {
+          "name": "SML-focus-stack",
+          "score": 23.5,
+          "Q": 0.44
+        },
+        {
+          "name": "U2Fusion",
+          "score": 26.8,
+          "Q": 0.62
+        }
       ]
     },
     {
-      "tier": "T4_blind", "rho": 10,
-      "omega_tier": {"H": 4096, "W": 4096, "K_frames": 2, "parallax_px": 30.0, "motion_ghosting": 0.5, "registration_error": 5.0},
-      "epsilon": 20.0, "d_ibench": 0.70,
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "H": 4096,
+        "W": 4096,
+        "K_frames": 2,
+        "parallax_px": 30.0,
+        "motion_ghosting": 0.5,
+        "registration_error": 5.0
+      },
+      "epsilon": 20.0,
+      "d_ibench": 0.7,
       "baselines": [
-        {"name": "Laplacian-Pyramid", "score": 16.5, "Q": 0.12},
-        {"name": "SML-focus-stack",   "score": 18.8, "Q": 0.25},
-        {"name": "U2Fusion",          "score": 22.0, "Q": 0.44}
+        {
+          "name": "Laplacian-Pyramid",
+          "score": 16.5,
+          "Q": 0.12
+        },
+        {
+          "name": "SML-focus-stack",
+          "score": 18.8,
+          "Q": 0.25
+        },
+        {
+          "name": "U2Fusion",
+          "score": 22.0,
+          "Q": 0.44
+        }
       ]
     }
   ],
-
   "p_benchmark": {
     "rho": 50,
     "dataset_p_benchmark": {
@@ -65,13 +146,22 @@
       "construction_method": "parametric (K_frames, parallax, ghosting, registration_error) sweep"
     },
     "baselines": [
-      {"name": "Laplacian-Pyramid", "overall_Q": 0.38},
-      {"name": "SML-focus-stack",   "overall_Q": 0.52},
-      {"name": "U2Fusion",          "overall_Q": 0.70}
+      {
+        "name": "Laplacian-Pyramid",
+        "overall_Q": 0.38
+      },
+      {
+        "name": "SML-focus-stack",
+        "overall_Q": 0.52
+      },
+      {
+        "name": "U2Fusion",
+        "overall_Q": 0.7
+      }
     ]
   },
-
   "hardness_rule_check": "SATISFIED — U2Fusion fails at T4_blind (K_frames=2 + motion_ghosting=0.5 + parallax=30 px corner, insufficient redundancy).",
   "ipfs_cid": null,
-  "ground_truth_cid": null
+  "ground_truth_cid": null,
+  "display_slug": "panorama-multifocus"
 }

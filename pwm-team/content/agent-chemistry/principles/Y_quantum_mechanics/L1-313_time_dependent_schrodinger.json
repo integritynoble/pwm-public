@@ -2,7 +2,7 @@
   "artifact_id": "L1-313",
   "layer": "L1",
   "principle_number": "313",
-  "title": "Time-Dependent Schr\u00f6dinger Equation",
+  "title": "Time-Dependent Schrödinger Equation",
   "domain": "Quantum Mechanics",
   "sub_domain": "Quantum dynamics",
   "source_file": "Y_quantum_mechanics/313_time_dependent_schrodinger.md",
@@ -155,5 +155,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "time-dependent-schrodinger"
 }

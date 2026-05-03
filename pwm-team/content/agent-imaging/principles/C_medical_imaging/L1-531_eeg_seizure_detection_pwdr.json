@@ -7,16 +7,33 @@
   "sub_domain": "Cortical electrical signal feature recovery from EEG with seizure / non-seizure categorical readout",
   "source_file": "C_medical_imaging/531_eeg_seizure_detection_pwdr.md",
   "source_data_quality_note": "v2 PWDR Principle. Wraps L1-068 EEG (existing in v1 genesis) with deterministic seizure-detection rules per ILAE 2017 Operational Classification + AAN clinical neurophysiology guidelines to assign per-segment seizure label {non-seizure, seizure_focal, seizure_generalized, status_epilepticus} + onset-zone localization. Universal in epilepsy monitoring (EMU), ICU continuous EEG (cEEG), and neonatal monitoring. UTSW Department of Neurology Comprehensive Epilepsy Center.",
-
   "gate_class": "physical_with_discrete_readout",
-  "gate_substitutions": {"kappa_substitute": null, "h_substitute": null, "conservation_substitute": "softmax simplex closure on seizure categorical {non_seizure, focal_aware, focal_impaired_awareness, focal_to_bilateral_TC, generalized_TC, generalized_absence, status_epilepticus}"},
+  "gate_substitutions": {
+    "kappa_substitute": null,
+    "h_substitute": null,
+    "conservation_substitute": "softmax simplex closure on seizure categorical {non_seizure, focal_aware, focal_impaired_awareness, focal_to_bilateral_TC, generalized_TC, generalized_absence, status_epilepticus}"
+  },
   "discrete_readout": {
     "threshold_function": "Per-segment (typically 10-second window): seizure = step on (rhythmic_pattern_frequency_Hz, evolution_in_frequency_AND_amplitude_AND_morphology, duration_seconds, spatial_distribution): seizure_focal if rhythmic >5 Hz pattern with evolution lasting > 10 seconds in localized channels; generalized if pattern across all channels symmetrically; status_epilepticus if seizure lasting > 5 minutes OR > 2 seizures without recovery between. Per ILAE 2017 Operational Classification + Trinka 2015 status epilepticus definition.",
     "lipschitz_constant": 0.05,
     "underlying_physical_state": "EEG signal feature recovery: spectral content per channel, rhythmic pattern detection (continuous wavelet transform or short-time FFT), spatial coherence between channels, evolution of dominant frequency/amplitude over time — recovered from L1-068 EEG core",
     "physics_core_principle": "L1-068",
-    "label_set_seizure_type": ["non_seizure", "focal_aware", "focal_impaired_awareness", "focal_to_bilateral_TC", "generalized_TC", "generalized_absence", "myoclonic", "atonic"],
-    "label_set_status": ["no_status", "convulsive_status_epilepticus", "non_convulsive_status_epilepticus", "subclinical_seizure"],
+    "label_set_seizure_type": [
+      "non_seizure",
+      "focal_aware",
+      "focal_impaired_awareness",
+      "focal_to_bilateral_TC",
+      "generalized_TC",
+      "generalized_absence",
+      "myoclonic",
+      "atonic"
+    ],
+    "label_set_status": [
+      "no_status",
+      "convulsive_status_epilepticus",
+      "non_convulsive_status_epilepticus",
+      "subclinical_seizure"
+    ],
     "threshold_continuity_proof": "Spectral power and coherence are continuous on EEG features; class boundaries are step functions on dominant-frequency, evolution-duration, spatial-distribution. Smoothed-detection globally Lipschitz with constant ~0.05 per percentage-point of feature-recovery error."
   },
   "related_principles": [
@@ -25,46 +42,191 @@
     "L1-507 (Joint MEG-EEG — sibling source-imaging multi-physics, n_c=2, informational)",
     "L1-528 (ECG arrhythmia — sibling biopotential signal PWDR, informational)"
   ],
-
   "E": {
     "description": "EEG Seizure Detection (PWDR): wraps L1-068 EEG with ILAE 2017 + Trinka 2015 + AAN clinical neurophysiology rules. Stage 1 (analytical, from L1-068): from multi-channel scalp EEG (typically 19-256 channels per international 10-20 / 10-10 systems), recover per-channel spectral content (delta 0.5-4 Hz, theta 4-8 Hz, alpha 8-13 Hz, beta 13-30 Hz, gamma 30-80 Hz), spatial coherence patterns, evolution of dominant frequency/amplitude/morphology, artifact rejection (eye blinks, muscle, cardiac). Stage 2 (deterministic threshold): apply rhythmic-pattern + evolution + duration + spatial-distribution rules. Difficulty tier delta = 5.",
     "forward_model": "Stage 1 (L1-068): multi-channel EEG -> {spectral_power(channel, frequency, time), spatial_coherence, evolution_features, artifact_mask}. Stage 2: seizure_class = step(features per ILAE 2017 + Trinka 2015 thresholds).",
     "world_state_x": "Per-segment seizure label (type + duration + onset zone if focal); per-recording status epilepticus boolean.",
     "observation_y": "Multi-channel EEG: 19-256 channels at 256-2000 Hz sampling; durations 30 minutes to 7 days continuous monitoring.",
-    "physical_parameters_theta": ["N_channels", "sampling_rate_Hz", "duration_minutes", "voltage_resolution_uV", "SNR_dB", "electrode_impedance_kohm", "muscle_artifact", "movement_artifact", "electrocardiac_contamination", "drowsy_state_confounder", "neonatal_premature_pattern", "manual_neurologist_inter_rater_kappa"]
+    "physical_parameters_theta": [
+      "N_channels",
+      "sampling_rate_Hz",
+      "duration_minutes",
+      "voltage_resolution_uV",
+      "SNR_dB",
+      "electrode_impedance_kohm",
+      "muscle_artifact",
+      "movement_artifact",
+      "electrocardiac_contamination",
+      "drowsy_state_confounder",
+      "neonatal_premature_pattern",
+      "manual_neurologist_inter_rater_kappa"
+    ]
   },
-
   "G": {
     "dag": "L.eeg_acquisition -> L.bandpass_filter -> L.artifact_rejection -> L.spectral_decomposition -> L.evolution_detection -> L.seizure_threshold_classifier -> int.temporal_spatial",
-    "vertices": ["L.eeg_acquisition", "L.bandpass_filter", "L.artifact_rejection", "L.spectral_decomposition", "L.evolution_detection", "L.seizure_threshold_classifier", "int.temporal_spatial"],
-    "arcs": ["L.eeg_acquisition -> L.bandpass_filter", "L.bandpass_filter -> L.artifact_rejection", "L.artifact_rejection -> L.spectral_decomposition", "L.spectral_decomposition -> L.evolution_detection", "L.evolution_detection -> L.seizure_threshold_classifier", "L.seizure_threshold_classifier -> int.temporal_spatial"],
+    "vertices": [
+      "L.eeg_acquisition",
+      "L.bandpass_filter",
+      "L.artifact_rejection",
+      "L.spectral_decomposition",
+      "L.evolution_detection",
+      "L.seizure_threshold_classifier",
+      "int.temporal_spatial"
+    ],
+    "arcs": [
+      "L.eeg_acquisition -> L.bandpass_filter",
+      "L.bandpass_filter -> L.artifact_rejection",
+      "L.artifact_rejection -> L.spectral_decomposition",
+      "L.spectral_decomposition -> L.evolution_detection",
+      "L.evolution_detection -> L.seizure_threshold_classifier",
+      "L.seizure_threshold_classifier -> int.temporal_spatial"
+    ],
     "L_DAG": 6.0,
     "n_c": 1,
-    "coupling_constraints": ["spatial_temporal_features: spatial coherence + temporal evolution are jointly observed across channels and jointly determine seizure class via the ILAE rule (focal vs generalized, with-evolution vs without)"]
+    "coupling_constraints": [
+      "spatial_temporal_features: spatial coherence + temporal evolution are jointly observed across channels and jointly determine seizure class via the ILAE rule (focal vs generalized, with-evolution vs without)"
+    ]
   },
-  "W": {"existence": true, "uniqueness": "conditional", "stability": "conditional", "condition_number_kappa": 100, "condition_number_effective": 18, "regime": "Existence inherited from L1-068. Uniqueness conditional on adequate channel coverage + electrode impedance < 10 kohm. Stability dominated by muscle_artifact and drowsy_state_confounder (subclinical seizures). Joint Hadamard well-posedness established by Fisher 2017 (ILAE 2017 Operational Classification), Trinka 2015 (status epilepticus definition), Hirsch 2013 (ACNS critical-care EEG terminology), Roy 2019 (deep learning EEG seizure benchmark), Acharya 2018 (EEG seizure deep learning review)."},
-  "C": {"solver_class": "linear-operator + signal-processing [bandpass + ICA artifact rejection + STFT/wavelet] + categorical-readout [ILAE classifier] | end-to-end deep neural [SeizNet, SeizureNet, EEGNet]", "convergence_rate_q": 1.0, "error_bound": "Inherits L1-068. Misclassification probability bound: Pr(seizure_hat != seizure_true) <= C * |feature_error| / d(features, ILAE_threshold).", "complexity": "O(N_channels * N_samples * log(N_samples)) for stage 1 STFT + O(N_segments * N_features) for stage 2"},
-  "physics_fingerprint": {"carrier": "biopotential", "sensing_mechanism": "eeg_with_seizure_classifier", "integration_axis": "temporal_spatial", "problem_class": "linear_inverse_with_categorical_readout", "noise_model": "gaussian", "solution_space": "1D_seizure_class_per_segment", "primitives": ["L.eeg_acquisition", "L.bandpass_filter", "L.artifact_rejection", "L.spectral_decomposition", "L.evolution_detection", "L.seizure_threshold_classifier", "int.temporal_spatial"]},
-  "difficulty_delta": 5, "difficulty_tier": "advanced",
-  "mismatch_parameters": ["electrode_impedance_kohm", "muscle_artifact", "movement_artifact", "electrocardiac_contamination", "drowsy_state_confounder", "neonatal_premature_pattern", "manual_neurologist_inter_rater_kappa"],
-  "error_metric": "categorical_accuracy", "error_metric_secondary": "sensitivity_per_seizure_event",
-
+  "W": {
+    "existence": true,
+    "uniqueness": "conditional",
+    "stability": "conditional",
+    "condition_number_kappa": 100,
+    "condition_number_effective": 18,
+    "regime": "Existence inherited from L1-068. Uniqueness conditional on adequate channel coverage + electrode impedance < 10 kohm. Stability dominated by muscle_artifact and drowsy_state_confounder (subclinical seizures). Joint Hadamard well-posedness established by Fisher 2017 (ILAE 2017 Operational Classification), Trinka 2015 (status epilepticus definition), Hirsch 2013 (ACNS critical-care EEG terminology), Roy 2019 (deep learning EEG seizure benchmark), Acharya 2018 (EEG seizure deep learning review)."
+  },
+  "C": {
+    "solver_class": "linear-operator + signal-processing [bandpass + ICA artifact rejection + STFT/wavelet] + categorical-readout [ILAE classifier] | end-to-end deep neural [SeizNet, SeizureNet, EEGNet]",
+    "convergence_rate_q": 1.0,
+    "error_bound": "Inherits L1-068. Misclassification probability bound: Pr(seizure_hat != seizure_true) <= C * |feature_error| / d(features, ILAE_threshold).",
+    "complexity": "O(N_channels * N_samples * log(N_samples)) for stage 1 STFT + O(N_segments * N_features) for stage 2"
+  },
+  "physics_fingerprint": {
+    "carrier": "biopotential",
+    "sensing_mechanism": "eeg_with_seizure_classifier",
+    "integration_axis": "temporal_spatial",
+    "problem_class": "linear_inverse_with_categorical_readout",
+    "noise_model": "gaussian",
+    "solution_space": "1D_seizure_class_per_segment",
+    "primitives": [
+      "L.eeg_acquisition",
+      "L.bandpass_filter",
+      "L.artifact_rejection",
+      "L.spectral_decomposition",
+      "L.evolution_detection",
+      "L.seizure_threshold_classifier",
+      "int.temporal_spatial"
+    ]
+  },
+  "difficulty_delta": 5,
+  "difficulty_tier": "advanced",
+  "mismatch_parameters": [
+    "electrode_impedance_kohm",
+    "muscle_artifact",
+    "movement_artifact",
+    "electrocardiac_contamination",
+    "drowsy_state_confounder",
+    "neonatal_premature_pattern",
+    "manual_neurologist_inter_rater_kappa"
+  ],
+  "error_metric": "categorical_accuracy",
+  "error_metric_secondary": "sensitivity_per_seizure_event",
   "spec_range": {
-    "center_spec": {"problem_class": "eeg_seizure_pwdr", "forward_operator": "eeg_seizure_pwdr_forward", "input_format": "multichannel_eeg_with_seizure_label", "omega": {"N_channels": 19, "sampling_rate_Hz": 256, "duration_minutes": 60, "voltage_resolution_uV": 1, "SNR_dB": 25, "electrode_impedance_kohm": 5, "muscle_artifact": 0.0, "movement_artifact": 0.0, "electrocardiac_contamination": 0.0, "drowsy_state_confounder": 0.0, "neonatal_premature_pattern": 0.0, "manual_neurologist_inter_rater_kappa": 0.0}, "epsilon_fn_center": "0.85_accuracy"},
-    "allowed_forward_operators": ["eeg_seizure_pwdr_forward", "eeg_status_epilepticus_pwdr_forward", "eeg_neonatal_seizure_pwdr_forward", "ceeg_icu_pwdr_forward"],
-    "allowed_problem_classes": ["eeg_seizure_pwdr", "eeg_focal_vs_generalized_pwdr", "eeg_status_epilepticus_pwdr", "eeg_continuous_icu_pwdr", "eeg_neonatal_pwdr"],
-    "allowed_omega_dimensions": ["N_channels", "sampling_rate_Hz", "duration_minutes", "voltage_resolution_uV", "SNR_dB", "electrode_impedance_kohm", "muscle_artifact", "movement_artifact", "electrocardiac_contamination", "drowsy_state_confounder", "neonatal_premature_pattern", "manual_neurologist_inter_rater_kappa"],
-    "omega_bounds": {"N_channels": [4, 256], "sampling_rate_Hz": [128, 5000], "duration_minutes": [10, 10080]},
-    "epsilon_bounds": {"categorical_accuracy": [0.50, 0.99]}
+    "center_spec": {
+      "problem_class": "eeg_seizure_pwdr",
+      "forward_operator": "eeg_seizure_pwdr_forward",
+      "input_format": "multichannel_eeg_with_seizure_label",
+      "omega": {
+        "N_channels": 19,
+        "sampling_rate_Hz": 256,
+        "duration_minutes": 60,
+        "voltage_resolution_uV": 1,
+        "SNR_dB": 25,
+        "electrode_impedance_kohm": 5,
+        "muscle_artifact": 0.0,
+        "movement_artifact": 0.0,
+        "electrocardiac_contamination": 0.0,
+        "drowsy_state_confounder": 0.0,
+        "neonatal_premature_pattern": 0.0,
+        "manual_neurologist_inter_rater_kappa": 0.0
+      },
+      "epsilon_fn_center": "0.85_accuracy"
+    },
+    "allowed_forward_operators": [
+      "eeg_seizure_pwdr_forward",
+      "eeg_status_epilepticus_pwdr_forward",
+      "eeg_neonatal_seizure_pwdr_forward",
+      "ceeg_icu_pwdr_forward"
+    ],
+    "allowed_problem_classes": [
+      "eeg_seizure_pwdr",
+      "eeg_focal_vs_generalized_pwdr",
+      "eeg_status_epilepticus_pwdr",
+      "eeg_continuous_icu_pwdr",
+      "eeg_neonatal_pwdr"
+    ],
+    "allowed_omega_dimensions": [
+      "N_channels",
+      "sampling_rate_Hz",
+      "duration_minutes",
+      "voltage_resolution_uV",
+      "SNR_dB",
+      "electrode_impedance_kohm",
+      "muscle_artifact",
+      "movement_artifact",
+      "electrocardiac_contamination",
+      "drowsy_state_confounder",
+      "neonatal_premature_pattern",
+      "manual_neurologist_inter_rater_kappa"
+    ],
+    "omega_bounds": {
+      "N_channels": [
+        4,
+        256
+      ],
+      "sampling_rate_Hz": [
+        128,
+        5000
+      ],
+      "duration_minutes": [
+        10,
+        10080
+      ]
+    },
+    "epsilon_bounds": {
+      "categorical_accuracy": [
+        0.5,
+        0.99
+      ]
+    }
   },
-
-  "p1_p10_tests": ["PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS"],
-  "s1_s4_gates": ["PASS", "PASS", "PASS", "PASS"],
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
   "ipfs_cid": null,
-  "recast_attempted": {"considered": true, "recast_path": "Original: 'Detect seizures in EEG'. Recast: 'Recover spectral + spatial + evolution features via L1-068; apply ILAE 2017 + Trinka 2015 rule-based seizure classifier'. Feasible because cortical electrical activity has well-defined Poisson-electrostatic forward model and seizure morphology rules are deterministic.", "reason_rejected": null},
-
+  "recast_attempted": {
+    "considered": true,
+    "recast_path": "Original: 'Detect seizures in EEG'. Recast: 'Recover spectral + spatial + evolution features via L1-068; apply ILAE 2017 + Trinka 2015 rule-based seizure classifier'. Feasible because cortical electrical activity has well-defined Poisson-electrostatic forward model and seizure morphology rules are deterministic.",
+    "reason_rejected": null
+  },
   "v3_metadata": {
-    "is_standalone_multiphysics": false, "coupling_count_n_c": 1,
+    "is_standalone_multiphysics": false,
+    "coupling_count_n_c": 1,
     "joint_well_posedness_references": [
       "Fisher RS et al. (2017) Operational classification of seizure types by the International League Against Epilepsy: Position Paper of the ILAE Commission for Classification and Terminology. Epilepsia 58(4):522-530.",
       "Trinka E et al. (2015) A definition and classification of status epilepticus — Report of the ILAE Task Force on Classification of Status Epilepticus. Epilepsia 56(10):1515-1523.",
@@ -73,7 +235,13 @@
       "Acharya UR et al. (2018) Deep convolutional neural network for the automated detection and diagnosis of seizure using EEG signals. Comput Biol Med 100:270-278.",
       "Shoeb AH (2009) Application of machine learning to epileptic seizure onset detection and treatment. PhD thesis, MIT (CHB-MIT scalp EEG database)."
     ],
-    "distinctness_audit": {"closest_existing_principle": "L1-068 EEG", "d_principle_estimate": 0.45, "advisory_label": "Distinct (parent-child PWDR pattern)", "rationale": "L1-068 EEG inverts scalp potential to recover neural source / cortical activity. L1-531 wraps with feature extraction + ILAE seizure classification. Different solution_space (1D seizure class per segment vs continuous source distribution); adds L.spectral_decomposition, L.evolution_detection, L.seizure_threshold_classifier primitives."},
+    "distinctness_audit": {
+      "closest_existing_principle": "L1-068 EEG",
+      "d_principle_estimate": 0.45,
+      "advisory_label": "Distinct (parent-child PWDR pattern)",
+      "rationale": "L1-068 EEG inverts scalp potential to recover neural source / cortical activity. L1-531 wraps with feature extraction + ILAE seizure classification. Different solution_space (1D seizure class per segment vs continuous source distribution); adds L.spectral_decomposition, L.evolution_detection, L.seizure_threshold_classifier primitives."
+    },
     "clinical_context": "Universal in epilepsy monitoring units (EMU), ICU continuous EEG (cEEG), and neonatal monitoring. ~50 million people globally have epilepsy. Status epilepticus is a neurological emergency with ~30-day mortality 15-20%. UTSW Comprehensive Epilepsy Center is a Level-4 epilepsy center. Commercial: Persyst (Persyst SeizureXpress), Natus NeuroWorks, BioSerenity, NeuroPace RNS (responsive neurostimulation with on-board seizure detection)."
-  }
+  },
+  "display_slug": "eeg-seizure"
 }

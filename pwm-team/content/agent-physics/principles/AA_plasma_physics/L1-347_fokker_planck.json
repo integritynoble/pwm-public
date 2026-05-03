@@ -2,7 +2,7 @@
   "artifact_id": "L1-347",
   "layer": "L1",
   "principle_number": "347",
-  "title": "Fokker-Planck \u2014 Coulomb-collision kinetic",
+  "title": "Fokker-Planck — Coulomb-collision kinetic",
   "domain": "Plasma Physics",
   "sub_domain": "Plasma Coulomb collision operator",
   "source_file": "AA_plasma_physics/347_fokker_planck.md",
@@ -11,7 +11,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Fokker-Planck \u2014 Coulomb-collision kinetic forward model.",
+    "description": "Fokker-Planck — Coulomb-collision kinetic forward model.",
     "forward_model": "df/dt|_coll = -div_v(A f - D grad_v f); A, D from Rosenbluth potentials h, g",
     "world_state_x": "velocity-space distribution f(v,t) approaching Maxwellian",
     "observation_y": "Thomson scattering spectrum / fast-ion D-alpha",
@@ -167,5 +167,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "fokker-planck"
 }

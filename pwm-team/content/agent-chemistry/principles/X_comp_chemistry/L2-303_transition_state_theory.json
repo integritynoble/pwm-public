@@ -120,5 +120,6 @@
     "S3": "Solver class Gaussian IRC / NEB; Polyrate for canonical variational TST + tunneling (Wigner, Eckart, SCT) provably converges at rate q=2.0; monotone residual decrease.",
     "S4": "epsilon_fn evaluates cleanly across 50 random Omega samples; hardness rule satisfied (top baseline fails at Omega corner)."
   },
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "display_slug": "transition-state-theory"
 }

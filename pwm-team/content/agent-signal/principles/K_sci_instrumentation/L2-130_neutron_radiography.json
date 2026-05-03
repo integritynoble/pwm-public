@@ -5,14 +5,48 @@
   "principle_ref": "sha256:<L1-130_principle_hash>",
   "title": "Neutron Tomography Spec",
   "spec_type": "mismatch_only",
-
   "six_tuple": {
     "omega": {
-      "N_proj": [10, 2000], "H": [128, 4096], "W": [128, 4096],
-      "pixel_um": [5, 500], "L_over_D": [50, 2000],
-      "beam_hardening": [0.0, 0.3], "scatter_fraction": [0.0, 0.3],
-      "limited_angles": [0, 120], "motion_blur": [0.0, 5.0],
-      "flux_inhomogeneity": [0.0, 0.2]
+      "N_proj": [
+        10,
+        2000
+      ],
+      "H": [
+        128,
+        4096
+      ],
+      "W": [
+        128,
+        4096
+      ],
+      "pixel_um": [
+        5,
+        500
+      ],
+      "L_over_D": [
+        50,
+        2000
+      ],
+      "beam_hardening": [
+        0.0,
+        0.3
+      ],
+      "scatter_fraction": [
+        0.0,
+        0.3
+      ],
+      "limited_angles": [
+        0,
+        120
+      ],
+      "motion_blur": [
+        0.0,
+        5.0
+      ],
+      "flux_inhomogeneity": [
+        0.0,
+        0.2
+      ]
     },
     "E": {
       "forward": "I_trans = I_0 * exp(-integral mu_n dl) + scatter + n",
@@ -20,43 +54,90 @@
       "primitive_chain": "L.absorb.lambert -> L.project.ray -> int.spatial",
       "inverse": "recover mu_n(r) 3D volume from projections"
     },
-    "B": {"nonnegativity_mu": true, "bounded_support": true},
-    "I": {"strategy": "fbp_init"},
-    "O": ["attenuation_NMSE", "spatial_resolution_um", "classification_accuracy", "residual_norm"],
+    "B": {
+      "nonnegativity_mu": true,
+      "bounded_support": true
+    },
+    "I": {
+      "strategy": "fbp_init"
+    },
+    "O": [
+      "attenuation_NMSE",
+      "spatial_resolution_um",
+      "classification_accuracy",
+      "residual_norm"
+    ],
     "epsilon_fn": "2e-3 + 0.02 * beam_hardening + 0.02 * scatter_fraction + 0.01 * (limited_angles/60) + 0.01 * motion_blur"
   },
-
   "protocol_fields": {
-    "input_format": {"projections": "float32(N_proj, H, W)"},
-    "output_format": {"volume": "float32(H, W, Z)"},
+    "input_format": {
+      "projections": "float32(N_proj, H, W)"
+    },
+    "output_format": {
+      "volume": "float32(H, W, Z)"
+    },
     "baselines": [
-      {"name": "FBP",       "method_sig": "L+O", "expected_nmse": 1e-2},
-      {"name": "SART-TV",   "method_sig": "L+O", "expected_nmse": 5e-3},
-      {"name": "ASTRA-TV",  "method_sig": "L+O", "expected_nmse": 4e-3},
-      {"name": "FBP-ConvNet","method_sig": "L+N","expected_nmse": 3e-3}
+      {
+        "name": "FBP",
+        "method_sig": "L+O",
+        "expected_nmse": 0.01
+      },
+      {
+        "name": "SART-TV",
+        "method_sig": "L+O",
+        "expected_nmse": 0.005
+      },
+      {
+        "name": "ASTRA-TV",
+        "method_sig": "L+O",
+        "expected_nmse": 0.004
+      },
+      {
+        "name": "FBP-ConvNet",
+        "method_sig": "L+N",
+        "expected_nmse": 0.003
+      }
     ]
   },
-
   "ibenchmark_range": {
     "center_ibenchmark": {
       "rho": 1,
-      "omega_tier": {"N_proj": 360, "H": 1024, "W": 1024, "pixel_um": 50, "L_over_D": 500, "beam_hardening": 0.0},
-      "epsilon": 5e-3
+      "omega_tier": {
+        "N_proj": 360,
+        "H": 1024,
+        "W": 1024,
+        "pixel_um": 50,
+        "L_over_D": 500,
+        "beam_hardening": 0.0
+      },
+      "epsilon": 0.005
     },
-    "tier_bounds": {"N_proj": [60, 1800], "H": [256, 2048]},
-    "proximity_threshold": 0.10
+    "tier_bounds": {
+      "N_proj": [
+        60,
+        1800
+      ],
+      "H": [
+        256,
+        2048
+      ]
+    },
+    "proximity_threshold": 0.1
   },
-
-  "d_spec": 0.50,
+  "d_spec": 0.5,
   "d_spec_notes": "Related to X-ray tomography (d~0.30); uses unique neutron-carrier advantages for H/Li/B imaging. Distance from 131 proton radiography ~= 0.35.",
-
-  "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
   "s1_s4_justifications": {
     "S1": "Projections N_proj x H x W; 3D volume HxWxZ consistent under Radon.",
     "S2": "Radon invertible under full-angle sampling.",
     "S3": "FBP closed-form; SART iterative geometric convergence.",
     "S4": "epsilon_fn defined; FBP-ConvNet fails at limited_angles=120 + scatter=0.3 (hardness)."
   },
-
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "display_slug": "neutron-radiography"
 }

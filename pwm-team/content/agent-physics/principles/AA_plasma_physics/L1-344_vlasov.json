@@ -2,7 +2,7 @@
   "artifact_id": "L1-344",
   "layer": "L1",
   "principle_number": "344",
-  "title": "Vlasov Equation \u2014 collisionless kinetic plasma",
+  "title": "Vlasov Equation — collisionless kinetic plasma",
   "domain": "Plasma Physics",
   "sub_domain": "6D phase-space Vlasov-Poisson",
   "source_file": "AA_plasma_physics/344_vlasov.md",
@@ -11,7 +11,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Vlasov Equation \u2014 collisionless kinetic plasma forward model.",
+    "description": "Vlasov Equation — collisionless kinetic plasma forward model.",
     "forward_model": "df/dt + v.grad_x f + (q/m)(E + v x B).grad_v f = 0; coupled Poisson or Maxwell",
     "world_state_x": "distribution function f(x, v, t)",
     "observation_y": "velocity distribution via LIF + bulk moments (density/velocity/pressure)",
@@ -174,5 +174,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "vlasov"
 }

@@ -2,7 +2,7 @@
   "artifact_id": "L1-247",
   "layer": "L1",
   "principle_number": "247",
-  "title": "Phase Retrieval \u2014 Gerchberg-Saxton / hybrid input-output",
+  "title": "Phase Retrieval — Gerchberg-Saxton / hybrid input-output",
   "domain": "Electromagnetics",
   "sub_domain": "Non-convex phase recovery from intensity",
   "source_file": "U_electromagnetics/247_phase_retrieval.md",
@@ -11,7 +11,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Phase Retrieval \u2014 Gerchberg-Saxton / hybrid input-output forward model.",
+    "description": "Phase Retrieval — Gerchberg-Saxton / hybrid input-output forward model.",
     "forward_model": "y = |F{x}|^2 + n; recover phase(F{x}) via alternating projection",
     "world_state_x": "complex-valued 2D object x(r)",
     "observation_y": "intensity |F{x}|^2 in far/near field",
@@ -174,5 +174,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "phase-retrieval"
 }

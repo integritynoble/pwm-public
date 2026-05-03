@@ -2,7 +2,7 @@
   "artifact_id": "L1-218",
   "layer": "L1",
   "principle_number": "218",
-  "title": "Viscoelasticity \u2014 linear hereditary models",
+  "title": "Viscoelasticity — linear hereditary models",
   "domain": "Structural Mechanics",
   "sub_domain": "Maxwell / Kelvin-Voigt / prony-series viscoelasticity",
   "source_file": "T_structural_mechanics/218_viscoelasticity.md",
@@ -11,7 +11,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Viscoelasticity \u2014 linear hereditary models forward model.",
+    "description": "Viscoelasticity — linear hereditary models forward model.",
     "forward_model": "sigma(t) = int_0^t G(t-s) d eps/ds ds; G(t) = G_inf + sum G_i exp(-t/tau_i)",
     "world_state_x": "Prony series G_i, tau_i",
     "observation_y": "DMA E*(omega) + creep / relaxation curves",
@@ -167,5 +167,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "viscoelasticity"
 }

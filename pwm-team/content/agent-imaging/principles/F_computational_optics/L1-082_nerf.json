@@ -2,7 +2,7 @@
   "artifact_id": "L1-082",
   "layer": "L1",
   "principle_number": "082",
-  "title": "Neural Radiance Fields (NeRF) \u2014 implicit volumetric scene representation",
+  "title": "Neural Radiance Fields (NeRF) — implicit volumetric scene representation",
   "domain": "Computational Optics",
   "sub_domain": "Implicit 3D scene reconstruction",
   "source_file": "F_computational_optics/082_nerf.md",
@@ -198,5 +198,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "nerf"
 }

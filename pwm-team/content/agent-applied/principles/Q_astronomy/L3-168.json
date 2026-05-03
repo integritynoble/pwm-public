@@ -3,7 +3,7 @@
   "layer": "L3",
   "parent_l2": "L2-168",
   "parent_l1": "L1-168",
-  "title": "Event Horizon Telescope (VLBI) Imaging \u2014 Benchmark Suite",
+  "title": "Event Horizon Telescope (VLBI) Imaging — Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "EHT_M87_2017_public",
@@ -290,5 +290,6 @@
     "M6_gate_checks": "gates/check_s{1,2,3,4}.py embedded with thresholds.yaml."
   },
   "ipfs_cid": null,
-  "ground_truth_cid": null
+  "ground_truth_cid": null,
+  "display_slug": "event-horizon-telescope-imaging-benchmark-suite"
 }

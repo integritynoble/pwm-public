@@ -131,5 +131,6 @@
     "S3": "Solver class Tikhonov-regularized Laplace inversion (CONTIN, GEX); tube model fits via Marquardt-Levenberg provably converges at rate q=2.0; monotone residual decrease.",
     "S4": "epsilon_fn evaluates cleanly across 50 random Omega samples; hardness rule satisfied (top baseline fails at Omega corner)."
   },
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "display_slug": "reptation-theory"
 }

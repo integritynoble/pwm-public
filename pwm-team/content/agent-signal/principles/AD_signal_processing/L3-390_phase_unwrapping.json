@@ -5,66 +5,151 @@
   "parent_l1": "L1-390",
   "title": "Phase Unwrapping Benchmark Suite (InSAR + MRI + synthetic)",
   "benchmark_type": "combined_P_and_I",
-
   "dataset_registry": {
     "primary": "Sentinel-1 InSAR interferograms (EU Sinergise, European Ground Motion Service)",
     "secondary": "ALOS-2 InSAR + ISCE2-derived coherence maps",
     "tertiary": "MRI phase images (BrainWeb) + synthetic 2D surfaces with known phi",
     "construction_method": "Wrap known phi surfaces; inject phase noise N(0, sigma_phi); spatially varying coherence",
-    "num_dev_instances_per_tier": 20, "holdout_instances_per_tier": 10
+    "num_dev_instances_per_tier": 20,
+    "holdout_instances_per_tier": 10
   },
-
   "ibenchmarks": [
     {
-      "tier": "T1_high_coherence", "rho": 1,
-      "omega_tier": {"H": 512, "W": 512, "sigma_phi": 0.2, "discontinuity_fraction": 0.0, "coherence_floor": 0.9},
-      "epsilon": 0.08, "d_ibench": 0.14,
+      "tier": "T1_high_coherence",
+      "rho": 1,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "sigma_phi": 0.2,
+        "discontinuity_fraction": 0.0,
+        "coherence_floor": 0.9
+      },
+      "epsilon": 0.08,
+      "d_ibench": 0.14,
       "baselines": [
-        {"name": "LS-DCT",   "rmse_rad": 0.15, "Q": 0.58},
-        {"name": "Goldstein","rmse_rad": 0.10, "Q": 0.78},
-        {"name": "PhaseNet", "rmse_rad": 0.07, "Q": 0.92}
+        {
+          "name": "LS-DCT",
+          "rmse_rad": 0.15,
+          "Q": 0.58
+        },
+        {
+          "name": "Goldstein",
+          "rmse_rad": 0.1,
+          "Q": 0.78
+        },
+        {
+          "name": "PhaseNet",
+          "rmse_rad": 0.07,
+          "Q": 0.92
+        }
       ]
     },
     {
-      "tier": "T2_moderate", "rho": 3,
-      "omega_tier": {"H": 512, "W": 512, "sigma_phi": 0.5, "discontinuity_fraction": 0.02, "coherence_floor": 0.6},
-      "epsilon": 0.25, "d_ibench": 0.28,
+      "tier": "T2_moderate",
+      "rho": 3,
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "sigma_phi": 0.5,
+        "discontinuity_fraction": 0.02,
+        "coherence_floor": 0.6
+      },
+      "epsilon": 0.25,
+      "d_ibench": 0.28,
       "baselines": [
-        {"name": "LS-DCT",   "rmse_rad": 0.35, "Q": 0.42},
-        {"name": "SnapHu",   "rmse_rad": 0.22, "Q": 0.68},
-        {"name": "PhaseNet", "rmse_rad": 0.20, "Q": 0.74}
+        {
+          "name": "LS-DCT",
+          "rmse_rad": 0.35,
+          "Q": 0.42
+        },
+        {
+          "name": "SnapHu",
+          "rmse_rad": 0.22,
+          "Q": 0.68
+        },
+        {
+          "name": "PhaseNet",
+          "rmse_rad": 0.2,
+          "Q": 0.74
+        }
       ]
     },
     {
-      "tier": "T3_noisy_discontinuous", "rho": 5,
-      "omega_tier": {"H": 1024, "W": 1024, "sigma_phi": 1.0, "discontinuity_fraction": 0.1, "coherence_floor": 0.3},
-      "epsilon": 0.6, "d_ibench": 0.52,
+      "tier": "T3_noisy_discontinuous",
+      "rho": 5,
+      "omega_tier": {
+        "H": 1024,
+        "W": 1024,
+        "sigma_phi": 1.0,
+        "discontinuity_fraction": 0.1,
+        "coherence_floor": 0.3
+      },
+      "epsilon": 0.6,
+      "d_ibench": 0.52,
       "baselines": [
-        {"name": "SnapHu",   "rmse_rad": 0.55, "Q": 0.45},
-        {"name": "PhaseNet", "rmse_rad": 0.50, "Q": 0.58}
+        {
+          "name": "SnapHu",
+          "rmse_rad": 0.55,
+          "Q": 0.45
+        },
+        {
+          "name": "PhaseNet",
+          "rmse_rad": 0.5,
+          "Q": 0.58
+        }
       ]
     },
     {
-      "tier": "T4_hardest", "rho": 10,
-      "omega_tier": {"H": 2048, "W": 2048, "sigma_phi": 2.0, "discontinuity_fraction": 0.3, "coherence_floor": 0.1, "local_fringe_gradient": 3.0},
-      "epsilon": 1.2, "d_ibench": 0.74,
+      "tier": "T4_hardest",
+      "rho": 10,
+      "omega_tier": {
+        "H": 2048,
+        "W": 2048,
+        "sigma_phi": 2.0,
+        "discontinuity_fraction": 0.3,
+        "coherence_floor": 0.1,
+        "local_fringe_gradient": 3.0
+      },
+      "epsilon": 1.2,
+      "d_ibench": 0.74,
       "baselines": [
-        {"name": "SnapHu",   "rmse_rad": 1.3, "Q": 0.25},
-        {"name": "PhaseNet", "rmse_rad": 1.1, "Q": 0.40}
+        {
+          "name": "SnapHu",
+          "rmse_rad": 1.3,
+          "Q": 0.25
+        },
+        {
+          "name": "PhaseNet",
+          "rmse_rad": 1.1,
+          "Q": 0.4
+        }
       ]
     }
   ],
-
   "p_benchmark": {
     "rho": 50,
-    "dataset_p_benchmark": {"name": "Sentinel-1 + ALOS-2 + MRI-BrainWeb union", "num_dev_instances": 200, "num_holdout_instances": 100},
+    "dataset_p_benchmark": {
+      "name": "Sentinel-1 + ALOS-2 + MRI-BrainWeb union",
+      "num_dev_instances": 200,
+      "num_holdout_instances": 100
+    },
     "baselines": [
-      {"name": "LS-DCT",   "overall_Q": 0.42},
-      {"name": "SnapHu",   "overall_Q": 0.62},
-      {"name": "PhaseNet", "overall_Q": 0.70}
+      {
+        "name": "LS-DCT",
+        "overall_Q": 0.42
+      },
+      {
+        "name": "SnapHu",
+        "overall_Q": 0.62
+      },
+      {
+        "name": "PhaseNet",
+        "overall_Q": 0.7
+      }
     ]
   },
-
   "hardness_rule_check": "SATISFIED — PhaseNet fails at T4_hardest corner (sigma_phi=2, discontinuity=0.3, coherence=0.1): 1.1 rad > epsilon_fn ~ 1.0 rad.",
-  "ipfs_cid": null, "ground_truth_cid": null
+  "ipfs_cid": null,
+  "ground_truth_cid": null,
+  "display_slug": "phase-unwrapping"
 }

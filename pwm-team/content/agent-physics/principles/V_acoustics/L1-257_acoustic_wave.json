@@ -2,7 +2,7 @@
   "artifact_id": "L1-257",
   "layer": "L1",
   "principle_number": "257",
-  "title": "Acoustic Wave Equation \u2014 time-domain pressure field reconstruction",
+  "title": "Acoustic Wave Equation — time-domain pressure field reconstruction",
   "domain": "Acoustics",
   "sub_domain": "3D linear acoustic wave propagation",
   "source_file": "V_acoustics/257_acoustic_wave.md",
@@ -11,7 +11,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Acoustic Wave Equation \u2014 time-domain pressure field reconstruction forward model.",
+    "description": "Acoustic Wave Equation — time-domain pressure field reconstruction forward model.",
     "forward_model": "1/c^2 * d^2 p/dt^2 - Laplacian(p) = s(x,t); p(x,0)=p0(x), dp/dt(x,0)=0",
     "world_state_x": "3D initial pressure field p0(x,y,z) or source distribution s(x,t) in a bounded domain",
     "observation_y": "time series p(x_r, t) at N_R receiver positions over [0, T]",
@@ -204,5 +204,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "acoustic-wave"
 }

@@ -2,7 +2,7 @@
   "artifact_id": "L1-246",
   "layer": "L1",
   "principle_number": "246",
-  "title": "Holographic Reconstruction \u2014 wavefront from interference",
+  "title": "Holographic Reconstruction — wavefront from interference",
   "domain": "Electromagnetics",
   "sub_domain": "Digital holography reconstruction",
   "source_file": "U_electromagnetics/246_holographic_recon.md",
@@ -11,7 +11,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Holographic Reconstruction \u2014 wavefront from interference forward model.",
+    "description": "Holographic Reconstruction — wavefront from interference forward model.",
     "forward_model": "I = |O + R|^2; reconstruction via spatial filtering + Fresnel backpropagation",
     "world_state_x": "complex object field O(x,y)",
     "observation_y": "intensity hologram I(x,y) on CCD",
@@ -181,5 +181,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "holographic-recon"
 }

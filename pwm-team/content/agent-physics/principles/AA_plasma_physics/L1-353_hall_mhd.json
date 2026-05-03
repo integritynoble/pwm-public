@@ -2,7 +2,7 @@
   "artifact_id": "L1-353",
   "layer": "L1",
   "principle_number": "353",
-  "title": "Hall MHD \u2014 ion-scale physics in reconnection",
+  "title": "Hall MHD — ion-scale physics in reconnection",
   "domain": "Plasma Physics",
   "sub_domain": "Hall term in resistive MHD (ion inertial scale)",
   "source_file": "AA_plasma_physics/353_hall_mhd.md",
@@ -11,7 +11,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Hall MHD \u2014 ion-scale physics in reconnection forward model.",
+    "description": "Hall MHD — ion-scale physics in reconnection forward model.",
     "forward_model": "E + u x B = eta J + (J x B - grad p_e)/n*e; Hall term dominates at ion inertial scale",
     "world_state_x": "ion/electron decoupled reconnection structure",
     "observation_y": "MMS spacecraft in-situ B, E, plasma moments",
@@ -174,5 +174,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "hall-mhd"
 }

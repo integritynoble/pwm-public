@@ -37,7 +37,7 @@
   },
   "W": {
     "existence": true,
-    "uniqueness": "for well-separated frequencies (delta_omega > 4pi/N) \u2014 Rayleigh criterion",
+    "uniqueness": "for well-separated frequencies (delta_omega > 4pi/N) — Rayleigh criterion",
     "stability": "conditional",
     "condition_number_kappa": 500,
     "condition_number_effective": 10,
@@ -169,5 +169,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "spectral-estimation"
 }

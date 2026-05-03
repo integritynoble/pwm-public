@@ -2,7 +2,7 @@
   "artifact_id": "L2-312",
   "layer": "L2",
   "parent_l1": "L1-312",
-  "title": "Time-Independent Schr\u00f6dinger Equation Mismatch-Only Spec",
+  "title": "Time-Independent Schrödinger Equation Mismatch-Only Spec",
   "spec_type": "mismatch_only",
   "six_tuple": {
     "omega": {
@@ -29,7 +29,7 @@
       "forward": "(-hbar^2/2m * Laplacian + V(r)) psi_n(r) = E_n psi_n(r)",
       "operator": "schrodinger_stationary_forward_mismatch",
       "primitive_chain": "E.hamiltonian -> M.eigensolve -> O.spectra_wavefunctions",
-      "inverse": "recover constitutive parameters for Time-Independent Schr\u00f6dinger Equation"
+      "inverse": "recover constitutive parameters for Time-Independent Schrödinger Equation"
     },
     "B": {
       "domain_specific_priors": true
@@ -117,5 +117,6 @@
     "S3": "Solver class Iterative Lanczos / Davidson; finite-element basis; adjoint-eigenvalue for inversion provably converges at rate q=2.0; monotone residual decrease.",
     "S4": "epsilon_fn evaluates cleanly across 50 random Omega samples; hardness rule satisfied (top baseline fails at Omega corner)."
   },
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "display_slug": "time-independent-schrodinger"
 }

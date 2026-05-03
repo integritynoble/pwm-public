@@ -2,7 +2,7 @@
   "artifact_id": "L1-248",
   "layer": "L1",
   "principle_number": "248",
-  "title": "Photonic Inverse Design \u2014 nanostructure topology optimization",
+  "title": "Photonic Inverse Design — nanostructure topology optimization",
   "domain": "Electromagnetics",
   "sub_domain": "Adjoint-based photonic topology optimization",
   "source_file": "U_electromagnetics/248_photonic_inverse.md",
@@ -11,7 +11,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Photonic Inverse Design \u2014 nanostructure topology optimization forward model.",
+    "description": "Photonic Inverse Design — nanostructure topology optimization forward model.",
     "forward_model": "grad FOM / grad eps = Re{ - E_fwd . E_adj * j*omega * delta_eps }; update eps via gradient",
     "world_state_x": "eps(x,y) distribution optimized for a device figure of merit (FOM)",
     "observation_y": "target scattering / transmission S-parameters",
@@ -181,5 +181,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "photonic-inverse"
 }

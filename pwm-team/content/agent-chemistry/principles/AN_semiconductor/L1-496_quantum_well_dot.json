@@ -11,7 +11,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
   "E": {
-    "description": "Envelope-function k.p or tight-binding Hamiltonian for semiconductor nanostructures; Schr\u00f6dinger-Poisson self-consistent for charged QDs; exchange-correlation via LDA/GGA.",
+    "description": "Envelope-function k.p or tight-binding Hamiltonian for semiconductor nanostructures; Schrödinger-Poisson self-consistent for charged QDs; exchange-correlation via LDA/GGA.",
     "forward_model": "H_{k.p} phi_n = E_n phi_n with strain-corrected Hamiltonian;  (H_{k.p} + V_H + V_xc) phi_n = E_n phi_n (SCF)",
     "world_state_x": "Bound-state wavefunctions phi_n(r) and energies E_n in quantum well or dot",
     "observation_y": "Optical absorption/PL transitions, intersubband absorption, Coulomb diamonds in transport spectroscopy",
@@ -159,5 +159,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "quantum-well-dot"
 }

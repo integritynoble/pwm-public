@@ -5,67 +5,165 @@
   "parent_l1": "L1-388",
   "title": "BSS Benchmark Suite (WSJ0-2mix + SiSEC + synthetic)",
   "benchmark_type": "combined_P_and_I",
-
   "dataset_registry": {
     "primary": "Synthetic ICA (N=3 mixtures of super-/sub-Gaussian signals, T=10000, varied kappa_A)",
     "secondary": "WSJ0-2mix / WSJ0-3mix speech separation benchmark; SiSEC challenge datasets",
     "tertiary": "Real EEG ICA (BCI2000) + Fetal ECG (Physionet)",
     "construction_method": "Generate sources of prescribed kurtosis; sample A from N(0, I) or with targeted kappa; scale to SNR",
-    "num_dev_instances_per_tier": 20, "holdout_instances_per_tier": 10
+    "num_dev_instances_per_tier": 20,
+    "holdout_instances_per_tier": 10
   },
-
   "ibenchmarks": [
     {
-      "tier": "T1_nominal", "rho": 1,
-      "omega_tier": {"N": 3, "M": 3, "T": 10000, "SNR_dB": 30, "kappa_A": 10, "gaussianity": 0.0},
-      "epsilon": 25.0, "d_ibench": 0.14,
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "N": 3,
+        "M": 3,
+        "T": 10000,
+        "SNR_dB": 30,
+        "kappa_A": 10,
+        "gaussianity": 0.0
+      },
+      "epsilon": 25.0,
+      "d_ibench": 0.14,
       "baselines": [
-        {"name": "FastICA","sir_db": 28.0, "amari_index": 0.03, "Q": 0.88},
-        {"name": "JADE",   "sir_db": 29.5, "amari_index": 0.02, "Q": 0.92},
-        {"name": "SOBI",   "sir_db": 26.0, "amari_index": 0.04, "Q": 0.80}
+        {
+          "name": "FastICA",
+          "sir_db": 28.0,
+          "amari_index": 0.03,
+          "Q": 0.88
+        },
+        {
+          "name": "JADE",
+          "sir_db": 29.5,
+          "amari_index": 0.02,
+          "Q": 0.92
+        },
+        {
+          "name": "SOBI",
+          "sir_db": 26.0,
+          "amari_index": 0.04,
+          "Q": 0.8
+        }
       ]
     },
     {
-      "tier": "T2_lowSNR", "rho": 3,
-      "omega_tier": {"N": 3, "M": 3, "T": 5000, "SNR_dB": 10, "kappa_A": 30, "gaussianity": 0.1},
-      "epsilon": 18.0, "d_ibench": 0.28,
+      "tier": "T2_lowSNR",
+      "rho": 3,
+      "omega_tier": {
+        "N": 3,
+        "M": 3,
+        "T": 5000,
+        "SNR_dB": 10,
+        "kappa_A": 30,
+        "gaussianity": 0.1
+      },
+      "epsilon": 18.0,
+      "d_ibench": 0.28,
       "baselines": [
-        {"name": "FastICA","sir_db": 17.0, "Q": 0.52},
-        {"name": "JADE",   "sir_db": 19.5, "Q": 0.62},
-        {"name": "SOBI",   "sir_db": 15.0, "Q": 0.42}
+        {
+          "name": "FastICA",
+          "sir_db": 17.0,
+          "Q": 0.52
+        },
+        {
+          "name": "JADE",
+          "sir_db": 19.5,
+          "Q": 0.62
+        },
+        {
+          "name": "SOBI",
+          "sir_db": 15.0,
+          "Q": 0.42
+        }
       ]
     },
     {
-      "tier": "T3_illcond", "rho": 5,
-      "omega_tier": {"N": 5, "M": 5, "T": 5000, "SNR_dB": 5, "kappa_A": 200, "gaussianity": 0.3},
-      "epsilon": 10.0, "d_ibench": 0.50,
+      "tier": "T3_illcond",
+      "rho": 5,
+      "omega_tier": {
+        "N": 5,
+        "M": 5,
+        "T": 5000,
+        "SNR_dB": 5,
+        "kappa_A": 200,
+        "gaussianity": 0.3
+      },
+      "epsilon": 10.0,
+      "d_ibench": 0.5,
       "baselines": [
-        {"name": "FastICA","sir_db": 8.0,  "Q": 0.32},
-        {"name": "JADE",   "sir_db": 11.0, "Q": 0.55}
+        {
+          "name": "FastICA",
+          "sir_db": 8.0,
+          "Q": 0.32
+        },
+        {
+          "name": "JADE",
+          "sir_db": 11.0,
+          "Q": 0.55
+        }
       ]
     },
     {
-      "tier": "T4_reverb_speech", "rho": 10,
-      "omega_tier": {"N": 2, "M": 2, "T": 50000, "SNR_dB": 0, "kappa_A": 10, "gaussianity": 0.5, "reverberation_ms": 300, "non_stationarity": 0.8},
-      "epsilon": 3.0, "d_ibench": 0.75,
+      "tier": "T4_reverb_speech",
+      "rho": 10,
+      "omega_tier": {
+        "N": 2,
+        "M": 2,
+        "T": 50000,
+        "SNR_dB": 0,
+        "kappa_A": 10,
+        "gaussianity": 0.5,
+        "reverberation_ms": 300,
+        "non_stationarity": 0.8
+      },
+      "epsilon": 3.0,
+      "d_ibench": 0.75,
       "baselines": [
-        {"name": "FreqICA",    "sir_db": 4.0,  "Q": 0.40},
-        {"name": "Conv-TasNet","sir_db": 12.0, "STOI": 0.82, "Q": 0.72}
+        {
+          "name": "FreqICA",
+          "sir_db": 4.0,
+          "Q": 0.4
+        },
+        {
+          "name": "Conv-TasNet",
+          "sir_db": 12.0,
+          "STOI": 0.82,
+          "Q": 0.72
+        }
       ]
     }
   ],
-
   "p_benchmark": {
     "rho": 50,
-    "dataset_p_benchmark": {"name": "Synthetic ICA + WSJ0-2mix + SiSEC + EEG", "num_dev_instances": 200, "num_holdout_instances": 100},
+    "dataset_p_benchmark": {
+      "name": "Synthetic ICA + WSJ0-2mix + SiSEC + EEG",
+      "num_dev_instances": 200,
+      "num_holdout_instances": 100
+    },
     "baselines": [
-      {"name": "FastICA",     "overall_Q": 0.52},
-      {"name": "JADE",        "overall_Q": 0.58},
-      {"name": "SOBI",        "overall_Q": 0.48},
-      {"name": "Conv-TasNet", "overall_Q": 0.62, "note": "audio only"}
+      {
+        "name": "FastICA",
+        "overall_Q": 0.52
+      },
+      {
+        "name": "JADE",
+        "overall_Q": 0.58
+      },
+      {
+        "name": "SOBI",
+        "overall_Q": 0.48
+      },
+      {
+        "name": "Conv-TasNet",
+        "overall_Q": 0.62,
+        "note": "audio only"
+      }
     ]
   },
-
   "hardness_rule_check": "SATISFIED — FastICA/JADE fail at T4_reverb_speech (reverberation=300 ms) with SIR 4 dB < epsilon_fn ~ 8 dB.",
-  "ipfs_cid": null, "ground_truth_cid": null
+  "ipfs_cid": null,
+  "ground_truth_cid": null,
+  "display_slug": "blind-source-separation"
 }

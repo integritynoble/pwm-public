@@ -3,7 +3,7 @@
   "layer": "L3",
   "parent_l2": "L2-481",
   "parent_l1": "L1-481",
-  "title": "Parton Distribution Functions (DGLAP) \u2014 Benchmark Suite",
+  "title": "Parton Distribution Functions (DGLAP) — Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "HERA_combined_DIS_dataset",
@@ -255,5 +255,6 @@
     "M6_gate_checks": "gates/check_s{1,2,3,4}.py embedded with thresholds.yaml."
   },
   "ipfs_cid": null,
-  "ground_truth_cid": null
+  "ground_truth_cid": null,
+  "display_slug": "parton-distribution-functions-benchmark-suite"
 }

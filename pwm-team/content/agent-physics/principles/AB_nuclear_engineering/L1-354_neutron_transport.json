@@ -2,7 +2,7 @@
   "artifact_id": "L1-354",
   "layer": "L1",
   "principle_number": "354",
-  "title": "Neutron Transport \u2014 linear Boltzmann equation",
+  "title": "Neutron Transport — linear Boltzmann equation",
   "domain": "Nuclear Engineering",
   "sub_domain": "Discrete-ordinates / SN neutron transport",
   "source_file": "AB_nuclear_engineering/354_neutron_transport.md",
@@ -11,7 +11,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Neutron Transport \u2014 linear Boltzmann equation forward model.",
+    "description": "Neutron Transport — linear Boltzmann equation forward model.",
     "forward_model": "Omega.grad psi + sigma_t psi = int sigma_s(E'->E, Omega'->Omega) psi dE' dOmega' + chi/(4pi) * int nu*sigma_f * phi dE'",
     "world_state_x": "angular flux psi(r, Omega, E, t) in 6D phase space",
     "observation_y": "fission chamber / foil activation / detector count rates at N_d positions",
@@ -204,5 +204,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "neutron-transport"
 }

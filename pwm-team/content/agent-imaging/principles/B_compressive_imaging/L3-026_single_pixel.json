@@ -5,57 +5,138 @@
   "parent_l1": "L1-026",
   "title": "Single-Pixel Imaging Mismatch-Only Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
-
   "dataset_registry": {
     "primary": "Set11 (barbara, boats, cameraman, fingerprint, flinstones, foreman, house, Lena512, Monarch, Parrots, peppers256)",
     "secondary": "BSD68 (Berkeley segmentation dataset, 68 test images)",
     "construction_method": "grayscale center-crop to power-of-2 sizes [32, 64, 128, 256]; vectorize for n = H*W",
     "num_dev_instances_per_tier": 20
   },
-
   "ibenchmarks": [
     {
-      "tier": "T1_nominal", "rho": 1,
-      "omega_tier": {"n_pixels": 4096, "sampling_ratio": 0.25, "noise_level": 0.01, "gain_alpha": 0.0, "illum_sigma": 0.0, "dark_offset": 0.0},
-      "epsilon": 27.0, "d_ibench": 0.15,
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "n_pixels": 4096,
+        "sampling_ratio": 0.25,
+        "noise_level": 0.01,
+        "gain_alpha": 0.0,
+        "illum_sigma": 0.0,
+        "dark_offset": 0.0
+      },
+      "epsilon": 27.0,
+      "d_ibench": 0.15,
       "baselines": [
-        {"name": "FISTA-L1",  "score": 25.2, "Q": 0.58},
-        {"name": "GAP-TV",    "score": 27.8, "Q": 0.72},
-        {"name": "ISTA-Net+", "score": 31.5, "Q": 0.90}
+        {
+          "name": "FISTA-L1",
+          "score": 25.2,
+          "Q": 0.58
+        },
+        {
+          "name": "GAP-TV",
+          "score": 27.8,
+          "Q": 0.72
+        },
+        {
+          "name": "ISTA-Net+",
+          "score": 31.5,
+          "Q": 0.9
+        }
       ]
     },
     {
-      "tier": "T2_low", "rho": 3,
-      "omega_tier": {"n_pixels": 4096, "sampling_ratio": 0.15, "noise_level": 0.02, "gain_alpha": 0.001, "illum_sigma": 5.0, "dark_offset": 0.005},
-      "epsilon": 23.5, "d_ibench": 0.30,
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "n_pixels": 4096,
+        "sampling_ratio": 0.15,
+        "noise_level": 0.02,
+        "gain_alpha": 0.001,
+        "illum_sigma": 5.0,
+        "dark_offset": 0.005
+      },
+      "epsilon": 23.5,
+      "d_ibench": 0.3,
       "baselines": [
-        {"name": "FISTA-L1",  "score": 22.1, "Q": 0.45},
-        {"name": "GAP-TV",    "score": 23.8, "Q": 0.52},
-        {"name": "ISTA-Net+", "score": 26.0, "Q": 0.68}
+        {
+          "name": "FISTA-L1",
+          "score": 22.1,
+          "Q": 0.45
+        },
+        {
+          "name": "GAP-TV",
+          "score": 23.8,
+          "Q": 0.52
+        },
+        {
+          "name": "ISTA-Net+",
+          "score": 26.0,
+          "Q": 0.68
+        }
       ]
     },
     {
-      "tier": "T3_moderate", "rho": 5,
-      "omega_tier": {"n_pixels": 16384, "sampling_ratio": 0.10, "noise_level": 0.03, "gain_alpha": 0.002, "illum_sigma": 10.0, "dark_offset": 0.010},
-      "epsilon": 20.5, "d_ibench": 0.48,
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "n_pixels": 16384,
+        "sampling_ratio": 0.1,
+        "noise_level": 0.03,
+        "gain_alpha": 0.002,
+        "illum_sigma": 10.0,
+        "dark_offset": 0.01
+      },
+      "epsilon": 20.5,
+      "d_ibench": 0.48,
       "baselines": [
-        {"name": "FISTA-L1",  "score": 19.3, "Q": 0.38},
-        {"name": "GAP-TV",    "score": 20.2, "Q": 0.44},
-        {"name": "ISTA-Net+", "score": 22.6, "Q": 0.58}
+        {
+          "name": "FISTA-L1",
+          "score": 19.3,
+          "Q": 0.38
+        },
+        {
+          "name": "GAP-TV",
+          "score": 20.2,
+          "Q": 0.44
+        },
+        {
+          "name": "ISTA-Net+",
+          "score": 22.6,
+          "Q": 0.58
+        }
       ]
     },
     {
-      "tier": "T4_blind", "rho": 10,
-      "omega_tier": {"n_pixels": 65536, "sampling_ratio": 0.05, "noise_level": 0.05, "gain_alpha": 0.003, "illum_sigma": 15.0, "dark_offset": 0.02},
-      "epsilon": 18.5, "d_ibench": 0.70,
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "n_pixels": 65536,
+        "sampling_ratio": 0.05,
+        "noise_level": 0.05,
+        "gain_alpha": 0.003,
+        "illum_sigma": 15.0,
+        "dark_offset": 0.02
+      },
+      "epsilon": 18.5,
+      "d_ibench": 0.7,
       "baselines": [
-        {"name": "FISTA-L1",  "score": 16.2, "Q": 0.22},
-        {"name": "GAP-TV",    "score": 17.0, "Q": 0.28},
-        {"name": "ISTA-Net+", "score": 18.8, "Q": 0.42}
+        {
+          "name": "FISTA-L1",
+          "score": 16.2,
+          "Q": 0.22
+        },
+        {
+          "name": "GAP-TV",
+          "score": 17.0,
+          "Q": 0.28
+        },
+        {
+          "name": "ISTA-Net+",
+          "score": 18.8,
+          "Q": 0.42
+        }
       ]
     }
   ],
-
   "p_benchmark": {
     "rho": 50,
     "dataset_p_benchmark": {
@@ -64,13 +145,22 @@
       "construction_method": "deterministic G(SHA256(h_sub||k)) seed per draw"
     },
     "baselines": [
-      {"name": "FISTA-L1",  "overall_Q": 0.43},
-      {"name": "GAP-TV",    "overall_Q": 0.52},
-      {"name": "ISTA-Net+", "overall_Q": 0.68}
+      {
+        "name": "FISTA-L1",
+        "overall_Q": 0.43
+      },
+      {
+        "name": "GAP-TV",
+        "overall_Q": 0.52
+      },
+      {
+        "name": "ISTA-Net+",
+        "overall_Q": 0.68
+      }
     ]
   },
-
   "hardness_rule_check": "SATISFIED — ISTA-Net+ fails at T4_blind (18.8 dB < 18.5 OK at tier epsilon, but fails the full P-bench curve in S4 stratum).",
   "ipfs_cid": null,
-  "ground_truth_cid": null
+  "ground_truth_cid": null,
+  "display_slug": "single-pixel"
 }

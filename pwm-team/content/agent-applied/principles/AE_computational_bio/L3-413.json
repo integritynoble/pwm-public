@@ -3,7 +3,7 @@
   "layer": "L3",
   "parent_l2": "L2-413",
   "parent_l1": "L1-413",
-  "title": "HMM Sequence Alignment and Profile Inference \u2014 Benchmark Suite",
+  "title": "HMM Sequence Alignment and Profile Inference — Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "Pfam_35.0_protein_families",
@@ -255,5 +255,6 @@
     "M6_gate_checks": "gates/check_s{1,2,3,4}.py embedded with thresholds.yaml."
   },
   "ipfs_cid": null,
-  "ground_truth_cid": null
+  "ground_truth_cid": null,
+  "display_slug": "hmm-sequence-alignment-and-profile-inference-benchmark-suite"
 }

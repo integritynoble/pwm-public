@@ -125,5 +125,6 @@
     "S3": "Solver class Richardson plot (log(J_s/T^2) vs 1/T); Bayesian joint fit across T provably converges at rate q=2.0; monotone residual decrease.",
     "S4": "epsilon_fn evaluates cleanly across 50 random Omega samples; hardness rule satisfied (top baseline fails at Omega corner)."
   },
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "display_slug": "thermionic-emission"
 }

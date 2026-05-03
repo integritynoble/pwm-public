@@ -11,7 +11,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Monte Carlo Event Generation: MC event generator tuning: extract parton shower and hadronization parameters from LEP/LHC event shape distributions. The forward operator produces the measurement through a 3-node primitive DAG (M.ps.parton_shower_dipole\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=5 with effective condition number kappa_eff~1000.0; non_perturbative_power_corrections, color_reconnection_model set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "Monte Carlo Event Generation: MC event generator tuning: extract parton shower and hadronization parameters from LEP/LHC event shape distributions. The forward operator produces the measurement through a 3-node primitive DAG (M.ps.parton_shower_dipole…); recovery is posed as a parameter_estimation problem. Difficulty tier delta=5 with effective condition number kappa_eff~1000.0; non_perturbative_power_corrections, color_reconnection_model set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "p(event) = sigma_hard * PSF(parton_shower, {alpha_s, lambda}) * H(Lund_model, {a,b,sigma_p})",
     "world_state_x": "Pythia8/Herwig7 tune parameters (alpha_s_ISR, alpha_s_FSR, Lund_a, Lund_b, sigma_p)",
     "observation_y": "event shape distributions (thrust, sphericity, C-parameter) and particle multiplicities",
@@ -149,5 +149,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "monte-carlo-event-generation"
 }

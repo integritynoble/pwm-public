@@ -2,7 +2,7 @@
   "artifact_id": "L1-284",
   "layer": "L1",
   "principle_number": "284",
-  "title": "Induced Polarization \u2014 chargeability imaging",
+  "title": "Induced Polarization — chargeability imaging",
   "domain": "Geophysics",
   "sub_domain": "Time- or frequency-domain IP inversion",
   "source_file": "W_geophysics/284_induced_polarization.md",
@@ -11,7 +11,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Induced Polarization \u2014 chargeability imaging forward model.",
+    "description": "Induced Polarization — chargeability imaging forward model.",
     "forward_model": "eta = (V_DC - V_IP) / V_DC; Cole-Cole: m(omega) = m_0 [1 - 1/(1 + (j omega tau)^c)]",
     "world_state_x": "chargeability m(x) and Cole-Cole relaxation tau(x)",
     "observation_y": "time-decay or frequency-dispersion IP measurements",
@@ -188,5 +188,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "induced-polarization"
 }

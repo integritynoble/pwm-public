@@ -200,5 +200,6 @@
     "agent-numerics-verifier",
     "agent-cross-domain-verifier"
   ],
-  "verification_date": "2026-04-21"
+  "verification_date": "2026-04-21",
+  "display_slug": "cacti"
 }

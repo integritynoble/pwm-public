@@ -2,7 +2,7 @@
   "artifact_id": "L1-214",
   "layer": "L1",
   "principle_number": "214",
-  "title": "Linear Buckling \u2014 eigenvalue stability analysis",
+  "title": "Linear Buckling — eigenvalue stability analysis",
   "domain": "Structural Mechanics",
   "sub_domain": "Linear buckling load factor",
   "source_file": "T_structural_mechanics/214_linear_buckling.md",
@@ -11,7 +11,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Linear Buckling \u2014 eigenvalue stability analysis forward model.",
+    "description": "Linear Buckling — eigenvalue stability analysis forward model.",
     "forward_model": "(K + lambda_cr K_G(u_0)) phi_cr = 0; smallest lambda_cr is buckling load factor",
     "world_state_x": "critical load factor lambda_cr and buckling mode shape phi_cr",
     "observation_y": "load-deflection test and observed buckling point",
@@ -176,5 +176,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "linear-buckling"
 }

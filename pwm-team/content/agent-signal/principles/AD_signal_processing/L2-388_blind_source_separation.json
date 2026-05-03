@@ -5,12 +5,40 @@
   "principle_ref": "sha256:<L1-388_principle_hash>",
   "title": "BSS Instantaneous-Mixing Spec (ICA benchmark family)",
   "spec_type": "mismatch_only",
-
   "six_tuple": {
     "omega": {
-      "N": [2, 20], "M": [2, 20], "T": [500, 200000],
-      "SNR_dB": [-10, 40], "kappa_A": [1, 1000],
-      "reverberation_ms": [0, 500], "gaussianity": [0.0, 1.0], "non_stationarity": [0.0, 1.0]
+      "N": [
+        2,
+        20
+      ],
+      "M": [
+        2,
+        20
+      ],
+      "T": [
+        500,
+        200000
+      ],
+      "SNR_dB": [
+        -10,
+        40
+      ],
+      "kappa_A": [
+        1,
+        1000
+      ],
+      "reverberation_ms": [
+        0,
+        500
+      ],
+      "gaussianity": [
+        0.0,
+        1.0
+      ],
+      "non_stationarity": [
+        0.0,
+        1.0
+      ]
     },
     "E": {
       "forward": "y = A * s + n; A unknown, s components statistically independent",
@@ -18,44 +46,108 @@
       "primitive_chain": "L.mix.linear -> int.temporal",
       "inverse": "recover s and A up to permutation and scale from y alone"
     },
-    "B": {"statistical_independence": true, "at_most_one_gaussian": true, "finite_variance": true},
-    "I": {"strategy": "whitening_preprocess"},
-    "O": ["SIR_dB", "permutation_recovery_rate", "STOI", "MSE_A", "amari_index"],
+    "B": {
+      "statistical_independence": true,
+      "at_most_one_gaussian": true,
+      "finite_variance": true
+    },
+    "I": {
+      "strategy": "whitening_preprocess"
+    },
+    "O": [
+      "SIR_dB",
+      "permutation_recovery_rate",
+      "STOI",
+      "MSE_A",
+      "amari_index"
+    ],
     "epsilon_fn": "20.0 + 5.0 * log10(T/10000) - 2.0 * log10(kappa_A) - 20.0 * gaussianity"
   },
-
   "protocol_fields": {
-    "input_format": {"mixtures": "float32(M, T)"},
-    "output_format": {"sources": "float32(N, T)", "mixing_matrix": "float32(M, N)"},
+    "input_format": {
+      "mixtures": "float32(M, T)"
+    },
+    "output_format": {
+      "sources": "float32(N, T)",
+      "mixing_matrix": "float32(M, N)"
+    },
     "baselines": [
-      {"name": "FastICA",     "method_sig": "L+O", "expected_sir": 22.0},
-      {"name": "Infomax",     "method_sig": "L+O", "expected_sir": 21.0},
-      {"name": "JADE",        "method_sig": "L+O", "expected_sir": 23.0},
-      {"name": "SOBI",        "method_sig": "L+O", "expected_sir": 20.0},
-      {"name": "Conv-TasNet", "method_sig": "L+N", "expected_sir": 15.0, "note": "trained on audio only"}
+      {
+        "name": "FastICA",
+        "method_sig": "L+O",
+        "expected_sir": 22.0
+      },
+      {
+        "name": "Infomax",
+        "method_sig": "L+O",
+        "expected_sir": 21.0
+      },
+      {
+        "name": "JADE",
+        "method_sig": "L+O",
+        "expected_sir": 23.0
+      },
+      {
+        "name": "SOBI",
+        "method_sig": "L+O",
+        "expected_sir": 20.0
+      },
+      {
+        "name": "Conv-TasNet",
+        "method_sig": "L+N",
+        "expected_sir": 15.0,
+        "note": "trained on audio only"
+      }
     ]
   },
-
   "ibenchmark_range": {
     "center_ibenchmark": {
       "rho": 1,
-      "omega_tier": {"N": 3, "M": 3, "T": 10000, "SNR_dB": 30, "kappa_A": 10, "gaussianity": 0.0, "reverberation_ms": 0},
+      "omega_tier": {
+        "N": 3,
+        "M": 3,
+        "T": 10000,
+        "SNR_dB": 30,
+        "kappa_A": 10,
+        "gaussianity": 0.0,
+        "reverberation_ms": 0
+      },
       "epsilon": 25.0
     },
-    "tier_bounds": {"N": [2, 10], "T": [500, 50000], "SNR_dB": [0, 40], "kappa_A": [1, 100]},
-    "proximity_threshold": 0.10
+    "tier_bounds": {
+      "N": [
+        2,
+        10
+      ],
+      "T": [
+        500,
+        50000
+      ],
+      "SNR_dB": [
+        0,
+        40
+      ],
+      "kappa_A": [
+        1,
+        100
+      ]
+    },
+    "proximity_threshold": 0.1
   },
-
   "d_spec": 0.55,
   "d_spec_notes": "Distance from convolutive-BSS spec ~= 0.30 (adds reverberation dim). Distance from 393 robust PCA ~= 0.60 (Novel — different problem class).",
-
-  "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
   "s1_s4_justifications": {
     "S1": "A in R^{MxN}, s in R^{NxT}, y in R^{MxT}. Dimensionally consistent when M>=N.",
     "S2": "Identifiability proven under Darmois-Skitovich (at most one Gaussian source).",
     "S3": "FastICA Newton iteration quadratic convergence; Infomax stochastic natural-gradient.",
     "S4": "epsilon_fn defined over Omega; Conv-TasNet fails on non-audio mixtures (hardness across solution families holds)."
   },
-
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "display_slug": "blind-source-separation"
 }

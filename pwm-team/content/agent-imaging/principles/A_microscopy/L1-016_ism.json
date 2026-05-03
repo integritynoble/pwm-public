@@ -2,7 +2,7 @@
   "artifact_id": "L1-016",
   "layer": "L1",
   "principle_number": "016",
-  "title": "Image Scanning Microscopy (ISM) \u2014 pixel reassignment super-resolution",
+  "title": "Image Scanning Microscopy (ISM) — pixel reassignment super-resolution",
   "domain": "Microscopy",
   "sub_domain": "Confocal with small-pinhole detector array",
   "source_file": "A_microscopy/016_ism.md",
@@ -11,7 +11,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical domain literature for this specific principle.",
   "E": {
-    "description": "Image Scanning Microscopy (ISM) \u2014 pixel reassignment super-resolution: airy scan detector array produces the measurement through a 4-node primitive DAG K.psf.confocal -> S.scan.raster -> L.pixel_reassign -> int.temporal, with time-integrated exposure and Poisson signal noise + Gaussian read noise. Recovery is posed as a linear inverse problem that inverts the forward operator to estimate the scene-side 2D intensity. Difficulty tier delta=3 with effective condition number kappa_eff~9; calibration-level mismatch (detector_registration, pinhole_size_AU, reassignment_kernel_drift) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
+    "description": "Image Scanning Microscopy (ISM) — pixel reassignment super-resolution: airy scan detector array produces the measurement through a 4-node primitive DAG K.psf.confocal -> S.scan.raster -> L.pixel_reassign -> int.temporal, with time-integrated exposure and Poisson signal noise + Gaussian read noise. Recovery is posed as a linear inverse problem that inverts the forward operator to estimate the scene-side 2D intensity. Difficulty tier delta=3 with effective condition number kappa_eff~9; calibration-level mismatch (detector_registration, pinhole_size_AU, reassignment_kernel_drift) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
     "forward_model": "y_i(r) = [PSF_i(r) conv f(r - delta_i)] + n, i = 1..N_det; sum after shift",
     "world_state_x": "Scene parameter of interest (density / complex field / lifetime / normals depending on spec).",
     "observation_y": "Measured intensity or photon counts from the imaging system.",
@@ -188,5 +188,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "ism"
 }

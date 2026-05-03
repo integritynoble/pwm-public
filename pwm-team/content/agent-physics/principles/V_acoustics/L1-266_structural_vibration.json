@@ -2,7 +2,7 @@
   "artifact_id": "L1-266",
   "layer": "L1",
   "principle_number": "266",
-  "title": "Structural Vibration Analysis \u2014 modal response",
+  "title": "Structural Vibration Analysis — modal response",
   "domain": "Acoustics",
   "sub_domain": "Vibration modes of linear elastic structures",
   "source_file": "V_acoustics/266_structural_vibration.md",
@@ -11,7 +11,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Structural Vibration Analysis \u2014 modal response forward model.",
+    "description": "Structural Vibration Analysis — modal response forward model.",
     "forward_model": "M u_ddot + C u_dot + K u = f(t); eigenproblem K Phi = Lambda M Phi",
     "world_state_x": "modal frequencies omega_k and mode shapes Phi_k of a structure",
     "observation_y": "accelerometer frequency response H(omega) at N_sensor locations",
@@ -190,5 +190,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "structural-vibration"
 }

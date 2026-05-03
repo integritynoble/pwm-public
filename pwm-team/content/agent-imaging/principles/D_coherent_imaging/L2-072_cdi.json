@@ -4,12 +4,40 @@
   "parent_l1": "L1-072",
   "title": "CDI Mismatch-Only Spec (shrinkwrap-assisted single-pattern recovery)",
   "spec_type": "mismatch_only",
-
   "six_tuple": {
     "omega": {
-      "H": [128, 4096], "W": [128, 4096], "oversampling_sigma": [2.0, 8.0],
-      "photon_count": [10, 100000], "beam_stop_radius_px": [0, 50],
-      "partial_coherence": [0.70, 1.0], "support_mask_error": [0.0, 0.3], "background": [0.0, 0.05]
+      "H": [
+        128,
+        4096
+      ],
+      "W": [
+        128,
+        4096
+      ],
+      "oversampling_sigma": [
+        2.0,
+        8.0
+      ],
+      "photon_count": [
+        10,
+        100000
+      ],
+      "beam_stop_radius_px": [
+        0,
+        50
+      ],
+      "partial_coherence": [
+        0.7,
+        1.0
+      ],
+      "support_mask_error": [
+        0.0,
+        0.3
+      ],
+      "background": [
+        0.0,
+        0.05
+      ]
     },
     "E": {
       "forward": "I(k) = |F{O(r) * 1_S(r)}|^2 + bg + n(k)",
@@ -17,37 +45,104 @@
       "primitive_chain": "M.support_mask -> F.fourier -> L.modulus_squared -> int.spatial",
       "inverse": "recover O(r) using projection algorithms with shrinkwrap-updated support"
     },
-    "B": {"compact_support": true, "complex_domain": true, "nonnegative_modulus": true},
-    "I": {"strategy": "random_phase_init_plus_shrinkwrap"},
-    "O": ["PSNR", "R_factor", "phase_L2_error", "residual_fourier_norm"],
+    "B": {
+      "compact_support": true,
+      "complex_domain": true,
+      "nonnegative_modulus": true
+    },
+    "I": {
+      "strategy": "random_phase_init_plus_shrinkwrap"
+    },
+    "O": [
+      "PSNR",
+      "R_factor",
+      "phase_L2_error",
+      "residual_fourier_norm"
+    ],
     "epsilon_fn": "18.0 + 3.0 * log2(oversampling_sigma / 2.0) + 2.0 * log10(photon_count / 10) - 10.0 * support_mask_error"
   },
-
   "protocol_fields": {
-    "input_format": {"diffraction_intensity": "float32(K, K)", "support_prior": "bool(H, W) optional", "beam_stop_mask": "bool(K, K)"},
-    "output_format": {"object_field": "complex64(H, W)"},
+    "input_format": {
+      "diffraction_intensity": "float32(K, K)",
+      "support_prior": "bool(H, W) optional",
+      "beam_stop_mask": "bool(K, K)"
+    },
+    "output_format": {
+      "object_field": "complex64(H, W)"
+    },
     "baselines": [
-      {"name": "HIO",       "method_sig": "I+O", "expected_psnr": 23.0},
-      {"name": "RAAR",      "method_sig": "I+O", "expected_psnr": 25.5},
-      {"name": "Shrinkwrap+RAAR", "method_sig": "I+O", "expected_psnr": 27.0},
-      {"name": "CDI-Net",   "method_sig": "L+N", "expected_psnr": 29.0}
+      {
+        "name": "HIO",
+        "method_sig": "I+O",
+        "expected_psnr": 23.0
+      },
+      {
+        "name": "RAAR",
+        "method_sig": "I+O",
+        "expected_psnr": 25.5
+      },
+      {
+        "name": "Shrinkwrap+RAAR",
+        "method_sig": "I+O",
+        "expected_psnr": 27.0
+      },
+      {
+        "name": "CDI-Net",
+        "method_sig": "L+N",
+        "expected_psnr": 29.0
+      }
     ]
   },
-
   "ibenchmark_range": {
     "center_ibenchmark": {
       "rho": 1,
-      "omega_tier": {"H": 512, "W": 512, "oversampling_sigma": 3.0, "photon_count": 1000, "beam_stop_radius_px": 10, "partial_coherence": 1.0, "support_mask_error": 0.0, "background": 0.0},
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "oversampling_sigma": 3.0,
+        "photon_count": 1000,
+        "beam_stop_radius_px": 10,
+        "partial_coherence": 1.0,
+        "support_mask_error": 0.0,
+        "background": 0.0
+      },
       "epsilon": 25.0
     },
     "tier_bounds": {
-      "H": [128, 2048], "W": [128, 2048], "oversampling_sigma": [2.0, 6.0],
-      "photon_count": [50, 50000], "partial_coherence": [0.80, 1.0], "support_mask_error": [0.0, 0.3]
+      "H": [
+        128,
+        2048
+      ],
+      "W": [
+        128,
+        2048
+      ],
+      "oversampling_sigma": [
+        2.0,
+        6.0
+      ],
+      "photon_count": [
+        50,
+        50000
+      ],
+      "partial_coherence": [
+        0.8,
+        1.0
+      ],
+      "support_mask_error": [
+        0.0,
+        0.3
+      ]
     },
-    "proximity_threshold": 0.10
+    "proximity_threshold": 0.1
   },
-
   "d_spec": 0.55,
-  "s1_s4_gates": ["PASS", "PASS", "PASS", "PASS"],
-  "ipfs_cid": null
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null,
+  "display_slug": "cdi"
 }

@@ -3,7 +3,7 @@
   "layer": "L2",
   "parent_l1": "L1-408",
   "principle_ref": "sha256:<L1-408_principle_hash>",
-  "title": "Wright-Fisher Population Genetics \u2014 Nominal + Mismatch Specs",
+  "title": "Wright-Fisher Population Genetics — Nominal + Mismatch Specs",
   "spec_type": "nominal_and_mismatch",
   "six_tuple": {
     "omega": {
@@ -113,5 +113,6 @@
     "S3": "Solver convergence proven for stated solver class.",
     "S4": "epsilon_fn evaluates without error; hardness rule satisfied."
   },
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "display_slug": "wright-fisher-population-genetics-nominal-mismatch-specs"
 }

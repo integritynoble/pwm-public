@@ -5,67 +5,158 @@
   "parent_l1": "L1-395",
   "title": "Adaptive Filtering Benchmark Suite (synthetic + AEC + speech)",
   "benchmark_type": "combined_P_and_I",
-
   "dataset_registry": {
     "primary": "Synthetic white/AR-colored reference x with time-varying unknown h* (random-walk drift)",
     "secondary": "ITU-T G.168 Acoustic Echo Cancellation (AEC) testbench traces",
     "tertiary": "NOIZEUS noisy-speech corpus + NIST-AEC Challenge 2021 data",
     "construction_method": "Simulate L-tap unknown filter with drift rate; generate desired d[n] = h*^T x + v; evaluate tracking over 10k samples",
-    "num_dev_instances_per_tier": 20, "holdout_instances_per_tier": 10
+    "num_dev_instances_per_tier": 20,
+    "holdout_instances_per_tier": 10
   },
-
   "ibenchmarks": [
     {
-      "tier": "T1_stationary", "rho": 1,
-      "omega_tier": {"L": 32, "mu": 0.01, "eigenspread": 10, "non_stationarity_rate": 0.0, "sigma_v": 0.01},
-      "epsilon": -30, "d_ibench": 0.14,
+      "tier": "T1_stationary",
+      "rho": 1,
+      "omega_tier": {
+        "L": 32,
+        "mu": 0.01,
+        "eigenspread": 10,
+        "non_stationarity_rate": 0.0,
+        "sigma_v": 0.01
+      },
+      "epsilon": -30,
+      "d_ibench": 0.14,
       "baselines": [
-        {"name": "LMS", "mse_db": -28, "Q": 0.75},
-        {"name": "NLMS","mse_db": -30, "Q": 0.85},
-        {"name": "RLS", "mse_db": -35, "Q": 0.95}
+        {
+          "name": "LMS",
+          "mse_db": -28,
+          "Q": 0.75
+        },
+        {
+          "name": "NLMS",
+          "mse_db": -30,
+          "Q": 0.85
+        },
+        {
+          "name": "RLS",
+          "mse_db": -35,
+          "Q": 0.95
+        }
       ]
     },
     {
-      "tier": "T2_colored_input", "rho": 3,
-      "omega_tier": {"L": 64, "mu": 0.01, "eigenspread": 50, "non_stationarity_rate": 0.01, "sigma_v": 0.03},
-      "epsilon": -22, "d_ibench": 0.27,
+      "tier": "T2_colored_input",
+      "rho": 3,
+      "omega_tier": {
+        "L": 64,
+        "mu": 0.01,
+        "eigenspread": 50,
+        "non_stationarity_rate": 0.01,
+        "sigma_v": 0.03
+      },
+      "epsilon": -22,
+      "d_ibench": 0.27,
       "baselines": [
-        {"name": "NLMS","mse_db": -22, "Q": 0.58},
-        {"name": "AP",  "mse_db": -25, "Q": 0.72},
-        {"name": "RLS", "mse_db": -28, "Q": 0.82}
+        {
+          "name": "NLMS",
+          "mse_db": -22,
+          "Q": 0.58
+        },
+        {
+          "name": "AP",
+          "mse_db": -25,
+          "Q": 0.72
+        },
+        {
+          "name": "RLS",
+          "mse_db": -28,
+          "Q": 0.82
+        }
       ]
     },
     {
-      "tier": "T3_nonstationary", "rho": 5,
-      "omega_tier": {"L": 256, "mu": 0.01, "eigenspread": 200, "non_stationarity_rate": 0.05, "sigma_v": 0.05},
-      "epsilon": -15, "d_ibench": 0.50,
+      "tier": "T3_nonstationary",
+      "rho": 5,
+      "omega_tier": {
+        "L": 256,
+        "mu": 0.01,
+        "eigenspread": 200,
+        "non_stationarity_rate": 0.05,
+        "sigma_v": 0.05
+      },
+      "epsilon": -15,
+      "d_ibench": 0.5,
       "baselines": [
-        {"name": "NLMS","mse_db": -12, "Q": 0.40},
-        {"name": "RLS", "mse_db": -17, "Q": 0.58}
+        {
+          "name": "NLMS",
+          "mse_db": -12,
+          "Q": 0.4
+        },
+        {
+          "name": "RLS",
+          "mse_db": -17,
+          "Q": 0.58
+        }
       ]
     },
     {
-      "tier": "T4_impulsive", "rho": 10,
-      "omega_tier": {"L": 1024, "mu": 0.1, "eigenspread": 1000, "non_stationarity_rate": 0.1, "sigma_v": 0.5, "step_size_miscal": 5.0, "impulsive_noise_fraction": 0.1},
-      "epsilon": -3, "d_ibench": 0.75,
+      "tier": "T4_impulsive",
+      "rho": 10,
+      "omega_tier": {
+        "L": 1024,
+        "mu": 0.1,
+        "eigenspread": 1000,
+        "non_stationarity_rate": 0.1,
+        "sigma_v": 0.5,
+        "step_size_miscal": 5.0,
+        "impulsive_noise_fraction": 0.1
+      },
+      "epsilon": -3,
+      "d_ibench": 0.75,
       "baselines": [
-        {"name": "NLMS","mse_db": 2, "Q": 0.20},
-        {"name": "Sign-LMS","mse_db": -3, "Q": 0.38},
-        {"name": "RLS","mse_db": 5, "Q": 0.15, "note": "numerical instability at L=1024"}
+        {
+          "name": "NLMS",
+          "mse_db": 2,
+          "Q": 0.2
+        },
+        {
+          "name": "Sign-LMS",
+          "mse_db": -3,
+          "Q": 0.38
+        },
+        {
+          "name": "RLS",
+          "mse_db": 5,
+          "Q": 0.15,
+          "note": "numerical instability at L=1024"
+        }
       ]
     }
   ],
-
   "p_benchmark": {
     "rho": 50,
-    "dataset_p_benchmark": {"name": "Synthetic + G.168 AEC + NIST-AEC union", "num_dev_instances": 200, "num_holdout_instances": 100},
+    "dataset_p_benchmark": {
+      "name": "Synthetic + G.168 AEC + NIST-AEC union",
+      "num_dev_instances": 200,
+      "num_holdout_instances": 100
+    },
     "baselines": [
-      {"name": "NLMS","overall_Q": 0.55},
-      {"name": "RLS", "overall_Q": 0.66},
-      {"name": "AP",  "overall_Q": 0.60}
+      {
+        "name": "NLMS",
+        "overall_Q": 0.55
+      },
+      {
+        "name": "RLS",
+        "overall_Q": 0.66
+      },
+      {
+        "name": "AP",
+        "overall_Q": 0.6
+      }
     ]
   },
-
   "hardness_rule_check": "SATISFIED — RLS fails at T4_impulsive (eigenspread=1000, impulsive=0.1) due to numerical instability — 5 dB > epsilon_fn -3.",
-  "ipfs_cid": null, "ground_truth_cid": null
+  "ipfs_cid": null,
+  "ground_truth_cid": null,
+  "display_slug": "adaptive-filtering"
 }

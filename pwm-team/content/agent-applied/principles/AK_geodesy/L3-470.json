@@ -3,7 +3,7 @@
   "layer": "L3",
   "parent_l2": "L2-470",
   "parent_l1": "L1-470",
-  "title": "Photogrammetry Structure-from-Motion \u2014 Benchmark Suite",
+  "title": "Photogrammetry Structure-from-Motion — Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "ISPRS_benchmark_UAV_photogrammetry",
@@ -255,5 +255,6 @@
     "M6_gate_checks": "gates/check_s{1,2,3,4}.py embedded with thresholds.yaml."
   },
   "ipfs_cid": null,
-  "ground_truth_cid": null
+  "ground_truth_cid": null,
+  "display_slug": "photogrammetry-structure-from-motion-benchmark-suite"
 }

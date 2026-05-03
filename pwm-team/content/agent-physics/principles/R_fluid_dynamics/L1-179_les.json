@@ -2,7 +2,7 @@
   "artifact_id": "L1-179",
   "layer": "L1",
   "principle_number": "179",
-  "title": "LES \u2014 large-eddy simulation",
+  "title": "LES — large-eddy simulation",
   "domain": "Fluid Dynamics",
   "sub_domain": "Subgrid-scale modeling for turbulence",
   "source_file": "R_fluid_dynamics/179_les.md",
@@ -11,7 +11,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "LES \u2014 large-eddy simulation forward model.",
+    "description": "LES — large-eddy simulation forward model.",
     "forward_model": "d/dt u_bar + div(u_bar u_bar) = -grad p_bar + div(2 (nu + nu_t) S_bar); nu_t from SGS model",
     "world_state_x": "filtered 3D velocity field u_bar(x,t)",
     "observation_y": "PIV + hot-wire instantaneous",
@@ -188,5 +188,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "les"
 }

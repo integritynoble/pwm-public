@@ -5,7 +5,6 @@
   "parent_l1": "L1-097",
   "title": "Structured-Light Depth Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
-
   "dataset_registry": {
     "primary": "Middlebury 2014 structured-light dataset (Aloe, Baby, Books, Cloth, ...)",
     "secondary": "HAMMER reflective-object scan set + Scharstein's Gray-code rigs",
@@ -13,50 +12,142 @@
     "construction_method": "render / capture K patterns at declared K and ambient; inject specular surface fraction",
     "num_dev_instances_per_tier": 20
   },
-
   "ibenchmarks": [
     {
-      "tier": "T1_nominal", "rho": 1,
-      "omega_tier": {"H": 1080, "W": 1920, "W_p": 1024, "K_patterns": 24, "baseline_mm": 120, "photon_count": 500, "specular_fraction": 0.0, "ambient_light": 0.0},
-      "epsilon": 0.5, "d_ibench": 0.14,
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "H": 1080,
+        "W": 1920,
+        "W_p": 1024,
+        "K_patterns": 24,
+        "baseline_mm": 120,
+        "photon_count": 500,
+        "specular_fraction": 0.0,
+        "ambient_light": 0.0
+      },
+      "epsilon": 0.5,
+      "d_ibench": 0.14,
       "baselines": [
-        {"name": "Gray-Phase-Decode", "rmse_mm": 0.72, "Q": 0.58},
-        {"name": "DeepSL",            "rmse_mm": 0.30, "Q": 0.92},
-        {"name": "ActiveStereoNet",   "rmse_mm": 0.40, "Q": 0.84}
+        {
+          "name": "Gray-Phase-Decode",
+          "rmse_mm": 0.72,
+          "Q": 0.58
+        },
+        {
+          "name": "DeepSL",
+          "rmse_mm": 0.3,
+          "Q": 0.92
+        },
+        {
+          "name": "ActiveStereoNet",
+          "rmse_mm": 0.4,
+          "Q": 0.84
+        }
       ]
     },
     {
-      "tier": "T2_ambient", "rho": 3,
-      "omega_tier": {"H": 1080, "W": 1920, "W_p": 1024, "K_patterns": 16, "baseline_mm": 120, "photon_count": 200, "specular_fraction": 0.05, "ambient_light": 10000},
-      "epsilon": 1.2, "d_ibench": 0.28,
+      "tier": "T2_ambient",
+      "rho": 3,
+      "omega_tier": {
+        "H": 1080,
+        "W": 1920,
+        "W_p": 1024,
+        "K_patterns": 16,
+        "baseline_mm": 120,
+        "photon_count": 200,
+        "specular_fraction": 0.05,
+        "ambient_light": 10000
+      },
+      "epsilon": 1.2,
+      "d_ibench": 0.28,
       "baselines": [
-        {"name": "Gray-Phase-Decode", "rmse_mm": 1.8,  "Q": 0.42},
-        {"name": "DeepSL",            "rmse_mm": 0.75, "Q": 0.78},
-        {"name": "ActiveStereoNet",   "rmse_mm": 1.0,  "Q": 0.66}
+        {
+          "name": "Gray-Phase-Decode",
+          "rmse_mm": 1.8,
+          "Q": 0.42
+        },
+        {
+          "name": "DeepSL",
+          "rmse_mm": 0.75,
+          "Q": 0.78
+        },
+        {
+          "name": "ActiveStereoNet",
+          "rmse_mm": 1.0,
+          "Q": 0.66
+        }
       ]
     },
     {
-      "tier": "T3_specular", "rho": 5,
-      "omega_tier": {"H": 2160, "W": 3840, "W_p": 2048, "K_patterns": 12, "baseline_mm": 120, "photon_count": 100, "specular_fraction": 0.20, "ambient_light": 30000, "subsurface_scattering": 0.10},
-      "epsilon": 2.5, "d_ibench": 0.48,
+      "tier": "T3_specular",
+      "rho": 5,
+      "omega_tier": {
+        "H": 2160,
+        "W": 3840,
+        "W_p": 2048,
+        "K_patterns": 12,
+        "baseline_mm": 120,
+        "photon_count": 100,
+        "specular_fraction": 0.2,
+        "ambient_light": 30000,
+        "subsurface_scattering": 0.1
+      },
+      "epsilon": 2.5,
+      "d_ibench": 0.48,
       "baselines": [
-        {"name": "Gray-Phase-Decode", "rmse_mm": 4.5,  "Q": 0.24},
-        {"name": "DeepSL",            "rmse_mm": 1.8,  "Q": 0.60},
-        {"name": "ActiveStereoNet",   "rmse_mm": 2.5,  "Q": 0.50}
+        {
+          "name": "Gray-Phase-Decode",
+          "rmse_mm": 4.5,
+          "Q": 0.24
+        },
+        {
+          "name": "DeepSL",
+          "rmse_mm": 1.8,
+          "Q": 0.6
+        },
+        {
+          "name": "ActiveStereoNet",
+          "rmse_mm": 2.5,
+          "Q": 0.5
+        }
       ]
     },
     {
-      "tier": "T4_blind", "rho": 10,
-      "omega_tier": {"H": 4000, "W": 4000, "W_p": 4096, "K_patterns": 4, "baseline_mm": 30, "photon_count": 50, "specular_fraction": 0.5, "ambient_light": 100000, "subsurface_scattering": 0.3},
-      "epsilon": 6.0, "d_ibench": 0.72,
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "H": 4000,
+        "W": 4000,
+        "W_p": 4096,
+        "K_patterns": 4,
+        "baseline_mm": 30,
+        "photon_count": 50,
+        "specular_fraction": 0.5,
+        "ambient_light": 100000,
+        "subsurface_scattering": 0.3
+      },
+      "epsilon": 6.0,
+      "d_ibench": 0.72,
       "baselines": [
-        {"name": "Gray-Phase-Decode", "rmse_mm": 14.0, "Q": 0.10},
-        {"name": "DeepSL",            "rmse_mm": 5.2,  "Q": 0.46},
-        {"name": "ActiveStereoNet",   "rmse_mm": 8.5,  "Q": 0.32}
+        {
+          "name": "Gray-Phase-Decode",
+          "rmse_mm": 14.0,
+          "Q": 0.1
+        },
+        {
+          "name": "DeepSL",
+          "rmse_mm": 5.2,
+          "Q": 0.46
+        },
+        {
+          "name": "ActiveStereoNet",
+          "rmse_mm": 8.5,
+          "Q": 0.32
+        }
       ]
     }
   ],
-
   "p_benchmark": {
     "rho": 50,
     "dataset_p_benchmark": {
@@ -65,13 +156,22 @@
       "construction_method": "parametric (K_patterns, ambient_light, specular_fraction, subsurface) sweep"
     },
     "baselines": [
-      {"name": "Gray-Phase-Decode", "overall_Q": 0.34},
-      {"name": "DeepSL",            "overall_Q": 0.72},
-      {"name": "ActiveStereoNet",   "overall_Q": 0.60}
+      {
+        "name": "Gray-Phase-Decode",
+        "overall_Q": 0.34
+      },
+      {
+        "name": "DeepSL",
+        "overall_Q": 0.72
+      },
+      {
+        "name": "ActiveStereoNet",
+        "overall_Q": 0.6
+      }
     ]
   },
-
   "hardness_rule_check": "SATISFIED — DeepSL fails at T4_blind (specular=0.5 + SSS=0.3 + ambient=100klx + K=4 corner).",
   "ipfs_cid": null,
-  "ground_truth_cid": null
+  "ground_truth_cid": null,
+  "display_slug": "structured-light"
 }

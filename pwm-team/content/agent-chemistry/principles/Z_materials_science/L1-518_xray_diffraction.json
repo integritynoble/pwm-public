@@ -7,7 +7,6 @@
   "sub_domain": "Powder / single-crystal X-ray diffraction lattice and structure-factor recovery",
   "source_file": "Z_materials_science/518_xray_diffraction.md",
   "source_data_quality_note": "Analytical core for the XRD pair (paired with L1-519 PWDR wrapper). Recovers crystal lattice parameters, structure factors, and atomic positions from X-ray diffraction patterns via Bragg's law and Rietveld refinement. New to genesis — closest existing siblings are L1-031 X-ray radiography (transmission imaging, not diffraction) and L1-294 DFT (electronic structure, not lattice geometry). Per pwm-team/pwm_product/genesis/PWM_V2_GENESIS_INCLUSION.md: crystal-XRD space-group classification is among the canonical Option-3 recast cases.",
-
   "gate_class": "analytical",
   "gate_substitutions": null,
   "related_principles": [
@@ -15,24 +14,51 @@
     "L1-294 (DFT — sibling electronic-structure-from-lattice computation, informational)",
     "L1-519 (XRD space-group classification PWDR — discrete-readout child)"
   ],
-
   "E": {
     "description": "X-ray Diffraction Crystal Structure Recovery: analytical forward model for powder or single-crystal XRD. Bragg's law n*lambda = 2*d*sin(theta) governs diffraction angles; structure factor F_hkl = sum_j f_j * exp(2*pi*i*(h*x_j + k*y_j + l*z_j)) governs intensities. For powder XRD: I(2*theta) = K * sum_hkl |F_hkl|^2 * m_hkl * Lp(theta) * P_hkl(eta) * profile(2*theta - 2*theta_hkl); for single-crystal: I_hkl = K * |F_hkl|^2 * Lp(theta) * absorption_correction. Recovery is posed as the joint inverse problem that recovers (a, b, c, alpha, beta, gamma, atomic_positions, occupancies, thermal_factors) from measured I(2*theta) or {I_hkl}. The forward DAG has 7 primitives with one coupling constraint (n_c = 1): the structure-factor-to-intensity multiplicative coupling (via |F|^2). Difficulty tier delta = 5 (advanced) given the high condition number of structure-factor inversion (phase problem unresolved without anomalous scattering or direct methods). Mismatch parameters: instrumental_broadening, preferred_orientation_powder, sample_displacement, beam_divergence, monochromator_misalignment, background_subtraction_error.",
     "forward_model": "Bragg's law: n*lambda = 2*d*sin(theta); structure factor: F_hkl = sum_j f_j * exp(2*pi*i*(hx_j + ky_j + lz_j)) * exp(-B_j*(sin(theta)/lambda)^2); powder intensity: I(2*theta) = K * sum_hkl |F_hkl|^2 * m_hkl * Lp(theta) * profile_pseudo_voigt(2*theta - 2*theta_hkl) + background; jointly invert I(2*theta) -> (a, b, c, alpha, beta, gamma, atomic_positions, occupancies, B_factors)",
     "world_state_x": "Crystal-structure parameters: lattice constants (a, b, c) [Angstrom], lattice angles (alpha, beta, gamma) [degrees], atomic fractional positions (x, y, z), site occupancies, isotropic or anisotropic thermal factors B (or U_ij).",
     "observation_y": "Powder XRD pattern I(2*theta) over theta range typically 5-120 degrees at 0.01-0.05 degree step; or single-crystal {I_hkl} for thousands to millions of reflections.",
-    "physical_parameters_theta": ["lambda_angstrom", "two_theta_min", "two_theta_max", "two_theta_step", "wavelength_dispersion", "instrumental_broadening", "preferred_orientation_powder", "sample_displacement", "beam_divergence", "monochromator_misalignment", "background_subtraction_error", "SNR_dB"]
+    "physical_parameters_theta": [
+      "lambda_angstrom",
+      "two_theta_min",
+      "two_theta_max",
+      "two_theta_step",
+      "wavelength_dispersion",
+      "instrumental_broadening",
+      "preferred_orientation_powder",
+      "sample_displacement",
+      "beam_divergence",
+      "monochromator_misalignment",
+      "background_subtraction_error",
+      "SNR_dB"
+    ]
   },
-
   "G": {
     "dag": "L.xray_source -> L.bragg_diffraction -> L.structure_factor -> L.intensity_calculation -> L.profile_function -> L.detector_response -> int.angular",
-    "vertices": ["L.xray_source", "L.bragg_diffraction", "L.structure_factor", "L.intensity_calculation", "L.profile_function", "L.detector_response", "int.angular"],
-    "arcs": ["L.xray_source -> L.bragg_diffraction", "L.bragg_diffraction -> L.structure_factor", "L.structure_factor -> L.intensity_calculation", "L.intensity_calculation -> L.profile_function", "L.profile_function -> L.detector_response", "L.detector_response -> int.angular"],
+    "vertices": [
+      "L.xray_source",
+      "L.bragg_diffraction",
+      "L.structure_factor",
+      "L.intensity_calculation",
+      "L.profile_function",
+      "L.detector_response",
+      "int.angular"
+    ],
+    "arcs": [
+      "L.xray_source -> L.bragg_diffraction",
+      "L.bragg_diffraction -> L.structure_factor",
+      "L.structure_factor -> L.intensity_calculation",
+      "L.intensity_calculation -> L.profile_function",
+      "L.profile_function -> L.detector_response",
+      "L.detector_response -> int.angular"
+    ],
     "L_DAG": 6.8,
     "n_c": 1,
-    "coupling_constraints": ["structure_factor_to_intensity: I_hkl is multiplicatively coupled to |F_hkl|^2 — the structure factor magnitude is observable but its phase is not; this is the canonical 'phase problem' of crystallography that Patterson methods, direct methods, and isomorphous-replacement / anomalous-scattering address"]
+    "coupling_constraints": [
+      "structure_factor_to_intensity: I_hkl is multiplicatively coupled to |F_hkl|^2 — the structure factor magnitude is observable but its phase is not; this is the canonical 'phase problem' of crystallography that Patterson methods, direct methods, and isomorphous-replacement / anomalous-scattering address"
+    ]
   },
-
   "W": {
     "existence": true,
     "uniqueness": "conditional",
@@ -41,14 +67,12 @@
     "condition_number_effective": 80,
     "regime": "Existence guaranteed within declared Omega bounds. Uniqueness conditional: for known atomic composition + Bravais lattice + sufficient resolution, structure refinement is unique up to centrosymmetric equivalence; phase problem requires Patterson methods (heavy-atom), direct methods (Karle-Hauptman maximum-entropy), or anomalous-scattering for ab-initio. Stability conditional with kappa raw ~ 600 (limited by phase problem and reflection-overlap in powder XRD); kappa_eff ~ 80 with Rietveld refinement under structural constraints. Joint Hadamard well-posedness for the XRD forward established by Rietveld 1969 (foundational), Hill-Howard 1986 (Rietveld profile refinement), Karle-Hauptman 1956 (direct methods, Nobel 1985), McCusker 1999 (Rietveld guidelines), Young 1993 (Rietveld method textbook), Coelho 2018 (TOPAS), Toby-Von Dreele 2013 (GSAS-II)."
   },
-
   "C": {
     "solver_class": "linear-operator + nonlinear refinement [Rietveld profile refinement; least-squares structure refinement] | direct methods [Karle-Hauptman maximum-entropy phase recovery] | linear-operator + deep neural prior [DeepPattern, CrystalNet]",
     "convergence_rate_q": 1.0,
     "error_bound": "Data-fidelity bound: ||(a, b, c, x_j)_hat - true||_2 <= C1 * sigma_intensity / sqrt(N_reflections * SNR_per_reflection). Phase-problem-induced bias adds + C_phase * (1 - heavy_atom_dominance) for ab-initio; Rietveld refinement bias + C2 * |instrumental_broadening| + C3 * |preferred_orientation| + C4 * |sample_displacement|. Achieves q=1 linear convergence under Rietveld (least-squares); direct methods achieve q=2 quadratic when initial phase set is good.",
     "complexity": "O(N_reflections * N_parameters^2) per Rietveld iteration; direct methods O(N_reflections * log(N_reflections)) per phase-cycle iteration"
   },
-
   "physics_fingerprint": {
     "carrier": "x_ray",
     "sensing_mechanism": "bragg_diffraction",
@@ -56,34 +80,131 @@
     "problem_class": "nonlinear_inverse",
     "noise_model": "poisson",
     "solution_space": "crystal_structure_parameters",
-    "primitives": ["L.xray_source", "L.bragg_diffraction", "L.structure_factor", "L.intensity_calculation", "L.profile_function", "L.detector_response", "int.angular"]
+    "primitives": [
+      "L.xray_source",
+      "L.bragg_diffraction",
+      "L.structure_factor",
+      "L.intensity_calculation",
+      "L.profile_function",
+      "L.detector_response",
+      "int.angular"
+    ]
   },
-
   "difficulty_delta": 5,
   "difficulty_tier": "advanced",
-  "mismatch_parameters": ["instrumental_broadening", "preferred_orientation_powder", "sample_displacement", "beam_divergence", "monochromator_misalignment", "background_subtraction_error"],
+  "mismatch_parameters": [
+    "instrumental_broadening",
+    "preferred_orientation_powder",
+    "sample_displacement",
+    "beam_divergence",
+    "monochromator_misalignment",
+    "background_subtraction_error"
+  ],
   "error_metric": "R_factor",
   "error_metric_secondary": "GoF_chi2",
-
   "spec_range": {
     "center_spec": {
       "problem_class": "powder_xrd_rietveld",
       "forward_operator": "powder_xrd_forward",
       "input_format": "1d_diffraction_pattern",
-      "omega": {"lambda_angstrom": 1.5418, "two_theta_min": 5, "two_theta_max": 120, "two_theta_step": 0.02, "wavelength_dispersion": 0.0, "instrumental_broadening": 0.05, "preferred_orientation_powder": 0.0, "sample_displacement": 0.0, "beam_divergence": 0.0, "monochromator_misalignment": 0.0, "background_subtraction_error": 0.0, "SNR_dB": 30},
+      "omega": {
+        "lambda_angstrom": 1.5418,
+        "two_theta_min": 5,
+        "two_theta_max": 120,
+        "two_theta_step": 0.02,
+        "wavelength_dispersion": 0.0,
+        "instrumental_broadening": 0.05,
+        "preferred_orientation_powder": 0.0,
+        "sample_displacement": 0.0,
+        "beam_divergence": 0.0,
+        "monochromator_misalignment": 0.0,
+        "background_subtraction_error": 0.0,
+        "SNR_dB": 30
+      },
       "epsilon_fn_center": "0.05_R_factor"
     },
-    "allowed_forward_operators": ["powder_xrd_forward", "single_crystal_xrd_forward", "rietveld_refinement_forward", "direct_methods_phase_forward"],
-    "allowed_problem_classes": ["powder_xrd_rietveld", "single_crystal_structure_solution", "powder_indexing", "ab_initio_structure_determination"],
-    "allowed_omega_dimensions": ["lambda_angstrom", "two_theta_min", "two_theta_max", "two_theta_step", "wavelength_dispersion", "instrumental_broadening", "preferred_orientation_powder", "sample_displacement", "beam_divergence", "monochromator_misalignment", "background_subtraction_error", "SNR_dB"],
-    "omega_bounds": {"lambda_angstrom": [0.4, 2.5], "two_theta_min": [1, 30], "two_theta_max": [60, 160], "two_theta_step": [0.001, 0.1], "instrumental_broadening": [0.01, 0.5], "preferred_orientation_powder": [0.0, 0.5], "SNR_dB": [10, 50]},
-    "epsilon_bounds": {"R_factor": [0.01, 0.30]}
+    "allowed_forward_operators": [
+      "powder_xrd_forward",
+      "single_crystal_xrd_forward",
+      "rietveld_refinement_forward",
+      "direct_methods_phase_forward"
+    ],
+    "allowed_problem_classes": [
+      "powder_xrd_rietveld",
+      "single_crystal_structure_solution",
+      "powder_indexing",
+      "ab_initio_structure_determination"
+    ],
+    "allowed_omega_dimensions": [
+      "lambda_angstrom",
+      "two_theta_min",
+      "two_theta_max",
+      "two_theta_step",
+      "wavelength_dispersion",
+      "instrumental_broadening",
+      "preferred_orientation_powder",
+      "sample_displacement",
+      "beam_divergence",
+      "monochromator_misalignment",
+      "background_subtraction_error",
+      "SNR_dB"
+    ],
+    "omega_bounds": {
+      "lambda_angstrom": [
+        0.4,
+        2.5
+      ],
+      "two_theta_min": [
+        1,
+        30
+      ],
+      "two_theta_max": [
+        60,
+        160
+      ],
+      "two_theta_step": [
+        0.001,
+        0.1
+      ],
+      "instrumental_broadening": [
+        0.01,
+        0.5
+      ],
+      "preferred_orientation_powder": [
+        0.0,
+        0.5
+      ],
+      "SNR_dB": [
+        10,
+        50
+      ]
+    },
+    "epsilon_bounds": {
+      "R_factor": [
+        0.01,
+        0.3
+      ]
+    }
   },
-
-  "p1_p10_tests": ["PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS"],
-  "s1_s4_gates": ["PASS", "PASS", "PASS", "PASS"],
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
   "ipfs_cid": null,
-
   "v3_metadata": {
     "is_standalone_multiphysics": false,
     "coupling_count_n_c": 1,
@@ -103,5 +224,6 @@
       "rationale": "L1-031 X-ray radiography is transmission-attenuation imaging (Beer-Lambert through bulk material); sensing_mechanism = transmission attenuation; solution_space = 2D/3D attenuation map. L1-518 XRD is Bragg-diffraction crystallography (Bragg law + structure factor); sensing_mechanism = bragg_diffraction; solution_space = crystal_structure_parameters (lattice + atomic positions). Different physics primitives (L.bragg_diffraction, L.structure_factor vs L.attenuation_projection), different problem class (nonlinear_inverse with phase problem vs linear_inverse). d_principle ~ 0.55 — solidly Distinct."
     },
     "clinical_context": "X-ray crystallography is the foundational technique of materials science, structural chemistry, drug discovery, and pharmaceutical formulation. Powder XRD is a routine quality-control tool in pharma manufacturing (polymorph identification, amorphous vs crystalline content), cement, metal alloys, semiconductors. Single-crystal XRD is the canonical method for protein structure determination (PDB), small-molecule drug structure, and crystal engineering. Universal commercial systems: Bruker D8, Rigaku SmartLab, PANalytical X'Pert, Stoe STADI MP. UTSW has multiple X-ray crystallography facilities for structural biology (Drug Discovery Institute, BioCryst). PWDR-class downstream Principle (L1-519) provides space-group classification readout."
-  }
+  },
+  "display_slug": "xrd"
 }

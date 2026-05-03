@@ -3,7 +3,7 @@
   "layer": "L3",
   "parent_l2": "L2-166",
   "parent_l1": "L1-166",
-  "title": "Stellar Coronagraphy PSF Subtraction \u2014 Benchmark Suite",
+  "title": "Stellar Coronagraphy PSF Subtraction — Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "GPI_archive_beta_pic",
@@ -290,5 +290,6 @@
     "M6_gate_checks": "gates/check_s{1,2,3,4}.py embedded with thresholds.yaml."
   },
   "ipfs_cid": null,
-  "ground_truth_cid": null
+  "ground_truth_cid": null,
+  "display_slug": "stellar-coronagraphy-psf-subtraction-benchmark-suite"
 }

@@ -2,7 +2,7 @@
   "artifact_id": "L1-210",
   "layer": "L1",
   "principle_number": "210",
-  "title": "Kirchhoff Plate \u2014 thin-plate bending",
+  "title": "Kirchhoff Plate — thin-plate bending",
   "domain": "Structural Mechanics",
   "sub_domain": "Thin-plate (classical) plate theory",
   "source_file": "T_structural_mechanics/210_kirchhoff_plate.md",
@@ -11,7 +11,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Kirchhoff Plate \u2014 thin-plate bending forward model.",
+    "description": "Kirchhoff Plate — thin-plate bending forward model.",
     "forward_model": "D * Laplacian^2(w) = q(x,y); D = Et^3/(12(1-nu^2))",
     "world_state_x": "plate deflection w(x,y)",
     "observation_y": "DIC surface deflection map",
@@ -174,5 +174,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "kirchhoff-plate"
 }

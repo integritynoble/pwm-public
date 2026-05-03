@@ -5,7 +5,6 @@
   "parent_l1": "L1-077",
   "title": "Coded-Exposure Motion-Deblur Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
-
   "dataset_registry": {
     "primary": "GoPro deblur dataset (simulated coded-exposure from 240 fps sharp bursts)",
     "secondary": "Su et al. real-world coded-exposure test set",
@@ -13,50 +12,136 @@
     "construction_method": "Integrate sharp high-fps sequence through binary code c(t); add Poisson+Gaussian noise at declared photon_count",
     "num_dev_instances_per_tier": 20
   },
-
   "ibenchmarks": [
     {
-      "tier": "T1_nominal", "rho": 1,
-      "omega_tier": {"H": 1024, "W": 1024, "T_ms": 52, "velocity_px": 20.0, "photon_count": 1000, "motion_velocity_error": 0.0, "motion_direction_error": 0.0},
-      "epsilon": 28.0, "d_ibench": 0.14,
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "H": 1024,
+        "W": 1024,
+        "T_ms": 52,
+        "velocity_px": 20.0,
+        "photon_count": 1000,
+        "motion_velocity_error": 0.0,
+        "motion_direction_error": 0.0
+      },
+      "epsilon": 28.0,
+      "d_ibench": 0.14,
       "baselines": [
-        {"name": "Wiener-coded",     "score": 26.0, "Q": 0.55},
-        {"name": "BM3D-deconv",      "score": 28.5, "Q": 0.72},
-        {"name": "DeepDeblur-coded", "score": 31.2, "Q": 0.88}
+        {
+          "name": "Wiener-coded",
+          "score": 26.0,
+          "Q": 0.55
+        },
+        {
+          "name": "BM3D-deconv",
+          "score": 28.5,
+          "Q": 0.72
+        },
+        {
+          "name": "DeepDeblur-coded",
+          "score": 31.2,
+          "Q": 0.88
+        }
       ]
     },
     {
-      "tier": "T2_low", "rho": 3,
-      "omega_tier": {"H": 1024, "W": 1024, "T_ms": 52, "velocity_px": 40.0, "photon_count": 500, "motion_velocity_error": 0.1, "motion_direction_error": 0.05},
-      "epsilon": 25.0, "d_ibench": 0.28,
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "H": 1024,
+        "W": 1024,
+        "T_ms": 52,
+        "velocity_px": 40.0,
+        "photon_count": 500,
+        "motion_velocity_error": 0.1,
+        "motion_direction_error": 0.05
+      },
+      "epsilon": 25.0,
+      "d_ibench": 0.28,
       "baselines": [
-        {"name": "Wiener-coded",     "score": 22.5, "Q": 0.38},
-        {"name": "BM3D-deconv",      "score": 25.3, "Q": 0.55},
-        {"name": "DeepDeblur-coded", "score": 28.0, "Q": 0.72}
+        {
+          "name": "Wiener-coded",
+          "score": 22.5,
+          "Q": 0.38
+        },
+        {
+          "name": "BM3D-deconv",
+          "score": 25.3,
+          "Q": 0.55
+        },
+        {
+          "name": "DeepDeblur-coded",
+          "score": 28.0,
+          "Q": 0.72
+        }
       ]
     },
     {
-      "tier": "T3_moderate", "rho": 5,
-      "omega_tier": {"H": 2048, "W": 2048, "T_ms": 100, "velocity_px": 70.0, "photon_count": 200, "motion_velocity_error": 0.25, "motion_direction_error": 0.15},
-      "epsilon": 22.0, "d_ibench": 0.48,
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "H": 2048,
+        "W": 2048,
+        "T_ms": 100,
+        "velocity_px": 70.0,
+        "photon_count": 200,
+        "motion_velocity_error": 0.25,
+        "motion_direction_error": 0.15
+      },
+      "epsilon": 22.0,
+      "d_ibench": 0.48,
       "baselines": [
-        {"name": "Wiener-coded",     "score": 19.2, "Q": 0.25},
-        {"name": "BM3D-deconv",      "score": 22.0, "Q": 0.44},
-        {"name": "DeepDeblur-coded", "score": 24.8, "Q": 0.60}
+        {
+          "name": "Wiener-coded",
+          "score": 19.2,
+          "Q": 0.25
+        },
+        {
+          "name": "BM3D-deconv",
+          "score": 22.0,
+          "Q": 0.44
+        },
+        {
+          "name": "DeepDeblur-coded",
+          "score": 24.8,
+          "Q": 0.6
+        }
       ]
     },
     {
-      "tier": "T4_blind", "rho": 10,
-      "omega_tier": {"H": 4096, "W": 4096, "T_ms": 200, "velocity_px": 100.0, "photon_count": 80, "motion_velocity_error": 0.5, "motion_direction_error": 0.3},
-      "epsilon": 19.0, "d_ibench": 0.72,
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "H": 4096,
+        "W": 4096,
+        "T_ms": 200,
+        "velocity_px": 100.0,
+        "photon_count": 80,
+        "motion_velocity_error": 0.5,
+        "motion_direction_error": 0.3
+      },
+      "epsilon": 19.0,
+      "d_ibench": 0.72,
       "baselines": [
-        {"name": "Wiener-coded",     "score": 15.5, "Q": 0.12},
-        {"name": "BM3D-deconv",      "score": 18.5, "Q": 0.30},
-        {"name": "DeepDeblur-coded", "score": 20.8, "Q": 0.44}
+        {
+          "name": "Wiener-coded",
+          "score": 15.5,
+          "Q": 0.12
+        },
+        {
+          "name": "BM3D-deconv",
+          "score": 18.5,
+          "Q": 0.3
+        },
+        {
+          "name": "DeepDeblur-coded",
+          "score": 20.8,
+          "Q": 0.44
+        }
       ]
     }
   ],
-
   "p_benchmark": {
     "rho": 50,
     "dataset_p_benchmark": {
@@ -65,13 +150,22 @@
       "construction_method": "parametric (velocity, motion_error, photon_count) sweep"
     },
     "baselines": [
-      {"name": "Wiener-coded",     "overall_Q": 0.35},
-      {"name": "BM3D-deconv",      "overall_Q": 0.52},
-      {"name": "DeepDeblur-coded", "overall_Q": 0.68}
+      {
+        "name": "Wiener-coded",
+        "overall_Q": 0.35
+      },
+      {
+        "name": "BM3D-deconv",
+        "overall_Q": 0.52
+      },
+      {
+        "name": "DeepDeblur-coded",
+        "overall_Q": 0.68
+      }
     ]
   },
-
   "hardness_rule_check": "SATISFIED — DeepDeblur-coded fails T4_blind corner (motion_velocity_error=0.5 + direction_error=0.3 + low photons simultaneously).",
   "ipfs_cid": null,
-  "ground_truth_cid": null
+  "ground_truth_cid": null,
+  "display_slug": "coded-exposure"
 }

@@ -2,7 +2,7 @@
   "artifact_id": "L1-215",
   "layer": "L1",
   "principle_number": "215",
-  "title": "Hyperelasticity \u2014 large-deformation rubber-like",
+  "title": "Hyperelasticity — large-deformation rubber-like",
   "domain": "Structural Mechanics",
   "sub_domain": "Neo-Hookean / Mooney-Rivlin / Ogden",
   "source_file": "T_structural_mechanics/215_hyperelasticity.md",
@@ -11,7 +11,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Hyperelasticity \u2014 large-deformation rubber-like forward model.",
+    "description": "Hyperelasticity — large-deformation rubber-like forward model.",
     "forward_model": "S = dW/dC; W(F) for Neo-Hookean: mu/2(I1-3) + K/2(J-1)^2",
     "world_state_x": "displacement field u(X) at large strain and material params",
     "observation_y": "DIC field + load cell measurements",
@@ -167,5 +167,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "hyperelasticity"
 }

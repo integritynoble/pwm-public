@@ -16,10 +16,10 @@
     "world_state_x": "3D Coulomb potential V(x,y,z) of the molecule",
     "observation_y": "Set of N_particle 2D projection images {y_i} with unknown poses",
     "physical_parameters_theta": [
-      "Electron dose (10-50 e^-/\u00c5^2 total)",
+      "Electron dose (10-50 e^-/Å^2 total)",
       "Defocus range (0.5-3 um)",
       "Particle count N_particle (10^4 - 10^6)",
-      "Pixel size (0.8-1.5 \u00c5)",
+      "Pixel size (0.8-1.5 Å)",
       "Conformational heterogeneity",
       "Per-particle motion during exposure"
     ]
@@ -91,7 +91,7 @@
         "pose_estimate_error": 0.0,
         "conformational_heterogeneity": 0.0
       },
-      "epsilon_fn_center": "3.5 \u00c5 resolution"
+      "epsilon_fn_center": "3.5 Å resolution"
     },
     "allowed_forward_operators": [
       "spa_forward",
@@ -183,5 +183,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "cryoem-spa"
 }

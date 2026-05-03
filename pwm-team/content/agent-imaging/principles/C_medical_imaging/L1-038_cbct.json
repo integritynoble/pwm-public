@@ -2,7 +2,7 @@
   "artifact_id": "L1-038",
   "layer": "L1",
   "principle_number": "038",
-  "title": "Cone-Beam CT (CBCT) \u2014 dental / interventional",
+  "title": "Cone-Beam CT (CBCT) — dental / interventional",
   "domain": "Medical Imaging",
   "sub_domain": "Flat-panel cone-beam CT reconstruction",
   "source_file": "C_medical_imaging/038_cbct.md",
@@ -11,7 +11,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical medical-imaging literature for this principle.",
   "E": {
-    "description": "Cone-Beam CT (CBCT) \u2014 dental / interventional: xray ct produces the measurement through a 5-node primitive DAG L.xray_source -> L.cone_beam_geometry -> S.scan.angular -> L.FDK_backproject -> int.angular, with multi-angle tomographic integration and photon-shot-noise-limited (Poisson counting). Recovery is posed as a linear inverse problem that inverts the forward operator to estimate the scene-side 3D attenuation. Difficulty tier delta=5 with effective condition number kappa_eff~20; calibration-level mismatch (scatter, truncation, beam_hardening) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
+    "description": "Cone-Beam CT (CBCT) — dental / interventional: xray ct produces the measurement through a 5-node primitive DAG L.xray_source -> L.cone_beam_geometry -> S.scan.angular -> L.FDK_backproject -> int.angular, with multi-angle tomographic integration and photon-shot-noise-limited (Poisson counting). Recovery is posed as a linear inverse problem that inverts the forward operator to estimate the scene-side 3D attenuation. Difficulty tier delta=5 with effective condition number kappa_eff~20; calibration-level mismatch (scatter, truncation, beam_hardening) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
     "forward_model": "y_theta(u,v) = I_0 exp(-integral mu ds) + scatter_cone + n; FDK reconstruct",
     "world_state_x": "Patient-side quantity of interest (attenuation / activity / perfusion / stiffness etc.)",
     "observation_y": "Clinical sensor output at declared resolution + noise",
@@ -207,5 +207,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "cbct"
 }

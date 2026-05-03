@@ -3,7 +3,7 @@
   "layer": "L3",
   "parent_l2": "L2-463",
   "parent_l1": "L1-463",
-  "title": "Seismic Rock Physics (Gassmann) \u2014 Benchmark Suite",
+  "title": "Seismic Rock Physics (Gassmann) — Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "Biot_Gassmann_benchmark_suite",
@@ -255,5 +255,6 @@
     "M6_gate_checks": "gates/check_s{1,2,3,4}.py embedded with thresholds.yaml."
   },
   "ipfs_cid": null,
-  "ground_truth_cid": null
+  "ground_truth_cid": null,
+  "display_slug": "seismic-rock-physics-benchmark-suite"
 }

@@ -2,7 +2,7 @@
   "artifact_id": "L1-141",
   "layer": "L1",
   "principle_number": "141",
-  "title": "LIBS \u2014 Laser-Induced Breakdown Spectroscopy imaging",
+  "title": "LIBS — Laser-Induced Breakdown Spectroscopy imaging",
   "domain": "Spectroscopy",
   "sub_domain": "Atomic emission elemental imaging",
   "source_file": "L_spectroscopy/141_libs_imaging.md",
@@ -198,5 +198,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "libs-imaging"
 }

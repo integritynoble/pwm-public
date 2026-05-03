@@ -5,14 +5,40 @@
   "principle_ref": "sha256:<L1-135_principle_hash>",
   "title": "Neutron Powder Rietveld Spec",
   "spec_type": "mismatch_only",
-
   "six_tuple": {
     "omega": {
-      "N_points": [1000, 100000], "lambda_A": [0.5, 6.0],
-      "N_atoms": [1, 1000],
-      "preferred_orientation": [0.0, 0.5], "absorption_correction": [0.0, 0.3],
-      "background_model_error": [0.0, 0.2], "thermal_diffuse_scatter": [0.0, 0.2],
-      "magnetic_interference": [0.0, 0.5]
+      "N_points": [
+        1000,
+        100000
+      ],
+      "lambda_A": [
+        0.5,
+        6.0
+      ],
+      "N_atoms": [
+        1,
+        1000
+      ],
+      "preferred_orientation": [
+        0.0,
+        0.5
+      ],
+      "absorption_correction": [
+        0.0,
+        0.3
+      ],
+      "background_model_error": [
+        0.0,
+        0.2
+      ],
+      "thermal_diffuse_scatter": [
+        0.0,
+        0.2
+      ],
+      "magnetic_interference": [
+        0.0,
+        0.5
+      ]
     },
     "E": {
       "forward": "I(2theta) = sum_hkl |F|^2 * P(2theta-2theta_hkl) * LP * abs + background + n_Poisson",
@@ -20,43 +46,88 @@
       "primitive_chain": "L.diffract.bragg -> L.project.rescipocal -> int.angular",
       "inverse": "Rietveld LS refinement of atomic/magnetic structure"
     },
-    "B": {"unit_cell_periodicity": true, "space_group_symmetry": true, "nonnegativity_thermal": true},
-    "I": {"strategy": "le_bail_init"},
-    "O": ["Rwp", "atomic_position_RMSE_angstrom", "magnetic_moment_RMSE_muB", "goodness_of_fit"],
+    "B": {
+      "unit_cell_periodicity": true,
+      "space_group_symmetry": true,
+      "nonnegativity_thermal": true
+    },
+    "I": {
+      "strategy": "le_bail_init"
+    },
+    "O": [
+      "Rwp",
+      "atomic_position_RMSE_angstrom",
+      "magnetic_moment_RMSE_muB",
+      "goodness_of_fit"
+    ],
     "epsilon_fn": "0.03 + 0.1 * preferred_orientation + 0.1 * absorption_correction + 0.1 * magnetic_interference + 0.05 * thermal_diffuse_scatter"
   },
-
   "protocol_fields": {
-    "input_format": {"2theta_or_tof": "float32(N_points)", "I": "float32(N_points)"},
-    "output_format": {"atom_positions": "float32(N_atoms, 3)", "magnetic_moments": "float32(N_atoms)"},
+    "input_format": {
+      "2theta_or_tof": "float32(N_points)",
+      "I": "float32(N_points)"
+    },
+    "output_format": {
+      "atom_positions": "float32(N_atoms, 3)",
+      "magnetic_moments": "float32(N_atoms)"
+    },
     "baselines": [
-      {"name": "Le-Bail",   "method_sig": "L+O", "expected_rwp": 0.08},
-      {"name": "GSAS-II",   "method_sig": "L+O", "expected_rwp": 0.05},
-      {"name": "Fullprof",  "method_sig": "L+O", "expected_rwp": 0.05},
-      {"name": "neutron-Net","method_sig": "L+N", "expected_rwp": 0.04}
+      {
+        "name": "Le-Bail",
+        "method_sig": "L+O",
+        "expected_rwp": 0.08
+      },
+      {
+        "name": "GSAS-II",
+        "method_sig": "L+O",
+        "expected_rwp": 0.05
+      },
+      {
+        "name": "Fullprof",
+        "method_sig": "L+O",
+        "expected_rwp": 0.05
+      },
+      {
+        "name": "neutron-Net",
+        "method_sig": "L+N",
+        "expected_rwp": 0.04
+      }
     ]
   },
-
   "ibenchmark_range": {
     "center_ibenchmark": {
       "rho": 1,
-      "omega_tier": {"N_points": 10000, "lambda_A": 1.5, "N_atoms": 20, "preferred_orientation": 0.0, "absorption_correction": 0.0},
+      "omega_tier": {
+        "N_points": 10000,
+        "lambda_A": 1.5,
+        "N_atoms": 20,
+        "preferred_orientation": 0.0,
+        "absorption_correction": 0.0
+      },
       "epsilon": 0.05
     },
-    "tier_bounds": {"N_atoms": [1, 500]},
-    "proximity_threshold": 0.10
+    "tier_bounds": {
+      "N_atoms": [
+        1,
+        500
+      ]
+    },
+    "proximity_threshold": 0.1
   },
-
   "d_spec": 0.35,
   "d_spec_notes": "Distance from 125 XRD ~= 0.35 (Similar — diffraction, different carrier). Distance from 130 neutron CT ~= 0.45.",
-
-  "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
   "s1_s4_justifications": {
     "S1": "2theta axis, atomic positions 3D per atom, consistent.",
     "S2": "LS refinement unique under adequate data and symmetry constraints.",
     "S3": "GSAS-II/Fullprof LS converge; Le-Bail linear peak intensities.",
     "S4": "epsilon_fn defined; neutron-Net fails at pref_orient=0.5 + magnetic_interference=0.5 (hardness)."
   },
-
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "display_slug": "neutron-diffraction"
 }

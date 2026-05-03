@@ -11,15 +11,15 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence boilerplate. Physics grounded in Rupp 2010 Biomolecular Crystallography; Giacovazzo et al. 2011 Fundamentals; Jeffrey 1997 Macromolecular Crystallography; Karplus-Diederichs 2012 data-quality metrics.",
   "E": {
-    "description": "Monochromatic X-rays (typically 1.0-1.8 \u00c5, from synchrotron or rotating anode) diffract off a single crystal; Bragg peaks at angles satisfying n*lambda = 2*d*sin(theta); intensities I(h,k,l) = |F(h,k,l)|^2 where F is Fourier transform of electron density. Phase problem requires SAD/MAD/MIR/MR methods; solvent flattening + refinement.",
+    "description": "Monochromatic X-rays (typically 1.0-1.8 Å, from synchrotron or rotating anode) diffract off a single crystal; Bragg peaks at angles satisfying n*lambda = 2*d*sin(theta); intensities I(h,k,l) = |F(h,k,l)|^2 where F is Fourier transform of electron density. Phase problem requires SAD/MAD/MIR/MR methods; solvent flattening + refinement.",
     "forward_model": "I(h,k,l) = |F(h,k,l)|^2 * LP(theta) * absorption(mu*t) * poisson_noise",
     "world_state_x": "Electron density rho(x,y,z) in unit cell",
     "observation_y": "Bragg-peak integrated intensities I(h,k,l) for reciprocal-lattice points",
     "physical_parameters_theta": [
-      "Wavelength lambda (0.5-2.5 \u00c5)",
+      "Wavelength lambda (0.5-2.5 Å)",
       "Crystal unit-cell parameters (a, b, c, alpha, beta, gamma)",
       "Space group (230 possibilities)",
-      "Resolution limit d_min (1-4 \u00c5 typical)",
+      "Resolution limit d_min (1-4 Å typical)",
       "Mosaicity, crystal size (dictates coherence)",
       "Radiation damage dose"
     ]
@@ -45,7 +45,7 @@
     "condition_number_kappa": 1000,
     "condition_number_effective": 30,
     "condition_number_mismatched": 800,
-    "regime": "Phase problem fundamentally ill-posed from intensities alone; experimental phasing (MAD/SAD) adds constraints. Well-posed at atomic resolution (<1.2 \u00c5) via direct methods."
+    "regime": "Phase problem fundamentally ill-posed from intensities alone; experimental phasing (MAD/SAD) adds constraints. Well-posed at atomic resolution (<1.2 Å) via direct methods."
   },
   "C": {
     "solver_class": "Direct methods (SHELX), MIR/MAD phasing, molecular replacement (Phaser), density modification (DM), learned (AlphaFold-priors)",
@@ -178,5 +178,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "xray-crystallography"
 }

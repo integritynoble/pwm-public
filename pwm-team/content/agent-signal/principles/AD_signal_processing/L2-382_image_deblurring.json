@@ -5,13 +5,40 @@
   "principle_ref": "sha256:<L1-382_principle_hash>",
   "title": "Image Deblurring Blind-Kernel Spec (GoPro / REDS benchmark family)",
   "spec_type": "mismatch_only",
-
   "six_tuple": {
     "omega": {
-      "H": [128, 2048], "W": [128, 2048], "K": [5, 51],
-      "noise_level": [0.001, 0.1], "kernel_size_error": [0.0, 0.3],
-      "kernel_shape_error": [0.0, 0.5], "sub_pixel_shift": [0.0, 2.0],
-      "saturation": [0.0, 0.1]
+      "H": [
+        128,
+        2048
+      ],
+      "W": [
+        128,
+        2048
+      ],
+      "K": [
+        5,
+        51
+      ],
+      "noise_level": [
+        0.001,
+        0.1
+      ],
+      "kernel_size_error": [
+        0.0,
+        0.3
+      ],
+      "kernel_shape_error": [
+        0.0,
+        0.5
+      ],
+      "sub_pixel_shift": [
+        0.0,
+        2.0
+      ],
+      "saturation": [
+        0.0,
+        0.1
+      ]
     },
     "E": {
       "forward": "y = k * x + n; kernel k uncertain up to size/shape error",
@@ -19,47 +46,113 @@
       "primitive_chain": "K.blur.shiftinvariant -> int.spatial",
       "inverse": "jointly recover x and k from y under sparse-gradient prior"
     },
-    "B": {"nonnegativity": true, "sparse_gradient": true, "kernel_unit_sum": "sum(k) = 1, k >= 0"},
-    "I": {"strategy": "coarse_to_fine_bilinear"},
-    "O": ["PSNR_dB", "SSIM", "LPIPS", "kernel_MSE", "residual_norm"],
+    "B": {
+      "nonnegativity": true,
+      "sparse_gradient": true,
+      "kernel_unit_sum": "sum(k) = 1, k >= 0"
+    },
+    "I": {
+      "strategy": "coarse_to_fine_bilinear"
+    },
+    "O": [
+      "PSNR_dB",
+      "SSIM",
+      "LPIPS",
+      "kernel_MSE",
+      "residual_norm"
+    ],
     "epsilon_fn": "22.0 + 2.0 * log2(H / 128) - 1.5 * kernel_shape_error - 10.0 * noise_level"
   },
-
   "protocol_fields": {
-    "input_format": {"blurred": "float32(H, W, 3)", "kernel_hint": "optional_float32(K, K)"},
-    "output_format": {"sharp": "float32(H, W, 3)", "kernel": "float32(K, K)"},
+    "input_format": {
+      "blurred": "float32(H, W, 3)",
+      "kernel_hint": "optional_float32(K, K)"
+    },
+    "output_format": {
+      "sharp": "float32(H, W, 3)",
+      "kernel": "float32(K, K)"
+    },
     "baselines": [
-      {"name": "Wiener",           "method_sig": "L+O", "expected_psnr": 22.0},
-      {"name": "TV-ADMM",          "method_sig": "L+O", "expected_psnr": 24.5},
-      {"name": "Krishnan-Fergus",  "method_sig": "L+O", "expected_psnr": 26.0},
-      {"name": "SRN-DeblurNet",    "method_sig": "L+N", "expected_psnr": 30.5},
-      {"name": "MPRNet",           "method_sig": "L+N", "expected_psnr": 32.6}
+      {
+        "name": "Wiener",
+        "method_sig": "L+O",
+        "expected_psnr": 22.0
+      },
+      {
+        "name": "TV-ADMM",
+        "method_sig": "L+O",
+        "expected_psnr": 24.5
+      },
+      {
+        "name": "Krishnan-Fergus",
+        "method_sig": "L+O",
+        "expected_psnr": 26.0
+      },
+      {
+        "name": "SRN-DeblurNet",
+        "method_sig": "L+N",
+        "expected_psnr": 30.5
+      },
+      {
+        "name": "MPRNet",
+        "method_sig": "L+N",
+        "expected_psnr": 32.6
+      }
     ]
   },
-
   "ibenchmark_range": {
     "center_ibenchmark": {
       "rho": 1,
-      "omega_tier": {"H": 512, "W": 512, "K": 15, "noise_level": 0.01, "kernel_size_error": 0.0, "kernel_shape_error": 0.0, "sub_pixel_shift": 0.0, "saturation": 0.0},
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "K": 15,
+        "noise_level": 0.01,
+        "kernel_size_error": 0.0,
+        "kernel_shape_error": 0.0,
+        "sub_pixel_shift": 0.0,
+        "saturation": 0.0
+      },
       "epsilon": 28.0
     },
     "tier_bounds": {
-      "H": [128, 1024], "W": [128, 1024], "K": [5, 51],
-      "noise_level": [0.005, 0.08], "kernel_shape_error": [0.0, 0.5]
+      "H": [
+        128,
+        1024
+      ],
+      "W": [
+        128,
+        1024
+      ],
+      "K": [
+        5,
+        51
+      ],
+      "noise_level": [
+        0.005,
+        0.08
+      ],
+      "kernel_shape_error": [
+        0.0,
+        0.5
+      ]
     },
-    "proximity_threshold": 0.10
+    "proximity_threshold": 0.1
   },
-
   "d_spec": 0.45,
   "d_spec_notes": "Reference distance from the hypothetical non-blind oracle spec is d_spec ~= 0.18 (Similar); this blind spec sits at the centroid of the deblurring family. Distance from 385 denoising ~= 0.35 (Related, shares carrier=photon and solution=2D_image but different primitive).",
-
-  "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
   "s1_s4_justifications": {
     "S1": "Dimensions: kernel K x K in pixels, y and x both H x W — dimensionally consistent under valid+ boundary.",
     "S2": "Wiener filter exists for any |OTF| > 0; bilinear blind problem is non-convex but admits local minima characterized under sparse-gradient priors.",
     "S3": "Richardson-Lucy monotonically improves Poisson likelihood; ADMM with TV prior converges O(1/k) ergodic; learned methods single forward pass.",
     "S4": "epsilon_fn evaluates for 10 random Omega samples, SRN-DeblurNet fails at kernel_shape_error=0.5 corner (hardness rule holds)."
   },
-
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "display_slug": "image-deblurring"
 }

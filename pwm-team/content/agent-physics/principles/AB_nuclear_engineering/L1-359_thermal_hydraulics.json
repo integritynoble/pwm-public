@@ -2,7 +2,7 @@
   "artifact_id": "L1-359",
   "layer": "L1",
   "principle_number": "359",
-  "title": "Reactor Thermal-Hydraulics \u2014 coupled T/H with neutronics",
+  "title": "Reactor Thermal-Hydraulics — coupled T/H with neutronics",
   "domain": "Nuclear Engineering",
   "sub_domain": "RELAP / CTF core thermal-hydraulic transient",
   "source_file": "AB_nuclear_engineering/359_thermal_hydraulics.md",
@@ -11,7 +11,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Reactor Thermal-Hydraulics \u2014 coupled T/H with neutronics forward model.",
+    "description": "Reactor Thermal-Hydraulics — coupled T/H with neutronics forward model.",
     "forward_model": "2-phase 6-equation: mass, momentum, energy per phase; fuel rod conduction; clad-coolant HTC",
     "world_state_x": "axial/radial fuel + coolant temperature + void fraction + pressure drops",
     "observation_y": "in-core thermocouples, loop flowmeters, pressurizer level",
@@ -183,5 +183,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "thermal-hydraulics"
 }

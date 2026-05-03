@@ -5,14 +5,48 @@
   "principle_ref": "sha256:<L1-137_principle_hash>",
   "title": "Raman Imaging Hyperspectral Unmixing Spec",
   "spec_type": "mismatch_only",
-
   "six_tuple": {
     "omega": {
-      "H": [64, 2048], "W": [64, 2048], "N_lambda": [128, 2048],
-      "tau_ms": [10, 10000], "lambda_L_nm": [488, 1064],
-      "K": [1, 20], "fluorescence_background": [0.0, 10.0],
-      "wavenumber_drift_cm1": [0.0, 10.0], "laser_power_fluct": [0.0, 0.3],
-      "pure_component_uncertainty": [0.0, 0.3]
+      "H": [
+        64,
+        2048
+      ],
+      "W": [
+        64,
+        2048
+      ],
+      "N_lambda": [
+        128,
+        2048
+      ],
+      "tau_ms": [
+        10,
+        10000
+      ],
+      "lambda_L_nm": [
+        488,
+        1064
+      ],
+      "K": [
+        1,
+        20
+      ],
+      "fluorescence_background": [
+        0.0,
+        10.0
+      ],
+      "wavenumber_drift_cm1": [
+        0.0,
+        10.0
+      ],
+      "laser_power_fluct": [
+        0.0,
+        0.3
+      ],
+      "pure_component_uncertainty": [
+        0.0,
+        0.3
+      ]
     },
     "E": {
       "forward": "y(r, omega) = S(omega) * c(r) + B_fluor(r, omega) + n",
@@ -20,44 +54,102 @@
       "primitive_chain": "S.scatter.inelastic -> L.disperse.spectral -> int.temporal",
       "inverse": "recover concentration maps c(r) in R^{HxWxK} from hyperspectral cube y"
     },
-    "B": {"nonnegativity_c": true, "spectral_smoothness_S": true, "sum_to_one_optional": "1^T c(r) <= 1"},
-    "I": {"strategy": "vca_endmember_init"},
-    "O": ["concentration_NMSE", "SNR_dB", "classification_accuracy", "residual_norm"],
+    "B": {
+      "nonnegativity_c": true,
+      "spectral_smoothness_S": true,
+      "sum_to_one_optional": "1^T c(r) <= 1"
+    },
+    "I": {
+      "strategy": "vca_endmember_init"
+    },
+    "O": [
+      "concentration_NMSE",
+      "SNR_dB",
+      "classification_accuracy",
+      "residual_norm"
+    ],
     "epsilon_fn": "2e-3 + 0.02 * fluorescence_background + 0.01 * wavenumber_drift_cm1 + 0.05 * pure_component_uncertainty"
   },
-
   "protocol_fields": {
-    "input_format": {"cube": "uint16(H, W, N_lambda)", "spectral_library": "float32(K, N_lambda)"},
-    "output_format": {"concentrations": "float32(H, W, K)"},
+    "input_format": {
+      "cube": "uint16(H, W, N_lambda)",
+      "spectral_library": "float32(K, N_lambda)"
+    },
+    "output_format": {
+      "concentrations": "float32(H, W, K)"
+    },
     "baselines": [
-      {"name": "CLS",        "method_sig": "L+O", "expected_nmse": 5e-3},
-      {"name": "NNLS",       "method_sig": "L+O", "expected_nmse": 4e-3},
-      {"name": "MCR-ALS",    "method_sig": "L+O", "expected_nmse": 3e-3},
-      {"name": "VCA+NNLS",   "method_sig": "L+O", "expected_nmse": 3.5e-3},
-      {"name": "UNet-RamanNet","method_sig": "L+N","expected_nmse": 2e-3}
+      {
+        "name": "CLS",
+        "method_sig": "L+O",
+        "expected_nmse": 0.005
+      },
+      {
+        "name": "NNLS",
+        "method_sig": "L+O",
+        "expected_nmse": 0.004
+      },
+      {
+        "name": "MCR-ALS",
+        "method_sig": "L+O",
+        "expected_nmse": 0.003
+      },
+      {
+        "name": "VCA+NNLS",
+        "method_sig": "L+O",
+        "expected_nmse": 0.0035
+      },
+      {
+        "name": "UNet-RamanNet",
+        "method_sig": "L+N",
+        "expected_nmse": 0.002
+      }
     ]
   },
-
   "ibenchmark_range": {
     "center_ibenchmark": {
       "rho": 1,
-      "omega_tier": {"H": 256, "W": 256, "N_lambda": 512, "tau_ms": 100, "K": 5, "fluorescence_background": 0.1, "wavenumber_drift_cm1": 0.0},
-      "epsilon": 5e-3
+      "omega_tier": {
+        "H": 256,
+        "W": 256,
+        "N_lambda": 512,
+        "tau_ms": 100,
+        "K": 5,
+        "fluorescence_background": 0.1,
+        "wavenumber_drift_cm1": 0.0
+      },
+      "epsilon": 0.005
     },
-    "tier_bounds": {"H": [64, 1024], "N_lambda": [128, 1024], "K": [1, 10]},
-    "proximity_threshold": 0.10
+    "tier_bounds": {
+      "H": [
+        64,
+        1024
+      ],
+      "N_lambda": [
+        128,
+        1024
+      ],
+      "K": [
+        1,
+        10
+      ]
+    },
+    "proximity_threshold": 0.1
   },
-
   "d_spec": 0.45,
   "d_spec_notes": "Distance from CARS (L2-138) ~= 0.30 (Related — coherent vs. spontaneous). Distance from 140 FTIR ~= 0.35 (Related — different vibrational mechanism).",
-
-  "s1_s4_gates": ["PASS","PASS","PASS","PASS"],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
   "s1_s4_justifications": {
     "S1": "Library S in R^{N_lambda x K}, concentrations c in R^{HxWxK}, cube y in R^{HxWxN_lambda} consistent.",
     "S2": "CLS unique when K < N_lambda and S full column rank; identifiable under spectral diversity.",
     "S3": "CLS closed-form; NNLS monotone; MCR-ALS descent convergence.",
     "S4": "epsilon_fn defined; UNet-RamanNet fails at T4 fluor=10, drift=10 cm^-1 (hardness)."
   },
-
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "display_slug": "raman-imaging"
 }

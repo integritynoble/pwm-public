@@ -7,7 +7,6 @@
   "sub_domain": "Single-cell / bulk RNA-seq transcript quantification with marker-gene-panel cell-type categorical readout",
   "source_file": "AE_computational_bio/520_rnaseq_celltype_pwdr.md",
   "source_data_quality_note": "v2 physical_with_discrete_readout (PWDR) genesis Principle. Wraps L1-413 HMM Sequence Alignment (existing in v1 genesis, sibling computational-biology core; note imperfect fit because RNA-seq quantification is more accurately a Bayesian / EM transcript-abundance recovery — a future dedicated RNA-seq quantification analytical core could be authored). Threshold function applies canonical marker-gene-panel rules (CellMarker, PanglaoDB) to assign cell-type labels. Universal in single-cell biology, immunology, oncology, developmental biology. UTSW Children's Medical Center Research Institute and Simmons Cancer Center single-cell programs.",
-
   "gate_class": "physical_with_discrete_readout",
   "gate_substitutions": {
     "kappa_substitute": null,
@@ -19,10 +18,44 @@
     "lipschitz_constant": 0.05,
     "underlying_physical_state": "per-cell normalized gene expression vector (typically log2 counts-per-million or scTransform-residual values across ~20k transcripts) recovered by L1-413-style alignment + transcript quantification",
     "physics_core_principle": "L1-413",
-    "label_set_immune": ["T_cell", "B_cell", "NK_cell", "monocyte", "macrophage", "dendritic_cell", "neutrophil", "mast_cell", "plasma_cell"],
-    "label_set_epithelial": ["basal", "luminal", "secretory", "ciliated", "goblet", "Paneth", "enterocyte", "hepatocyte", "alveolar_AT1", "alveolar_AT2"],
-    "label_set_stromal": ["fibroblast", "myofibroblast", "endothelial", "pericyte", "smooth_muscle"],
-    "label_set_neural": ["neuron_excitatory", "neuron_inhibitory", "astrocyte", "oligodendrocyte", "microglia", "OPC"],
+    "label_set_immune": [
+      "T_cell",
+      "B_cell",
+      "NK_cell",
+      "monocyte",
+      "macrophage",
+      "dendritic_cell",
+      "neutrophil",
+      "mast_cell",
+      "plasma_cell"
+    ],
+    "label_set_epithelial": [
+      "basal",
+      "luminal",
+      "secretory",
+      "ciliated",
+      "goblet",
+      "Paneth",
+      "enterocyte",
+      "hepatocyte",
+      "alveolar_AT1",
+      "alveolar_AT2"
+    ],
+    "label_set_stromal": [
+      "fibroblast",
+      "myofibroblast",
+      "endothelial",
+      "pericyte",
+      "smooth_muscle"
+    ],
+    "label_set_neural": [
+      "neuron_excitatory",
+      "neuron_inhibitory",
+      "astrocyte",
+      "oligodendrocyte",
+      "microglia",
+      "OPC"
+    ],
     "threshold_continuity_proof": "Marker-gene panel scoring is a sum of indicator functions on continuous-valued expression z-scores; per-class boundaries form measure-zero hyperplanes in expression space. Smoothed-classification (softmax with finite temperature) is globally Lipschitz with constant ~0.05 per z-score unit."
   },
   "related_principles": [
@@ -30,24 +63,54 @@
     "L1-403 (PBPK — sibling computational biology, informational)",
     "L1-412 (protein folding — sibling computational biology, informational)"
   ],
-
   "E": {
     "description": "RNA-seq Cell-Type Classification (PWDR): wraps RNA-seq alignment + transcript quantification core with canonical marker-gene-panel rules. Stage 1 (analytical, sibling to L1-413): align reads to transcriptome (HISAT2, STAR, kallisto, Salmon); estimate per-transcript abundance via EM (RSEM, Kallisto pseudoalignment) or Bayesian inference (Salmon variational); normalize to counts-per-million or apply scTransform/sctransform Pearson residuals. Stage 2 (deterministic threshold): per-cell argmax over marker-panel scores per CellMarker / PanglaoDB / Tabula Sapiens taxonomies. Difficulty tier delta = 5. Mismatch parameters: dropout_rate, batch_effect, doublet_contamination, ambient_rna_contamination, marker_panel_coverage_uncertainty, taxonomy_disagreement.",
     "forward_model": "Stage 1 (sibling to L1-413): reads -> transcriptome alignment -> counts -> log2 CPM or scTransform residuals across ~20k genes per cell. Stage 2: cell_type = argmax_class score(expression vector, marker panel_class) per CellMarker/PanglaoDB.",
     "world_state_x": "Per-cell categorical label in canonical cell-type taxonomy (immune, epithelial, stromal, neural sub-classes).",
     "observation_y": "Single-cell or bulk RNA-seq read library: typically 10x Genomics 3' or 5' chemistry, 50k-200k reads per cell, ~20k expressed transcripts.",
-    "physical_parameters_theta": ["N_cells", "N_genes", "reads_per_cell", "sequencing_depth", "library_complexity", "dropout_rate", "batch_effect", "doublet_contamination", "ambient_rna_contamination", "marker_panel_coverage_uncertainty", "taxonomy_disagreement"]
+    "physical_parameters_theta": [
+      "N_cells",
+      "N_genes",
+      "reads_per_cell",
+      "sequencing_depth",
+      "library_complexity",
+      "dropout_rate",
+      "batch_effect",
+      "doublet_contamination",
+      "ambient_rna_contamination",
+      "marker_panel_coverage_uncertainty",
+      "taxonomy_disagreement"
+    ]
   },
-
   "G": {
     "dag": "L.poly_a_capture -> L.reverse_transcription -> L.pcr_amplification -> L.sequencing -> L.transcriptome_alignment -> L.transcript_quantification -> L.normalization -> L.marker_panel_classifier -> int.cell",
-    "vertices": ["L.poly_a_capture", "L.reverse_transcription", "L.pcr_amplification", "L.sequencing", "L.transcriptome_alignment", "L.transcript_quantification", "L.normalization", "L.marker_panel_classifier", "int.cell"],
-    "arcs": ["L.poly_a_capture -> L.reverse_transcription", "L.reverse_transcription -> L.pcr_amplification", "L.pcr_amplification -> L.sequencing", "L.sequencing -> L.transcriptome_alignment", "L.transcriptome_alignment -> L.transcript_quantification", "L.transcript_quantification -> L.normalization", "L.normalization -> L.marker_panel_classifier", "L.marker_panel_classifier -> int.cell"],
+    "vertices": [
+      "L.poly_a_capture",
+      "L.reverse_transcription",
+      "L.pcr_amplification",
+      "L.sequencing",
+      "L.transcriptome_alignment",
+      "L.transcript_quantification",
+      "L.normalization",
+      "L.marker_panel_classifier",
+      "int.cell"
+    ],
+    "arcs": [
+      "L.poly_a_capture -> L.reverse_transcription",
+      "L.reverse_transcription -> L.pcr_amplification",
+      "L.pcr_amplification -> L.sequencing",
+      "L.sequencing -> L.transcriptome_alignment",
+      "L.transcriptome_alignment -> L.transcript_quantification",
+      "L.transcript_quantification -> L.normalization",
+      "L.normalization -> L.marker_panel_classifier",
+      "L.marker_panel_classifier -> int.cell"
+    ],
     "L_DAG": 8.3,
     "n_c": 1,
-    "coupling_constraints": ["transcriptome_to_classifier: gene-expression vector and marker-panel reference share gene-identifier indexing; coupling enables per-cell argmax classification"]
+    "coupling_constraints": [
+      "transcriptome_to_classifier: gene-expression vector and marker-panel reference share gene-identifier indexing; coupling enables per-cell argmax classification"
+    ]
   },
-
   "W": {
     "existence": true,
     "uniqueness": "conditional",
@@ -56,14 +119,12 @@
     "condition_number_effective": 35,
     "regime": "Existence guaranteed within Omega bounds. Uniqueness conditional on adequate sequencing depth (typically >30k reads per cell for 3' chemistry) and adequate marker-panel coverage. Stability conditional with dropout_rate dominant for low-expressing markers; batch_effect dominant cross-sample; doublet_contamination dominant for high cell densities. Joint Hadamard well-posedness for the coupled RNA-seq + marker-panel-classifier forward established by Trapnell 2014 (foundational scRNA-seq), Macosko 2015 (Drop-seq), Stuart-Butler 2019 (Seurat v3 integration), Tabula Sapiens Consortium 2022, Zhang 2019 (CellMarker), Franzen 2019 (PanglaoDB)."
   },
-
   "C": {
     "solver_class": "linear-operator + statistical [Salmon EM transcript quantification + marker-panel argmax] | nonlinear [Seurat / Scanpy clustering then label-transfer] | linear-operator + deep neural [scVI variational, scANVI, scPhere]",
     "convergence_rate_q": 1.0,
     "error_bound": "Inherits L1-413-like sequence-alignment + transcript-quantification bound. Misclassification probability bound: Pr(cell_type_hat != cell_type_true) <= C_thresh * |expression_z_score_error| / d(expression, marker_threshold).",
     "complexity": "O(N_reads * log(N_genes)) for alignment; O(N_cells * N_genes) for normalization + marker scoring; total alignment-dominated"
   },
-
   "physics_fingerprint": {
     "carrier": "rna_molecules_with_sequencing",
     "sensing_mechanism": "rnaseq_with_marker_panel_classifier",
@@ -71,40 +132,125 @@
     "problem_class": "linear_inverse_with_categorical_readout",
     "noise_model": "negative_binomial",
     "solution_space": "1D_celltype_label",
-    "primitives": ["L.poly_a_capture", "L.reverse_transcription", "L.pcr_amplification", "L.sequencing", "L.transcriptome_alignment", "L.transcript_quantification", "L.normalization", "L.marker_panel_classifier", "int.cell"]
+    "primitives": [
+      "L.poly_a_capture",
+      "L.reverse_transcription",
+      "L.pcr_amplification",
+      "L.sequencing",
+      "L.transcriptome_alignment",
+      "L.transcript_quantification",
+      "L.normalization",
+      "L.marker_panel_classifier",
+      "int.cell"
+    ]
   },
-
   "difficulty_delta": 5,
   "difficulty_tier": "advanced",
-  "mismatch_parameters": ["dropout_rate", "batch_effect", "doublet_contamination", "ambient_rna_contamination", "marker_panel_coverage_uncertainty", "taxonomy_disagreement"],
+  "mismatch_parameters": [
+    "dropout_rate",
+    "batch_effect",
+    "doublet_contamination",
+    "ambient_rna_contamination",
+    "marker_panel_coverage_uncertainty",
+    "taxonomy_disagreement"
+  ],
   "error_metric": "categorical_accuracy",
   "error_metric_secondary": "macro_F1_per_celltype",
-
   "spec_range": {
     "center_spec": {
       "problem_class": "scrnaseq_celltype_pwdr",
       "forward_operator": "scrnaseq_celltype_pwdr_forward",
       "input_format": "scrnaseq_count_matrix_with_celltype_label",
-      "omega": {"N_cells": 5000, "N_genes": 20000, "reads_per_cell": 50000, "sequencing_depth": 50000, "library_complexity": 0.85, "dropout_rate": 0.0, "batch_effect": 0.0, "doublet_contamination": 0.0, "ambient_rna_contamination": 0.0, "marker_panel_coverage_uncertainty": 0.0, "taxonomy_disagreement": 0.0},
+      "omega": {
+        "N_cells": 5000,
+        "N_genes": 20000,
+        "reads_per_cell": 50000,
+        "sequencing_depth": 50000,
+        "library_complexity": 0.85,
+        "dropout_rate": 0.0,
+        "batch_effect": 0.0,
+        "doublet_contamination": 0.0,
+        "ambient_rna_contamination": 0.0,
+        "marker_panel_coverage_uncertainty": 0.0,
+        "taxonomy_disagreement": 0.0
+      },
       "epsilon_fn_center": "0.85_accuracy"
     },
-    "allowed_forward_operators": ["scrnaseq_celltype_pwdr_forward", "bulk_rnaseq_deconvolution_pwdr_forward", "scrnaseq_immune_pwdr_forward", "scrnaseq_atlas_pwdr_forward"],
-    "allowed_problem_classes": ["scrnaseq_celltype_pwdr", "scrnaseq_immune_celltype_pwdr", "scrnaseq_epithelial_pwdr", "scrnaseq_neural_pwdr", "bulk_rnaseq_deconvolution_pwdr"],
-    "allowed_omega_dimensions": ["N_cells", "N_genes", "reads_per_cell", "sequencing_depth", "library_complexity", "dropout_rate", "batch_effect", "doublet_contamination", "ambient_rna_contamination", "marker_panel_coverage_uncertainty", "taxonomy_disagreement"],
-    "omega_bounds": {"N_cells": [100, 1000000], "N_genes": [1000, 60000], "reads_per_cell": [1000, 1000000], "dropout_rate": [0.0, 0.5]},
-    "epsilon_bounds": {"categorical_accuracy": [0.40, 0.99]}
+    "allowed_forward_operators": [
+      "scrnaseq_celltype_pwdr_forward",
+      "bulk_rnaseq_deconvolution_pwdr_forward",
+      "scrnaseq_immune_pwdr_forward",
+      "scrnaseq_atlas_pwdr_forward"
+    ],
+    "allowed_problem_classes": [
+      "scrnaseq_celltype_pwdr",
+      "scrnaseq_immune_celltype_pwdr",
+      "scrnaseq_epithelial_pwdr",
+      "scrnaseq_neural_pwdr",
+      "bulk_rnaseq_deconvolution_pwdr"
+    ],
+    "allowed_omega_dimensions": [
+      "N_cells",
+      "N_genes",
+      "reads_per_cell",
+      "sequencing_depth",
+      "library_complexity",
+      "dropout_rate",
+      "batch_effect",
+      "doublet_contamination",
+      "ambient_rna_contamination",
+      "marker_panel_coverage_uncertainty",
+      "taxonomy_disagreement"
+    ],
+    "omega_bounds": {
+      "N_cells": [
+        100,
+        1000000
+      ],
+      "N_genes": [
+        1000,
+        60000
+      ],
+      "reads_per_cell": [
+        1000,
+        1000000
+      ],
+      "dropout_rate": [
+        0.0,
+        0.5
+      ]
+    },
+    "epsilon_bounds": {
+      "categorical_accuracy": [
+        0.4,
+        0.99
+      ]
+    }
   },
-
-  "p1_p10_tests": ["PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS"],
-  "s1_s4_gates": ["PASS", "PASS", "PASS", "PASS"],
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
   "ipfs_cid": null,
-
   "recast_attempted": {
     "considered": true,
     "recast_path": "Original framing: 'Cluster scRNA-seq cells and assign types' (would be data_driven_statistical Seurat / Scanpy clustering pipeline). Option-3 recast: 'Recover per-cell gene-expression vector via RNA-seq alignment + EM transcript quantification; apply CellMarker / PanglaoDB / Tabula Sapiens marker-panel scoring per cell'. Feasible because gene expression has a well-defined sampling forward model and marker panels are deterministic functions of expression vectors.",
     "reason_rejected": null
   },
-
   "v3_metadata": {
     "is_standalone_multiphysics": false,
     "coupling_count_n_c": 1,
@@ -124,5 +270,6 @@
       "rationale": "L1-413 HMM Sequence Alignment uses HMM emission and transition probabilities for sequence-alignment problems. L1-520 RNA-seq cell-typing recovers transcript abundance via EM / variational Bayes (different forward model) and applies marker-panel categorical classification. Sibling computational-biology pattern but distinct primitives; d_principle ~ 0.55. Future work: author dedicated RNA-seq transcript-quantification analytical core."
     },
     "clinical_context": "Universal in single-cell biology, immunology, oncology (TIL profiling, immunotherapy response prediction), developmental biology (cell-fate trajectory analysis), and emerging clinical diagnostics (HCA cell census, BICCN brain atlas). 10x Genomics Chromium and BD Rhapsody dominate commercial single-cell platforms. UTSW Children's Medical Center Research Institute and Simmons Cancer Center run single-cell pipelines. Reference solvers: Salmon, kallisto, STAR (alignment); Seurat, Scanpy (analysis); CellMarker / PanglaoDB / Tabula Sapiens (marker panels). PWDR formulation gives physics-grounded explainability: cell types derive from explicit marker-gene expression thresholds tied to community taxonomies, not black-box clustering."
-  }
+  },
+  "display_slug": "rnaseq-celltype"
 }

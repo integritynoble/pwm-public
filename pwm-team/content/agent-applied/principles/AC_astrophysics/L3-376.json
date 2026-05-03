@@ -3,7 +3,7 @@
   "layer": "L3",
   "parent_l2": "L2-376",
   "parent_l1": "L1-376",
-  "title": "Cosmic Ray Propagation Inversion \u2014 Benchmark Suite",
+  "title": "Cosmic Ray Propagation Inversion — Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "AMS-02_B_C_ratio_2021",
@@ -255,5 +255,6 @@
     "M6_gate_checks": "gates/check_s{1,2,3,4}.py embedded with thresholds.yaml."
   },
   "ipfs_cid": null,
-  "ground_truth_cid": null
+  "ground_truth_cid": null,
+  "display_slug": "cosmic-ray-propagation-inversion-benchmark-suite"
 }

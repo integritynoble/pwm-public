@@ -2,7 +2,7 @@
   "artifact_id": "L1-220",
   "layer": "L1",
   "principle_number": "220",
-  "title": "Linear Elastic Fracture Mechanics (LEFM) \u2014 K/J evaluation",
+  "title": "Linear Elastic Fracture Mechanics (LEFM) — K/J evaluation",
   "domain": "Structural Mechanics",
   "sub_domain": "SIF / J-integral extraction",
   "source_file": "T_structural_mechanics/220_lefm.md",
@@ -11,7 +11,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Linear Elastic Fracture Mechanics (LEFM) \u2014 K/J evaluation forward model.",
+    "description": "Linear Elastic Fracture Mechanics (LEFM) — K/J evaluation forward model.",
     "forward_model": "J = int_Gamma (W dy - T . du/dx ds); K = sqrt(E' J) for plane strain",
     "world_state_x": "stress intensity factors K_I, K_II, K_III and J integral",
     "observation_y": "DIC crack-tip displacement / caustic images",
@@ -167,5 +167,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "lefm"
 }

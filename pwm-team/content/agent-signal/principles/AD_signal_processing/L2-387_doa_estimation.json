@@ -134,7 +134,7 @@
     "proximity_threshold": 0.1
   },
   "d_spec": 0.55,
-  "d_spec_notes": "Distance from wideband DoA spec ~= 0.30 (Related, adds frequency index). Distance from 394 spectral estimation ~= 0.40 (Related \u2014 both are parametric spectral estimation, different physical carriers).",
+  "d_spec_notes": "Distance from wideband DoA spec ~= 0.30 (Related, adds frequency index). Distance from 394 spectral estimation ~= 0.40 (Related — both are parametric spectral estimation, different physical carriers).",
   "s1_s4_gates": [
     "PASS",
     "PASS",
@@ -147,5 +147,6 @@
     "S3": "Root-MUSIC closed-form; ESPRIT closed-form via TLS; sparse methods FISTA O(1/k^2).",
     "S4": "epsilon_fn defined everywhere; MUSIC fails at T=1 or correlation=1 corners (hardness holds)."
   },
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "display_slug": "doa-estimation"
 }

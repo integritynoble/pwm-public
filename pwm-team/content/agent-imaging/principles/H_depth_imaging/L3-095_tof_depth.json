@@ -5,7 +5,6 @@
   "parent_l1": "L1-095",
   "title": "AMCW-ToF Depth Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
-
   "dataset_registry": {
     "primary": "Kinect v2 rgb-d indoor test set + NYU-Depth V2 (filtered for ToF-compatible scenes)",
     "secondary": "Cornell-Box MPI benchmark (synthetic concave corners, transparent)",
@@ -13,50 +12,140 @@
     "construction_method": "Simulate 4-bucket demod at declared f_mod; synthetic MPI via global-illumination transport; Poisson counting at declared photon_count",
     "num_dev_instances_per_tier": 20
   },
-
   "ibenchmarks": [
     {
-      "tier": "T1_nominal", "rho": 1,
-      "omega_tier": {"H": 424, "W": 512, "f_mod_MHz": 80, "N_freq": 3, "photon_count": 500, "multipath_interference": 0.0, "motion_jitter": 0.0, "ambient_light": 0.0},
-      "epsilon": 8.0, "d_ibench": 0.14,
+      "tier": "T1_nominal",
+      "rho": 1,
+      "omega_tier": {
+        "H": 424,
+        "W": 512,
+        "f_mod_MHz": 80,
+        "N_freq": 3,
+        "photon_count": 500,
+        "multipath_interference": 0.0,
+        "motion_jitter": 0.0,
+        "ambient_light": 0.0
+      },
+      "epsilon": 8.0,
+      "d_ibench": 0.14,
       "baselines": [
-        {"name": "Quadrature-CRT", "rmse_mm": 10.5, "Q": 0.62},
-        {"name": "SRA-MPI",        "rmse_mm": 8.2,  "Q": 0.78},
-        {"name": "ToF-DeepNet",    "rmse_mm": 6.0,  "Q": 0.92}
+        {
+          "name": "Quadrature-CRT",
+          "rmse_mm": 10.5,
+          "Q": 0.62
+        },
+        {
+          "name": "SRA-MPI",
+          "rmse_mm": 8.2,
+          "Q": 0.78
+        },
+        {
+          "name": "ToF-DeepNet",
+          "rmse_mm": 6.0,
+          "Q": 0.92
+        }
       ]
     },
     {
-      "tier": "T2_low", "rho": 3,
-      "omega_tier": {"H": 424, "W": 512, "f_mod_MHz": 80, "N_freq": 2, "photon_count": 200, "multipath_interference": 0.05, "motion_jitter": 0.01, "ambient_light": 5000},
-      "epsilon": 12.0, "d_ibench": 0.28,
+      "tier": "T2_low",
+      "rho": 3,
+      "omega_tier": {
+        "H": 424,
+        "W": 512,
+        "f_mod_MHz": 80,
+        "N_freq": 2,
+        "photon_count": 200,
+        "multipath_interference": 0.05,
+        "motion_jitter": 0.01,
+        "ambient_light": 5000
+      },
+      "epsilon": 12.0,
+      "d_ibench": 0.28,
       "baselines": [
-        {"name": "Quadrature-CRT", "rmse_mm": 16.0, "Q": 0.38},
-        {"name": "SRA-MPI",        "rmse_mm": 12.5, "Q": 0.58},
-        {"name": "ToF-DeepNet",    "rmse_mm": 9.5,  "Q": 0.75}
+        {
+          "name": "Quadrature-CRT",
+          "rmse_mm": 16.0,
+          "Q": 0.38
+        },
+        {
+          "name": "SRA-MPI",
+          "rmse_mm": 12.5,
+          "Q": 0.58
+        },
+        {
+          "name": "ToF-DeepNet",
+          "rmse_mm": 9.5,
+          "Q": 0.75
+        }
       ]
     },
     {
-      "tier": "T3_moderate", "rho": 5,
-      "omega_tier": {"H": 720, "W": 1280, "f_mod_MHz": 40, "N_freq": 2, "photon_count": 100, "multipath_interference": 0.15, "motion_jitter": 0.025, "ambient_light": 20000},
-      "epsilon": 18.0, "d_ibench": 0.48,
+      "tier": "T3_moderate",
+      "rho": 5,
+      "omega_tier": {
+        "H": 720,
+        "W": 1280,
+        "f_mod_MHz": 40,
+        "N_freq": 2,
+        "photon_count": 100,
+        "multipath_interference": 0.15,
+        "motion_jitter": 0.025,
+        "ambient_light": 20000
+      },
+      "epsilon": 18.0,
+      "d_ibench": 0.48,
       "baselines": [
-        {"name": "Quadrature-CRT", "rmse_mm": 28.0, "Q": 0.22},
-        {"name": "SRA-MPI",        "rmse_mm": 20.5, "Q": 0.48},
-        {"name": "ToF-DeepNet",    "rmse_mm": 15.5, "Q": 0.62}
+        {
+          "name": "Quadrature-CRT",
+          "rmse_mm": 28.0,
+          "Q": 0.22
+        },
+        {
+          "name": "SRA-MPI",
+          "rmse_mm": 20.5,
+          "Q": 0.48
+        },
+        {
+          "name": "ToF-DeepNet",
+          "rmse_mm": 15.5,
+          "Q": 0.62
+        }
       ]
     },
     {
-      "tier": "T4_blind", "rho": 10,
-      "omega_tier": {"H": 1080, "W": 1920, "f_mod_MHz": 20, "N_freq": 1, "photon_count": 30, "multipath_interference": 0.30, "motion_jitter": 0.05, "ambient_light": 50000},
-      "epsilon": 30.0, "d_ibench": 0.72,
+      "tier": "T4_blind",
+      "rho": 10,
+      "omega_tier": {
+        "H": 1080,
+        "W": 1920,
+        "f_mod_MHz": 20,
+        "N_freq": 1,
+        "photon_count": 30,
+        "multipath_interference": 0.3,
+        "motion_jitter": 0.05,
+        "ambient_light": 50000
+      },
+      "epsilon": 30.0,
+      "d_ibench": 0.72,
       "baselines": [
-        {"name": "Quadrature-CRT", "rmse_mm": 58.0, "Q": 0.10},
-        {"name": "SRA-MPI",        "rmse_mm": 38.0, "Q": 0.30},
-        {"name": "ToF-DeepNet",    "rmse_mm": 28.0, "Q": 0.46}
+        {
+          "name": "Quadrature-CRT",
+          "rmse_mm": 58.0,
+          "Q": 0.1
+        },
+        {
+          "name": "SRA-MPI",
+          "rmse_mm": 38.0,
+          "Q": 0.3
+        },
+        {
+          "name": "ToF-DeepNet",
+          "rmse_mm": 28.0,
+          "Q": 0.46
+        }
       ]
     }
   ],
-
   "p_benchmark": {
     "rho": 50,
     "dataset_p_benchmark": {
@@ -65,13 +154,22 @@
       "construction_method": "parametric (f_mod, N_freq, photon_count, multipath) sweep"
     },
     "baselines": [
-      {"name": "Quadrature-CRT", "overall_Q": 0.33},
-      {"name": "SRA-MPI",        "overall_Q": 0.55},
-      {"name": "ToF-DeepNet",    "overall_Q": 0.70}
+      {
+        "name": "Quadrature-CRT",
+        "overall_Q": 0.33
+      },
+      {
+        "name": "SRA-MPI",
+        "overall_Q": 0.55
+      },
+      {
+        "name": "ToF-DeepNet",
+        "overall_Q": 0.7
+      }
     ]
   },
-
   "hardness_rule_check": "SATISFIED — ToF-DeepNet fails T4_blind (MPI=0.3 + motion=0.05 + f_mod=20 MHz + ambient=50 klx corner exceeds epsilon).",
   "ipfs_cid": null,
-  "ground_truth_cid": null
+  "ground_truth_cid": null,
+  "display_slug": "tof-depth"
 }

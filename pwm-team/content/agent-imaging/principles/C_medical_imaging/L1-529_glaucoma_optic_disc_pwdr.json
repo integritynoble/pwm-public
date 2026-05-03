@@ -7,16 +7,28 @@
   "sub_domain": "Optic disc + cup segmentation from fundus with cup-to-disc-ratio glaucoma readout",
   "source_file": "C_medical_imaging/529_glaucoma_optic_disc_pwdr.md",
   "source_data_quality_note": "v2 PWDR Principle. Wraps L1-049 fundus (existing in v1 genesis) with deterministic cup-to-disc-ratio (CDR) threshold rules per ICO Glaucoma Guidelines 2016 to assign glaucoma suspect / glaucoma categorical labels. Universal in ophthalmology — every fundus exam reviewed for cupping; CDR is the primary morphologic biomarker for primary open-angle glaucoma (POAG) screening. UTSW Department of Ophthalmology glaucoma clinic high-volume use.",
-
   "gate_class": "physical_with_discrete_readout",
-  "gate_substitutions": {"kappa_substitute": null, "h_substitute": null, "conservation_substitute": "softmax simplex closure on glaucoma-suspect ordinal {normal, suspect, glaucoma_likely, advanced_glaucoma} per ICO 2016 + ISNT-rule"},
+  "gate_substitutions": {
+    "kappa_substitute": null,
+    "h_substitute": null,
+    "conservation_substitute": "softmax simplex closure on glaucoma-suspect ordinal {normal, suspect, glaucoma_likely, advanced_glaucoma} per ICO 2016 + ISNT-rule"
+  },
   "discrete_readout": {
     "threshold_function": "Glaucoma-suspect(fundus) = step on (vertical_CDR, ISNT_rule_violation, neuroretinal_rim_thinning, RNFL_defect_presence, peripapillary_atrophy): normal if vertical_CDR < 0.5 + ISNT obeyed; suspect if 0.5 <= CDR < 0.7 OR mild ISNT violation; glaucoma_likely if CDR >= 0.7 OR significant rim notching; advanced if CDR >= 0.8 OR RNFL defect with corresponding visual field loss. ISNT rule: in normal eye, neuroretinal rim is thickest Inferiorly > Superiorly > Nasally > Temporally; violation suggests glaucomatous damage.",
     "lipschitz_constant": 0.05,
     "underlying_physical_state": "optic disc + optic cup segmentation masks + neuroretinal rim morphology + RNFL defect detection recovered from L1-049 fundus photograph (or sibling SLO / OCT-en-face)",
     "physics_core_principle": "L1-049",
-    "label_set_severity": ["normal", "glaucoma_suspect", "glaucoma_likely", "advanced_glaucoma"],
-    "label_set_field_correlation": ["normal_visual_field", "early_arcuate_defect", "advanced_field_loss"],
+    "label_set_severity": [
+      "normal",
+      "glaucoma_suspect",
+      "glaucoma_likely",
+      "advanced_glaucoma"
+    ],
+    "label_set_field_correlation": [
+      "normal_visual_field",
+      "early_arcuate_defect",
+      "advanced_field_loss"
+    ],
     "threshold_continuity_proof": "Cup-to-disc ratio is continuous on disc + cup segmentation; ISNT-rule violations are step functions on rim-quadrant-thickness measurements. Smoothed-classification globally Lipschitz with constant ~0.05 per percentage-point of segmentation error."
   },
   "related_principles": [
@@ -25,46 +37,185 @@
     "L1-042 (OCT — sibling RNFL thickness assessment, informational)",
     "L1-513 (DR ETDRS PWDR — sibling fundus-based PWDR, d_principle ~ 0.45)"
   ],
-
   "E": {
     "description": "Glaucoma Optic-Disc Cupping (PWDR): wraps L1-049 with ICO 2016 Glaucoma Guidelines + Disc Damage Likelihood Scale grading rules. Stage 1 (analytical, from L1-049): segment optic disc and optic cup boundaries; measure vertical and horizontal CDR; assess neuroretinal rim morphology (ISNT pattern); detect peripapillary RNFL defects. Stage 2 (deterministic threshold): apply CDR + ISNT + DDLS rules. Difficulty tier delta = 3.",
     "forward_model": "Stage 1 (L1-049): fundus photograph -> {disc_mask, cup_mask, vertical_CDR, ISNT_rim_thickness, RNFL_defect_mask}. Stage 2: severity = step(features per ICO 2016 + ISNT + DDLS).",
     "world_state_x": "Per-eye glaucoma severity {normal, suspect, glaucoma_likely, advanced}.",
     "observation_y": "Disc-centered fundus photograph (typically 30-degree FOV centered on optic disc, 2000x2000 RGB).",
-    "physical_parameters_theta": ["H", "W", "field_of_view_degrees", "pixel_resolution_um", "RGB_calibration", "SNR_dB", "image_quality", "physiologic_cupping_variant", "pallor_mimicker", "tilted_disc_anatomy", "peripapillary_atrophy_overlap", "manual_grader_inter_rater_kappa"]
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "field_of_view_degrees",
+      "pixel_resolution_um",
+      "RGB_calibration",
+      "SNR_dB",
+      "image_quality",
+      "physiologic_cupping_variant",
+      "pallor_mimicker",
+      "tilted_disc_anatomy",
+      "peripapillary_atrophy_overlap",
+      "manual_grader_inter_rater_kappa"
+    ]
   },
-
   "G": {
     "dag": "L.fundus_acquisition -> L.disc_cup_segmentation -> L.cdr_measurement -> L.isnt_rule_check -> L.rnfl_defect_detection -> L.glaucoma_severity_classifier -> int.spatial",
-    "vertices": ["L.fundus_acquisition", "L.disc_cup_segmentation", "L.cdr_measurement", "L.isnt_rule_check", "L.rnfl_defect_detection", "L.glaucoma_severity_classifier", "int.spatial"],
-    "arcs": ["L.fundus_acquisition -> L.disc_cup_segmentation", "L.disc_cup_segmentation -> L.cdr_measurement", "L.disc_cup_segmentation -> L.isnt_rule_check", "L.fundus_acquisition -> L.rnfl_defect_detection", "L.cdr_measurement -> L.glaucoma_severity_classifier", "L.isnt_rule_check -> L.glaucoma_severity_classifier", "L.rnfl_defect_detection -> L.glaucoma_severity_classifier", "L.glaucoma_severity_classifier -> int.spatial"],
+    "vertices": [
+      "L.fundus_acquisition",
+      "L.disc_cup_segmentation",
+      "L.cdr_measurement",
+      "L.isnt_rule_check",
+      "L.rnfl_defect_detection",
+      "L.glaucoma_severity_classifier",
+      "int.spatial"
+    ],
+    "arcs": [
+      "L.fundus_acquisition -> L.disc_cup_segmentation",
+      "L.disc_cup_segmentation -> L.cdr_measurement",
+      "L.disc_cup_segmentation -> L.isnt_rule_check",
+      "L.fundus_acquisition -> L.rnfl_defect_detection",
+      "L.cdr_measurement -> L.glaucoma_severity_classifier",
+      "L.isnt_rule_check -> L.glaucoma_severity_classifier",
+      "L.rnfl_defect_detection -> L.glaucoma_severity_classifier",
+      "L.glaucoma_severity_classifier -> int.spatial"
+    ],
     "L_DAG": 5.6,
     "n_c": 1,
-    "coupling_constraints": ["disc_cup_to_features: disc + cup segmentation jointly constrains CDR and ISNT-rim-thickness measurements"]
+    "coupling_constraints": [
+      "disc_cup_to_features: disc + cup segmentation jointly constrains CDR and ISNT-rim-thickness measurements"
+    ]
   },
-  "W": {"existence": true, "uniqueness": "conditional", "stability": "conditional", "condition_number_kappa": 80, "condition_number_effective": 16, "regime": "Existence inherited from L1-049. Uniqueness conditional on adequate disc visibility (no media opacity). Stability dominated by physiologic_cupping_variant (large physiologic cups can mimic glaucoma) and tilted_disc_anatomy. Joint Hadamard well-posedness established by Bourne 2016 (ICO Glaucoma Guidelines), Spaeth 2002 (Disc Damage Likelihood Scale), Jonas 1989 (foundational neuroretinal rim morphometry), Li 2018 (deep learning glaucoma detection benchmark)."},
-  "C": {"solver_class": "linear-operator + image-segmentation [disc + cup segmentation U-Net] + categorical-readout [ICO + ISNT classifier] | end-to-end deep neural [GlaucomaNet, EyeArt glaucoma]", "convergence_rate_q": 2.0, "error_bound": "Inherits L1-049. Misclassification probability bound: Pr(severity_hat != severity_true) <= C * |CDR_error| / d(CDR, severity_threshold).", "complexity": "O(H * W) for segmentation; O(1) for classification"},
-  "physics_fingerprint": {"carrier": "photon", "sensing_mechanism": "fundus_with_glaucoma_grading", "integration_axis": "spatial", "problem_class": "linear_inverse_with_categorical_readout", "noise_model": "gaussian", "solution_space": "1D_glaucoma_severity", "primitives": ["L.fundus_acquisition", "L.disc_cup_segmentation", "L.cdr_measurement", "L.isnt_rule_check", "L.rnfl_defect_detection", "L.glaucoma_severity_classifier", "int.spatial"]},
-  "difficulty_delta": 3, "difficulty_tier": "standard",
-  "mismatch_parameters": ["image_quality", "physiologic_cupping_variant", "pallor_mimicker", "tilted_disc_anatomy", "peripapillary_atrophy_overlap", "manual_grader_inter_rater_kappa"],
-  "error_metric": "categorical_accuracy", "error_metric_secondary": "sensitivity_for_advanced_glaucoma",
-
+  "W": {
+    "existence": true,
+    "uniqueness": "conditional",
+    "stability": "conditional",
+    "condition_number_kappa": 80,
+    "condition_number_effective": 16,
+    "regime": "Existence inherited from L1-049. Uniqueness conditional on adequate disc visibility (no media opacity). Stability dominated by physiologic_cupping_variant (large physiologic cups can mimic glaucoma) and tilted_disc_anatomy. Joint Hadamard well-posedness established by Bourne 2016 (ICO Glaucoma Guidelines), Spaeth 2002 (Disc Damage Likelihood Scale), Jonas 1989 (foundational neuroretinal rim morphometry), Li 2018 (deep learning glaucoma detection benchmark)."
+  },
+  "C": {
+    "solver_class": "linear-operator + image-segmentation [disc + cup segmentation U-Net] + categorical-readout [ICO + ISNT classifier] | end-to-end deep neural [GlaucomaNet, EyeArt glaucoma]",
+    "convergence_rate_q": 2.0,
+    "error_bound": "Inherits L1-049. Misclassification probability bound: Pr(severity_hat != severity_true) <= C * |CDR_error| / d(CDR, severity_threshold).",
+    "complexity": "O(H * W) for segmentation; O(1) for classification"
+  },
+  "physics_fingerprint": {
+    "carrier": "photon",
+    "sensing_mechanism": "fundus_with_glaucoma_grading",
+    "integration_axis": "spatial",
+    "problem_class": "linear_inverse_with_categorical_readout",
+    "noise_model": "gaussian",
+    "solution_space": "1D_glaucoma_severity",
+    "primitives": [
+      "L.fundus_acquisition",
+      "L.disc_cup_segmentation",
+      "L.cdr_measurement",
+      "L.isnt_rule_check",
+      "L.rnfl_defect_detection",
+      "L.glaucoma_severity_classifier",
+      "int.spatial"
+    ]
+  },
+  "difficulty_delta": 3,
+  "difficulty_tier": "standard",
+  "mismatch_parameters": [
+    "image_quality",
+    "physiologic_cupping_variant",
+    "pallor_mimicker",
+    "tilted_disc_anatomy",
+    "peripapillary_atrophy_overlap",
+    "manual_grader_inter_rater_kappa"
+  ],
+  "error_metric": "categorical_accuracy",
+  "error_metric_secondary": "sensitivity_for_advanced_glaucoma",
   "spec_range": {
-    "center_spec": {"problem_class": "glaucoma_disc_pwdr", "forward_operator": "glaucoma_disc_pwdr_forward", "input_format": "disc_centered_fundus_with_glaucoma_label", "omega": {"H": 2048, "W": 2048, "field_of_view_degrees": 30, "pixel_resolution_um": 5, "RGB_calibration": 0.0, "SNR_dB": 30, "image_quality": 0.0, "physiologic_cupping_variant": 0.0, "pallor_mimicker": 0.0, "tilted_disc_anatomy": 0.0, "peripapillary_atrophy_overlap": 0.0, "manual_grader_inter_rater_kappa": 0.0}, "epsilon_fn_center": "0.85_accuracy"},
-    "allowed_forward_operators": ["glaucoma_disc_pwdr_forward", "glaucoma_ddls_pwdr_forward", "glaucoma_with_visual_field_pwdr_forward"],
-    "allowed_problem_classes": ["glaucoma_disc_pwdr", "glaucoma_ddls_pwdr", "glaucoma_screening_pwdr"],
-    "allowed_omega_dimensions": ["H", "W", "field_of_view_degrees", "pixel_resolution_um", "RGB_calibration", "SNR_dB", "image_quality", "physiologic_cupping_variant", "pallor_mimicker", "tilted_disc_anatomy", "peripapillary_atrophy_overlap", "manual_grader_inter_rater_kappa"],
-    "omega_bounds": {"H": [512, 4096], "W": [512, 4096]},
-    "epsilon_bounds": {"categorical_accuracy": [0.50, 0.99]}
+    "center_spec": {
+      "problem_class": "glaucoma_disc_pwdr",
+      "forward_operator": "glaucoma_disc_pwdr_forward",
+      "input_format": "disc_centered_fundus_with_glaucoma_label",
+      "omega": {
+        "H": 2048,
+        "W": 2048,
+        "field_of_view_degrees": 30,
+        "pixel_resolution_um": 5,
+        "RGB_calibration": 0.0,
+        "SNR_dB": 30,
+        "image_quality": 0.0,
+        "physiologic_cupping_variant": 0.0,
+        "pallor_mimicker": 0.0,
+        "tilted_disc_anatomy": 0.0,
+        "peripapillary_atrophy_overlap": 0.0,
+        "manual_grader_inter_rater_kappa": 0.0
+      },
+      "epsilon_fn_center": "0.85_accuracy"
+    },
+    "allowed_forward_operators": [
+      "glaucoma_disc_pwdr_forward",
+      "glaucoma_ddls_pwdr_forward",
+      "glaucoma_with_visual_field_pwdr_forward"
+    ],
+    "allowed_problem_classes": [
+      "glaucoma_disc_pwdr",
+      "glaucoma_ddls_pwdr",
+      "glaucoma_screening_pwdr"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "field_of_view_degrees",
+      "pixel_resolution_um",
+      "RGB_calibration",
+      "SNR_dB",
+      "image_quality",
+      "physiologic_cupping_variant",
+      "pallor_mimicker",
+      "tilted_disc_anatomy",
+      "peripapillary_atrophy_overlap",
+      "manual_grader_inter_rater_kappa"
+    ],
+    "omega_bounds": {
+      "H": [
+        512,
+        4096
+      ],
+      "W": [
+        512,
+        4096
+      ]
+    },
+    "epsilon_bounds": {
+      "categorical_accuracy": [
+        0.5,
+        0.99
+      ]
+    }
   },
-
-  "p1_p10_tests": ["PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS"],
-  "s1_s4_gates": ["PASS", "PASS", "PASS", "PASS"],
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
   "ipfs_cid": null,
-  "recast_attempted": {"considered": true, "recast_path": "Original: 'Classify fundus into glaucoma vs normal'. Recast: 'Segment disc + cup via L1-049; compute CDR + check ISNT rule; apply ICO 2016 + DDLS thresholds'. Feasible because optic disc morphology has well-defined photometric forward model.", "reason_rejected": null},
-
+  "recast_attempted": {
+    "considered": true,
+    "recast_path": "Original: 'Classify fundus into glaucoma vs normal'. Recast: 'Segment disc + cup via L1-049; compute CDR + check ISNT rule; apply ICO 2016 + DDLS thresholds'. Feasible because optic disc morphology has well-defined photometric forward model.",
+    "reason_rejected": null
+  },
   "v3_metadata": {
-    "is_standalone_multiphysics": false, "coupling_count_n_c": 1,
+    "is_standalone_multiphysics": false,
+    "coupling_count_n_c": 1,
     "joint_well_posedness_references": [
       "Bourne RRA et al. (2016) ICO Guidelines for Glaucoma Eye Care. International Council of Ophthalmology.",
       "Spaeth GL et al. (2002) The disc damage likelihood scale: reproducibility of a new method of estimating the amount of optic nerve damage caused by glaucoma. Trans Am Ophthalmol Soc 100:181-185.",
@@ -72,7 +223,13 @@
       "Li Z, He Y, Keel S, Meng W, Chang RT, He M (2018) Efficacy of a deep learning system for detecting glaucomatous optic neuropathy based on color fundus photographs. Ophthalmology 125(8):1199-1206.",
       "Phene S et al. (2019) Deep learning and glaucoma specialists: the relative importance of optic disc features to predict glaucoma. Ophthalmology 126(12):1627-1639."
     ],
-    "distinctness_audit": {"closest_existing_principle": "L1-049 fundus (parent core) and L1-513 DR PWDR (sibling)", "d_principle_estimate": 0.45, "advisory_label": "Distinct (parent-child PWDR; sibling DR PWDR has different lesion targets)", "rationale": "L1-049 fundus recovers full retinal photograph; L1-529 specializes to disc/cup segmentation + glaucoma classification. Distinct from L1-513 DR (different lesion set: vasculature/microaneurysms vs disc/cup/RNFL)."},
+    "distinctness_audit": {
+      "closest_existing_principle": "L1-049 fundus (parent core) and L1-513 DR PWDR (sibling)",
+      "d_principle_estimate": 0.45,
+      "advisory_label": "Distinct (parent-child PWDR; sibling DR PWDR has different lesion targets)",
+      "rationale": "L1-049 fundus recovers full retinal photograph; L1-529 specializes to disc/cup segmentation + glaucoma classification. Distinct from L1-513 DR (different lesion set: vasculature/microaneurysms vs disc/cup/RNFL)."
+    },
     "clinical_context": "Universal in ophthalmology. Glaucoma is the second leading cause of blindness globally. CDR + ISNT + RNFL is the morphologic foundation of POAG screening. UTSW Department of Ophthalmology glaucoma clinic. Deep learning systems (Li 2018, Phene 2019) achieve specialist-level diagnostic performance on benchmark datasets (REFUGE, ORIGA, RIM-ONE)."
-  }
+  },
+  "display_slug": "glaucoma-optic-disc"
 }

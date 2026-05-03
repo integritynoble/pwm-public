@@ -4,17 +4,44 @@
   "parent_l1": "L1-078",
   "title": "Event Camera Intensity Reconstruction Mismatch-Only Spec",
   "spec_type": "mismatch_only",
-
   "six_tuple": {
     "omega": {
-      "H": [240, 1280], "W": [180, 960],
-      "N_events_per_sec": [10000, 100000000],
-      "contrast_threshold_C": [0.05, 0.50],
-      "reconstruction_rate_Hz": [15, 240],
-      "contrast_threshold_variance": [0.0, 0.10],
-      "noise_event_rate": [0.0, 100000],
-      "refractory_period_drift": [0.0, 1000],
-      "hot_pixels": [0, 100]
+      "H": [
+        240,
+        1280
+      ],
+      "W": [
+        180,
+        960
+      ],
+      "N_events_per_sec": [
+        10000,
+        100000000
+      ],
+      "contrast_threshold_C": [
+        0.05,
+        0.5
+      ],
+      "reconstruction_rate_Hz": [
+        15,
+        240
+      ],
+      "contrast_threshold_variance": [
+        0.0,
+        0.1
+      ],
+      "noise_event_rate": [
+        0.0,
+        100000
+      ],
+      "refractory_period_drift": [
+        0.0,
+        1000
+      ],
+      "hot_pixels": [
+        0,
+        100
+      ]
     },
     "E": {
       "forward": "emit e_k when |log I(u,v,t_k) - log I(u,v,t_k_prev)| >= C; per-pixel C has variance sigma_C^2 and noise events fire at rate r_noise",
@@ -22,41 +49,99 @@
       "primitive_chain": "L.log_intensity -> D.threshold.delta -> S.stream.asynchronous",
       "inverse": "recover intensity video I(u,v,t) from event stream"
     },
-    "B": {"nonnegative_intensity": true, "log_continuous_between_events": true},
-    "I": {"strategy": "accumulate_event_voxel_grid_plus_recurrent_init"},
-    "O": ["PSNR", "SSIM", "temporal_LPIPS", "log_intensity_L1"],
+    "B": {
+      "nonnegative_intensity": true,
+      "log_continuous_between_events": true
+    },
+    "I": {
+      "strategy": "accumulate_event_voxel_grid_plus_recurrent_init"
+    },
+    "O": [
+      "PSNR",
+      "SSIM",
+      "temporal_LPIPS",
+      "log_intensity_L1"
+    ],
     "epsilon_fn": "14.0 + 2.5 * log10(N_events_per_sec / 10000) - 15.0 * contrast_threshold_variance - 4.0 * log10(noise_event_rate + 1)"
   },
-
   "protocol_fields": {
-    "input_format": {"events": "int64(N, 4): (t_ns, u, v, polarity)", "anchor_frame": "optional_float32(H, W)"},
-    "output_format": {"video": "float32(H, W, N_frames)"},
+    "input_format": {
+      "events": "int64(N, 4): (t_ns, u, v, polarity)",
+      "anchor_frame": "optional_float32(H, W)"
+    },
+    "output_format": {
+      "video": "float32(H, W, N_frames)"
+    },
     "baselines": [
-      {"name": "Poisson-Events", "method_sig": "A+O", "expected_psnr": 18.0},
-      {"name": "FireNet",        "method_sig": "L+N", "expected_psnr": 22.0},
-      {"name": "E2VID",          "method_sig": "R+N", "expected_psnr": 24.5},
-      {"name": "SPADE-E2VID",    "method_sig": "R+N", "expected_psnr": 26.0}
+      {
+        "name": "Poisson-Events",
+        "method_sig": "A+O",
+        "expected_psnr": 18.0
+      },
+      {
+        "name": "FireNet",
+        "method_sig": "L+N",
+        "expected_psnr": 22.0
+      },
+      {
+        "name": "E2VID",
+        "method_sig": "R+N",
+        "expected_psnr": 24.5
+      },
+      {
+        "name": "SPADE-E2VID",
+        "method_sig": "R+N",
+        "expected_psnr": 26.0
+      }
     ]
   },
-
   "ibenchmark_range": {
     "center_ibenchmark": {
       "rho": 1,
-      "omega_tier": {"H": 640, "W": 480, "N_events_per_sec": 1000000, "contrast_threshold_C": 0.20, "reconstruction_rate_Hz": 60, "contrast_threshold_variance": 0.0, "noise_event_rate": 0.0, "hot_pixels": 0},
+      "omega_tier": {
+        "H": 640,
+        "W": 480,
+        "N_events_per_sec": 1000000,
+        "contrast_threshold_C": 0.2,
+        "reconstruction_rate_Hz": 60,
+        "contrast_threshold_variance": 0.0,
+        "noise_event_rate": 0.0,
+        "hot_pixels": 0
+      },
       "epsilon": 22.0
     },
     "tier_bounds": {
-      "H": [240, 1280], "W": [180, 960],
-      "N_events_per_sec": [100000, 10000000],
-      "contrast_threshold_variance": [0.0, 0.10],
-      "noise_event_rate": [0.0, 100000]
+      "H": [
+        240,
+        1280
+      ],
+      "W": [
+        180,
+        960
+      ],
+      "N_events_per_sec": [
+        100000,
+        10000000
+      ],
+      "contrast_threshold_variance": [
+        0.0,
+        0.1
+      ],
+      "noise_event_rate": [
+        0.0,
+        100000
+      ]
     },
-    "proximity_threshold": 0.10
+    "proximity_threshold": 0.1
   },
-
   "d_spec": 0.72,
   "d_spec_notes": "Event camera is Novel-band (>0.65): asynchronous event carrier, log-intensity threshold sensing, 2D+time video solution space all differ from every other E_computational_photo spec.",
-
-  "s1_s4_gates": ["PASS", "PASS", "PASS", "PASS"],
-  "ipfs_cid": null
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null,
+  "display_slug": "event-camera"
 }

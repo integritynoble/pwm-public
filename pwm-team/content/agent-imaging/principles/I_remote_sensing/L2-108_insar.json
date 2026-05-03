@@ -2,7 +2,7 @@
   "artifact_id": "L2-108",
   "layer": "L2",
   "parent_l1": "L1-108",
-  "title": "Interferometric SAR (InSAR) \u2014 deformation + DEM Mismatch-Only Spec",
+  "title": "Interferometric SAR (InSAR) — deformation + DEM Mismatch-Only Spec",
   "spec_type": "mismatch_only",
   "six_tuple": {
     "omega": {
@@ -166,5 +166,6 @@
     "PASS",
     "PASS"
   ],
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "display_slug": "insar"
 }

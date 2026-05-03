@@ -2,7 +2,7 @@
   "artifact_id": "L1-173",
   "layer": "L1",
   "principle_number": "173",
-  "title": "Stokes Flow \u2014 low-Re linear viscous",
+  "title": "Stokes Flow — low-Re linear viscous",
   "domain": "Fluid Dynamics",
   "sub_domain": "Creeping Stokes flow (Re<<1)",
   "source_file": "R_fluid_dynamics/173_stokes_flow.md",
@@ -11,7 +11,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Stokes Flow \u2014 low-Re linear viscous forward model.",
+    "description": "Stokes Flow — low-Re linear viscous forward model.",
     "forward_model": "mu Laplacian u - grad p + f = 0; div u = 0",
     "world_state_x": "u, p in a viscous low-Re flow",
     "observation_y": "microscope PIV + pressure probes",
@@ -174,5 +174,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "stokes-flow"
 }

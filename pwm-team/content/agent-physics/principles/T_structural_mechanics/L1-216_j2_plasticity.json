@@ -2,7 +2,7 @@
   "artifact_id": "L1-216",
   "layer": "L1",
   "principle_number": "216",
-  "title": "J2 Plasticity \u2014 von Mises rate-independent",
+  "title": "J2 Plasticity — von Mises rate-independent",
   "domain": "Structural Mechanics",
   "sub_domain": "Rate-independent J2 plasticity with hardening",
   "source_file": "T_structural_mechanics/216_j2_plasticity.md",
@@ -11,7 +11,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "J2 Plasticity \u2014 von Mises rate-independent forward model.",
+    "description": "J2 Plasticity — von Mises rate-independent forward model.",
     "forward_model": "f = sqrt(3/2 s:s) - sigma_y(eps_p); dot eps_p = gamma * df/dsigma; return mapping",
     "world_state_x": "plastic strain eps_p(x) + updated yield surface",
     "observation_y": "stress-strain curve + strain fields",
@@ -167,5 +167,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "j2-plasticity"
 }

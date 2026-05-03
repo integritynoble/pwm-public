@@ -11,7 +11,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Heston Stochastic Volatility Calibration: Heston model calibration: fit 5-parameter stochastic vol model to observed implied volatility surface. The forward operator produces the measurement through a 3-node primitive DAG (M.heston.characteristic_function\u2026); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=5 with effective condition number kappa_eff~500; data_sparsity_OTM_options, term_structure_inversion_error set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "Heston Stochastic Volatility Calibration: Heston model calibration: fit 5-parameter stochastic vol model to observed implied volatility surface. The forward operator produces the measurement through a 3-node primitive DAG (M.heston.characteristic_function…); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=5 with effective condition number kappa_eff~500; data_sparsity_OTM_options, term_structure_inversion_error set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "dS = rS dt + sqrt(v) S dW_S; dv = kappa(theta-v)dt + xi*sqrt(v)*dW_v; option price via Fourier inversion",
     "world_state_x": "Heston parameters (v0, kappa, theta, xi, rho) describing vol dynamics",
     "observation_y": "implied vol surface sigma_impl(K, T) or market prices C(K_i, T_j)",
@@ -149,5 +149,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "heston-stochastic-volatility-calibration"
 }

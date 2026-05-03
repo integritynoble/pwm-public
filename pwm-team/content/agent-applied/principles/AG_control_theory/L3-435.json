@@ -3,7 +3,7 @@
   "layer": "L3",
   "parent_l2": "L2-435",
   "parent_l1": "L1-435",
-  "title": "4D-Var Data Assimilation \u2014 Benchmark Suite",
+  "title": "4D-Var Data Assimilation — Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "quasi_geostrophic_toy_model_4DVar",
@@ -255,5 +255,6 @@
     "M6_gate_checks": "gates/check_s{1,2,3,4}.py embedded with thresholds.yaml."
   },
   "ipfs_cid": null,
-  "ground_truth_cid": null
+  "ground_truth_cid": null,
+  "display_slug": "4d-var-data-assimilation-benchmark-suite"
 }

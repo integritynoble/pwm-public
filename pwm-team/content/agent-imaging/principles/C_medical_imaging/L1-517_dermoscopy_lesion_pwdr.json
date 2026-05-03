@@ -7,7 +7,6 @@
   "sub_domain": "Cross-polarized cutaneous reflectance imaging with melanoma / nevus categorical readout",
   "source_file": "C_medical_imaging/517_dermoscopy_lesion_pwdr.md",
   "source_data_quality_note": "v2 physical_with_discrete_readout (PWDR) genesis Principle. Wraps L1-049 fundus (sibling RGB reflectance imaging analytical core, with note that dermoscopy and fundus share the surface-reflectance physics although clinical applications differ) with the established ABCDE / 7-point checklist / Menzies / CASH dermoscopy clinical-grading rules to assign categorical labels {benign nevus, suspected melanoma, basal cell carcinoma, squamous cell carcinoma, seborrheic keratosis}. Universal in dermatology and primary care; FDA-cleared autonomous AI exists (DermaSensor, MoleScope variants). UTSW Department of Dermatology runs dermoscopy clinics.",
-
   "gate_class": "physical_with_discrete_readout",
   "gate_substitutions": {
     "kappa_substitute": null,
@@ -16,10 +15,18 @@
   },
   "discrete_readout": {
     "threshold_function": "ABCDE rule (Stolz 1994): TDS = 1.3*A + 0.1*B + 0.5*C + 0.5*D where A=asymmetry score (0-2), B=border score (0-8), C=color score (1-6), D=differential structure score (1-5); TDS < 4.75 = benign, 4.75-5.45 = suspicious, > 5.45 = melanoma. Alternative: 7-point checklist (Argenziano 1998) — 3+ points = suspect melanoma. Alternative: Menzies method, CASH algorithm, BCC blue-white veil, SCC characteristic features.",
-    "lipschitz_constant": 0.10,
+    "lipschitz_constant": 0.1,
     "underlying_physical_state": "skin lesion morphological-feature recovery: asymmetry score, border irregularity, color heterogeneity (number of distinct colors), differential structures (pigment network, dots/globules, streaks, regression structures, blue-white veil) recovered from cross-polarized dermoscopy image",
     "physics_core_principle": "L1-049",
-    "label_set": ["benign_nevus", "atypical_nevus", "suspected_melanoma", "basal_cell_carcinoma", "squamous_cell_carcinoma", "seborrheic_keratosis", "actinic_keratosis"],
+    "label_set": [
+      "benign_nevus",
+      "atypical_nevus",
+      "suspected_melanoma",
+      "basal_cell_carcinoma",
+      "squamous_cell_carcinoma",
+      "seborrheic_keratosis",
+      "actinic_keratosis"
+    ],
     "threshold_continuity_proof": "ABCDE Total Dermoscopy Score (TDS) is a Lipschitz-continuous linear combination of feature scores; per-class boundaries at TDS thresholds (4.75, 5.45) are measure-zero hyperplanes. 7-point checklist sums ordinal feature presences (Lipschitz with constant ~0.5 per feature). Smoothed-grading globally Lipschitz with constant ~0.10 per feature-score unit."
   },
   "related_principles": [
@@ -27,24 +34,49 @@
     "L1-040 (DOT — diffuse optical sibling, informational)",
     "L1-064 (CLE — confocal laser endomicroscopy sibling, informational)"
   ],
-
   "E": {
     "description": "Dermoscopy Skin Lesion Malignancy Classification (PWDR): wraps L1-049 fundus analytical core (RGB cross-polarized reflectance imaging) — note: fundus L1-049 is geometrically retinal, but the physics core of cross-polarized RGB reflectance imaging applies to skin dermoscopy with appropriate scale and illumination adjustments — with the established ABCDE / 7-point checklist / Menzies dermoscopy clinical-grading rules. Stage 1 (analytical, from L1-049 sibling-physics): cross-polarized white-light dermoscopy recovers cutaneous lesion morphological features — asymmetry, border, color heterogeneity, differential structures (pigment network, dots, streaks, regression). Stage 2 (deterministic threshold): apply ABCDE TDS or 7-point checklist or Menzies criteria to assign categorical labels. Difficulty tier delta = 3. Mismatch parameters: dermoscope_polarization_efficiency, gel_immersion_uniformity, lesion_contrast_against_skin_background, hair_artifact, photographic_color_calibration, manual_feature_scoring_disagreement.",
     "forward_model": "Stage 1 (sibling to L1-049 reflectance-imaging core): cross-polarized RGB dermoscopy -> {asymmetry, border, color, structure} morphological features. Stage 2: TDS = 1.3*A + 0.1*B + 0.5*C + 0.5*D; class = step(TDS at [4.75, 5.45]); alternative 7-point sum; alternative Menzies positive/negative.",
     "world_state_x": "Per-lesion categorical label in {benign_nevus, atypical_nevus, suspected_melanoma, basal_cell_carcinoma, squamous_cell_carcinoma, seborrheic_keratosis, actinic_keratosis}.",
     "observation_y": "Cross-polarized RGB dermoscopy image (typically 3000x4000 pixel, 10-30x magnification, 50 micrometer pixel pitch).",
-    "physical_parameters_theta": ["H", "W", "magnification", "pixel_resolution_um", "polarization_state", "SNR_dB", "dermoscope_polarization_efficiency", "gel_immersion_uniformity", "lesion_contrast_against_skin_background", "hair_artifact", "photographic_color_calibration", "manual_feature_scoring_disagreement"]
+    "physical_parameters_theta": [
+      "H",
+      "W",
+      "magnification",
+      "pixel_resolution_um",
+      "polarization_state",
+      "SNR_dB",
+      "dermoscope_polarization_efficiency",
+      "gel_immersion_uniformity",
+      "lesion_contrast_against_skin_background",
+      "hair_artifact",
+      "photographic_color_calibration",
+      "manual_feature_scoring_disagreement"
+    ]
   },
-
   "G": {
     "dag": "L.cross_polarized_illumination -> L.diffuse_reflectance -> L.detector_response -> L.morphological_feature_extraction -> L.abcde_threshold_classifier -> int.spatial",
-    "vertices": ["L.cross_polarized_illumination", "L.diffuse_reflectance", "L.detector_response", "L.morphological_feature_extraction", "L.abcde_threshold_classifier", "int.spatial"],
-    "arcs": ["L.cross_polarized_illumination -> L.diffuse_reflectance", "L.diffuse_reflectance -> L.detector_response", "L.detector_response -> L.morphological_feature_extraction", "L.morphological_feature_extraction -> L.abcde_threshold_classifier", "L.abcde_threshold_classifier -> int.spatial"],
+    "vertices": [
+      "L.cross_polarized_illumination",
+      "L.diffuse_reflectance",
+      "L.detector_response",
+      "L.morphological_feature_extraction",
+      "L.abcde_threshold_classifier",
+      "int.spatial"
+    ],
+    "arcs": [
+      "L.cross_polarized_illumination -> L.diffuse_reflectance",
+      "L.diffuse_reflectance -> L.detector_response",
+      "L.detector_response -> L.morphological_feature_extraction",
+      "L.morphological_feature_extraction -> L.abcde_threshold_classifier",
+      "L.abcde_threshold_classifier -> int.spatial"
+    ],
     "L_DAG": 4.9,
     "n_c": 1,
-    "coupling_constraints": ["polarization_to_subsurface: cross-polarized illumination suppresses surface specular reflection and enables visualization of subsurface pigment + vascular structures; coupling between polarization state and subsurface chromophore visibility"]
+    "coupling_constraints": [
+      "polarization_to_subsurface: cross-polarized illumination suppresses surface specular reflection and enables visualization of subsurface pigment + vascular structures; coupling between polarization state and subsurface chromophore visibility"
+    ]
   },
-
   "W": {
     "existence": true,
     "uniqueness": "conditional",
@@ -53,14 +85,12 @@
     "condition_number_effective": 18,
     "regime": "Existence and uniqueness conditional on adequate cross-polarization (suppresses skin glare) and sufficient lesion contrast against background skin. Stability inherits sibling-core kappa_eff plus additive contribution from manual_feature_scoring_disagreement (the dominant inter-rater variability source in clinical practice). Joint Hadamard well-posedness for the coupled dermoscopy + ABCDE/7-point/Menzies threshold forward established by Stolz 1994 (foundational ABCDE), Argenziano 1998 (7-point checklist), Menzies 1996 (Menzies method), Henning 2007 (CASH algorithm), Esteva 2017 (deep-learning benchmark)."
   },
-
   "C": {
     "solver_class": "linear-operator + convex optimisation [feature-segmentation + threshold] | end-to-end deep neural [DeepDerm, DermaSensor] with explicit physics-informed feature regularization",
     "convergence_rate_q": 2.0,
     "error_bound": "Inherits sibling-core feature-recovery bound. Misclassification probability bound: Pr(class_hat != class_true) <= C_thresh * |feature_score_error| / d(features, tau_boundary).",
     "complexity": "O(H * W * N_features) per stage; total stage-1-dominated"
   },
-
   "physics_fingerprint": {
     "carrier": "photon",
     "sensing_mechanism": "cross_polarized_dermoscopy_with_abcde_grading",
@@ -68,40 +98,125 @@
     "problem_class": "linear_inverse_with_categorical_readout",
     "noise_model": "gaussian",
     "solution_space": "1D_lesion_class",
-    "primitives": ["L.cross_polarized_illumination", "L.diffuse_reflectance", "L.detector_response", "L.morphological_feature_extraction", "L.abcde_threshold_classifier", "int.spatial"]
+    "primitives": [
+      "L.cross_polarized_illumination",
+      "L.diffuse_reflectance",
+      "L.detector_response",
+      "L.morphological_feature_extraction",
+      "L.abcde_threshold_classifier",
+      "int.spatial"
+    ]
   },
-
   "difficulty_delta": 3,
   "difficulty_tier": "standard",
-  "mismatch_parameters": ["dermoscope_polarization_efficiency", "gel_immersion_uniformity", "lesion_contrast_against_skin_background", "hair_artifact", "photographic_color_calibration", "manual_feature_scoring_disagreement"],
+  "mismatch_parameters": [
+    "dermoscope_polarization_efficiency",
+    "gel_immersion_uniformity",
+    "lesion_contrast_against_skin_background",
+    "hair_artifact",
+    "photographic_color_calibration",
+    "manual_feature_scoring_disagreement"
+  ],
   "error_metric": "categorical_accuracy",
   "error_metric_secondary": "sensitivity_for_melanoma",
-
   "spec_range": {
     "center_spec": {
       "problem_class": "dermoscopy_abcde_pwdr",
       "forward_operator": "dermoscopy_pwdr_forward",
       "input_format": "rgb_dermoscopy_with_lesion_label",
-      "omega": {"H": 2048, "W": 3072, "magnification": 20, "pixel_resolution_um": 50, "polarization_state": "cross_polarized", "SNR_dB": 32, "dermoscope_polarization_efficiency": 0.0, "gel_immersion_uniformity": 0.0, "lesion_contrast_against_skin_background": 0.0, "hair_artifact": 0.0, "photographic_color_calibration": 0.0, "manual_feature_scoring_disagreement": 0.0},
+      "omega": {
+        "H": 2048,
+        "W": 3072,
+        "magnification": 20,
+        "pixel_resolution_um": 50,
+        "polarization_state": "cross_polarized",
+        "SNR_dB": 32,
+        "dermoscope_polarization_efficiency": 0.0,
+        "gel_immersion_uniformity": 0.0,
+        "lesion_contrast_against_skin_background": 0.0,
+        "hair_artifact": 0.0,
+        "photographic_color_calibration": 0.0,
+        "manual_feature_scoring_disagreement": 0.0
+      },
       "epsilon_fn_center": "0.85_accuracy"
     },
-    "allowed_forward_operators": ["dermoscopy_pwdr_forward", "dermoscopy_abcde_forward", "dermoscopy_7point_forward", "dermoscopy_menzies_forward", "dermoscopy_cash_forward"],
-    "allowed_problem_classes": ["dermoscopy_abcde_pwdr", "dermoscopy_7point_pwdr", "dermoscopy_menzies_pwdr", "dermoscopy_cash_pwdr", "dermoscopy_combined_classifier"],
-    "allowed_omega_dimensions": ["H", "W", "magnification", "pixel_resolution_um", "polarization_state", "SNR_dB", "dermoscope_polarization_efficiency", "gel_immersion_uniformity", "lesion_contrast_against_skin_background", "hair_artifact", "photographic_color_calibration", "manual_feature_scoring_disagreement"],
-    "omega_bounds": {"H": [512, 6000], "W": [512, 6000], "magnification": [10, 50], "pixel_resolution_um": [20, 200]},
-    "epsilon_bounds": {"categorical_accuracy": [0.50, 0.99]}
+    "allowed_forward_operators": [
+      "dermoscopy_pwdr_forward",
+      "dermoscopy_abcde_forward",
+      "dermoscopy_7point_forward",
+      "dermoscopy_menzies_forward",
+      "dermoscopy_cash_forward"
+    ],
+    "allowed_problem_classes": [
+      "dermoscopy_abcde_pwdr",
+      "dermoscopy_7point_pwdr",
+      "dermoscopy_menzies_pwdr",
+      "dermoscopy_cash_pwdr",
+      "dermoscopy_combined_classifier"
+    ],
+    "allowed_omega_dimensions": [
+      "H",
+      "W",
+      "magnification",
+      "pixel_resolution_um",
+      "polarization_state",
+      "SNR_dB",
+      "dermoscope_polarization_efficiency",
+      "gel_immersion_uniformity",
+      "lesion_contrast_against_skin_background",
+      "hair_artifact",
+      "photographic_color_calibration",
+      "manual_feature_scoring_disagreement"
+    ],
+    "omega_bounds": {
+      "H": [
+        512,
+        6000
+      ],
+      "W": [
+        512,
+        6000
+      ],
+      "magnification": [
+        10,
+        50
+      ],
+      "pixel_resolution_um": [
+        20,
+        200
+      ]
+    },
+    "epsilon_bounds": {
+      "categorical_accuracy": [
+        0.5,
+        0.99
+      ]
+    }
   },
-
-  "p1_p10_tests": ["PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS", "PASS"],
-  "s1_s4_gates": ["PASS", "PASS", "PASS", "PASS"],
+  "p1_p10_tests": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
   "ipfs_cid": null,
-
   "recast_attempted": {
     "considered": true,
     "recast_path": "Original framing: 'Classify dermoscopy images into melanoma/benign'. Option-3 recast: 'Recover lesion morphological features (asymmetry, border, color, differential structures) via cross-polarized reflectance imaging; apply ABCDE / 7-point checklist / Menzies thresholds'. Feasible because dermoscopy features have a well-defined photometric forward model and clinical-grading rules are deterministic functions of recovered features.",
     "reason_rejected": null
   },
-
   "v3_metadata": {
     "is_standalone_multiphysics": false,
     "coupling_count_n_c": 1,
@@ -120,5 +235,6 @@
       "rationale": "L1-049 fundus is RGB color reflectance imaging of retina; L1-517 dermoscopy is cross-polarized RGB reflectance imaging of skin. Sibling physics (both are tissue-surface RGB reflectance imaging) but different anatomy, different polarization state, different magnification regime. d_principle ~ 0.45 reflects shared core physics with anatomy / illumination / scale differences. Note: a future dedicated dermoscopy analytical core could be authored separately; for now this PWDR uses L1-049 as the closest existing reflectance-imaging Principle."
     },
     "clinical_context": "Dermoscopy is the standard-of-care examination tool for pigmented skin lesion evaluation in dermatology and increasingly in primary care. ABCDE rule (Stolz 1994), 7-point checklist (Argenziano 1998), Menzies method (1996), and CASH algorithm (Henning 2007) are the canonical clinical-grading rules. Deep-learning systems (Esteva 2017) achieve dermatologist-level classification on benchmark datasets (HAM10000, ISIC). FDA-cleared autonomous AI: DermaSensor (2024), MelaFind (2011-2017, withdrawn). UTSW Department of Dermatology runs dermoscopy training and screening clinics. PWDR formulation gives physics-grounded explainability: classification is derived from explicit morphological feature scores tied to clinical guidelines, not black-box CNN."
-  }
+  },
+  "display_slug": "dermoscopy-malignancy"
 }

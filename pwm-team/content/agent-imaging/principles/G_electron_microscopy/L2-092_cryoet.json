@@ -2,7 +2,7 @@
   "artifact_id": "L2-092",
   "layer": "L2",
   "parent_l1": "L1-092",
-  "title": "Cryo-Electron Tomography (cryoET) \u2014 in-situ 3D biology at nm scale Mismatch-Only Spec",
+  "title": "Cryo-Electron Tomography (cryoET) — in-situ 3D biology at nm scale Mismatch-Only Spec",
   "spec_type": "mismatch_only",
   "six_tuple": {
     "omega": {
@@ -171,5 +171,6 @@
     "PASS",
     "PASS"
   ],
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "display_slug": "cryoet"
 }

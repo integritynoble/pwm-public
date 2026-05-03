@@ -2,7 +2,7 @@
   "artifact_id": "L1-221",
   "layer": "L1",
   "principle_number": "221",
-  "title": "Cohesive Zone Model \u2014 traction-separation interface",
+  "title": "Cohesive Zone Model — traction-separation interface",
   "domain": "Structural Mechanics",
   "sub_domain": "CZM interface fracture",
   "source_file": "T_structural_mechanics/221_cohesive_zone.md",
@@ -11,7 +11,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Cohesive Zone Model \u2014 traction-separation interface forward model.",
+    "description": "Cohesive Zone Model — traction-separation interface forward model.",
     "forward_model": "T = T(delta) with max T at delta_0, integrate G_c = int T d delta = cohesive energy",
     "world_state_x": "cohesive law parameters {T_max, G_c, delta_0}",
     "observation_y": "DIC separation + AE signals vs applied load",
@@ -167,5 +167,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "cohesive-zone"
 }

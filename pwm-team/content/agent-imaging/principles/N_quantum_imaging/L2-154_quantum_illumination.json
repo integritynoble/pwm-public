@@ -2,7 +2,7 @@
   "artifact_id": "L2-154",
   "layer": "L2",
   "parent_l1": "L1-154",
-  "title": "Quantum Illumination \u2014 entanglement-enhanced target detection Mismatch-Only Spec",
+  "title": "Quantum Illumination — entanglement-enhanced target detection Mismatch-Only Spec",
   "spec_type": "mismatch_only",
   "six_tuple": {
     "omega": {
@@ -137,5 +137,6 @@
     "PASS",
     "PASS"
   ],
-  "ipfs_cid": null
+  "ipfs_cid": null,
+  "display_slug": "quantum-illumination"
 }

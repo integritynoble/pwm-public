@@ -2,7 +2,7 @@
   "artifact_id": "L1-349",
   "layer": "L1",
   "principle_number": "349",
-  "title": "MHD Stability \u2014 linear eigenmode growth rates",
+  "title": "MHD Stability — linear eigenmode growth rates",
   "domain": "Plasma Physics",
   "sub_domain": "Tokamak/stellarator linear stability",
   "source_file": "AA_plasma_physics/349_mhd_stability.md",
@@ -11,7 +11,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "MHD Stability \u2014 linear eigenmode growth rates forward model.",
+    "description": "MHD Stability — linear eigenmode growth rates forward model.",
     "forward_model": "omega^2 xi = F(xi); symplectic operator F determines modes (ideal, kink, ballooning, ELM)",
     "world_state_x": "growth rates gamma and mode structures xi_m,n",
     "observation_y": "magnetic pickup spectra + SXR fluctuations",
@@ -167,5 +167,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "mhd-stability"
 }

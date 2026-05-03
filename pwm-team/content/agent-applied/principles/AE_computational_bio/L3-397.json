@@ -3,7 +3,7 @@
   "layer": "L3",
   "parent_l2": "L2-397",
   "parent_l1": "L1-397",
-  "title": "FitzHugh-Nagumo Excitability Model \u2014 Benchmark Suite",
+  "title": "FitzHugh-Nagumo Excitability Model — Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "FitzHugh_Nagumo_synthetic_benchmark",
@@ -255,5 +255,6 @@
     "M6_gate_checks": "gates/check_s{1,2,3,4}.py embedded with thresholds.yaml."
   },
   "ipfs_cid": null,
-  "ground_truth_cid": null
+  "ground_truth_cid": null,
+  "display_slug": "fitzhugh-nagumo-excitability-model-benchmark-suite"
 }

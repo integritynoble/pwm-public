@@ -3,7 +3,7 @@
   "layer": "L3",
   "parent_l2": "L2-440",
   "parent_l1": "L1-440",
-  "title": "Hull-White Interest Rate Model Calibration \u2014 Benchmark Suite",
+  "title": "Hull-White Interest Rate Model Calibration — Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "Bloomberg_swaption_surface_USD_2023",
@@ -255,5 +255,6 @@
     "M6_gate_checks": "gates/check_s{1,2,3,4}.py embedded with thresholds.yaml."
   },
   "ipfs_cid": null,
-  "ground_truth_cid": null
+  "ground_truth_cid": null,
+  "display_slug": "hull-white-interest-rate-model-calibration-benchmark-suite"
 }

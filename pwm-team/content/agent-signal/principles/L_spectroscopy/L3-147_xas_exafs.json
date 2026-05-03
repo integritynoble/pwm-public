@@ -5,66 +5,157 @@
   "parent_l1": "L1-147",
   "title": "XAS/EXAFS Benchmark Suite (catalysis + battery + Pauling-standards)",
   "benchmark_type": "combined_P_and_I",
-
   "dataset_registry": {
     "primary": "NIST standard XAS database (bulk metals, simple oxides)",
     "secondary": "Catalysis operando XAS (NSLS-II, APS); Li-ion battery operando",
     "tertiary": "Synthetic FEFF-generated spectra with known cluster structures",
     "construction_method": "Simulate or acquire XAS/EXAFS; inject E_0 shift and self-absorption errors",
-    "num_dev_instances_per_tier": 20, "holdout_instances_per_tier": 10
+    "num_dev_instances_per_tier": 20,
+    "holdout_instances_per_tier": 10
   },
-
   "ibenchmarks": [
     {
-      "tier": "T1_simple_metal", "rho": 1,
-      "omega_tier": {"N_E": 400, "k_max": 10, "K_shells": 2, "SNR_dB": 30, "S_0_squared": 0.9, "e0_shift_eV": 0.0},
-      "epsilon": 0.008, "d_ibench": 0.14,
+      "tier": "T1_simple_metal",
+      "rho": 1,
+      "omega_tier": {
+        "N_E": 400,
+        "k_max": 10,
+        "K_shells": 2,
+        "SNR_dB": 30,
+        "S_0_squared": 0.9,
+        "e0_shift_eV": 0.0
+      },
+      "epsilon": 0.008,
+      "d_ibench": 0.14,
       "baselines": [
-        {"name": "IFEFFIT",   "rmse_A": 0.010, "Q": 0.75},
-        {"name": "Bayes-EXAFS","rmse_A": 0.008, "Q": 0.88},
-        {"name": "EXAFS-CNN", "rmse_A": 0.007, "Q": 0.92}
+        {
+          "name": "IFEFFIT",
+          "rmse_A": 0.01,
+          "Q": 0.75
+        },
+        {
+          "name": "Bayes-EXAFS",
+          "rmse_A": 0.008,
+          "Q": 0.88
+        },
+        {
+          "name": "EXAFS-CNN",
+          "rmse_A": 0.007,
+          "Q": 0.92
+        }
       ]
     },
     {
-      "tier": "T2_oxide", "rho": 3,
-      "omega_tier": {"N_E": 400, "k_max": 10, "K_shells": 4, "SNR_dB": 20, "S_0_squared": 0.75, "e0_shift_eV": 1.0},
-      "epsilon": 0.02, "d_ibench": 0.28,
+      "tier": "T2_oxide",
+      "rho": 3,
+      "omega_tier": {
+        "N_E": 400,
+        "k_max": 10,
+        "K_shells": 4,
+        "SNR_dB": 20,
+        "S_0_squared": 0.75,
+        "e0_shift_eV": 1.0
+      },
+      "epsilon": 0.02,
+      "d_ibench": 0.28,
       "baselines": [
-        {"name": "IFEFFIT",   "rmse_A": 0.025, "Q": 0.55},
-        {"name": "Bayes-EXAFS","rmse_A": 0.018, "Q": 0.70},
-        {"name": "EXAFS-CNN", "rmse_A": 0.015, "Q": 0.78}
+        {
+          "name": "IFEFFIT",
+          "rmse_A": 0.025,
+          "Q": 0.55
+        },
+        {
+          "name": "Bayes-EXAFS",
+          "rmse_A": 0.018,
+          "Q": 0.7
+        },
+        {
+          "name": "EXAFS-CNN",
+          "rmse_A": 0.015,
+          "Q": 0.78
+        }
       ]
     },
     {
-      "tier": "T3_operando", "rho": 5,
-      "omega_tier": {"N_E": 300, "k_max": 8, "K_shells": 6, "SNR_dB": 10, "S_0_squared": 0.7, "e0_shift_eV": 2.0, "self_absorption_correction": 0.15},
-      "epsilon": 0.05, "d_ibench": 0.50,
+      "tier": "T3_operando",
+      "rho": 5,
+      "omega_tier": {
+        "N_E": 300,
+        "k_max": 8,
+        "K_shells": 6,
+        "SNR_dB": 10,
+        "S_0_squared": 0.7,
+        "e0_shift_eV": 2.0,
+        "self_absorption_correction": 0.15
+      },
+      "epsilon": 0.05,
+      "d_ibench": 0.5,
       "baselines": [
-        {"name": "Bayes-EXAFS","rmse_A": 0.06, "Q": 0.40},
-        {"name": "EXAFS-CNN", "rmse_A": 0.04, "Q": 0.58}
+        {
+          "name": "Bayes-EXAFS",
+          "rmse_A": 0.06,
+          "Q": 0.4
+        },
+        {
+          "name": "EXAFS-CNN",
+          "rmse_A": 0.04,
+          "Q": 0.58
+        }
       ]
     },
     {
-      "tier": "T4_noisy_dilute", "rho": 10,
-      "omega_tier": {"N_E": 100, "k_max": 6, "K_shells": 10, "SNR_dB": -5, "S_0_squared": 0.5, "e0_shift_eV": 5.0, "self_absorption_correction": 0.3, "detector_saturation": 0.2},
-      "epsilon": 0.15, "d_ibench": 0.74,
+      "tier": "T4_noisy_dilute",
+      "rho": 10,
+      "omega_tier": {
+        "N_E": 100,
+        "k_max": 6,
+        "K_shells": 10,
+        "SNR_dB": -5,
+        "S_0_squared": 0.5,
+        "e0_shift_eV": 5.0,
+        "self_absorption_correction": 0.3,
+        "detector_saturation": 0.2
+      },
+      "epsilon": 0.15,
+      "d_ibench": 0.74,
       "baselines": [
-        {"name": "Bayes-EXAFS","rmse_A": 0.18, "Q": 0.22},
-        {"name": "EXAFS-CNN", "rmse_A": 0.12, "Q": 0.40}
+        {
+          "name": "Bayes-EXAFS",
+          "rmse_A": 0.18,
+          "Q": 0.22
+        },
+        {
+          "name": "EXAFS-CNN",
+          "rmse_A": 0.12,
+          "Q": 0.4
+        }
       ]
     }
   ],
-
   "p_benchmark": {
     "rho": 50,
-    "dataset_p_benchmark": {"name": "NIST + operando-cat + operando-battery union", "num_dev_instances": 200, "num_holdout_instances": 100},
+    "dataset_p_benchmark": {
+      "name": "NIST + operando-cat + operando-battery union",
+      "num_dev_instances": 200,
+      "num_holdout_instances": 100
+    },
     "baselines": [
-      {"name": "IFEFFIT",   "overall_Q": 0.55},
-      {"name": "Bayes-EXAFS","overall_Q": 0.62},
-      {"name": "EXAFS-CNN", "overall_Q": 0.70}
+      {
+        "name": "IFEFFIT",
+        "overall_Q": 0.55
+      },
+      {
+        "name": "Bayes-EXAFS",
+        "overall_Q": 0.62
+      },
+      {
+        "name": "EXAFS-CNN",
+        "overall_Q": 0.7
+      }
     ]
   },
-
   "hardness_rule_check": "SATISFIED — EXAFS-CNN fails at T4_noisy_dilute (SNR=-5, K=10): 0.12 > epsilon_fn ~ 0.10.",
-  "ipfs_cid": null, "ground_truth_cid": null
+  "ipfs_cid": null,
+  "ground_truth_cid": null,
+  "display_slug": "xas-exafs"
 }

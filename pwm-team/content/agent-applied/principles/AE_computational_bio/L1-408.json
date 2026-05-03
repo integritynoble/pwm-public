@@ -11,7 +11,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Wright-Fisher Population Genetics: Wright-Fisher inference: estimate effective population size Ne, selection coefficient s, and mutation rates from allele frequency data. The forward operator produces the measurement through a 3-node primitive DAG (M.wf.wright_fisher_drift\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=5 with effective condition number kappa_eff~100; population_structure_subdivision, bottleneck_demographic_history set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "Wright-Fisher Population Genetics: Wright-Fisher inference: estimate effective population size Ne, selection coefficient s, and mutation rates from allele frequency data. The forward operator produces the measurement through a 3-node primitive DAG (M.wf.wright_fisher_drift…); recovery is posed as a parameter_estimation problem. Difficulty tier delta=5 with effective condition number kappa_eff~100; population_structure_subdivision, bottleneck_demographic_history set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "p_{t+1} | p_t ~ Binomial(2Ne, p_t + s*p_t*(1-p_t)); allele frequencies drift under genetic drift and selection",
     "world_state_x": "effective population size Ne and selection coefficient s for each variant",
     "observation_y": "allele frequencies p(t) from time-series sequencing or cross-sectional population samples",
@@ -148,5 +148,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "wright-fisher-population-genetics"
 }

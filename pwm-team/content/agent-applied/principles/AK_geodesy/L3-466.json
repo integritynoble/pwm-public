@@ -3,7 +3,7 @@
   "layer": "L3",
   "parent_l2": "L2-466",
   "parent_l1": "L1-466",
-  "title": "GNSS Positioning and Navigation \u2014 Benchmark Suite",
+  "title": "GNSS Positioning and Navigation — Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "IGS_RINEX_archive_2023",
@@ -255,5 +255,6 @@
     "M6_gate_checks": "gates/check_s{1,2,3,4}.py embedded with thresholds.yaml."
   },
   "ipfs_cid": null,
-  "ground_truth_cid": null
+  "ground_truth_cid": null,
+  "display_slug": "gnss-positioning-and-navigation-benchmark-suite"
 }

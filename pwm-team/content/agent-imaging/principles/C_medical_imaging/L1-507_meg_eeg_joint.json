@@ -7,7 +7,6 @@
   "sub_domain": "Multi-modal bioelectromagnetic neural source localization (multi-physics joint inverse)",
   "source_file": "C_medical_imaging/507_meg_eeg_joint.md",
   "source_data_quality_note": "v3 standalone multi-physics genesis Principle. Joint forward operator couples Maxwell magnetostatic Biot-Savart (MEG) with Poisson electrostatic in a layered head-volume-conductor model (EEG). Recovers spatiotemporal neural current dipole density J(r, t) from simultaneous MEG and EEG measurements. The joint inverse is better-conditioned than either modality alone — MEG is sensitive to tangential cortical sources, EEG to radial sources; combined acquisition triangulates both classes. Distinct from L1-067 MEG (single-modality, magnetic only) and L1-068 EEG (single-modality, electric only) by primitive set, sensing_mechanism, and the joint inversion formulation. Authored under the standalone-as-default v3 design (see pwm-team/pwm_product/genesis/PWM_V3_STANDALONE_VS_COMPOSITE.md).",
-
   "gate_class": "analytical",
   "gate_substitutions": null,
   "related_principles": [
@@ -15,7 +14,6 @@
     "L1-068 (EEG — electric-only neural source localization, d_principle ~ 0.50)",
     "L1-030 (MRI — head anatomical model component, informational)"
   ],
-
   "E": {
     "description": "Joint MEG-EEG Source Imaging: joint multi-physics forward couples (i) Maxwell magnetostatic Biot-Savart law for the magnetic field from intracranial neural currents B(r_sensor, t) = integral G_M(r_sensor, r'; sigma_head) * J(r', t) dr'; (ii) Poisson electrostatic equation for the scalp potential V(r_electrode, t) = integral G_E(r_electrode, r'; sigma_head) * J(r', t) dr' in a layered head-volume-conductor model (brain, CSF, skull, scalp); (iii) shared anatomical model parameterized by head conductivity profile sigma_head(r) derived from MR-derived segmentation. The forward DAG has 8 primitives with two coupling constraints (n_c = 2): (i) joint observation — the same neural source J(r, t) is simultaneously observed by MEG sensors (magnetic field B) and EEG electrodes (scalp potential V); (ii) shared head conductivity model — both Green's functions G_M and G_E depend on the same sigma_head(r), creating a structural coupling that improves identifiability when both modalities are jointly inverted. Recovery is posed as the joint linear inverse problem y(t) = [B(t); V(t)] = [G_M; G_E] * J(t) + n(t) where the stacked operator [G_M; G_E] has lower effective condition number than either G_M or G_E alone. Difficulty tier delta = 5 with raw condition number kappa ~ 1000 (the inverse problem is fundamentally underdetermined — finite sensors, infinitely many sources) and effective kappa_eff ~ 100 after Tikhonov / minimum-norm / sLORETA / beamformer regularization. Mismatch parameters: head_segmentation_error, conductivity_uncertainty, sensor_position_error, source_orientation_assumption, reference_electrode_drift, magnetic_artifact_contamination. Additive Gaussian thermal noise sets the data-fidelity floor. See forward_model field for the closed-form joint imaging equation.",
     "forward_model": "B(r_sensor, t) = (mu_0 / 4*pi) * integral [J(r', t) x (r_sensor - r') / |r_sensor - r'|^3] dr' (Biot-Savart, MEG forward); V(r_electrode, t) = integral G_E(r_electrode, r'; sigma_head) * div(J(r', t)) dr' (Poisson, EEG forward); jointly invert y(t) = [B(t); V(t)] = [G_M; G_E] * J(t) + n(t) -> J(r, t) given head model sigma_head(r)",
@@ -37,7 +35,6 @@
       "magnetic_artifact_contamination"
     ]
   },
-
   "G": {
     "dag": "L.neural_source -> L.cortical_mesh_constraint -> L.head_volume_conductor -> L.maxwell_magnetostatic -> L.poisson_electrostatic -> L.megsensor_detection -> L.eegsensor_detection -> int.spatial -> int.temporal",
     "vertices": [
@@ -69,7 +66,6 @@
       "shared_head_conductivity: both Green's functions G_M and G_E depend on the same sigma_head(r) profile; structural coupling that improves joint identifiability when sigma_head is co-estimated"
     ]
   },
-
   "W": {
     "existence": true,
     "uniqueness": "conditional",
@@ -78,14 +74,12 @@
     "condition_number_effective": 100,
     "regime": "Existence of recovered neural source distribution J(r, t) is guaranteed within the cortical-mesh constraint and the declared Omega bounds. Uniqueness is fundamentally conditional — the joint inverse problem is underdetermined (~15000 source dipoles with constrained orientation vs ~400 sensors typical), so unique solutions require regularization (minimum-norm, sLORETA, beamformer, sparse priors, dynamical / temporal constraints). Stability is moderately conditioned (kappa_eff ~ 100 after L2 regularization) — head_segmentation_error dominates source-localization bias; conductivity_uncertainty contributes scaling factor; sensor_position_error contributes a few-millimeter localization shift; source_orientation_assumption (free vs cortically-constrained vs surface-normal) contributes prior bias. Joint Hadamard well-posedness for the coupled MEG+EEG forward (with regularization) is established by Mosher et al. 1992, Hamalainen-Ilmoniemi 1994, Pascual-Marqui 2002 (sLORETA), Sharon et al. 2007, Henson et al. 2009, and Huang et al. 2014."
   },
-
   "C": {
     "solver_class": "linear-operator + convex optimisation [minimum-norm estimator MNE; sLORETA; eLORETA; LCMV beamformer; mixed-norm priors] | nonlinear [dynamic causal modeling DCM; particle filtering] | linear-operator + deep neural prior [DeepSourceNet]",
     "convergence_rate_q": 2.0,
     "error_bound": "Data-fidelity bound: ||J_hat - J||_2 <= C1 * sigma_noise / sqrt(N_MEG + N_EEG) at each time t. Underdetermined-system bias adds + C2 * |head_segmentation_error| + C3 * |conductivity_uncertainty| + C4 * ||J - J_s||_1 (best s-sparse approximation residual under L1 prior). MNE / sLORETA achieve q=2 (O(1/k^2)) under L2 prior; mixed-norm solvers achieve q=1 linear convergence under L1 + L2 priors (sparse spatially, smooth temporally). Joint MEG+EEG inversion has 2-3x lower spatial localization error than single-modality MNE under typical head models. Deep-prior variants achieve faster initial convergence with bounded systematic bias.",
     "complexity": "O(N_dipoles * (N_MEG + N_EEG) * T_samples) per iteration via direct Green's-function evaluation; FEM-based BEM approaches O(N_dipoles * N_BEM_nodes^2) per forward; learned variants O(N_dipoles * F_theta_cost) per forward pass"
   },
-
   "physics_fingerprint": {
     "carrier": "neural_current",
     "sensing_mechanism": "joint_magnetic_and_electric_with_volume_conductor",
@@ -105,7 +99,6 @@
       "int.temporal"
     ]
   },
-
   "difficulty_delta": 5,
   "difficulty_tier": "advanced",
   "mismatch_parameters": [
@@ -118,7 +111,6 @@
   ],
   "error_metric": "PSNR_dB",
   "error_metric_secondary": "spatial_localization_error_mm",
-
   "spec_range": {
     "center_spec": {
       "problem_class": "meg_eeg_joint_source_imaging",
@@ -169,24 +161,62 @@
       "magnetic_artifact_contamination"
     ],
     "omega_bounds": {
-      "N_dipoles": [1000, 30000],
-      "N_MEG_channels": [0, 306],
-      "N_EEG_channels": [0, 256],
-      "T_samples": [100, 100000],
-      "sampling_rate_Hz": [256, 5000],
-      "head_layer_count": [3, 7],
-      "SNR_dB": [0.0, 35.0],
-      "head_segmentation_error": [0.0, 0.3],
-      "conductivity_uncertainty": [0.0, 0.5],
-      "sensor_position_error": [0.0, 0.2],
-      "reference_electrode_drift": [0.0, 0.3],
-      "magnetic_artifact_contamination": [0.0, 0.4]
+      "N_dipoles": [
+        1000,
+        30000
+      ],
+      "N_MEG_channels": [
+        0,
+        306
+      ],
+      "N_EEG_channels": [
+        0,
+        256
+      ],
+      "T_samples": [
+        100,
+        100000
+      ],
+      "sampling_rate_Hz": [
+        256,
+        5000
+      ],
+      "head_layer_count": [
+        3,
+        7
+      ],
+      "SNR_dB": [
+        0.0,
+        35.0
+      ],
+      "head_segmentation_error": [
+        0.0,
+        0.3
+      ],
+      "conductivity_uncertainty": [
+        0.0,
+        0.5
+      ],
+      "sensor_position_error": [
+        0.0,
+        0.2
+      ],
+      "reference_electrode_drift": [
+        0.0,
+        0.3
+      ],
+      "magnetic_artifact_contamination": [
+        0.0,
+        0.4
+      ]
     },
     "epsilon_bounds": {
-      "psnr_db": [3.0, 38.0]
+      "psnr_db": [
+        3.0,
+        38.0
+      ]
     }
   },
-
   "p1_p10_tests": [
     "PASS",
     "PASS",
@@ -206,7 +236,6 @@
     "PASS"
   ],
   "ipfs_cid": null,
-
   "v3_metadata": {
     "is_standalone_multiphysics": true,
     "coupling_count_n_c": 2,
@@ -222,10 +251,11 @@
     ],
     "distinctness_audit": {
       "closest_existing_principle": "L1-067 MEG and L1-068 EEG (tie)",
-      "d_principle_estimate": 0.50,
+      "d_principle_estimate": 0.5,
       "advisory_label": "Distinct",
       "rationale": "L1-067 MEG inverts only B(t) with sensing_mechanism = magnetic_only; n_c = 0; primitives focus on Biot-Savart only. L1-068 EEG inverts only V(t) with sensing_mechanism = electric_only; n_c = 0; primitives focus on Poisson electrostatic only. L1-507 jointly inverts the stacked observation [B; V] with sensing_mechanism = joint_magnetic_and_electric_with_volume_conductor; n_c = 2 (joint source observation + shared head model); primitives include both Maxwell magnetostatic and Poisson electrostatic plus a unified L.head_volume_conductor coupling. Solution_space is 5D_neural_source_spatiotemporal vs the single-modality 4D versions. Jaccard distance over (sensing_mechanism, primitives, problem_class) ~ 0.50 from each parent — solidly Distinct under v1 advisory thresholds (>= 0.30). Clinical motivation: combined MEG+EEG has 2-3x lower spatial localization error than either alone, with measurable benefit in epilepsy presurgical mapping and evoked-response studies."
     },
     "clinical_context": "Clinical: epilepsy presurgical mapping (interictal-spike source localization), evoked-response studies (somatosensory/auditory/visual mapping for tumor resection planning), brain-computer interfaces. Joint MEG-EEG offers measurable advantage over either modality alone — MEG sensitive to tangential cortical sources, EEG to radial; combined acquisition triangulates both classes with 2-3x lower mean spatial localization error in benchmark validation. Established at major academic medical centers with co-located MEG and EEG capabilities (Mass General, Karolinska, Aston, etc.). Standard reference implementations: MNE-Python, Brainstorm, FieldTrip, NUTMEG."
-  }
+  },
+  "display_slug": "meg-eeg-joint"
 }

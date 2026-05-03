@@ -3,7 +3,7 @@
   "layer": "L3",
   "parent_l2": "L2-411",
   "parent_l1": "L1-411",
-  "title": "Oxygen Transport (Krogh Cylinder) \u2014 Benchmark Suite",
+  "title": "Oxygen Transport (Krogh Cylinder) — Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "MICA_muscle_pO2_dataset",
@@ -255,5 +255,6 @@
     "M6_gate_checks": "gates/check_s{1,2,3,4}.py embedded with thresholds.yaml."
   },
   "ipfs_cid": null,
-  "ground_truth_cid": null
+  "ground_truth_cid": null,
+  "display_slug": "oxygen-transport-benchmark-suite"
 }

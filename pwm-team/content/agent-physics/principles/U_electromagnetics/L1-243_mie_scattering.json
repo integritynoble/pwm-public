@@ -2,7 +2,7 @@
   "artifact_id": "L1-243",
   "layer": "L1",
   "principle_number": "243",
-  "title": "Mie Scattering \u2014 rigorous spherical-particle scattering",
+  "title": "Mie Scattering — rigorous spherical-particle scattering",
   "domain": "Electromagnetics",
   "sub_domain": "Particle size distribution from Mie pattern",
   "source_file": "U_electromagnetics/243_mie_scattering.md",
@@ -11,7 +11,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Mie Scattering \u2014 rigorous spherical-particle scattering forward model.",
+    "description": "Mie Scattering — rigorous spherical-particle scattering forward model.",
     "forward_model": "sigma_scatter(theta) = (|S1|^2 + |S2|^2)/(2*k^2*r^2); S_n from Mie series in a_n, b_n",
     "world_state_x": "particle size distribution N(d) and complex refractive index n + ik",
     "observation_y": "angular scattering pattern at multiple wavelengths",
@@ -167,5 +167,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "mie-scattering"
 }

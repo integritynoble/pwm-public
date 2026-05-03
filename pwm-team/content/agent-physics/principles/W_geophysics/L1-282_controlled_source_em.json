@@ -2,7 +2,7 @@
   "artifact_id": "L1-282",
   "layer": "L1",
   "principle_number": "282",
-  "title": "Controlled-Source EM (CSEM) \u2014 resistivity for hydrocarbons",
+  "title": "Controlled-Source EM (CSEM) — resistivity for hydrocarbons",
   "domain": "Geophysics",
   "sub_domain": "Marine CSEM for hydrocarbon reservoirs",
   "source_file": "W_geophysics/282_controlled_source_em.md",
@@ -11,7 +11,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Controlled-Source EM (CSEM) \u2014 resistivity for hydrocarbons forward model.",
+    "description": "Controlled-Source EM (CSEM) — resistivity for hydrocarbons forward model.",
     "forward_model": "E, H from controlled dipole; complex conductivity sigma(omega) of layered seafloor",
     "world_state_x": "resistivity of seafloor target (thin hydrocarbon layer)",
     "observation_y": "E-field amplitude + phase at seafloor receivers",
@@ -167,5 +167,6 @@
     "joint_well_posedness_references": [],
     "distinctness_audit": null,
     "clinical_context": null
-  }
+  },
+  "display_slug": "controlled-source-em"
 }

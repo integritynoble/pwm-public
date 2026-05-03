@@ -4,13 +4,52 @@
   "parent_l1": "L1-073",
   "title": "ODT Rytov-Regime Mismatch-Only Spec",
   "spec_type": "mismatch_only",
-
   "six_tuple": {
     "omega": {
-      "H": [128, 2048], "W": [128, 2048], "D": [32, 512], "K_angles": [30, 360],
-      "NA_illum": [0.4, 1.4], "wavelength_nm": [400, 800], "n_0": [1.0, 1.5],
-      "delta_n_max": [0.001, 0.1], "illumination_angle_error": [0.0, 2.0],
-      "aberration_zernike": [0.0, 0.5], "limited_angle_range": [90, 360]
+      "H": [
+        128,
+        2048
+      ],
+      "W": [
+        128,
+        2048
+      ],
+      "D": [
+        32,
+        512
+      ],
+      "K_angles": [
+        30,
+        360
+      ],
+      "NA_illum": [
+        0.4,
+        1.4
+      ],
+      "wavelength_nm": [
+        400,
+        800
+      ],
+      "n_0": [
+        1.0,
+        1.5
+      ],
+      "delta_n_max": [
+        0.001,
+        0.1
+      ],
+      "illumination_angle_error": [
+        0.0,
+        2.0
+      ],
+      "aberration_zernike": [
+        0.0,
+        0.5
+      ],
+      "limited_angle_range": [
+        90,
+        360
+      ]
     },
     "E": {
       "forward": "U_s = Rytov(n(r) - n_0, theta_k) over K angles; missing-cone excluded",
@@ -18,37 +57,109 @@
       "primitive_chain": "S.scan.angular -> F.propagation.helmholtz -> L.projection.ewald_cap -> int.angular",
       "inverse": "recover n(r) on 3D grid from K holographic-angle fields"
     },
-    "B": {"weak_scattering": "|delta_n| < 0.05 * n_0", "compact_object_support": true, "complex_n": true},
-    "I": {"strategy": "zero_init_plus_angular_filtered_backprojection"},
-    "O": ["3D_PSNR_dB", "refractive_index_L2", "missing_cone_residual", "residual_fourier_norm"],
+    "B": {
+      "weak_scattering": "|delta_n| < 0.05 * n_0",
+      "compact_object_support": true,
+      "complex_n": true
+    },
+    "I": {
+      "strategy": "zero_init_plus_angular_filtered_backprojection"
+    },
+    "O": [
+      "3D_PSNR_dB",
+      "refractive_index_L2",
+      "missing_cone_residual",
+      "residual_fourier_norm"
+    ],
     "epsilon_fn": "22.0 + 3.0 * log2(K_angles / 30) + 3.0 * (NA_illum - 0.4) - 8.0 * illumination_angle_error / 2.0"
   },
-
   "protocol_fields": {
-    "input_format": {"complex_fields": "complex64(K, H, W)", "illumination_angles": "float32(K, 2)"},
-    "output_format": {"refractive_index_3d": "complex64(H, W, D)"},
+    "input_format": {
+      "complex_fields": "complex64(K, H, W)",
+      "illumination_angles": "float32(K, 2)"
+    },
+    "output_format": {
+      "refractive_index_3d": "complex64(H, W, D)"
+    },
     "baselines": [
-      {"name": "FBP-ODT",       "method_sig": "L+O", "expected_psnr": 24.0},
-      {"name": "TV-ADMM-ODT",   "method_sig": "L+O", "expected_psnr": 27.5},
-      {"name": "LS-LT multi-slice", "method_sig": "I+O", "expected_psnr": 29.0},
-      {"name": "DeepODT",       "method_sig": "L+N", "expected_psnr": 31.2}
+      {
+        "name": "FBP-ODT",
+        "method_sig": "L+O",
+        "expected_psnr": 24.0
+      },
+      {
+        "name": "TV-ADMM-ODT",
+        "method_sig": "L+O",
+        "expected_psnr": 27.5
+      },
+      {
+        "name": "LS-LT multi-slice",
+        "method_sig": "I+O",
+        "expected_psnr": 29.0
+      },
+      {
+        "name": "DeepODT",
+        "method_sig": "L+N",
+        "expected_psnr": 31.2
+      }
     ]
   },
-
   "ibenchmark_range": {
     "center_ibenchmark": {
       "rho": 1,
-      "omega_tier": {"H": 512, "W": 512, "D": 128, "K_angles": 90, "NA_illum": 1.0, "wavelength_nm": 532, "n_0": 1.33, "delta_n_max": 0.02, "illumination_angle_error": 0.0, "limited_angle_range": 360},
+      "omega_tier": {
+        "H": 512,
+        "W": 512,
+        "D": 128,
+        "K_angles": 90,
+        "NA_illum": 1.0,
+        "wavelength_nm": 532,
+        "n_0": 1.33,
+        "delta_n_max": 0.02,
+        "illumination_angle_error": 0.0,
+        "limited_angle_range": 360
+      },
       "epsilon": 27.0
     },
     "tier_bounds": {
-      "H": [128, 1024], "W": [128, 1024], "D": [32, 256], "K_angles": [30, 180],
-      "NA_illum": [0.6, 1.4], "delta_n_max": [0.001, 0.05], "illumination_angle_error": [0.0, 2.0]
+      "H": [
+        128,
+        1024
+      ],
+      "W": [
+        128,
+        1024
+      ],
+      "D": [
+        32,
+        256
+      ],
+      "K_angles": [
+        30,
+        180
+      ],
+      "NA_illum": [
+        0.6,
+        1.4
+      ],
+      "delta_n_max": [
+        0.001,
+        0.05
+      ],
+      "illumination_angle_error": [
+        0.0,
+        2.0
+      ]
     },
-    "proximity_threshold": 0.10
+    "proximity_threshold": 0.1
   },
-
   "d_spec": 0.62,
-  "s1_s4_gates": ["PASS", "PASS", "PASS", "PASS"],
-  "ipfs_cid": null
+  "s1_s4_gates": [
+    "PASS",
+    "PASS",
+    "PASS",
+    "PASS"
+  ],
+  "ipfs_cid": null,
+  "display_slug": "odt"
 }
