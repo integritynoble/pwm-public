@@ -325,7 +325,7 @@ class PWMChain:
                 "chainId": self.chain_id,
                 "nonce": self.w3.eth.get_transaction_count(acct.address),
                 "gas": int(gas * 1.2),
-                "maxFeePerGas": self.w3.eth.gas_price * 2,
+                "maxFeePerGas": max(self.w3.eth.gas_price * 2, self.w3.to_wei(2, "gwei")),
                 "maxPriorityFeePerGas": self.w3.to_wei(1, "gwei"),
             }
         )
@@ -405,7 +405,7 @@ class PWMChain:
                 "nonce": self.w3.eth.get_transaction_count(acct.address),
                 "gas": gas,
                 "value": required,
-                "maxFeePerGas": self.w3.eth.gas_price * 2,
+                "maxFeePerGas": max(self.w3.eth.gas_price * 2, self.w3.to_wei(2, "gwei")),
                 "maxPriorityFeePerGas": self.w3.to_wei(1, "gwei"),
             }
         )
