@@ -293,6 +293,75 @@ def test_leaderboard(seeded_env):
     assert body["entries"][0]["draw_rank"] == 1
 
 
+def test_leaderboard_returns_enriched_payload(seeded_env):
+    """Enriched leaderboard payload includes benchmark title (from genesis),
+    current SOTA (top-rank cert), explicit rank field per entry, and the
+    delta vs the off-chain reference baseline.
+
+    Verifies the contract documented in
+    `pwm-team/coordination/PWM_LEADERBOARD_DISPLAY_DESIGN_2026-05-03.md`.
+    """
+    client, refs = seeded_env
+    r = client.get(f"/api/leaderboard/{refs['bench_hash']}")
+    assert r.status_code == 200
+    body = r.json()
+
+    # Backward-compat: existing field still present.
+    assert "entries" in body
+    assert len(body["entries"]) == 1
+
+    # New fields.
+    assert body.get("benchmark_id") == "L3-001"
+    assert body.get("benchmark_title") == "Test Benchmark"
+
+    # current_sota = the top-rank entry surfaced as a first-class field.
+    sota = body.get("current_sota")
+    assert sota is not None, "current_sota should be present when at least one cert exists"
+    assert sota["cert_hash"] == refs["cert_hash"]
+    assert sota["rank"] == 1
+
+    # ranks: same entries as `entries`, but with an explicit `rank` int per row.
+    ranks = body.get("ranks")
+    assert ranks is not None
+    assert len(ranks) == 1
+    assert ranks[0]["rank"] == 1
+    assert ranks[0]["cert_hash"] == refs["cert_hash"]
+
+
+def test_leaderboard_with_artifact_id_resolves_chain_hash(seeded_env):
+    """Like /api/benchmarks/L3-001, /api/leaderboard accepts artifact_id form.
+
+    Customers see L3-003 in the URL (not 0xbb...bb), so the leaderboard
+    endpoint must accept that form too. Mirrors the resolver pattern in
+    benchmark_detail.
+    """
+    client, refs = seeded_env
+    r = client.get("/api/leaderboard/L3-001")
+    assert r.status_code == 200
+    body = r.json()
+    assert body.get("benchmark_id") == "L3-001"
+    assert len(body["entries"]) == 1
+    # ranks should also be populated when looked up by artifact_id.
+    assert body.get("ranks") and body["ranks"][0]["rank"] == 1
+
+
+def test_leaderboard_empty_returns_no_sota_but_metadata(seeded_env, tmp_path):
+    """Benchmark with no on-chain certs returns current_sota=None but
+    still resolves benchmark_id + benchmark_title from genesis. This is
+    the "empty leaderboard fallback" — every benchmark page has at
+    least the metadata layer to display from day 1.
+    """
+    client, _ = seeded_env
+    # Use a hash that has no certs in the seeded DB.
+    empty_hash = "0x" + "ee" * 32
+    r = client.get(f"/api/leaderboard/{empty_hash}")
+    assert r.status_code == 200
+    body = r.json()
+    assert body.get("entries") == []
+    assert body.get("ranks") == []
+    assert body.get("current_sota") is None
+
+
 def test_bounties(seeded_env):
     client, _ = seeded_env
     r = client.get("/api/bounties")

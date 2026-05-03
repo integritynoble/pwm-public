@@ -328,14 +328,136 @@ def cert_detail(cert_hash: str):
         conn.close()
 
 
-@app.get("/api/leaderboard/{benchmark_hash}")
-def leaderboard(benchmark_hash: str):
+@app.get("/api/leaderboard/{benchmark_ref}")
+def leaderboard(benchmark_ref: str):
+    """Leaderboard for one benchmark, enriched with metadata for UI display.
+
+    Accepts either an on-chain hash (0x…) or an artifact_id form (L3-003)
+    so customers don't have to paste raw hashes into URLs.
+
+    Response shape (per `PWM_LEADERBOARD_DISPLAY_DESIGN_2026-05-03.md`):
+        benchmark_hash       on-chain hex; lower-cased
+        benchmark_id         artifact_id like "L3-003" if resolvable
+        benchmark_title      from genesis JSON if resolvable
+        reference            off-chain reference baseline
+                                {label, score_q, psnr_db, source}
+                             or null if no genesis baseline available
+        current_sota         the top-rank entry surfaced as a first-class
+                             field; null when no certs exist
+                                {cert_hash, label, score_q, psnr_db,
+                                 submitter, rank, status, ...}
+        improvement_db       psnr_db(SOTA) - psnr_db(reference);
+                             null if either side missing
+        ranks                same entries as `entries` but with explicit
+                             `rank` int (1-indexed)
+        entries              kept for backward-compatibility with the
+                             pre-enrichment client
+
+    The reference floor is read from the L3 manifest's first
+    ibenchmarks-tier first baseline (typically the GAP-TV / classical
+    reference). Empty-leaderboard fallback: the page still has reference
+    + benchmark_title to render even before the first cert lands.
+    """
     conn = store.get_conn()
     try:
-        rows = store.certificates_for_benchmark(conn, benchmark_hash)[:10]
-        return _cached({"benchmark_hash": benchmark_hash.lower(), "entries": rows})
+        # Resolve hash from artifact_id if needed (mirrors benchmark_detail).
+        chain_hash: str | None = None
+        artifact_id: str | None = None
+        title: str | None = None
+        genesis_entry: dict | None = None
+
+        if benchmark_ref.startswith("0x"):
+            chain_hash = benchmark_ref.lower()
+            chain_row = store.get_artifact(conn, chain_hash)
+            artifact_id = (chain_row or {}).get("artifact_id")
+            if artifact_id:
+                genesis_entry = genesis.by_artifact_id(artifact_id)
+        else:
+            chain_row = store.get_artifact_by_artifact_id(conn, benchmark_ref)
+            artifact_id = benchmark_ref
+            genesis_entry = genesis.by_artifact_id(benchmark_ref)
+            if chain_row is None and genesis_entry and genesis_entry.get("chain_hash"):
+                chain_row = store.get_artifact(conn, genesis_entry["chain_hash"])
+            if chain_row:
+                chain_hash = chain_row.get("hash")
+
+        if genesis_entry:
+            title = genesis_entry.get("title")
+
+        rows: list[dict] = []
+        if chain_hash:
+            rows = store.certificates_for_benchmark(conn, chain_hash)[:10]
+
+        # Enrich each row with an explicit rank (1-indexed). The store
+        # already orders by draw_rank ASC then q_int DESC, so the row
+        # order IS the rank order.
+        ranks: list[dict] = []
+        for i, row in enumerate(rows):
+            r = dict(row)
+            # Prefer the on-chain finalized rank when present; otherwise
+            # provisional rank from sort order.
+            r["rank"] = r.get("draw_rank") or (i + 1)
+            ranks.append(r)
+
+        current_sota = ranks[0] if ranks else None
+
+        # Reference floor: first baseline of the first ibenchmarks tier in
+        # the L3 manifest. Tolerate missing fields — every level is optional.
+        reference = _extract_reference_baseline(genesis_entry)
+
+        improvement_db = None
+        if (
+            current_sota is not None
+            and current_sota.get("psnr_db") is not None
+            and reference is not None
+            and reference.get("psnr_db") is not None
+        ):
+            improvement_db = round(
+                float(current_sota["psnr_db"]) - float(reference["psnr_db"]), 3
+            )
+
+        return _cached({
+            "benchmark_hash": (chain_hash or "").lower(),
+            "benchmark_id": artifact_id,
+            "benchmark_title": title,
+            "reference": reference,
+            "current_sota": current_sota,
+            "improvement_db": improvement_db,
+            "ranks": ranks,
+            "entries": rows,
+        })
     finally:
         conn.close()
+
+
+def _extract_reference_baseline(genesis_entry: dict | None) -> dict | None:
+    """Pull the first baseline of the first ibenchmarks tier as the
+    reference floor for leaderboard display.
+
+    Schema (from a real L3 manifest):
+        ibenchmarks: [
+          {tier: T1_nominal, baselines: [
+              {name: "GAP-TV", metric: "PSNR_dB", score: 26.0, Q: 0.62}, ...
+          ]}, ...
+        ]
+    """
+    if not genesis_entry:
+        return None
+    ibench = genesis_entry.get("ibenchmarks") or []
+    if not ibench:
+        return None
+    baselines = (ibench[0] or {}).get("baselines") or []
+    if not baselines:
+        return None
+    first = baselines[0]
+    return {
+        "label": first.get("name"),
+        "score_q": first.get("Q"),
+        "psnr_db": first.get("score") if first.get("metric") == "PSNR_dB" else None,
+        "metric": first.get("metric"),
+        "tier": (ibench[0] or {}).get("tier"),
+        "source": "off-chain reference (genesis manifest baseline)",
+    }
 
 
 # ---------- write path: certificate-meta enrichment ----------

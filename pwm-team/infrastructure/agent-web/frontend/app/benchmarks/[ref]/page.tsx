@@ -22,7 +22,10 @@ export async function generateMetadata({
 
 export default async function BenchmarkDetail({ params }: { params: Promise<{ ref: string }> }) {
   const { ref } = await params;
-  const data = await api.benchmark(ref);
+  const [data, lb] = await Promise.all([
+    api.benchmark(ref),
+    api.leaderboard(ref).catch(() => null),  // tolerate API miss; header degrades gracefully
+  ]);
   if (!data) return notFound();
 
   const g = data.genesis;
@@ -119,6 +122,8 @@ export default async function BenchmarkDetail({ params }: { params: Promise<{ re
         </section>
       )}
 
+      {lb && <SotaReferenceDeltaHeader lb={lb} />}
+
       {data.demo && <ExampleDataSection demo={data.demo} />}
 
       {data.demo && <GetThisBenchmarkSection demo={data.demo} benchmarkRef={ref} />}
@@ -133,7 +138,9 @@ export default async function BenchmarkDetail({ params }: { params: Promise<{ re
           )}
         </div>
         {data.leaderboard.length === 0 ? (
-          <div className="pwm-card text-pwm-muted italic">No solutions submitted yet.</div>
+          <div className="pwm-card text-pwm-muted italic">
+            No solutions submitted yet. The reference baseline above is the floor — submit a better solver to claim rank 1.
+          </div>
         ) : (
           <div className="pwm-card overflow-x-auto">
             <table className="pwm-table">
@@ -152,7 +159,7 @@ export default async function BenchmarkDetail({ params }: { params: Promise<{ re
               <tbody>
                 {data.leaderboard.map((c: any, i: number) => (
                   <tr key={c.cert_hash}>
-                    <td>{c.draw_rank ?? `#${i + 1}?`}</td>
+                    <td>{rankBadge(c.draw_rank ?? i + 1)}</td>
                     <td className="font-mono">
                       <Link className="pwm-link" href={`/cert/${c.cert_hash}`}>{shortAddr(c.cert_hash)}</Link>
                     </td>
@@ -176,6 +183,115 @@ export default async function BenchmarkDetail({ params }: { params: Promise<{ re
         )}
       </section>
     </div>
+  );
+}
+
+
+/** Visual rank badge: gold/silver/bronze for top 3, ribbon for 4-10, plain # for 11+. */
+function rankBadge(rank: number | null | undefined): string {
+  if (rank == null) return '#?';
+  if (rank === 1) return '🥇 #1';
+  if (rank === 2) return '🥈 #2';
+  if (rank === 3) return '🥉 #3';
+  if (rank <= 10) return `🎗 #${rank}`;
+  return `#${rank}`;
+}
+
+
+/**
+ * SOTA / Reference / Delta header — the protocol storytelling block.
+ *
+ * Shows three things side-by-side:
+ *   - Current SOTA (best on-chain cert) — dynamic
+ *   - Reference floor (off-chain GAP-TV-class baseline) — static
+ *   - Improvement delta — the protocol's value proposition in one number
+ *
+ * Empty-leaderboard fallback: if no certs exist, shows just the
+ * reference floor with a "be the first to submit" call-to-action.
+ */
+function SotaReferenceDeltaHeader({ lb }: { lb: NonNullable<Awaited<ReturnType<typeof api.leaderboard>>> }) {
+  const sota = lb.current_sota;
+  const ref = lb.reference;
+  const delta = lb.improvement_db;
+
+  // Don't render the section at all if neither side has data.
+  if (!sota && !ref) return null;
+
+  return (
+    <section className="pwm-card border-cyan-500/30 space-y-3">
+      <h2 className="text-lg font-semibold">Current standing</h2>
+      <div className="grid md:grid-cols-3 gap-3 text-sm">
+        {/* SOTA */}
+        <div className="bg-slate-950/60 border border-cyan-500/40 rounded px-3 py-3">
+          <div className="text-xs uppercase tracking-wide text-cyan-400 mb-1">🏆 Current SOTA</div>
+          {sota ? (
+            <>
+              <div className="font-semibold">
+                {sota.solver_label ?? <span className="text-pwm-muted italic">unlabeled</span>}
+              </div>
+              <div className="font-mono text-lg">
+                {sota.psnr_db != null ? `${Number(sota.psnr_db).toFixed(2)} dB` : '—'}
+              </div>
+              <div className="text-xs text-pwm-muted mt-1">
+                {rankBadge(sota.rank)} · cert{' '}
+                <Link className="pwm-link font-mono" href={`/cert/${sota.cert_hash}`}>
+                  {shortAddr(sota.cert_hash)}
+                </Link>
+              </div>
+            </>
+          ) : (
+            <>
+              <div className="text-pwm-muted italic text-sm">No certs submitted yet.</div>
+              <div className="text-xs text-pwm-muted mt-2">
+                Be the first to submit a solution and claim rank 1.
+              </div>
+            </>
+          )}
+        </div>
+
+        {/* Reference */}
+        <div className="bg-slate-950/60 border border-slate-700 rounded px-3 py-3">
+          <div className="text-xs uppercase tracking-wide text-slate-400 mb-1">📊 Reference floor</div>
+          {ref ? (
+            <>
+              <div className="font-semibold">
+                {ref.label ?? <span className="text-pwm-muted italic">unnamed</span>}
+              </div>
+              <div className="font-mono text-lg">
+                {ref.psnr_db != null ? `${Number(ref.psnr_db).toFixed(2)} dB` : '—'}
+              </div>
+              <div className="text-xs text-pwm-muted mt-1">
+                {ref.tier ?? 'baseline'} · deliberate floor; anyone better wins
+              </div>
+            </>
+          ) : (
+            <div className="text-pwm-muted italic text-sm">No reference baseline declared.</div>
+          )}
+        </div>
+
+        {/* Delta */}
+        <div className="bg-slate-950/60 border border-emerald-500/40 rounded px-3 py-3">
+          <div className="text-xs uppercase tracking-wide text-emerald-400 mb-1">📈 PWM-enabled delta</div>
+          {delta != null ? (
+            <>
+              <div className="font-mono text-lg">
+                {delta >= 0 ? '+' : ''}
+                {delta.toFixed(2)} dB
+              </div>
+              <div className="text-xs text-pwm-muted mt-1">
+                {delta > 0
+                  ? 'community submission improved on the floor'
+                  : 'no improvement yet'}
+              </div>
+            </>
+          ) : (
+            <div className="text-pwm-muted italic text-sm">
+              Delta unavailable (need both SOTA and reference PSNR).
+            </div>
+          )}
+        </div>
+      </div>
+    </section>
   );
 }
 

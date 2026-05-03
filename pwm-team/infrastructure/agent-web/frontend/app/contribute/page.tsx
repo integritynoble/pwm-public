@@ -156,7 +156,7 @@ const SECTIONS: LayerSection[] = [
       {
         title: 'Browse solutions',
         description:
-          'See certified L4 certs and their leaderboards. Each benchmark page has a top-10 ranking. Click any cert to verify its S1-S4 status.',
+          'Each benchmark page has a Current standing block (🏆 SOTA / 📊 Reference floor / 📈 PWM-enabled delta) plus a top-10 leaderboard with rank badges (🥇🥈🥉🎗). Click any cert to verify its S1-S4 status.',
         href: '/benchmarks',
         cta: 'Browse leaderboards →',
         style: 'browse',

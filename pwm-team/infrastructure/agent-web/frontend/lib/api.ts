@@ -138,6 +138,49 @@ export type Pools = {
   treasury: Array<{ principle_id: string; balance: string }>;
 };
 
+/** Reference baseline for a benchmark — the floor everyone competes against. */
+export type LeaderboardReference = {
+  label: string | null;
+  score_q: number | null;
+  psnr_db: number | null;
+  metric: string | null;
+  tier: string | null;
+  source: string;
+};
+
+/** A single entry on the benchmark leaderboard, with explicit rank. */
+export type LeaderboardRank = {
+  rank: number;
+  cert_hash: string;
+  submitter: string;
+  q_int: number;
+  status: number;
+  draw_rank: number | null;
+  draw_amount: string | null;
+  solver_label: string | null;
+  psnr_db: number | null;
+  runtime_sec: number | null;
+  framework: string | null;
+  meta_url: string | null;
+  meta_posted_at: number | null;
+  benchmark_hash: string;
+  submitted_at: number;
+  block_number: number;
+  tx_hash: string;
+};
+
+export type LeaderboardResponse = {
+  benchmark_hash: string;
+  benchmark_id: string | null;
+  benchmark_title: string | null;
+  reference: LeaderboardReference | null;
+  current_sota: LeaderboardRank | null;
+  improvement_db: number | null;
+  ranks: LeaderboardRank[];
+  /** Backward-compat: same data as `ranks` minus the explicit rank field. */
+  entries: any[];
+};
+
 export type Bounty = {
   slug: string;
   title: string;
@@ -154,7 +197,7 @@ export const api = {
   benchmark: (ref: string) => get<BenchmarkDetail>(`/api/benchmarks/${encodeURIComponent(ref)}`),
   pools: () => get<Pools>('/api/pools'),
   cert: (hash: string) => get<CertDetail>(`/api/cert/${encodeURIComponent(hash)}`),
-  leaderboard: (hash: string) => get<{ benchmark_hash: string; entries: any[] }>(`/api/leaderboard/${encodeURIComponent(hash)}`),
+  leaderboard: (ref: string) => get<LeaderboardResponse>(`/api/leaderboard/${encodeURIComponent(ref)}`),
   bounties: () => get<{ bounties: Bounty[] }>('/api/bounties'),
   network: () => get<{ network: string; addresses: Record<string, string> }>('/api/network'),
   activity: (limit = 50) => get<{ activity: ActivityEntry[] }>(`/api/activity?limit=${limit}`),
