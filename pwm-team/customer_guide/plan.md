@@ -278,10 +278,10 @@ a polished customer experience.
 - [x] **3.6 — If 3b: Director creates new public repo on GitHub**
 - [x] **3.7 — Author** `scripts/sync_to_public_repo.sh` — `git filter-repo` based selective mirror
 - [ ] **3.8 — Director runs** `scripts/sync_to_public_repo.sh` (interactive — needs Director's GitHub credentials)
-- [ ] **3.9 — Update doc references** — find all `integritynoble/pwm` references in coordination docs, customer guide, READMEs, CLI install instructions; replace with public URL where appropriate
-- [ ] **3.10 — Update `pwm-node` CLI install instructions** in agent-cli/README.md — use public repo URL
-- [ ] **3.11 — Update web explorer** `view-on-github` links — point to public repo
-- [ ] **3.12 — Update bounty specs** — public repo URL in claim instructions
+- [x] **3.9 — Update doc references** — find all `integritynoble/pwm` references in coordination docs, customer guide, READMEs, CLI install instructions; replace with public URL where appropriate
+- [x] **3.10 — Update `pwm-node` CLI install instructions** in agent-cli/README.md — use public repo URL
+- [x] **3.11 — Update web explorer** `view-on-github` links — point to public repo
+- [x] **3.12 — Update bounty specs** — public repo URL in claim instructions
 - [ ] **3.13 — Director: redeploy explorer with new GitHub URL**
 - [ ] **3.14 — Smoke test:** open the public repo URL in incognito browser; clone it as a fresh user; run `pwm-node --network testnet benchmarks` against the cloned copy
 
