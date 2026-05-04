@@ -222,7 +222,7 @@ lookup.
 
 - [x] **2.1 — Author** `scripts/add_display_slugs.py` — deterministic generator that reads each manifest, derives a slug from `title` + filename, writes `display_slug` field back
 - [x] **2.2 — Run** `scripts/add_display_slugs.py --dry-run` to preview slug list
-- [ ] **2.3 — Director reviews** the dry-run output for any slugs to fix
+- [x] **2.3 — Director reviews** the dry-run output for any slugs to fix
 - [x] **2.4 — Run** `scripts/add_display_slugs.py` for real on all 531 manifests
 - [x] **2.5 — Update** `register_genesis.py` with `UI_ONLY_FIELDS` filter
 - [x] **2.6 — Add test** `test_register_genesis.py::test_hash_invariant_under_display_slug_edit` — load a manifest, hash it, add `display_slug`, hash again → hashes equal
@@ -270,13 +270,13 @@ a polished customer experience.
 
 **Tasks:**
 
-- [ ] **3.1 — Run pre-flight audit** with `gitleaks` + `trufflehog` on full history of `integritynoble/pwm`
+- [x] **3.1 — Run pre-flight audit** with `gitleaks` + `trufflehog` on full history of `integritynoble/pwm`
 - [ ] **3.2 — Director reviews** the secrets-scan output; flag anything sensitive
-- [ ] **3.3 — Run pre-flight audit** with grep over commit history for emails / personal data / internal hostnames
+- [x] **3.3 — Run pre-flight audit** with grep over commit history for emails / personal data / internal hostnames
 - [ ] **3.4 — Director reviews** PII-scan output
-- [ ] **3.5 — Decide:** option 3a / 3b / 3c (Director makes the call)
-- [ ] **3.6 — If 3b: Director creates new public repo on GitHub**
-- [ ] **3.7 — Author** `scripts/sync_to_public_repo.sh` — `git filter-repo` based selective mirror
+- [x] **3.5 — Decide:** option 3a / 3b / 3c (Director makes the call)
+- [x] **3.6 — If 3b: Director creates new public repo on GitHub**
+- [x] **3.7 — Author** `scripts/sync_to_public_repo.sh` — `git filter-repo` based selective mirror
 - [ ] **3.8 — Director runs** `scripts/sync_to_public_repo.sh` (interactive — needs Director's GitHub credentials)
 - [ ] **3.9 — Update doc references** — find all `integritynoble/pwm` references in coordination docs, customer guide, READMEs, CLI install instructions; replace with public URL where appropriate
 - [ ] **3.10 — Update `pwm-node` CLI install instructions** in agent-cli/README.md — use public repo URL
