@@ -107,6 +107,6 @@ the benchmark's reward pool. Full economics in
 - **Canonical reference:** `papers/Proof-of-Solution/mine_example/cassi.md`
   (~1,600-line deep-dive — the source material for this page)
 - **Questions or gap requests:** raise a GitHub issue at
-  https://github.com/integritynoble/pwm/issues with the
+  https://github.com/integritynoble/pwm-public/issues with the
   `bounty-07-claim` label to request creation of a new benchmark
   tier or related principle.

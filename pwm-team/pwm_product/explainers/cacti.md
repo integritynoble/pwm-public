@@ -115,6 +115,6 @@ economics.
 - **Canonical reference:** `papers/Proof-of-Solution/mine_example/cacti.md`
   (deep-dive; source material for this page)
 - **Questions or gap requests:** open a GitHub issue at
-  https://github.com/integritynoble/pwm/issues with the
+  https://github.com/integritynoble/pwm-public/issues with the
   `bounty-07-claim` label to request creation of a new benchmark
   tier or related principle.
