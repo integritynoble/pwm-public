@@ -67,11 +67,26 @@ def build_parser() -> argparse.ArgumentParser:
 
     sub = p.add_subparsers(dest="command", required=True, metavar="<command>")
 
-    # benchmarks — list available benchmarks (offline)
-    bp = sub.add_parser("benchmarks", help="List available benchmarks.")
-    bp.add_argument("--domain", help="Filter by domain (e.g. imaging, compressive).")
-    bp.add_argument("--spec", help="Filter by spec ID (e.g. L2-003).")
-    bp.set_defaults(handler=benchmarks.run)
+    # benchmarks — list available L3 benchmarks (offline). Walks
+    # genesis/l3/ and prints L3-flavoured columns. Per smoke-test F1.
+    bp = sub.add_parser(
+        "benchmarks",
+        help="List available L3 benchmarks (parent L1/L2, rho, T1 epsilon, T1 baseline).",
+    )
+    bp.add_argument("--domain", help="Filter by title/slug substring (e.g. cassi, compressive).")
+    bp.add_argument("--spec", help="Filter by parent L2 ID (e.g. L2-003).")
+    bp.set_defaults(handler=benchmarks._run_benchmarks)
+
+    # principles — list available L1 Principles (offline). Same behaviour
+    # the historical `benchmarks` command had pre-2026-05-04, just under
+    # the more accurate name. Per smoke-test F1.
+    pp = sub.add_parser(
+        "principles",
+        help="List available L1 Principles (domain, difficulty, verification).",
+    )
+    pp.add_argument("--domain", help="Filter by domain (e.g. imaging, compressive).")
+    pp.add_argument("--spec", help="Filter by spec ID (e.g. L2-003).")
+    pp.set_defaults(handler=benchmarks._run_principles)
 
     # inspect — resolve a hash/id to its artifact (offline variant reads genesis dir)
     ip = sub.add_parser(
@@ -234,8 +249,48 @@ def _chain_stub(args: argparse.Namespace) -> int:
     return 2
 
 
+def _ensure_utf8_stdio() -> None:
+    """Reconfigure sys.stdout / sys.stderr to UTF-8 if the terminal default
+    can't handle non-Latin-1 characters (e.g. Greek letters in error labels,
+    em-dashes in match output).
+
+    Per smoke-test finding F2 (PWM_PUBLIC_REPO_SMOKE_TEST_RESULTS_2026-05-03.md):
+    Windows shells default to cp1252/charmap, which crashes on output like
+    "(δ=3)". The agent-cli CLAUDE.md requires "Works on Linux, macOS,
+    Windows" — this shim is what makes the contract hold.
+
+    `errors='replace'` keeps the program running if a truly unencodable
+    glyph slips through, rather than crashing on it.
+    """
+    for name in ("stdout", "stderr"):
+        stream = getattr(sys, name, None)
+        if stream is None:
+            continue
+        encoding = getattr(stream, "encoding", None) or ""
+        if encoding.lower().replace("-", "") == "utf8":
+            continue
+        # Python 3.7+ has sys.stdout.reconfigure on TextIOWrapper.
+        reconfigure = getattr(stream, "reconfigure", None)
+        if callable(reconfigure):
+            try:
+                reconfigure(encoding="utf-8", errors="replace")
+                continue
+            except Exception:
+                pass
+        # Fallback: replace with a TextIOWrapper around the underlying buffer.
+        buf = getattr(stream, "buffer", None)
+        if buf is not None:
+            try:
+                import io
+                setattr(sys, name, io.TextIOWrapper(
+                    buf, encoding="utf-8", errors="replace", line_buffering=True))
+            except Exception:
+                pass
+
+
 def main(argv: list[str] | None = None) -> int:
     """Main entry point. Returns the exit code."""
+    _ensure_utf8_stdio()
     parser = build_parser()
     args = parser.parse_args(argv)
     try:

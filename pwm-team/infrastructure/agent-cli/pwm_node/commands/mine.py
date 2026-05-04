@@ -33,13 +33,41 @@ from pathlib import Path
 _ZERO_ADDR = "0x" + "0" * 40
 
 
+# UI-only fields excluded from canonical-JSON hashing. MUST match
+# scripts/register_genesis.py::UI_ONLY_FIELDS exactly — otherwise the
+# benchmarkHash this CLI computes will diverge from what's on-chain
+# and `submit_certificate` will revert with "benchmark not registered".
+# Smoke-test 2026-05-03 caught this divergence before the public-repo
+# cutover; that's what the test_hash_convention.py regression covers.
+_UI_ONLY_FIELDS = frozenset({
+    "display_slug",
+    "display_color",
+    "ui_metadata",
+})
+
+
+def _canonical_for_hashing(obj):
+    """Strip UI-only fields recursively at top level before hashing.
+
+    Keeps the on-chain hash invariant under UI-metadata edits, matching
+    `scripts/register_genesis.py::_canonical_for_hashing`.
+    """
+    if isinstance(obj, dict):
+        return {k: v for k, v in obj.items() if k not in _UI_ONLY_FIELDS}
+    return obj
+
+
 def _canonical_json(obj) -> bytes:
     """Stable-serialize to bytes: sorted keys, compact separators, UTF-8.
 
-    Must match scripts/register_genesis_sepolia.py::_canonical_json so the
+    Must match scripts/register_genesis.py::_canonical_json so the
     benchmarkHash we compute here equals the hash that was registered on-chain.
+    Filters UI_ONLY_FIELDS (display_slug, display_color, ui_metadata)
+    before serializing — see PWM_HUMAN_READABLE_IDS_AND_CONTRIBUTION_FLOW_2026-05-03.md
+    for the rationale.
     """
-    return json.dumps(obj, sort_keys=True, separators=(",", ":")).encode("utf-8")
+    filtered = _canonical_for_hashing(obj)
+    return json.dumps(filtered, sort_keys=True, separators=(",", ":")).encode("utf-8")
 
 
 def _keccak256_hex(data: bytes) -> str:
