@@ -49,6 +49,7 @@
       "baselines": [
         {
           "name": "GAP-TV",
+          "category": "classical",
           "metric": "PSNR_dB",
           "score": 26.0,
           "SSIM": 0.79,
@@ -57,6 +58,7 @@
         },
         {
           "name": "ADMM-CASSI",
+          "category": "classical",
           "metric": "PSNR_dB",
           "score": 28.5,
           "SSIM": 0.85,
@@ -65,11 +67,22 @@
         },
         {
           "name": "PnP-HSICNN",
+          "category": "classical",
           "metric": "PSNR_dB",
           "score": 31.8,
           "SSIM": 0.9,
           "SAM_deg": 5.1,
           "Q": 0.89
+        },
+        {
+          "name": "MST-L",
+          "category": "deep_learning",
+          "metric": "PSNR_dB",
+          "score": 35.295,
+          "SSIM": 0.94,
+          "SAM_deg": 3.5,
+          "Q": 0.95,
+          "source": "PyTorch 2.1 + CUDA 12.1; cert 0x7c7740faad378c8514128903a26165d5e5d303b56e2b5b4649917265c5a3ee13"
         }
       ]
     },

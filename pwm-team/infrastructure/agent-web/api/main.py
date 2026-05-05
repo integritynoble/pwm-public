@@ -429,9 +429,11 @@ def leaderboard(benchmark_ref: str):
 
         current_sota = ranks[0] if ranks else None
 
-        # Reference floor: first baseline of the first ibenchmarks tier in
-        # the L3 manifest. Tolerate missing fields — every level is optional.
+        # Reference floors: classical (deliberate weak floor everyone can
+        # beat) + optional deep-learning (the harder named landmark).
+        # Tolerate missing fields — every level is optional.
         reference = _extract_reference_baseline(genesis_entry)
+        reference_advanced = _extract_advanced_baseline(genesis_entry)
 
         improvement_db = None
         if (
@@ -449,6 +451,7 @@ def leaderboard(benchmark_ref: str):
             "benchmark_id": artifact_id,
             "benchmark_title": title,
             "reference": reference,
+            "reference_advanced": reference_advanced,
             "current_sota": current_sota,
             "improvement_db": improvement_db,
             "ranks": ranks,
@@ -502,34 +505,66 @@ def _is_synthetic_cert(row: dict) -> bool:
     return False
 
 
+def _format_baseline(b: dict, tier: str | None) -> dict:
+    return {
+        "label": b.get("name"),
+        "category": b.get("category"),
+        "score_q": b.get("Q"),
+        "psnr_db": b.get("score") if b.get("metric") == "PSNR_dB" else None,
+        "metric": b.get("metric"),
+        "tier": tier,
+        "source": "off-chain reference (genesis manifest baseline)",
+    }
+
+
 def _extract_reference_baseline(genesis_entry: dict | None) -> dict | None:
     """Pull the first baseline of the first ibenchmarks tier as the
-    reference floor for leaderboard display.
+    classical reference floor for leaderboard display.
 
     Schema (from a real L3 manifest):
         ibenchmarks: [
           {tier: T1_nominal, baselines: [
-              {name: "GAP-TV", metric: "PSNR_dB", score: 26.0, Q: 0.62}, ...
+              {name: "GAP-TV", category: "classical",
+               metric: "PSNR_dB", score: 26.0, Q: 0.62}, ...
           ]}, ...
         ]
+
+    Returns the first entry whose `category` is "classical" if any
+    baseline declares categories; otherwise falls back to the first
+    baseline (legacy manifests without categories).
     """
     if not genesis_entry:
         return None
     ibench = genesis_entry.get("ibenchmarks") or []
     if not ibench:
         return None
+    tier = (ibench[0] or {}).get("tier")
     baselines = (ibench[0] or {}).get("baselines") or []
     if not baselines:
         return None
-    first = baselines[0]
-    return {
-        "label": first.get("name"),
-        "score_q": first.get("Q"),
-        "psnr_db": first.get("score") if first.get("metric") == "PSNR_dB" else None,
-        "metric": first.get("metric"),
-        "tier": (ibench[0] or {}).get("tier"),
-        "source": "off-chain reference (genesis manifest baseline)",
-    }
+    classical = next((b for b in baselines if b.get("category") == "classical"), None)
+    chosen = classical or baselines[0]
+    return _format_baseline(chosen, tier)
+
+
+def _extract_advanced_baseline(genesis_entry: dict | None) -> dict | None:
+    """Pull the first baseline of the first ibenchmarks tier whose
+    `category` is "deep_learning".
+
+    Returns None when no deep-learning baseline is declared. Pages
+    render this alongside the classical reference floor as the
+    "deep-learning floor" — a harder gate that surfaces the SOTA
+    deep-learning method as a known landmark for new contributors.
+    """
+    if not genesis_entry:
+        return None
+    ibench = genesis_entry.get("ibenchmarks") or []
+    if not ibench:
+        return None
+    tier = (ibench[0] or {}).get("tier")
+    baselines = (ibench[0] or {}).get("baselines") or []
+    advanced = next((b for b in baselines if b.get("category") == "deep_learning"), None)
+    return _format_baseline(advanced, tier) if advanced else None
 
 
 # ---------- write path: certificate-meta enrichment ----------

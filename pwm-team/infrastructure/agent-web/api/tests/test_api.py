@@ -541,6 +541,112 @@ def test_leaderboard_filters_unlabeled_high_q_int(seeded_env):
     assert refs["cert_hash"] in cert_hashes                 # labeled seeded cert
 
 
+def test_leaderboard_returns_classical_and_deep_learning_floors(tmp_path, monkeypatch):
+    """When the L3 manifest declares both 'classical' and 'deep_learning'
+    baselines, the leaderboard endpoint surfaces both: `reference` for
+    the classical floor (deliberate, easy gate) and `reference_advanced`
+    for the deep-learning floor (harder named landmark).
+    """
+    from indexer import db as idx_db
+    from indexer import handlers as idx_handlers
+    from indexer.events import EventContext
+
+    db_path = tmp_path / "twofloor.db"
+    conn = idx_db.connect(db_path)
+    idx_db.init_db(conn)
+    bench_hash = b"\xee" * 32
+    ctx = EventContext(block_number=1, tx_hash="0xfake4", timestamp=1700000400)
+    idx_handlers.handle_artifact_registered(
+        conn, {"hash": bench_hash, "layer": 3, "creator": "0x" + "01" * 20, "timestamp": ctx.timestamp}, ctx,
+    )
+    conn.execute(
+        "UPDATE artifacts SET artifact_id = ? WHERE hash = ?",
+        ("L3-EE", "0x" + "ee" * 32),
+    )
+    conn.commit()
+    conn.close()
+    monkeypatch.setenv("PWM_DB", str(db_path))
+
+    genesis_root = tmp_path / "twofloor_genesis"
+    (genesis_root / "l3").mkdir(parents=True)
+    (genesis_root / "l3" / "L3-EE.json").write_text(json.dumps({
+        "artifact_id": "L3-EE", "title": "Two-Floor Bench",
+        "ibenchmarks": [{
+            "tier": "T1_nominal",
+            "baselines": [
+                {"name": "GAP-TV", "category": "classical",
+                 "metric": "PSNR_dB", "score": 26.0, "Q": 0.62},
+                {"name": "MST-L", "category": "deep_learning",
+                 "metric": "PSNR_dB", "score": 35.295, "Q": 0.95},
+            ],
+        }],
+    }))
+    monkeypatch.setenv("PWM_GENESIS_DIR", str(genesis_root))
+
+    from api import genesis as g_mod
+    g_mod.reload()
+    from api.main import app
+    client = TestClient(app)
+
+    r = client.get("/api/leaderboard/0x" + "ee" * 32)
+    assert r.status_code == 200
+    body = r.json()
+    assert body["reference"]["label"] == "GAP-TV"
+    assert body["reference"]["psnr_db"] == 26.0
+    assert body["reference"]["category"] == "classical"
+    assert body["reference_advanced"]["label"] == "MST-L"
+    assert body["reference_advanced"]["psnr_db"] == 35.295
+    assert body["reference_advanced"]["category"] == "deep_learning"
+
+
+def test_leaderboard_reference_advanced_absent_when_no_deep_learning_baseline(tmp_path, monkeypatch):
+    """Manifests that declare only classical baselines (or no categories
+    at all) should still work — `reference_advanced` is None."""
+    from indexer import db as idx_db
+    from indexer import handlers as idx_handlers
+    from indexer.events import EventContext
+
+    db_path = tmp_path / "onefloor.db"
+    conn = idx_db.connect(db_path)
+    idx_db.init_db(conn)
+    bench_hash = b"\xef" * 32
+    ctx = EventContext(block_number=1, tx_hash="0xfake5", timestamp=1700000500)
+    idx_handlers.handle_artifact_registered(
+        conn, {"hash": bench_hash, "layer": 3, "creator": "0x" + "01" * 20, "timestamp": ctx.timestamp}, ctx,
+    )
+    conn.execute(
+        "UPDATE artifacts SET artifact_id = ? WHERE hash = ?",
+        ("L3-EF", "0x" + "ef" * 32),
+    )
+    conn.commit()
+    conn.close()
+    monkeypatch.setenv("PWM_DB", str(db_path))
+
+    genesis_root = tmp_path / "onefloor_genesis"
+    (genesis_root / "l3").mkdir(parents=True)
+    (genesis_root / "l3" / "L3-EF.json").write_text(json.dumps({
+        "artifact_id": "L3-EF", "title": "One-Floor Bench",
+        "ibenchmarks": [{
+            "tier": "T1_nominal",
+            "baselines": [
+                {"name": "GAP-TV", "metric": "PSNR_dB", "score": 26.0, "Q": 0.62},
+            ],
+        }],
+    }))
+    monkeypatch.setenv("PWM_GENESIS_DIR", str(genesis_root))
+
+    from api import genesis as g_mod
+    g_mod.reload()
+    from api.main import app
+    client = TestClient(app)
+
+    r = client.get("/api/leaderboard/0x" + "ef" * 32)
+    assert r.status_code == 200
+    body = r.json()
+    assert body["reference"]["label"] == "GAP-TV"
+    assert body["reference_advanced"] is None
+
+
 def test_bounties(seeded_env):
     client, _ = seeded_env
     r = client.get("/api/bounties")

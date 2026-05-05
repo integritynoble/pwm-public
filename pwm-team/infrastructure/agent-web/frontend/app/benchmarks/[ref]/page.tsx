@@ -212,6 +212,10 @@ function rankBadge(rank: number | null | undefined): string {
 function SotaReferenceDeltaHeader({ lb }: { lb: NonNullable<Awaited<ReturnType<typeof api.leaderboard>>> }) {
   const sota = lb.current_sota;
   const ref = lb.reference;
+  const refAdvanced = (lb as any).reference_advanced as
+    | { label?: string | null; psnr_db?: number | null; tier?: string | null }
+    | null
+    | undefined;
   const delta = lb.improvement_db;
 
   // Don't render the section at all if neither side has data.
@@ -249,23 +253,39 @@ function SotaReferenceDeltaHeader({ lb }: { lb: NonNullable<Awaited<ReturnType<t
           )}
         </div>
 
-        {/* Reference */}
-        <div className="bg-slate-950/60 border border-slate-700 rounded px-3 py-3">
-          <div className="text-xs uppercase tracking-wide text-slate-400 mb-1">📊 Reference floor</div>
-          {ref ? (
-            <>
+        {/* Reference (classical + optional deep-learning floor stacked) */}
+        <div className="bg-slate-950/60 border border-slate-700 rounded px-3 py-3 space-y-3">
+          <div>
+            <div className="text-xs uppercase tracking-wide text-slate-400 mb-1">📊 Classical floor</div>
+            {ref ? (
+              <>
+                <div className="font-semibold">
+                  {ref.label ?? <span className="text-pwm-muted italic">unnamed</span>}
+                </div>
+                <div className="font-mono text-lg">
+                  {ref.psnr_db != null ? `${Number(ref.psnr_db).toFixed(2)} dB` : '—'}
+                </div>
+                <div className="text-xs text-pwm-muted mt-1">
+                  deliberate floor; anyone better wins
+                </div>
+              </>
+            ) : (
+              <div className="text-pwm-muted italic text-sm">No reference baseline declared.</div>
+            )}
+          </div>
+          {refAdvanced && (
+            <div className="border-t border-slate-700 pt-3">
+              <div className="text-xs uppercase tracking-wide text-fuchsia-400 mb-1">🧠 Deep-learning floor</div>
               <div className="font-semibold">
-                {ref.label ?? <span className="text-pwm-muted italic">unnamed</span>}
+                {refAdvanced.label ?? <span className="text-pwm-muted italic">unnamed</span>}
               </div>
               <div className="font-mono text-lg">
-                {ref.psnr_db != null ? `${Number(ref.psnr_db).toFixed(2)} dB` : '—'}
+                {refAdvanced.psnr_db != null ? `${Number(refAdvanced.psnr_db).toFixed(2)} dB` : '—'}
               </div>
               <div className="text-xs text-pwm-muted mt-1">
-                {ref.tier ?? 'baseline'} · deliberate floor; anyone better wins
+                published deep-learning landmark; harder gate
               </div>
-            </>
-          ) : (
-            <div className="text-pwm-muted italic text-sm">No reference baseline declared.</div>
+            </div>
           )}
         </div>
 
