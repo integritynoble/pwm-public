@@ -326,6 +326,129 @@ operational secrets stay in the founding-team-only private repo.
 
 ---
 
+## Permissions and immutability — "if the JSONs are in a public repo, can anyone change them?"
+
+A common follow-up question: the manifests live in a public Git repo
+that humans can edit. Doesn't that make them mutable? The answer is
+**yes for the file system, no for the protocol**. Here's why.
+
+### Two layers of permission
+
+**GitHub layer (file-system access):**
+
+- **Anyone can fork** `pwm-public` and modify their fork — public,
+  free, can't be prevented (it's MIT-licensed open source).
+- **Only people with write access** to `integritynoble/pwm-public`
+  (today: just Director, possibly 1-2 collaborators in the future)
+  can push directly.
+- **Pull requests from outside contributors** require the maintainer's
+  approval to merge.
+- **The repo owner** can push directly, force-push, or rewrite
+  history within their own copy.
+
+**Chain layer (the cryptographic enforcement):**
+
+- The chain stores `keccak256(canonical_json)` of each manifest at
+  registration time.
+- The chain has its own copy of the hash, independent of any
+  off-chain repo.
+- Editing the JSON in the repo does not change what's on-chain.
+- A modified manifest's new hash will not match any registered
+  artifact.
+
+### What happens when someone edits a registered manifest
+
+```
+ON-CHAIN (PWMRegistry, immutable):
+  L1-003 hash = 0xe3b1328c66835cd729fa50650ef1d1bac4aa407807d6d97d4979e988a99a51ea
+  registered 2026-04-19, creator 0x0c566f...7dEd
+
+REPO (mutable):
+  L1-003.json file content   ─keccak256(canonical_json)─►  computed hash
+
+  unchanged file:  computed = 0xe3b1328c66… → MATCHES on-chain  ✓
+  edited file:     computed = 0xNEW_DIFFERENT_HASH → DOES NOT MATCH  ✗
+```
+
+The protocol's runtime checks:
+
+1. `pwm-node mine L3-003` reads the local JSON, computes
+   `keccak256(canonical_json)`, calls
+   `PWMCertificate.submit(cert_hash, benchmarkHash, …)` where
+   `benchmarkHash` is the freshly-computed local hash.
+2. The contract checks: *is `benchmarkHash` a registered artifact?*
+3. **If the JSON was edited, the answer is NO** — the submission
+   reverts with `"benchmark not registered"`.
+4. **Result:** an edit silently breaks all mining and verification
+   for that artifact, and every CLI user sees the failure
+   immediately.
+
+### The one safe edit: `display_slug` and other UI-only fields
+
+`scripts/register_genesis.py` defines a `UI_ONLY_FIELDS` filter that
+strips presentation-only fields (`display_slug`, `display_color`,
+`ui_metadata`) before hashing. These fields can be added or changed
+in the JSON without affecting the on-chain hash:
+
+```python
+UI_ONLY_FIELDS = frozenset({"display_slug", "display_color", "ui_metadata"})
+```
+
+Editing the slug (`"cassi"` → `"cassi-v2"`) re-renders the URL but
+leaves the chain binding intact. The invariant is enforced by
+`scripts/test_register_genesis.py::test_hash_invariant_under_display_slug_addition`,
+so any future regression that breaks the filter fails CI before it
+can reach `main`.
+
+### Permissions matrix — what the maintainer CAN and CANNOT do
+
+| Action | Who can do it | Effect |
+|---|---|---|
+| Edit `display_slug` / `display_color` / `ui_metadata` on a registered manifest | Anyone with write access | Safe — UI rendering changes; chain hash unchanged because of the filter |
+| Edit a manifest's substantive content (physics, scoring, dataset CIDs, baselines) | Anyone with write access | **Breaks the chain binding immediately**. Mining + verification revert. Should never happen after registration; if it does, `git revert` restores. |
+| Register a new manifest (L1-532, etc.) on-chain | The deployer wallet (today, via `scripts/register_genesis.py`) | Adds a new artifact; old artifacts are unaffected |
+| Delete a registered artifact from the chain | **Nobody** — the contract has no `delete` function | Once registered, `ArtifactRegistered` events are permanent |
+| Change a registered artifact's hash on-chain | **Nobody** — the contract has no edit function for past events | Hashes are append-only; corrections require registering a new artifact at a new hash |
+| Bypass the on-chain hash check at submission time | **Nobody** | The check is enforced inside Solidity by the `PWMCertificate.submit()` precondition |
+
+### Practical attack scenarios and what protects against them
+
+| Scenario | What actually happens |
+|---|---|
+| **Adversary forks `pwm-public`, edits L3-003 to make CASSI trivially easy, deploys their own contracts** | Their fork is a *separate protocol*, not PWM. Their cert hashes don't match `integritynoble/pwm-public`'s `PWMRegistry` registrations. Researchers citing "PWM L3-003" cite the original on-chain hash, not the fork. The fork has zero adoption signal because nothing builds on it. |
+| **Adversary submits a PR that subtly weakens an L3 epsilon threshold** | Code review catches it — substantive manifest changes are visible diffs. Even if merged, the chain hash doesn't auto-update; a separate `register_genesis.py` re-run would be needed (which the deployer wallet controls) to apply the change on-chain. The two-step gap creates a public paper trail and gives reviewers time to catch the change. |
+| **Maintainer accidentally edits `L3-003.json` (typo fix on a paragraph in a `description` field)** | Mining breaks immediately for that benchmark — CI / smoke tests catch within minutes. `git revert` fixes it; no on-chain damage. |
+| **Maintainer deliberately rewrites the substantive content of a registered manifest** | Mining breaks for everyone. To "publish" the change, the maintainer would need to register a new artifact at a new hash (e.g., `L3-003v2`) — a public on-chain event with a clear paper trail. The original `L3-003` and any certs bound to it remain intact. |
+| **Multisig signer key compromise** | An attacker who captures 3 of 5 signing keys could change governance parameters (caps, periods) but **still cannot retroactively alter `ArtifactRegistered` events** — the contract has no such function. They could register *new* malicious artifacts, but those would appear as new entries in the catalog, not as silent overwrites of existing ones. |
+
+### What this means for the protocol's trust model
+
+**The owner cannot retroactively change a registered Principle, Spec,
+or Benchmark. Neither can anyone else.** The repo files are editable
+in the file-system sense, but every meaningful protocol operation
+re-derives the chain hash and bails out on mismatch. The chain is
+the cryptographic source of truth; the repo is a content-addressable
+cache that anyone can verify by re-hashing.
+
+If the maintainer genuinely needs to "fix" a registered manifest
+after the fact (e.g., the L3 dataset's IPFS CID rotates because the
+pinning service changed), the protocol's design says: **register a
+new artifact at a new hash, deprecate the old one in human-readable
+docs.** Existing certs stay bound to the old hash forever; the new
+hash gets picked up by future submissions.
+
+For meaningful tampering an attacker would need to either:
+
+1. Take over the 3-of-5 multisig **and** register a malicious
+   replacement (visible on-chain event with clear paper trail), or
+2. Convince every researcher / regulator / cited paper to migrate
+   to a fork that they trust over the original protocol.
+
+Both are very hard. That's the core of what makes the protocol
+trustworthy despite living in a public, mutable Git repo.
+
+---
+
 ## Why this matters for different audiences
 
 ### Researchers citing PWM in papers
