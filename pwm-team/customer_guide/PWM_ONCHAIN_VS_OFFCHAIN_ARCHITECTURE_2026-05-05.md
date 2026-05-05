@@ -1395,6 +1395,108 @@ review process — is off-chain.
 
 ---
 
+## Appendix — Storage primitives (`solution_uri`, CID, IPFS)
+
+This appendix expands on terms used throughout the dataset / solution
+hashing sections. Skip if already familiar.
+
+### Is `solution_uri` optional?
+
+**Yes — and intentionally so.** Two miner workflows:
+
+| Workflow | `solution_uri` present? | What's on-chain | Tradeoff |
+|---|---|---|---|
+| **Local-only mining** (default today) | empty / omitted | Cert binds Q score, ω instance, benchmark hash, solver_id | Q is tamper-evident, but you can't *prove* you actually computed it from the reconstruction you claim |
+| **IPFS-pinned mining** | filled with `ipfs://…` CID | Cert *additionally* binds the exact `.npz` bytes | Anyone can pull the `.npz`, re-run the scorer, and confirm Q is honest — full third-party reproducibility |
+
+The cert is still tamper-resistant for the reported Q either way.
+The optional field upgrades it from "trust the score" to "verify the
+score from raw bytes."
+
+### What is a CID?
+
+**CID = Content IDentifier.** It's the IPFS equivalent of a hash-based
+file ID. Three properties matter:
+
+1. **The CID *is* the hash of the file's bytes.** When you `ipfs add solution.npz`, IPFS:
+   - Reads the `.npz` bytes
+   - Computes SHA-256 (default; multihash-encoded)
+   - Wraps it in a CIDv1 string like `bafybeig...`
+   - Returns that string as the file's address
+2. **Content-addressed, not location-addressed.** Unlike `https://example.com/file.npz` (which says *where* to find it), `bafybeig...` says *what it is*. Anyone hosting those exact bytes can serve it; the CID stays the same.
+3. **One bit changes → CID changes.** Same avalanche property as Keccak — flip one bit in the `.npz`, the CID becomes completely different. That's how the chain detects tampering: the cert pinned a specific CID; if your `.npz` no longer hashes to that CID, the binding is broken and visible.
+
+**Example CID:** `bafybeigdyrzt5sfp7udm7hu76uh7y26nf3efuylqabf3oclgtqy55fbzdi` — first letter `b` = base32, `afy…` = CIDv1 with SHA-256 multihash, the rest is the digest.
+
+**Why use CIDs instead of URLs:** A URL (`https://miner.com/sol.npz`)
+lets the miner silently swap the file. A CID can't be swapped — change
+the bytes, change the CID, break the cert binding. That's why
+"IPFS-pinned" mining is the verifiable path.
+
+### What is IPFS?
+
+**IPFS = InterPlanetary File System.** A decentralized, content-addressed
+file storage network. Three things to know:
+
+#### 1. What it is
+
+A peer-to-peer network where files are addressed by **what they are**
+(their hash / CID) instead of **where they are** (a server URL).
+Think "BitTorrent for permanent files, with built-in hashing."
+
+#### 2. How it works (concretely)
+
+```
+You:                                        IPFS network:
+─────                                       ──────────────
+$ ipfs add solution.npz
+
+                                            ↓
+                                   1. Hashes the bytes (SHA-256)
+                                   2. Returns the CID:
+                                      bafybeig...
+                                   3. Your node stores the file
+                                      and announces "I have CID X"
+
+$ ipfs cat bafybeig...   ← anyone, anywhere
+
+                                            ↓
+                                   Network finds any peer hosting
+                                   that CID and streams the bytes.
+                                   Receiver re-hashes the bytes
+                                   and verifies they match the CID.
+```
+
+Key consequence: **if the bytes don't hash to the CID, IPFS rejects them.**
+Tampering is mathematically impossible without changing the address.
+
+#### 3. Why PWM uses it
+
+| Property | Why it matters for PWM |
+|---|---|
+| **Content-addressed** | A cert pinning `ipfs://bafy…` binds to *exactly those bytes*. Miner can't swap the `.npz` without breaking the binding. |
+| **Decentralized** | No single server PWM has to maintain. Anyone hosting the CID can serve it — UTSW today, an Optimism node tomorrow, a researcher's laptop in 5 years. |
+| **Verifiable** | Auditor pulls the `.npz`, re-hashes locally, confirms it matches the CID before trusting it. No "trust the host." |
+| **Cheap to reference on-chain** | The CID is ~50 bytes. Storing the CID on-chain costs cents; storing the actual `.npz` (megabytes) would cost dollars per cert. IPFS lets the chain hold the *fingerprint* and IPFS hold the *bytes*. |
+
+#### 4. The honest caveats
+
+- **IPFS doesn't guarantee permanence.** If no node pins (keeps hosting) a CID, it can become unreachable. Bytes don't disappear — they become un-findable until someone re-pins them.
+- **PWM mitigates this with pinning services** (Pinata, Web3.Storage, Filecoin) — paid services that promise to keep specific CIDs hosted. For genesis benchmarks, the protocol pins them; for miner solutions, it's the miner's choice.
+- **Bundled demos in the repo are *not* on IPFS today** — they live in `pwm_product/demos/<modality>/sample_*/` with SHA-256 fingerprints in `meta.json`. IPFS becomes relevant for full-size benchmark datasets (gigabytes) and miner solutions.
+
+#### 5. Mental model
+
+> Web2 link: `https://example.com/file.npz` — "go to that server, hope the file is still there, hope it hasn't been swapped"
+>
+> IPFS link: `ipfs://bafybeig...` — "find these specific bytes anywhere on the network, verify them mathematically before trusting"
+
+The shift is from *trusting the host* to *trusting the math*. That's
+the same reason PWM uses it: matches the on-chain trust model where
+every artifact is a hash, not a URL.
+
+---
+
 ## Cross-references
 
 - `PWM_PRINCIPLES_SPECS_BENCHMARKS_SOLUTIONS_GUIDE_2026-05-03.md` — full create-and-use flows for all 4 layers
