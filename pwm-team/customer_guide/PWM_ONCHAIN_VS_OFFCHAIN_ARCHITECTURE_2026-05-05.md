@@ -513,6 +513,117 @@ immediately. States C and D are normal during authoring or during
 clone-out-of-sync. The protocol is designed to make all four states
 **detectable**.
 
+### Why a single-character change to the JSON breaks the binding
+
+A natural follow-up: *if I change one tiny detail in the JSON,
+why does the hash change so completely that the chain entry no
+longer matches?* The answer is the **avalanche effect** — the
+foundational property of cryptographic hash functions like the
+keccak256 used by Ethereum.
+
+#### Concrete demonstration with the real `L3-003.json`
+
+```
+ORIGINAL L3-003.json:
+  hash = 0xdc8ad0dc68682eff750188c8d4d84179b3f7deddee1af562bc3b085794048b4a
+
+After changing ONE letter case ("CASSI" → "Cassi"):
+  hash = 0xfe2b71053066a0c032b2a28403bbf033ace452fdd9126346ee67b6d80ea83981
+  → ~128 of the 256 output bits flipped (50%)
+
+After changing ONE number (epsilon 28.0 → 28.001):
+  hash = 0xeb16774aa9195c5826e041bc2dd80b512f0a5bbadbaccbdebb66cdb3fce32686
+  → totally unrelated to original
+
+After adding ONE trailing space:
+  hash = 0x35ebf748263d1a526e13fea94b24d2c28318dc8b48e47400dd787e06a0a50c1f
+  → totally unrelated
+
+NOT a change: re-pretty-printing the JSON with extra indentation
+  hash = 0xdc8ad0dc68682eff750188c8d4d84179b3f7deddee1af562bc3b085794048b4a
+  → identical (canonical_json normalizes whitespace + key order)
+```
+
+#### Why this happens
+
+A cryptographic hash function takes any-length input and outputs a
+fixed-length number — for keccak256, exactly 256 bits (= 64 hex
+chars). It is engineered with three deliberate properties:
+
+**Property 1 — Avalanche.** When ONE bit of input changes, about
+**half of the output bits flip in unpredictable positions**. This
+is a deliberate design feature: the function performs 24 rounds of
+bit-level mixing operations (S-box substitutions, rotations, XORs
+across multiple state lanes) so any single-bit change cascades
+through every round.
+
+**Property 2 — Determinism.** Run keccak256 on the same input on
+any machine, in any language, at any time → same hash. The
+function has no randomness; the "randomness" is structural in how
+the bits get mixed.
+
+**Property 3 — Preimage resistance.** Given a hash, you cannot
+find an input that produces it (other than by brute-force guessing).
+For a 256-bit output, that's 2^256 ≈ 10^77 possibilities — more
+than the estimated number of atoms in the observable universe.
+
+#### Why these properties matter for the protocol
+
+| Property | What it gives the protocol |
+|---|---|
+| Avalanche | A 1-character JSON change → totally different hash → impossible to "almost match" the chain entry |
+| Determinism | Anyone can re-hash a JSON locally and verify it matches the chain |
+| Preimage resistance | Nobody can craft a malicious JSON that happens to hash to the same value as the original (~10^77 search space) |
+| 256-bit output | Collisions are statistically impossible — no two different inputs ever produce the same hash in practice |
+
+#### The one normalization step: `canonical_json`
+
+You might worry that pretty-printing or re-ordering keys would
+spuriously change the hash, since the bytes ARE different. The
+protocol handles this with **canonical JSON**:
+
+```python
+json.dumps(obj, sort_keys=True, separators=(",", ":"))
+```
+
+This produces a single, deterministic byte sequence regardless of
+how the file is formatted on disk:
+
+- **Sorted keys** — `{"b": 2, "a": 1}` → `{"a":1,"b":2}` (alphabetical)
+- **Compact separators** — no spaces after `,` or `:`
+- **No trailing whitespace, no indentation**
+
+So the hash is sensitive to:
+
+- ✅ Any value change (1 character in any string, 1 digit in any
+  number, adding or removing a key)
+- ❌ NOT sensitive to formatting / whitespace / key order
+
+This is the right balance: **meaningful changes are caught;
+cosmetic changes are tolerated.** That's why `git diff` showing a
+re-formatted manifest doesn't break mining, but `git diff` showing
+a value change does.
+
+#### The intuition
+
+Think of `keccak256` as a **digital fingerprint** for content:
+
+- A person's fingerprint doesn't change if they put on different clothes (formatting)
+- But someone with even a slightly different finger has a totally different fingerprint pattern
+- Two people NEVER have identical fingerprints by accident
+- Given a fingerprint, you can't reconstruct the person
+
+The chain stores the JSON's "fingerprint" (`0xdc8ad0dc…` for L3-003).
+Anyone who claims to have "the same JSON" must produce a file with
+the same fingerprint — and even a 1-character change makes that
+mathematically impossible.
+
+**That's why the agreement enforcement works:** there's no edit
+small enough to escape detection. Either the hashes match exactly
+(✅ in sync) or they're totally unrelated (❌ drifted). There's no
+in-between, no fuzzy match, no "close enough." Cryptographic
+hashing is binary: identical or completely different.
+
 ### Six mechanisms that enforce / detect agreement
 
 #### 1. Per-operation re-hash (automatic, runtime)
