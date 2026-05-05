@@ -665,6 +665,201 @@ registered manifest substantively and the chain quietly accepts it.
 
 ---
 
+## What if the owner tries to silently rewrite a registered manifest?
+
+The previous sections cover the general case. A natural follow-up
+zooms in on the worst-case threat model: **what if the GitHub-repo
+owner — i.e., Director — tries to substantively change a registered
+artifact, e.g., weaken `L3-003`'s forward model so existing solvers
+trivially pass?** The protocol's defense is layered, and crucially it
+doesn't depend on Director being well-behaved.
+
+### What the owner CAN technically do
+
+| Action | Possible? | Effect |
+|---|---|---|
+| Edit `L3-003.json` to weaken the forward model in the repo | ✅ Yes — owner has write access | None on-chain |
+| Force-push to overwrite git history | ✅ Yes | None on-chain |
+| Get the modification deployed to mining users | ❌ No (see below) | — |
+| Get the modification accepted by the chain | ❌ No (see below) | — |
+| Hide the modification from auditors / users | ❌ No (see below) | — |
+
+**The key distinction:** editing the file is permitted; making the
+edit consequential at the protocol level is not.
+
+### What stops the modification from being applied
+
+#### 1. The on-chain hash for L3-003 is permanent
+
+```
+PWMRegistry on-chain:
+  L3-003 → 0xdc8ad0dc68682eff750188c8d4d84179b3f7deddee1af562bc3b085794048b4a
+           (registered 2026-04-19, immutable)
+```
+
+The contract has no `updateArtifact()` function. There is no admin-
+override path. **Even via the 3-of-5 governance multisig with 48h
+timelock, the only governance capability is to change protocol
+parameters (caps, periods, etc.) — not to retroactively rewrite an
+`ArtifactRegistered` event.**
+
+#### 2. Editing the JSON only orphans the chain entry
+
+If the owner modifies `L3-003.json`'s `E.forward_model`, the new file
+hashes to `0xNEW...`. Now:
+
+```
+On-chain:                                Off-chain repo:
+L3-003 = 0xdc8ad0dc...                   L3-003.json hashes to 0xNEW...
+   ↑                                          ↑
+   │                                          │
+   └──────────── these no longer match ──────┘
+```
+
+The on-chain entry doesn't change. It still says "L3-003 is the
+artifact whose hash is `0xdc8ad0dc...`". But there's no JSON in the
+repo that hashes to that value anymore — the on-chain entry now
+points at "missing" off-chain content.
+
+#### 3. Mining fails immediately and visibly
+
+Every user running `pwm-node mine L3-003`:
+
+```python
+benchmark_hash = keccak256(canonical_json(local_L3_003_file))
+# benchmark_hash = 0xNEW... (because the file is the modified version)
+
+contract.submit(cert_hash, benchmark_hash, Q_int, payload)
+# Solidity: require(registry[benchmark_hash].layer != 0, "benchmark not registered")
+# REVERTS — benchmark_hash 0xNEW... has no on-chain entry
+```
+
+Every miner sees `"benchmark not registered"` the next time they
+mine L3-003. The CLI surfaces the offending hash in the error
+message. **The owner can't push the modification through silently —
+they can only push a state where mining is broken for everyone.**
+
+#### 4. CI catches it before merge
+
+`pwm-team/infrastructure/agent-cli/tests/test_hash_convention.py`
+contains an explicit assertion that `L3-003.json` hashes to
+`0xdc8ad0dc...`. If the owner edits the file:
+
+- Local pre-commit runs the test → fails
+- CI on the PR runs the test → red X
+- They'd have to **deliberately bypass CI** to merge it
+- Merging still doesn't change anything on-chain — it just commits a
+  broken state to `main` for the next reviewer to revert
+
+#### 5. The git commit is forensically visible
+
+Even if the owner force-pushes to hide the change:
+
+- The pwm-public mirror has its own commit history (created by
+  `sync_to_public_repo.sh`); they'd have to force-push there too
+- Anyone who cloned before the force-push has the original content
+  on their disk forever
+- The chain hash `0xdc8ad0dc...` provides cryptographic proof of what
+  the manifest used to be — anyone can show "the original L3-003
+  hashed to X; here's the JSON that hashes to X; here's the new JSON
+  that doesn't"
+- Reviewers, auditors, regulators, and grant reviewers all comparing
+  cited cert hashes to the chain see the same disconnect
+
+#### 6. The "register a new artifact" path also leaves a paper trail
+
+What the owner COULD do is register a new artifact at the new hash:
+
+```python
+# Hypothetical: register a v2 of L3-003 with weakened forward model
+PWMRegistry.register(0xNEW..., parent_hash=L2-003-hash, layer=3, creator=owner)
+```
+
+But this:
+
+- Doesn't replace the original — it adds a NEW entry; the original
+  `0xdc8ad0dc...` stays on chain forever
+- Is a public on-chain transaction visible on Etherscan
+- Takes the deployer wallet (owner's key, with funded Sepolia ETH)
+- Would need to be plumbed into `register_genesis.py`'s
+  `ARTIFACTS_TO_REGISTER` list (a code change in a public commit)
+- Researchers / auditors comparing "L3-003 cited 2026-04-22" vs
+  "owner's new L3-003-v2 cited 2026-05-05" see TWO entries, not a
+  silent swap
+- All existing certs (the 10 D5-stress-test ones, plus any future
+  MST-L cert) STILL bind to the original `0xdc8ad0dc...` — they
+  don't migrate
+
+In other words, a v2 isn't an override — it's a NEW thing alongside
+the original, fully visible.
+
+### Threat-mitigation matrix — what each mechanism prevents
+
+| Mechanism | Prevents what? |
+|---|---|
+| **Append-only Solidity (no UPDATE)** | Retroactive in-place modification of the on-chain entry. Even with multisig keys, this is impossible. |
+| **Per-operation re-hash in CLI** | Silent acceptance of a modified manifest. Every miner immediately sees `revert("benchmark not registered")`. |
+| **CI hash test** | Merging the modification to `main` without explicit override + visible failure |
+| **Cryptographic audit trail (chain hash)** | Hiding that a modification happened. Anyone can compare the chain entry to the modified JSON in 2 lines of code. |
+| **Git history (especially pwm-public mirror)** | Quietly rewriting history without leaving traces |
+| **Existing certs bind to old hash** | Migrating past submissions to a new "version" — old certs are forever bound to old hash |
+
+### What it would actually take to weaken L3-003 in practice
+
+For a substantive modification of L3-003's forward model to actually
+take effect at the protocol level, the owner would need ALL of these
+simultaneously:
+
+1. Push the modified JSON, **and**
+2. Bypass / override the CI hash test, **and**
+3. Re-register a new artifact at the new hash on-chain (requires the
+   deployer wallet with Sepolia ETH; later requires 3-of-5 multisig
+   signatures for any contract-state change), **and**
+4. Convince every researcher, regulator, miner, and audit firm that
+   the new artifact is the "real" L3-003 — despite the original
+   `0xdc8ad0dc...` still being on-chain with full registration
+   history, **and**
+5. Deal with the fact that all existing certs on the leaderboard,
+   all published papers citing L3-003, and all reproducibility chains
+   (e.g., FDA submissions citing a cert hash) are still bound to the
+   original.
+
+**Step 4 is where it falls apart.** The chain provides cryptographic
+proof that the original hash was registered first by the deployer
+wallet. Any third party can compare a "new" L3-003 to the chain's
+record and see the discrepancy. **The protocol doesn't depend on the
+owner being well-behaved — it depends on bad behavior being publicly
+visible and easily disproven, which it is.**
+
+### Practical owner-options summary
+
+| Approach | Outcome |
+|---|---|
+| Edit JSON, push to main | CI fails. If forced, mining breaks for everyone immediately. Visible. |
+| Edit JSON, force-push to mirror | Mirror users notice via `git log`; chain hash still doesn't match. Visible. |
+| Register a new artifact L3-003-v2 with weakened forward model | Public on-chain event; old artifact still in registry; researchers can choose; visible. |
+| Try to claim "L3-003 = the new content" | Direct contradiction with on-chain `0xdc8ad0dc...`; trivially disproven by anyone with `keccak256`. |
+
+**There's no path for the owner to silently weaken the forward model
+and have it accepted.** Their options are: break the protocol loudly,
+add a v2 artifact transparently, or leave the original untouched.
+
+### What the protocol genuinely trusts the owner with
+
+The only thing the protocol genuinely trusts the owner with is:
+**deciding what to register in the first place.** That's the
+founding-team's privileged moment — picking which Principles, which
+Specs, which Benchmarks become canonical at genesis (or at later
+batch-extensions). Once registered, the owner loses the ability to
+silently change them, just like everyone else.
+
+This is the same trust model as Bitcoin/Ethereum themselves: the
+chain depends on the genesis state being authored honestly, but
+once that genesis is locked in, no party — including the original
+authors — can rewrite it.
+
+---
+
 ## Why this matters for different audiences
 
 ### Researchers citing PWM in papers
