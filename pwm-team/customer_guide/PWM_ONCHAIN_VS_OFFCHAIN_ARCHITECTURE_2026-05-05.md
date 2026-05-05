@@ -449,6 +449,222 @@ trustworthy despite living in a public, mutable Git repo.
 
 ---
 
+## How L1/L2/L3 on-chain and off-chain are kept in agreement
+
+A natural follow-up: if the `.json` files in the repo can be edited
+and the on-chain hash is independent of them, **how does the system
+ensure the two stay consistent over time?** The answer is six
+interlocking mechanisms; together they make drift either impossible
+to do silently, or impossible to apply at the protocol level.
+
+### The relationship in one sentence
+
+The chain stores `keccak256(canonical_json(manifest))` as the
+artifact's primary key. The repo stores the manifest content. **The
+hash IS the link** — and the protocol re-derives it on every
+operation, so the two sides are forced to stay in sync or every
+operation against that artifact breaks loudly.
+
+### Visual model — what binds the two together
+
+```
+                         The hash IS the binding
+                         ───────────────────────
+
+      OFF-CHAIN                                                ON-CHAIN
+   (mutable file)                                          (immutable hash)
+   ──────────────                                          ────────────────
+
+   pwm-team/
+   pwm_product/                       keccak256(             PWMRegistry
+   genesis/l1/    ──canonical_json──►   canonical_json) ───►  ───────────
+   L1-003.json                                                {
+                                                                "0xe3b1328c…": {
+   {                                                              parent: 0x0…,
+     "artifact_id": "L1-003",                                     layer: 1,
+     "title": "CASSI",                                            creator: 0x0c56…7dEd,
+     ...                                                          timestamp: 2026-04-19,
+   }                                                            },
+                                                                ...
+                                                              }
+
+     ↑                                                          ↑
+   anyone can edit                                            nobody can edit
+   (forks, PRs)                                               (Solidity has no UPDATE)
+```
+
+The hash is **computed**, not stored, on the off-chain side. The
+chain doesn't depend on a specific JSON file existing — it depends
+on a JSON file existing **that hashes to the same value**. Any
+clone (Director's, an external auditor's, a malicious fork) is
+verifiable against the chain by the same re-hash test.
+
+### The four possible "agreement states"
+
+| State | Repo JSON | Chain entry | Behavior |
+|---|---|---|---|
+| **A. In sync** | exists, hash = X | exists at hash X | Everything works — mine, verify, stake, browse all succeed |
+| **B. Drifted (edit broke it)** | exists, hash = Y ≠ X | exists at X | Mining/staking against this artifact silently reverts with `"benchmark not registered"` because the CLI computes Y and looks for Y on chain, finds nothing |
+| **C. Repo has it but chain doesn't** | exists | not registered | The artifact is a *draft*. CLI works for offline browsing; mining fails because no on-chain entry exists. Common for newly authored manifests awaiting batch registration |
+| **D. Chain has it but repo doesn't** | missing | exists at X | CLI can't find the manifest locally to inspect; only Etherscan / direct chain query works. Means the user has the wrong repo branch / version |
+
+State A is the goal. State B is a regression that gets caught
+immediately. States C and D are normal during authoring or during
+clone-out-of-sync. The protocol is designed to make all four states
+**detectable**.
+
+### Six mechanisms that enforce / detect agreement
+
+#### 1. Per-operation re-hash (automatic, runtime)
+
+Every CLI operation re-derives the hash before any chain call:
+
+```python
+# pwm-node/commands/mine.py — the actual code path
+benchmark_hash = _keccak256_hex(_canonical_json(artifact))    # local re-hash
+submit_certificate(cert_hash, benchmark_hash, ...)            # contract call
+# Solidity: require(registry.getArtifact(benchmark_hash).layer != 0)  ← reverts if mismatch
+```
+
+Every miner, verifier, and staker performs a fresh consistency check
+on every action. If anyone's repo copy drifts, their next operation
+fails — visible to them and to anyone watching the chain for failed
+submission attempts.
+
+#### 2. Test suite with explicit chain-hash assertions (CI, per-PR)
+
+`pwm-team/infrastructure/agent-cli/tests/test_hash_convention.py`
+walks all 6 CASSI/CACTI genesis artifacts (L1/L2/L3 × 2), re-hashes
+each, and asserts equality with the known on-chain hash:
+
+```python
+@pytest.mark.parametrize("artifact_id,expected_hash", [
+    ("L1-003", "0xe3b1328c66835cd729fa50650ef1d1bac4aa407807d6d97d4979e988a99a51ea"),
+    ("L2-003", "0x471e7017692cde623cee2741e751413cfb4752457429f128c0004174fea86896"),
+    ("L3-003", "0xdc8ad0dc68682eff750188c8d4d84179b3f7deddee1af562bc3b085794048b4a"),
+    ...
+])
+def test_genesis_artifact_hash_matches_onchain(artifact_id, expected_hash):
+    obj = load_manifest(artifact_id)
+    computed = keccak256_canonical_json(obj)
+    assert computed == expected_hash, f"{artifact_id} drifted!"
+```
+
+If a PR edits any registered manifest substantively (not just a
+`display_slug` change), this test fails on CI before merge. The
+maintainer literally cannot push a change that orphans a registered
+artifact without first seeing 6 red Xs.
+
+#### 3. UI_ONLY_FIELDS filter for safe edits (deliberate carve-out)
+
+`scripts/register_genesis.py` defines:
+
+```python
+UI_ONLY_FIELDS = frozenset({"display_slug", "display_color", "ui_metadata"})
+```
+
+These fields are stripped before hashing, so adding a slug to a
+registered manifest doesn't invalidate the chain hash. Regression-
+tested by `scripts/test_register_genesis.py::test_hash_invariant_under_display_slug_addition`.
+
+#### 4. Append-only chain semantics (Solidity-level guarantee)
+
+The PWMRegistry contract has `register()` but no `update()` or
+`delete()`. Once an `ArtifactRegistered` event is emitted, it's
+permanent:
+
+- Even if a maintainer wanted to retroactively change a registered
+  artifact, the chain wouldn't let them
+- A "correction" requires registering a NEW artifact at a new hash,
+  leaving the old one as-is
+- Auditors looking at the chain see the full registration history;
+  no silent overwrites are possible
+
+#### 5. Multisig-gated registration (governance-level guarantee)
+
+`scripts/register_genesis.py` calls `PWMRegistry.register()` from
+the deployer wallet. The deployer is the only address authorized to
+add to the canonical genesis batch. After mainnet, this transitions
+to multisig governance (3-of-5).
+
+- An adversary with write access to the GitHub repo cannot register
+  a new artifact on chain
+- They can only modify off-chain JSONs, which then fail per-operation
+  hash check
+- "Register a malicious new principle" requires keys, not just
+  GitHub access
+
+#### 6. Loud failure modes (no silent drift)
+
+Drift never fails silently. Every disagreement between the off-chain
+content and the on-chain hash triggers an immediate, visible
+operation failure:
+
+| Detection point | What the user sees | Recovery |
+|---|---|---|
+| Pre-commit (local) | Hash test runs; commit blocked | Revert the change OR confirm it's a UI-only field |
+| CI on PR | Red X on `test_hash_convention.py` | Block merge until fixed; investigate why the manifest changed |
+| Runtime (CLI mining) | `pwm-node mine ...` reverts with `"benchmark not registered"` | `git diff` against canonical pwm-public; revert the local edit; or pull the right branch |
+| Runtime (explorer) | Benchmark page shows correct title from JSON but `/api/leaderboard/<id>` returns no certs because chain has no record matching the new hash | Check explorer's git checkout; sync to canonical pwm-public |
+
+In every case the failure is loud and traceable to the specific
+manifest that drifted.
+
+### How to detect drift right now (concrete commands)
+
+```bash
+# 1. Run the genesis hash-convention test (~2 sec, takes 6 SHAs vs known on-chain values)
+python3 -m pytest pwm-team/infrastructure/agent-cli/tests/test_hash_convention.py -v
+
+# 2. Run the UI_ONLY_FIELDS regression test (~1 sec)
+python3 -m pytest scripts/test_register_genesis.py -v
+
+# 3. Spot-check one manifest manually
+python3 -c "
+import json, sys
+sys.path.insert(0, 'scripts')
+from register_genesis import _canonical_json
+from eth_utils import keccak
+obj = json.load(open('pwm-team/pwm_product/genesis/l1/L1-003.json'))
+h = '0x' + keccak(_canonical_json(obj)).hex()
+print('local hash :', h)
+print('expected   : 0xe3b1328c66835cd729fa50650ef1d1bac4aa407807d6d97d4979e988a99a51ea')
+print('match      :', h == '0xe3b1328c66835cd729fa50650ef1d1bac4aa407807d6d97d4979e988a99a51ea')
+"
+
+# 4. Live verify against on-chain (browse Sepolia events)
+# Visit: https://sepolia.etherscan.io/address/0x2375217dd8FeC420707D53C75C86e2258FBaab65#events
+# Confirm the L1/L2/L3 hashes appear in the ArtifactRegistered events list.
+```
+
+As of this writing all 6 genesis artifacts hash bit-identically to
+their on-chain registrations.
+
+### Bottom line — agreement is structural, not trust-based
+
+**The agreement is not enforced by trust ("Director promises not to
+edit").** It's enforced by:
+
+1. **Cryptographic content addressing** — the hash IS the lookup key
+2. **Append-only on-chain semantics** — the registered state can't
+   be retroactively modified
+3. **Per-operation re-hashing** — every CLI/contract call verifies
+   fresh
+4. **CI tests with explicit chain-hash assertions** — drift fails
+   before merge
+5. **Multisig-gated registration** — only the founding team can
+   add canonical entries
+6. **Loud failure modes** — drift surfaces at the first
+   mining/staking attempt
+
+The repo's `.json` files are editable, but every edit immediately
+diverges the hash, which immediately breaks the protocol-level
+binding, which immediately surfaces as a test failure or a revert.
+There is no code path where a maintainer (or anyone else) edits a
+registered manifest substantively and the chain quietly accepts it.
+
+---
+
 ## Why this matters for different audiences
 
 ### Researchers citing PWM in papers
