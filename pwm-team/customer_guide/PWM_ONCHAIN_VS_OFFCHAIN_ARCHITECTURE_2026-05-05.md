@@ -624,6 +624,156 @@ small enough to escape detection. Either the hashes match exactly
 in-between, no fuzzy match, no "close enough." Cryptographic
 hashing is binary: identical or completely different.
 
+### How the hash actually "measures" the JSON's content
+
+The previous subsection establishes *that* a tiny change breaks the
+binding. A natural follow-up: *how does the hash actually look at
+the content of the JSON?* The answer is that it doesn't understand
+JSON syntax at all — it treats the file as a flat sequence of bytes
+and mixes every byte into the output through 24 rounds of bit-level
+operations. Here's the chain step-by-step.
+
+#### Step 1 — JSON file → canonical string
+
+The file on disk is text. After
+`json.dumps(obj, sort_keys=True, separators=(",", ":"))`, you get a
+single string with sorted keys and no whitespace:
+
+```
+{"artifact_id":"L1-003","title":"CASSI"}
+```
+
+40 characters. Every character — `{`, `"`, `:`, `,`, digits,
+letters — is part of the input.
+
+#### Step 2 — Each character → one byte (UTF-8)
+
+Each character has a numeric code (its ASCII / UTF-8 value):
+
+| Character | Decimal | Hex | Binary |
+|---|---|---|---|
+| `{` | 123 | `0x7b` | `01111011` |
+| `"` | 34  | `0x22` | `00100010` |
+| `a` | 97  | `0x61` | `01100001` |
+| `0` | 48  | `0x30` | `00110000` |
+| `1` | 49  | `0x31` | `00110001` |
+
+So `{"artifact_id":"L1-003","title":"CASSI"}` becomes (40 bytes,
+shown as hex):
+
+```
+7b 22 61 72 74 69 66 61 63 74 5f 69 64 22 3a 22 4c 31 2d 30 30 33 22 2c 22 74 69 74 6c 65 22 3a 22 43 41 53 53 49 22 7d
+↑                                                                                                                       ↑
+{                                                                                                                       }
+```
+
+40 bytes = 320 bits. **Every single one of those 320 bits is input
+to the hash function.** No JSON-syntax awareness, no field-by-field
+walk — just raw bytes.
+
+#### Step 3 — Keccak256 mixes ALL the bytes through 24 rounds
+
+The hash function (`keccak256`, the SHA-3 variant Ethereum uses)
+runs the byte sequence through this process:
+
+1. **Pad** the input to a multiple of 1088 bits (so any-length input fits)
+2. **Absorb** the padded input into a 1600-bit internal state, XORing
+   1088 bits of input at a time
+3. **Permute** the state by running the **Keccak-f[1600] permutation**
+   — 24 rounds of:
+   - **θ (theta)** — XOR each bit with the parity of two neighboring columns
+   - **ρ (rho)** — bitwise rotate each lane by a fixed amount
+   - **π (pi)** — permute the position of each lane in the 5×5×64 state matrix
+   - **χ (chi)** — non-linear S-box: each bit is XORed with a function of two neighbors
+   - **ι (iota)** — XOR a round-specific constant
+4. **Squeeze** out 256 bits from the permuted state → that's your hash
+
+Every one of those 24 rounds touches every bit. So changing 1
+input bit propagates: round 1 affects ~5 output bits → round 2
+spreads those to ~25 → round 3 to ~125 → after a few rounds, every
+output bit depends on every input bit. By round 24, the dependency
+is "complete" and effectively unpredictable.
+
+#### Step 4 — Concrete demo: flipping ONE input bit
+
+Watch what happens when one ASCII character changes from `'0'`
+(`0x30 = 00110000`) to `'1'` (`0x31 = 00110001`) — that's exactly
+**one bit flipped** in the 320-bit input:
+
+```
+Original input bytes:  ...30 30 33...   ("003")
+Modified input bytes:  ...30 31 33...   ← single-bit change
+                            ↑
+                            one bit flipped (LSB of one byte)
+```
+
+The 256-bit output hashes:
+
+```
+Original:  69c426a5e830c55cf0d781392b89c82da990e6af1e4dd199e30e4a61e1cc42b8
+Modified:  8cafda27c0f39d49c2f21b5f59257911a0c49e4d33530beebd6223caf5343556
+
+                                          ↳ 129 of 256 bits flipped (~50%)
+```
+
+**One-bit input change → roughly half the output bits flip in
+unpredictable positions.** That's the avalanche effect at the byte
+level.
+
+#### Why every byte gets "measured" equally
+
+Because of the absorption + permutation structure:
+
+- Every input byte gets XORed into the 1600-bit state during the absorb phase
+- Every round of the permutation MIXES bits across the whole state — no bit stays "isolated" after even 1-2 rounds
+- After 24 rounds, the contribution of every input byte has been spread across every output bit
+
+So the answer to *how the hash measures the JSON's details*: **it
+doesn't measure anything semantic.** It just XORs every byte into
+a giant state and stirs vigorously enough that every input byte
+affects every output bit. The "stirring" is so thorough that even
+a 1-bit change is statistically indistinguishable from a completely
+different input.
+
+#### What this means for the protocol
+
+When you change ONE detail in `L3-003.json`:
+
+- That detail = 1+ characters = 8+ bits in the byte sequence
+- Those bits flip in the input to keccak256
+- After 24 rounds of mixing, the output hash has ~half its 256 bits flipped
+- The new hash is **statistically indistinguishable from a totally unrelated input**
+- It bears no visible relation to `0xdc8ad0dc…`
+
+There is **no edit small enough** to keep the hash close to the
+original. Cryptographic hashing is binary: bit-identical input →
+bit-identical output; anything else → unrelated output.
+
+This property is called the **strict avalanche criterion**:
+
+> Each output bit should change with probability 0.5 when any
+> single input bit is changed.
+
+Keccak256 satisfies this. SHA-256 satisfies this. Any hash function
+that DIDN'T satisfy this would be considered cryptographically
+broken (you could partially recover input information from
+similarities in output).
+
+#### Common misconceptions
+
+| What you might think | What actually happens |
+|---|---|
+| "The hash sees the JSON structure / fields / values" | No — it sees only a flat byte sequence. JSON syntax is invisible to the hash function. |
+| "Small changes → small hash diffs" | No — single-bit input change → ~128 output bits flip. |
+| "The hash function is 'reading' the content" | Closer to: every byte is XORed into a state and permuted 24 times. |
+| "I could engineer a small edit that keeps the hash close" | No — every edit produces a statistically-random-looking new hash. |
+| "The hash function understands meaning of fields like `epsilon` vs `title`" | No — it can't tell the difference between changing a meaningful field and a meaningless one. Both produce uncorrelated output. (This is a feature: the protocol doesn't have to enumerate which fields matter.) |
+
+The chain doesn't trust you to be honest about content. It trusts
+the math: any change you make is **mathematically guaranteed** to
+produce a hash that doesn't match the on-chain entry. **The hash
+is the protocol's way of measuring without trusting.**
+
 ### Six mechanisms that enforce / detect agreement
 
 #### 1. Per-operation re-hash (automatic, runtime)
