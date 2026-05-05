@@ -653,7 +653,7 @@ def match(
     Response shape matches pwm_overview1.md §8.3 + 08-llm-matcher.md wire schema.
 
     For LLM-routed / natural-language matching, see Bounty #8
-    (`interfaces/bounties/08-llm-matcher.md`).
+    (`pwm-team/bounties/08-llm-matcher.md`).
     """
     # Responses are NOT cached — filters are combinatorial; would bloat the cache.
     return matching.match_prompt(

@@ -46,6 +46,12 @@ INCLUDE_PATHS=(
     "pwm-team/infrastructure/agent-miner/"
     "pwm-team/infrastructure/agent-web/"
     "pwm-team/customer_guide/"
+    "pwm-team/content/"           # G1: 1611 files / 11 MB — realises the
+                                  # 531 first-class L1 Principles claim
+    "pwm-team/bounties/"          # G4: bounty roster + claim board moved
+                                  # out of coordination/ (2026-05-05)
+    "public/packages/pwm_core/"   # G2: deep-learning miner deps (MST-L,
+                                  # EfficientSCI) — 766 files / 11 MB
     "scripts/"
     "papers/Proof-of-Solution/mine_example/science/"
 )

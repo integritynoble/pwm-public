@@ -1,8 +1,10 @@
 """Open-bounty listing — reads the static specs published by agent-coord.
 
 Bounty INDEX.md and per-bounty markdown files live in
-`coordination/agent-coord/interfaces/bounties/`. We expose a minimal JSON
-view so the /bounties frontend route can render without scraping markdown.
+`pwm-team/bounties/` (moved out of `coordination/` 2026-05-05 so they
+ship in the public mirror per `PWM_CUSTOMER_GUIDE_AUDIT_2026-05-04.md`
+G4). We expose a minimal JSON view so the /bounties frontend route
+can render without scraping markdown.
 """
 from __future__ import annotations
 
@@ -17,7 +19,7 @@ try:
 except IndexError:
     PWM_TEAM_ROOT = Path("/repo/pwm-team")
 REPO_ROOT = PWM_TEAM_ROOT.parent  # used only for relative display paths
-DEFAULT_DIR = PWM_TEAM_ROOT / "coordination" / "agent-coord" / "interfaces" / "bounties"
+DEFAULT_DIR = PWM_TEAM_ROOT / "bounties"
 
 
 def bounties_dir() -> Path:

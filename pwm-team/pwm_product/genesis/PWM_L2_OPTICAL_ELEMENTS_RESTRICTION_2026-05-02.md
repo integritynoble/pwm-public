@@ -191,4 +191,4 @@ here for post-mainnet pickup.
 - `papers/Proof-of-Solution/mine_example/science/B_compressive_imaging/025_cassi.md` — reference Principle that already lists elements
 - `pwm-team/coordination/PWM_PART1_C1_STATUS.md` — status of L2/L3 skeletons for the 29 v2/v3 anchors (these would be candidates for retrofitting)
 - `pwm-team/pwm_product/genesis/PWM_GATE_CLASSES_AND_SCALING.md` — gate-class taxonomy (analytical / PWDR / DDS) that scopes which L2 specs get the new field
-- `pwm-team/coordination/agent-coord/interfaces/bounties/05-contracts-competing.md`, `08-llm-matcher.md` — bounties that benefit most from anti-gaming via normative element lists
+- `pwm-team/bounties/05-contracts-competing.md`, `08-llm-matcher.md` — bounties that benefit most from anti-gaming via normative element lists

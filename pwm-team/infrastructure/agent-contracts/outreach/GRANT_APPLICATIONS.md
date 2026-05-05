@@ -55,7 +55,7 @@ All 7 contracts are deployed and operational on Sepolia testnet:
 
 ### What does success look like?
 - Audit completed, findings remediated, contracts deployed on Ethereum mainnet (or equivalent audited L2)
-- Genesis 500 bounty opens (Bounty #7, ~168K PWM, already pre-staged — see `pwm-team/coordination/agent-coord/interfaces/bounties/07-genesis-principle-polish.md`)
+- Genesis 500 bounty opens (Bounty #7, ~168K PWM, already pre-staged — see `pwm-team/bounties/07-genesis-principle-polish.md`)
 - First external L4 solution submitted by a researcher outside the founding team
 
 ### Timeline

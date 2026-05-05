@@ -7,8 +7,8 @@ card against the user's input (prompt keywords + optional structured
 filters), and returns the top-3 candidates with per-candidate rationales.
 
 LLM-routed / natural-language matching is a third-party bounty
-(`agent-coord/interfaces/bounties/08-llm-matcher.md`); this file is NOT
-that. Scoring here is deterministic, explainable, and requires no
+(`pwm-team/bounties/08-llm-matcher.md`); this file is NOT that.
+Scoring here is deterministic, explainable, and requires no
 external API.
 
 Inputs:

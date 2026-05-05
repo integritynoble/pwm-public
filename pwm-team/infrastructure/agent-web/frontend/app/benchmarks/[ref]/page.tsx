@@ -406,8 +406,7 @@ function GetThisBenchmarkSection({
   const solverPath = first?.meta.reference_solver;
   const cardYamlPath = `pwm-team/pwm_product/benchmark_cards/${demo.benchmark_id}.yaml`;
   const l3JsonPath = `pwm-team/pwm_product/genesis/l3/${demo.benchmark_id}.json`;
-  const bountyIndexPath =
-    'pwm-team/coordination/agent-coord/interfaces/bounties/INDEX.md';
+  const bountyIndexPath = 'pwm-team/bounties/INDEX.md';
   const demosReadmePath = `pwm-team/pwm_product/demos/${demo.name}/README.md`;
 
   return (

@@ -189,7 +189,7 @@ JSON
 hardcoded `ARTIFACTS_TO_REGISTER` list (CASSI + CACTI L1/L2/L3); it
 doesn't accept `--manifest` / `--layer` flags. To get a NEW Principle
 on-chain, the recommended path is the **PR-based claim flow** in
-`pwm-team/coordination/PWM_PRINCIPLE_CONTRIBUTION_GUIDE.md`:
+`pwm-team/customer_guide/PWM_PRINCIPLE_CONTRIBUTION_GUIDE.md`:
 
 ```
 1. Open a GitHub issue in integritynoble/pwm-public titled:
@@ -213,9 +213,9 @@ python3 scripts/register_genesis.py --network testnet --dry-run
 ```
 
 For the contribution flow + manifest schema, see
-`pwm-team/coordination/PWM_PRINCIPLE_CONTRIBUTION_GUIDE.md` (private
-coord doc; the same content is being consolidated into a public
-contribution guide for the next pwm-public sync).
+`pwm-team/customer_guide/PWM_PRINCIPLE_CONTRIBUTION_GUIDE.md` — the
+canonical public contribution guide (moved out of `coordination/`
+into `customer_guide/` 2026-05-05 so it ships in the public mirror).
 
 ### Stake on an existing Principle (back its credibility)
 
@@ -581,9 +581,9 @@ User-facing content that ships with the repo and that every reader of
 this guide can open directly:
 
 - `pwm-team/customer_guide/plan.md` — current customer-experience roadmap (Phase 1 / 2 / 3)
-- `pwm-team/coordination/PWM_PRINCIPLE_CONTRIBUTION_GUIDE.md` — full flow for authoring a NEW Principle (claim board, manifest schema, PR template)
-- `pwm-team/coordination/agent-coord/interfaces/bounties/INDEX.md` — Reserve-bounty roster (8 bounties, ~1.24M PWM allocated)
-- `pwm-team/coordination/agent-coord/interfaces/bounties/07-claims.md` — FCFS claim board (open to general L1/L2/L3 contributions, not just Bounty #7 Tier B)
+- `pwm-team/customer_guide/PWM_PRINCIPLE_CONTRIBUTION_GUIDE.md` — full flow for authoring a NEW Principle (claim board, manifest schema, PR template)
+- `pwm-team/bounties/INDEX.md` — Reserve-bounty roster (8 bounties, ~1.24M PWM allocated)
+- `pwm-team/bounties/07-claims.md` — FCFS claim board (open to general L1/L2/L3 contributions, not just Bounty #7 Tier B)
 - `pwm-team/infrastructure/agent-cli/README.md` — full `pwm-node` CLI docs
 - `pwm-team/pwm_product/reference_solvers/` — reference solvers (CASSI GAP-TV, CASSI MST-L, CACTI PnP-ADMM, CACTI EfficientSCI)
 - `pwm-team/pwm_product/genesis/l1/`, `l2/`, `l3/` — canonical genesis manifests

@@ -50,7 +50,7 @@ COPY pwm-team/infrastructure/agent-web/indexer /app/indexer
 # Static data (replaces the volume mounts from docker-compose)
 COPY pwm-team/coordination/agent-coord/interfaces/contracts_abi  /app/coord/contracts_abi
 COPY pwm-team/coordination/agent-coord/interfaces/addresses.json /app/coord/addresses.json
-COPY pwm-team/coordination/agent-coord/interfaces/bounties       /app/coord/bounties
+COPY pwm-team/bounties                                            /app/coord/bounties
 COPY pwm-team/pwm_product/genesis                                /app/genesis
 COPY pwm-team/pwm_product/demos                                  /app/demos
 COPY pwm-team/pwm_product/benchmark_cards                        /app/benchmark_cards

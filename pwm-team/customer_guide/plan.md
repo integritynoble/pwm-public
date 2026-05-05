@@ -202,8 +202,8 @@ than the SOTA story.
 - Modify: `pwm-team/infrastructure/agent-cli/pwm_node/commands/benchmarks.py` — same
 - Modify: `pwm-team/infrastructure/agent-web/frontend/app/principles/page.tsx` — title-first display
 - Modify: `pwm-team/infrastructure/agent-web/frontend/app/benchmarks/[ref]/page.tsx` — title-first display
-- Create: `pwm-team/coordination/PWM_PRINCIPLE_CONTRIBUTION_GUIDE.md` — claim-board → author → PR flow
-- Modify: `pwm-team/coordination/agent-coord/interfaces/bounties/07-claims.md` — extend FCFS claim board to general contributions (not just Bounty #7)
+- Create: `pwm-team/customer_guide/PWM_PRINCIPLE_CONTRIBUTION_GUIDE.md` — claim-board → author → PR flow (moved out of `coordination/` 2026-05-05 to ship in public mirror)
+- Modify: `pwm-team/bounties/07-claims.md` — extend FCFS claim board to general contributions (not just Bounty #7) (moved out of `coordination/agent-coord/interfaces/bounties/` 2026-05-05)
 - Modify: `pwm-team/customer_guide/PWM_PRINCIPLES_SPECS_BENCHMARKS_SOLUTIONS_GUIDE_2026-05-03.md` — add "Contributing a new Principle" section
 
 **Slug naming convention:**
@@ -245,7 +245,7 @@ lookup.
 - [x] **2.11 — Update frontend** `benchmarks/[ref]/page.tsx` — title-first
 - [x] **2.12 — Add slug-based URL routing** `/benchmarks/cassi` redirects to `/benchmarks/L3-003`
 - [x] **2.13 — Author** `PWM_PRINCIPLE_CONTRIBUTION_GUIDE.md` — claim-board flow
-- [x] **2.14 — Update** `interfaces/bounties/07-claims.md` — open to general contributions
+- [x] **2.14 — Update** `pwm-team/bounties/07-claims.md` — open to general contributions
 - [x] **2.15 — Update** customer guide — add "Contributing a new Principle" section
 - [x] **2.16 — Smoke test end-to-end on local docker compose**
 - [x] **2.17 — Commit + push as `feat/human-readable-ids`**

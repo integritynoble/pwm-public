@@ -3,7 +3,7 @@
 Dispatches subcommands implemented in pwm_node.commands.*.
 
 Architecture: argparse top-level with one subparser per mandatory command from
-the bounty spec (interfaces/bounties/03-pwm-node-cli.md). Offline commands
+the bounty spec (`pwm-team/bounties/03-pwm-node-cli.md`). Offline commands
 (benchmarks, inspect, verify) work without any chain or IPFS dependency.
 Online commands (mine, submit-cert, sp register, balance) require --network
 flag and a configured wallet.
