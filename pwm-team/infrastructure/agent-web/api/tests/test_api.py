@@ -376,6 +376,95 @@ def test_leaderboard_empty_returns_no_sota_but_metadata(seeded_env, tmp_path):
     assert body.get("current_sota") is None
 
 
+def test_leaderboard_filters_synthetic_q_certs(seeded_env):
+    """D5 stress-test certs with synthetic Q (q_int > 100) are hidden.
+
+    The protocol normalises Q to [0, 1] via Q = PSNR_dB / 100 in
+    `mine.py`, so q_int > 100 is structurally impossible for a real
+    cert. The D5 harness wrote synthetic q_int values 182-215 directly
+    to exercise indexer plumbing; without this filter they drown out
+    real solver certs on the public leaderboard.
+    """
+    client, refs = seeded_env
+
+    # Inject 3 synthetic-Q certs against the same benchmark. Real cert
+    # in the seeded fixture has Q_int=88 (below 100, so kept).
+    from indexer import db as idx_db
+    from indexer import handlers as idx_handlers
+    from indexer.events import EventContext
+    import os
+    db_path = Path(os.environ["PWM_DB"])
+    conn = idx_db.connect(db_path)
+    bench_hash = bytes.fromhex(refs["bench_hash"][2:])
+    ctx = EventContext(block_number=2, tx_hash="0xfake", timestamp=1700000100)
+    for i, q in enumerate([215, 200, 150]):
+        idx_handlers.handle_certificate_submitted(
+            conn,
+            {"certHash": bytes([0xa0 + i]) * 32,
+             "benchmarkHash": bench_hash,
+             "submitter": "0x" + "ff" * 20,
+             "Q_int": q},
+            ctx,
+        )
+    conn.commit()
+    conn.close()
+
+    r = client.get(f"/api/leaderboard/{refs['bench_hash']}")
+    assert r.status_code == 200
+    body = r.json()
+    assert body["synthetic_filtered"] == 3
+    # Real cert (Q_int=88) survives; synthetic ones are gone.
+    assert len(body["ranks"]) == 1
+    assert body["ranks"][0]["cert_hash"] == refs["cert_hash"]
+    # current_sota points at the real cert, not the higher-Q synthetic.
+    assert body["current_sota"]["q_int"] == 88
+
+
+def test_leaderboard_filters_d5_stress_test_label(seeded_env):
+    """Even with q_int in the legal range, the D5-stress-test solver
+    label is filtered. Belt-and-suspenders alongside the q_int > 100
+    rule for synthetic certs that happened to land in [0, 100]."""
+    client, refs = seeded_env
+
+    # Insert a synthetic cert with q_int in the legal range (so the
+    # q_int filter alone wouldn't catch it), then post a meta row with
+    # the D5 label.
+    from indexer import db as idx_db
+    from indexer import handlers as idx_handlers
+    from indexer.events import EventContext
+    import os
+    db_path = Path(os.environ["PWM_DB"])
+    conn = idx_db.connect(db_path)
+    bench_hash = bytes.fromhex(refs["bench_hash"][2:])
+    fake_cert = bytes([0xbb]) * 32
+    ctx = EventContext(block_number=3, tx_hash="0xfake2", timestamp=1700000200)
+    idx_handlers.handle_certificate_submitted(
+        conn,
+        {"certHash": fake_cert,
+         "benchmarkHash": bench_hash,
+         "submitter": "0x" + "ee" * 20,
+         "Q_int": 95},   # within legal range
+        ctx,
+    )
+    conn.commit()
+    conn.close()
+
+    fake_cert_hex = "0x" + fake_cert.hex()
+    r1 = client.post(
+        f"/api/cert-meta/{fake_cert_hex}",
+        json={"solver_label": "D5-stress-test", "psnr_db": 95.0},
+    )
+    assert r1.status_code == 200
+
+    r2 = client.get(f"/api/leaderboard/{refs['bench_hash']}")
+    body = r2.json()
+    assert body["synthetic_filtered"] == 1
+    cert_hashes = [r["cert_hash"] for r in body["ranks"]]
+    assert fake_cert_hex not in cert_hashes
+    # Real seeded cert is still there.
+    assert refs["cert_hash"] in cert_hashes
+
+
 def test_bounties(seeded_env):
     client, _ = seeded_env
     r = client.get("/api/bounties")

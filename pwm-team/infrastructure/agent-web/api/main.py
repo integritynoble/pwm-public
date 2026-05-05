@@ -402,9 +402,19 @@ def leaderboard(benchmark_ref: str):
         chain_hash, artifact_id, genesis_entry = _resolve_benchmark_ref(conn, benchmark_ref)
         title = genesis_entry.get("title") if genesis_entry else None
 
-        rows: list[dict] = []
+        all_rows: list[dict] = []
         if chain_hash:
-            rows = store.certificates_for_benchmark(conn, chain_hash)[:10]
+            all_rows = store.certificates_for_benchmark(conn, chain_hash)
+
+        # Filter D5 stress-test / synthetic-Q entries from the public
+        # leaderboard. They were authored to exercise indexer + draw
+        # plumbing, not to represent real solver runs, and their
+        # synthetic Q values (often Q_int > 100, i.e. Q > 1.0 — outside
+        # the protocol's [0, 1] convention) drown out genuine certs.
+        # See PWM_DIRECTOR_NEXT_ACTIONS_2026-05-04 § leaderboard polish.
+        real_rows = [r for r in all_rows if not _is_synthetic_cert(r)]
+        synthetic_filtered = len(all_rows) - len(real_rows)
+        rows = real_rows[:10]
 
         # Enrich each row with an explicit rank (1-indexed). The store
         # already orders by draw_rank ASC then q_int DESC, so the row
@@ -443,9 +453,36 @@ def leaderboard(benchmark_ref: str):
             "improvement_db": improvement_db,
             "ranks": ranks,
             "entries": rows,
+            "synthetic_filtered": synthetic_filtered,
         })
     finally:
         conn.close()
+
+
+# Cert rows emitted by the D5 stress-test harness in
+# `pwm-team/infrastructure/agent-web/scripts/d5_stress_test.py`. Their
+# `solver_label` is set on the cert_meta row at fixture time. The
+# Q-value side covers the case where meta wasn't (yet) posted.
+_SYNTHETIC_SOLVER_LABELS = frozenset({"D5-stress-test"})
+
+
+def _is_synthetic_cert(row: dict) -> bool:
+    """True if a cert row should be hidden from the public leaderboard.
+
+    Two independent signals — either is sufficient:
+
+    1. solver_label matches a known synthetic harness label (explicit).
+    2. q_int > 100 (defense-in-depth). Real solver Q values are normalised
+       to [0, 1] (`Q = PSNR_dB / 100` in `mine.py:_compute_q`), so q_int
+       above 100 is structurally impossible for a real cert.
+    """
+    label = (row.get("solver_label") or "").strip()
+    if label in _SYNTHETIC_SOLVER_LABELS:
+        return True
+    q_int = row.get("q_int")
+    if q_int is not None and q_int > 100:
+        return True
+    return False
 
 
 def _extract_reference_baseline(genesis_entry: dict | None) -> dict | None:
