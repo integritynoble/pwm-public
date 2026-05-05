@@ -466,21 +466,35 @@ def leaderboard(benchmark_ref: str):
 _SYNTHETIC_SOLVER_LABELS = frozenset({"D5-stress-test"})
 
 
+_UNLABELED_HIGH_Q_THRESHOLD = 50  # PSNR≥50 dB without a posted label is implausible
+
+
 def _is_synthetic_cert(row: dict) -> bool:
     """True if a cert row should be hidden from the public leaderboard.
 
-    Two independent signals — either is sufficient:
+    Three independent signals — any one is sufficient:
 
     1. solver_label matches a known synthetic harness label (explicit).
     2. q_int > 100 (defense-in-depth). Real solver Q values are normalised
        to [0, 1] (`Q = PSNR_dB / 100` in `mine.py:_compute_q`), so q_int
        above 100 is structurally impossible for a real cert.
+    3. q_int >= 50 AND no solver_label posted via cert-meta. Reasoning:
+       a real PSNR ≥ 50 dB on these benchmarks is rare; if a submitter
+       achieved it, they have every incentive to post a solver_label so
+       the leaderboard shows their work properly. Unlabeled certs in
+       that range are therefore much more likely to be unlabeled test
+       fixtures or harness leftovers than real submissions worth
+       advertising. A real solver running ~30-40 dB without a label
+       still appears (q_int < 50), and any labeled cert at any q_int
+       below 100 still appears.
     """
     label = (row.get("solver_label") or "").strip()
     if label in _SYNTHETIC_SOLVER_LABELS:
         return True
     q_int = row.get("q_int")
     if q_int is not None and q_int > 100:
+        return True
+    if q_int is not None and q_int >= _UNLABELED_HIGH_Q_THRESHOLD and not label:
         return True
     return False
 

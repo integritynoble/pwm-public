@@ -43,7 +43,7 @@ def seeded_env(tmp_path, monkeypatch):
     )
     idx_handlers.handle_certificate_submitted(
         conn,
-        {"certHash": cert_hash, "benchmarkHash": bench_hash, "submitter": "0x" + "04" * 20, "Q_int": 88},
+        {"certHash": cert_hash, "benchmarkHash": bench_hash, "submitter": "0x" + "04" * 20, "Q_int": 35},
         ctx,
     )
     idx_handlers.handle_certificate_finalized(conn, {"certHash": cert_hash, "rank": 1}, ctx)
@@ -282,7 +282,7 @@ def test_cert_detail_and_gates(seeded_env):
     r = client.get(f"/api/cert/{refs['cert_hash']}")
     assert r.status_code == 200
     body = r.json()
-    assert body["certificate"]["q_int"] == 88
+    assert body["certificate"]["q_int"] == 35
     assert body["s_gates"]["S1"] == "PASS"
 
 
@@ -388,7 +388,7 @@ def test_leaderboard_filters_synthetic_q_certs(seeded_env):
     client, refs = seeded_env
 
     # Inject 3 synthetic-Q certs against the same benchmark. Real cert
-    # in the seeded fixture has Q_int=88 (below 100, so kept).
+    # in the seeded fixture has Q_int=35 (below 100, so kept).
     from indexer import db as idx_db
     from indexer import handlers as idx_handlers
     from indexer.events import EventContext
@@ -413,11 +413,11 @@ def test_leaderboard_filters_synthetic_q_certs(seeded_env):
     assert r.status_code == 200
     body = r.json()
     assert body["synthetic_filtered"] == 3
-    # Real cert (Q_int=88) survives; synthetic ones are gone.
+    # Real cert (Q_int=35) survives; synthetic ones are gone.
     assert len(body["ranks"]) == 1
     assert body["ranks"][0]["cert_hash"] == refs["cert_hash"]
     # current_sota points at the real cert, not the higher-Q synthetic.
-    assert body["current_sota"]["q_int"] == 88
+    assert body["current_sota"]["q_int"] == 35
 
 
 def test_leaderboard_filters_d5_stress_test_label(seeded_env):
@@ -463,6 +463,81 @@ def test_leaderboard_filters_d5_stress_test_label(seeded_env):
     assert fake_cert_hex not in cert_hashes
     # Real seeded cert is still there.
     assert refs["cert_hash"] in cert_hashes
+
+
+def test_leaderboard_filters_unlabeled_high_q_int(seeded_env):
+    """Unlabeled certs at q_int >= 50 are hidden as likely test fixtures.
+
+    Real solver submissions at PSNR ≥ 50 dB on these benchmarks are rare,
+    and any submitter who actually achieved that has every incentive to
+    POST /api/cert-meta to have their solver_label show on the leaderboard.
+    Unlabeled certs in that range are therefore dominated by older
+    harness-test certs from founder wallets — they bury real solver runs
+    (e.g. MST-L at q_int=35) and aren't useful to the public leaderboard.
+
+    Threshold q_int=50 was picked so:
+      - real-world MST-L (q_int=35) survives even unlabeled
+      - founder-wallet test certs at q_int 80-100 get filtered when unlabeled
+      - any labeled cert in the legal q_int range survives
+    """
+    client, refs = seeded_env
+
+    from indexer import db as idx_db
+    from indexer import handlers as idx_handlers
+    from indexer.events import EventContext
+    import os
+    db_path = Path(os.environ["PWM_DB"])
+    conn = idx_db.connect(db_path)
+    bench_hash = bytes.fromhex(refs["bench_hash"][2:])
+    ctx = EventContext(block_number=4, tx_hash="0xfake3", timestamp=1700000300)
+
+    # Inject 3 unlabeled high-q_int certs (founder-wallet-like) — all
+    # within the legal q_int range so the q_int>100 rule doesn't catch
+    # them, and none have cert_meta posted.
+    unlabeled_high = bytes([0xd0]) * 32
+    unlabeled_mid = bytes([0xd1]) * 32
+    unlabeled_low = bytes([0xd2]) * 32
+    for cert, q in [(unlabeled_high, 95), (unlabeled_mid, 60), (unlabeled_low, 49)]:
+        idx_handlers.handle_certificate_submitted(
+            conn,
+            {"certHash": cert, "benchmarkHash": bench_hash,
+             "submitter": "0x" + "dd" * 20, "Q_int": q},
+            ctx,
+        )
+
+    # Also inject a LABELED cert at q_int=80 — this one should NOT be
+    # filtered, because the labeled-real-solver branch is the whole
+    # point of allowing posts via cert-meta.
+    labeled_high = bytes([0xd3]) * 32
+    idx_handlers.handle_certificate_submitted(
+        conn,
+        {"certHash": labeled_high, "benchmarkHash": bench_hash,
+         "submitter": "0x" + "dd" * 20, "Q_int": 80},
+        ctx,
+    )
+    conn.execute(
+        """INSERT OR REPLACE INTO cert_meta
+               (cert_hash, solver_label, psnr_db, posted_at, posted_by)
+           VALUES (?, ?, ?, ?, ?)""",
+        ("0x" + labeled_high.hex(), "RealSolver-X", 80.0, ctx.timestamp, "test-fixture"),
+    )
+    conn.commit()
+    conn.close()
+
+    r = client.get(f"/api/leaderboard/{refs['bench_hash']}")
+    assert r.status_code == 200
+    body = r.json()
+
+    # Two unlabeled certs filtered (q_int=95 and q_int=60). The
+    # q_int=49 unlabeled cert survives (below threshold).
+    assert body["synthetic_filtered"] == 2
+
+    cert_hashes = [r["cert_hash"] for r in body["ranks"]]
+    assert "0x" + unlabeled_high.hex() not in cert_hashes  # filtered
+    assert "0x" + unlabeled_mid.hex() not in cert_hashes   # filtered
+    assert "0x" + unlabeled_low.hex() in cert_hashes       # below threshold
+    assert "0x" + labeled_high.hex() in cert_hashes        # labeled, survives
+    assert refs["cert_hash"] in cert_hashes                 # labeled seeded cert
 
 
 def test_bounties(seeded_env):
