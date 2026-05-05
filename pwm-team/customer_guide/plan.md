@@ -169,7 +169,7 @@ GET /api/leaderboard/{benchmark_id}
 - [x] **1.17 — Smoke test end-to-end on local docker compose**
 - [x] **1.18 — Commit + push as `feat/leaderboard-display`**
 - [x] **1.19 — Open PR for Director review + merge**
-- [ ] **1.20 — Director: SSH to GCP server, redeploy explorer**
+- [x] **1.20 — Director: SSH to GCP server, redeploy explorer**
 
 **Done when:** Visiting `https://explorer.pwm.platformai.org/benchmarks/L3-003` shows the SOTA / Reference / Delta header; visiting `/contribute?section=solution` shows rank columns. Both render correctly even with zero on-chain certs (empty-leaderboard fallback to reference floor).
 
@@ -238,7 +238,7 @@ lookup.
 - [x] **2.16 — Smoke test end-to-end on local docker compose**
 - [x] **2.17 — Commit + push as `feat/human-readable-ids`**
 - [x] **2.18 — Open PR for Director review + merge**
-- [ ] **2.19 — Director: SSH to GCP server, redeploy explorer**
+- [x] **2.19 — Director: SSH to GCP server, redeploy explorer**
 
 **Done when:** Every page in the explorer shows `Coded Aperture Snapshot Spectral Imaging (L1-003)` not bare `L1-003`; URLs accept both `/benchmarks/cassi` and `/benchmarks/L3-003`; new contributors have a documented path to claim L1-532 and beyond.
 
@@ -271,18 +271,18 @@ a polished customer experience.
 **Tasks:**
 
 - [x] **3.1 — Run pre-flight audit** with `gitleaks` + `trufflehog` on full history of `integritynoble/pwm`
-- [ ] **3.2 — Director reviews** the secrets-scan output; flag anything sensitive
+- [x] **3.2 — Director reviews** the secrets-scan output; flag anything sensitive
 - [x] **3.3 — Run pre-flight audit** with grep over commit history for emails / personal data / internal hostnames
-- [ ] **3.4 — Director reviews** PII-scan output
+- [x] **3.4 — Director reviews** PII-scan output
 - [x] **3.5 — Decide:** option 3a / 3b / 3c (Director makes the call)
 - [x] **3.6 — If 3b: Director creates new public repo on GitHub**
 - [x] **3.7 — Author** `scripts/sync_to_public_repo.sh` — `git filter-repo` based selective mirror
-- [ ] **3.8 — Director runs** `scripts/sync_to_public_repo.sh` (interactive — needs Director's GitHub credentials)
+- [x] **3.8 — Director runs** `scripts/sync_to_public_repo.sh` (interactive — needs Director's GitHub credentials)
 - [x] **3.9 — Update doc references** — find all `integritynoble/pwm` references in coordination docs, customer guide, READMEs, CLI install instructions; replace with public URL where appropriate
 - [x] **3.10 — Update `pwm-node` CLI install instructions** in agent-cli/README.md — use public repo URL
 - [x] **3.11 — Update web explorer** `view-on-github` links — point to public repo
 - [x] **3.12 — Update bounty specs** — public repo URL in claim instructions
-- [ ] **3.13 — Director: redeploy explorer with new GitHub URL**
+- [x] **3.13 — Director: redeploy explorer with new GitHub URL**
 - [ ] **3.14 — Smoke test:** open the public repo URL in incognito browser; clone it as a fresh user; run `pwm-node --network testnet benchmarks` against the cloned copy
 
 **Done when:** A new external user can `git clone <public-repo>`, `pip install -e pwm-team/infrastructure/agent-cli`, and run `pwm-node match "hyperspectral inverse problem"` end-to-end without any private-repo access.
