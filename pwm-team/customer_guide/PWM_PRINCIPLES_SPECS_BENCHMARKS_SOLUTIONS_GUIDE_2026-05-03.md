@@ -205,15 +205,22 @@ edit `scripts/register_genesis.py` to add their manifest tuple to the
 `ARTIFACTS_TO_REGISTER` list, then run:
 
 ```bash
+# What founders run for the seeded CASSI + CACTI genesis batch:
 PWM_PRIVATE_KEY=$PWM_PRIVATE_KEY \
 PWM_RPC_URL=$SEPOLIA_RPC_URL \
-python3 scripts/register_genesis.py --network testnet
+python3 scripts/register_genesis.py --network testnet --dry-run
+# Drop --dry-run to actually broadcast.
 ```
+
+For the contribution flow + manifest schema, see
+`pwm-team/coordination/PWM_PRINCIPLE_CONTRIBUTION_GUIDE.md` (private
+coord doc; the same content is being consolidated into a public
+contribution guide for the next pwm-public sync).
 
 ### Stake on an existing Principle (back its credibility)
 
 ```bash
-pwm-node --network testnet stake quote principle      # show required ~$50 PWM
+pwm-node --network testnet stake quote                # all 3 layers; or use --layer 0 for principle only
 pwm-node --network testnet stake principle 0x<L1-hash>
 ```
 
@@ -263,7 +270,7 @@ ID (so `L1-XXX` claim → `L2-XXX` + `L3-XXX` ship in the same PR).
 ### Stake on an existing Spec (~$5 tier)
 
 ```bash
-pwm-node --network testnet stake quote spec
+pwm-node --network testnet stake quote                # all 3 layers; or use --layer 1 for spec only
 pwm-node --network testnet stake spec 0x<L2-hash>
 ```
 
@@ -338,7 +345,7 @@ The L3 manifest must include:
 ### Stake on an existing Benchmark (~$1 tier)
 
 ```bash
-pwm-node --network testnet stake quote benchmark
+pwm-node --network testnet stake quote                # all 3 layers; or use --layer 2 for benchmark only
 pwm-node --network testnet stake benchmark 0x<L3-hash>
 ```
 
