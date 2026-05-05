@@ -185,15 +185,29 @@ JSON
 
 ### Register it on-chain
 
+`scripts/register_genesis.py` only registers the founding-team's
+hardcoded `ARTIFACTS_TO_REGISTER` list (CASSI + CACTI L1/L2/L3); it
+doesn't accept `--manifest` / `--layer` flags. To get a NEW Principle
+on-chain, the recommended path is the **PR-based claim flow** in
+`pwm-team/coordination/PWM_PRINCIPLE_CONTRIBUTION_GUIDE.md`:
+
+```
+1. Open a GitHub issue in integritynoble/pwm-public titled:
+     [L1 claim] L1-XXX <slug> — <author name>
+2. agent-coord reserves the next free numeric ID
+3. Author the L1/L2/L3 manifests, open a PR
+4. After verifier-agent review, agent-coord registers them on-chain
+   at the next genesis-extension event
+```
+
+Power-users who want to register their own artifact directly can
+edit `scripts/register_genesis.py` to add their manifest tuple to the
+`ARTIFACTS_TO_REGISTER` list, then run:
+
 ```bash
 PWM_PRIVATE_KEY=$PWM_PRIVATE_KEY \
 PWM_RPC_URL=$SEPOLIA_RPC_URL \
-python3 scripts/register_genesis.py \
-  --network testnet \
-  --manifest my_new_principle/L1-100_my_principle.json \
-  --layer L1
-# Emits ArtifactRegistered event; saves the keccak256(canonical_json)
-# hash to addresses.json for staking later
+python3 scripts/register_genesis.py --network testnet
 ```
 
 ### Stake on an existing Principle (back its credibility)
@@ -240,14 +254,11 @@ cat pwm-team/pwm_product/genesis/l2/L2-003.json
 
 ### Author + register
 
-```bash
-# Same shape as L1, but include parent_l1 + the six-tuple fields
-python3 scripts/register_genesis.py \
-  --network testnet \
-  --manifest my_new_principle/L2-100_my_spec.json \
-  --layer L2 \
-  --parent-l1 0x<L1-100-hash>
-```
+L2 manifests follow the same shape as L1, with `parent_l1` + six-tuple
+fields. They register on-chain via the same flow as L1 — through the
+PR-based claim path documented in `PWM_PRINCIPLE_CONTRIBUTION_GUIDE.md`.
+L2 and L3 children typically inherit the parent L1's reserved numeric
+ID (so `L1-XXX` claim → `L2-XXX` + `L3-XXX` ship in the same PR).
 
 ### Stake on an existing Spec (~$5 tier)
 
@@ -310,13 +321,10 @@ spending Sepolia ETH or revealing their submission identity.
 
 ### Author + register
 
-```bash
-python3 scripts/register_genesis.py \
-  --network testnet \
-  --manifest my_new_principle/L3-100_my_benchmark.json \
-  --layer L3 \
-  --parent-l2 0x<L2-100-hash>
-```
+L3 manifests register on-chain through the same PR-based claim flow as
+L1 + L2 (see `PWM_PRINCIPLE_CONTRIBUTION_GUIDE.md`). The L3 ships in the
+same PR as its parent L1 + L2; agent-coord registers all three together
+at the next genesis-extension event.
 
 The L3 manifest must include:
 
@@ -535,7 +543,7 @@ get 15%/10%/5% respectively. The principle's treasury T_k gets 15%.
 | Stake on a Benchmark | `pwm-node stake benchmark 0x<L3-hash>` |
 | Finalize a cert (after 7d) | on-chain only: `cast send <PWMCertificate> "finalize(bytes32)" 0x<cert-hash>` (CLI wrapper TBD) |
 | Run full CASSI+CACTI lifecycle | `bash scripts/testnet_mine_walkthrough.sh` |
-| Register a new L1/L2/L3 | `python3 scripts/register_genesis.py --network testnet --manifest <path> --layer <L1|L2|L3>` |
+| Register a new L1/L2/L3 | open a `[L1 claim]` issue per `PWM_PRINCIPLE_CONTRIBUTION_GUIDE.md`; agent-coord registers via `scripts/register_genesis.py --network testnet` (script's `ARTIFACTS_TO_REGISTER` list is hardcoded; no `--manifest` / `--layer` flags) |
 
 ## What network for what action
 
