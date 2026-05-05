@@ -28,6 +28,15 @@ If you're reading this on GitHub, every code-blocked path is
 clickable in the file tree. If you're reading it after a local clone,
 the same paths work in your shell.
 
+> **Repo visibility status (current):** `pwm-public` is currently a
+> **private repo** during the pre-mainnet preparation window.
+> Anonymous browsers see a GitHub 404; access today is granted
+> per-engagement to auditors, partner labs, and grant reviewers on
+> request. The repo flips to fully public on **D9 Step 12 (mainnet
+> launch day, ~3-4 weeks)** per `customer_guide/plan.md` Phase 3.
+> If you're reading this from inside the founding team or as an
+> invited collaborator, the URL above works directly for you.
+
 > **Note for internal reviewers:** some cross-referenced design docs
 > (`PWM_TESTNET_TESTING_GUIDE_2026-05-02.md`, `PWM_OPTION_C_HANDOFF_GPU_SUBMISSION_2026-05-02.md`,
 > etc.) live in the founding-team's private coordination tree and
