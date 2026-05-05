@@ -774,6 +774,218 @@ the math: any change you make is **mathematically guaranteed** to
 produce a hash that doesn't match the on-chain entry. **The hash
 is the protocol's way of measuring without trusting.**
 
+### How the hash extends to datasets and solutions (not just JSON)
+
+The previous subsection explains how the hash measures a JSON
+manifest's content. But a benchmark involves more than JSON:
+
+- **Benchmark inputs** — actual measurement data (e.g., the KAIST
+  hyperspectral cube, ~10 MB-30 GB depending on the dataset)
+- **Solver outputs** — the L4 reconstruction (e.g., a 256×256×28
+  cube saved as `solution.npz`)
+- **Ground truth** — the reference reconstruction used to compute
+  the Q score
+
+These are **binary blobs**, not JSON. They don't fit on-chain. So
+how does the protocol bind them to the cryptographic trust anchor?
+
+The answer is a **three-layer hash chain**, where each layer points
+at the next via content-addressed identifiers. Tampering with any
+layer is detectable by re-hashing.
+
+#### Layer A — On-chain L3 manifest hash covers the dataset registry
+
+The L3 manifest's `dataset_registry` field is part of the JSON that
+gets hashed:
+
+```json
+"dataset_registry": {
+    "primary": "KAIST hyperspectral 30 (2017)",
+    "secondary": "CAVE multispectral dataset",
+    "tertiary": "ICVL hyperspectral dataset",
+    "construction_method": "crop center 2x crop + 28-band downselect from 31-band source",
+    "num_dev_instances_per_tier": 20,
+    "holdout_instances_per_tier": 10
+}
+```
+
+When this manifest's keccak256 is registered on-chain
+(`0xdc8ad0dc...` for L3-003), that hash includes — and therefore
+is sensitive to changes in — the dataset_registry. So changing
+which dataset L3-003 cites (or its construction method) immediately
+breaks the manifest hash.
+
+For richer L3 schemas, `dataset_registry` can include explicit IPFS
+CIDs:
+
+```json
+"dataset_registry": {
+    "primary_cid": "bafybeig...zk3rq",      ← IPFS content-address
+    "secondary_cid": "bafybeih...4w7p3",
+    ...
+}
+```
+
+A CID is itself a hash of the dataset file. So:
+
+- Change the dataset bytes → the CID changes
+- The L3 manifest cites a specific CID → if the dataset changed, the
+  manifest no longer points at it
+- To "publish" the new dataset, the manifest would have to be edited
+  → manifest hash changes → on-chain registration is invalidated
+
+The chain hash transitively covers the dataset.
+
+#### Layer B — Bundled demo files: SHA-256 in `meta.json`
+
+For the small bundled samples in
+`pwm-team/pwm_product/demos/cassi/sample_01/`, the directory ships
+its own `meta.json` with explicit SHA-256 fingerprints of each file:
+
+```json
+{
+  "sha256": {
+    "ground_truth.npz": "fc17d8ff5930a47f436953acdb270265380ace799e13d1015d247ce6d07eff6e",
+    "snapshot.npz":     "34ace23eec7926b3d5066c8ccb03f898629985b725da615dbf4fd41407f8fb53",
+    "solution.npz":     "49f58a998246a866ce5ec8150115f8693b60ab9362af924dee951858bb112a20"
+  },
+  "shape_ground_truth": [256, 256, 28],
+  "reference_solver_psnr_db": 26.49,
+  "scene_id": "scene01",
+  ...
+}
+```
+
+Verifying that any of those `.npz` files hasn't been tampered with
+is a 2-line script:
+
+```bash
+python3 -c "
+import hashlib
+declared = '34ace23eec7926b3d5066c8ccb03f898629985b725da615dbf4fd41407f8fb53'
+actual   = hashlib.sha256(open('pwm-team/pwm_product/demos/cassi/sample_01/snapshot.npz', 'rb').read()).hexdigest()
+print(f'match? {actual == declared}')
+"
+# match? True   ← when the file hasn't been tampered with
+```
+
+Verified live on the current repo:
+
+```
+✓ ground_truth.npz   declared=fc17d8ff5930…  actual=fc17d8ff5930…
+✓ snapshot.npz       declared=34ace23eec79…  actual=34ace23eec79…
+✓ solution.npz       declared=49f58a998246…  actual=49f58a998246…
+all match: True
+```
+
+`meta.json` itself is committed in the repo, so its content is
+covered by git history (not by the on-chain hash, since the demo
+folder isn't in the L3 manifest's dataset_registry today). For
+genesis demos, this means: the bundled samples are *git-verified*,
+not *chain-verified*. That's appropriate because demos are
+illustrative samples, not authoritative protocol benchmarks.
+
+#### Layer C — L4 solution: cert payload binds to the solution
+
+The L4 cert payload (the bytes submitted to `PWMCertificate.submit()`)
+typically includes the Q score, benchmark hash, ω instance, AND
+optionally a `solution_uri` field — an IPFS CID or HTTP URL pointing
+at the actual reconstruction:
+
+```json
+{
+  "Q": 820,
+  "benchmarkHash": "0xdc8ad0dc...",
+  "omega": {"H": 256, "W": 256, "N_bands": 28, ...},
+  "solver_id": "0x...",
+  "solution_uri": "ipfs://bafybeig.../solution.npz"   ← optional
+}
+```
+
+`cert_hash = keccak256(canonical_payload)` covers all of those
+fields including `solution_uri`. So:
+
+- The cert hash on-chain transitively binds to the solution's CID
+- The CID is the hash of the actual `.npz` reconstruction file
+- Anyone can verify reproducibility by:
+  1. Pulling the cert payload from chain → reading `solution_uri`
+  2. Pulling the `.npz` from IPFS using that CID
+  3. Re-running the scoring algorithm against the benchmark inputs
+  4. Comparing the recomputed Q to the cert's Q
+
+If the miner later modifies the `.npz`, its IPFS CID changes →
+no longer matches the cert's `solution_uri` → reproducibility
+break is mathematically detectable.
+
+For miners who don't pin to IPFS (the common case today), only the
+Q score is bound to the chain — the `.npz` itself stays on local
+disk and isn't third-party verifiable. That's a deliberate
+miner-choice tradeoff: the cert *is still tamper-resistant for the
+reported Q score*, but cannot prove the Q was honestly computed
+from the claimed reconstruction.
+
+#### The full trust chain in one diagram
+
+```
+                                       ON-CHAIN
+                                       ────────
+                         ╭─→ L3 manifest hash 0xdc8ad0dc…
+                         │      ↓ covers (via canonical_json)
+                         │   dataset_registry (CIDs + construction method)
+                         │      ↓ each CID is the SHA-256 of …
+                         │   actual dataset bytes on IPFS
+                         │
+   chain trust anchor   ─┤
+                         │
+                         ╰─→ L4 cert hash 0xb293…
+                                ↓ covers (via keccak256 of payload)
+                             cert_payload (Q score + solution_uri + ω + …)
+                                ↓ solution_uri is the SHA-256 of …
+                             actual reconstruction bytes on IPFS
+                                                           
+                                       OFF-CHAIN (verifiable by re-hashing)
+                                       ──────────────────────────────────
+```
+
+Each layer is verifiable by re-deriving its hash from the next
+layer's content. The chain anchors only the top — but transitively
+covers everything below via CIDs.
+
+#### Why this works without putting big data on-chain
+
+| Item | Hash type | Where stored | What changes if tampered |
+|---|---|---|---|
+| L3 manifest JSON | `keccak256(canonical_json)` | On-chain reference; full JSON in repo | Manifest hash diverges; chain registration orphaned |
+| Bundled demo files (`.npz`) | `sha256` of file bytes | On-disk + git history; declared in `meta.json` | `meta.json` declared SHA-256 ≠ actual file SHA-256 |
+| L3 dataset on IPFS (production) | IPFS CID = `sha256` of the file | IPFS network | New CID; manifest's `primary_cid` no longer matches |
+| L4 reconstruction (`solution.npz`) | IPFS CID (if pinned) or local SHA-256 | Miner's disk + optional IPFS | Cert's `solution_uri` no longer matches; reproducibility break |
+| Ground truth | Same as dataset (IPFS CID) | IPFS or repo | Same — CID drift detectable |
+
+**The chain does not need to know the contents of any of these
+binary files.** It only needs to know one hash per artifact — and
+through a chain of content-addressed pointers (CIDs), that hash
+transitively covers everything.
+
+#### Concrete worked example: tampering with a CASSI demo file
+
+If someone modifies `pwm-team/pwm_product/demos/cassi/sample_01/snapshot.npz`:
+
+1. The file's actual SHA-256 changes (avalanche again — same property
+   as keccak256, applied to bytes instead of canonical JSON)
+2. `meta.json`'s declared `34ace23eec79…` no longer matches the new
+   actual SHA-256
+3. The 2-line verification script `match? = False`
+4. Anyone running the demo locally to reproduce the reference solver's
+   ~26.49 dB result gets a different number → reproducibility breaks
+5. Re-pinning the modified file to IPFS produces a new CID; if the L3
+   manifest's `dataset_registry` cited the original CID, the manifest
+   no longer points at the modified content (so the modified content
+   is just disconnected from the protocol)
+
+In every layer, tampering is **detectable by re-hashing alone** — no
+trusted oracle, no signed audit log, no escrow service. Just hash,
+compare, decide.
+
 ### Six mechanisms that enforce / detect agreement
 
 #### 1. Per-operation re-hash (automatic, runtime)
