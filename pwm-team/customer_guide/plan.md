@@ -11,10 +11,24 @@
 **Source of truth (already shipped):**
 - 7 contracts on Sepolia (chainId 11155111), audit-clean tag `mainnet-v1.0.0`
 - 531 L1 Principles in genesis catalog (502 v1 + 8 v3 standalone + 21 v2 PWDR + analytical cores)
-- 4 reference implementations (scoring 81 tests, CLI 73 tests, miner 101 tests, web 27 tests)
+- 4 reference implementations (~323 tests total as of 2026-05-05: scoring 72, CLI 100, miner 101, web 50; counts grow as features land)
 - Web explorer live at `https://explorer.pwm.platformai.org` (Sepolia mode)
 - MST-L + EfficientSCI wrapper solvers ready (`pwm-team/pwm_product/reference_solvers/`)
 - Walkthrough script `scripts/testnet_mine_walkthrough.sh` for first cert submissions
+
+---
+
+## Status (2026-05-05)
+
+| Phase | State | Notes |
+|---|---|---|
+| Phase 1 (leaderboard display) | ✅ SHIPPED | merged via `feat/leaderboard-display` and follow-up `feat/leaderboard-solver-labels` (PR #9). Live in production. |
+| Phase 2 (human-readable IDs) | ✅ SHIPPED | merged via `feat/human-readable-ids`; 1599 manifests carry `display_slug`; `UI_ONLY_FIELDS` filter preserves on-chain hashes. Live in production. |
+| Phase 3 (public repo) | 🟡 13/14 — pending D9 flip | `integritynoble/pwm-public` mirror live (private) at 200 commits / 910 files; Option B pre-flip smoke test passed 2026-05-03. Task 3.14 (incognito-browser smoke test) requires the repo to be made public — gated to D9 mainnet day. |
+
+Section below preserves the original execution plan with task-level
+checkmarks for traceability; updates from drift-from-plan reality are
+called out inline where they matter.
 
 ---
 
@@ -111,8 +125,8 @@ adoption-evidence sections demand.
 
 **Effort:** ~2 days CPU work, single PR.
 
-**Files:**
-- Create: `pwm-team/infrastructure/agent-web/api/tests/test_leaderboard.py`
+**Files (as shipped — drifted from initial plan):**
+- Modify: `pwm-team/infrastructure/agent-web/api/tests/test_api.py` (5 new leaderboard test functions added inline rather than spinning up a separate `test_leaderboard.py`)
 - Modify: `pwm-team/infrastructure/agent-web/api/main.py` (add `/api/leaderboard/{benchmark_id}` endpoint)
 - Modify: `pwm-team/infrastructure/agent-web/api/store.py` (rank query + cert_meta join)
 - Modify: `pwm-team/infrastructure/agent-web/indexer/db.py` (cert_meta read helper)
@@ -146,7 +160,7 @@ GET /api/leaderboard/{benchmark_id}
 
 **Tasks:**
 
-- [x] **1.1 — Write failing test** `test_leaderboard.py::test_empty_leaderboard_returns_reference_floor`
+- [x] **1.1 — Write failing test** in `test_api.py::test_leaderboard_empty_returns_no_sota_but_metadata`
   - Hit `/api/leaderboard/L3-003` with no on-chain certs → expect `current_sota = null`, `reference.psnr_db = 26.49`
 - [x] **1.2 — Run test, confirm 404** (endpoint doesn't exist yet)
 - [x] **1.3 — Add endpoint to `api/main.py`** with empty stub returning placeholder JSON
@@ -154,14 +168,12 @@ GET /api/leaderboard/{benchmark_id}
 - [x] **1.5 — Implement `store.py::get_leaderboard(benchmark_id)`** — SQL query joining `certs` + `cert_meta` with `RANK() OVER (PARTITION BY benchmarkHash ORDER BY q DESC)`
 - [x] **1.6 — Wire endpoint to store function**, return real JSON
 - [x] **1.7 — Test passes**
-- [x] **1.8 — Add test** `test_leaderboard.py::test_one_cert_appears_as_rank_1`
-  - Insert a cert + cert_meta row; expect `current_sota.rank == 1`
+- [x] **1.8 — Add test** `test_api.py::test_leaderboard` (covers single-cert rank-1 case)
+  - Insert a cert + cert_meta row; expect rank-1 entry
 - [x] **1.9 — Test passes** (no extra impl needed)
-- [x] **1.10 — Add test** `test_leaderboard.py::test_three_certs_ranked_by_q`
-  - Insert 3 certs with q = 0.5, 0.7, 0.9; expect ranks [3, 2, 1]
+- [x] **1.10 — Add test** `test_api.py::test_leaderboard_returns_enriched_payload` (covers multi-cert rank ordering + title/floor/SOTA enrichment)
 - [x] **1.11 — Test passes**
-- [x] **1.12 — Add test** `test_leaderboard.py::test_improvement_delta_computed_from_reference_psnr`
-  - Reference = 26.49 dB, SOTA cert PSNR = 34.1 → expect `improvement_db ≈ 7.6`
+- [x] **1.12 — Add tests** `test_leaderboard_with_slug_resolves_to_artifact_id` + `test_leaderboard_with_artifact_id_resolves_chain_hash` (covers the URL-form variants the frontend issues; improvement_db computation lives inside `test_leaderboard_returns_enriched_payload`)
 - [x] **1.13 — Test passes**
 - [x] **1.14 — Frontend: update `/benchmarks/[ref]/page.tsx`** — add SOTA / Reference / Delta header section
 - [x] **1.15 — Frontend: update `/benchmarks/[ref]/page.tsx`** — replace single-number display with leaderboard table
@@ -283,7 +295,9 @@ a polished customer experience.
 - [x] **3.11 — Update web explorer** `view-on-github` links — point to public repo
 - [x] **3.12 — Update bounty specs** — public repo URL in claim instructions
 - [x] **3.13 — Director: redeploy explorer with new GitHub URL**
-- [ ] **3.14 — Smoke test:** open the public repo URL in incognito browser; clone it as a fresh user; run `pwm-node --network testnet benchmarks` against the cloned copy
+- [~] **3.14 — Smoke test:** open the public repo URL in incognito browser; clone it as a fresh user; run `pwm-node --network testnet benchmarks` against the cloned copy
+  - **Option B (pre-flip, SSH content-only)** ran 2026-05-03 — all green; CLI surface verified; two CLI/doc mismatches found and fixed (`--version` flag, `match` positional). See `PWM_PUBLIC_REPO_SMOKE_TEST_2026-05-03.md`.
+  - **Option A (post-flip, incognito browser)** is the remaining piece and is intentionally gated to D9 (mainnet day) when the public repo flips visible.
 
 **Done when:** A new external user can `git clone <public-repo>`, `pip install -e pwm-team/infrastructure/agent-cli`, and run `pwm-node match "hyperspectral inverse problem"` end-to-end without any private-repo access.
 
@@ -353,8 +367,17 @@ Before authorizing implementation, please confirm:
 
 ---
 
-## Approval
+## Approval (closed)
 
-When Director approves this plan, CPU agent will execute Phase 1 (then 2, then 3) following the task list above. Tell me **"go phase 1"** to start with the leaderboard display PR. Or **"go all phases sequential"** to run all three end-to-end with a checkpoint review between each.
+Approved by Director 2026-04-29; all phases approved sequential.
+Phases 1 and 2 are fully shipped to production. Phase 3 is 13/14 with
+the only outstanding item (3.14 Option A) deliberately gated to D9
+mainnet day when `integritynoble/pwm-public` flips visible.
 
-Director can also redirect: pause any phase, re-order, drop a phase entirely, or add new requirements before implementation starts.
+This plan is now historical. The next customer-guide-side work is
+tracked in:
+- `PWM_CUSTOMER_GUIDE_CLI_ACCURACY_AUDIT_2026-05-05.md` (drift fixes
+  to the customer guide doc itself)
+- `PWM_PUBLIC_REPO_SMOKE_TEST_2026-05-03.md` (the D9 Option A check)
+- `DIRECTOR_RUNBOOK_D1_TO_D10_2026-05-01.md` (mainnet-day flow that
+  triggers Option A)
