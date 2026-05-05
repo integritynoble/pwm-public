@@ -466,7 +466,10 @@ def leaderboard(benchmark_ref: str):
 _SYNTHETIC_SOLVER_LABELS = frozenset({"D5-stress-test"})
 
 
-_UNLABELED_HIGH_Q_THRESHOLD = 50  # PSNR≥50 dB without a posted label is implausible
+_UNLABELED_HIGH_Q_THRESHOLD = 40  # PSNR≥40 dB without a posted label is suspicious
+                                  # on these benchmarks: GAP-TV ≈ 26, EfficientSCI ≈ 33,
+                                  # MST-L ≈ 35. Real submitters above 40 should post a
+                                  # solver_label so their work surfaces with attribution.
 
 
 def _is_synthetic_cert(row: dict) -> bool:

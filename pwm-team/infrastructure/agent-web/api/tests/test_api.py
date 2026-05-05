@@ -466,18 +466,19 @@ def test_leaderboard_filters_d5_stress_test_label(seeded_env):
 
 
 def test_leaderboard_filters_unlabeled_high_q_int(seeded_env):
-    """Unlabeled certs at q_int >= 50 are hidden as likely test fixtures.
+    """Unlabeled certs at q_int >= 40 are hidden as likely test fixtures.
 
-    Real solver submissions at PSNR ≥ 50 dB on these benchmarks are rare,
-    and any submitter who actually achieved that has every incentive to
-    POST /api/cert-meta to have their solver_label show on the leaderboard.
-    Unlabeled certs in that range are therefore dominated by older
-    harness-test certs from founder wallets — they bury real solver runs
-    (e.g. MST-L at q_int=35) and aren't useful to the public leaderboard.
+    Real solver submissions at PSNR ≥ 40 dB on these benchmarks are
+    suspicious — GAP-TV reference is ~26 dB, EfficientSCI ~33 dB,
+    MST-L ~35 dB. Any submitter actually beating MST-L by 5+ dB has
+    every incentive to POST /api/cert-meta and have their solver_label
+    show on the leaderboard. Unlabeled certs in that range are
+    dominated by older harness-test certs from founder wallets — they
+    bury real solver runs and aren't useful to the public leaderboard.
 
-    Threshold q_int=50 was picked so:
+    Threshold q_int=40 was picked so:
       - real-world MST-L (q_int=35) survives even unlabeled
-      - founder-wallet test certs at q_int 80-100 get filtered when unlabeled
+      - founder-wallet test certs at q_int 41-100 get filtered when unlabeled
       - any labeled cert in the legal q_int range survives
     """
     client, refs = seeded_env
@@ -497,7 +498,7 @@ def test_leaderboard_filters_unlabeled_high_q_int(seeded_env):
     unlabeled_high = bytes([0xd0]) * 32
     unlabeled_mid = bytes([0xd1]) * 32
     unlabeled_low = bytes([0xd2]) * 32
-    for cert, q in [(unlabeled_high, 95), (unlabeled_mid, 60), (unlabeled_low, 49)]:
+    for cert, q in [(unlabeled_high, 95), (unlabeled_mid, 45), (unlabeled_low, 39)]:
         idx_handlers.handle_certificate_submitted(
             conn,
             {"certHash": cert, "benchmarkHash": bench_hash,
@@ -528,14 +529,14 @@ def test_leaderboard_filters_unlabeled_high_q_int(seeded_env):
     assert r.status_code == 200
     body = r.json()
 
-    # Two unlabeled certs filtered (q_int=95 and q_int=60). The
-    # q_int=49 unlabeled cert survives (below threshold).
+    # Two unlabeled certs filtered (q_int=95 and q_int=45). The
+    # q_int=39 unlabeled cert survives (below threshold of 40).
     assert body["synthetic_filtered"] == 2
 
     cert_hashes = [r["cert_hash"] for r in body["ranks"]]
-    assert "0x" + unlabeled_high.hex() not in cert_hashes  # filtered
-    assert "0x" + unlabeled_mid.hex() not in cert_hashes   # filtered
-    assert "0x" + unlabeled_low.hex() in cert_hashes       # below threshold
+    assert "0x" + unlabeled_high.hex() not in cert_hashes  # filtered (95 ≥ 40)
+    assert "0x" + unlabeled_mid.hex() not in cert_hashes   # filtered (45 ≥ 40)
+    assert "0x" + unlabeled_low.hex() in cert_hashes       # below threshold (39 < 40)
     assert "0x" + labeled_high.hex() in cert_hashes        # labeled, survives
     assert refs["cert_hash"] in cert_hashes                 # labeled seeded cert
 
