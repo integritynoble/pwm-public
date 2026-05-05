@@ -405,7 +405,9 @@ pwm-node --network testnet mine L3-003 \
 # 4. Wait 7 days for the challenge period
 
 # 5. Finalize — triggers reward distribution
-pwm-node --network testnet finalize <cert_hash>
+#    No CLI wrapper yet; call the contract directly:
+cast send <PWMCertificate-addr> "finalize(bytes32)" <cert_hash> \
+  --rpc-url $SEPOLIA_RPC_URL --private-key $PWM_PRIVATE_KEY
 # Rank 1 wins 40% of pool, rank 2 wins 5%, rank 3 wins 2%, rank 4-10 win 1% each
 ```
 
