@@ -50,8 +50,14 @@ INCLUDE_PATHS=(
                                   # 531 first-class L1 Principles claim
     "pwm-team/bounties/"          # G4: bounty roster + claim board moved
                                   # out of coordination/ (2026-05-05)
-    "public/packages/pwm_core/"   # G2: deep-learning miner deps (MST-L,
-                                  # EfficientSCI) — 766 files / 11 MB
+    "public"                      # G2: submodule pointer to
+                                  # integritynoble/Physics_World_Model
+                                  # which hosts public/packages/pwm_core
+                                  # (deep-learning miner deps for MST-L,
+                                  # EfficientSCI). External users
+                                  # `git clone --recursive` to fetch.
+    ".gitmodules"                 # G2: submodule URL config — rewritten
+                                  # SSH→HTTPS by step 4.5 below
     "scripts/"
     "papers/Proof-of-Solution/mine_example/science/"
 )
@@ -164,6 +170,23 @@ done
 git filter-repo --force --invert-paths "${EXCLUDE_ARGS[@]}" 2>&1 | tail -3
 remaining=$(git ls-files | wc -l)
 echo "   ✓ kept $remaining files after exclusion filter"
+
+# ---- step 3.5: rewrite submodule URL SSH → HTTPS -------------------------
+# The source .gitmodules uses an SSH URL (git@github-integritynoble:...)
+# that's only resolvable on Director's machine. External users cloning
+# pwm-public --recursive need the HTTPS form.
+if [[ -f .gitmodules ]]; then
+    echo
+    echo "3.5. Rewriting submodule URL SSH → HTTPS in .gitmodules..."
+    sed -i 's|git@github-integritynoble:integritynoble/|https://github.com/integritynoble/|g' .gitmodules
+    sed -i 's|git@github\.com:integritynoble/|https://github.com/integritynoble/|g' .gitmodules
+    git -c user.email="ci@pwm.platformai.org" \
+        -c user.name="PWM Public Mirror" \
+        commit -am "fix(submodule): rewrite SSH URL to HTTPS for public clones" \
+        2>&1 | tail -1
+    echo "   ✓ rewrote .gitmodules:"
+    grep "url" .gitmodules | sed 's|^|     |'
+fi
 
 # ---- step 4: synthesize root README + LICENSE ---------------------------
 echo

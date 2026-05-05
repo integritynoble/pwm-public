@@ -95,8 +95,16 @@ export PWM_PRIVATE_KEY=0x<your-Sepolia-key>
 export SEPOLIA_RPC_URL=https://ethereum-sepolia-rpc.publicnode.com
 export PWM_RPC_URL=$SEPOLIA_RPC_URL
 
-# 2. For miners running deep-learning solvers (MST-L, EfficientSCI, etc.):
-pip install -e public/packages/pwm_core   # path inside the pwm-public repo
+# 2. For miners running deep-learning solvers (MST-L, EfficientSCI, etc.),
+#    pwm_core is a separate package vendored as a submodule. To pull it
+#    into the working tree, clone with --recursive (or run the submodule
+#    init step against an existing clone):
+#
+#      git clone --recursive https://github.com/integritynoble/pwm-public.git
+#      # or:  git submodule update --init --recursive
+#
+#    Then install it + a CUDA-matched torch wheel:
+pip install -e public/packages/pwm_core
 pip install torch torchvision --index-url https://download.pytorch.org/whl/cu128
 # (adjust the cu128 wheel suffix to match your local CUDA version; CPU-only
 #  also works for development, just slower)
