@@ -1,6 +1,6 @@
 # PWM Layers — Complete Guide: Create + Use (L1 / L2 / L3 / L4)
 
-**Date:** 2026-05-03
+**Date:** 2026-05-03 (refreshed 2026-05-05 — CLI accuracy pass)
 **Audience:** Researchers, students, industry teams, regulators, external developers, founders
 **Network:** Ethereum Sepolia testnet (chainId 11155111) for examples; Base mainnet flow identical, just swap `--network testnet` → `--network base`
 **Canonical public repo:** `https://github.com/integritynoble/pwm-public`
@@ -118,14 +118,20 @@ filterable by domain.
 ### Browse the catalog (CLI)
 
 ```bash
-pwm-node --network testnet benchmarks
-# Lists all registered L3 benchmarks; each maps back to its parent L1
+# L1 Principle catalog (~531 entries):
+pwm-node principles
+
+# L3 Benchmark catalog (parent L1/L2, rho, T1 baseline):
+pwm-node benchmarks
 ```
+
+Both commands are offline — no `--network` flag, no chain calls.
+Add `--domain <substring>` to filter (e.g. `pwm-node principles --domain imaging`).
 
 ### Inspect one Principle in detail
 
 ```bash
-pwm-node --network testnet inspect L1-003
+pwm-node inspect L1-003
 # Prints title, domain, gate_class, ω parameters, forward model,
 # DAG primitive chain, L_DAG complexity score, references
 ```
@@ -134,12 +140,13 @@ Or read the JSON directly:
 
 ```bash
 cat pwm-team/pwm_product/genesis/l1/L1-003.json
-# Or by domain:
-ls pwm-team/content/agent-imaging/principles/      # 100+ medical imaging
-ls pwm-team/content/agent-physics/principles/      # 100+ physics
-ls pwm-team/content/agent-chemistry/principles/    # 60+ chemistry
-ls pwm-team/content/agent-applied/principles/      # 30+ applied
-ls pwm-team/content/agent-signal/principles/       # 20+ signal processing
+# Or by domain (manifests are nested under topic subdirs):
+find pwm-team/content/agent-imaging/principles   -name "L1-*.json" | wc -l   # 165 medical imaging
+find pwm-team/content/agent-physics/principles   -name "L1-*.json" | wc -l   # 148 physics
+find pwm-team/content/agent-applied/principles   -name "L1-*.json" | wc -l   # 112 applied
+find pwm-team/content/agent-chemistry/principles -name "L1-*.json" | wc -l   #  67 chemistry
+find pwm-team/content/agent-signal/principles    -name "L1-*.json" | wc -l   #  39 signal processing
+# Total: 531 first-class L1 Principles across all domains.
 ```
 
 ### Find a Principle for your problem
@@ -283,8 +290,8 @@ The L3 manifest lists dataset CIDs in `dataset_registry`. Pull via IPFS:
 # Option 2: programmatic
 ipfs get <CID-from-L3-manifest> -o ./cassi_data/
 
-# Option 3: pwm-node helper (if your benchmark inputs are on-chain-resolvable)
-pwm-node --network testnet fetch-benchmark L3-003 --output ./cassi_data/
+# Option 3: read CIDs straight out of the manifest, then pull
+jq -r '.dataset_registry[]' pwm-team/pwm_product/genesis/l3/L3-003.json
 ```
 
 ### Evaluate your own solver locally (no on-chain submission, no wallet needed)
@@ -337,28 +344,32 @@ The actual "mining" loop: run a solver, compute a quality score Q, submit a tamp
 
 ### Verify a published claim
 
-A vendor publishes "We scored 0.95 on PWM L3-523, cert 0xb293...". Verify:
+A vendor publishes "We scored 0.95 on PWM L3-523, cert 0xb293...".
 
-```bash
-pwm-node --network testnet verify-cert 0xb293...
-# Returns:
-#   benchmark: L3-523 (Pneumothorax CXR detection)
-#   submitter: 0xab12...cd34
-#   Q score: 0.95
-#   solver_label: <whatever the submitter declared>
-#   submitted block: 10720312
-#   challenge status: clean (7-day window passed)
-#   finalized: yes, rewards distributed
+**Easiest path — explorer page:**
+
+```
+https://explorer.pwm.platformai.org/cert/0xb293...
 ```
 
-Or via Etherscan:
+Renders the cert detail: benchmark hash, submitter address, Q score,
+solver label (if submitter posted meta), challenge status, and a
+direct link to the on-chain tx.
+
+**Programmatic — Etherscan (canonical):**
 
 ```
 https://sepolia.etherscan.io/tx/0xb293...
 ```
 
-The on-chain `CertificateSubmitted` event holds all the same data
-immutably.
+The on-chain `CertificateSubmitted` event holds the cert hash,
+benchmarkHash, submitter address, and Q_int — immutable, no UI in
+between. For deeper verification, read the `PWMCertificate` contract
+state directly via `cast call` or web3.py.
+
+> **Note:** a CLI wrapper (`pwm-node verify-cert <hash>`) is
+> on the roadmap. Until then the two URLs above are the canonical
+> verification path.
 
 ### Download a published Solution as a reference
 
@@ -408,8 +419,9 @@ bash scripts/testnet_mine_walkthrough.sh
 # Knobs: CASSI_ONLY=1, DRY_RUN=1, SKIP_STAKE=1
 ```
 
-See `PWM_TESTNET_MINE_WALKTHROUGH_USAGE_2026-05-03.md` for the full
-usage guide.
+Read the script header (`head -60 scripts/testnet_mine_walkthrough.sh`)
+for the full env-var matrix and what each phase does — it doubles as
+the walkthrough's reference manual.
 
 ### What happens on-chain during `mine`
 
@@ -464,9 +476,11 @@ get 15%/10%/5% respectively. The principle's treasury T_k gets 15%.
 ### Journey C — Regulator verifying Aidoc's pneumothorax claim
 
 1. Aidoc publishes: "Cert 0xabcd... shows 95% sensitivity on L3-523"
-2. Regulator runs `pwm-node verify-cert 0xabcd...`
-3. CLI confirms: cert references L3-523, score is 0.95, submitter is
-   Aidoc's published wallet, cert finalized (challenge period clean)
+2. Regulator opens `https://explorer.pwm.platformai.org/cert/0xabcd...`
+   (or pulls the same data from the on-chain `CertificateSubmitted`
+   event via `https://sepolia.etherscan.io/tx/0xabcd...`)
+3. The page confirms: cert references L3-523, score is 0.95, submitter
+   is Aidoc's published wallet, cert finalized (challenge period clean)
 4. Regulator can re-download the L3-523 holdout split and
    independently re-verify if desired
 
@@ -491,8 +505,10 @@ get 15%/10%/5% respectively. The principle's treasury T_k gets 15%.
 5. Run `bash scripts/testnet_mine_walkthrough.sh`
 6. Both CASSI and CACTI cert hashes appear on the leaderboard within
    ~1-2 minutes of the on-chain confirmation
-7. After 7 days (challenge-period clean), finalize each cert with
-   `pwm-node finalize <cert_hash>`
+7. After 7 days (challenge-period clean), the cert auto-becomes
+   citable — finalization is an on-chain call against
+   `PWMCertificate.finalize(cert_hash)`. Until a CLI wrapper ships,
+   anyone can call it directly via `cast send` (Foundry) or web3.py.
 8. Cite cert hashes wherever — papers, FDA submissions, grant
    applications
 
@@ -503,18 +519,19 @@ get 15%/10%/5% respectively. The principle's treasury T_k gets 15%.
 | Want to… | Command |
 |---|---|
 | Browse all Principles (web) | `https://explorer.pwm.platformai.org/principles` |
-| Browse all Benchmarks (CLI) | `pwm-node --network testnet benchmarks` |
+| Browse all Principles (CLI) | `pwm-node principles` |
+| Browse all Benchmarks (CLI) | `pwm-node benchmarks` |
 | Find a Principle for your problem | `pwm-node match "<description>"` |
-| Read one Principle | `pwm-node --network testnet inspect L1-XXX` |
-| Read one Spec | `pwm-node --network testnet inspect L2-XXX` |
-| Read one Benchmark | `pwm-node --network testnet inspect L3-XXX` |
+| Read one Principle | `pwm-node inspect L1-XXX` |
+| Read one Spec | `pwm-node inspect L2-XXX` |
+| Read one Benchmark | `pwm-node inspect L3-XXX` |
 | Download a benchmark dataset | "Get this benchmark" card on `/benchmarks/L3-XXX` |
 | Compare your solver locally (no tx) | `pwm-node mine L3-XXX --solver your.py --dry-run` |
 | Submit cert on-chain | `pwm-node mine L3-XXX --solver your.py` |
-| Verify someone's published claim | `pwm-node verify-cert 0x...` |
+| Verify someone's published claim | `https://explorer.pwm.platformai.org/cert/0x...` (or Etherscan tx URL) |
 | Stake on a Principle | `pwm-node stake principle 0x<L1-hash>` |
 | Stake on a Benchmark | `pwm-node stake benchmark 0x<L3-hash>` |
-| Finalize a cert (after 7d) | `pwm-node finalize 0x<cert-hash>` |
+| Finalize a cert (after 7d) | on-chain only: `cast send <PWMCertificate> "finalize(bytes32)" 0x<cert-hash>` (CLI wrapper TBD) |
 | Run full CASSI+CACTI lifecycle | `bash scripts/testnet_mine_walkthrough.sh` |
 | Register a new L1/L2/L3 | `python3 scripts/register_genesis.py --network testnet --manifest <path> --layer <L1|L2|L3>` |
 
@@ -525,7 +542,7 @@ get 15%/10%/5% respectively. The principle's treasury T_k gets 15%.
 | `--network offline` | Reading local JSON manifests; pure metadata browsing |
 | `--network testnet` (Sepolia chainId 11155111) | All examples in this guide; live testnet today; ~$0 in real money |
 | `--network baseSepolia` (chainId 84532) | Step 5 dress rehearsal (pending hardware wallets) |
-| `--network base` (chainId 8453) | Base mainnet — production once Step 11 lands (~3-4 weeks out per `MAINNET_BLOCKERS_2026-04-30.md`) |
+| `--network base` (chainId 8453) | Base mainnet — production once Step 11 (founder mining live) lands; timeline tracked internally |
 
 ## Common confusions
 
@@ -534,7 +551,7 @@ get 15%/10%/5% respectively. The principle's treasury T_k gets 15%.
 | "I need to register all 4 layers myself before mining" | No. L1/L2/L3 are typically registered once by Principle authors. As a miner (L4) you just need to find an existing benchmark and submit certs against it. |
 | "Mining requires a GPU" | Only for solvers that use deep-learning models (MST, EfficientSCI). The reference solvers `cassi_gap_tv.py` + `cacti_pnp_admm.py` run on numpy CPU only. |
 | "I need to be a founder to use PWM" | No. Anyone with a funded testnet wallet can stake + mine. External developers are the *primary* audience; founders are the bootstrap. |
-| "Verifying a cert requires my own Sepolia ETH" | No. `verify-cert` is read-only; no tx, no gas. |
+| "Verifying a cert requires my own Sepolia ETH" | No. The explorer URL and Etherscan are pure reads — no tx, no gas, no wallet needed. |
 | "L4 = my reconstruction output" | Close but not quite. L4 = a **certificate** that includes the Q score + a hash binding the score to a specific (solver, benchmark, ω) tuple. The actual reconstruction can be off-chain (IPFS-pinned). |
 
 ---
