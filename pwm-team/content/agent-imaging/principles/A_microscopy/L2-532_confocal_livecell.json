@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L2-003",
+  "artifact_id": "L2-532",
   "layer": "L2",
-  "registration_tier": "founder_vetted",
-  "parent_l1": "L1-003",
+  "registration_tier": "stub",
+  "parent_l1": "L1-532",
   "title": "Confocal Fluorescence (pinhole-rejection livecell imaging) Mismatch-Only Spec",
   "spec_type": "mismatch_only",
   "six_tuple": {
