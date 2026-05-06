@@ -335,6 +335,24 @@ The P-benchmark: rho=50 instances, anti-overfitting mechanisms M1-M6, dataset_re
 benchmark detail page with ω parameters, baseline solver scores,
 sample data PNGs, "Get this benchmark" download card, leaderboard.
 
+### Two reference floors per benchmark
+
+The benchmark page surfaces **two** reference floors so contributors
+see both onboarding gates at once:
+
+| Floor | Today on L3-003 | What it means |
+|---|---|---|
+| 📊 **Classical floor** | GAP-TV 26.0 dB | Deliberate weak baseline. Anyone better than this wins rewards — easy onboarding gate. |
+| 🧠 **Deep-learning floor** | MST-L 35.3 dB | Published deep-learning landmark. Beating this is the harder gate that signals real solver progress. |
+
+The `improvement_db` shown on the page is anchored to the **classical
+floor**, so the protocol's "PWM-enabled +X dB" story stays anchored to
+the easy-to-beat baseline (it would otherwise be 0 dB whenever the SOTA
+matches the deep-learning landmark). Both floors come from the L3
+manifest's `ibenchmarks[*].baselines[]` array, with each baseline tagged
+`category: "classical"` or `category: "deep_learning"`. New L3 manifests
+that don't tag categories fall back to legacy single-floor display.
+
 ### Inspect via CLI
 
 ```bash
@@ -585,10 +603,16 @@ hashing strips it before computing keccak256, so:
 ### Journey A — PhD student comparing their CASSI method to SOTA
 
 1. Visit `https://explorer.pwm.platformai.org/benchmarks/L3-003`
-2. Click "Get this benchmark" → download inputs
-3. Run their method locally → compute PSNR
-4. Compare to leaderboard (rank 1 = MST-L 34.1 dB)
-5. **Optional:** `pwm-node mine L3-003 --solver my_method.py` to make
+2. Note the two reference floors at the top: classical floor (GAP-TV
+   ~26 dB) and deep-learning floor (MST-L 35.30 dB). Their method
+   must beat at least the classical floor to register meaningful
+   improvement; beating the deep-learning floor is the harder gate.
+3. Click "Get this benchmark" → download inputs
+4. Run their method locally → compute PSNR
+5. Compare to leaderboard (rank 1 today: MST-L at 35.30 dB; the
+   `improvement_db` shown on the page is `current_sota − classical_floor`,
+   i.e. the +9.3 dB gap PWM has surfaced so far)
+6. **Optional:** `pwm-node mine L3-003 --solver my_method.py` to make
    the comparison auditable in their paper
 
 **Time:** ~30 min (excluding their solver dev time)
@@ -596,7 +620,14 @@ hashing strips it before computing keccak256, so:
 
 ### Journey B — AI imaging vendor proving robustness for FDA
 
-1. `pwm-node inspect L1-514` to read the Chest CT severity Principle
+1. Read the Chest CT severity Principle. L1-514 is a Tier-3 stub today
+   (catalog entry, not yet on-chain), so `pwm-node inspect` can't load
+   it; read the manifest directly:
+   ```bash
+   jq . pwm-team/content/agent-imaging/principles/C_medical_imaging/L1-514_chest_ct_severity_pwdr.json
+   ```
+   When L1-514 graduates to Tier-1 / Tier-2 (founder_vetted /
+   community_proposed), `pwm-node inspect L1-514` will surface it.
 2. Download the L3-514 dataset (when registered on mainnet)
 3. Run their AI on the holdout split → compute classification accuracy + calibration
 4. `pwm-node mine L3-514 --solver our_ai_wrapper.py`

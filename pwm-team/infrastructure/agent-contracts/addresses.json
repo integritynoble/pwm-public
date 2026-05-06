@@ -20,8 +20,8 @@
     ]
   },
   "mainnet": {
-    "network": "mainnet",
-    "chainId": 1,
+    "network": "base",
+    "chainId": 8453,
     "PWMRegistry": null,
     "PWMMinting": null,
     "PWMStaking": null,
