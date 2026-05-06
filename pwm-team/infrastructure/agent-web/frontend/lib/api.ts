@@ -54,6 +54,8 @@ export type Overview = {
   recent_activity: ActivityEntry[];
 };
 
+export type RegistrationTier = 'founder_vetted' | 'community_proposed' | 'stub';
+
 export type PrincipleSummary = {
   artifact_id: string;
   title: string;
@@ -66,6 +68,15 @@ export type PrincipleSummary = {
   active_spec_count?: number;
   active_benchmark_count?: number;
   epsilon_center?: string;
+  registration_tier?: RegistrationTier;
+};
+
+export type PrinciplesList = {
+  genesis: PrincipleSummary[];
+  chain: any[];
+  domains: string[];
+  tier_counts: { founder_vetted: number; community_proposed: number; stub: number; total: number };
+  tier: 'mineable' | 'stub' | 'all';
 };
 
 export type PrincipleDetail = {
@@ -81,6 +92,7 @@ export type PrincipleDetail = {
   }>;
   chain_meta: { principle_id: string; delta: string | null; promoted: number | null; updated_at: number } | null;
   total_minted_wei: string;
+  is_stub?: boolean;
 };
 
 export type BenchmarkSummary = {
@@ -191,7 +203,8 @@ export type Bounty = {
 
 export const api = {
   overview: () => get<Overview>('/api/overview'),
-  principles: () => get<{ genesis: PrincipleSummary[]; chain: any[]; domains: string[] }>('/api/principles'),
+  principles: (tier?: 'mineable' | 'stub' | 'all') =>
+    get<PrinciplesList>(`/api/principles${tier ? `?tier=${tier}` : ''}`),
   principle: (id: string) => get<PrincipleDetail>(`/api/principles/${encodeURIComponent(id)}`),
   benchmarks: () => get<BenchmarksList>('/api/benchmarks'),
   benchmark: (ref: string) => get<BenchmarkDetail>(`/api/benchmarks/${encodeURIComponent(ref)}`),

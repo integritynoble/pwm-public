@@ -161,7 +161,33 @@ def activity_feed(limit: int = 50):
 
 
 @app.get("/api/principles")
-def principles_list():
+def principles_list(tier: str = "mineable"):
+    """List L1 principles. ?tier=mineable (default) returns founder_vetted +
+    community_proposed; ?tier=stub returns the claim-board inventory only;
+    ?tier=all returns everything across both buckets.
+
+    Tier counts are always returned so the UI can show "showing 2 of 531".
+    """
+    buckets = genesis.all_principles_by_tier()
+    counts = {k: len(v) for k, v in buckets.items()}
+    counts["total"] = sum(counts.values())
+
+    mineable = buckets.get("founder_vetted", []) + buckets.get("community_proposed", [])
+    mineable_ids = {p.get("artifact_id") for p in mineable}
+
+    if tier == "stub":
+        selected = buckets.get("stub", [])
+        summaries = [genesis.summarize_stub_principle(p) for p in selected]
+    elif tier == "all":
+        selected = mineable + buckets.get("stub", [])
+        summaries = [
+            genesis.summarize_principle(p) if p.get("artifact_id") in mineable_ids
+            else genesis.summarize_stub_principle(p)
+            for p in selected
+        ]
+    else:  # "mineable" (default)
+        summaries = [genesis.summarize_principle(p) for p in mineable]
+
     chain_principles = []
     conn = store.get_conn()
     try:
@@ -169,19 +195,36 @@ def principles_list():
     finally:
         conn.close()
     body = {
-        "genesis": [genesis.summarize_principle(p) for p in genesis.principles()],
+        "genesis": summaries,
         "chain": chain_principles,
-        "domains": list(genesis.principle_domains()),
+        "domains": list(genesis.principle_domains(include_stubs=(tier in ("stub", "all")))),
+        "tier_counts": counts,
+        "tier": tier,
     }
     return _cached(body)
 
 
 @app.get("/api/principles/{principle_id}")
 def principle_detail(principle_id: str):
-    p = genesis.by_artifact_id(principle_id)
+    p = genesis.principle_by_artifact_id_any(principle_id)
     if not p:
         raise HTTPException(status_code=404, detail=f"principle not found: {principle_id}")
+
+    is_stub = (p.get("registration_tier") or "stub") == "stub"
     specs = [genesis.summarize_spec(s) for s in genesis.specs_for_principle(principle_id)]
+
+    if is_stub:
+        # Stubs have no on-chain footprint — skip the chain queries entirely.
+        return _cached({
+            "principle": p,
+            "specs": specs,
+            "treasury_balance_wei": None,
+            "registered_benchmarks": [],
+            "chain_meta": None,
+            "total_minted_wei": "0",
+            "is_stub": True,
+        })
+
     conn = store.get_conn()
     try:
         # PWMMinting indexes principles by unpadded numeric id (e.g. "3" not "003").
@@ -201,6 +244,7 @@ def principle_detail(principle_id: str):
         "registered_benchmarks": registered,
         "chain_meta": meta,
         "total_minted_wei": total_minted,
+        "is_stub": False,
     })
 
 

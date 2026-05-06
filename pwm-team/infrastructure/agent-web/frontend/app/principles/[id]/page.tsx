@@ -31,6 +31,8 @@ export default async function PrincipleDetail({
   const g = p.G ?? {};
   const w = p.W ?? {};
   const c = p.C ?? {};
+  const isStub = data.is_stub === true || (p.registration_tier ?? 'stub') === 'stub';
+  const tier = (p.registration_tier ?? 'stub') as string;
   const walkthroughAnchor: string | null =
     id === 'L1-003' ? 'cassi' : id === 'L1-004' ? 'cacti' : null;
 
@@ -46,14 +48,62 @@ export default async function PrincipleDetail({
           {p.sub_domain && <span className="pwm-pill">{p.sub_domain}</span>}
           {p.difficulty_tier && <span className="pwm-pill">δ={p.difficulty_delta} · {p.difficulty_tier}</span>}
           {g.L_DAG != null && <span className="pwm-pill">L_DAG = {g.L_DAG}</span>}
+          {tier === 'founder_vetted' && (
+            <span className="pwm-pill !text-emerald-300 !border-emerald-500/40">★ Founder-vetted</span>
+          )}
+          {tier === 'community_proposed' && (
+            <span className="pwm-pill !text-cyan-300 !border-cyan-500/40">✓ Community-vetted</span>
+          )}
+          {tier === 'stub' && (
+            <span className="pwm-pill !text-slate-400 !border-slate-600">📋 Stub — not mineable</span>
+          )}
         </div>
-        {walkthroughAnchor && (
+        {walkthroughAnchor && !isStub && (
           <Link
             href={`/walkthroughs/${walkthroughAnchor}`}
             className="inline-block mt-4 px-4 py-2 rounded bg-gradient-to-r from-cyan-500 to-indigo-500 text-black font-semibold text-sm"
           >
             Read full 4-layer walkthrough →
           </Link>
+        )}
+        {isStub && (
+          <div className="mt-4 pwm-card !border-amber-700/40 !bg-amber-950/10">
+            <div className="flex items-start gap-3">
+              <span className="text-2xl">📋</span>
+              <div className="flex-1">
+                <h3 className="text-amber-200 font-semibold mb-1">Unclaimed Principle — open for contribution</h3>
+                <p className="text-sm text-amber-100/70 mb-3">
+                  This Principle is declared in the catalog but has no reference solver, no pinned dataset,
+                  and is not registered on-chain. There is no reward pool. Submitting a cert against this
+                  Principle today will record the cert for reproducibility but pay zero PWM.
+                </p>
+                <p className="text-sm text-amber-100/70 mb-3">
+                  <strong className="text-amber-200">To claim it</strong> as a Bounty #7 contribution:
+                  open a PR adding (1) a reference solver, (2) ≥1 dataset pinned to IPFS, (3) updates to
+                  the L3 manifest with dataset CIDs. After verifier-agent triple-review, the founders&apos;
+                  3-of-5 multisig signs <code>PWMRegistry.register()</code> and the Principle becomes mineable.
+                </p>
+                <div className="flex flex-wrap gap-3 text-sm">
+                  <a
+                    href="https://github.com/integritynoble/pwm-public/blob/main/pwm-team/customer_guide/PWM_PRINCIPLE_CONTRIBUTION_GUIDE.md"
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-block px-4 py-2 rounded bg-amber-600/80 hover:bg-amber-500 text-black font-semibold"
+                  >
+                    Read the contribution guide →
+                  </a>
+                  <a
+                    href={`https://github.com/integritynoble/pwm-public/issues/new?title=%5B${p.artifact_id}+claim%5D+${encodeURIComponent(p.title || '')}&body=I+want+to+claim+${p.artifact_id}+(${encodeURIComponent(p.title || '')}).%0A%0A**Reference+solver:**+%3CdescribeYourSolverApproach%3E%0A%0A**Dataset:**+%3CdescribeYourDataset%3E%0A%0A**Estimated+timeline:**+%3CweeksFromMerge%3E`}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-block px-4 py-2 rounded border border-amber-500/40 text-amber-200 hover:bg-amber-900/20 font-semibold"
+                  >
+                    Open a claim issue →
+                  </a>
+                </div>
+              </div>
+            </div>
+          </div>
         )}
       </div>
 
@@ -125,30 +175,32 @@ export default async function PrincipleDetail({
         )}
       </section>
 
-      <section className="grid md:grid-cols-2 gap-4">
-        <div className="pwm-card">
-          <h2 className="text-lg font-semibold mb-2">Treasury (T_k)</h2>
-          <p className="text-sm">
-            Balance: <span className="font-mono">{weiToPwm(data.treasury_balance_wei)} PWM</span>
-          </p>
-        </div>
-        <div className="pwm-card">
-          <h2 className="text-lg font-semibold mb-2">Minting</h2>
-          <p className="text-sm">
-            Total minted: <span className="font-mono">{weiToPwm(data.total_minted_wei)} PWM</span>
-          </p>
-          {data.chain_meta?.delta && (
-            <p className="text-sm mt-1">
-              On-chain δ: <span className="font-mono">{data.chain_meta.delta}</span>
-              {data.chain_meta.promoted === 1 && (
-                <span className="pwm-pill ml-2 !text-emerald-300">promoted</span>
-              )}
+      {!isStub && (
+        <section className="grid md:grid-cols-2 gap-4">
+          <div className="pwm-card">
+            <h2 className="text-lg font-semibold mb-2">Treasury (T_k)</h2>
+            <p className="text-sm">
+              Balance: <span className="font-mono">{weiToPwm(data.treasury_balance_wei)} PWM</span>
             </p>
-          )}
-        </div>
-      </section>
+          </div>
+          <div className="pwm-card">
+            <h2 className="text-lg font-semibold mb-2">Minting</h2>
+            <p className="text-sm">
+              Total minted: <span className="font-mono">{weiToPwm(data.total_minted_wei)} PWM</span>
+            </p>
+            {data.chain_meta?.delta && (
+              <p className="text-sm mt-1">
+                On-chain δ: <span className="font-mono">{data.chain_meta.delta}</span>
+                {data.chain_meta.promoted === 1 && (
+                  <span className="pwm-pill ml-2 !text-emerald-300">promoted</span>
+                )}
+              </p>
+            )}
+          </div>
+        </section>
+      )}
 
-      {data.registered_benchmarks?.length > 0 && (
+      {!isStub && data.registered_benchmarks?.length > 0 && (
         <section>
           <h2 className="text-lg font-semibold mb-3">Registered benchmarks (on-chain)</h2>
           <div className="pwm-card overflow-x-auto">

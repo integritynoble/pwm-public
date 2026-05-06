@@ -59,12 +59,89 @@ def load_all() -> dict[str, list[dict]]:
     return result
 
 
+# Content-tree principles (the ~531 cataloged inventory). Most are Tier 3
+# stubs awaiting a contributor — declared with forward model and DAG, but
+# no reference solver, no dataset, not registered on-chain. Surfaced via
+# /api/principles?tier=stub|all so contributors can browse the claim board
+# without polluting the default mineable view.
+@lru_cache(maxsize=1)
+def load_content_l1() -> list[dict]:
+    """Walk pwm-team/content/agent-*/principles/ for L1-*.json files."""
+    content_root = PWM_TEAM_ROOT / "content"
+    if not content_root.exists():
+        return []
+    seen_ids: set[str] = set()
+    out: list[dict] = []
+    for path in sorted(content_root.rglob("L1-*.json")):
+        try:
+            data = json.loads(path.read_text())
+        except (OSError, json.JSONDecodeError):
+            continue
+        if not isinstance(data, dict):
+            continue
+        artifact_id = data.get("artifact_id") or ""
+        if not artifact_id.startswith("L1-"):
+            continue
+        if artifact_id in seen_ids:
+            # Some L1 IDs appear under multiple sub-directories; keep first.
+            continue
+        seen_ids.add(artifact_id)
+        try:
+            rel = str(path.relative_to(PWM_TEAM_ROOT))
+        except ValueError:
+            rel = str(path)
+        data.setdefault("_source_path", rel)
+        out.append(data)
+    return out
+
+
 def reload() -> None:
     load_all.cache_clear()
+    load_content_l1.cache_clear()
 
 
 def principles() -> list[dict]:
     return load_all()["l1"]
+
+
+def all_principles_by_tier() -> dict[str, list[dict]]:
+    """Merge genesis + content-tree L1s, bucketed by registration_tier.
+
+    Genesis manifests take precedence over content-tree copies of the
+    same artifact_id (the genesis copy is the canonical one that gets
+    registered on-chain).
+    """
+    buckets: dict[str, list[dict]] = {"founder_vetted": [], "community_proposed": [], "stub": []}
+    seen_ids: set[str] = set()
+
+    for p in principles():
+        aid = p.get("artifact_id") or ""
+        if not aid:
+            continue
+        seen_ids.add(aid)
+        tier = p.get("registration_tier") or "stub"
+        buckets.setdefault(tier, []).append(p)
+
+    for p in load_content_l1():
+        aid = p.get("artifact_id") or ""
+        if not aid or aid in seen_ids:
+            continue
+        seen_ids.add(aid)
+        tier = p.get("registration_tier") or "stub"
+        buckets.setdefault(tier, []).append(p)
+
+    return buckets
+
+
+def principle_by_artifact_id_any(artifact_id: str) -> dict | None:
+    """Lookup an L1 principle in genesis OR content tree by artifact_id."""
+    hit = by_artifact_id(artifact_id)
+    if hit is not None:
+        return hit
+    for p in load_content_l1():
+        if p.get("artifact_id") == artifact_id:
+            return p
+    return None
 
 
 def specs() -> list[dict]:
@@ -145,6 +222,31 @@ def summarize_principle(p: dict) -> dict:
         "active_spec_count": len(active_specs),
         "active_benchmark_count": sum(len(benchmarks_for_spec(s.get("artifact_id", ""))) for s in active_specs),
         "epsilon_center": (spec_range.get("center_spec") or {}).get("epsilon_fn_center"),
+        "registration_tier": p.get("registration_tier") or "stub",
+    }
+
+
+def summarize_stub_principle(p: dict) -> dict:
+    """Lightweight summary for content-tree stubs (no chain queries needed).
+
+    Tier 3 stubs don't have on-chain treasury, leaderboard, or registered
+    benchmarks. The list view only needs scientific identity (title, domain,
+    forward_model) to let contributors browse the claim board.
+    """
+    g = p.get("G") or {}
+    return {
+        "artifact_id": p.get("artifact_id"),
+        "title": p.get("title"),
+        "domain": p.get("domain"),
+        "sub_domain": p.get("sub_domain"),
+        "difficulty_delta": p.get("difficulty_delta"),
+        "difficulty_tier": p.get("difficulty_tier"),
+        "L_DAG": g.get("L_DAG"),
+        "forward_model": (p.get("E") or {}).get("forward_model"),
+        "active_spec_count": 0,
+        "active_benchmark_count": 0,
+        "epsilon_center": None,
+        "registration_tier": p.get("registration_tier") or "stub",
     }
 
 
@@ -176,10 +278,16 @@ def summarize_spec(s: dict) -> dict:
     }
 
 
-def principle_domains() -> Iterable[str]:
+def principle_domains(include_stubs: bool = False) -> Iterable[str]:
     seen = set()
     for p in principles():
         d = p.get("domain")
         if d and d not in seen:
             seen.add(d)
             yield d
+    if include_stubs:
+        for p in load_content_l1():
+            d = p.get("domain")
+            if d and d not in seen:
+                seen.add(d)
+                yield d
