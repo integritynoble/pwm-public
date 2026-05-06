@@ -757,6 +757,9 @@ this guide can open directly:
 
 - `pwm-team/customer_guide/plan.md` — current customer-experience roadmap (Phase 1 / 2 / 3)
 - `pwm-team/customer_guide/PWM_PRINCIPLE_CONTRIBUTION_GUIDE.md` — full flow for authoring a NEW Principle (claim board, manifest schema, PR template)
+- `pwm-team/customer_guide/PWM_Q_SCORE_EXPLAINED_2026-05-06.md` — what `Q_int` on the leaderboard actually means + how PSNR floor/ceiling normalization works (CASSI 26.49 dB → Q_int 85 worked example)
+- `pwm-team/customer_guide/PWM_ONCHAIN_VS_OFFCHAIN_ARCHITECTURE_2026-05-05.md` — what data lives on-chain (registry hashes, cert payloads) vs off-chain (manifests, datasets, cert-meta), and how they're bound together by keccak256
+- `pwm-team/customer_guide/PWM_VERIFY_MST_L_CASSI_CLAIM_2026-05-06.md` — concrete walkthrough of independently verifying the MST-L 35.295 dB cert (`0x7c7740…e13`); mirrors Journey C with real on-chain data
 - `pwm-team/bounties/INDEX.md` — Reserve-bounty roster (8 bounties, ~1.24M PWM allocated)
 - `pwm-team/bounties/07-claims.md` — FCFS claim board (open to general L1/L2/L3 contributions, not just Bounty #7 Tier B)
 - `pwm-team/infrastructure/agent-cli/README.md` — full `pwm-node` CLI docs
