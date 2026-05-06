@@ -592,8 +592,18 @@ def _extract_reference_baseline(genesis_entry: dict | None) -> dict | None:
 
 
 def _extract_advanced_baseline(genesis_entry: dict | None) -> dict | None:
-    """Pull the first baseline of the first ibenchmarks tier whose
-    `category` is "deep_learning".
+    """Pull the first deep-learning sidecar baseline.
+
+    Looks in two places, in priority order:
+
+    1. The top-level `display_baselines` array — UI-only sidecar entries
+       (in UI_ONLY_FIELDS, so they don't affect the manifest's keccak256
+       hash). This is the canonical place to add a deep-learning landmark
+       like MST-L without breaking the on-chain registration.
+    2. Fallback: any `ibenchmarks[0].baselines[]` entry tagged
+       `category: "deep_learning"`. Tagging baselines this way DOES
+       change the manifest hash, so it should only be used on
+       not-yet-registered manifests.
 
     Returns None when no deep-learning baseline is declared. Pages
     render this alongside the classical reference floor as the
@@ -602,6 +612,14 @@ def _extract_advanced_baseline(genesis_entry: dict | None) -> dict | None:
     """
     if not genesis_entry:
         return None
+
+    # Priority 1: hash-invariant sidecar
+    sidecar = genesis_entry.get("display_baselines") or []
+    advanced = next((b for b in sidecar if b.get("category") == "deep_learning"), None)
+    if advanced:
+        return _format_baseline(advanced, advanced.get("tier"))
+
+    # Priority 2: legacy in-baselines tag (changes the manifest hash)
     ibench = genesis_entry.get("ibenchmarks") or []
     if not ibench:
         return None

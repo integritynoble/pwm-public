@@ -348,10 +348,21 @@ see both onboarding gates at once:
 The `improvement_db` shown on the page is anchored to the **classical
 floor**, so the protocol's "PWM-enabled +X dB" story stays anchored to
 the easy-to-beat baseline (it would otherwise be 0 dB whenever the SOTA
-matches the deep-learning landmark). Both floors come from the L3
-manifest's `ibenchmarks[*].baselines[]` array, with each baseline tagged
-`category: "classical"` or `category: "deep_learning"`. New L3 manifests
-that don't tag categories fall back to legacy single-floor display.
+matches the deep-learning landmark).
+
+The data sources are split deliberately to preserve hash invariance:
+
+| Field | Where in manifest | Hashed (on-chain)? | Use case |
+|---|---|---|---|
+| Classical floor | `ibenchmarks[0].baselines[0]` | ✓ Yes | Frozen at registration; e.g. GAP-TV on L3-003 |
+| Deep-learning floor | top-level `display_baselines[]` (in `UI_ONLY_FIELDS`) | ✗ No | Updateable post-registration; e.g. MST-L landmark added 2026-05-05 |
+
+This means a founder can land a new SOTA (e.g. EfficientSCI surpassing
+MST-L) by appending to `display_baselines` and re-deploying the
+explorer — no manifest re-registration needed, on-chain hash stays
+valid. The legacy `baselines[*].category: "deep_learning"` path is
+still supported as a fallback for not-yet-registered manifests, but it
+DOES change the keccak256 — only use it on Tier-3 stubs.
 
 ### Inspect via CLI
 
@@ -385,6 +396,14 @@ pwm-node --network testnet mine L3-003 \
 
 This is how a researcher compares their method to SOTA without
 spending Sepolia ETH or revealing their submission identity.
+
+**Solver contract:** the framework calls
+`python <solver.py> --input <work_dir>/input/ --output <work_dir>/output/`
+inside a per-mine working directory. Place the L3 dataset (downloaded
+via "Get this benchmark" or `ipfs get`) under `<work_dir>/input/`
+before invoking, or have the solver fetch it itself from a CID listed
+in the manifest's `dataset_registry`. The `--dry-run` flag stops at
+score-and-payload time; it does NOT auto-stage data.
 
 ## L3 — How PRODUCERS create new Benchmarks
 

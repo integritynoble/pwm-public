@@ -127,6 +127,10 @@ UI_ONLY_FIELDS = frozenset({
     "display_color",
     "ui_metadata",
     "registration_tier",
+    "display_baselines",  # leaderboard-floor sidecar; e.g. deep-learning
+                          # SOTA landmarks added off-chain via cert-meta.
+                          # `baselines[]` is canonical (contributes to hash);
+                          # `display_baselines` is UI-only (stripped before keccak).
 })
 
 

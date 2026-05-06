@@ -599,6 +599,71 @@ def test_leaderboard_returns_classical_and_deep_learning_floors(tmp_path, monkey
     assert body["reference_advanced"]["category"] == "deep_learning"
 
 
+def test_leaderboard_reads_deep_learning_floor_from_display_baselines_sidecar(tmp_path, monkeypatch):
+    """The canonical place to declare a deep-learning floor is the
+    top-level `display_baselines` sidecar — it's in UI_ONLY_FIELDS so
+    adding it doesn't change the manifest's keccak256 hash, which is
+    what the on-chain registration is bound to.
+
+    This test verifies the API picks up the sidecar entry even when
+    `ibenchmarks[*].baselines[]` has no `category` tags (matching the
+    real production manifest L3-003).
+    """
+    from indexer import db as idx_db
+    from indexer import handlers as idx_handlers
+    from indexer.events import EventContext
+
+    db_path = tmp_path / "sidecar.db"
+    conn = idx_db.connect(db_path)
+    idx_db.init_db(conn)
+    bench_hash = b"\xff" * 32
+    ctx = EventContext(block_number=1, tx_hash="0xfake6", timestamp=1700000600)
+    idx_handlers.handle_artifact_registered(
+        conn, {"hash": bench_hash, "layer": 3, "creator": "0x" + "01" * 20, "timestamp": ctx.timestamp}, ctx,
+    )
+    conn.execute(
+        "UPDATE artifacts SET artifact_id = ? WHERE hash = ?",
+        ("L3-FF", "0x" + "ff" * 32),
+    )
+    conn.commit()
+    conn.close()
+    monkeypatch.setenv("PWM_DB", str(db_path))
+
+    genesis_root = tmp_path / "sidecar_genesis"
+    (genesis_root / "l3").mkdir(parents=True)
+    (genesis_root / "l3" / "L3-FF.json").write_text(json.dumps({
+        "artifact_id": "L3-FF", "title": "Sidecar Bench",
+        # Canonical baselines (no category tags — would be hashed)
+        "ibenchmarks": [{
+            "tier": "T1_nominal",
+            "baselines": [
+                {"name": "GAP-TV", "metric": "PSNR_dB", "score": 26.0, "Q": 0.62},
+            ],
+        }],
+        # UI-only sidecar (in UI_ONLY_FIELDS — not hashed)
+        "display_baselines": [
+            {"name": "MST-L", "category": "deep_learning",
+             "tier": "T1_nominal", "metric": "PSNR_dB",
+             "score": 35.295, "Q": 0.95},
+        ],
+    }))
+    monkeypatch.setenv("PWM_GENESIS_DIR", str(genesis_root))
+
+    from api import genesis as g_mod
+    g_mod.reload()
+    from api.main import app
+    client = TestClient(app)
+
+    r = client.get("/api/leaderboard/0x" + "ff" * 32)
+    assert r.status_code == 200
+    body = r.json()
+    assert body["reference"]["label"] == "GAP-TV"
+    assert body["reference"]["psnr_db"] == 26.0
+    assert body["reference_advanced"]["label"] == "MST-L"
+    assert body["reference_advanced"]["psnr_db"] == 35.295
+    assert body["reference_advanced"]["category"] == "deep_learning"
+
+
 def test_leaderboard_reference_advanced_absent_when_no_deep_learning_baseline(tmp_path, monkeypatch):
     """Manifests that declare only classical baselines (or no categories
     at all) should still work — `reference_advanced` is None."""
