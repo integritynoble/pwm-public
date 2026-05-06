@@ -374,15 +374,20 @@ pwm-node --network testnet inspect L3-003
 
 ### Download the dataset
 
-The L3 manifest lists dataset CIDs in `dataset_registry`. Pull via IPFS:
-
 ```bash
-# Option 1: web "Get this benchmark" card on the explorer
-# Option 2: programmatic
-ipfs get <CID-from-L3-manifest> -o ./cassi_data/
+# Option 1 (recommended): web "Get this benchmark" card on the explorer
+# https://explorer.pwm.platformai.org/benchmarks/L3-003 — bundles the
+# T1_nominal split as a single zip download.
 
-# Option 3: read CIDs straight out of the manifest, then pull
-jq -r '.dataset_registry[]' pwm-team/pwm_product/genesis/l3/L3-003.json
+# Option 2 (post-launch): once the IPFS pinning bounty (Bounty #6) ships,
+# CIDs will land in the L3 manifest's `dataset_registry` and you'll be
+# able to fetch them directly:
+#   ipfs get <CID-from-L3-manifest> -o ./cassi_data/
+# Today, dataset_registry in the manifest holds dataset NAMES + construction
+# notes only (KAIST-30, CAVE, ICVL); the explorer card is the working path.
+
+# Option 3: dataset metadata for reference
+jq -r '.dataset_registry' pwm-team/pwm_product/genesis/l3/L3-003.json
 ```
 
 ### Evaluate your own solver locally (no on-chain submission, no wallet needed)
