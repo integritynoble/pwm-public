@@ -107,12 +107,21 @@ export PWM_RPC_URL=$SEPOLIA_RPC_URL
 # 2. For miners running deep-learning solvers (MST-L, EfficientSCI, etc.),
 #    pwm_core is a separate package vendored as a submodule. To pull it
 #    into the working tree, clone with --recursive (or run the submodule
-#    init step against an existing clone):
+#    init step against an existing clone). Install Git LFS first so the
+#    pretrained .pth weight files come down with the submodule:
 #
+#      # one-time on this machine:
+#      git lfs install
+#      # then either:
 #      git clone --recursive https://github.com/integritynoble/pwm-public.git
-#      # or:  git submodule update --init --recursive
+#      # or against an existing clone:
+#      git submodule update --init --recursive
+#      git -C public lfs pull
 #
-#    Then install it + a CUDA-matched torch wheel:
+#    Verify weights landed (and auto-fix common issues):
+#      bash scripts/download_weights.sh
+#
+#    Then install pwm_core + a CUDA-matched torch wheel:
 pip install -e public/packages/pwm_core
 pip install torch torchvision --index-url https://download.pytorch.org/whl/cu128
 # (adjust the cu128 wheel suffix to match your local CUDA version; CPU-only
