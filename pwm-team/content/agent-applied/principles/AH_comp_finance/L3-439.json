@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-439",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-439",
   "parent_l1": "L1-439",
-  "title": "Heston Stochastic Volatility Calibration — Benchmark Suite",
+  "title": "Heston Stochastic Volatility Calibration \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "CBOE_SPX_options_2023",

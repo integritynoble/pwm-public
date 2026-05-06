@@ -1,6 +1,7 @@
 {
   "artifact_id": "L3-132",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-132",
   "parent_l1": "L1-132",
   "title": "Muon Tomography Benchmark Suite",
@@ -141,7 +142,7 @@
       }
     ]
   },
-  "hardness_rule_check": "SATISFIED — muon-CNN fails at T4_short_time (N_muon=1e4, 1 hr): 0.55 > epsilon_fn ~ 0.4.",
+  "hardness_rule_check": "SATISFIED \u2014 muon-CNN fails at T4_short_time (N_muon=1e4, 1 hr): 0.55 > epsilon_fn ~ 0.4.",
   "ipfs_cid": null,
   "ground_truth_cid": null,
   "display_slug": "muon-tomography"

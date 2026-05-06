@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-395",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-395",
   "principle_ref": "sha256:<L1-395_principle_hash>",
   "title": "Adaptive Filtering Non-Stationary Spec (echo cancellation family)",
@@ -124,7 +125,7 @@
     "proximity_threshold": 0.1
   },
   "d_spec": 0.55,
-  "d_spec_notes": "Distance from RLS-spec ~= 0.25 (Similar, different step-size family). Distance from 389 channel estimation ~= 0.35 (Related — both linear regression on time series).",
+  "d_spec_notes": "Distance from RLS-spec ~= 0.25 (Similar, different step-size family). Distance from 389 channel estimation ~= 0.35 (Related \u2014 both linear regression on time series).",
   "s1_s4_gates": [
     "PASS",
     "PASS",

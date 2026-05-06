@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-126",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-126",
   "principle_ref": "sha256:<L1-126_principle_hash>",
   "title": "SAXS BioSAXS Indirect-FT Spec",
@@ -132,7 +133,7 @@
     "proximity_threshold": 0.1
   },
   "d_spec": 0.5,
-  "d_spec_notes": "Distance from 133 WAXS ~= 0.30 (Related — same scattering, larger q). Distance from 125 XRD ~= 0.45 (Related — both elastic X-ray, different length scale).",
+  "d_spec_notes": "Distance from 133 WAXS ~= 0.30 (Related \u2014 same scattering, larger q). Distance from 125 XRD ~= 0.45 (Related \u2014 both elastic X-ray, different length scale).",
   "s1_s4_gates": [
     "PASS",
     "PASS",

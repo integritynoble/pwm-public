@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-450",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-450",
   "parent_l1": "L1-450",
-  "title": "Trajectory Optimization — Benchmark Suite",
+  "title": "Trajectory Optimization \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "motion_benchmark_MoveIt",

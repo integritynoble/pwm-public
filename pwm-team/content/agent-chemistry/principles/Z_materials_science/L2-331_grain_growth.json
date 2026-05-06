@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-331",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-331",
   "title": "Grain Growth and Recrystallization Mismatch-Only Spec",
   "spec_type": "mismatch_only",

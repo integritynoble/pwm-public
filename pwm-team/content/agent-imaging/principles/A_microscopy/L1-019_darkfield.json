@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-019",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "019",
   "title": "Darkfield Microscopy (oblique-illumination scattering imaging)",
   "domain": "Microscopy",

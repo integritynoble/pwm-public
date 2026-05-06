@@ -1,9 +1,10 @@
 {
   "artifact_id": "L2-434",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-434",
   "principle_ref": "sha256:<L1-434_principle_hash>",
-  "title": "PID Controller Tuning — Nominal + Mismatch Specs",
+  "title": "PID Controller Tuning \u2014 Nominal + Mismatch Specs",
   "spec_type": "nominal_and_mismatch",
   "six_tuple": {
     "omega": {

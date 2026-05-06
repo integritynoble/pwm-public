@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-063",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "063",
   "title": "Digital Breast Tomosynthesis (DBT)",
   "domain": "Medical Imaging",

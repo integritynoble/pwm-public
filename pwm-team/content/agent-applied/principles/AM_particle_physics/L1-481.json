@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-481",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "481",
   "title": "Parton Distribution Functions (DGLAP)",
   "domain": "Particle Physics",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Parton Distribution Functions (DGLAP): PDF extraction: determine parton distribution functions from global fit to DIS, Drell-Yan, and jet cross-section data via DGLAP evolution. The forward operator produces the measurement through a 3-node primitive DAG (M.dglap.splitting_functions…); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=10 with effective condition number kappa_eff~10000.0; nuclear_correction_uncertainty, higher_twist_uncertainty set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "Parton Distribution Functions (DGLAP): PDF extraction: determine parton distribution functions from global fit to DIS, Drell-Yan, and jet cross-section data via DGLAP evolution. The forward operator produces the measurement through a 3-node primitive DAG (M.dglap.splitting_functions\u2026); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=10 with effective condition number kappa_eff~10000.0; nuclear_correction_uncertainty, higher_twist_uncertainty set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "d/d(ln Q ** 2) f_i(x, Q ** 2) = sum_j integral_{x}^{1} (dz/z) P_{ij}(z) f_j(x/z, Q ** 2)",
     "world_state_x": "parton distribution functions f_i(x, Q ** 2) for i=gluon,u,d,s,c,b quarks",
     "observation_y": "measured cross sections sigma_exp for DIS (HERA), pp (LHC), DY experiments",

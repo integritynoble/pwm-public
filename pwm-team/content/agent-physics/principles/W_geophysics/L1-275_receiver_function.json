@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-275",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "275",
-  "title": "Receiver Function — teleseismic crust imaging",
+  "title": "Receiver Function \u2014 teleseismic crust imaging",
   "domain": "Geophysics",
   "sub_domain": "P-to-S converted phase receiver function",
   "source_file": "W_geophysics/275_receiver_function.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Receiver Function — teleseismic crust imaging forward model.",
+    "description": "Receiver Function \u2014 teleseismic crust imaging forward model.",
     "forward_model": "RF(t) = Z_r(t) deconvolved by Z_v(t); peaks at P-to-S converters at depth",
     "world_state_x": "1D crust+mantle velocity profile Vp(z), Vs(z)",
     "observation_y": "vertical + radial/transverse broadband seismograms",

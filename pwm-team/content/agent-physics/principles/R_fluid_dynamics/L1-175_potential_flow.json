@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-175",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "175",
-  "title": "Potential Flow — irrotational inviscid",
+  "title": "Potential Flow \u2014 irrotational inviscid",
   "domain": "Fluid Dynamics",
   "sub_domain": "Laplace equation for irrotational flow",
   "source_file": "R_fluid_dynamics/175_potential_flow.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Potential Flow — irrotational inviscid forward model.",
+    "description": "Potential Flow \u2014 irrotational inviscid forward model.",
     "forward_model": "Laplacian phi = 0; u = grad phi; dynamic p via Bernoulli",
     "world_state_x": "velocity potential phi(x) -> u + p",
     "observation_y": "surface pressure + stagnation pressure + PIV",

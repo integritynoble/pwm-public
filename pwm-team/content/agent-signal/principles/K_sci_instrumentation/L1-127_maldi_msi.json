@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-127",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "127",
-  "title": "MALDI-MSI — Matrix-Assisted Laser Desorption/Ionization Mass-Spec Imaging",
+  "title": "MALDI-MSI \u2014 Matrix-Assisted Laser Desorption/Ionization Mass-Spec Imaging",
   "domain": "Scientific Instrumentation",
   "sub_domain": "Laser-desorption mass-spec imaging of tissue",
   "source_file": "K_scientific_instrumentation/127_maldi_msi.md",

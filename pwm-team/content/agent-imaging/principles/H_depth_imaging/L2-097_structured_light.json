@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-097",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-097",
   "title": "Structured-Light Depth Mismatch-Only Spec",
   "spec_type": "mismatch_only",

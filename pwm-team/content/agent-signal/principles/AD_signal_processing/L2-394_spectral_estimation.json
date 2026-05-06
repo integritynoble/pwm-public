@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-394",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-394",
   "principle_ref": "sha256:<L1-394_principle_hash>",
   "title": "Spectral Estimation Uniform-Sampling Spec (subspace methods)",
@@ -123,7 +124,7 @@
     "proximity_threshold": 0.1
   },
   "d_spec": 0.3,
-  "d_spec_notes": "Distance from 387 DoA ~= 0.40 (Related — both parametric spectral estimation, different carrier). Distance from AR/MA ARMA spec ~= 0.25 (Similar).",
+  "d_spec_notes": "Distance from 387 DoA ~= 0.40 (Related \u2014 both parametric spectral estimation, different carrier). Distance from AR/MA ARMA spec ~= 0.25 (Similar).",
   "s1_s4_gates": [
     "PASS",
     "PASS",

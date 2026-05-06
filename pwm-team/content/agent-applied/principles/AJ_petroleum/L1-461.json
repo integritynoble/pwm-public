@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-461",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "461",
   "title": "Hydraulic Fracture Propagation Modeling",
   "domain": "Petroleum Engineering",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Hydraulic Fracture Propagation Modeling: Hydraulic fracture modeling: infer fracture geometry (length, height, width) from treatment pressure and microseismic data. The forward operator produces the measurement through a 3-node primitive DAG (M.pkn.fracture_model…); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=5 with effective condition number kappa_eff~500; stress_shadow_complexity, natural_fracture_interaction set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "Hydraulic Fracture Propagation Modeling: Hydraulic fracture modeling: infer fracture geometry (length, height, width) from treatment pressure and microseismic data. The forward operator produces the measurement through a 3-node primitive DAG (M.pkn.fracture_model\u2026); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=5 with effective condition number kappa_eff~500; stress_shadow_complexity, natural_fracture_interaction set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "dp/dt = q/(V_f + C_L*A_f); w = (K_Ic/(E'*sqrt(L))) for PKN/KGD model",
     "world_state_x": "fracture half-length L_f, height H_f, average width w_bar, fracture conductivity",
     "observation_y": "surface treating pressure p(t), microseismic event locations {x_m, y_m, z_m}",

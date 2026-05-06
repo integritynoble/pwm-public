@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-337",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "337",
   "title": "Thin Film Growth Kinetics",
   "domain": "Materials Science",

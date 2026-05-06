@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-425",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-425",
   "parent_l1": "L1-425",
-  "title": "Groundwater Contaminant Transport Inversion — Benchmark Suite",
+  "title": "Groundwater Contaminant Transport Inversion \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "MADE_Columbus_AFB_aquifer_dataset",

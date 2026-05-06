@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-411",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-411",
   "parent_l1": "L1-411",
-  "title": "Oxygen Transport (Krogh Cylinder) — Benchmark Suite",
+  "title": "Oxygen Transport (Krogh Cylinder) \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "MICA_muscle_pO2_dataset",

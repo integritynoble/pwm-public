@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-295",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "295",
   "title": "Hartree-Fock Self-Consistent Field",
   "domain": "Computational Chemistry",

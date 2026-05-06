@@ -1,9 +1,10 @@
 {
   "artifact_id": "L2-421",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-421",
   "principle_ref": "sha256:<L1-421_principle_hash>",
-  "title": "River Hydraulics Shallow Water Inversion — Nominal + Mismatch Specs",
+  "title": "River Hydraulics Shallow Water Inversion \u2014 Nominal + Mismatch Specs",
   "spec_type": "nominal_and_mismatch",
   "six_tuple": {
     "omega": {

@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-211",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "211",
-  "title": "Mindlin-Reissner Plate — thick-plate with shear",
+  "title": "Mindlin-Reissner Plate \u2014 thick-plate with shear",
   "domain": "Structural Mechanics",
   "sub_domain": "Shear-deformable plate theory",
   "source_file": "T_structural_mechanics/211_mindlin_reissner_plate.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Mindlin-Reissner Plate — thick-plate with shear forward model.",
+    "description": "Mindlin-Reissner Plate \u2014 thick-plate with shear forward model.",
     "forward_model": "div(D (grad phi + grad phi^T)/2) - kGt(grad w - phi) = 0; div(kGt(grad w - phi)) + q = 0",
     "world_state_x": "plate deflection w(x,y) + rotations phi_x, phi_y",
     "observation_y": "DIC surface + inclinometer",

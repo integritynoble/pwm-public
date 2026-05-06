@@ -122,5 +122,31 @@ def test_hash_invariant_when_slug_added_then_removed():
     assert _canonical_json(manifest_v1) == _canonical_json(manifest_v3)
 
 
+def test_registration_tier_is_ui_only_field():
+    """`registration_tier` must be in UI_ONLY_FIELDS — added 2026-05-06 to
+    let the catalog self-document tier (founder_vetted / community_proposed
+    / stub) without changing on-chain hashes for already-registered artifacts.
+    """
+    assert "registration_tier" in UI_ONLY_FIELDS
+
+
+def test_hash_invariant_under_registration_tier_addition():
+    """Adding `registration_tier` must NOT change the canonical-JSON bytes.
+    Otherwise backfilling tier=stub on the 529 cataloged manifests would
+    orphan any future registrations, and the L1-003/L1-004 hashes already
+    on Sepolia would diverge from local canonical_json output.
+    """
+    manifest_v1 = _example_manifest()
+    manifest_v2 = {**manifest_v1, "registration_tier": "founder_vetted"}
+    manifest_v3 = {**manifest_v1, "registration_tier": "stub"}
+
+    assert _canonical_json(manifest_v1) == _canonical_json(manifest_v2)
+    assert _canonical_json(manifest_v1) == _canonical_json(manifest_v3)
+    assert _canonical_json(manifest_v2) == _canonical_json(manifest_v3), (
+        "Different registration_tier values changed the canonical bytes; "
+        "the field would need to be in UI_ONLY_FIELDS to stay hash-invariant."
+    )
+
+
 if __name__ == "__main__":
     sys.exit(pytest.main([__file__, "-xvs"]))

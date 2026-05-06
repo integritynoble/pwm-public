@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-133",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-133",
   "principle_ref": "sha256:<L1-133_principle_hash>",
   "title": "WAXS Polymer/Structure Spec",
@@ -122,7 +123,7 @@
     "proximity_threshold": 0.1
   },
   "d_spec": 0.3,
-  "d_spec_notes": "Distance from 126 SAXS ~= 0.30 (Related — same scattering mechanism, different q-range). Distance from 125 XRD ~= 0.35.",
+  "d_spec_notes": "Distance from 126 SAXS ~= 0.30 (Related \u2014 same scattering mechanism, different q-range). Distance from 125 XRD ~= 0.35.",
   "s1_s4_gates": [
     "PASS",
     "PASS",

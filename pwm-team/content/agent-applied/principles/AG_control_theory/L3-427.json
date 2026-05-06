@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-427",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-427",
   "parent_l1": "L1-427",
-  "title": "Kalman Filter State Estimation — Benchmark Suite",
+  "title": "Kalman Filter State Estimation \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "IEEE_estimation_benchmark_suite",

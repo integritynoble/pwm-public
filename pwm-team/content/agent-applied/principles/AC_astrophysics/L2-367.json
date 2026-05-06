@@ -1,9 +1,10 @@
 {
   "artifact_id": "L2-367",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-367",
   "principle_ref": "sha256:<L1-367_principle_hash>",
-  "title": "CMB Gravitational Lensing Reconstruction — Nominal + Mismatch Specs",
+  "title": "CMB Gravitational Lensing Reconstruction \u2014 Nominal + Mismatch Specs",
   "spec_type": "nominal_and_mismatch",
   "six_tuple": {
     "omega": {

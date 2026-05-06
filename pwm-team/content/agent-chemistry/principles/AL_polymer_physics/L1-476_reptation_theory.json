@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-476",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "476",
   "title": "de Gennes-Doi-Edwards Reptation Theory",
   "domain": "Polymer Physics",

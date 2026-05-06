@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-273",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "273",
-  "title": "Full Waveform Inversion (FWI) — subsurface velocity imaging",
+  "title": "Full Waveform Inversion (FWI) \u2014 subsurface velocity imaging",
   "domain": "Geophysics",
   "sub_domain": "Seismic FWI (crown jewel of PDE inverse problems)",
   "source_file": "W_geophysics/273_full_waveform_inversion.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Full Waveform Inversion (FWI) — subsurface velocity imaging forward model.",
+    "description": "Full Waveform Inversion (FWI) \u2014 subsurface velocity imaging forward model.",
     "forward_model": "rho d^2u/dt^2 - div(C : eps(u)) = f(t); chi = (1/2) ||d_obs - d_cal||^2; grad_m chi via adjoint",
     "world_state_x": "3D elastic properties (v_P, v_S, rho, anisotropy) of subsurface",
     "observation_y": "multi-component shot-receiver gathers in time",

@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-011",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "011",
   "title": "PALM / STORM (single-molecule localization microscopy)",
   "domain": "Microscopy",

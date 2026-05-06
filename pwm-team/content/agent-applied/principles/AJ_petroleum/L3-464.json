@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-464",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-464",
   "parent_l1": "L1-464",
-  "title": "Arps Decline Curve Analysis — Benchmark Suite",
+  "title": "Arps Decline Curve Analysis \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "DI_production_database_Permian",

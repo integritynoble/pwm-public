@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-155",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "155",
   "title": "Entangled-Photon Microscopy (N00N / SPDC imaging)",
   "domain": "Quantum Imaging",

@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-224",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "224",
-  "title": "Fatigue — Paris law crack growth",
+  "title": "Fatigue \u2014 Paris law crack growth",
   "domain": "Structural Mechanics",
   "sub_domain": "da/dN = C * (delta K)^m crack growth",
   "source_file": "T_structural_mechanics/224_fatigue_paris_law.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Fatigue — Paris law crack growth forward model.",
+    "description": "Fatigue \u2014 Paris law crack growth forward model.",
     "forward_model": "da/dN = C (delta K)^m; N_life = int_{a0}^{a_f} da / (C (delta K(a))^m)",
     "world_state_x": "crack length a(N) and fatigue life N_life",
     "observation_y": "crack length measurement + cycle count",

@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-182",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "182",
-  "title": "Boussinesq Approximation — buoyant flow",
+  "title": "Boussinesq Approximation \u2014 buoyant flow",
   "domain": "Fluid Dynamics",
   "sub_domain": "Boussinesq buoyancy-driven convection",
   "source_file": "R_fluid_dynamics/182_boussinesq.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Boussinesq Approximation — buoyant flow forward model.",
+    "description": "Boussinesq Approximation \u2014 buoyant flow forward model.",
     "forward_model": "rho^0 du/dt + rho^0 u.grad u = -grad p + mu Laplacian u - rho^0 beta (T-T_0) g; energy; div u = 0",
     "world_state_x": "velocity u, temperature T fields in buoyant flow",
     "observation_y": "PIV + thermocouples",

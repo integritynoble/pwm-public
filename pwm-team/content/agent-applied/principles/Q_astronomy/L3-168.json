@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-168",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-168",
   "parent_l1": "L1-168",
-  "title": "Event Horizon Telescope (VLBI) Imaging — Benchmark Suite",
+  "title": "Event Horizon Telescope (VLBI) Imaging \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "EHT_M87_2017_public",

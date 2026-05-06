@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-379",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "379",
   "title": "Baryon Acoustic Oscillation (BAO) Fitting",
   "domain": "Astrophysics",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Baryon Acoustic Oscillation (BAO) Fitting: BAO analysis: measure acoustic scale in galaxy clustering to constrain Hubble parameter and angular diameter distance. The forward operator produces the measurement through a 3-node primitive DAG (F.fourier.power_spectrum…); recovery is posed as a parameter_estimation problem. Difficulty tier delta=5 with effective condition number kappa_eff~30; galaxy_bias_nonlinearity, RSD_model_error set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "Baryon Acoustic Oscillation (BAO) Fitting: BAO analysis: measure acoustic scale in galaxy clustering to constrain Hubble parameter and angular diameter distance. The forward operator produces the measurement through a 3-node primitive DAG (F.fourier.power_spectrum\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=5 with effective condition number kappa_eff~30; galaxy_bias_nonlinearity, RSD_model_error set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "xi(s) = integral P(k) * sinc(k*s) k ** 2 dk / (2*pi ** 2); BAO peak at s ~ 150 Mpc/h",
     "world_state_x": "distance ratios D_V/r_d and D_H/r_d at survey redshift z_eff",
     "observation_y": "galaxy 2-point correlation function xi(s) or power spectrum P(k) from spectroscopic survey",

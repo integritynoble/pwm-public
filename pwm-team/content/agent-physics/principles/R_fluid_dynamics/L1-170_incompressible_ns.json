@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-170",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "170",
-  "title": "Incompressible Navier-Stokes — low-Mach viscous flow",
+  "title": "Incompressible Navier-Stokes \u2014 low-Mach viscous flow",
   "domain": "Fluid Dynamics",
   "sub_domain": "Incompressible NS at moderate Re",
   "source_file": "R_fluid_dynamics/170_incompressible_ns.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Incompressible Navier-Stokes — low-Mach viscous flow forward model.",
+    "description": "Incompressible Navier-Stokes \u2014 low-Mach viscous flow forward model.",
     "forward_model": "du/dt + u.grad u = -grad p/rho + nu Laplacian u + f; div u = 0",
     "world_state_x": "velocity u(x,t), pressure p(x,t)",
     "observation_y": "PIV + pressure probes",

@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-205",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "205",
-  "title": "Laser Heating — short-pulse temperature rise inversion",
+  "title": "Laser Heating \u2014 short-pulse temperature rise inversion",
   "domain": "Heat Transfer",
   "sub_domain": "Ultrafast laser-induced thermal transient",
   "source_file": "S_heat_transfer/205_laser_heating.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Laser Heating — short-pulse temperature rise inversion forward model.",
+    "description": "Laser Heating \u2014 short-pulse temperature rise inversion forward model.",
     "forward_model": "(tau_q * d^2/dt^2 + d/dt) T = alpha * Laplacian T + Q(x,t)/(rho*cp); Q from laser absorption",
     "world_state_x": "transient 3D temperature field T(x,t) under pulsed laser",
     "observation_y": "pyrometer IR + thermoreflectance surface time-series",

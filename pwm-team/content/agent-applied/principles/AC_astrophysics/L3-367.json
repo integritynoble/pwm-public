@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-367",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-367",
   "parent_l1": "L1-367",
-  "title": "CMB Gravitational Lensing Reconstruction — Benchmark Suite",
+  "title": "CMB Gravitational Lensing Reconstruction \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "Planck_2018_lensing_map",

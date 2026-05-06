@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-505",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "505",
   "title": "Pharmacokinetic Dynamic PET (PK-PET)",
   "domain": "Medical Imaging",
@@ -10,9 +11,9 @@
   "gate_class": "analytical",
   "gate_substitutions": null,
   "related_principles": [
-    "L1-033 (PET — static activity reconstruction component, informational)",
-    "L1-403 (PBPK — physiologically-based pharmacokinetics, informational, n_c=1)",
-    "L1-034 (SPECT — sibling nuclear-medicine projection physics, informational)"
+    "L1-033 (PET \u2014 static activity reconstruction component, informational)",
+    "L1-403 (PBPK \u2014 physiologically-based pharmacokinetics, informational, n_c=1)",
+    "L1-034 (SPECT \u2014 sibling nuclear-medicine projection physics, informational)"
   ],
   "E": {
     "description": "Pharmacokinetic Dynamic PET (PK-PET): joint multi-physics forward couples (i) compartmental ODE tracer kinetics describing time-evolution of free and bound tracer concentrations C_T(r, t), C_T_bound(r, t) under plasma input C_p(t) and rate constants (K_1, k_2, k_3, k_4)(r); (ii) tissue activity distribution A(r, t) = alpha(r) * [C_T(r, t) + C_T_bound(r, t)] coupling chemistry to photon physics; (iii) PET projection forward y(s, t) = integral A(r, t) * h_PET(s; r) dr where h_PET is the line-of-response system matrix including attenuation, scatter, normalization, and detector response. The forward DAG has 8 primitives with two coupling constraints (n_c = 2): (i) ODE kinetics state -> tissue activity (deterministic, multi-compartment); (ii) time-resolved activity -> time-resolved projection (linear in activity, time-coupled across frames). Recovery is posed as the joint 4D inverse problem that recovers (K_1, k_2, k_3, k_4)(r) directly from y(s, t) (direct kinetic reconstruction) or via a two-step pipeline (4D-EM-ML for activity then voxelwise kinetic fitting). Standard tracers: FDG (irreversible 2-tissue with k_4=0 for metabolic rate K_i), FLT (proliferation), 11C-PiB (amyloid), 18F-FDOPA (dopamine synthesis), [18F]-Florbetapir (amyloid). Difficulty tier delta = 5 with raw condition number kappa ~ 200 (limited by count statistics and identifiability of multi-compartment model) and effective kappa_eff ~ 25 after temporal regularization and direct kinetic ML reconstruction. Mismatch parameters: input_function_uncertainty, attenuation_correction_error, scatter_correction_error, motion_during_scan, partial_volume_effect, count_statistics_dropoff. Poisson noise dominates count statistics; Gaussian thermal/electronic noise sets a smaller residual floor. See forward_model field for the closed-form joint imaging equation.",
@@ -61,8 +62,8 @@
     "L_DAG": 8.3,
     "n_c": 2,
     "coupling_constraints": [
-      "kinetics_to_activity: A(r, t) = alpha * (C_T + C_T_bound) — deterministic coupling between ODE compartment state and tissue radioactivity at each time t; multi-compartment models introduce identifiability constraints between (K_1, k_2, k_3, k_4)",
-      "activity_to_projection: y(s, t) = integral A(r, t) * h_PET(s; r) dr — linear in activity at each time t but time-coupled across frames through ODE temporal dynamics; Poisson statistics couple count rate to noise variance"
+      "kinetics_to_activity: A(r, t) = alpha * (C_T + C_T_bound) \u2014 deterministic coupling between ODE compartment state and tissue radioactivity at each time t; multi-compartment models introduce identifiability constraints between (K_1, k_2, k_3, k_4)",
+      "activity_to_projection: y(s, t) = integral A(r, t) * h_PET(s; r) dr \u2014 linear in activity at each time t but time-coupled across frames through ODE temporal dynamics; Poisson statistics couple count rate to noise variance"
     ]
   },
   "W": {
@@ -71,7 +72,7 @@
     "stability": "conditional",
     "condition_number_kappa": 200,
     "condition_number_effective": 25,
-    "regime": "Existence of recovered 4D kinetic parameter maps (K_1, k_2, k_3, k_4)(r) is guaranteed within the declared Omega bounds. Uniqueness holds for irreversible 2-tissue compartmental models (FDG-like, k_4 = 0) with sufficient temporal sampling and known C_p(t); reversible 2-tissue models (4 free parameters) require either reference-region constraint or sufficient SNR for full identifiability. Stability is moderately conditioned (kappa_eff ~ 25 after 4D-EM-ML or direct kinetic reconstruction) — input_function_uncertainty dominates K_1 bias; partial_volume_effect dominates small-structure quantitation; count_statistics_dropoff dominates late-frame variance. Joint Hadamard well-posedness for the coupled compartmental-PET forward is established by Carson (1996, 2003), Gunn-Gunn-Cunningham (2001), Patlak-Blasberg-Fenstermacher (1983 Patlak plot), Logan et al. (1990 Logan plot), Wang-Qi (2013 direct kinetic estimation), and Reader-Verhaeghe (2014 4D image reconstruction)."
+    "regime": "Existence of recovered 4D kinetic parameter maps (K_1, k_2, k_3, k_4)(r) is guaranteed within the declared Omega bounds. Uniqueness holds for irreversible 2-tissue compartmental models (FDG-like, k_4 = 0) with sufficient temporal sampling and known C_p(t); reversible 2-tissue models (4 free parameters) require either reference-region constraint or sufficient SNR for full identifiability. Stability is moderately conditioned (kappa_eff ~ 25 after 4D-EM-ML or direct kinetic reconstruction) \u2014 input_function_uncertainty dominates K_1 bias; partial_volume_effect dominates small-structure quantitation; count_statistics_dropoff dominates late-frame variance. Joint Hadamard well-posedness for the coupled compartmental-PET forward is established by Carson (1996, 2003), Gunn-Gunn-Cunningham (2001), Patlak-Blasberg-Fenstermacher (1983 Patlak plot), Logan et al. (1990 Logan plot), Wang-Qi (2013 direct kinetic estimation), and Reader-Verhaeghe (2014 4D image reconstruction)."
   },
   "C": {
     "solver_class": "linear-operator + convex optimisation [direct kinetic ML, 4D-EM-ML, NEGML; nested ML for kinetics + activity] | graphical analysis [Patlak plot for irreversible tracers, Logan plot for reversible tracers] | linear-operator + deep neural prior [DeepKinet, DeepPET]",
@@ -266,9 +267,9 @@
       "closest_existing_principle": "L1-033 PET",
       "d_principle_estimate": 0.55,
       "advisory_label": "Distinct",
-      "rationale": "L1-033 PET reconstructs static 3D activity distribution A(r) from a single-time-frame sinogram; sensing_mechanism = annihilation_pair_detection; problem_class = linear_inverse; solution_space = 3D activity. L1-505 PK-PET reconstructs 4D kinetic parameter maps (K_1, k_2, k_3, k_4)(r) from time-resolved sinogram y(s, t) given C_p(t); sensing_mechanism = annihilation_with_compartmental_kinetics; problem_class = linear_inverse_4d; solution_space = 4D_kinetic_parameter_map. Adds L.compartmental_ode primitive and the kinetics-to-activity coupling absent from static PET. Jaccard distance over (sensing_mechanism, solution_space, problem_class, primitives) ~ 0.55 — solidly Distinct under v1 advisory thresholds (>= 0.30). The 4D temporal dimension and the recovery of kinetic rate constants (rather than instantaneous activity) make this a fundamentally different inversion target."
+      "rationale": "L1-033 PET reconstructs static 3D activity distribution A(r) from a single-time-frame sinogram; sensing_mechanism = annihilation_pair_detection; problem_class = linear_inverse; solution_space = 3D activity. L1-505 PK-PET reconstructs 4D kinetic parameter maps (K_1, k_2, k_3, k_4)(r) from time-resolved sinogram y(s, t) given C_p(t); sensing_mechanism = annihilation_with_compartmental_kinetics; problem_class = linear_inverse_4d; solution_space = 4D_kinetic_parameter_map. Adds L.compartmental_ode primitive and the kinetics-to-activity coupling absent from static PET. Jaccard distance over (sensing_mechanism, solution_space, problem_class, primitives) ~ 0.55 \u2014 solidly Distinct under v1 advisory thresholds (>= 0.30). The 4D temporal dimension and the recovery of kinetic rate constants (rather than instantaneous activity) make this a fundamentally different inversion target."
     },
-    "clinical_context": "Clinical research / quantitative oncology imaging. FDG-PK recovers metabolic rate of glucose (K_i = MRGlc) — gold standard for tumor staging, treatment response, and brain glucose metabolism (Alzheimer's, Parkinson's). FLT-PK recovers proliferation rate (K_1 * k_3 / (k_2 + k_3)). 11C-PiB and [18F]-Florbetapir-PK recover amyloid distribution volume V_T (Alzheimer's diagnosis). 18F-FDOPA-PK recovers presynaptic dopamine synthesis rate (Parkinson's). Standard at most academic medical centers' PET research programs. Replaces semi-quantitative SUV with absolute kinetic rates that are comparable across scans, scanners, and patients."
+    "clinical_context": "Clinical research / quantitative oncology imaging. FDG-PK recovers metabolic rate of glucose (K_i = MRGlc) \u2014 gold standard for tumor staging, treatment response, and brain glucose metabolism (Alzheimer's, Parkinson's). FLT-PK recovers proliferation rate (K_1 * k_3 / (k_2 + k_3)). 11C-PiB and [18F]-Florbetapir-PK recover amyloid distribution volume V_T (Alzheimer's diagnosis). 18F-FDOPA-PK recovers presynaptic dopamine synthesis rate (Parkinson's). Standard at most academic medical centers' PET research programs. Replaces semi-quantitative SUV with absolute kinetic rates that are comparable across scans, scanners, and patients."
   },
   "display_slug": "pkpet"
 }

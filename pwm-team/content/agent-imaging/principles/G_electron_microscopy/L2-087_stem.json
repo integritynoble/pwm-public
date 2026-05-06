@@ -1,8 +1,9 @@
 {
   "artifact_id": "L2-087",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-087",
-  "title": "Scanning TEM (STEM) — HAADF / BF imaging with convergent beam Mismatch-Only Spec",
+  "title": "Scanning TEM (STEM) \u2014 HAADF / BF imaging with convergent beam Mismatch-Only Spec",
   "spec_type": "mismatch_only",
   "six_tuple": {
     "omega": {

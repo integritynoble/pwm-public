@@ -1,8 +1,9 @@
 {
   "artifact_id": "L2-020",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-020",
-  "title": "Lattice Light Sheet Microscopy (LLSM) — Bessel-lattice 3D imaging Mismatch-Only Spec",
+  "title": "Lattice Light Sheet Microscopy (LLSM) \u2014 Bessel-lattice 3D imaging Mismatch-Only Spec",
   "spec_type": "mismatch_only",
   "six_tuple": {
     "omega": {

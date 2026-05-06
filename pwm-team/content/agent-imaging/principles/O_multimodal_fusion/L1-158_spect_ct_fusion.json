@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-158",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "158",
   "title": "SPECT-CT Fusion",
   "domain": "Multimodal Fusion",

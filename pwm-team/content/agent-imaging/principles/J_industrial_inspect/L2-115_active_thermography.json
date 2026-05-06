@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-115",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-115",
   "title": "Active Thermography (pulsed / lock-in IR inspection) Mismatch-Only Spec",
   "spec_type": "mismatch_only",

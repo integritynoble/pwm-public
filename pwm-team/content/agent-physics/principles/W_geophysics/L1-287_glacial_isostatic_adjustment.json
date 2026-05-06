@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-287",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "287",
-  "title": "Glacial Isostatic Adjustment (GIA) — post-glacial rebound",
+  "title": "Glacial Isostatic Adjustment (GIA) \u2014 post-glacial rebound",
   "domain": "Geophysics",
   "sub_domain": "Viscoelastic Earth + ice-load history",
   "source_file": "W_geophysics/287_glacial_isostatic_adjustment.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Glacial Isostatic Adjustment (GIA) — post-glacial rebound forward model.",
+    "description": "Glacial Isostatic Adjustment (GIA) \u2014 post-glacial rebound forward model.",
     "forward_model": "response = L conv load_history; sea-level eqn gives eustatic adjustment",
     "world_state_x": "present-day vertical uplift rate + mantle viscosity structure",
     "observation_y": "GPS vertical velocities + tide-gauge RSL + paleo shorelines",

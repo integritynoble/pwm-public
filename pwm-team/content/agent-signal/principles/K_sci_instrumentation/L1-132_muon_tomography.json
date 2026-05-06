@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-132",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "132",
   "title": "Muon Tomography (cosmic-ray scattering imaging)",
   "domain": "Scientific Instrumentation",

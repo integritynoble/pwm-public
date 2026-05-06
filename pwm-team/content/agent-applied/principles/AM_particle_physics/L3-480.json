@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-480",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-480",
   "parent_l1": "L1-480",
-  "title": "Lattice QCD Path Integral — Benchmark Suite",
+  "title": "Lattice QCD Path Integral \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "MILC_gauge_configurations_public",

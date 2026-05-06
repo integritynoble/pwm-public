@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-054",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-054",
   "parent_l1": "L1-054",
-  "title": "Photon-Counting CT (PCCT) — spectral detector CT Benchmark Suite",
+  "title": "Photon-Counting CT (PCCT) \u2014 spectral detector CT Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "canonical clinical/public dataset for this modality",
@@ -179,7 +180,7 @@
       }
     ]
   },
-  "hardness_rule_check": "SATISFIED — top baseline fails at T4_blind strata corner.",
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind strata corner.",
   "ipfs_cid": null,
   "ground_truth_cid": null,
   "display_slug": "photon-counting-ct"

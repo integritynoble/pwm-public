@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-383",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-383",
   "principle_ref": "sha256:<L1-383_principle_hash>",
   "title": "Image Super-Resolution Real-World Spec (Real-ESRGAN family)",
@@ -128,7 +129,7 @@
     "proximity_threshold": 0.1
   },
   "d_spec": 0.42,
-  "d_spec_notes": "Reference from hypothetical bicubic-oracle spec d_spec ~= 0.20 (Similar). Distance from 382 deblurring ~= 0.35 (Related — both share K.blur primitive but SR adds decimation).",
+  "d_spec_notes": "Reference from hypothetical bicubic-oracle spec d_spec ~= 0.20 (Similar). Distance from 382 deblurring ~= 0.35 (Related \u2014 both share K.blur primitive but SR adds decimation).",
   "s1_s4_gates": [
     "PASS",
     "PASS",

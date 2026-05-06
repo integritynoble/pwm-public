@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-312",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "312",
-  "title": "Time-Independent Schrödinger Equation",
+  "title": "Time-Independent Schr\u00f6dinger Equation",
   "domain": "Quantum Mechanics",
   "sub_domain": "Stationary quantum eigenproblem",
   "source_file": "Y_quantum_mechanics/312_time_independent_schrodinger.md",

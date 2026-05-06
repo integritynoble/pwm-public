@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-396",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-396",
   "parent_l1": "L1-396",
-  "title": "Hodgkin-Huxley Neuron Model Parameter Estimation — Benchmark Suite",
+  "title": "Hodgkin-Huxley Neuron Model Parameter Estimation \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "Allen_Cell_Types_Database_patch_clamp",

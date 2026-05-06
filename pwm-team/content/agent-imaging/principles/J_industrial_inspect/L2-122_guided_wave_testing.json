@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-122",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-122",
   "title": "Guided-Wave Ultrasonic Testing (long-range pipe/rail inspection) Mismatch-Only Spec",
   "spec_type": "mismatch_only",

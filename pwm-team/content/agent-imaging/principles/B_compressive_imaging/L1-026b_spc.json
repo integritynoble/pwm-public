@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-026b",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "026b",
   "title": "Single-Pixel Camera (SPC) with Hadamard structured illumination",
   "domain": "Compressive Imaging",

@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-432",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-432",
   "parent_l1": "L1-432",
-  "title": "Optimal Control (LQR) — Benchmark Suite",
+  "title": "Optimal Control (LQR) \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "SLICOT_benchmark_LQR_systems",

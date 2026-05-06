@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-387",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-387",
   "principle_ref": "sha256:<L1-387_principle_hash>",
   "title": "DoA Estimation Calibration-Mismatch Spec (ULA family)",
@@ -134,7 +135,7 @@
     "proximity_threshold": 0.1
   },
   "d_spec": 0.55,
-  "d_spec_notes": "Distance from wideband DoA spec ~= 0.30 (Related, adds frequency index). Distance from 394 spectral estimation ~= 0.40 (Related — both are parametric spectral estimation, different physical carriers).",
+  "d_spec_notes": "Distance from wideband DoA spec ~= 0.30 (Related, adds frequency index). Distance from 394 spectral estimation ~= 0.40 (Related \u2014 both are parametric spectral estimation, different physical carriers).",
   "s1_s4_gates": [
     "PASS",
     "PASS",

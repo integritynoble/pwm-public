@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-463",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-463",
   "parent_l1": "L1-463",
-  "title": "Seismic Rock Physics (Gassmann) — Benchmark Suite",
+  "title": "Seismic Rock Physics (Gassmann) \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "Biot_Gassmann_benchmark_suite",

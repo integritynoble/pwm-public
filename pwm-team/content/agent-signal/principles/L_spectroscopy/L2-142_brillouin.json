@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-142",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-142",
   "principle_ref": "sha256:<L1-142_principle_hash>",
   "title": "Brillouin Microscopy Peak-Fitting Spec",
@@ -127,7 +128,7 @@
     "proximity_threshold": 0.1
   },
   "d_spec": 0.55,
-  "d_spec_notes": "Novel vs. other spectroscopies — uniquely encodes mechanical (not chemical) properties. Distance from 137 Raman ~= 0.50.",
+  "d_spec_notes": "Novel vs. other spectroscopies \u2014 uniquely encodes mechanical (not chemical) properties. Distance from 137 Raman ~= 0.50.",
   "s1_s4_gates": [
     "PASS",
     "PASS",

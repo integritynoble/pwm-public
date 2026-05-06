@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-101",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "101",
-  "title": "Active Sonar — underwater acoustic imaging",
+  "title": "Active Sonar \u2014 underwater acoustic imaging",
   "domain": "Remote Sensing",
   "sub_domain": "Underwater acoustic imaging",
   "source_file": "I_remote_sensing/101_sonar.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical remote-sensing literature for this principle.",
   "E": {
-    "description": "Active Sonar — underwater acoustic imaging: active sonar pulse produces the measurement through a 4-node primitive DAG L.emit.acoustic_pulse -> S.scan.beam -> L.beamform -> int.temporal, with time-integrated exposure and additive Gaussian thermal/electronic noise. Recovery is posed as a linear inverse problem that inverts the forward operator to estimate the scene-side 2D acoustic reflectivity. Difficulty tier delta=3 with effective condition number kappa_eff~12; calibration-level mismatch (sound_speed_profile_error, multipath, platform_roll) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
+    "description": "Active Sonar \u2014 underwater acoustic imaging: active sonar pulse produces the measurement through a 4-node primitive DAG L.emit.acoustic_pulse -> S.scan.beam -> L.beamform -> int.temporal, with time-integrated exposure and additive Gaussian thermal/electronic noise. Recovery is posed as a linear inverse problem that inverts the forward operator to estimate the scene-side 2D acoustic reflectivity. Difficulty tier delta=3 with effective condition number kappa_eff~12; calibration-level mismatch (sound_speed_profile_error, multipath, platform_roll) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
     "forward_model": "y(t, theta) = sum_r reflectivity(r) * pulse(t - 2r/c(r)) + reverberation + n",
     "world_state_x": "Scene-side quantity of interest (reflectance / velocity / phase / concentration)",
     "observation_y": "Sensor output at declared resolution + noise",

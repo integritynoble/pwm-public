@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-437",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-437",
   "parent_l1": "L1-437",
-  "title": "Nonlinear Observer Design — Benchmark Suite",
+  "title": "Nonlinear Observer Design \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "MATLAB_observer_design_examples",

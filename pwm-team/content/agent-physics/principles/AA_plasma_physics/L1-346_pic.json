@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-346",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "346",
-  "title": "PIC (Particle-in-Cell) — plasma kinetic simulation",
+  "title": "PIC (Particle-in-Cell) \u2014 plasma kinetic simulation",
   "domain": "Plasma Physics",
   "sub_domain": "PIC kinetic plasma simulation",
   "source_file": "AA_plasma_physics/346_pic.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "PIC (Particle-in-Cell) — plasma kinetic simulation forward model.",
+    "description": "PIC (Particle-in-Cell) \u2014 plasma kinetic simulation forward model.",
     "forward_model": "dm_i v_i/dt = q(E + v x B) at x_i; rho = sum_i q_i * S(x - x_i); Maxwell solver",
     "world_state_x": "particle-cloud distribution + self-consistent E, B fields",
     "observation_y": "probe currents + imaging cameras + Langmuir probes",

@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-237",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "237",
-  "title": "Radar Cross-Section — backscatter reconstruction",
+  "title": "Radar Cross-Section \u2014 backscatter reconstruction",
   "domain": "Electromagnetics",
   "sub_domain": "Monostatic / bistatic RCS",
   "source_file": "U_electromagnetics/237_rcs.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Radar Cross-Section — backscatter reconstruction forward model.",
+    "description": "Radar Cross-Section \u2014 backscatter reconstruction forward model.",
     "forward_model": "sigma_RCS = 4*pi*lim_{r->inf} r^2 * |E_scat|^2 / |E_inc|^2",
     "world_state_x": "target RCS sigma(theta,phi,f) over aspect angles and frequencies",
     "observation_y": "radar return amplitude+phase measurements",

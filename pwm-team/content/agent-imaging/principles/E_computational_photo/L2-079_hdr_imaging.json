@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-079",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-079",
   "title": "HDR Multi-Exposure Fusion Mismatch-Only Spec",
   "spec_type": "mismatch_only",

@@ -1,6 +1,7 @@
 {
   "artifact_id": "L3-390",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-390",
   "parent_l1": "L1-390",
   "title": "Phase Unwrapping Benchmark Suite (InSAR + MRI + synthetic)",
@@ -148,7 +149,7 @@
       }
     ]
   },
-  "hardness_rule_check": "SATISFIED — PhaseNet fails at T4_hardest corner (sigma_phi=2, discontinuity=0.3, coherence=0.1): 1.1 rad > epsilon_fn ~ 1.0 rad.",
+  "hardness_rule_check": "SATISFIED \u2014 PhaseNet fails at T4_hardest corner (sigma_phi=2, discontinuity=0.3, coherence=0.1): 1.1 rad > epsilon_fn ~ 1.0 rad.",
   "ipfs_cid": null,
   "ground_truth_cid": null,
   "display_slug": "phase-unwrapping"

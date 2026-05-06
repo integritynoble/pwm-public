@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-488",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "488",
   "title": "Drift-Diffusion Semiconductor Transport (TCAD)",
   "domain": "Semiconductor Physics",

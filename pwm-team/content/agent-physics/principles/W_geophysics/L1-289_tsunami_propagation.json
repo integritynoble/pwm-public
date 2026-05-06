@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-289",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "289",
-  "title": "Tsunami Propagation — shallow-water wave simulation",
+  "title": "Tsunami Propagation \u2014 shallow-water wave simulation",
   "domain": "Geophysics",
   "sub_domain": "Nonlinear shallow-water tsunami",
   "source_file": "W_geophysics/289_tsunami_propagation.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Tsunami Propagation — shallow-water wave simulation forward model.",
+    "description": "Tsunami Propagation \u2014 shallow-water wave simulation forward model.",
     "forward_model": "dh/dt + div((h+H) u) = 0; du/dt + u.grad u + g grad h = -friction",
     "world_state_x": "water surface elevation h(x,y,t) + currents u(x,y,t)",
     "observation_y": "tide-gauge + DART ocean-bottom pressure sensors",

@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-135",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-135",
   "principle_ref": "sha256:<L1-135_principle_hash>",
   "title": "Neutron Powder Rietveld Spec",
@@ -115,7 +116,7 @@
     "proximity_threshold": 0.1
   },
   "d_spec": 0.35,
-  "d_spec_notes": "Distance from 125 XRD ~= 0.35 (Similar — diffraction, different carrier). Distance from 130 neutron CT ~= 0.45.",
+  "d_spec_notes": "Distance from 125 XRD ~= 0.35 (Similar \u2014 diffraction, different carrier). Distance from 130 neutron CT ~= 0.45.",
   "s1_s4_gates": [
     "PASS",
     "PASS",

@@ -1,9 +1,10 @@
 {
   "artifact_id": "L2-416",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-416",
   "principle_ref": "sha256:<L1-416_principle_hash>",
-  "title": "Atmospheric Radiative Transfer Inversion — Nominal + Mismatch Specs",
+  "title": "Atmospheric Radiative Transfer Inversion \u2014 Nominal + Mismatch Specs",
   "spec_type": "nominal_and_mismatch",
   "six_tuple": {
     "omega": {

@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-452",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "452",
   "title": "Multibody Dynamics with Constraints",
   "domain": "Robotics",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Multibody Dynamics with Constraints: Multibody dynamics with holonomic constraints: simulate articulated mechanism using Lagrange multipliers. The forward operator produces the measurement through a 3-node primitive DAG (M.lagrange.multiplier_dynamics…); recovery is posed as a parameter_estimation problem. Difficulty tier delta=5 with effective condition number kappa_eff~500; constraint_drift_accumulation, index_reduction_error set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "Multibody Dynamics with Constraints: Multibody dynamics with holonomic constraints: simulate articulated mechanism using Lagrange multipliers. The forward operator produces the measurement through a 3-node primitive DAG (M.lagrange.multiplier_dynamics\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=5 with effective condition number kappa_eff~500; constraint_drift_accumulation, index_reduction_error set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "[M, -J ** T; J, 0] [q_ddot; lambda] = [Q; b]; constraint stabilization: Baumgarte method",
     "world_state_x": "generalized accelerations q_ddot and constraint forces lambda",
     "observation_y": "generalized forces Q(t) and current state {q, q_dot}",

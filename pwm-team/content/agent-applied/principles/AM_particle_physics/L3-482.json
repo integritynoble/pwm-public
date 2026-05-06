@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-482",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-482",
   "parent_l1": "L1-482",
-  "title": "Monte Carlo Event Generation — Benchmark Suite",
+  "title": "Monte Carlo Event Generation \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "LEP_event_shapes_ALEPH_DELPHI_L3_OPAL",

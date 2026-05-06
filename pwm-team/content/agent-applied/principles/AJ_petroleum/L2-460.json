@@ -1,9 +1,10 @@
 {
   "artifact_id": "L2-460",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-460",
   "principle_ref": "sha256:<L1-460_principle_hash>",
-  "title": "Reservoir History Matching — Nominal + Mismatch Specs",
+  "title": "Reservoir History Matching \u2014 Nominal + Mismatch Specs",
   "spec_type": "nominal_and_mismatch",
   "six_tuple": {
     "omega": {

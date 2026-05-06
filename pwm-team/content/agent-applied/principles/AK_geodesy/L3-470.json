@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-470",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-470",
   "parent_l1": "L1-470",
-  "title": "Photogrammetry Structure-from-Motion — Benchmark Suite",
+  "title": "Photogrammetry Structure-from-Motion \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "ISPRS_benchmark_UAV_photogrammetry",

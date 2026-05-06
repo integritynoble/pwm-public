@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-152",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-152",
   "title": "XFEL Serial Femtosecond Crystallography (SFX) Mismatch-Only Spec",
   "spec_type": "mismatch_only",

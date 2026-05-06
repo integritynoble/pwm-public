@@ -1,6 +1,7 @@
 {
   "artifact_id": "L3-124",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-124",
   "parent_l1": "L1-124",
   "title": "Vibration-Based Damage Detection (modal analysis NDT) Benchmark Suite",
@@ -183,7 +184,7 @@
       }
     ]
   },
-  "hardness_rule_check": "SATISFIED — top baseline fails at T4_blind strata corner.",
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind strata corner.",
   "ipfs_cid": null,
   "ground_truth_cid": null,
   "display_slug": "vibration-damage-detection"

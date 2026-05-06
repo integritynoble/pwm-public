@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-306",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-306",
   "title": "Coarse-Grained Molecular Dynamics (MARTINI, Dry-MARTINI) Mismatch-Only Spec",
   "spec_type": "mismatch_only",

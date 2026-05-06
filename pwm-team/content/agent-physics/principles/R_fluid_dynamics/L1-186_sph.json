@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-186",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "186",
-  "title": "SPH — smoothed particle hydrodynamics",
+  "title": "SPH \u2014 smoothed particle hydrodynamics",
   "domain": "Fluid Dynamics",
   "sub_domain": "Lagrangian meshfree SPH",
   "source_file": "R_fluid_dynamics/186_sph.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "SPH — smoothed particle hydrodynamics forward model.",
+    "description": "SPH \u2014 smoothed particle hydrodynamics forward model.",
     "forward_model": "rho_i = sum_j m_j W_ij; du_i/dt = -sum_j m_j (p_i/rho_i^2 + p_j/rho_j^2) grad W_ij + ...",
     "world_state_x": "particle density, velocity, pressure in meshfree representation",
     "observation_y": "wave tank / free-surface impact imaging",

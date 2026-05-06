@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-115",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "115",
   "title": "Active Thermography (pulsed / lock-in IR inspection)",
   "domain": "Industrial Inspection",

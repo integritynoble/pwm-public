@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-326",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-326",
   "title": "k.p Perturbation Theory Mismatch-Only Spec",
   "spec_type": "mismatch_only",

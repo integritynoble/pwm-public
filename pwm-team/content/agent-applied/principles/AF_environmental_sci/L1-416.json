@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-416",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "416",
   "title": "Atmospheric Radiative Transfer Inversion",
   "domain": "Environmental Science",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Atmospheric Radiative Transfer Inversion: Atmospheric RT inversion: retrieve temperature, ozone, and trace gas profiles from hyperspectral satellite radiances. The forward operator produces the measurement through a 3-node primitive DAG (S.rt.disort_solver…); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=5 with effective condition number kappa_eff~500; cloud_contamination, nonLTE_effect set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "Atmospheric Radiative Transfer Inversion: Atmospheric RT inversion: retrieve temperature, ozone, and trace gas profiles from hyperspectral satellite radiances. The forward operator produces the measurement through a 3-node primitive DAG (S.rt.disort_solver\u2026); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=5 with effective condition number kappa_eff~500; cloud_contamination, nonLTE_effect set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "I(nu) = integral B(nu, T(z)) * d_tau/dz * exp(-tau(nu,z)/mu) dz (Schwarzschild equation)",
     "world_state_x": "atmospheric temperature T(z) and trace gas concentration profiles q_i(z)",
     "observation_y": "top-of-atmosphere radiance spectra I(nu) from hyperspectral IR sounder",

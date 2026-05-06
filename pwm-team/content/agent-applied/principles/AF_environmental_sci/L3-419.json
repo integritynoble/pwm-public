@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-419",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-419",
   "parent_l1": "L1-419",
-  "title": "Ocean Circulation Inverse Modeling — Benchmark Suite",
+  "title": "Ocean Circulation Inverse Modeling \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "Argo_GDAC_global_profiles",

@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-363",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "363",
-  "title": "Decay Heat — residual power after reactor shutdown",
+  "title": "Decay Heat \u2014 residual power after reactor shutdown",
   "domain": "Nuclear Engineering",
   "sub_domain": "Summation calculation of post-shutdown decay heat",
   "source_file": "AB_nuclear_engineering/363_decay_heat.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Decay Heat — residual power after reactor shutdown forward model.",
+    "description": "Decay Heat \u2014 residual power after reactor shutdown forward model.",
     "forward_model": "P_decay(t) = sum_i N_i(t) * lambda_i * E_i; N_i from Bateman with irradiation history",
     "world_state_x": "decay heat P_decay(t) vs time after shutdown",
     "observation_y": "spent-fuel calorimetry + gamma spectroscopy",

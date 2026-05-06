@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-018",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-018",
   "title": "Differential Interference Contrast (DIC / Nomarski) Microscopy Mismatch-Only Spec",
   "spec_type": "mismatch_only",

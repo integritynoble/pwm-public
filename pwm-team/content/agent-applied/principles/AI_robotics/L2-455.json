@@ -1,9 +1,10 @@
 {
   "artifact_id": "L2-455",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-455",
   "principle_ref": "sha256:<L1-455_principle_hash>",
-  "title": "Orbital Mechanics Inversion (Lambert) — Nominal + Mismatch Specs",
+  "title": "Orbital Mechanics Inversion (Lambert) \u2014 Nominal + Mismatch Specs",
   "spec_type": "nominal_and_mismatch",
   "six_tuple": {
     "omega": {

@@ -1,8 +1,9 @@
 {
   "artifact_id": "L2-313",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-313",
-  "title": "Time-Dependent Schrödinger Equation Mismatch-Only Spec",
+  "title": "Time-Dependent Schr\u00f6dinger Equation Mismatch-Only Spec",
   "spec_type": "mismatch_only",
   "six_tuple": {
     "omega": {
@@ -31,7 +32,7 @@
       "forward": "i*hbar*dpsi/dt = (H_0 + V_laser(t))*psi(t)",
       "operator": "TDSE_forward_mismatch",
       "primitive_chain": "E.hamiltonian_t -> E.laser_coupling -> M.time_integrate -> O.time_resolved",
-      "inverse": "recover constitutive parameters for Time-Dependent Schrödinger Equation"
+      "inverse": "recover constitutive parameters for Time-Dependent Schr\u00f6dinger Equation"
     },
     "B": {
       "domain_specific_priors": true

@@ -1,9 +1,10 @@
 {
   "artifact_id": "L2-399",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-399",
   "principle_ref": "sha256:<L1-399_principle_hash>",
-  "title": "Cardiac Electrophysiology (Monodomain) — Nominal + Mismatch Specs",
+  "title": "Cardiac Electrophysiology (Monodomain) \u2014 Nominal + Mismatch Specs",
   "spec_type": "nominal_and_mismatch",
   "six_tuple": {
     "omega": {

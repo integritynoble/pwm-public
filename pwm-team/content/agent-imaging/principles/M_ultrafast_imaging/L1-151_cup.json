@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-151",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "151",
-  "title": "Compressed Ultrafast Photography (CUP) — trillion fps imaging",
+  "title": "Compressed Ultrafast Photography (CUP) \u2014 trillion fps imaging",
   "domain": "Ultrafast Imaging",
   "sub_domain": "Coded-aperture + streak camera 1 Tfps imaging",
   "source_file": "M_ultrafast_imaging/151_cup.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
   "E": {
-    "description": "Compressed Ultrafast Photography (CUP) — trillion fps imaging: compressed ultrafast produces the measurement through a 5-node primitive DAG L.diag.binary -> S.temporal.coded -> L.streak_sweep -> L.modulus_squared -> int.temporal, with time-integrated exposure and photon-shot-noise-limited (Poisson counting). Recovery is posed as a linear inverse problem that inverts the forward operator to estimate the scene-side 3D xyt video. Difficulty tier delta=10 with effective condition number kappa_eff~28; calibration-level mismatch (dmd_mask_drift, streak_nonlinearity, cross_talk) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
+    "description": "Compressed Ultrafast Photography (CUP) \u2014 trillion fps imaging: compressed ultrafast produces the measurement through a 5-node primitive DAG L.diag.binary -> S.temporal.coded -> L.streak_sweep -> L.modulus_squared -> int.temporal, with time-integrated exposure and photon-shot-noise-limited (Poisson counting). Recovery is posed as a linear inverse problem that inverts the forward operator to estimate the scene-side 3D xyt video. Difficulty tier delta=10 with effective condition number kappa_eff~28; calibration-level mismatch (dmd_mask_drift, streak_nonlinearity, cross_talk) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
     "forward_model": "y(x, y') = sum_t C(x, y - shear*t) * f(x, y, t) + n; recover 3D (x, y, t) from 2D streak image",
     "world_state_x": "Principle-specific quantity of interest",
     "observation_y": "Detector output at declared geometry",

@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-195",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "195",
-  "title": "Transient Heat Conduction — inverse heat conduction (IHCP)",
+  "title": "Transient Heat Conduction \u2014 inverse heat conduction (IHCP)",
   "domain": "Heat Transfer",
   "sub_domain": "Parabolic PDE inverse source/BC estimation",
   "source_file": "S_heat_transfer/195_transient_heat.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Transient Heat Conduction — inverse heat conduction (IHCP) forward model.",
+    "description": "Transient Heat Conduction \u2014 inverse heat conduction (IHCP) forward model.",
     "forward_model": "rho*cp*dT/dt = div(k grad T) + Q(x,t); BCs: Dirichlet/Neumann/Robin at boundaries",
     "world_state_x": "3D temperature field T(x,t) and/or heat flux q''(x_b,t) at inaccessible boundary",
     "observation_y": "thermocouple time series at N_s interior/accessible positions",

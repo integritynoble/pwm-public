@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-442",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "442",
   "title": "Implied Volatility Surface Construction",
   "domain": "Computational Finance",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Implied Volatility Surface Construction: Implied vol surface construction: build smooth, arbitrage-free implied volatility surface from sparse market quotes. The forward operator produces the measurement through a 3-node primitive DAG (S.interpolation.cubic_spline…); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=3 with effective condition number kappa_eff~30; sparse_data_interpolation_error, butterfly_arbitrage_violation set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "Implied Volatility Surface Construction: Implied vol surface construction: build smooth, arbitrage-free implied volatility surface from sparse market quotes. The forward operator produces the measurement through a 3-node primitive DAG (S.interpolation.cubic_spline\u2026); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=3 with effective condition number kappa_eff~30; sparse_data_interpolation_error, butterfly_arbitrage_violation set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "sigma_impl(k, T) modeled by SVI parameterization: w(k) = a + b*(rho*(k-m) + sqrt((k-m) ** 2 + sigma ** 2))",
     "world_state_x": "continuous implied vol surface sigma(K/F, T) satisfying calendar and butterfly arbitrage constraints",
     "observation_y": "sparse market implied vols sigma_i at (K_i, T_j) grid points",

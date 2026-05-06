@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-234",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "234",
-  "title": "FDTD — finite-difference time-domain Maxwell",
+  "title": "FDTD \u2014 finite-difference time-domain Maxwell",
   "domain": "Electromagnetics",
   "sub_domain": "Yee-grid explicit FDTD",
   "source_file": "U_electromagnetics/234_fdtd.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "FDTD — finite-difference time-domain Maxwell forward model.",
+    "description": "FDTD \u2014 finite-difference time-domain Maxwell forward model.",
     "forward_model": "E(n+1) = E(n) + (dt/eps) * curl H - (dt*sigma/eps)*E; H(n+0.5) = H(n-0.5) - (dt/mu)*curl E",
     "world_state_x": "E, H fields at Yee grid positions through time",
     "observation_y": "field probes + far-field NTF transform",

@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-451",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-451",
   "parent_l1": "L1-451",
-  "title": "Rigid Body Dynamics Simulation — Benchmark Suite",
+  "title": "Rigid Body Dynamics Simulation \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "rigid_body_dynamics_benchmark_PyBullet",

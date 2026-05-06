@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-244",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "244",
-  "title": "Rayleigh Scattering — molecular / small-particle scattering",
+  "title": "Rayleigh Scattering \u2014 molecular / small-particle scattering",
   "domain": "Electromagnetics",
   "sub_domain": "Rayleigh regime optical scattering",
   "source_file": "U_electromagnetics/244_rayleigh_scattering.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Rayleigh Scattering — molecular / small-particle scattering forward model.",
+    "description": "Rayleigh Scattering \u2014 molecular / small-particle scattering forward model.",
     "forward_model": "sigma_R ~ (2*pi/lambda)^4 * alpha^2; depolarization for non-spherical",
     "world_state_x": "molecular number density or small-aerosol concentration",
     "observation_y": "integrated photometer readings across wavelengths",

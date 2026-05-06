@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-386",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-386",
   "principle_ref": "sha256:<L1-386_principle_hash>",
   "title": "Compressed Sensing Canonical Spec (Gaussian matrix + Lp recovery)",

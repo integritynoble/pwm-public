@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-100",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "100",
-  "title": "Synthetic Aperture Radar (SAR) — range-Doppler coherent imaging",
+  "title": "Synthetic Aperture Radar (SAR) \u2014 range-Doppler coherent imaging",
   "domain": "Remote Sensing",
   "sub_domain": "Microwave coherent imaging",
   "source_file": "I_remote_sensing/100_sar.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical remote-sensing literature for this principle.",
   "E": {
-    "description": "Synthetic Aperture Radar (SAR) — range-Doppler coherent imaging: sar coherent imaging produces the measurement through a 5-node primitive DAG L.emit.chirp -> S.scan.platform -> L.pulse_compression -> L.range_doppler -> int.spatial, with multi-angle tomographic integration and multiplicative speckle (Rayleigh amplitude / exponential intensity). Recovery is posed as a non-convex inverse problem that inverts the forward operator to estimate the scene-side 2D complex scattering. Difficulty tier delta=5 with effective condition number kappa_eff~20; calibration-level mismatch (platform_motion_error, ionospheric_phase, speckle_coherence_loss) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
+    "description": "Synthetic Aperture Radar (SAR) \u2014 range-Doppler coherent imaging: sar coherent imaging produces the measurement through a 5-node primitive DAG L.emit.chirp -> S.scan.platform -> L.pulse_compression -> L.range_doppler -> int.spatial, with multi-angle tomographic integration and multiplicative speckle (Rayleigh amplitude / exponential intensity). Recovery is posed as a non-convex inverse problem that inverts the forward operator to estimate the scene-side 2D complex scattering. Difficulty tier delta=5 with effective condition number kappa_eff~20; calibration-level mismatch (platform_motion_error, ionospheric_phase, speckle_coherence_loss) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
     "forward_model": "y(t, phi) = chirp conv s(r, a) * exp(i*4*pi*R/lambda) + n; recover complex scattering field s",
     "world_state_x": "Scene-side quantity of interest (reflectance / velocity / phase / concentration)",
     "observation_y": "Sensor output at declared resolution + noise",

@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-420",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "420",
   "title": "Sea Ice Thermodynamic-Dynamic Inversion",
   "domain": "Environmental Science",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Sea Ice Thermodynamic-Dynamic Inversion: Sea ice state estimation: retrieve ice concentration, thickness, and drift from passive microwave and altimetry. The forward operator produces the measurement through a 3-node primitive DAG (S.passive_microwave.brightness_temp…); recovery is posed as a parameter_estimation problem. Difficulty tier delta=5 with effective condition number kappa_eff~200; melt_pond_fraction, snow_ice_interface_uncertainty set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "Sea Ice Thermodynamic-Dynamic Inversion: Sea ice state estimation: retrieve ice concentration, thickness, and drift from passive microwave and altimetry. The forward operator produces the measurement through a 3-node primitive DAG (S.passive_microwave.brightness_temp\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=5 with effective condition number kappa_eff~200; melt_pond_fraction, snow_ice_interface_uncertainty set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "T_B(f, theta, p) = (1-A)*T_ocean + A*[T_ice + f_snow(T_snow)]; ice motion from TOPAZ/neXtSIM",
     "world_state_x": "sea ice concentration A (%), thickness h_i (m), drift velocity u_i (m/day)",
     "observation_y": "satellite brightness temperatures T_B(19,37,85 GHz), ICESat/Cryosat-2 freeboard",

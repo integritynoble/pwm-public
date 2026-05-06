@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-208b",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "208b",
-  "title": "Euler-Bernoulli Beam — energy (variational) formulation",
+  "title": "Euler-Bernoulli Beam \u2014 energy (variational) formulation",
   "domain": "Structural Mechanics",
   "sub_domain": "Variational (minimum-PE) thin-beam formulation",
   "source_file": "T_structural_mechanics/208b_euler_bernoulli_beam.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Euler-Bernoulli Beam — energy (variational) formulation forward model.",
+    "description": "Euler-Bernoulli Beam \u2014 energy (variational) formulation forward model.",
     "forward_model": "Pi = (1/2) int EI (w'')^2 dx - int q*w dx; stationary => Galerkin FEM system",
     "world_state_x": "beam deflection w(x) from Rayleigh-Ritz expansion",
     "observation_y": "same as classical formulation",

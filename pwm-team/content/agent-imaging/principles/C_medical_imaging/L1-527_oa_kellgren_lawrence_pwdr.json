@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-527",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "527",
   "title": "Knee / Hip Osteoarthritis Kellgren-Lawrence Grading (PWDR)",
   "domain": "Medical Imaging",
@@ -31,9 +32,9 @@
     "threshold_continuity_proof": "Joint-space-width and osteophyte-count are continuous on bone-edge geometric reconstruction; KL-grade boundaries are step functions with measure-zero hyperplanes. Smoothed-grading globally Lipschitz with constant ~0.06 per percentage-point of feature-recovery error."
   },
   "related_principles": [
-    "L1-031 (X-ray radiography — analytical core, physics_core_principle)",
-    "L1-029 (CT — sibling cross-sectional bone modality, informational)",
-    "L1-030 (MRI — sibling cartilage assessment modality, informational)"
+    "L1-031 (X-ray radiography \u2014 analytical core, physics_core_principle)",
+    "L1-029 (CT \u2014 sibling cross-sectional bone modality, informational)",
+    "L1-030 (MRI \u2014 sibling cartilage assessment modality, informational)"
   ],
   "E": {
     "description": "Knee / Hip OA KL Grading (PWDR): wraps L1-031 with Kellgren-Lawrence 1957 grading rules. Stage 1 (analytical, from L1-031): from weight-bearing radiograph, recover joint-space width, osteophyte morphology, subchondral bone density, joint-line obliquity. Stage 2 (deterministic threshold): apply KL atlas decision tree; OARSI compartment grade overlay if requested. Difficulty tier delta = 3.",

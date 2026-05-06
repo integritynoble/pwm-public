@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-141",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-141",
   "principle_ref": "sha256:<L1-141_principle_hash>",
   "title": "LIBS Elemental-Mapping Spec (matrix-effect mismatch family)",
@@ -137,7 +138,7 @@
     "proximity_threshold": 0.1
   },
   "d_spec": 0.6,
-  "d_spec_notes": "Distance from Raman/IR spectroscopies ~= 0.55 (Novel — plasma emission vs. vibrational). LIBS is uniquely destructive and nonlinear.",
+  "d_spec_notes": "Distance from Raman/IR spectroscopies ~= 0.55 (Novel \u2014 plasma emission vs. vibrational). LIBS is uniquely destructive and nonlinear.",
   "s1_s4_gates": [
     "PASS",
     "PASS",

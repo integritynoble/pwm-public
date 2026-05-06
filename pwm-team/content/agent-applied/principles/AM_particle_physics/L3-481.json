@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-481",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-481",
   "parent_l1": "L1-481",
-  "title": "Parton Distribution Functions (DGLAP) — Benchmark Suite",
+  "title": "Parton Distribution Functions (DGLAP) \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "HERA_combined_DIS_dataset",

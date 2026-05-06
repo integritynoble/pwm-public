@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-383",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "383",
   "title": "Image Super-Resolution (single-image)",
   "domain": "Signal Processing",

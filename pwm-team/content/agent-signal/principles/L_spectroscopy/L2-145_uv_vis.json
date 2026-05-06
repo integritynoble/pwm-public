@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-145",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-145",
   "principle_ref": "sha256:<L1-145_principle_hash>",
   "title": "UV-Vis Concentration Spec",
@@ -117,7 +118,7 @@
     "proximity_threshold": 0.1
   },
   "d_spec": 0.35,
-  "d_spec_notes": "Distance from 140 FTIR ~= 0.30 (Related — different spectral range, same Beer-Lambert model). Distance from Raman ~= 0.50.",
+  "d_spec_notes": "Distance from 140 FTIR ~= 0.30 (Related \u2014 different spectral range, same Beer-Lambert model). Distance from Raman ~= 0.50.",
   "s1_s4_gates": [
     "PASS",
     "PASS",
@@ -125,7 +126,7 @@
     "PASS"
   ],
   "s1_s4_justifications": {
-    "S1": "epsilon library N_lambda x K, spectrum N_lambda, concentration K — consistent.",
+    "S1": "epsilon library N_lambda x K, spectrum N_lambda, concentration K \u2014 consistent.",
     "S2": "Beer-Lambert linear; CLS unique with full-column-rank epsilon.",
     "S3": "CLS closed-form; PLS/MCR-ALS descent.",
     "S4": "epsilon_fn defined; UV-Net fails at stray_light=0.01 + scatter=1 (hardness)."

@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-046",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "046",
   "title": "Doppler Ultrasound (color / spectral)",
   "domain": "Medical Imaging",

@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-345",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "345",
-  "title": "Gyrokinetic — 5D reduced plasma kinetic",
+  "title": "Gyrokinetic \u2014 5D reduced plasma kinetic",
   "domain": "Plasma Physics",
   "sub_domain": "Magnetic-fusion gyrokinetic simulation",
   "source_file": "AA_plasma_physics/345_gyrokinetic.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Gyrokinetic — 5D reduced plasma kinetic forward model.",
+    "description": "Gyrokinetic \u2014 5D reduced plasma kinetic forward model.",
     "forward_model": "dF/dt + (v_||*b + v_E + v_grad_B + v_curv).grad F + ... = 0; Poisson solves E field",
     "world_state_x": "5D gyrocenter distribution + fluctuating phi, A_||",
     "observation_y": "BES + CECE + reflectometer fluctuation amplitudes",

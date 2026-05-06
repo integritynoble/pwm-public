@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-327",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-327",
   "title": "Phase-Field Allen-Cahn Dynamics Mismatch-Only Spec",
   "spec_type": "mismatch_only",

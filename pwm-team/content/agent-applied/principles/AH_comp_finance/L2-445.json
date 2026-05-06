@@ -1,9 +1,10 @@
 {
   "artifact_id": "L2-445",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-445",
   "principle_ref": "sha256:<L1-445_principle_hash>",
-  "title": "GARCH Volatility Estimation — Nominal + Mismatch Specs",
+  "title": "GARCH Volatility Estimation \u2014 Nominal + Mismatch Specs",
   "spec_type": "nominal_and_mismatch",
   "six_tuple": {
     "omega": {

@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-001",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-001",
   "title": "Widefield Fluorescence Mismatch-Only Spec",
   "spec_type": "mismatch_only",

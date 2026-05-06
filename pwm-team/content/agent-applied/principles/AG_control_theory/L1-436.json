@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-436",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "436",
   "title": "Ensemble Kalman Filter (EnKF)",
   "domain": "Control Theory",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Ensemble Kalman Filter (EnKF): EnKF: ensemble-based approximation of Kalman filter covariance; scales to large state dimensions. The forward operator produces the measurement through a 3-node primitive DAG (S.enkf.ensemble_update…); recovery is posed as a parameter_estimation problem. Difficulty tier delta=5 with effective condition number kappa_eff~500; sampling_error_finite_ensemble, localization_radius_choice set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "Ensemble Kalman Filter (EnKF): EnKF: ensemble-based approximation of Kalman filter covariance; scales to large state dimensions. The forward operator produces the measurement through a 3-node primitive DAG (S.enkf.ensemble_update\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=5 with effective condition number kappa_eff~500; sampling_error_finite_ensemble, localization_radius_choice set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "K = P_f H ** T (H P_f H ** T + R)^{-1}; P_f estimated from ensemble; analysis: x_a ** i = x_f ** i + K(y ** i - Hx_f ** i)",
     "world_state_x": "ensemble of state estimates {x_a ** i} representing posterior distribution",
     "observation_y": "observations {y_t} at each assimilation cycle",

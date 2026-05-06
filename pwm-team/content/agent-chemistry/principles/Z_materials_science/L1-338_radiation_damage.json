@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-338",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "338",
   "title": "Radiation Damage Cascade Dynamics",
   "domain": "Materials Science",

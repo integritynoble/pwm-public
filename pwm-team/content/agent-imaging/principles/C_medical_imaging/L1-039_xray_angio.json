@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-039",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "039",
   "title": "X-ray Angiography (DSA)",
   "domain": "Medical Imaging",

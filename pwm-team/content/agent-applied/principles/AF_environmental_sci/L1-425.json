@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-425",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "425",
   "title": "Groundwater Contaminant Transport Inversion",
   "domain": "Environmental Science",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Groundwater Contaminant Transport Inversion: Groundwater contaminant transport inversion: infer hydraulic conductivity K field from head and concentration data. The forward operator produces the measurement through a 3-node primitive DAG (M.darcy.groundwater_flow…); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=5 with effective condition number kappa_eff~2000; density_dependent_flow_effects, preferential_flow_paths set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "Groundwater Contaminant Transport Inversion: Groundwater contaminant transport inversion: infer hydraulic conductivity K field from head and concentration data. The forward operator produces the measurement through a 3-node primitive DAG (M.darcy.groundwater_flow\u2026); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=5 with effective condition number kappa_eff~2000; density_dependent_flow_effects, preferential_flow_paths set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "nabla*(K*nabla h) = S_s*(dh/dt) + q (Darcy); dC/dt + v*nabla C = nabla*(D*nabla C) - lambda*C",
     "world_state_x": "hydraulic conductivity field K(x,y,z) in 3D aquifer domain",
     "observation_y": "hydraulic head h(t) at N_wells observation wells, concentration breakthrough curves",

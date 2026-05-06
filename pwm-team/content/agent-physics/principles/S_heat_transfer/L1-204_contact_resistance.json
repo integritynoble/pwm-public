@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-204",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "204",
-  "title": "Thermal Contact Resistance — interface conductance estimation",
+  "title": "Thermal Contact Resistance \u2014 interface conductance estimation",
   "domain": "Heat Transfer",
   "sub_domain": "Interface thermal conductance inversion",
   "source_file": "S_heat_transfer/204_contact_resistance.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Thermal Contact Resistance — interface conductance estimation forward model.",
+    "description": "Thermal Contact Resistance \u2014 interface conductance estimation forward model.",
     "forward_model": "q'' = h_c * (T_1 - T_2) at interface; T_bulk(x) satisfies steady conduction in each body",
     "world_state_x": "interface thermal conductance h_c(x) distribution",
     "observation_y": "thermocouples across interface at known applied heat flux",

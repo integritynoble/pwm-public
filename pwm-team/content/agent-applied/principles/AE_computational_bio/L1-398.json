@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-398",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "398",
   "title": "Cable Equation (Dendrite Propagation)",
   "domain": "Computational Biology",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Cable Equation (Dendrite Propagation): Cable equation inversion: recover dendritic conductance distribution from voltage recordings at one or few locations. The forward operator produces the measurement through a 3-node primitive DAG (M.pde.cable_equation…); recovery is posed as a linear_inverse problem. Difficulty tier delta=3 with effective condition number kappa_eff~80; dendritic_branching_approximation, nonlinear_membrane_conductances set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "Cable Equation (Dendrite Propagation): Cable equation inversion: recover dendritic conductance distribution from voltage recordings at one or few locations. The forward operator produces the measurement through a 3-node primitive DAG (M.pde.cable_equation\u2026); recovery is posed as a linear_inverse problem. Difficulty tier delta=3 with effective condition number kappa_eff~80; dendritic_branching_approximation, nonlinear_membrane_conductances set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "C_m * dV/dt = (1/r_i) * d ** 2V/dx ** 2 - g_L*(V-E_L) - g_syn(x,t)*(V-E_syn)",
     "world_state_x": "synaptic conductance distribution g_syn(x,t) along dendritic cable",
     "observation_y": "voltage V(t) recorded at soma or branch point from synaptic inputs",

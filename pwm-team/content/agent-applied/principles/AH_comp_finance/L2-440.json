@@ -1,9 +1,10 @@
 {
   "artifact_id": "L2-440",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-440",
   "principle_ref": "sha256:<L1-440_principle_hash>",
-  "title": "Hull-White Interest Rate Model Calibration — Nominal + Mismatch Specs",
+  "title": "Hull-White Interest Rate Model Calibration \u2014 Nominal + Mismatch Specs",
   "spec_type": "nominal_and_mismatch",
   "six_tuple": {
     "omega": {

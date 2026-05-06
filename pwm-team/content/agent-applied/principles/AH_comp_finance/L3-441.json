@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-441",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-441",
   "parent_l1": "L1-441",
-  "title": "Monte Carlo Option Pricing — Benchmark Suite",
+  "title": "Monte Carlo Option Pricing \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "synthetic_GBM_benchmark",

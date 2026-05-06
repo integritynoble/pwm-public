@@ -1,9 +1,10 @@
 {
   "artifact_id": "L2-402",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-402",
   "principle_ref": "sha256:<L1-402_principle_hash>",
-  "title": "Pharmacokinetics Compartment Model — Nominal + Mismatch Specs",
+  "title": "Pharmacokinetics Compartment Model \u2014 Nominal + Mismatch Specs",
   "spec_type": "nominal_and_mismatch",
   "six_tuple": {
     "omega": {

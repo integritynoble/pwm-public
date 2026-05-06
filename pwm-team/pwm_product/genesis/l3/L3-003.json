@@ -1,6 +1,7 @@
 {
   "artifact_id": "L3-003",
   "layer": "L3",
+  "registration_tier": "founder_vetted",
   "parent_l2": "L2-003",
   "parent_l1": "L1-003",
   "title": "CASSI Mismatch-Only Benchmark Suite (P-benchmark + 4 I-benchmark tiers)",

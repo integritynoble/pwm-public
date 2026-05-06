@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-336",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "336",
   "title": "Rubber Elasticity Theory",
   "domain": "Materials Science",
@@ -42,7 +43,7 @@
     "stability": "conditional",
     "condition_number_kappa": 60,
     "condition_number_effective": 10,
-    "regime": "Well-posed; inversion of (n_c, C_2) from uniaxial alone is ill-conditioned — requires biaxial."
+    "regime": "Well-posed; inversion of (n_c, C_2) from uniaxial alone is ill-conditioned \u2014 requires biaxial."
   },
   "C": {
     "solver_class": "Nonlinear least squares LM; Bayesian hyperelastic fit",

@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-094",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "094",
-  "title": "STEM-EDX — X-ray energy-dispersive elemental mapping",
+  "title": "STEM-EDX \u2014 X-ray energy-dispersive elemental mapping",
   "domain": "Electron Microscopy",
   "sub_domain": "Chemical composition via characteristic X-rays",
   "source_file": "G_electron_microscopy/094_stem_edx.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical electron-microscopy literature for this principle.",
   "E": {
-    "description": "STEM-EDX — X-ray energy-dispersive elemental mapping: edx characteristic xray produces the measurement through a 4-node primitive DAG L.illumination.convergent_probe -> S.scan.raster -> D.edx_detector -> int.spectral, with spectral-channel integration and photon-shot-noise-limited (Poisson counting). Recovery is posed as a linear inverse problem that inverts the forward operator to estimate the scene-side elemental concentration map. Difficulty tier delta=3 with effective condition number kappa_eff~10; calibration-level mismatch (detector_dead_time, peak_overlap, absorption_correction) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
+    "description": "STEM-EDX \u2014 X-ray energy-dispersive elemental mapping: edx characteristic xray produces the measurement through a 4-node primitive DAG L.illumination.convergent_probe -> S.scan.raster -> D.edx_detector -> int.spectral, with spectral-channel integration and photon-shot-noise-limited (Poisson counting). Recovery is posed as a linear inverse problem that inverts the forward operator to estimate the scene-side elemental concentration map. Difficulty tier delta=3 with effective condition number kappa_eff~10; calibration-level mismatch (detector_dead_time, peak_overlap, absorption_correction) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
     "forward_model": "S(E, r) = sum_el c_el(r) * phi_el(E) + bremsstrahlung + n; unmix per element via reference peaks",
     "world_state_x": "Scene parameter (density / orientation / spectrum / complex field depending on principle)",
     "observation_y": "Electron detector output at declared geometry + noise",

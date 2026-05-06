@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-056",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "056",
   "title": "Chemical Exchange Saturation Transfer (CEST) MRI",
   "domain": "Medical Imaging",

@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-023",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "023",
   "title": "Three-Photon Microscopy (chi-5 deep-tissue imaging)",
   "domain": "Microscopy",

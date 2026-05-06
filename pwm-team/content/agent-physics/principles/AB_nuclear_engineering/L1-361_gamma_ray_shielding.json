@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-361",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "361",
-  "title": "Gamma-Ray Shielding — deep-penetration attenuation",
+  "title": "Gamma-Ray Shielding \u2014 deep-penetration attenuation",
   "domain": "Nuclear Engineering",
   "sub_domain": "Deep-penetration point-kernel / SN for gamma shielding",
   "source_file": "AB_nuclear_engineering/361_gamma_ray_shielding.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Gamma-Ray Shielding — deep-penetration attenuation forward model.",
+    "description": "Gamma-Ray Shielding \u2014 deep-penetration attenuation forward model.",
     "forward_model": "D(x) = B(mu*r, E) * S/(4*pi*r^2) * exp(-mu(E)*r); buildup B accounts for scatter",
     "world_state_x": "gamma dose rate D(x,E) behind shield",
     "observation_y": "dose rate / ion chamber readings at N_d monitor positions",

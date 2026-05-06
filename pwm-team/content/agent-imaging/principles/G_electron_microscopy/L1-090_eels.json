@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-090",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "090",
   "title": "Electron Energy Loss Spectroscopy (EELS)",
   "domain": "Electron Microscopy",

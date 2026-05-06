@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-431",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-431",
   "parent_l1": "L1-431",
-  "title": "System Identification (N4SID/ARX) — Benchmark Suite",
+  "title": "System Identification (N4SID/ARX) \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "MATLAB_system_identification_toolbox_benchmark",

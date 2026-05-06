@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-424",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "424",
   "title": "Carbon Cycle Biogeochemical Inversion",
   "domain": "Environmental Science",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Carbon Cycle Biogeochemical Inversion: Carbon cycle inversion: estimate surface CO2 fluxes (NEE, ocean uptake) from atmospheric CO2 observations. The forward operator produces the measurement through a 3-node primitive DAG (M.agcm.tracer_transport…); recovery is posed as a linear_inverse problem. Difficulty tier delta=5 with effective condition number kappa_eff~2000; transport_model_error, prior_uncertainty_specification set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "Carbon Cycle Biogeochemical Inversion: Carbon cycle inversion: estimate surface CO2 fluxes (NEE, ocean uptake) from atmospheric CO2 observations. The forward operator produces the measurement through a 3-node primitive DAG (M.agcm.tracer_transport\u2026); recovery is posed as a linear_inverse problem. Difficulty tier delta=5 with effective condition number kappa_eff~2000; transport_model_error, prior_uncertainty_specification set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "C_atm(x, t) = integral G(x, t; x', t') * F(x', t') dx' dt' (AGCM transport)",
     "world_state_x": "net ecosystem exchange NEE(x,t) and ocean-atmosphere CO2 flux F_ocean(x,t)",
     "observation_y": "atmospheric CO2 mole fraction at N_stations ground stations + satellite (OCO-2)",

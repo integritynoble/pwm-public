@@ -1,6 +1,7 @@
 {
   "artifact_id": "L3-395",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-395",
   "parent_l1": "L1-395",
   "title": "Adaptive Filtering Benchmark Suite (synthetic + AEC + speech)",
@@ -155,7 +156,7 @@
       }
     ]
   },
-  "hardness_rule_check": "SATISFIED — RLS fails at T4_impulsive (eigenspread=1000, impulsive=0.1) due to numerical instability — 5 dB > epsilon_fn -3.",
+  "hardness_rule_check": "SATISFIED \u2014 RLS fails at T4_impulsive (eigenspread=1000, impulsive=0.1) due to numerical instability \u2014 5 dB > epsilon_fn -3.",
   "ipfs_cid": null,
   "ground_truth_cid": null,
   "display_slug": "adaptive-filtering"

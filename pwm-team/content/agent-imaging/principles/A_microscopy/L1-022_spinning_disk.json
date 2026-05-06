@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-022",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "022",
   "title": "Spinning Disk Confocal (Nipkow) Microscopy",
   "domain": "Microscopy",

@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-031",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "031",
   "title": "Planar X-ray Radiography",
   "domain": "Medical Imaging",

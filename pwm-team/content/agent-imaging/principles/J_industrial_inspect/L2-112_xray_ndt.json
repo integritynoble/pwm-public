@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-112",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-112",
   "title": "X-ray Non-Destructive Testing (2D radiography) Mismatch-Only Spec",
   "spec_type": "mismatch_only",

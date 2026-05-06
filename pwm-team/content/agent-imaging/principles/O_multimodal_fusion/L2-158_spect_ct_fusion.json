@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-158",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-158",
   "title": "SPECT-CT Fusion Mismatch-Only Spec",
   "spec_type": "mismatch_only",

@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-262",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "262",
   "title": "Underwater Acoustic Ray Tracing (Bellhop)",
   "domain": "Acoustics",

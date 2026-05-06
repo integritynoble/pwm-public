@@ -1,9 +1,10 @@
 {
   "artifact_id": "L2-430",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-430",
   "principle_ref": "sha256:<L1-430_principle_hash>",
-  "title": "Particle Filter (Sequential Monte Carlo) — Nominal + Mismatch Specs",
+  "title": "Particle Filter (Sequential Monte Carlo) \u2014 Nominal + Mismatch Specs",
   "spec_type": "nominal_and_mismatch",
   "six_tuple": {
     "omega": {

@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-468",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "468",
   "title": "Satellite Radar Altimetry",
   "domain": "Geodesy",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Satellite Radar Altimetry: Radar altimetry: estimate sea surface height from radar echo waveform retracking (Brown model). The forward operator produces the measurement through a 3-node primitive DAG (S.altimeter.retracker_brown…); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~30; rain_contamination, inland_water_reflection set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "Satellite Radar Altimetry: Radar altimetry: estimate sea surface height from radar echo waveform retracking (Brown model). The forward operator produces the measurement through a 3-node primitive DAG (S.altimeter.retracker_brown\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~30; rain_contamination, inland_water_reflection set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "P(tau) = sigma_0 * integral W(t) * G ** 2(theta) * sinc ** 2(...) dt; Brown ocean model",
     "world_state_x": "SSH, SWH (significant wave height), backscatter coefficient sigma_0",
     "observation_y": "radar return waveform P(tau) with N_gates gates at 20 Hz sampling",

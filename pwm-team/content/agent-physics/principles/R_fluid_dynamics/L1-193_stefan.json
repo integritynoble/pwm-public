@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-193",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "193",
-  "title": "Stefan Problem — fluid-side melt-front tracking",
+  "title": "Stefan Problem \u2014 fluid-side melt-front tracking",
   "domain": "Fluid Dynamics",
   "sub_domain": "Phase-change with fluid convection",
   "source_file": "R_fluid_dynamics/193_stefan.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Stefan Problem — fluid-side melt-front tracking forward model.",
+    "description": "Stefan Problem \u2014 fluid-side melt-front tracking forward model.",
     "forward_model": "Solid + liquid regions coupled via energy balance at moving interface; natural convection in liquid",
     "world_state_x": "moving liquid-solid interface + u, T in liquid",
     "observation_y": "thermocouples + PIV",

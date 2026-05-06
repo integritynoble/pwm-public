@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-318",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "318",
   "title": "Tight-Binding Electronic Structure",
   "domain": "Quantum Mechanics",

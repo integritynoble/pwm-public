@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-202",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "202",
-  "title": "Phase Change Material — Stefan moving-boundary problem",
+  "title": "Phase Change Material \u2014 Stefan moving-boundary problem",
   "domain": "Heat Transfer",
   "sub_domain": "Latent-heat tracking (melt/solid boundary)",
   "source_file": "S_heat_transfer/202_pcm.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Phase Change Material — Stefan moving-boundary problem forward model.",
+    "description": "Phase Change Material \u2014 Stefan moving-boundary problem forward model.",
     "forward_model": "rho_s c_s dT_s/dt = div(k_s grad T_s) in solid; rho_l c_l dT_l/dt = div(k_l grad T_l); Stefan BC: rho*L_f * dX/dt = (k_s dT_s - k_l dT_l)/dn",
     "world_state_x": "moving phase boundary X(t) + T_s/T_l fields",
     "observation_y": "thermocouple arrays + X-ray transmission visualization of interface",

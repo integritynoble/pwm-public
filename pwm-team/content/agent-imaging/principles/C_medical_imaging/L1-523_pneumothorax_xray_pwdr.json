@@ -1,12 +1,13 @@
 {
   "artifact_id": "L1-523",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "523",
   "title": "Pneumothorax Detection from Chest X-ray (PWDR)",
   "domain": "Medical Imaging",
   "sub_domain": "Pleural-line and lung-edge recovery from chest radiograph with pneumothorax categorical readout",
   "source_file": "C_medical_imaging/523_pneumothorax_xray_pwdr.md",
-  "source_data_quality_note": "v2 physical_with_discrete_readout (PWDR) genesis Principle. Wraps L1-031 X-ray radiography (existing in v1 genesis) with deterministic threshold rules on visceral-pleural-line detection and Light-index volumetric estimation to assign categorical pneumothorax labels {none, small, moderate, large, tension}. Universal in emergency / trauma / critical care radiology — every chest X-ray is reviewed for pneumothorax. UTSW Emergency Department + Trauma Center high-volume use.",
+  "source_data_quality_note": "v2 physical_with_discrete_readout (PWDR) genesis Principle. Wraps L1-031 X-ray radiography (existing in v1 genesis) with deterministic threshold rules on visceral-pleural-line detection and Light-index volumetric estimation to assign categorical pneumothorax labels {none, small, moderate, large, tension}. Universal in emergency / trauma / critical care radiology \u2014 every chest X-ray is reviewed for pneumothorax. UTSW Emergency Department + Trauma Center high-volume use.",
   "gate_class": "physical_with_discrete_readout",
   "gate_substitutions": {
     "kappa_substitute": null,
@@ -14,7 +15,7 @@
     "conservation_substitute": "softmax simplex closure on pneumothorax-severity ordinal readout {none, small (<15%), moderate (15-30%), large (>30%), tension}"
   },
   "discrete_readout": {
-    "threshold_function": "Pneumothorax(CXR) = step function on visceral-pleural-line presence + apex-to-cupola distance. Light index (1985): collapse_pct = (1 - (avg_lung_radius_collapsed / avg_lung_radius_normal)^3) × 100. Categories: none if no visceral pleural line; small if collapse<15%; moderate if 15-30%; large if >30%; tension if mediastinal shift, depressed hemidiaphragm, or hemodynamic instability per Roberts 2014 ATLS guideline. Alternative metrics: Collins method (apex-to-cupola distance + interpleural distance at hilum + mid-thorax), Rhea formula.",
+    "threshold_function": "Pneumothorax(CXR) = step function on visceral-pleural-line presence + apex-to-cupola distance. Light index (1985): collapse_pct = (1 - (avg_lung_radius_collapsed / avg_lung_radius_normal)^3) \u00d7 100. Categories: none if no visceral pleural line; small if collapse<15%; moderate if 15-30%; large if >30%; tension if mediastinal shift, depressed hemidiaphragm, or hemodynamic instability per Roberts 2014 ATLS guideline. Alternative metrics: Collins method (apex-to-cupola distance + interpleural distance at hilum + mid-thorax), Rhea formula.",
     "lipschitz_constant": 0.04,
     "underlying_physical_state": "lung-edge / visceral-pleural-line geometric reconstruction + per-hemithorax air-fraction map recovered from L1-031 X-ray radiograph (frontal +/- lateral views)",
     "physics_core_principle": "L1-031",
@@ -33,9 +34,9 @@
     "threshold_continuity_proof": "Light index is continuous on lung-radius ratio (cubic continuous transformation); category boundaries at collapse_pct={15, 30}% are measure-zero hyperplanes. Smoothed-grading globally Lipschitz with constant ~0.04 per percentage-point of pleural-line-detection error."
   },
   "related_principles": [
-    "L1-031 (X-ray radiography — radiograph attenuation analytical core, physics_core_principle)",
-    "L1-029 (CT — gold-standard sibling for ambiguous cases, informational)",
-    "L1-038 (CBCT — sibling rotational X-ray, informational)"
+    "L1-031 (X-ray radiography \u2014 radiograph attenuation analytical core, physics_core_principle)",
+    "L1-029 (CT \u2014 gold-standard sibling for ambiguous cases, informational)",
+    "L1-038 (CBCT \u2014 sibling rotational X-ray, informational)"
   ],
   "E": {
     "description": "Pneumothorax Detection from Chest X-ray (PWDR): wraps L1-031 X-ray radiography analytical core with established trauma / emergency-radiology grading rules. Stage 1 (analytical, from L1-031): from frontal (+/- lateral) chest radiograph, recover lung-edge geometric reconstruction (visceral pleural line, lateral chest wall border) and per-hemithorax air-attenuation distribution. Stage 2 (deterministic threshold): apply Light-index, Collins, or Rhea formulas to estimate percent collapse; classify into severity bins; flag tension features (mediastinal shift, depressed hemidiaphragm). Difficulty tier delta = 3. Mismatch parameters: rotation_artifact, expiratory_vs_inspiratory_state, supine_vs_upright_acquisition, skin_fold_pseudo_pneumothorax, bullous_disease_confounders, bilateral_severity_disagreement.",
@@ -236,7 +237,7 @@
       "advisory_label": "Distinct (parent-child PWDR pattern)",
       "rationale": "L1-031 recovers continuous attenuation map; L1-523 wraps with pneumothorax detection rule. Different solution_space (1D pneumothorax severity vs 2D attenuation); adds L.pleural_line_detection, L.light_index_estimation, L.severity_threshold_classifier primitives."
     },
-    "clinical_context": "Universal use in emergency / trauma / critical care radiology. Every chest X-ray reviewed for pneumothorax (specifically post-line-placement, post-procedural, trauma, mechanical ventilation). Tension pneumothorax is a life-threatening emergency requiring immediate decompression. UTSW Emergency Department + Trauma Center high-volume use. FDA-cleared autonomous AI: Aidoc PNX, Lunit INSIGHT CXR, Annalise CXR, Qure.ai qXR — all PWDR-shaped systems. Deep learning systems (CheXNet, CheXpert) achieve radiologist-level detection on benchmark datasets."
+    "clinical_context": "Universal use in emergency / trauma / critical care radiology. Every chest X-ray reviewed for pneumothorax (specifically post-line-placement, post-procedural, trauma, mechanical ventilation). Tension pneumothorax is a life-threatening emergency requiring immediate decompression. UTSW Emergency Department + Trauma Center high-volume use. FDA-cleared autonomous AI: Aidoc PNX, Lunit INSIGHT CXR, Annalise CXR, Qure.ai qXR \u2014 all PWDR-shaped systems. Deep learning systems (CheXNet, CheXpert) achieve radiologist-level detection on benchmark datasets."
   },
   "display_slug": "pneumothorax-cxr"
 }

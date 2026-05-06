@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-140",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "140",
-  "title": "FTIR Imaging — Fourier-Transform Infrared Hyperspectral Microscopy",
+  "title": "FTIR Imaging \u2014 Fourier-Transform Infrared Hyperspectral Microscopy",
   "domain": "Spectroscopy",
   "sub_domain": "Mid-IR vibrational absorption hyperspectral imaging",
   "source_file": "L_spectroscopy/140_ftir_imaging.md",

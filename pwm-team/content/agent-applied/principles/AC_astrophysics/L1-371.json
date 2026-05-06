@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-371",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "371",
   "title": "Stellar Atmosphere Spectral Inversion",
   "domain": "Astrophysics",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Stellar Atmosphere Spectral Inversion: Stellar spectral inversion: recover T_eff, log g, [Fe/H] from high-resolution spectra via atmosphere model fitting. The forward operator produces the measurement through a 3-node primitive DAG (S.radiative.transfer_lte…); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=5 with effective condition number kappa_eff~500; continuum_normalization_error, wavelength_calibration_error_kms set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "Stellar Atmosphere Spectral Inversion: Stellar spectral inversion: recover T_eff, log g, [Fe/H] from high-resolution spectra via atmosphere model fitting. The forward operator produces the measurement through a 3-node primitive DAG (S.radiative.transfer_lte\u2026); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=5 with effective condition number kappa_eff~500; continuum_normalization_error, wavelength_calibration_error_kms set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "F_lambda(T_eff, log_g, [M/H]) from MARCS/KURUCZ model atmosphere + spectral synthesis",
     "world_state_x": "stellar parameters (T_eff, log_g, [Fe/H], v_micro, v_macro) and abundance ratios",
     "observation_y": "observed stellar spectrum F_lambda at resolution R=lambda/delta_lambda",

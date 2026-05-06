@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-239",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "239",
-  "title": "Waveguide Modes — dispersion and S-parameter analysis",
+  "title": "Waveguide Modes \u2014 dispersion and S-parameter analysis",
   "domain": "Electromagnetics",
   "sub_domain": "Rectangular/coax/photonic waveguide eigenmodes",
   "source_file": "U_electromagnetics/239_waveguide.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Waveguide Modes — dispersion and S-parameter analysis forward model.",
+    "description": "Waveguide Modes \u2014 dispersion and S-parameter analysis forward model.",
     "forward_model": "(d^2/dx^2 + d^2/dy^2 + k_c^2) E_z = 0; k_z = sqrt(k^2 - k_c^2)",
     "world_state_x": "modal field patterns E_m(x,y) + dispersion k_z(omega) + S-parameters",
     "observation_y": "VNA S11/S21 magnitude and phase across frequency",

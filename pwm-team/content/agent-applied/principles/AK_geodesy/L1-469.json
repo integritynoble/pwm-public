@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-469",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "469",
   "title": "LiDAR Point Cloud 3D Mapping",
   "domain": "Geodesy",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "LiDAR Point Cloud 3D Mapping: Airborne LiDAR mapping: recover 3D terrain/surface model from point cloud after boresight calibration. The forward operator produces the measurement through a 3-node primitive DAG (M.tof.range_equation…); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~20; IMU_drift_deg, GPS_accuracy_cm set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "LiDAR Point Cloud 3D Mapping: Airborne LiDAR mapping: recover 3D terrain/surface model from point cloud after boresight calibration. The forward operator produces the measurement through a 3-node primitive DAG (M.tof.range_equation\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~20; IMU_drift_deg, GPS_accuracy_cm set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "X_obj = R_IMU * R_boresight * (R_scan * r_vec + t_scan) + X_IMU",
     "world_state_x": "3D surface elevation model DEM(x,y) or DSM",
     "observation_y": "point cloud (X,Y,Z,intensity) for N_points returns per flight strip",

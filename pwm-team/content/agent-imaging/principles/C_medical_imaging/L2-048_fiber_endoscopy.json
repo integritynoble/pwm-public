@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-048",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-048",
   "title": "Fiber-Optic Endoscopy Mismatch-Only Spec",
   "spec_type": "mismatch_only",

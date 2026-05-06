@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-070",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "070",
   "title": "Ptychography (scanning coherent diffraction with probe overlap)",
   "domain": "Coherent Imaging",

@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-305",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-305",
   "title": "Implicit Solvation Models (PCM, COSMO, SMD) Mismatch-Only Spec",
   "spec_type": "mismatch_only",

@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-324",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-324",
   "title": "Lindblad Master Equation (Open Quantum Systems) Mismatch-Only Spec",
   "spec_type": "mismatch_only",

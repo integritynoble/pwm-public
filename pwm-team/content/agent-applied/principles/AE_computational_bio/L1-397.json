@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-397",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "397",
   "title": "FitzHugh-Nagumo Excitability Model",
   "domain": "Computational Biology",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "FitzHugh-Nagumo Excitability Model: FitzHugh-Nagumo model: 2D reduction of HH capturing excitability and bifurcation structure. The forward operator produces the measurement through a 3-node primitive DAG (M.ode.fitzhugh_nagumo…); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~50; noise_amplitude, heterogeneity_in_network set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "FitzHugh-Nagumo Excitability Model: FitzHugh-Nagumo model: 2D reduction of HH capturing excitability and bifurcation structure. The forward operator produces the measurement through a 3-node primitive DAG (M.ode.fitzhugh_nagumo\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~50; noise_amplitude, heterogeneity_in_network set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "dv/dt = v - v ** 3/3 - w + I; dw/dt = epsilon*(v + a - b*w)",
     "world_state_x": "FHN parameters {a, b, epsilon, I_bias} controlling excitability and oscillation",
     "observation_y": "voltage-like variable v(t) and recovery variable w(t)",

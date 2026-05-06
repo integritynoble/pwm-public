@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-444",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "444",
   "title": "Markowitz Mean-Variance Portfolio Optimization",
   "domain": "Computational Finance",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Markowitz Mean-Variance Portfolio Optimization: Markowitz portfolio: find minimum variance portfolio for target return using covariance matrix from historical data. The forward operator produces the measurement through a 3-node primitive DAG (M.covariance.sample_shrinkage…); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~50; estimation_error_expected_returns, covariance_matrix_instability set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "Markowitz Mean-Variance Portfolio Optimization: Markowitz portfolio: find minimum variance portfolio for target return using covariance matrix from historical data. The forward operator produces the measurement through a 3-node primitive DAG (M.covariance.sample_shrinkage\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~50; estimation_error_expected_returns, covariance_matrix_instability set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "min_w w ** T Sigma w s.t. mu ** T w = mu_target, 1 ** T w = 1, w >= 0",
     "world_state_x": "optimal portfolio weights w in R ** N satisfying constraints",
     "observation_y": "historical return matrix R in R^{T x N} for N assets over T periods",

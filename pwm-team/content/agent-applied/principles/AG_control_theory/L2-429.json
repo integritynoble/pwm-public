@@ -1,9 +1,10 @@
 {
   "artifact_id": "L2-429",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-429",
   "principle_ref": "sha256:<L1-429_principle_hash>",
-  "title": "Unscented Kalman Filter (UKF) — Nominal + Mismatch Specs",
+  "title": "Unscented Kalman Filter (UKF) \u2014 Nominal + Mismatch Specs",
   "spec_type": "nominal_and_mismatch",
   "six_tuple": {
     "omega": {
@@ -25,7 +26,7 @@
       ]
     },
     "E": {
-      "forward": "Sigma points X_i = {x_hat, x_hat ± sqrt((n+kappa)*P)}; Y_i = h(X_i); y_hat = sum w_i Y_i",
+      "forward": "Sigma points X_i = {x_hat, x_hat \u00b1 sqrt((n+kappa)*P)}; Y_i = h(X_i); y_hat = sum w_i Y_i",
       "operator": "sigma_point_state_estimation",
       "primitive_chain": "S.ukf.sigma_points_UT -> M.statistical.moment_propagation -> O.innov.sigma_point_update",
       "inverse": "recover nonlinear state estimate x_hat_k to 3rd order accuracy in moments from nonlinear measurements {y_k}"

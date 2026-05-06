@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-365",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-365",
   "parent_l1": "L1-365",
-  "title": "Cosmological N-body (Large-Scale Structure) — Benchmark Suite",
+  "title": "Cosmological N-body (Large-Scale Structure) \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "Bolshoi_simulation_public",

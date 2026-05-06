@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-252",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "252",
-  "title": "Inverse Synthetic Aperture Radar (ISAR) — rotating-target imaging",
+  "title": "Inverse Synthetic Aperture Radar (ISAR) \u2014 rotating-target imaging",
   "domain": "Electromagnetics",
   "sub_domain": "ISAR range-Doppler imaging of maneuvering targets",
   "source_file": "U_electromagnetics/252_isar.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Inverse Synthetic Aperture Radar (ISAR) — rotating-target imaging forward model.",
+    "description": "Inverse Synthetic Aperture Radar (ISAR) \u2014 rotating-target imaging forward model.",
     "forward_model": "s(tau, f_D) = sum_k sigma_k * exp(-j*2*pi*f_D*t_k) * p(tau - 2*R_k/c)",
     "world_state_x": "target reflectivity sigma(range, cross-range) from multi-pulse integration",
     "observation_y": "pulse-compressed + Doppler-binned radar returns",

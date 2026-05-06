@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-325",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "325",
   "title": "Electron-Phonon Coupling and Eliashberg Theory",
   "domain": "Quantum Mechanics",

@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-130",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "130",
   "title": "Neutron Radiography and Tomography",
   "domain": "Scientific Instrumentation",

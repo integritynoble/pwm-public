@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-459",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "459",
   "title": "Compositional Reservoir Simulation",
   "domain": "Petroleum Engineering",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Compositional Reservoir Simulation: Compositional simulation: track N_c component flow with EOS phase equilibrium calculations for gas condensate and miscible floods. The forward operator produces the measurement through a 3-node primitive DAG (M.eos.peng_robinson…); recovery is posed as a parameter_estimation problem. Difficulty tier delta=5 with effective condition number kappa_eff~5000; EOS_tuning_uncertainty, compositional_gradient_uncertainty set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "Compositional Reservoir Simulation: Compositional simulation: track N_c component flow with EOS phase equilibrium calculations for gas condensate and miscible floods. The forward operator produces the measurement through a 3-node primitive DAG (M.eos.peng_robinson\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=5 with effective condition number kappa_eff~5000; EOS_tuning_uncertainty, compositional_gradient_uncertainty set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "phi*(d(rho*z_i)/dt) = -nabla*(rho_o*x_i*u_o + rho_g*y_i*u_g) + q_i; K_i = y_i/x_i from EOS",
     "world_state_x": "component mole fractions z_i(x,t) and pressure P(x,t) across 3D grid",
     "observation_y": "wellhead compositional analysis, GOR, condensate-gas ratio, BHP",

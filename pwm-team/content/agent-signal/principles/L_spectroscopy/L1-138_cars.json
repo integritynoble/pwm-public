@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-138",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "138",
-  "title": "CARS — Coherent Anti-Stokes Raman Scattering",
+  "title": "CARS \u2014 Coherent Anti-Stokes Raman Scattering",
   "domain": "Spectroscopy",
   "sub_domain": "Third-order nonlinear coherent vibrational microscopy",
   "source_file": "L_spectroscopy/138_cars.md",

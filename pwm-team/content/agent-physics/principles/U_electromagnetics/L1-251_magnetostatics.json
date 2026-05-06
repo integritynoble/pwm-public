@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-251",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "251",
-  "title": "Magnetostatics — coil design and field inversion",
+  "title": "Magnetostatics \u2014 coil design and field inversion",
   "domain": "Electromagnetics",
   "sub_domain": "Biot-Savart / vector potential magnetostatics",
   "source_file": "U_electromagnetics/251_magnetostatics.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Magnetostatics — coil design and field inversion forward model.",
+    "description": "Magnetostatics \u2014 coil design and field inversion forward model.",
     "forward_model": "B = curl A; div(1/mu grad A) = -J; Biot-Savart: B = (mu/4pi) int I dl x r/r^3",
     "world_state_x": "B(x,y,z) field from coils/magnets",
     "observation_y": "Hall probe readings at mapped positions",

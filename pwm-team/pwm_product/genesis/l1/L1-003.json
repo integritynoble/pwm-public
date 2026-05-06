@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-003",
   "layer": "L1",
+  "registration_tier": "founder_vetted",
   "principle_number": "003",
   "title": "Coded Aperture Snapshot Spectral Imaging (CASSI)",
   "domain": "Compressive Imaging",

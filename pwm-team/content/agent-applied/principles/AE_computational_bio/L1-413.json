@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-413",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "413",
   "title": "HMM Sequence Alignment and Profile Inference",
   "domain": "Computational Biology",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "HMM Sequence Alignment and Profile Inference: Profile HMM: learn emission and transition probabilities from multiple sequence alignment; find optimal alignment via Viterbi. The forward operator produces the measurement through a 3-node primitive DAG (M.hmm.profile_model…); recovery is posed as a statistical_inverse problem. Difficulty tier delta=5 with effective condition number kappa_eff~500; sequence_divergence_too_high, domain_boundaries_unknown set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "HMM Sequence Alignment and Profile Inference: Profile HMM: learn emission and transition probabilities from multiple sequence alignment; find optimal alignment via Viterbi. The forward operator produces the measurement through a 3-node primitive DAG (M.hmm.profile_model\u2026); recovery is posed as a statistical_inverse problem. Difficulty tier delta=5 with effective condition number kappa_eff~500; sequence_divergence_too_high, domain_boundaries_unknown set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "P(seq | HMM) = prod_t P(obs_t | state_t) * P(state_t | state_{t-1}); Viterbi decodes optimal path",
     "world_state_x": "HMM parameters: emission matrix E (20 amino acids x M_match states), transition matrix T",
     "observation_y": "multiple sequence alignment (N_seq sequences, L_length positions) for training",

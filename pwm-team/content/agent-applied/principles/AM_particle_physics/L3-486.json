@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-486",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-486",
   "parent_l1": "L1-486",
-  "title": "Dark Matter Direct Detection Inversion — Benchmark Suite",
+  "title": "Dark Matter Direct Detection Inversion \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "XENON1T_public_data",

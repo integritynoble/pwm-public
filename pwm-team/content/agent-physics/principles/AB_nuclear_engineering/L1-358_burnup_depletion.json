@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-358",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "358",
-  "title": "Burnup / Depletion — fuel nuclide evolution",
+  "title": "Burnup / Depletion \u2014 fuel nuclide evolution",
   "domain": "Nuclear Engineering",
   "sub_domain": "Bateman nuclide transmutation + flux coupling",
   "source_file": "AB_nuclear_engineering/358_burnup_depletion.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Burnup / Depletion — fuel nuclide evolution forward model.",
+    "description": "Burnup / Depletion \u2014 fuel nuclide evolution forward model.",
     "forward_model": "dN_i/dt = -lambda_i N_i - sigma_a_i phi N_i + sum_j (lambda_{j->i} + sigma_c,{j->i} phi) N_j",
     "world_state_x": "nuclide inventories N_i(t) in fuel bundle over burnup history",
     "observation_y": "destructive/non-destructive spent fuel assay (Cs/Nd/Pu isotopic ratios)",

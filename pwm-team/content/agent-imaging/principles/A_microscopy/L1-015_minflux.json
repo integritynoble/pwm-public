@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-015",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "015",
   "title": "MINFLUX (minimum-photon single-molecule localization)",
   "domain": "Microscopy",

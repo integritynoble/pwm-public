@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-104",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-104",
   "title": "Ground Penetrating Radar (GPR) Mismatch-Only Spec",
   "spec_type": "mismatch_only",

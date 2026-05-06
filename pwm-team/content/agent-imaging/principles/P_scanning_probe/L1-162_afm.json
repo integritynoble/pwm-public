@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-162",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "162",
   "title": "Atomic Force Microscopy (AFM)",
   "domain": "Scanning Probe",

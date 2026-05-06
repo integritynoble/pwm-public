@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-140",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-140",
   "principle_ref": "sha256:<L1-140_principle_hash>",
   "title": "FTIR Imaging Scatter-Corrected Spec",
@@ -131,7 +132,7 @@
     "proximity_threshold": 0.1
   },
   "d_spec": 0.4,
-  "d_spec_notes": "Distance from 137 Raman ~= 0.35 (Related — vibrational spectroscopy, different mechanism). Distance from 145 UV-Vis ~= 0.30 (Related — electronic absorption).",
+  "d_spec_notes": "Distance from 137 Raman ~= 0.35 (Related \u2014 vibrational spectroscopy, different mechanism). Distance from 145 UV-Vis ~= 0.30 (Related \u2014 electronic absorption).",
   "s1_s4_gates": [
     "PASS",
     "PASS",

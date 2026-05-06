@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-402",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-402",
   "parent_l1": "L1-402",
-  "title": "Pharmacokinetics Compartment Model — Benchmark Suite",
+  "title": "Pharmacokinetics Compartment Model \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "PhAd_database_public_PK",

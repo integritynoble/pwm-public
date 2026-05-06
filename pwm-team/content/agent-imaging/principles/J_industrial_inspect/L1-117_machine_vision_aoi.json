@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-117",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "117",
   "title": "Automated Optical Inspection (AOI) for PCB / manufacturing defects",
   "domain": "Industrial Inspection",

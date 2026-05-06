@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-021",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-021",
   "title": "Second Harmonic Generation (SHG) Microscopy Mismatch-Only Spec",
   "spec_type": "mismatch_only",

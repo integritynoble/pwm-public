@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-138",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-138",
   "principle_ref": "sha256:<L1-138_principle_hash>",
   "title": "CARS Multiplex Spec (broadband CARS family)",
@@ -130,7 +131,7 @@
     "proximity_threshold": 0.1
   },
   "d_spec": 0.35,
-  "d_spec_notes": "Distance from 139 SRS ~= 0.20 (Similar — both coherent Raman, SRS is background-free). Distance from 137 Raman ~= 0.30 (Related).",
+  "d_spec_notes": "Distance from 139 SRS ~= 0.20 (Similar \u2014 both coherent Raman, SRS is background-free). Distance from 137 Raman ~= 0.30 (Related).",
   "s1_s4_gates": [
     "PASS",
     "PASS",

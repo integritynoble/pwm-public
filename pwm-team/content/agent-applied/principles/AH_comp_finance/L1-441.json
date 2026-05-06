@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-441",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "441",
   "title": "Monte Carlo Option Pricing",
   "domain": "Computational Finance",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Monte Carlo Option Pricing: Monte Carlo option pricing: estimate exotic option price via simulation with variance reduction techniques. The forward operator produces the measurement through a 3-node primitive DAG (S.mc.path_generation…); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~10; discretization_error_Euler_Milstein, random_seed_variance set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "Monte Carlo Option Pricing: Monte Carlo option pricing: estimate exotic option price via simulation with variance reduction techniques. The forward operator produces the measurement through a 3-node primitive DAG (S.mc.path_generation\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~10; discretization_error_Euler_Milstein, random_seed_variance set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "C = e^{-rT} * E[max(S_T - K, 0)]; estimate by sample average over N_paths simulated paths",
     "world_state_x": "option price C and Greeks (delta, gamma, vega)",
     "observation_y": "simulated payoffs g(S_T ** i) for i=1..N_paths",

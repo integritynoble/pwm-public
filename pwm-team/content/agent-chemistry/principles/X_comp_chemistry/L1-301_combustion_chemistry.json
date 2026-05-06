@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-301",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "301",
   "title": "Combustion Chemistry and Ignition Kinetics",
   "domain": "Computational Chemistry",

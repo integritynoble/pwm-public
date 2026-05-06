@@ -1,6 +1,7 @@
 {
   "artifact_id": "L3-081",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-081",
   "parent_l1": "L1-081",
   "title": "Integral Photography Benchmark Suite",
@@ -172,7 +173,7 @@
       }
     ]
   },
-  "hardness_rule_check": "SATISFIED — LF-Transformer-IP fails T4_blind (L_x=7 + rotation=0.05 + low photons corner below angular-spatial trade-off bound).",
+  "hardness_rule_check": "SATISFIED \u2014 LF-Transformer-IP fails T4_blind (L_x=7 + rotation=0.05 + low photons corner below angular-spatial trade-off bound).",
   "ipfs_cid": null,
   "ground_truth_cid": null,
   "display_slug": "integral-photography"

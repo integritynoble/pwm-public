@@ -1,6 +1,7 @@
 {
   "artifact_id": "L3-394",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-394",
   "parent_l1": "L1-394",
   "title": "Spectral Estimation Benchmark Suite (synthetic + audio + radar)",
@@ -148,7 +149,7 @@
       }
     ]
   },
-  "hardness_rule_check": "SATISFIED — Atomic-Norm fails at T4_noise_irregular (delta_omega=0.005 subwavelength, SNR=-5 dB): freq_rmse 0.1 > epsilon_fn ~ 0.05.",
+  "hardness_rule_check": "SATISFIED \u2014 Atomic-Norm fails at T4_noise_irregular (delta_omega=0.005 subwavelength, SNR=-5 dB): freq_rmse 0.1 > epsilon_fn ~ 0.05.",
   "ipfs_cid": null,
   "ground_truth_cid": null,
   "display_slug": "spectral-estimation"

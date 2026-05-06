@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-277",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "277",
-  "title": "Ambient-Noise Tomography — Green-function retrieval",
+  "title": "Ambient-Noise Tomography \u2014 Green-function retrieval",
   "domain": "Geophysics",
   "sub_domain": "Cross-correlation of ambient seismic noise",
   "source_file": "W_geophysics/277_ambient_noise_tomography.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Ambient-Noise Tomography — Green-function retrieval forward model.",
+    "description": "Ambient-Noise Tomography \u2014 Green-function retrieval forward model.",
     "forward_model": "C_AB(tau) = int u_A(t) u_B(t+tau) dt ~= d/dtau G_AB + G_BA (Green-function retrieval)",
     "world_state_x": "2D phase-velocity map c(x,y,f) + inverted crust/upper mantle model",
     "observation_y": "noise cross-correlations across station pairs",

@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-149",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "149",
-  "title": "Streak Camera — picosecond 1D time-resolved imaging",
+  "title": "Streak Camera \u2014 picosecond 1D time-resolved imaging",
   "domain": "Ultrafast Imaging",
   "sub_domain": "1D time-resolved photoelectron streaking",
   "source_file": "M_ultrafast_imaging/149_streak_camera.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical literature for this principle.",
   "E": {
-    "description": "Streak Camera — picosecond 1D time-resolved imaging: streak tube time resolved produces the measurement through a 4-node primitive DAG L.photocathode -> L.sweep_voltage -> D.streaked_phosphor -> int.temporal, with time-integrated exposure and photon-shot-noise-limited (Poisson counting). Recovery is posed as a linear inverse problem that inverts the forward operator to estimate the scene-side 1D time trace. Difficulty tier delta=5 with effective condition number kappa_eff~12; calibration-level mismatch (sweep_nonlinearity, photocathode_jitter, space_charge) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
+    "description": "Streak Camera \u2014 picosecond 1D time-resolved imaging: streak tube time resolved produces the measurement through a 4-node primitive DAG L.photocathode -> L.sweep_voltage -> D.streaked_phosphor -> int.temporal, with time-integrated exposure and photon-shot-noise-limited (Poisson counting). Recovery is posed as a linear inverse problem that inverts the forward operator to estimate the scene-side 1D time trace. Difficulty tier delta=5 with effective condition number kappa_eff~12; calibration-level mismatch (sweep_nonlinearity, photocathode_jitter, space_charge) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
     "forward_model": "y(t, x) = sum_tau I_source(tau, x) * sweep_response(t - tau) + space_charge + n",
     "world_state_x": "Principle-specific quantity of interest",
     "observation_y": "Detector output at declared geometry",

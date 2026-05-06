@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-395",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "395",
   "title": "Adaptive Filtering (LMS / RLS time-varying system identification)",
   "domain": "Signal Processing",

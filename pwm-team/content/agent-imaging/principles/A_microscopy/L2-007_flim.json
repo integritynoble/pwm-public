@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-007",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-007",
   "title": "Fluorescence Lifetime Imaging Microscopy (FLIM) Mismatch-Only Spec",
   "spec_type": "mismatch_only",

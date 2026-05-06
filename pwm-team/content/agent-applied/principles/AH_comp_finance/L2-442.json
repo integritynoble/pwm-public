@@ -1,9 +1,10 @@
 {
   "artifact_id": "L2-442",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-442",
   "principle_ref": "sha256:<L1-442_principle_hash>",
-  "title": "Implied Volatility Surface Construction — Nominal + Mismatch Specs",
+  "title": "Implied Volatility Surface Construction \u2014 Nominal + Mismatch Specs",
   "spec_type": "nominal_and_mismatch",
   "six_tuple": {
     "omega": {

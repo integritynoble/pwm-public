@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-435",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "435",
   "title": "4D-Var Data Assimilation",
   "domain": "Control Theory",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "4D-Var Data Assimilation: 4D-Var: find initial state minimizing misfit to observations over time window via adjoint-based gradient. The forward operator produces the measurement through a 3-node primitive DAG (M.nwp.nonlinear_forecast…); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=5 with effective condition number kappa_eff~10000.0; model_error_within_window, linearization_error set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "4D-Var Data Assimilation: 4D-Var: find initial state minimizing misfit to observations over time window via adjoint-based gradient. The forward operator produces the measurement through a 3-node primitive DAG (M.nwp.nonlinear_forecast\u2026); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=5 with effective condition number kappa_eff~10000.0; model_error_within_window, linearization_error set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "J(x0) = ||x0-xb||^2_{B^{-1}} + sum_t ||H_t M_t(x0) - y_t||^2_{R_t^{-1}}; grad J via adjoint",
     "world_state_x": "optimal initial state x0 at analysis time t0",
     "observation_y": "observations {y_t} distributed in time window [t0, t0+T]",

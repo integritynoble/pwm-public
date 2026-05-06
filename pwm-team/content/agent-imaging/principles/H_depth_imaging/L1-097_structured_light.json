@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-097",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "097",
   "title": "Structured-Light 3D Imaging (projector-camera triangulation)",
   "domain": "Depth Imaging",

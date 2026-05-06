@@ -1,6 +1,7 @@
 {
   "artifact_id": "L3-072",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-072",
   "parent_l1": "L1-072",
   "title": "CDI Benchmark Suite (HIO / RAAR / Shrinkwrap / CDI-Net)",
@@ -160,7 +161,7 @@
       }
     ]
   },
-  "hardness_rule_check": "SATISFIED — CDI-Net fails at T4_blind (17.2 dB > 14.5 tier epsilon OK, but fails S4_xlarge stratum in P-bench where oversampling=2.0 and photon_count<=20 co-occur).",
+  "hardness_rule_check": "SATISFIED \u2014 CDI-Net fails at T4_blind (17.2 dB > 14.5 tier epsilon OK, but fails S4_xlarge stratum in P-bench where oversampling=2.0 and photon_count<=20 co-occur).",
   "ipfs_cid": null,
   "ground_truth_cid": null,
   "display_slug": "cdi"

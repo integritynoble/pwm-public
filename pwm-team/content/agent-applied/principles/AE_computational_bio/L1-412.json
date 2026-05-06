@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-412",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "412",
   "title": "Protein Folding Energy Landscape Inversion",
   "domain": "Computational Biology",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Protein Folding Energy Landscape Inversion: Protein structure determination: recover 3D atomic coordinates from cryo-EM density map or experimental NMR restraints. The forward operator produces the measurement through a 3-node primitive DAG (M.energy.force_field…); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=50 with effective condition number kappa_eff~10000000.0; conformational_heterogeneity, solvent_contribution_neglect set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "Protein Folding Energy Landscape Inversion: Protein structure determination: recover 3D atomic coordinates from cryo-EM density map or experimental NMR restraints. The forward operator produces the measurement through a 3-node primitive DAG (M.energy.force_field\u2026); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=50 with effective condition number kappa_eff~10000000.0; conformational_heterogeneity, solvent_contribution_neglect set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "rho_exp(r) = sum_i w_i * exp(-|r - r_i|^2 / (2*sigma ** 2)) (cryo-EM density); NOE distances r_ij ~ |r_i - r_j|",
     "world_state_x": "3D protein structure: atomic coordinates {r_i} for all N_atoms atoms",
     "observation_y": "cryo-EM density map rho_exp or NMR NOE distance restraints {d_ij_obs}",

@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-336",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-336",
   "title": "Rubber Elasticity Theory Mismatch-Only Spec",
   "spec_type": "mismatch_only",

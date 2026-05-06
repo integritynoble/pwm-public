@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-120",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "120",
   "title": "Scanning Acoustic Microscopy (SAM)",
   "domain": "Industrial Inspection",

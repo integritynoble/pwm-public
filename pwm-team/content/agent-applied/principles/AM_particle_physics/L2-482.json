@@ -1,9 +1,10 @@
 {
   "artifact_id": "L2-482",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-482",
   "principle_ref": "sha256:<L1-482_principle_hash>",
-  "title": "Monte Carlo Event Generation — Nominal + Mismatch Specs",
+  "title": "Monte Carlo Event Generation \u2014 Nominal + Mismatch Specs",
   "spec_type": "nominal_and_mismatch",
   "six_tuple": {
     "omega": {

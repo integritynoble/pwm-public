@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-440",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-440",
   "parent_l1": "L1-440",
-  "title": "Hull-White Interest Rate Model Calibration — Benchmark Suite",
+  "title": "Hull-White Interest Rate Model Calibration \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "Bloomberg_swaption_surface_USD_2023",

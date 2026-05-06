@@ -1,9 +1,10 @@
 {
   "artifact_id": "L2-167",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-167",
   "principle_ref": "sha256:<L1-167_principle_hash>",
-  "title": "Lucky Imaging Atmospheric Turbulence Recovery — Nominal + Mismatch Specs",
+  "title": "Lucky Imaging Atmospheric Turbulence Recovery \u2014 Nominal + Mismatch Specs",
   "spec_type": "nominal_and_mismatch",
   "six_tuple": {
     "omega": {

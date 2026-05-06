@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-406",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-406",
   "parent_l1": "L1-406",
-  "title": "SEIR Epidemic with Exposed Compartment — Benchmark Suite",
+  "title": "SEIR Epidemic with Exposed Compartment \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "WHO_COVID19_global_2020_2022",

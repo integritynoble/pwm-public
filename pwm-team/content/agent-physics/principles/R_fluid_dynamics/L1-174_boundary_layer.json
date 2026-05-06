@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-174",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "174",
-  "title": "Boundary Layer — Prandtl / Blasius near-wall flow",
+  "title": "Boundary Layer \u2014 Prandtl / Blasius near-wall flow",
   "domain": "Fluid Dynamics",
   "sub_domain": "Laminar and turbulent boundary layers",
   "source_file": "R_fluid_dynamics/174_boundary_layer.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Boundary Layer — Prandtl / Blasius near-wall flow forward model.",
+    "description": "Boundary Layer \u2014 Prandtl / Blasius near-wall flow forward model.",
     "forward_model": "u du/dx + v du/dy = -1/rho dp/dx + nu d^2 u/dy^2; continuity; outer matching",
     "world_state_x": "velocity profile u(y) + wall shear tau_w + thickness delta(x)",
     "observation_y": "hot-wire + laser-Doppler + wall shear",

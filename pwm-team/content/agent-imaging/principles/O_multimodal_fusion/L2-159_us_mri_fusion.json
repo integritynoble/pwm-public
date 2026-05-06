@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-159",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-159",
   "title": "US-MRI Fusion (biopsy guidance / cardiac) Mismatch-Only Spec",
   "spec_type": "mismatch_only",

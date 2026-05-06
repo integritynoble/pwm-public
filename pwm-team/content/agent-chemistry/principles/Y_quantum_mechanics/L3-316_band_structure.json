@@ -1,13 +1,14 @@
 {
   "artifact_id": "L3-316",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-316",
   "parent_l1": "L1-316",
   "title": "Electronic Band Structure Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "Materials Project band-gap database",
-    "secondary": "NIST Landolt-Börnstein semiconductor gap reference",
+    "secondary": "NIST Landolt-B\u00f6rnstein semiconductor gap reference",
     "construction_method": "canonical ground truth + declared noise at tier Omega for Electronic Band Structure",
     "num_dev_instances_per_tier": 20,
     "holdout_instances_per_tier": 10
@@ -181,7 +182,7 @@
   "p_benchmark": {
     "rho": 50,
     "dataset_p_benchmark": {
-      "name": "Materials Project + Landolt-Börnstein band-gap union",
+      "name": "Materials Project + Landolt-B\u00f6rnstein band-gap union",
       "construction_method": "parametric Omega sampling over declared bounds; stratified by rho.",
       "num_dev_instances": 200,
       "num_holdout_instances": 100
@@ -223,7 +224,7 @@
       }
     ]
   },
-  "hardness_rule_check": "SATISFIED — top baseline fails epsilon_fn at T4_blind Omega corner.",
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails epsilon_fn at T4_blind Omega corner.",
   "anti_overfitting_mechanisms": {
     "M1_random_instantiation": "seeded by benchmark hash; non-repeatable holdout",
     "M2_convergence_scoring": "verifies declared convergence rate across Omega",

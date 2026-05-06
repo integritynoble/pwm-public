@@ -1,8 +1,8 @@
 # PWM Layers — Complete Guide: Create + Use (L1 / L2 / L3 / L4)
 
-**Date:** 2026-05-03 (refreshed 2026-05-05 — CLI accuracy pass)
+**Date:** 2026-05-03 (refreshed 2026-05-06 — registration tiers + CLI flag fix)
 **Audience:** Researchers, students, industry teams, regulators, external developers, founders
-**Network:** Ethereum Sepolia testnet (chainId 11155111) for examples; Base mainnet flow identical, just swap `--network testnet` → `--network base`
+**Network:** Ethereum Sepolia testnet (chainId 11155111) for examples. Base mainnet at launch reuses the same `--network mainnet` flag; the chain selection is determined by which `addresses.json` entry the CLI resolves (`testnet` → Sepolia today; `mainnet` → Base mainnet at launch).
 **Canonical public repo:** `https://github.com/integritynoble/pwm-public`
 **Web explorer:** `https://explorer.pwm.platformai.org`
 **Related (in this repo):** [`PWM_PRINCIPLE_CONTRIBUTION_GUIDE.md`](#cross-references-inside-this-public-repo)
@@ -129,21 +129,38 @@ The physics declaration: forward model + parameter space + DAG primitive chain +
 
 ### Browse the catalog (web)
 
-`https://explorer.pwm.platformai.org/principles` — 531 Principles
-filterable by domain.
+`https://explorer.pwm.platformai.org/principles` — shows artifacts
+registered on the live network (today: 2 founder-vetted Principles
+on Sepolia — CASSI and CACTI).
 
 ### Browse the catalog (CLI)
 
 ```bash
-# L1 Principle catalog (~531 entries):
+# L1 Principles registered on the active network (default genesis dir):
 pwm-node principles
+#   Today: 2 entries (CASSI, CACTI) — these are the founder-vetted set
+#   that ships with the protocol launch and is registered on Sepolia.
 
-# L3 Benchmark catalog (parent L1/L2, rho, T1 baseline):
+# L3 Benchmarks registered on the active network:
 pwm-node benchmarks
 ```
 
-Both commands are offline — no `--network` flag, no chain calls.
+Both commands are offline-by-default — no `--network` flag needed for
+catalog reads.
 Add `--domain <substring>` to filter (e.g. `pwm-node principles --domain imaging`).
+
+### Two views of the catalog: registered vs cataloged
+
+PWM's catalog has two sizes depending on what you're asking:
+
+| View | Count today | What it shows | How to access |
+|---|---|---|---|
+| **Registered on-chain** | 2 (CASSI, CACTI) | Principles the multisig has registered to `PWMRegistry`. **Mineable** — submitting a cert against these has a real reward pool.  | `pwm-node principles`, `https://explorer.pwm.platformai.org/principles` |
+| **Cataloged in repo** | 531 | Scientifically-declared L1 inventory across imaging, physics, applied, chemistry, signal — most are **stubs awaiting an external contributor** to author a reference solver and pin a dataset. **Not mineable** until promoted (see "Registration tiers" below). | `find pwm-team/content/agent-*/principles -name "L1-*.json"` |
+
+That's why this guide's CLI examples print 2 entries even though the
+repo has 531 manifest files — the CLI defaults to showing what's
+actually registered and minable, not the wider claim-board inventory.
 
 ### Inspect one Principle in detail
 
@@ -163,7 +180,8 @@ find pwm-team/content/agent-physics/principles   -name "L1-*.json" | wc -l   # 1
 find pwm-team/content/agent-applied/principles   -name "L1-*.json" | wc -l   # 112 applied
 find pwm-team/content/agent-chemistry/principles -name "L1-*.json" | wc -l   #  67 chemistry
 find pwm-team/content/agent-signal/principles    -name "L1-*.json" | wc -l   #  39 signal processing
-# Total: 531 first-class L1 Principles across all domains.
+# Total: 531 cataloged L1 Principles across all domains (mostly Tier 3
+# stubs awaiting contributor authoring — see "Registration tiers" below).
 ```
 
 ### Find a Principle for your problem
@@ -485,6 +503,74 @@ get 15%/10%/5% respectively. The principle's treasury T_k gets 15%.
 
 ---
 
+## Registration tiers — what's mineable, what's claimable, what's neither
+
+Every L1/L2/L3 manifest carries a `registration_tier` field that tells
+you exactly where the artifact sits in its lifecycle. Three values:
+
+| Tier | Field value | What it means | Mineable? | Pool funded? |
+|---|---|---|---|---|
+| **Tier 1** | `"founder_vetted"` | Founders personally ran the reference solver, confirmed scoring, funded the pool. Today: L1-003 + L1-004 (CASSI + CACTI) + their L2/L3 children. | ✓ Yes | ✓ Yes |
+| **Tier 2** | `"community_proposed"` | External contributor PR'd the missing pieces (reference solver, IPFS dataset, S1-S4 review). Multisig signed `PWMRegistry.register()` after merge. None today (post-launch path). | ✓ Yes | ✓ Yes (capped) |
+| **Tier 3** | `"stub"` | JSON manifest exists in repo as a "claim board" entry. Forward model declared, but no reference solver, no dataset, not registered on-chain. **The 529 of 531 cataloged manifests sit at this tier today.** | ✗ No (cert submits succeed but resolve to a zero pool) | ✗ No |
+
+### Inspect the tier of any artifact
+
+```bash
+jq -r '.registration_tier' pwm-team/content/agent-imaging/principles/C_medical_imaging/L1-503_qsm.json
+# Output: stub
+
+jq -r '.registration_tier' pwm-team/pwm_product/genesis/l1/L1-003.json
+# Output: founder_vetted
+```
+
+### Why the 529 stubs don't drain mainnet
+
+`PWMReward.distribute()` only pays out for cert hashes whose
+`benchmarkHash` resolves to a **registered** L3 in `PWMRegistry`.
+Stubs aren't registered, so a cert submitted against L3-523 (for
+example) lands in a zero-pool — the cert is recorded for
+reproducibility purposes, but no PWM moves. Registration is
+multisig-gated; only Tier 1 + promoted Tier 2 artifacts ever reach
+the chain.
+
+### How a Tier 3 stub becomes mineable
+
+```
+Tier 3 (stub in repo)              Tier 2 (community-vetted)         Tier 1 (founder-vetted)
+──────────────────────             ───────────────────────────       ─────────────────────────
+"L1-503 QSM exists as a    ──→     External contributor:        ──→  (rare; founders take
+description; nobody has           1. Opens PR with reference         direct ownership only
+written a solver yet"                solver                          for personally-proven
+                                  2. Pins ≥1 dataset to IPFS         expertise — e.g. Cai
+                                  3. Updates L3-XXX manifest         et al. for MST-L on
+                                  4. Verifier-agent triple-           CASSI)
+                                     reviews
+                                  5. 3-of-5 multisig signs
+                                     PWMRegistry.register()
+                                  6. Per-principle pool funded
+                                     (capped via maxBenchmarkPoolWei)
+                                  ↓
+                                  Now mineable on mainnet
+```
+
+For the per-PR contribution policy and gate criteria, see
+`pwm-team/customer_guide/PWM_PRINCIPLE_CONTRIBUTION_GUIDE.md`.
+
+### Hash invariance — adding `registration_tier` doesn't break existing on-chain hashes
+
+`registration_tier` is in the `UI_ONLY_FIELDS` filter (alongside
+`display_slug`, `display_color`, `ui_metadata`). The canonical-JSON
+hashing strips it before computing keccak256, so:
+
+- L1-003's on-chain hash `0xe3b1328c…99a51ea` stays valid after the
+  field is added (verified 2026-05-06).
+- Tier promotion (stub → community_proposed → founder_vetted)
+  changes the catalog metadata without re-registering the artifact
+  or invalidating prior certs.
+
+---
+
 ## End-to-end concrete user journeys
 
 ### Journey A — PhD student comparing their CASSI method to SOTA
@@ -571,12 +657,20 @@ get 15%/10%/5% respectively. The principle's treasury T_k gets 15%.
 
 ## What network for what action
 
-| Network | Use for |
-|---|---|
-| `--network offline` | Reading local JSON manifests; pure metadata browsing |
-| `--network testnet` (Sepolia chainId 11155111) | All examples in this guide; live testnet today; ~$0 in real money |
-| `--network baseSepolia` (chainId 84532) | Step 5 dress rehearsal (pending hardware wallets) |
-| `--network base` (chainId 8453) | Base mainnet — production once Step 11 (founder mining live) lands; timeline tracked internally |
+The CLI accepts three values for `--network`: `offline`, `testnet`,
+`mainnet`. The actual chain selected depends on which entry is
+populated in `pwm-team/infrastructure/agent-contracts/addresses.json`.
+
+| Network flag | Resolves to (today) | Use for |
+|---|---|---|
+| `--network offline` (default) | No chain | Reading local JSON manifests; pure metadata browsing; `pwm-node principles` and `inspect` work without RPC |
+| `--network testnet` | Ethereum Sepolia (chainId 11155111) | All examples in this guide; live testnet today; ~$0 in real money |
+| `--network mainnet` | Base mainnet (chainId 8453) at launch — `addresses.json:mainnet` is currently null and gets populated on D9 | Production mining once Step 11 (founder mining live) lands; same flag as testnet, just a different `addresses.json` entry |
+
+The Base Sepolia dress-rehearsal step (chainId 84532) is run by
+swapping the `testnet` entry in `addresses.json` to point at the
+Base Sepolia contracts during Step 5, then swapping back. It's not
+a separate CLI flag.
 
 ## Common confusions
 
@@ -637,4 +731,5 @@ above plus `PWM_PRINCIPLE_CONTRIBUTION_GUIDE.md`.
 - **Producer vs consumer split:** most PWM users are consumers; the protocol design front-loads consumer ease-of-use
 - **L1/L2/L3 = registered (one-time):** L4 = mined (repeated); staking is orthogonal and optional
 - **The walkthrough script** (`scripts/testnet_mine_walkthrough.sh`) automates Journey E — Director's path to populating the testnet leaderboard
-- **All examples in this guide work on Sepolia today** — Base Sepolia + Base mainnet are forthcoming; the CLI is network-agnostic via the `--network` flag
+- **All examples in this guide work on Sepolia today** — Base Sepolia + Base mainnet are forthcoming. The CLI's `--network mainnet` flag will resolve to Base mainnet contracts (via `addresses.json:mainnet`) once D9 populates that entry; no new flag values are added.
+- **Registration tiers (added 2026-05-06):** every L1/L2/L3 manifest carries a `registration_tier` field — `founder_vetted` (today: 2 Principles + their L2/L3 children, registered on Sepolia), `community_proposed` (none yet — post-launch path), or `stub` (529 cataloged inventory entries awaiting a contributor). Only Tier 1 + promoted Tier 2 are mineable; Tier 3 stubs can't drain the mainnet pool. `registration_tier` is in `UI_ONLY_FIELDS` so adding/promoting it is hash-invariant.

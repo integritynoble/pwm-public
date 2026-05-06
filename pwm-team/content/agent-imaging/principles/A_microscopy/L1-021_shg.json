@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-021",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "021",
   "title": "Second Harmonic Generation (SHG) Microscopy",
   "domain": "Microscopy",

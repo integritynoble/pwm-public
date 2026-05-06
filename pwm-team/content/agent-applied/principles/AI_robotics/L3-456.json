@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-456",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-456",
   "parent_l1": "L1-456",
-  "title": "Rotor Dynamics Aeroelastic Inversion — Benchmark Suite",
+  "title": "Rotor Dynamics Aeroelastic Inversion \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "NACA_rotor_database",

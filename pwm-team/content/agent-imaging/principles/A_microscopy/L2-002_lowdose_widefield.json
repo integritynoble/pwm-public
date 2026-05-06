@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-002",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-002",
   "title": "Low-Dose Widefield Fluorescence (photon-starved Airy deconvolution) Mismatch-Only Spec",
   "spec_type": "mismatch_only",

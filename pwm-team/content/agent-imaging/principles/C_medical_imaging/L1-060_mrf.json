@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-060",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "060",
   "title": "MR Fingerprinting (MRF)",
   "domain": "Medical Imaging",

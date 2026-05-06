@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-071",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "071",
   "title": "Digital Holography (off-axis and in-line intensity holograms)",
   "domain": "Coherent Imaging",

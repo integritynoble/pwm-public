@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-249",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "249",
-  "title": "Metamaterial / Metasurface — effective medium inversion",
+  "title": "Metamaterial / Metasurface \u2014 effective medium inversion",
   "domain": "Electromagnetics",
   "sub_domain": "Effective permittivity/permeability retrieval",
   "source_file": "U_electromagnetics/249_metamaterial.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Metamaterial / Metasurface — effective medium inversion forward model.",
+    "description": "Metamaterial / Metasurface \u2014 effective medium inversion forward model.",
     "forward_model": "n_eff = (1/kd)*arccos((1 - S11^2 + S21^2)/(2*S21)); Z_eff from S-parameters",
     "world_state_x": "effective eps_eff(omega), mu_eff(omega), n_eff(omega)",
     "observation_y": "S11, S21 magnitude and phase vs frequency",

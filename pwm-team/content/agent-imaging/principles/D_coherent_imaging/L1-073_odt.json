@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-073",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "073",
-  "title": "Optical Diffraction Tomography (ODT) — 3D refractive-index imaging",
+  "title": "Optical Diffraction Tomography (ODT) \u2014 3D refractive-index imaging",
   "domain": "Coherent Imaging",
   "sub_domain": "Multi-angle coherent tomography",
   "source_file": "D_coherent_imaging/073_odt.md",

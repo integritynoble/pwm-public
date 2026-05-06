@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-015",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-015",
   "title": "MINFLUX (minimum-photon single-molecule localization) Mismatch-Only Spec",
   "spec_type": "mismatch_only",

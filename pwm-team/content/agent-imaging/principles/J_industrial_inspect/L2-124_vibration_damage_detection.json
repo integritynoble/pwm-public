@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-124",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-124",
   "title": "Vibration-Based Damage Detection (modal analysis NDT) Mismatch-Only Spec",
   "spec_type": "mismatch_only",

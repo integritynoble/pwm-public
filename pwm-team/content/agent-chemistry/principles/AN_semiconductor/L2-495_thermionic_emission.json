@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-495",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-495",
   "title": "Thermionic Emission at Metal-Semiconductor Interfaces Mismatch-Only Spec",
   "spec_type": "mismatch_only",

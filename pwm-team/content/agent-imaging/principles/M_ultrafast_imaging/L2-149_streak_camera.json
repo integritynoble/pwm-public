@@ -1,8 +1,9 @@
 {
   "artifact_id": "L2-149",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-149",
-  "title": "Streak Camera — picosecond 1D time-resolved imaging Mismatch-Only Spec",
+  "title": "Streak Camera \u2014 picosecond 1D time-resolved imaging Mismatch-Only Spec",
   "spec_type": "mismatch_only",
   "six_tuple": {
     "omega": {

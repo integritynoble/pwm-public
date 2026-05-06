@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-004",
   "layer": "L1",
+  "registration_tier": "founder_vetted",
   "principle_number": "004",
   "title": "Coded Aperture Compressive Temporal Imaging (CACTI)",
   "domain": "Compressive Imaging",

@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-297",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-297",
   "title": "Time-Dependent Density Functional Theory (TDDFT) Mismatch-Only Spec",
   "spec_type": "mismatch_only",

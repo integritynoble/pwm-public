@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-160",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-160",
   "title": "CT-FLIT (Fluorescence Lifetime Imaging Tomography) Mismatch-Only Spec",
   "spec_type": "mismatch_only",

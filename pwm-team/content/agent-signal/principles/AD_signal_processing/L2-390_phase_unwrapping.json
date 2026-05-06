@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-390",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-390",
   "principle_ref": "sha256:<L1-390_principle_hash>",
   "title": "Phase Unwrapping Noisy-Coherence Spec (InSAR family)",
@@ -122,7 +123,7 @@
     "proximity_threshold": 0.1
   },
   "d_spec": 0.55,
-  "d_spec_notes": "Distance from 3D/temporal phase unwrap spec ~= 0.30 (Similar — different integration axis). Phase unwrapping is topologically different from other inverse problems (integer ambiguity).",
+  "d_spec_notes": "Distance from 3D/temporal phase unwrap spec ~= 0.30 (Similar \u2014 different integration axis). Phase unwrapping is topologically different from other inverse problems (integer ambiguity).",
   "s1_s4_gates": [
     "PASS",
     "PASS",

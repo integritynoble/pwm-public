@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-323",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-323",
   "title": "Exact Diagonalization of Many-Body Hamiltonians Mismatch-Only Spec",
   "spec_type": "mismatch_only",

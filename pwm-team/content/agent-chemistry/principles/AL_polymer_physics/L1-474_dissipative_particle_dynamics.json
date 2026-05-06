@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-474",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "474",
   "title": "Dissipative Particle Dynamics (DPD)",
   "domain": "Polymer Physics",

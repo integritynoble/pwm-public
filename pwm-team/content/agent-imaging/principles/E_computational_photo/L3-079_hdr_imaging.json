@@ -1,6 +1,7 @@
 {
   "artifact_id": "L3-079",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-079",
   "parent_l1": "L1-079",
   "title": "HDR Multi-Exposure Fusion Benchmark Suite",
@@ -168,7 +169,7 @@
       }
     ]
   },
-  "hardness_rule_check": "SATISFIED — HDR-CNN fails at T4_blind (motion_ghosting=0.5 + K=2 + 8-bit + under_coverage=0.3 corner is under-covered).",
+  "hardness_rule_check": "SATISFIED \u2014 HDR-CNN fails at T4_blind (motion_ghosting=0.5 + K=2 + 8-bit + under_coverage=0.3 corner is under-covered).",
   "ipfs_cid": null,
   "ground_truth_cid": null,
   "display_slug": "hdr-imaging"

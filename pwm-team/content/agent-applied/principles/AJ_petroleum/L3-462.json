@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-462",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-462",
   "parent_l1": "L1-462",
-  "title": "Enhanced Oil Recovery (EOR) Modeling — Benchmark Suite",
+  "title": "Enhanced Oil Recovery (EOR) Modeling \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "SPE_polymer_flooding_benchmark",

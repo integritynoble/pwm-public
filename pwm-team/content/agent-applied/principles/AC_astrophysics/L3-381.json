@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-381",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-381",
   "parent_l1": "L1-381",
-  "title": "Type Ia Supernova Distance Standardization — Benchmark Suite",
+  "title": "Type Ia Supernova Distance Standardization \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "Pantheon_Plus_SH0ES",

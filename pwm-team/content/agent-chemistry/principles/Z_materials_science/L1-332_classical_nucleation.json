@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-332",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "332",
   "title": "Classical Nucleation Theory",
   "domain": "Materials Science",

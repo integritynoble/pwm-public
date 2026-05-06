@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-283",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "283",
-  "title": "Electrical Resistivity Tomography (ERT) — near-surface",
+  "title": "Electrical Resistivity Tomography (ERT) \u2014 near-surface",
   "domain": "Geophysics",
   "sub_domain": "DC-resistivity near-surface imaging",
   "source_file": "W_geophysics/283_electrical_resistivity_tomography.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Electrical Resistivity Tomography (ERT) — near-surface forward model.",
+    "description": "Electrical Resistivity Tomography (ERT) \u2014 near-surface forward model.",
     "forward_model": "div(sigma grad phi) = -I delta(x_src); measure V at remote electrodes",
     "world_state_x": "3D resistivity (surface-down to ~100 m depth)",
     "observation_y": "N_quadrupole apparent resistivity measurements",

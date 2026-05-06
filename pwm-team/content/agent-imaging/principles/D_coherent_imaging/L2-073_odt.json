@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-073",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-073",
   "title": "ODT Rytov-Regime Mismatch-Only Spec",
   "spec_type": "mismatch_only",

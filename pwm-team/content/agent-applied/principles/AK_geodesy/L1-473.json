@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-473",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "473",
   "title": "Radiometric Sensor Calibration",
   "domain": "Geodesy",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Radiometric Sensor Calibration: Absolute radiometric calibration: determine gain and offset coefficients converting DN to physical radiance/reflectance. The forward operator produces the measurement through a 3-node primitive DAG (S.calibration.vicarious…); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~20; sensor_degradation_drift_percent_yr, BRDF_angular_effect set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "Radiometric Sensor Calibration: Absolute radiometric calibration: determine gain and offset coefficients converting DN to physical radiance/reflectance. The forward operator produces the measurement through a 3-node primitive DAG (S.calibration.vicarious\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~20; sensor_degradation_drift_percent_yr, BRDF_angular_effect set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "TOA_reflectance = gain * DN + offset; atmospheric correction: rho_surface = (rho_TOA - rho_path) / T_atm",
     "world_state_x": "calibration coefficients (gain, offset) per spectral band for satellite sensor",
     "observation_y": "DN values for calibration targets (pseudo-invariant sites, vicarious sites, on-board lamps)",

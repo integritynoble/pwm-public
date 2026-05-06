@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-485",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-485",
   "parent_l1": "L1-485",
-  "title": "Neutrino Oscillation Parameter Extraction — Benchmark Suite",
+  "title": "Neutrino Oscillation Parameter Extraction \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "T2K_Run1-10_oscillation_data",

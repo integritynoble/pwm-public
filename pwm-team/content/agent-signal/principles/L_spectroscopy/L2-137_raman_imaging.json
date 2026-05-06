@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-137",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-137",
   "principle_ref": "sha256:<L1-137_principle_hash>",
   "title": "Raman Imaging Hyperspectral Unmixing Spec",
@@ -137,7 +138,7 @@
     "proximity_threshold": 0.1
   },
   "d_spec": 0.45,
-  "d_spec_notes": "Distance from CARS (L2-138) ~= 0.30 (Related — coherent vs. spontaneous). Distance from 140 FTIR ~= 0.35 (Related — different vibrational mechanism).",
+  "d_spec_notes": "Distance from CARS (L2-138) ~= 0.30 (Related \u2014 coherent vs. spontaneous). Distance from 140 FTIR ~= 0.35 (Related \u2014 different vibrational mechanism).",
   "s1_s4_gates": [
     "PASS",
     "PASS",

@@ -1,9 +1,10 @@
 {
   "artifact_id": "L2-169",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-169",
   "principle_ref": "sha256:<L1-169_principle_hash>",
-  "title": "Solar EUV/X-ray Image Reconstruction — Nominal + Mismatch Specs",
+  "title": "Solar EUV/X-ray Image Reconstruction \u2014 Nominal + Mismatch Specs",
   "spec_type": "nominal_and_mismatch",
   "six_tuple": {
     "omega": {

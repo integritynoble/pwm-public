@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-018",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "018",
   "title": "Differential Interference Contrast (DIC / Nomarski) Microscopy",
   "domain": "Microscopy",

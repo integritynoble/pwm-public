@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-146",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-146",
   "principle_ref": "sha256:<L1-146_principle_hash>",
   "title": "NMR 1D Peak-Picking Spec",
@@ -132,7 +133,7 @@
     "proximity_threshold": 0.1
   },
   "d_spec": 0.45,
-  "d_spec_notes": "Distance from 2D NMR spec ~= 0.25 (Similar, different dim). Distance from 394 spectral estimation ~= 0.40 (Related — both harmonic).",
+  "d_spec_notes": "Distance from 2D NMR spec ~= 0.25 (Similar, different dim). Distance from 394 spectral estimation ~= 0.40 (Related \u2014 both harmonic).",
   "s1_s4_gates": [
     "PASS",
     "PASS",

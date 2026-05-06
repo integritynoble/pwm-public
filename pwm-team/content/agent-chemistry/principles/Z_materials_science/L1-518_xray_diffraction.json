@@ -1,18 +1,19 @@
 {
   "artifact_id": "L1-518",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "518",
   "title": "X-ray Diffraction Crystal Structure Recovery (analytical core)",
   "domain": "Materials Science",
   "sub_domain": "Powder / single-crystal X-ray diffraction lattice and structure-factor recovery",
   "source_file": "Z_materials_science/518_xray_diffraction.md",
-  "source_data_quality_note": "Analytical core for the XRD pair (paired with L1-519 PWDR wrapper). Recovers crystal lattice parameters, structure factors, and atomic positions from X-ray diffraction patterns via Bragg's law and Rietveld refinement. New to genesis — closest existing siblings are L1-031 X-ray radiography (transmission imaging, not diffraction) and L1-294 DFT (electronic structure, not lattice geometry). Per pwm-team/pwm_product/genesis/PWM_V2_GENESIS_INCLUSION.md: crystal-XRD space-group classification is among the canonical Option-3 recast cases.",
+  "source_data_quality_note": "Analytical core for the XRD pair (paired with L1-519 PWDR wrapper). Recovers crystal lattice parameters, structure factors, and atomic positions from X-ray diffraction patterns via Bragg's law and Rietveld refinement. New to genesis \u2014 closest existing siblings are L1-031 X-ray radiography (transmission imaging, not diffraction) and L1-294 DFT (electronic structure, not lattice geometry). Per pwm-team/pwm_product/genesis/PWM_V2_GENESIS_INCLUSION.md: crystal-XRD space-group classification is among the canonical Option-3 recast cases.",
   "gate_class": "analytical",
   "gate_substitutions": null,
   "related_principles": [
-    "L1-031 (X-ray radiography — sibling X-ray modality, transmission geometry, informational)",
-    "L1-294 (DFT — sibling electronic-structure-from-lattice computation, informational)",
-    "L1-519 (XRD space-group classification PWDR — discrete-readout child)"
+    "L1-031 (X-ray radiography \u2014 sibling X-ray modality, transmission geometry, informational)",
+    "L1-294 (DFT \u2014 sibling electronic-structure-from-lattice computation, informational)",
+    "L1-519 (XRD space-group classification PWDR \u2014 discrete-readout child)"
   ],
   "E": {
     "description": "X-ray Diffraction Crystal Structure Recovery: analytical forward model for powder or single-crystal XRD. Bragg's law n*lambda = 2*d*sin(theta) governs diffraction angles; structure factor F_hkl = sum_j f_j * exp(2*pi*i*(h*x_j + k*y_j + l*z_j)) governs intensities. For powder XRD: I(2*theta) = K * sum_hkl |F_hkl|^2 * m_hkl * Lp(theta) * P_hkl(eta) * profile(2*theta - 2*theta_hkl); for single-crystal: I_hkl = K * |F_hkl|^2 * Lp(theta) * absorption_correction. Recovery is posed as the joint inverse problem that recovers (a, b, c, alpha, beta, gamma, atomic_positions, occupancies, thermal_factors) from measured I(2*theta) or {I_hkl}. The forward DAG has 7 primitives with one coupling constraint (n_c = 1): the structure-factor-to-intensity multiplicative coupling (via |F|^2). Difficulty tier delta = 5 (advanced) given the high condition number of structure-factor inversion (phase problem unresolved without anomalous scattering or direct methods). Mismatch parameters: instrumental_broadening, preferred_orientation_powder, sample_displacement, beam_divergence, monochromator_misalignment, background_subtraction_error.",
@@ -56,7 +57,7 @@
     "L_DAG": 6.8,
     "n_c": 1,
     "coupling_constraints": [
-      "structure_factor_to_intensity: I_hkl is multiplicatively coupled to |F_hkl|^2 — the structure factor magnitude is observable but its phase is not; this is the canonical 'phase problem' of crystallography that Patterson methods, direct methods, and isomorphous-replacement / anomalous-scattering address"
+      "structure_factor_to_intensity: I_hkl is multiplicatively coupled to |F_hkl|^2 \u2014 the structure factor magnitude is observable but its phase is not; this is the canonical 'phase problem' of crystallography that Patterson methods, direct methods, and isomorphous-replacement / anomalous-scattering address"
     ]
   },
   "W": {
@@ -221,7 +222,7 @@
       "closest_existing_principle": "L1-031 X-ray radiography",
       "d_principle_estimate": 0.55,
       "advisory_label": "Distinct",
-      "rationale": "L1-031 X-ray radiography is transmission-attenuation imaging (Beer-Lambert through bulk material); sensing_mechanism = transmission attenuation; solution_space = 2D/3D attenuation map. L1-518 XRD is Bragg-diffraction crystallography (Bragg law + structure factor); sensing_mechanism = bragg_diffraction; solution_space = crystal_structure_parameters (lattice + atomic positions). Different physics primitives (L.bragg_diffraction, L.structure_factor vs L.attenuation_projection), different problem class (nonlinear_inverse with phase problem vs linear_inverse). d_principle ~ 0.55 — solidly Distinct."
+      "rationale": "L1-031 X-ray radiography is transmission-attenuation imaging (Beer-Lambert through bulk material); sensing_mechanism = transmission attenuation; solution_space = 2D/3D attenuation map. L1-518 XRD is Bragg-diffraction crystallography (Bragg law + structure factor); sensing_mechanism = bragg_diffraction; solution_space = crystal_structure_parameters (lattice + atomic positions). Different physics primitives (L.bragg_diffraction, L.structure_factor vs L.attenuation_projection), different problem class (nonlinear_inverse with phase problem vs linear_inverse). d_principle ~ 0.55 \u2014 solidly Distinct."
     },
     "clinical_context": "X-ray crystallography is the foundational technique of materials science, structural chemistry, drug discovery, and pharmaceutical formulation. Powder XRD is a routine quality-control tool in pharma manufacturing (polymorph identification, amorphous vs crystalline content), cement, metal alloys, semiconductors. Single-crystal XRD is the canonical method for protein structure determination (PDB), small-molecule drug structure, and crystal engineering. Universal commercial systems: Bruker D8, Rigaku SmartLab, PANalytical X'Pert, Stoe STADI MP. UTSW has multiple X-ray crystallography facilities for structural biology (Drug Discovery Institute, BioCryst). PWDR-class downstream Principle (L1-519) provides space-group classification readout."
   },

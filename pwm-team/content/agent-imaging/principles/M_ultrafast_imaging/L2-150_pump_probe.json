@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-150",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-150",
   "title": "Pump-Probe Spectroscopy / Imaging Mismatch-Only Spec",
   "spec_type": "mismatch_only",

@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-002",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "002",
   "title": "Low-Dose Widefield Fluorescence (photon-starved Airy deconvolution)",
   "domain": "Microscopy",

@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-276",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "276",
-  "title": "Seismic Reflection — post-stack migration and imaging",
+  "title": "Seismic Reflection \u2014 post-stack migration and imaging",
   "domain": "Geophysics",
   "sub_domain": "Reverse-time migration (RTM) of reflection seismology",
   "source_file": "W_geophysics/276_seismic_reflection.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Seismic Reflection — post-stack migration and imaging forward model.",
+    "description": "Seismic Reflection \u2014 post-stack migration and imaging forward model.",
     "forward_model": "image(x) = int_time S(x,t) * R(x,t) dt where S=forward, R=adjoint (RTM imaging condition)",
     "world_state_x": "3D subsurface reflectivity image R(x,y,z)",
     "observation_y": "shot-receiver gather in (source_x, receiver_x, time)",

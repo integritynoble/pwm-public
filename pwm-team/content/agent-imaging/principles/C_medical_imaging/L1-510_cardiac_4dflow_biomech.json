@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-510",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "510",
   "title": "Cardiac 4D-flow MRI with Hemodynamic Biomechanics",
   "domain": "Medical Imaging",
@@ -10,11 +11,11 @@
   "gate_class": "analytical",
   "gate_substitutions": null,
   "related_principles": [
-    "L1-030 (MRI — Fourier encoding component, informational)",
-    "L1-058 (MRA — vessel-anatomy MR variant, d_principle ~ 0.50)",
-    "L1-046 (Doppler US — alternative velocity measurement modality, informational)",
-    "L1-170 (Incompressible Navier-Stokes — fluid-dynamics primitive, informational)",
-    "L1-400 (Cardiovascular Hemodynamics NS — sibling cardiovascular flow Principle, n_c=2)"
+    "L1-030 (MRI \u2014 Fourier encoding component, informational)",
+    "L1-058 (MRA \u2014 vessel-anatomy MR variant, d_principle ~ 0.50)",
+    "L1-046 (Doppler US \u2014 alternative velocity measurement modality, informational)",
+    "L1-170 (Incompressible Navier-Stokes \u2014 fluid-dynamics primitive, informational)",
+    "L1-400 (Cardiovascular Hemodynamics NS \u2014 sibling cardiovascular flow Principle, n_c=2)"
   ],
   "E": {
     "description": "Cardiac 4D-flow MRI with Hemodynamic Biomechanics: joint multi-physics forward couples (i) 4D phase-contrast MR acquisition where the phase difference Delta-phi(r, t) = gamma * TE * venc * v(r, t) accumulates over a flow-encoding gradient pair, encoding all three velocity components (v_x, v_y, v_z) into the MR signal phase across a 3D spatial grid + cardiac cycle phase; (ii) incompressible Navier-Stokes equations governing the velocity-pressure (v, p) coupling: rho * (dv/dt + (v . grad) v) = -grad p + mu * Laplacian(v) + f_body, with incompressibility constraint div(v) = 0; (iii) physiologically-consistent boundary conditions (no-slip at vessel walls, prescribed inflow / outflow waveforms at chamber inlets and outlets, periodic-cardiac-cycle constraint). The forward DAG has 8 primitives with two coupling constraints (n_c = 2): (i) MR-phase-to-velocity linear coupling (analytic, well-conditioned across vessel lumen but compromised at high-velocity-gradient walls); (ii) NS-equation coupling between velocity and pressure (nonlinear convective term + incompressibility, the standard incompressible-NS multi-physics constraint that regularizes noisy MR-derived velocities and recovers pressure that is otherwise unobservable directly). Recovery is posed as the joint inverse problem that recovers (v(r, t), p(r, t)) from measured Delta-phi(r, t) under NS constraint and BC. Difficulty tier delta = 5 with raw condition number kappa ~ 220 (limited by venc-aliasing and SNR per velocity component) and effective kappa_eff ~ 30 after NS-regularized variational reconstruction. Mismatch parameters: venc_aliasing, partial_volume_at_walls, breath_hold_motion, eddy_current_offset, segmentation_error_at_chambers, viscosity_uncertainty. Additive Gaussian thermal noise sets the data-fidelity floor. See forward_model field for the closed-form joint imaging equation.",
@@ -64,8 +65,8 @@
     "L_DAG": 8.3,
     "n_c": 2,
     "coupling_constraints": [
-      "mr_phase_to_velocity: Delta-phi = gamma * TE * venc * v — analytic linear coupling between MR phase and velocity, well-conditioned across lumen but compromised at high-gradient walls (partial-volume averaging) and at walls themselves (zero velocity but non-zero phase from background field)",
-      "ns_velocity_pressure_coupling: incompressible Navier-Stokes couples (v, p) through rho * (dv/dt + (v.grad)v) = -grad p + mu Laplacian(v) + f_body and div(v) = 0; the nonlinear convective term plus incompressibility constraint regularize noisy MR-velocity reconstruction AND recover pressure (otherwise unobservable from MR phase alone) — this is the principal multi-physics coupling"
+      "mr_phase_to_velocity: Delta-phi = gamma * TE * venc * v \u2014 analytic linear coupling between MR phase and velocity, well-conditioned across lumen but compromised at high-gradient walls (partial-volume averaging) and at walls themselves (zero velocity but non-zero phase from background field)",
+      "ns_velocity_pressure_coupling: incompressible Navier-Stokes couples (v, p) through rho * (dv/dt + (v.grad)v) = -grad p + mu Laplacian(v) + f_body and div(v) = 0; the nonlinear convective term plus incompressibility constraint regularize noisy MR-velocity reconstruction AND recover pressure (otherwise unobservable from MR phase alone) \u2014 this is the principal multi-physics coupling"
     ]
   },
   "W": {
@@ -74,7 +75,7 @@
     "stability": "conditional",
     "condition_number_kappa": 220,
     "condition_number_effective": 30,
-    "regime": "Existence of joint (v(r, t), p(r, t)) is guaranteed within the declared Omega bounds and chamber geometry. Uniqueness holds under physiologically-consistent boundary conditions (no-slip walls, prescribed inflow/outflow, periodic-cardiac-cycle) and adequate venc/SNR; pressure recovery is conditionally unique up to a constant (Helmholtz-Hodge decomposition) — typical practice fixes pressure at one anatomical reference. Stability is moderately conditioned (kappa_eff ~ 30 after NS-regularized variational reconstruction) — venc_aliasing dominates aliasing-induced velocity errors; partial_volume_at_walls dominates wall-shear-stress bias; eddy_current_offset contributes a systematic background-velocity bias; viscosity_uncertainty contributes a scaling factor for shear-related quantities. Joint Hadamard well-posedness for the coupled MR-PC + NS forward is established by Markl et al. 2012 (foundational 4D-flow review), Stankovic et al. 2014 (clinical 4D-flow), Bertoglio-Caiazzo 2015 (NS-regularized 4D-flow inverse), Pereira et al. 2016 (assimilation), Garcia et al. 2018 (NS-regularized clinical 4D-flow), and Soulat et al. 2020 (4D-flow benchmarking)."
+    "regime": "Existence of joint (v(r, t), p(r, t)) is guaranteed within the declared Omega bounds and chamber geometry. Uniqueness holds under physiologically-consistent boundary conditions (no-slip walls, prescribed inflow/outflow, periodic-cardiac-cycle) and adequate venc/SNR; pressure recovery is conditionally unique up to a constant (Helmholtz-Hodge decomposition) \u2014 typical practice fixes pressure at one anatomical reference. Stability is moderately conditioned (kappa_eff ~ 30 after NS-regularized variational reconstruction) \u2014 venc_aliasing dominates aliasing-induced velocity errors; partial_volume_at_walls dominates wall-shear-stress bias; eddy_current_offset contributes a systematic background-velocity bias; viscosity_uncertainty contributes a scaling factor for shear-related quantities. Joint Hadamard well-posedness for the coupled MR-PC + NS forward is established by Markl et al. 2012 (foundational 4D-flow review), Stankovic et al. 2014 (clinical 4D-flow), Bertoglio-Caiazzo 2015 (NS-regularized 4D-flow inverse), Pereira et al. 2016 (assimilation), Garcia et al. 2018 (NS-regularized clinical 4D-flow), and Soulat et al. 2020 (4D-flow benchmarking)."
   },
   "C": {
     "solver_class": "linear-operator + variational [4D-PC with divergence-free regularization; NS-PINN with Galerkin projection; sequential PCMRI + CFD assimilation] | iterative variational data assimilation [4D-Var, ensemble Kalman filter] | linear-operator + deep neural prior [4DFlowNet, NS-PINN]",
@@ -278,7 +279,7 @@
       "closest_existing_principle": "L1-058 MRA",
       "d_principle_estimate": 0.5,
       "advisory_label": "Distinct",
-      "rationale": "L1-058 MRA recovers vessel-anatomy contrast (lumen geometry) from time-of-flight or contrast-enhanced MR; sensing_mechanism = mri_angiography; n_c = 0; solution_space = 3D vessel anatomy. L1-510 4D-flow MRI with NS biomechanics jointly inverts (v(r, t), p(r, t)) from phase-contrast 4D MR data under NS regularization; sensing_mechanism = phase_contrast_mri_with_navier_stokes; n_c = 2 (MR-phase-to-velocity + NS-velocity-pressure coupling); solution_space = 4D_velocity_pressure_joint. Adds L.flow_encoding_gradient, L.navier_stokes_constraint, L.boundary_conditions primitives; recovers physics-consistent pressure that is otherwise unobservable. Jaccard distance over (sensing_mechanism, solution_space, primitives) ~ 0.50 — solidly Distinct under v1 advisory thresholds (>= 0.30). Note: shares primitives with L1-400 Cardiovascular Hemodynamics NS (already in genesis with n_c=2) but differs in measurement modality — L1-400 is generic NS without specific MR encoding."
+      "rationale": "L1-058 MRA recovers vessel-anatomy contrast (lumen geometry) from time-of-flight or contrast-enhanced MR; sensing_mechanism = mri_angiography; n_c = 0; solution_space = 3D vessel anatomy. L1-510 4D-flow MRI with NS biomechanics jointly inverts (v(r, t), p(r, t)) from phase-contrast 4D MR data under NS regularization; sensing_mechanism = phase_contrast_mri_with_navier_stokes; n_c = 2 (MR-phase-to-velocity + NS-velocity-pressure coupling); solution_space = 4D_velocity_pressure_joint. Adds L.flow_encoding_gradient, L.navier_stokes_constraint, L.boundary_conditions primitives; recovers physics-consistent pressure that is otherwise unobservable. Jaccard distance over (sensing_mechanism, solution_space, primitives) ~ 0.50 \u2014 solidly Distinct under v1 advisory thresholds (>= 0.30). Note: shares primitives with L1-400 Cardiovascular Hemodynamics NS (already in genesis with n_c=2) but differs in measurement modality \u2014 L1-400 is generic NS without specific MR encoding."
     },
     "clinical_context": "Clinical research and emerging routine: aortic disease (stenosis severity, regurgitation, dissection planning, post-repair surveillance), congenital heart disease (Fontan/single-ventricle hemodynamics, tetralogy of Fallot post-repair), pulmonary hypertension assessment, intracardiac flow patterns (LV diastolic dysfunction, valve dysfunction). Computed pressure-drop and wall-shear-stress are emerging biomarkers replacing catheter-based hemodynamic measurements. Established at major academic medical centers; commercial tools include Arterys (now part of Tempus), GTFlow, EnSite, ITFlow. Acquisition time 8-15 min at 3T."
   },

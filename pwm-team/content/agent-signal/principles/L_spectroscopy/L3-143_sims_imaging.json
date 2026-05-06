@@ -1,6 +1,7 @@
 {
   "artifact_id": "L3-143",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-143",
   "parent_l1": "L1-143",
   "title": "SIMS Imaging Benchmark Suite (cell + polymer + NanoSIMS)",
@@ -150,7 +151,7 @@
       }
     ]
   },
-  "hardness_rule_check": "SATISFIED — CNN-SIMS fails at T4_severe_matrix: 0.45 > epsilon_fn ~ 0.30.",
+  "hardness_rule_check": "SATISFIED \u2014 CNN-SIMS fails at T4_severe_matrix: 0.45 > epsilon_fn ~ 0.30.",
   "ipfs_cid": null,
   "ground_truth_cid": null,
   "display_slug": "sims-imaging"

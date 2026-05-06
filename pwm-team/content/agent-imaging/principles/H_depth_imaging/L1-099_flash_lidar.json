@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-099",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "099",
   "title": "Flash LiDAR (single-shot 2D SPAD-array direct ToF)",
   "domain": "Depth Imaging",

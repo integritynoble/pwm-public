@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-320",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-320",
   "title": "Bethe-Salpeter Equation for Excitons Mismatch-Only Spec",
   "spec_type": "mismatch_only",

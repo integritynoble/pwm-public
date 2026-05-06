@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-377",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "377",
   "title": "Galaxy SED Fitting",
   "domain": "Astrophysics",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Galaxy SED Fitting: Galaxy SED fitting: infer stellar mass, SFR, age, metallicity from broadband photometry using stellar population synthesis models. The forward operator produces the measurement through a 3-node primitive DAG (M.sed.stellar_population…); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~80; AGN_contamination, stellar_IMF_uncertainty set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "Galaxy SED Fitting: Galaxy SED fitting: infer stellar mass, SFR, age, metallicity from broadband photometry using stellar population synthesis models. The forward operator produces the measurement through a 3-node primitive DAG (M.sed.stellar_population\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~80; AGN_contamination, stellar_IMF_uncertainty set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "F_lambda = integral SFH(t) * SSP_lambda(t, Z) dt * 10^(-0.4*A_lambda)",
     "world_state_x": "galaxy parameters: M_star, SFR, age, metallicity Z, dust A_V",
     "observation_y": "broadband fluxes F_nu in N_filters bands from UV to IR",

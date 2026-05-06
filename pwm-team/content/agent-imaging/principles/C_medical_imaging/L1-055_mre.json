@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-055",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "055",
   "title": "Magnetic Resonance Elastography (MRE)",
   "domain": "Medical Imaging",

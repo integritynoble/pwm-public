@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-453",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "453",
   "title": "Vehicle Dynamics (Bicycle Model)",
   "domain": "Robotics",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Vehicle Dynamics (Bicycle Model): Vehicle dynamics: estimate vehicle state (yaw rate, side-slip) from IMU and wheel encoders using bicycle model. The forward operator produces the measurement through a 3-node primitive DAG (M.bicycle.lateral_dynamics…); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~80; tire_force_saturation, road_friction_uncertainty set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "Vehicle Dynamics (Bicycle Model): Vehicle dynamics: estimate vehicle state (yaw rate, side-slip) from IMU and wheel encoders using bicycle model. The forward operator produces the measurement through a 3-node primitive DAG (M.bicycle.lateral_dynamics\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~80; tire_force_saturation, road_friction_uncertainty set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "m*v*(beta_dot + psi_dot) = F_yf + F_yr; I_z*psi_ddot = l_f*F_yf - l_r*F_yr; Pacejka tire forces",
     "world_state_x": "vehicle state (v_x, v_y, psi, psi_dot, beta) at each time step",
     "observation_y": "IMU (psi_dot, a_x, a_y), wheel speeds omega_i, steering angle delta_f",

@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-128",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "128",
   "title": "Atom Probe Tomography (APT)",
   "domain": "Scientific Instrumentation",
@@ -47,7 +48,7 @@
     "condition_number_kappa": 1000,
     "condition_number_effective": 50,
     "condition_number_mismatched": 3000,
-    "regime": "Reconstruction is ill-posed due to hemispherical projection approximation — fails at multi-phase tips (different evaporation fields per phase). Field-ion trajectories assumed ideal; local magnification errors of 10-30% at interfaces."
+    "regime": "Reconstruction is ill-posed due to hemispherical projection approximation \u2014 fails at multi-phase tips (different evaporation fields per phase). Field-ion trajectories assumed ideal; local magnification errors of 10-30% at interfaces."
   },
   "C": {
     "solver_class": "IVAS/APSuite point-projection reconstruction, direct field-density, posterior-sampling (Wei et al.), learned (APT-Net), FIM-assisted priors",

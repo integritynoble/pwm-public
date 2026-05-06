@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-049",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "049",
   "title": "Fundus Imaging (retinal photography)",
   "domain": "Medical Imaging",

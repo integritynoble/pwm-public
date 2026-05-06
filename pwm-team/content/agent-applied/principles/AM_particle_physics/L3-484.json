@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-484",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-484",
   "parent_l1": "L1-484",
-  "title": "Charged Particle Track Reconstruction — Benchmark Suite",
+  "title": "Charged Particle Track Reconstruction \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "ATLAS_Run2_tracking_benchmark",

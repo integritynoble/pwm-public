@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-519",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "519",
   "title": "X-ray Diffraction Crystal Space-Group Classification (PWDR)",
   "domain": "Materials Science",
@@ -36,12 +37,12 @@
     "label_set_space_group": [
       "230_space_groups_per_International_Tables_Vol_A"
     ],
-    "threshold_continuity_proof": "Crystal system membership is determined by lattice-parameter relations (a vs b vs c, angles vs 90/120 degrees); each relation defines a measure-zero hyperplane. Bravais centering and space-group decisions are determined by systematic absence patterns — discrete tests on intensity ratios. Smoothed-classification (interpolated when lattice-parameter ratios are near boundaries) is globally Lipschitz with constant ~0.05 per percentage-point of lattice-parameter uncertainty. Inherits stability from L1-518."
+    "threshold_continuity_proof": "Crystal system membership is determined by lattice-parameter relations (a vs b vs c, angles vs 90/120 degrees); each relation defines a measure-zero hyperplane. Bravais centering and space-group decisions are determined by systematic absence patterns \u2014 discrete tests on intensity ratios. Smoothed-classification (interpolated when lattice-parameter ratios are near boundaries) is globally Lipschitz with constant ~0.05 per percentage-point of lattice-parameter uncertainty. Inherits stability from L1-518."
   },
   "related_principles": [
     "L1-518 (XRD analytical core, physics_core_principle)",
-    "L1-031 (X-ray radiography — sibling X-ray modality, informational)",
-    "L1-294 (DFT — sibling first-principles structure prediction, informational)"
+    "L1-031 (X-ray radiography \u2014 sibling X-ray modality, informational)",
+    "L1-294 (DFT \u2014 sibling first-principles structure prediction, informational)"
   ],
   "E": {
     "description": "X-ray Diffraction Space-Group Classification (PWDR): wraps L1-518 XRD analytical core with the deterministic crystallographic-symmetry decision tree from International Tables for Crystallography Vol A. Stage 1 (analytical, from L1-518): recover lattice parameters (a, b, c, alpha, beta, gamma), atomic positions, and systematic-absence pattern. Stage 2 (deterministic threshold): apply hierarchical decision tree (crystal system -> Bravais lattice -> point group -> space group) to assign one of 230 space groups per Hermann-Mauguin notation. Difficulty tier delta = 5. Mismatch parameters: lattice_parameter_uncertainty, systematic_absence_threshold_uncertainty, twinning_artifact, modulation_or_superlattice, pseudosymmetry_ambiguity.",
@@ -93,7 +94,7 @@
     "stability": "conditional",
     "condition_number_kappa": 600,
     "condition_number_effective": 100,
-    "regime": "Existence and uniqueness inherited from L1-518 with additional constraint: pseudosymmetry can cause space-group ambiguity (e.g., P2_1/n vs Pn — distinguishing requires additional statistics or chemistry constraint). Stability inherits L1-518's high condition number plus additive systematic_absence_threshold_uncertainty. Joint Hadamard well-posedness for the space-group classification established by Hahn 2005 (International Tables Vol A), Cromer-Liberman 1970 (anomalous scattering for centrosymmetry tests), Le Bail 2005 (powder indexing), Kabsch 2010 (XDS for space-group determination), Spek 2003 (PLATON ADDSYM)."
+    "regime": "Existence and uniqueness inherited from L1-518 with additional constraint: pseudosymmetry can cause space-group ambiguity (e.g., P2_1/n vs Pn \u2014 distinguishing requires additional statistics or chemistry constraint). Stability inherits L1-518's high condition number plus additive systematic_absence_threshold_uncertainty. Joint Hadamard well-posedness for the space-group classification established by Hahn 2005 (International Tables Vol A), Cromer-Liberman 1970 (anomalous scattering for centrosymmetry tests), Le Bail 2005 (powder indexing), Kabsch 2010 (XDS for space-group determination), Spek 2003 (PLATON ADDSYM)."
   },
   "C": {
     "solver_class": "linear-operator + decision-tree [International Tables Vol A space-group decision tree] | direct methods + symmetry-search [Le Bail indexing + space-group enumeration] | linear-operator + deep neural prior [SpaceGroupNet]",
@@ -228,7 +229,7 @@
     "joint_well_posedness_references": [
       "Hahn T, ed. (2005) International Tables for Crystallography, Volume A: Space-group symmetry, 5th ed. International Union of Crystallography.",
       "Cromer DT, Liberman D (1970) Relativistic calculation of anomalous scattering factors for X rays. J Chem Phys 53(5):1891-1898.",
-      "Le Bail A (2005) Powder pattern indexing — application to monocrystalline thin film PbS. Powder Diffraction 20(4):316-326.",
+      "Le Bail A (2005) Powder pattern indexing \u2014 application to monocrystalline thin film PbS. Powder Diffraction 20(4):316-326.",
       "Kabsch W (2010) XDS. Acta Crystallogr D Biol Crystallogr 66(2):125-132.",
       "Spek AL (2003) Single-crystal structure validation with the program PLATON. J Appl Crystallogr 36(1):7-13.",
       "Allmann R, Hinek R (2007) The introduction of structure types into the Inorganic Crystal Structure Database ICSD. Acta Crystallogr A 63(5):412-417."
@@ -239,7 +240,7 @@
       "advisory_label": "Distinct (parent-child PWDR pattern)",
       "rationale": "L1-518 recovers continuous lattice parameters and structure factors; L1-519 wraps with International Tables decision tree to produce categorical space-group label. Different solution_space (1D space-group label vs continuous crystal-structure parameters); adds L.lattice_parameter_recovery, L.systematic_absence_test, L.space_group_decision_tree primitives."
     },
-    "clinical_context": "Beyond materials science academic research, space-group classification is critical in pharma polymorph identification (different polymorphs can have different bioavailability, solubility, stability — FDA-relevant), cement / metal alloy quality control, semiconductor characterization, and forensic mineralogy. Universal standard databases: Cambridge Structural Database (CSD, organic + organometallic), Inorganic Crystal Structure Database (ICSD), Protein Data Bank (PDB) — all use space-group classification as primary indexing. Reference solvers: PLATON ADDSYM, FINDSYM, ISOTROPY for symmetry detection and validation. UTSW has structural biology programs benefiting from space-group classification automation."
+    "clinical_context": "Beyond materials science academic research, space-group classification is critical in pharma polymorph identification (different polymorphs can have different bioavailability, solubility, stability \u2014 FDA-relevant), cement / metal alloy quality control, semiconductor characterization, and forensic mineralogy. Universal standard databases: Cambridge Structural Database (CSD, organic + organometallic), Inorganic Crystal Structure Database (ICSD), Protein Data Bank (PDB) \u2014 all use space-group classification as primary indexing. Reference solvers: PLATON ADDSYM, FINDSYM, ISOTROPY for symmetry detection and validation. UTSW has structural biology programs benefiting from space-group classification automation."
   },
   "display_slug": "xrd-space-group"
 }

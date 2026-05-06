@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-060",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-060",
   "title": "MR Fingerprinting (MRF) Mismatch-Only Spec",
   "spec_type": "mismatch_only",

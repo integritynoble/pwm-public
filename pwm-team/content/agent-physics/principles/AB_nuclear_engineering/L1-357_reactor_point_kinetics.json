@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-357",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "357",
-  "title": "Point Reactor Kinetics — power transient modeling",
+  "title": "Point Reactor Kinetics \u2014 power transient modeling",
   "domain": "Nuclear Engineering",
   "sub_domain": "Coupled precursor/power ODEs for reactivity insertion",
   "source_file": "AB_nuclear_engineering/357_reactor_point_kinetics.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Point Reactor Kinetics — power transient modeling forward model.",
+    "description": "Point Reactor Kinetics \u2014 power transient modeling forward model.",
     "forward_model": "dP/dt = (rho(t) - beta_eff)/Lambda * P + sum_i lambda_i C_i; dC_i/dt = beta_i/Lambda * P - lambda_i C_i",
     "world_state_x": "power P(t), precursor concentrations C_i(t), reactivity rho(t)",
     "observation_y": "ex-core neutron detector time-series during transient",

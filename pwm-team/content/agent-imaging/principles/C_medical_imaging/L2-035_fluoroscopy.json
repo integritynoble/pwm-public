@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-035",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-035",
   "title": "Fluoroscopy (real-time X-ray) Mismatch-Only Spec",
   "spec_type": "mismatch_only",

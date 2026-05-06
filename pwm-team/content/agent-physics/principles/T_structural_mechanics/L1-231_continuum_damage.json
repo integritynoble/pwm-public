@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-231",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "231",
-  "title": "Continuum Damage Mechanics — scalar/tensor damage",
+  "title": "Continuum Damage Mechanics \u2014 scalar/tensor damage",
   "domain": "Structural Mechanics",
   "sub_domain": "Kachanov-Lemaitre continuum damage",
   "source_file": "T_structural_mechanics/231_continuum_damage.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Continuum Damage Mechanics — scalar/tensor damage forward model.",
+    "description": "Continuum Damage Mechanics \u2014 scalar/tensor damage forward model.",
     "forward_model": "sigma_eff = sigma/(1-d); dd/dt = f(Y); Y = -dPsi/dd thermodynamic force",
     "world_state_x": "scalar (or tensor) damage field d(x,t) in [0, d_c]",
     "observation_y": "DIC + ultrasonic stiffness degradation",

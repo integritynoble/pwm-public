@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-335",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-335",
   "title": "Flory-Huggins Polymer Solution Theory Mismatch-Only Spec",
   "spec_type": "mismatch_only",

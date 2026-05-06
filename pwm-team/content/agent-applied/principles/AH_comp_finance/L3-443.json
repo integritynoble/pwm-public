@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-443",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-443",
   "parent_l1": "L1-443",
-  "title": "Merton Credit Risk Structural Model — Benchmark Suite",
+  "title": "Merton Credit Risk Structural Model \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "Compustat_equity_Bloomberg_CDS_2023",

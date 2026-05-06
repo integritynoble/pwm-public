@@ -1,8 +1,9 @@
 {
   "artifact_id": "L2-084",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-084",
-  "title": "Scanning Electron Microscopy (SEM) — secondary-electron surface imaging Mismatch-Only Spec",
+  "title": "Scanning Electron Microscopy (SEM) \u2014 secondary-electron surface imaging Mismatch-Only Spec",
   "spec_type": "mismatch_only",
   "six_tuple": {
     "omega": {

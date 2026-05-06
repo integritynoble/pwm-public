@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-415",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-415",
   "parent_l1": "L1-415",
-  "title": "Advection-Dispersion Transport Inversion — Benchmark Suite",
+  "title": "Advection-Dispersion Transport Inversion \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "MADE_site_tracer_test",

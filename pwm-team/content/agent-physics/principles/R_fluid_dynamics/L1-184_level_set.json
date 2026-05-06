@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-184",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "184",
-  "title": "Level-Set Method — implicit interface evolution",
+  "title": "Level-Set Method \u2014 implicit interface evolution",
   "domain": "Fluid Dynamics",
   "sub_domain": "Level-set interface representation for multiphase",
   "source_file": "R_fluid_dynamics/184_level_set.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Level-Set Method — implicit interface evolution forward model.",
+    "description": "Level-Set Method \u2014 implicit interface evolution forward model.",
     "forward_model": "d phi/dt + u . grad phi = 0; reinitialize to |grad phi|=1",
     "world_state_x": "signed-distance phi(x,t) capturing interface {phi=0}",
     "observation_y": "imaging + PIV",

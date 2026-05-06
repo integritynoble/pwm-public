@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-304",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-304",
   "title": "Semi-Empirical Quantum Chemistry (AM1, PM6, DFTB, xTB) Mismatch-Only Spec",
   "spec_type": "mismatch_only",

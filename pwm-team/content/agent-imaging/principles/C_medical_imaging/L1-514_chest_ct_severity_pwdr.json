@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-514",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "514",
   "title": "Chest CT Pneumonia/COVID Severity Classification (PWDR)",
   "domain": "Medical Imaging",
@@ -36,9 +37,9 @@
     "threshold_continuity_proof": "TSS-grade is a step function on per-lobe involvement-fraction (continuous in [0,1]); each tau_k boundary is a measure-zero hyperplane. Smoothed-grading is globally Lipschitz with constant ~0.05 per percentage-point of involvement fraction. Inherits underlying-state stability from L1-029 CT."
   },
   "related_principles": [
-    "L1-029 (CT — tissue-density reconstruction analytical core, physics_core_principle)",
-    "L1-038 (CBCT — sibling cone-beam CT, informational)",
-    "L1-054 (photon_counting_CT — sibling spectral CT, informational)"
+    "L1-029 (CT \u2014 tissue-density reconstruction analytical core, physics_core_principle)",
+    "L1-038 (CBCT \u2014 sibling cone-beam CT, informational)",
+    "L1-054 (photon_counting_CT \u2014 sibling spectral CT, informational)"
   ],
   "E": {
     "description": "Chest CT Severity Classification (PWDR): wraps L1-029 CT analytical core with the international Pan/Francone Total Severity Score and Dutch CO-RADS clinical-grading rules. Stage 1 (analytical, from L1-029): reconstruct lung tissue density mu_attenuation(r) [HU] from CT projections; segment lobes and identify abnormal regions per Hounsfield-density thresholds (-700 to -400 HU = ground-glass opacity GGO; -100 to 50 HU = consolidation; -700 to -800 + interlobular septal thickening = crazy-paving). Stage 2 (deterministic threshold): aggregate per-lobe involvement fractions to per-lobe TSS sub-scores; sum across 5 lobes for total TSS in [0, 25]; apply morphological-pattern rules to yield CO-RADS likelihood category. The threshold function is piecewise-constant on per-lobe involvement fractions and locally Lipschitz-continuous on the underlying density reconstruction. Difficulty tier delta = 3 inherited from L1-029. Mismatch parameters: kV_calibration_drift, slice_thickness_anisotropy, motion_blur_breath_hold, contrast_enhancement_state, lobe_segmentation_error, threshold_calibration_uncertainty.",
@@ -240,7 +241,7 @@
     "joint_well_posedness_references": [
       "Pan F et al. (2020) Time course of lung changes at chest CT during recovery from coronavirus disease 2019 (COVID-19). Radiology 295(3):715-721.",
       "Francone M et al. (2020) Chest CT score in COVID-19 patients: correlation with disease severity and short-term prognosis. Eur Radiol 30(12):6808-6817.",
-      "Prokop M et al. (2020) CO-RADS: a categorical CT assessment scheme for patients suspected of having COVID-19 — definition and evaluation. Radiology 296(2):E97-E104.",
+      "Prokop M et al. (2020) CO-RADS: a categorical CT assessment scheme for patients suspected of having COVID-19 \u2014 definition and evaluation. Radiology 296(2):E97-E104.",
       "Inui S et al. (2020) Chest CT findings in cases from the cruise ship 'Diamond Princess' with coronavirus disease 2019. Radiol Cardiothorac Imaging 2(2):e200110.",
       "Liu Z et al. (2021) An automatic and effective method to identify pneumonia type and severity from chest CT scans. Comput Methods Programs Biomed 207:106177.",
       "Lessmann N et al. (2021) Automated assessment of CO-RADS and chest CT severity scores in patients with suspected COVID-19 using artificial intelligence. Radiology 298(1):E18-E28."
@@ -251,7 +252,7 @@
       "advisory_label": "Distinct (parent-child PWDR pattern)",
       "rationale": "L1-029 CT recovers tissue attenuation distribution mu(r); L1-514 wraps with TSS / CO-RADS grading rules. Different solution_space (1D severity grade vs 3D density volume); adds L.lobe_segmentation, L.density_thresholding, L.tss_classifier primitives."
     },
-    "clinical_context": "Universal clinical use during pneumonia surveillance — community-acquired pneumonia, hospital-acquired pneumonia, ventilator-associated pneumonia, and importantly COVID-19 acute disease and post-acute sequelae. CO-RADS adopted across European radiology departments since 2020; TSS used globally for severity stratification and prognosis. UTSW Department of Radiology participates in pneumonia and COVID-19 imaging research. PWDR formulation gives physics-grounded explainability: severity is derived from explicit involvement fractions of recovered lung density, not black-box scoring."
+    "clinical_context": "Universal clinical use during pneumonia surveillance \u2014 community-acquired pneumonia, hospital-acquired pneumonia, ventilator-associated pneumonia, and importantly COVID-19 acute disease and post-acute sequelae. CO-RADS adopted across European radiology departments since 2020; TSS used globally for severity stratification and prognosis. UTSW Department of Radiology participates in pneumonia and COVID-19 imaging research. PWDR formulation gives physics-grounded explainability: severity is derived from explicit involvement fractions of recovered lung density, not black-box scoring."
   },
   "display_slug": "chest-ct-severity"
 }

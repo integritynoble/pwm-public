@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-391",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-391",
   "principle_ref": "sha256:<L1-391_principle_hash>",
   "title": "Sparse Signal Recovery Synthesis-Model Spec (overcomplete dictionary)",
@@ -125,7 +126,7 @@
     "proximity_threshold": 0.1
   },
   "d_spec": 0.22,
-  "d_spec_notes": "Close to 386 CS (d~0.20 Similar) — shared sparsity prior, different projection type. Analysis-sparse spec would differ by d~0.28.",
+  "d_spec_notes": "Close to 386 CS (d~0.20 Similar) \u2014 shared sparsity prior, different projection type. Analysis-sparse spec would differ by d~0.28.",
   "s1_s4_gates": [
     "PASS",
     "PASS",

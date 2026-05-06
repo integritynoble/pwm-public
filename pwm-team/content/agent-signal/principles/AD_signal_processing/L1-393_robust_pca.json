@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-393",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "393",
   "title": "Robust Principal Component Analysis (low-rank plus sparse)",
   "domain": "Signal Processing",

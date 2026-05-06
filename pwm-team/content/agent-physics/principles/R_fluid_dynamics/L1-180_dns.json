@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-180",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "180",
-  "title": "DNS — direct numerical simulation",
+  "title": "DNS \u2014 direct numerical simulation",
   "domain": "Fluid Dynamics",
   "sub_domain": "Full resolution of Kolmogorov scales",
   "source_file": "R_fluid_dynamics/180_dns.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "DNS — direct numerical simulation forward model.",
+    "description": "DNS \u2014 direct numerical simulation forward model.",
     "forward_model": "Full NS without any turbulence model; grid sufficient to resolve Kolmogorov eta",
     "world_state_x": "instantaneous u(x,t), p(x,t) at all scales",
     "observation_y": "reference DNS data (Johns Hopkins / Lawrence Livermore)",

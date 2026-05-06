@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-233",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "233",
-  "title": "Helmholtz Scattering — frequency-domain EM scattering",
+  "title": "Helmholtz Scattering \u2014 frequency-domain EM scattering",
   "domain": "Electromagnetics",
   "sub_domain": "Frequency-domain vector Helmholtz scattering",
   "source_file": "U_electromagnetics/233_helmholtz_scatter.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Helmholtz Scattering — frequency-domain EM scattering forward model.",
+    "description": "Helmholtz Scattering \u2014 frequency-domain EM scattering forward model.",
     "forward_model": "curl curl E - k^2 E = J_src; E_scat = (exp(-j*k*r)/4pi/r) f(theta,phi) at far-field",
     "world_state_x": "scattered E-field and scatterer shape/material",
     "observation_y": "far-field amplitude+phase at N_theta x N_phi angles",

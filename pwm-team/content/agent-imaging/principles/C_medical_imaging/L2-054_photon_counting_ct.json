@@ -1,8 +1,9 @@
 {
   "artifact_id": "L2-054",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-054",
-  "title": "Photon-Counting CT (PCCT) — spectral detector CT Mismatch-Only Spec",
+  "title": "Photon-Counting CT (PCCT) \u2014 spectral detector CT Mismatch-Only Spec",
   "spec_type": "mismatch_only",
   "six_tuple": {
     "omega": {

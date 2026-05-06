@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-408",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-408",
   "parent_l1": "L1-408",
-  "title": "Wright-Fisher Population Genetics — Benchmark Suite",
+  "title": "Wright-Fisher Population Genetics \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "Drosophila_time_series_evolution_dataset",

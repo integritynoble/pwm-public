@@ -1,6 +1,7 @@
 {
   "artifact_id": "L3-080",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-080",
   "parent_l1": "L1-080",
   "title": "Light-Field Decoding Benchmark Suite",
@@ -164,7 +165,7 @@
       }
     ]
   },
-  "hardness_rule_check": "SATISFIED — DistgLF fails at T4_blind (U=3 + low photons + mla_rotation=0.05 corner below angular-resolution bound).",
+  "hardness_rule_check": "SATISFIED \u2014 DistgLF fails at T4_blind (U=3 + low photons + mla_rotation=0.05 corner below angular-resolution bound).",
   "ipfs_cid": null,
   "ground_truth_cid": null,
   "display_slug": "light-field"

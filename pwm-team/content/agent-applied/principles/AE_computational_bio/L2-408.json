@@ -1,9 +1,10 @@
 {
   "artifact_id": "L2-408",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-408",
   "principle_ref": "sha256:<L1-408_principle_hash>",
-  "title": "Wright-Fisher Population Genetics — Nominal + Mismatch Specs",
+  "title": "Wright-Fisher Population Genetics \u2014 Nominal + Mismatch Specs",
   "spec_type": "nominal_and_mismatch",
   "six_tuple": {
     "omega": {

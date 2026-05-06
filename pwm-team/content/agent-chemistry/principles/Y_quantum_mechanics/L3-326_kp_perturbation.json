@@ -1,12 +1,13 @@
 {
   "artifact_id": "L3-326",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-326",
   "parent_l1": "L1-326",
   "title": "k.p Perturbation Theory Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
-    "primary": "Landolt-Börnstein semiconductor parameters",
+    "primary": "Landolt-B\u00f6rnstein semiconductor parameters",
     "secondary": "Vurgaftman-Meyer III-V parameter compilation",
     "construction_method": "canonical ground truth + declared noise at tier Omega for k.p Perturbation Theory",
     "num_dev_instances_per_tier": 20,
@@ -177,7 +178,7 @@
   "p_benchmark": {
     "rho": 50,
     "dataset_p_benchmark": {
-      "name": "Landolt-Börnstein + Vurgaftman-Meyer library",
+      "name": "Landolt-B\u00f6rnstein + Vurgaftman-Meyer library",
       "construction_method": "parametric Omega sampling over declared bounds; stratified by rho.",
       "num_dev_instances": 200,
       "num_holdout_instances": 100
@@ -219,7 +220,7 @@
       }
     ]
   },
-  "hardness_rule_check": "SATISFIED — top baseline fails epsilon_fn at T4_blind Omega corner.",
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails epsilon_fn at T4_blind Omega corner.",
   "anti_overfitting_mechanisms": {
     "M1_random_instantiation": "seeded by benchmark hash; non-repeatable holdout",
     "M2_convergence_scoring": "verifies declared convergence rate across Omega",

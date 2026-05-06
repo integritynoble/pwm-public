@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-110",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-110",
   "title": "Ocean Color Remote Sensing (chlorophyll / CDOM / TSM) Mismatch-Only Spec",
   "spec_type": "mismatch_only",

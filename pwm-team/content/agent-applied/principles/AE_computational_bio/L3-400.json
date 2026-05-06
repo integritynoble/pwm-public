@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-400",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-400",
   "parent_l1": "L1-400",
-  "title": "Hemodynamics (Navier-Stokes Cardiovascular) — Benchmark Suite",
+  "title": "Hemodynamics (Navier-Stokes Cardiovascular) \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "4DFlow_MRI_aorta_dataset",

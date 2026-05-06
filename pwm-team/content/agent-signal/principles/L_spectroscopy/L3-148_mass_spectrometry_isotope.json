@@ -1,6 +1,7 @@
 {
   "artifact_id": "L3-148",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-148",
   "parent_l1": "L1-148",
   "title": "IRMS Benchmark Suite (VSMOW + VPDB + air N2 + sulfur)",
@@ -146,7 +147,7 @@
       }
     ]
   },
-  "hardness_rule_check": "SATISFIED — MLModel-IRMS fails at T4_extreme (memory=0.1, nonlin=1e-3): 1.5 > epsilon_fn ~ 1.1.",
+  "hardness_rule_check": "SATISFIED \u2014 MLModel-IRMS fails at T4_extreme (memory=0.1, nonlin=1e-3): 1.5 > epsilon_fn ~ 1.1.",
   "ipfs_cid": null,
   "ground_truth_cid": null,
   "display_slug": "mass-spectrometry-isotope"

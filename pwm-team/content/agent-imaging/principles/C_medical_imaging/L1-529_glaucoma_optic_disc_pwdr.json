@@ -1,12 +1,13 @@
 {
   "artifact_id": "L1-529",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "529",
   "title": "Glaucoma Optic-Disc Cupping Classification (PWDR)",
   "domain": "Medical Imaging",
   "sub_domain": "Optic disc + cup segmentation from fundus with cup-to-disc-ratio glaucoma readout",
   "source_file": "C_medical_imaging/529_glaucoma_optic_disc_pwdr.md",
-  "source_data_quality_note": "v2 PWDR Principle. Wraps L1-049 fundus (existing in v1 genesis) with deterministic cup-to-disc-ratio (CDR) threshold rules per ICO Glaucoma Guidelines 2016 to assign glaucoma suspect / glaucoma categorical labels. Universal in ophthalmology — every fundus exam reviewed for cupping; CDR is the primary morphologic biomarker for primary open-angle glaucoma (POAG) screening. UTSW Department of Ophthalmology glaucoma clinic high-volume use.",
+  "source_data_quality_note": "v2 PWDR Principle. Wraps L1-049 fundus (existing in v1 genesis) with deterministic cup-to-disc-ratio (CDR) threshold rules per ICO Glaucoma Guidelines 2016 to assign glaucoma suspect / glaucoma categorical labels. Universal in ophthalmology \u2014 every fundus exam reviewed for cupping; CDR is the primary morphologic biomarker for primary open-angle glaucoma (POAG) screening. UTSW Department of Ophthalmology glaucoma clinic high-volume use.",
   "gate_class": "physical_with_discrete_readout",
   "gate_substitutions": {
     "kappa_substitute": null,
@@ -32,10 +33,10 @@
     "threshold_continuity_proof": "Cup-to-disc ratio is continuous on disc + cup segmentation; ISNT-rule violations are step functions on rim-quadrant-thickness measurements. Smoothed-classification globally Lipschitz with constant ~0.05 per percentage-point of segmentation error."
   },
   "related_principles": [
-    "L1-049 (fundus — RGB fundus photography analytical core, physics_core_principle)",
-    "L1-050 (OCTA — sibling angiography modality, informational)",
-    "L1-042 (OCT — sibling RNFL thickness assessment, informational)",
-    "L1-513 (DR ETDRS PWDR — sibling fundus-based PWDR, d_principle ~ 0.45)"
+    "L1-049 (fundus \u2014 RGB fundus photography analytical core, physics_core_principle)",
+    "L1-050 (OCTA \u2014 sibling angiography modality, informational)",
+    "L1-042 (OCT \u2014 sibling RNFL thickness assessment, informational)",
+    "L1-513 (DR ETDRS PWDR \u2014 sibling fundus-based PWDR, d_principle ~ 0.45)"
   ],
   "E": {
     "description": "Glaucoma Optic-Disc Cupping (PWDR): wraps L1-049 with ICO 2016 Glaucoma Guidelines + Disc Damage Likelihood Scale grading rules. Stage 1 (analytical, from L1-049): segment optic disc and optic cup boundaries; measure vertical and horizontal CDR; assess neuroretinal rim morphology (ISNT pattern); detect peripapillary RNFL defects. Stage 2 (deterministic threshold): apply CDR + ISNT + DDLS rules. Difficulty tier delta = 3.",

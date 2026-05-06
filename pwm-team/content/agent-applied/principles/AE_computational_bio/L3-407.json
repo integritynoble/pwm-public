@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-407",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-407",
   "parent_l1": "L1-407",
-  "title": "Lotka-Volterra Predator-Prey Dynamics — Benchmark Suite",
+  "title": "Lotka-Volterra Predator-Prey Dynamics \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "Hudson_Bay_lynx_hare_dataset",

@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-090",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-090",
   "title": "Electron Energy Loss Spectroscopy (EELS) Mismatch-Only Spec",
   "spec_type": "mismatch_only",

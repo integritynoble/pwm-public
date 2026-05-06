@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-011",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-011",
   "title": "PALM / STORM (single-molecule localization microscopy) Mismatch-Only Spec",
   "spec_type": "mismatch_only",

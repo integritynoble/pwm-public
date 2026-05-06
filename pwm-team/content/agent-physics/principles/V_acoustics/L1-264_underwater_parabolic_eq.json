@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-264",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "264",
-  "title": "Underwater Acoustics — Parabolic Equation (RAM)",
+  "title": "Underwater Acoustics \u2014 Parabolic Equation (RAM)",
   "domain": "Acoustics",
   "sub_domain": "Pade-expansion split-step PE",
   "source_file": "V_acoustics/264_underwater_parabolic_eq.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Underwater Acoustics — Parabolic Equation (RAM) forward model.",
+    "description": "Underwater Acoustics \u2014 Parabolic Equation (RAM) forward model.",
     "forward_model": "dp/dr = i*k_0 * (sqrt(1 + X) - 1) * p, X = (1/k_0^2)(d^2/dz^2 + k^2(z,r) - k_0^2)",
     "world_state_x": "complex acoustic pressure p(r,z) in range-depth domain",
     "observation_y": "complex pressure at receiver array at (r_i, z_j) for one or several frequencies",

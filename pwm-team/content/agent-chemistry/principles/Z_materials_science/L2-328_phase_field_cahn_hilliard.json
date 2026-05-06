@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-328",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-328",
   "title": "Cahn-Hilliard Phase Separation Mismatch-Only Spec",
   "spec_type": "mismatch_only",

@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-150",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "150",
   "title": "Pump-Probe Spectroscopy / Imaging",
   "domain": "Ultrafast Imaging",

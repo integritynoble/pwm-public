@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-181",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "181",
-  "title": "Shallow Water Equations — coastal/tidal/inundation",
+  "title": "Shallow Water Equations \u2014 coastal/tidal/inundation",
   "domain": "Fluid Dynamics",
   "sub_domain": "2D shallow-water on a sphere / river / coast",
   "source_file": "R_fluid_dynamics/181_shallow_water.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Shallow Water Equations — coastal/tidal/inundation forward model.",
+    "description": "Shallow Water Equations \u2014 coastal/tidal/inundation forward model.",
     "forward_model": "dh/dt + div((h+H)u) = 0; du/dt + u.grad u + g grad h = -C_f |u|u/(h+H)",
     "world_state_x": "water elevation h(x,y,t) + depth-averaged currents u(x,y,t)",
     "observation_y": "tide gauges + satellite altimetry",

@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-450",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "450",
   "title": "Trajectory Optimization",
   "domain": "Robotics",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Trajectory Optimization: Trajectory optimization: find minimum-time or minimum-effort robot trajectory satisfying dynamics and obstacle constraints. The forward operator produces the measurement through a 3-node primitive DAG (M.collocation.direct_transcription…); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=5 with effective condition number kappa_eff~2000; dynamic_obstacle_uncertainty, model_uncertainty set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "Trajectory Optimization: Trajectory optimization: find minimum-time or minimum-effort robot trajectory satisfying dynamics and obstacle constraints. The forward operator produces the measurement through a 3-node primitive DAG (M.collocation.direct_transcription\u2026); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=5 with effective condition number kappa_eff~2000; dynamic_obstacle_uncertainty, model_uncertainty set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "min integral_0 ** T l(x,u) dt; s.t. dx/dt = f(x,u), g(x,u) <= 0 (constraints), x(0)=x0, x(T)=xT",
     "world_state_x": "optimal state-control trajectory {x*(t), u*(t)} over time horizon T",
     "observation_y": "initial/final conditions, obstacle set, dynamics model",

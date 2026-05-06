@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-023",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-023",
   "title": "Three-Photon Microscopy (chi-5 deep-tissue imaging) Mismatch-Only Spec",
   "spec_type": "mismatch_only",

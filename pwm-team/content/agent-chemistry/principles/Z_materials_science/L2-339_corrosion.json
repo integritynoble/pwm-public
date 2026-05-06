@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-339",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-339",
   "title": "Electrochemical Corrosion Kinetics Mismatch-Only Spec",
   "spec_type": "mismatch_only",

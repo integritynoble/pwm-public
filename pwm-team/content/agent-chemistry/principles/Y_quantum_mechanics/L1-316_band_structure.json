@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-316",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "316",
   "title": "Electronic Band Structure",
   "domain": "Quantum Mechanics",
@@ -42,7 +43,7 @@
     "stability": "conditional",
     "condition_number_kappa": 600,
     "condition_number_effective": 50,
-    "regime": "Well-posed; DFT gap underestimate (Kohn-Sham gap problem); inverse structure→band mapping requires phase info."
+    "regime": "Well-posed; DFT gap underestimate (Kohn-Sham gap problem); inverse structure\u2192band mapping requires phase info."
   },
   "C": {
     "solver_class": "DFT-LDA/GGA (VASP, Quantum ESPRESSO); tight-binding; GW (separate)",

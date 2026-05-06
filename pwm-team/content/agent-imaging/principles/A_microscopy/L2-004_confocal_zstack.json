@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-004",
   "layer": "L2",
+  "registration_tier": "founder_vetted",
   "parent_l1": "L1-004",
   "title": "Confocal Z-Stack (3D axial deconvolution) Mismatch-Only Spec",
   "spec_type": "mismatch_only",

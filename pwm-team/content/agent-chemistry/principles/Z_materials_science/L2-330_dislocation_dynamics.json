@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-330",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-330",
   "title": "Discrete Dislocation Dynamics Mismatch-Only Spec",
   "spec_type": "mismatch_only",

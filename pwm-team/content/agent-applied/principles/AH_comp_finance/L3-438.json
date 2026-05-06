@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-438",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-438",
   "parent_l1": "L1-438",
-  "title": "Black-Scholes Option Pricing Calibration — Benchmark Suite",
+  "title": "Black-Scholes Option Pricing Calibration \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "CBOE_SPX_options_2023",

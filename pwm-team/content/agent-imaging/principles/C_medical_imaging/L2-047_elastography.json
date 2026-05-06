@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-047",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-047",
   "title": "Elastography (Shear-Wave / Strain) Mismatch-Only Spec",
   "spec_type": "mismatch_only",

@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-309",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "309",
   "title": "Kinetic Monte Carlo (KMC)",
   "domain": "Computational Chemistry",

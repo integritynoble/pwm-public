@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-407",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "407",
   "title": "Lotka-Volterra Predator-Prey Dynamics",
   "domain": "Computational Biology",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Lotka-Volterra Predator-Prey Dynamics: Lotka-Volterra parameter estimation: infer growth rates and interaction coefficients from time-series population data. The forward operator produces the measurement through a 3-node primitive DAG (M.ode.lotka_volterra…); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~20; stochastic_demographic_noise, environmental_variability set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "Lotka-Volterra Predator-Prey Dynamics: Lotka-Volterra parameter estimation: infer growth rates and interaction coefficients from time-series population data. The forward operator produces the measurement through a 3-node primitive DAG (M.ode.lotka_volterra\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~20; stochastic_demographic_noise, environmental_variability set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "dH/dt = r*H - a*H*P; dP/dt = b*a*H*P - m*P; neutrally stable oscillations",
     "world_state_x": "LV parameters (r_prey_growth, a_predation, b_efficiency, m_predator_mortality)",
     "observation_y": "population counts {H(t_i), P(t_i)} from census or survey data",

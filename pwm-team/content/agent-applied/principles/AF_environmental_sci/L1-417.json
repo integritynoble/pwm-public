@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-417",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "417",
   "title": "General Circulation Model (GCM) Inversion",
   "domain": "Environmental Science",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "General Circulation Model (GCM) Inversion: GCM parameter estimation: infer climate sensitivity and parameterization coefficients from observed climate data. The forward operator produces the measurement through a 3-node primitive DAG (M.primitive.equations…); recovery is posed as a parameter_estimation problem. Difficulty tier delta=10 with effective condition number kappa_eff~1000000.0; internal_variability_noise, aerosol_forcing_uncertainty set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "General Circulation Model (GCM) Inversion: GCM parameter estimation: infer climate sensitivity and parameterization coefficients from observed climate data. The forward operator produces the measurement through a 3-node primitive DAG (M.primitive.equations\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=10 with effective condition number kappa_eff~1000000.0; internal_variability_noise, aerosol_forcing_uncertainty set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "d/dt [T, u, v, q, ps] = F(T, u, v, q, ps; theta_param) using primitive equations on spectral grid",
     "world_state_x": "ECS (equilibrium climate sensitivity), parameterization parameters theta for convection, clouds, boundary layer",
     "observation_y": "global temperature trends, precipitation patterns, TOA radiation fluxes from reanalysis (ERA5)",
@@ -48,7 +49,7 @@
   "C": {
     "solver_class": "statistical [ensemble_MCMC_climate or emulator_based_calibration (ClimateBench)]",
     "convergence_rate_q": 1.5,
-    "error_bound": "Data-fidelity bound: ECS uncertainty ±0.5 K at 1-sigma from perturbed physics ensembles. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~1000000.0. Mismatch-induced bias + C2 * |internal_variability_noise|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
+    "error_bound": "Data-fidelity bound: ECS uncertainty \u00b10.5 K at 1-sigma from perturbed physics ensembles. Noise floor: O(sigma / sqrt(kappa_eff)) with kappa_eff~1000000.0. Mismatch-induced bias + C2 * |internal_variability_noise|; iterative solvers achieve q=2 convergence (O(1/k^2)) near the optimum; epsilon_fn captures quality degradation across declared Omega.",
     "complexity": "O(N_ensemble * N_year_simulation) with N_year ~ 100 years per iteration"
   },
   "physics_fingerprint": {

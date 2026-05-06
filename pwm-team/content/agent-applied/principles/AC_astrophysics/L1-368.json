@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-368",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "368",
   "title": "Strong Gravitational Lensing Inversion",
   "domain": "Astrophysics",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Strong Gravitational Lensing Inversion: Strong lensing inversion: reconstruct lens mass distribution and source surface brightness from multiply-imaged arcs. The forward operator produces the measurement through a 3-node primitive DAG (M.lens.deflection…); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=10 with effective condition number kappa_eff~5000; PSF_mismatch, line_of_sight_contamination set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "Strong Gravitational Lensing Inversion: Strong lensing inversion: reconstruct lens mass distribution and source surface brightness from multiply-imaged arcs. The forward operator produces the measurement through a 3-node primitive DAG (M.lens.deflection\u2026); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=10 with effective condition number kappa_eff~5000; PSF_mismatch, line_of_sight_contamination set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "I_obs(theta) = integral PSF(theta-theta') * I_src(beta(theta', kappa)) dtheta' + noise",
     "world_state_x": "convergence kappa(theta) (lens) and source surface brightness I_src(beta)",
     "observation_y": "lensed image I_obs(theta) in R^{H x W} (HST/JWST quality)",

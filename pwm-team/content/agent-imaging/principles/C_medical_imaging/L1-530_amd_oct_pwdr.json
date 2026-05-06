@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-530",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "530",
   "title": "Age-Related Macular Degeneration OCT Grading (PWDR)",
   "domain": "Medical Imaging",
@@ -38,10 +39,10 @@
     "threshold_continuity_proof": "Drusen size and GA area are continuous on layer-segmentation outputs; AMD-stage boundaries form measure-zero hyperplanes. Smoothed-classification globally Lipschitz with constant ~0.05 per percentage-point of segmentation error."
   },
   "related_principles": [
-    "L1-042 (OCT — coherence-domain analytical core, physics_core_principle)",
-    "L1-049 (fundus — sibling color-fundus modality, informational)",
-    "L1-050 (OCTA — sibling angiography, informational)",
-    "L1-508 (OCE — sibling OCT-mechanics PWDR, informational)"
+    "L1-042 (OCT \u2014 coherence-domain analytical core, physics_core_principle)",
+    "L1-049 (fundus \u2014 sibling color-fundus modality, informational)",
+    "L1-050 (OCTA \u2014 sibling angiography, informational)",
+    "L1-508 (OCE \u2014 sibling OCT-mechanics PWDR, informational)"
   ],
   "E": {
     "description": "AMD OCT Grading (PWDR): wraps L1-042 OCT with AREDS 2001 + Beckman 2013 clinical classification rules. Stage 1 (analytical, from L1-042): from spectral-domain or swept-source OCT macular volume, segment retinal layers (10-layer RNFL/GCL/IPL/INL/OPL/ONL/ELM/IS-OS/RPE/BM); detect drusen (sub-RPE deposits); detect fluid pockets (intraretinal cysts, subretinal fluid, pigment epithelial detachment); segment geographic atrophy boundary. Stage 2 (deterministic threshold): apply AREDS / Beckman criteria for AMD staging. Difficulty tier delta = 3.",
@@ -243,7 +244,7 @@
       "advisory_label": "Distinct (parent-child PWDR pattern)",
       "rationale": "L1-042 OCT recovers reflectivity volumes; L1-530 wraps with drusen + fluid + GA segmentation + AMD classifier. Different solution_space (1D AMD stage vs 3D reflectivity); adds L.layer_segmentation, L.drusen_detection, L.fluid_detection, L.ga_segmentation, L.amd_stage_classifier primitives."
     },
-    "clinical_context": "Universal in ophthalmology. AMD is the leading cause of blindness in adults > 50 in developed countries. AREDS / Beckman classification underpins anti-VEGF treatment decisions for wet AMD (ranibizumab, aflibercept, bevacizumab, brolucizumab, faricimab). UTSW Department of Ophthalmology retina clinic. FDA-cleared autonomous AI: DeepMind retinal AI (Moorfields collaboration), Heidelberg AnyDrusen, NotalVision Home OCT — all PWDR-shaped systems."
+    "clinical_context": "Universal in ophthalmology. AMD is the leading cause of blindness in adults > 50 in developed countries. AREDS / Beckman classification underpins anti-VEGF treatment decisions for wet AMD (ranibizumab, aflibercept, bevacizumab, brolucizumab, faricimab). UTSW Department of Ophthalmology retina clinic. FDA-cleared autonomous AI: DeepMind retinal AI (Moorfields collaboration), Heidelberg AnyDrusen, NotalVision Home OCT \u2014 all PWDR-shaped systems."
   },
   "display_slug": "amd-oct"
 }

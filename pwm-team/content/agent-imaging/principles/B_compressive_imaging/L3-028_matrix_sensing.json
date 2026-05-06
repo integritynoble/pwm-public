@@ -1,6 +1,7 @@
 {
   "artifact_id": "L3-028",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-028",
   "parent_l1": "L1-028",
   "title": "Gaussian Matrix Sensing Benchmark Suite",
@@ -164,7 +165,7 @@
       }
     ]
   },
-  "hardness_rule_check": "SATISFIED — all baselines fail at T4_undersampled (m_over_minmn = 2.5 is below the RIP threshold ~ 3); no method passes epsilon_fn everywhere in Omega.",
+  "hardness_rule_check": "SATISFIED \u2014 all baselines fail at T4_undersampled (m_over_minmn = 2.5 is below the RIP threshold ~ 3); no method passes epsilon_fn everywhere in Omega.",
   "ipfs_cid": null,
   "ground_truth_cid": null,
   "display_slug": "matrix-sensing"

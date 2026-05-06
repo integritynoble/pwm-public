@@ -1,9 +1,10 @@
 {
   "artifact_id": "L2-471",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-471",
   "principle_ref": "sha256:<L1-471_principle_hash>",
-  "title": "Satellite Gravity Gradiometry (GOCE) — Nominal + Mismatch Specs",
+  "title": "Satellite Gravity Gradiometry (GOCE) \u2014 Nominal + Mismatch Specs",
   "spec_type": "nominal_and_mismatch",
   "six_tuple": {
     "omega": {

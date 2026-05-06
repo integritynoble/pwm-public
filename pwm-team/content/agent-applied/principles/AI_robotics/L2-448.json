@@ -1,9 +1,10 @@
 {
   "artifact_id": "L2-448",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-448",
   "principle_ref": "sha256:<L1-448_principle_hash>",
-  "title": "Forward Dynamics — Nominal + Mismatch Specs",
+  "title": "Forward Dynamics \u2014 Nominal + Mismatch Specs",
   "spec_type": "nominal_and_mismatch",
   "six_tuple": {
     "omega": {

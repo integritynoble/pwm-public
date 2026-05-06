@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-087",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "087",
-  "title": "Scanning TEM (STEM) — HAADF / BF imaging with convergent beam",
+  "title": "Scanning TEM (STEM) \u2014 HAADF / BF imaging with convergent beam",
   "domain": "Electron Microscopy",
   "sub_domain": "Atom-resolution Z-contrast imaging",
   "source_file": "G_electron_microscopy/087_stem.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical electron-microscopy literature for this principle.",
   "E": {
-    "description": "Scanning TEM (STEM) — HAADF / BF imaging with convergent beam: convergent electron probe produces the measurement through a 4-node primitive DAG L.illumination.convergent_probe -> S.scan.raster -> D.annular_detector -> int.temporal, with time-integrated exposure and photon-shot-noise-limited (Poisson counting). Recovery is posed as a linear inverse problem that inverts the forward operator to estimate the scene-side 2D intensity. Difficulty tier delta=5 with effective condition number kappa_eff~18; calibration-level mismatch (probe_aberration, scan_distortion, beam_damage) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
+    "description": "Scanning TEM (STEM) \u2014 HAADF / BF imaging with convergent beam: convergent electron probe produces the measurement through a 4-node primitive DAG L.illumination.convergent_probe -> S.scan.raster -> D.annular_detector -> int.temporal, with time-integrated exposure and photon-shot-noise-limited (Poisson counting). Recovery is posed as a linear inverse problem that inverts the forward operator to estimate the scene-side 2D intensity. Difficulty tier delta=5 with effective condition number kappa_eff~18; calibration-level mismatch (probe_aberration, scan_distortion, beam_damage) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
     "forward_model": "y(r) = integral |Psi_probe(r'; aberration)|^2 * scatter_HAADF(r - r') d^2 r' + n",
     "world_state_x": "Scene parameter (density / orientation / spectrum / complex field depending on principle)",
     "observation_y": "Electron detector output at declared geometry + noise",

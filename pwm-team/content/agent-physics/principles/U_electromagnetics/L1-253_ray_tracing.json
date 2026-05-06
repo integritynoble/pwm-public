@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-253",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "253",
-  "title": "Ray Tracing (EM) — wireless propagation model",
+  "title": "Ray Tracing (EM) \u2014 wireless propagation model",
   "domain": "Electromagnetics",
   "sub_domain": "Urban propagation ray tracing (5G/6G)",
   "source_file": "U_electromagnetics/253_ray_tracing.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Ray Tracing (EM) — wireless propagation model forward model.",
+    "description": "Ray Tracing (EM) \u2014 wireless propagation model forward model.",
     "forward_model": "P_rx = |sum_paths A_path * exp(-j*k*L_path)|^2 * G_tx * G_rx * (lambda/4pi)^2",
     "world_state_x": "received power P_rx(x,y) across urban or indoor geometry",
     "observation_y": "measured RSSI at N_sites",

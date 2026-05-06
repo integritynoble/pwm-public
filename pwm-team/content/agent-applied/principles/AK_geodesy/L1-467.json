@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-467",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "467",
   "title": "Satellite Orbit Determination",
   "domain": "Geodesy",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Satellite Orbit Determination: Satellite orbit determination: estimate initial state vector from tracking data (range, range-rate, angles) using batch or sequential processing. The forward operator produces the measurement through a 3-node primitive DAG (M.ode.equations_of_motion…); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~200; atmospheric_drag_uncertainty, SRP_modeling_error set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "Satellite Orbit Determination: Satellite orbit determination: estimate initial state vector from tracking data (range, range-rate, angles) using batch or sequential processing. The forward operator produces the measurement through a 3-node primitive DAG (M.ode.equations_of_motion\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~200; atmospheric_drag_uncertainty, SRP_modeling_error set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "rho(t) = |X_sat(t; x0) - X_gs|; X_sat integrated from EOM with SRP, drag, gravity harmonics",
     "world_state_x": "initial state vector x0 = (r0, v0) in ECI coordinates at epoch t0",
     "observation_y": "ground station range rho(t), range-rate rho_dot(t), angular observations for N_passes",

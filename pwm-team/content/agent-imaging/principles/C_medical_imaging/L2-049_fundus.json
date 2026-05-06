@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-049",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-049",
   "title": "Fundus Imaging (retinal photography) Mismatch-Only Spec",
   "spec_type": "mismatch_only",

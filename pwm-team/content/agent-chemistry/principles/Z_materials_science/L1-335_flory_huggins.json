@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-335",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "335",
   "title": "Flory-Huggins Polymer Solution Theory",
   "domain": "Materials Science",

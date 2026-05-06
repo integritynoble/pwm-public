@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-455",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-455",
   "parent_l1": "L1-455",
-  "title": "Orbital Mechanics Inversion (Lambert) — Benchmark Suite",
+  "title": "Orbital Mechanics Inversion (Lambert) \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "GMAT_orbit_determination_benchmark",

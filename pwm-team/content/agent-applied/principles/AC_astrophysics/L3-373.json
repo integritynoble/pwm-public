@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-373",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-373",
   "parent_l1": "L1-373",
-  "title": "Pulsar Timing Array GW Background — Benchmark Suite",
+  "title": "Pulsar Timing Array GW Background \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "IPTA_DR3_timing_data",

@@ -1,6 +1,7 @@
 {
   "artifact_id": "L3-388",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-388",
   "parent_l1": "L1-388",
   "title": "BSS Benchmark Suite (WSJ0-2mix + SiSEC + synthetic)",
@@ -162,7 +163,7 @@
       }
     ]
   },
-  "hardness_rule_check": "SATISFIED — FastICA/JADE fail at T4_reverb_speech (reverberation=300 ms) with SIR 4 dB < epsilon_fn ~ 8 dB.",
+  "hardness_rule_check": "SATISFIED \u2014 FastICA/JADE fail at T4_reverb_speech (reverberation=300 ms) with SIR 4 dB < epsilon_fn ~ 8 dB.",
   "ipfs_cid": null,
   "ground_truth_cid": null,
   "display_slug": "blind-source-separation"

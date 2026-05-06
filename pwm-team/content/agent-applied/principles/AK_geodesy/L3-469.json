@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-469",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-469",
   "parent_l1": "L1-469",
-  "title": "LiDAR Point Cloud 3D Mapping — Benchmark Suite",
+  "title": "LiDAR Point Cloud 3D Mapping \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "USGS_3DEP_LiDAR_archive",

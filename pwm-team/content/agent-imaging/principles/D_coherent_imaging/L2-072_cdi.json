@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-072",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-072",
   "title": "CDI Mismatch-Only Spec (shrinkwrap-assisted single-pattern recovery)",
   "spec_type": "mismatch_only",

@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-190",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "190",
-  "title": "Advection-Diffusion — scalar transport",
+  "title": "Advection-Diffusion \u2014 scalar transport",
   "domain": "Fluid Dynamics",
   "sub_domain": "Passive scalar transport by flow",
   "source_file": "R_fluid_dynamics/190_advection_diffusion.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Advection-Diffusion — scalar transport forward model.",
+    "description": "Advection-Diffusion \u2014 scalar transport forward model.",
     "forward_model": "dC/dt + u.grad C = D Laplacian C + S(x,t)",
     "world_state_x": "scalar C(x,t) transported by flow",
     "observation_y": "in-situ concentration sensors",

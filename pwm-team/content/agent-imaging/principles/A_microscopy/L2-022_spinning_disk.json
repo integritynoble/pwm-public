@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-022",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-022",
   "title": "Spinning Disk Confocal (Nipkow) Microscopy Mismatch-Only Spec",
   "spec_type": "mismatch_only",

@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-375",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-375",
   "parent_l1": "L1-375",
-  "title": "Accretion Disk Structure Inversion — Benchmark Suite",
+  "title": "Accretion Disk Structure Inversion \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "XMM_NuSTAR_Cyg_X1_archive",

@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-445",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-445",
   "parent_l1": "L1-445",
-  "title": "GARCH Volatility Estimation — Benchmark Suite",
+  "title": "GARCH Volatility Estimation \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "SP500_daily_returns_1993_2023",

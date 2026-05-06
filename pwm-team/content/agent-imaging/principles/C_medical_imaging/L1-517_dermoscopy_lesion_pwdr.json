@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-517",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "517",
   "title": "Dermoscopy Skin Lesion Malignancy Classification (PWDR)",
   "domain": "Medical Imaging",
@@ -14,7 +15,7 @@
     "conservation_substitute": "softmax simplex closure on cutaneous-lesion categorical readout"
   },
   "discrete_readout": {
-    "threshold_function": "ABCDE rule (Stolz 1994): TDS = 1.3*A + 0.1*B + 0.5*C + 0.5*D where A=asymmetry score (0-2), B=border score (0-8), C=color score (1-6), D=differential structure score (1-5); TDS < 4.75 = benign, 4.75-5.45 = suspicious, > 5.45 = melanoma. Alternative: 7-point checklist (Argenziano 1998) — 3+ points = suspect melanoma. Alternative: Menzies method, CASH algorithm, BCC blue-white veil, SCC characteristic features.",
+    "threshold_function": "ABCDE rule (Stolz 1994): TDS = 1.3*A + 0.1*B + 0.5*C + 0.5*D where A=asymmetry score (0-2), B=border score (0-8), C=color score (1-6), D=differential structure score (1-5); TDS < 4.75 = benign, 4.75-5.45 = suspicious, > 5.45 = melanoma. Alternative: 7-point checklist (Argenziano 1998) \u2014 3+ points = suspect melanoma. Alternative: Menzies method, CASH algorithm, BCC blue-white veil, SCC characteristic features.",
     "lipschitz_constant": 0.1,
     "underlying_physical_state": "skin lesion morphological-feature recovery: asymmetry score, border irregularity, color heterogeneity (number of distinct colors), differential structures (pigment network, dots/globules, streaks, regression structures, blue-white veil) recovered from cross-polarized dermoscopy image",
     "physics_core_principle": "L1-049",
@@ -30,12 +31,12 @@
     "threshold_continuity_proof": "ABCDE Total Dermoscopy Score (TDS) is a Lipschitz-continuous linear combination of feature scores; per-class boundaries at TDS thresholds (4.75, 5.45) are measure-zero hyperplanes. 7-point checklist sums ordinal feature presences (Lipschitz with constant ~0.5 per feature). Smoothed-grading globally Lipschitz with constant ~0.10 per feature-score unit."
   },
   "related_principles": [
-    "L1-049 (fundus — sibling RGB reflectance imaging core, physics_core_principle; note: fundus is retinal, dermoscopy is cutaneous — different anatomy but shared cross-polarized-reflectance physics)",
-    "L1-040 (DOT — diffuse optical sibling, informational)",
-    "L1-064 (CLE — confocal laser endomicroscopy sibling, informational)"
+    "L1-049 (fundus \u2014 sibling RGB reflectance imaging core, physics_core_principle; note: fundus is retinal, dermoscopy is cutaneous \u2014 different anatomy but shared cross-polarized-reflectance physics)",
+    "L1-040 (DOT \u2014 diffuse optical sibling, informational)",
+    "L1-064 (CLE \u2014 confocal laser endomicroscopy sibling, informational)"
   ],
   "E": {
-    "description": "Dermoscopy Skin Lesion Malignancy Classification (PWDR): wraps L1-049 fundus analytical core (RGB cross-polarized reflectance imaging) — note: fundus L1-049 is geometrically retinal, but the physics core of cross-polarized RGB reflectance imaging applies to skin dermoscopy with appropriate scale and illumination adjustments — with the established ABCDE / 7-point checklist / Menzies dermoscopy clinical-grading rules. Stage 1 (analytical, from L1-049 sibling-physics): cross-polarized white-light dermoscopy recovers cutaneous lesion morphological features — asymmetry, border, color heterogeneity, differential structures (pigment network, dots, streaks, regression). Stage 2 (deterministic threshold): apply ABCDE TDS or 7-point checklist or Menzies criteria to assign categorical labels. Difficulty tier delta = 3. Mismatch parameters: dermoscope_polarization_efficiency, gel_immersion_uniformity, lesion_contrast_against_skin_background, hair_artifact, photographic_color_calibration, manual_feature_scoring_disagreement.",
+    "description": "Dermoscopy Skin Lesion Malignancy Classification (PWDR): wraps L1-049 fundus analytical core (RGB cross-polarized reflectance imaging) \u2014 note: fundus L1-049 is geometrically retinal, but the physics core of cross-polarized RGB reflectance imaging applies to skin dermoscopy with appropriate scale and illumination adjustments \u2014 with the established ABCDE / 7-point checklist / Menzies dermoscopy clinical-grading rules. Stage 1 (analytical, from L1-049 sibling-physics): cross-polarized white-light dermoscopy recovers cutaneous lesion morphological features \u2014 asymmetry, border, color heterogeneity, differential structures (pigment network, dots, streaks, regression). Stage 2 (deterministic threshold): apply ABCDE TDS or 7-point checklist or Menzies criteria to assign categorical labels. Difficulty tier delta = 3. Mismatch parameters: dermoscope_polarization_efficiency, gel_immersion_uniformity, lesion_contrast_against_skin_background, hair_artifact, photographic_color_calibration, manual_feature_scoring_disagreement.",
     "forward_model": "Stage 1 (sibling to L1-049 reflectance-imaging core): cross-polarized RGB dermoscopy -> {asymmetry, border, color, structure} morphological features. Stage 2: TDS = 1.3*A + 0.1*B + 0.5*C + 0.5*D; class = step(TDS at [4.75, 5.45]); alternative 7-point sum; alternative Menzies positive/negative.",
     "world_state_x": "Per-lesion categorical label in {benign_nevus, atypical_nevus, suspected_melanoma, basal_cell_carcinoma, squamous_cell_carcinoma, seborrheic_keratosis, actinic_keratosis}.",
     "observation_y": "Cross-polarized RGB dermoscopy image (typically 3000x4000 pixel, 10-30x magnification, 50 micrometer pixel pitch).",

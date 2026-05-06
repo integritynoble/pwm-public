@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-167",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "167",
   "title": "Lucky Imaging Atmospheric Turbulence Recovery",
   "domain": "Astronomy",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Lucky Imaging Atmospheric Turbulence Recovery: Lucky imaging: select best short-exposure frames (minimal wavefront aberration), shift-and-add for diffraction-limited reconstruction. The forward operator produces the measurement through a 3-node primitive DAG (K.psf.turbulence…); recovery is posed as a linear_inverse problem. Difficulty tier delta=3 with effective condition number kappa_eff~50; seeing_variation, anisoplanatism set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "Lucky Imaging Atmospheric Turbulence Recovery: Lucky imaging: select best short-exposure frames (minimal wavefront aberration), shift-and-add for diffraction-limited reconstruction. The forward operator produces the measurement through a 3-node primitive DAG (K.psf.turbulence\u2026); recovery is posed as a linear_inverse problem. Difficulty tier delta=3 with effective condition number kappa_eff~50; seeing_variation, anisoplanatism set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "I_k(r) = PSF_k(r; phi_k) * f(r) + n_k(r), select frames where Strehl(phi_k) > threshold",
     "world_state_x": "true object f in R^{H x W} at diffraction limit",
     "observation_y": "stack of N_frames short-exposure images I_k in R^{H x W x N_frames}",

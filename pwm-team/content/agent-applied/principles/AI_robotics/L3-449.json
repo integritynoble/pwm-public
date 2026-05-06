@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-449",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-449",
   "parent_l1": "L1-449",
-  "title": "Inverse Dynamics — Benchmark Suite",
+  "title": "Inverse Dynamics \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "KUKA_LBR_dynamic_identification",

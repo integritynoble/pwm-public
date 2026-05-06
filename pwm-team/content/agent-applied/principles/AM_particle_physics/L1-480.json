@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-480",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "480",
   "title": "Lattice QCD Path Integral",
   "domain": "Particle Physics",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Lattice QCD Path Integral: Lattice QCD: compute hadron masses and matrix elements from first principles via Monte Carlo path integral on discrete spacetime lattice. The forward operator produces the measurement through a 3-node primitive DAG (S.hmc.hybrid_monte_carlo…); recovery is posed as a statistical_inverse problem. Difficulty tier delta=50 with effective condition number kappa_eff~1000000.0; discretization_error_O_a2, finite_volume_error set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "Lattice QCD Path Integral: Lattice QCD: compute hadron masses and matrix elements from first principles via Monte Carlo path integral on discrete spacetime lattice. The forward operator produces the measurement through a 3-node primitive DAG (S.hmc.hybrid_monte_carlo\u2026); recovery is posed as a statistical_inverse problem. Difficulty tier delta=50 with effective condition number kappa_eff~1000000.0; discretization_error_O_a2, finite_volume_error set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "Z = integral D[U] D[psi] D[psi_bar] exp(-S_gauge[U] - S_fermion[U,psi,psi_bar]); hadron mass from 2pt correlator decay",
     "world_state_x": "quark mass spectrum {m_u, m_d, m_s, m_c, m_b} and QCD coupling alpha_s",
     "observation_y": "Euclidean two-point correlators C(tau) = <O(tau) O_dag(0)> for various hadron interpolators O",

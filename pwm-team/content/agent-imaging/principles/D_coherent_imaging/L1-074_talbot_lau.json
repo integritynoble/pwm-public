@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-074",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "074",
   "title": "Talbot-Lau Grating Interferometry (X-ray phase-contrast imaging)",
   "domain": "Coherent Imaging",

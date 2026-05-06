@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-526",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "526",
   "title": "Bone Fracture Detection from Radiograph (PWDR)",
   "domain": "Medical Imaging",
@@ -14,7 +15,7 @@
     "conservation_substitute": "softmax simplex closure on fracture-severity ordinal {none, hairline, complete_non_displaced, displaced, comminuted, intra_articular_complex}"
   },
   "discrete_readout": {
-    "threshold_function": "Fracture(radiograph) = step on cortical-disruption-line presence + displacement-mm + fragment-count: hairline if cortical lucency width < 1 mm; complete if discontinuity through cortex; displaced if displacement > 2 mm or angulation > 10 degrees; comminuted if fragment count >= 3; intra_articular if fracture line crosses joint surface. AO/OTA classification overlay applied per Müller AO Foundation 1996.",
+    "threshold_function": "Fracture(radiograph) = step on cortical-disruption-line presence + displacement-mm + fragment-count: hairline if cortical lucency width < 1 mm; complete if discontinuity through cortex; displaced if displacement > 2 mm or angulation > 10 degrees; comminuted if fragment count >= 3; intra_articular if fracture line crosses joint surface. AO/OTA classification overlay applied per M\u00fcller AO Foundation 1996.",
     "lipschitz_constant": 0.05,
     "underlying_physical_state": "cortical bone edge geometric reconstruction + per-bone fragment mask + joint-surface relationship recovered from L1-031 X-ray radiograph (multi-view: AP / lateral / oblique)",
     "physics_core_principle": "L1-031",
@@ -40,9 +41,9 @@
     "threshold_continuity_proof": "Cortical-disruption-width and displacement are continuous on bone-edge geometric reconstruction; per-class boundaries form measure-zero hyperplanes at width = {0, 1 mm} and displacement = {0, 2 mm}. Smoothed-grading globally Lipschitz with constant ~0.05 per percentage-point of cortical-edge detection error."
   },
   "related_principles": [
-    "L1-031 (X-ray radiography — radiograph attenuation analytical core, physics_core_principle)",
-    "L1-029 (CT — gold-standard sibling for complex fractures, informational)",
-    "L1-037 (DEXA — sibling bone density modality, informational)"
+    "L1-031 (X-ray radiography \u2014 radiograph attenuation analytical core, physics_core_principle)",
+    "L1-029 (CT \u2014 gold-standard sibling for complex fractures, informational)",
+    "L1-037 (DEXA \u2014 sibling bone density modality, informational)"
   ],
   "E": {
     "description": "Bone Fracture Detection (PWDR): wraps L1-031 with established orthopedic / emergency radiology grading rules. Stage 1 (analytical, from L1-031): from multi-view radiograph (AP, lateral, oblique), recover cortical bone edge map, fragment segmentation, displacement vectors, joint-surface relationships. Stage 2 (deterministic threshold): apply width / displacement / fragment-count thresholds; AO/OTA class overlay; severity bins. Difficulty tier delta = 3.",
@@ -95,7 +96,7 @@
     "stability": "conditional",
     "condition_number_kappa": 60,
     "condition_number_effective": 14,
-    "regime": "Existence inherited from L1-031. Uniqueness conditional on adequate views. Stability dominated by overlapping_structures and growth_plate_confounder (pediatric). Joint Hadamard well-posedness established by Müller AO 1996 (foundational classification), Lindsey 2018 (deep learning fracture detection benchmark), Rajpurkar 2017 (CheXNet), Olczak 2017 (Stockholm fracture deep learning)."
+    "regime": "Existence inherited from L1-031. Uniqueness conditional on adequate views. Stability dominated by overlapping_structures and growth_plate_confounder (pediatric). Joint Hadamard well-posedness established by M\u00fcller AO 1996 (foundational classification), Lindsey 2018 (deep learning fracture detection benchmark), Rajpurkar 2017 (CheXNet), Olczak 2017 (Stockholm fracture deep learning)."
   },
   "C": {
     "solver_class": "linear-operator + edge-detection [Canny / learned] + categorical-readout [AO/OTA classifier] | end-to-end deep neural [Aidoc Bone, Gleamer BoneView] with explicit physics-informed cortical-edge regularization",
@@ -226,7 +227,7 @@
     "is_standalone_multiphysics": false,
     "coupling_count_n_c": 1,
     "joint_well_posedness_references": [
-      "Müller ME et al. (1996) The Comprehensive Classification of Fractures of Long Bones (AO/OTA). Springer.",
+      "M\u00fcller ME et al. (1996) The Comprehensive Classification of Fractures of Long Bones (AO/OTA). Springer.",
       "Lindsey R et al. (2018) Deep neural network improves fracture detection by clinicians. PNAS 115(45):11591-11596.",
       "Rajpurkar P et al. (2017) CheXNet: radiologist-level pneumonia detection on chest X-rays. arXiv:1711.05225.",
       "Olczak J et al. (2017) Artificial intelligence for analyzing orthopedic trauma radiographs. Acta Orthop 88(6):581-586.",

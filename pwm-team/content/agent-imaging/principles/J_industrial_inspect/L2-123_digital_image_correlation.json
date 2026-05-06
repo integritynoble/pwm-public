@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-123",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-123",
   "title": "Digital Image Correlation (DIC) for full-field strain Mismatch-Only Spec",
   "spec_type": "mismatch_only",

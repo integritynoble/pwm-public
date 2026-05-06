@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-269",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "269",
-  "title": "Duct Acoustics — wave propagation in ducts / silencers",
+  "title": "Duct Acoustics \u2014 wave propagation in ducts / silencers",
   "domain": "Acoustics",
   "sub_domain": "Modal transmission in non-uniform ducts",
   "source_file": "V_acoustics/269_duct_acoustics.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Duct Acoustics — wave propagation in ducts / silencers forward model.",
+    "description": "Duct Acoustics \u2014 wave propagation in ducts / silencers forward model.",
     "forward_model": "A(x+dx) = T(kx, M, Z_liner) A(x); A=[p_+, p_-]^T amplitudes",
     "world_state_x": "mode amplitudes A_m^+/-(x) along a duct cross-section",
     "observation_y": "in-duct pressure probes at N_probe axial positions",

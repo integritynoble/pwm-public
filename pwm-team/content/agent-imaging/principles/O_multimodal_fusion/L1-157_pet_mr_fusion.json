@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-157",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "157",
   "title": "PET-MR Fusion (molecular + multi-contrast soft tissue)",
   "domain": "Multimodal Fusion",

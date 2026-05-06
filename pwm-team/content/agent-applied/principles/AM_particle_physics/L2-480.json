@@ -1,9 +1,10 @@
 {
   "artifact_id": "L2-480",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-480",
   "principle_ref": "sha256:<L1-480_principle_hash>",
-  "title": "Lattice QCD Path Integral — Nominal + Mismatch Specs",
+  "title": "Lattice QCD Path Integral \u2014 Nominal + Mismatch Specs",
   "spec_type": "nominal_and_mismatch",
   "six_tuple": {
     "omega": {

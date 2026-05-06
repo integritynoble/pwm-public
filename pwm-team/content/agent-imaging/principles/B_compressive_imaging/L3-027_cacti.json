@@ -1,6 +1,7 @@
 {
   "artifact_id": "L3-027",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-027",
   "parent_l1": "L1-027",
   "canonical_reference": "pwm_product/genesis/l3/L3-004.json",
@@ -185,7 +186,7 @@
       }
     ]
   },
-  "hardness_rule_check": "SATISFIED — EfficientSCI loses 20.58 dB under severe mask mismatch, fails T4_blind.",
+  "hardness_rule_check": "SATISFIED \u2014 EfficientSCI loses 20.58 dB under severe mask mismatch, fails T4_blind.",
   "ipfs_cid": null,
   "ground_truth_cid": null,
   "display_slug": "cacti"

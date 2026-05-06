@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-385",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-385",
   "principle_ref": "sha256:<L1-385_principle_hash>",
   "title": "Image Denoising Blind-Noise Spec (SIDD / DND benchmark family)",
@@ -114,7 +115,7 @@
     "proximity_threshold": 0.1
   },
   "d_spec": 0.48,
-  "d_spec_notes": "Distance from 382 deblurring ~= 0.30 (Similar — shared 2D_image solution space). Oracle-noise spec would be d_spec ~= 0.18 from this blind spec.",
+  "d_spec_notes": "Distance from 382 deblurring ~= 0.30 (Similar \u2014 shared 2D_image solution space). Oracle-noise spec would be d_spec ~= 0.18 from this blind spec.",
   "s1_s4_gates": [
     "PASS",
     "PASS",

@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-419",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "419",
   "title": "Ocean Circulation Inverse Modeling",
   "domain": "Environmental Science",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Ocean Circulation Inverse Modeling: Ocean state estimation: infer 3D temperature, salinity, and velocity fields consistent with all observations (ECCO approach). The forward operator produces the measurement through a 3-node primitive DAG (M.primitive.boussinesq_ocean…); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=5 with effective condition number kappa_eff~10000.0; forcing_uncertainty, mixing_parameterization_error set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "Ocean Circulation Inverse Modeling: Ocean state estimation: infer 3D temperature, salinity, and velocity fields consistent with all observations (ECCO approach). The forward operator produces the measurement through a 3-node primitive DAG (M.primitive.boussinesq_ocean\u2026); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=5 with effective condition number kappa_eff~10000.0; forcing_uncertainty, mixing_parameterization_error set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "OGCM (MITgcm): primitive equations for T, S, u, v, w, eta; forcing from ERA5 winds and fluxes",
     "world_state_x": "global ocean T(x,y,z,t), S(x,y,z,t), u,v,w fields and surface forcing corrections",
     "observation_y": "Argo float T/S profiles, altimetry SSH, SST from satellites, hydrographic sections",

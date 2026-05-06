@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-131",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-131",
   "principle_ref": "sha256:<L1-131_principle_hash>",
   "title": "pCT Reconstruction Spec",
@@ -120,7 +121,7 @@
     "proximity_threshold": 0.1
   },
   "d_spec": 0.55,
-  "d_spec_notes": "Distance from 130 neutron radiography ~= 0.35 (Related — different carrier, similar geometry). Distance from 132 muon tomo ~= 0.35.",
+  "d_spec_notes": "Distance from 130 neutron radiography ~= 0.35 (Related \u2014 different carrier, similar geometry). Distance from 132 muon tomo ~= 0.35.",
   "s1_s4_gates": [
     "PASS",
     "PASS",

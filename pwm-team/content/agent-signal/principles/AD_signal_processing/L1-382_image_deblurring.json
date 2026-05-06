@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-382",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "382",
   "title": "Image Deblurring (non-blind and blind deconvolution)",
   "domain": "Signal Processing",

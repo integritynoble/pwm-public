@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-095",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "095",
   "title": "Amplitude-Modulated Continuous-Wave Time-of-Flight (AMCW-ToF) Depth",
   "domain": "Depth Imaging",

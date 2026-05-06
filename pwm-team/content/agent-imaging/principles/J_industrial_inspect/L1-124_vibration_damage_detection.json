@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-124",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "124",
   "title": "Vibration-Based Damage Detection (modal analysis NDT)",
   "domain": "Industrial Inspection",

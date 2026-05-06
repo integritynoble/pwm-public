@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-131",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "131",
   "title": "Proton Radiography & CT (pRad, pCT)",
   "domain": "Scientific Instrumentation",

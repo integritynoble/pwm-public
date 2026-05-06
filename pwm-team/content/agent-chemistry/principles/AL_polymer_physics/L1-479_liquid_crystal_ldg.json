@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-479",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "479",
   "title": "Landau-de Gennes Liquid Crystal Theory",
   "domain": "Polymer Physics",

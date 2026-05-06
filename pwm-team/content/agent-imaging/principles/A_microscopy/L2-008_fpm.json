@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-008",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-008",
   "title": "Fourier Ptychographic Microscopy (FPM) Mismatch-Only Spec",
   "spec_type": "mismatch_only",

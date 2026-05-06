@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-079",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "079",
   "title": "High Dynamic Range (HDR) Imaging via Multi-Exposure Fusion",
   "domain": "Computational Photography",

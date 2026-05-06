@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-188",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "188",
-  "title": "Darcy Flow — low-Re porous-medium flow",
+  "title": "Darcy Flow \u2014 low-Re porous-medium flow",
   "domain": "Fluid Dynamics",
   "sub_domain": "Linear Darcy's law in porous media",
   "source_file": "R_fluid_dynamics/188_darcy.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Darcy Flow — low-Re porous-medium flow forward model.",
+    "description": "Darcy Flow \u2014 low-Re porous-medium flow forward model.",
     "forward_model": "u = -k/mu * grad p; div(u) = 0 (steady); BCs on inflow/outflow",
     "world_state_x": "pressure p(x), velocity u(x) in porous medium",
     "observation_y": "piezometer + tracer concentration",

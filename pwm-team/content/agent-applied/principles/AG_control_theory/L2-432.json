@@ -1,9 +1,10 @@
 {
   "artifact_id": "L2-432",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-432",
   "principle_ref": "sha256:<L1-432_principle_hash>",
-  "title": "Optimal Control (LQR) — Nominal + Mismatch Specs",
+  "title": "Optimal Control (LQR) \u2014 Nominal + Mismatch Specs",
   "spec_type": "nominal_and_mismatch",
   "six_tuple": {
     "omega": {

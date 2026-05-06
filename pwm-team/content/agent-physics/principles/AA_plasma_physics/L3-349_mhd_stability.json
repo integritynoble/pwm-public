@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-349",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-349",
   "parent_l1": "L1-349",
-  "title": "MHD Stability — linear eigenmode growth rates Benchmark Suite",
+  "title": "MHD Stability \u2014 linear eigenmode growth rates Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "canonical Plasma Physics dataset for this principle",
@@ -234,7 +235,7 @@
       }
     ]
   },
-  "hardness_rule_check": "SATISFIED — top baseline fails at T4_blind Omega corner under max mismatch.",
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind Omega corner under max mismatch.",
   "anti_overfitting_mechanisms": {
     "M1_random_instantiation": "generator/instantiate.py uses G(SHA256(h_sub || k)) seeded per submission.",
     "M2_convergence_scoring": "convergence/check_convergence.py verifies declared q-rate across mesh refinements.",

@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-457",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "457",
   "title": "Hydrodynamic Lubrication (Reynolds Equation)",
   "domain": "Robotics",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Hydrodynamic Lubrication (Reynolds Equation): Reynolds equation inversion: recover bearing geometry, clearance, and lubricant properties from pressure measurements. The forward operator produces the measurement through a 3-node primitive DAG (M.reynolds.thin_film…); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~100; viscosity_temperature_dependence, surface_roughness_effect set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "Hydrodynamic Lubrication (Reynolds Equation): Reynolds equation inversion: recover bearing geometry, clearance, and lubricant properties from pressure measurements. The forward operator produces the measurement through a 3-node primitive DAG (M.reynolds.thin_film\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~100; viscosity_temperature_dependence, surface_roughness_effect set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "d/dx(h ** 3/eta * dp/dx) + d/dz(h ** 3/eta * dp/dz) = 6*U*dh/dx (Reynolds equation); p >= 0",
     "world_state_x": "film pressure field p(x,z) and bearing load capacity W",
     "observation_y": "pressure measurements p_i at N_sensors sensor locations in bearing",

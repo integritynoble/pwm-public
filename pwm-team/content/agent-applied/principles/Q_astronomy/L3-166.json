@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-166",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-166",
   "parent_l1": "L1-166",
-  "title": "Stellar Coronagraphy PSF Subtraction — Benchmark Suite",
+  "title": "Stellar Coronagraphy PSF Subtraction \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "GPI_archive_beta_pic",

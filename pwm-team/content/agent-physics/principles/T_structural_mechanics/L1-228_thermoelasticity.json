@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-228",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "228",
-  "title": "Thermoelasticity — coupled thermal-mechanical",
+  "title": "Thermoelasticity \u2014 coupled thermal-mechanical",
   "domain": "Structural Mechanics",
   "sub_domain": "Classical weakly coupled thermoelasticity",
   "source_file": "T_structural_mechanics/228_thermoelasticity.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Thermoelasticity — coupled thermal-mechanical forward model.",
+    "description": "Thermoelasticity \u2014 coupled thermal-mechanical forward model.",
     "forward_model": "sigma = C : (eps - alpha_T * DT); rho cp dT/dt = div(k grad T) + Q",
     "world_state_x": "displacement u(x,t) + temperature T(x,t)",
     "observation_y": "strain gauge + thermocouples",

@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-267",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "267",
-  "title": "Acoustic Emission — source localization",
+  "title": "Acoustic Emission \u2014 source localization",
   "domain": "Acoustics",
   "sub_domain": "TDOA-based AE source localization",
   "source_file": "V_acoustics/267_ae_source_localization.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Acoustic Emission — source localization forward model.",
+    "description": "Acoustic Emission \u2014 source localization forward model.",
     "forward_model": "t_i = t_0 + ||x_s - x_i|| / c; solve for x_s from TDOA = t_i - t_j",
     "world_state_x": "3D AE source locations {x_s} and origin times t_0",
     "observation_y": "arrival-time picks at N_sensor piezo-AE sensors",

@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-026b",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-026b",
   "title": "SPC Mismatch-Only Spec",
   "spec_type": "mismatch_only",

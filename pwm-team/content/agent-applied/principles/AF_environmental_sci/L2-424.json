@@ -1,9 +1,10 @@
 {
   "artifact_id": "L2-424",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-424",
   "principle_ref": "sha256:<L1-424_principle_hash>",
-  "title": "Carbon Cycle Biogeochemical Inversion — Nominal + Mismatch Specs",
+  "title": "Carbon Cycle Biogeochemical Inversion \u2014 Nominal + Mismatch Specs",
   "spec_type": "nominal_and_mismatch",
   "six_tuple": {
     "omega": {

@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-405",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-405",
   "parent_l1": "L1-405",
-  "title": "SIR Epidemic Parameter Estimation — Benchmark Suite",
+  "title": "SIR Epidemic Parameter Estimation \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "WHO_COVID19_incidence_2020_2022",

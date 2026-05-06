@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-410",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-410",
   "parent_l1": "L1-410",
-  "title": "Tumor Growth Model Inversion — Benchmark Suite",
+  "title": "Tumor Growth Model Inversion \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "TCIA_CT_tumor_volume_dataset",

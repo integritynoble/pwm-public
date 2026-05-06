@@ -126,6 +126,7 @@ UI_ONLY_FIELDS = frozenset({
     "display_slug",
     "display_color",
     "ui_metadata",
+    "registration_tier",
 })
 
 

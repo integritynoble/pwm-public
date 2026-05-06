@@ -1,6 +1,7 @@
 {
   "artifact_id": "L3-031",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-031",
   "parent_l1": "L1-031",
   "title": "Planar X-ray Radiography Benchmark Suite",
@@ -171,7 +172,7 @@
       }
     ]
   },
-  "hardness_rule_check": "SATISFIED — top baseline fails at T4_blind strata corner.",
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind strata corner.",
   "ipfs_cid": null,
   "ground_truth_cid": null,
   "display_slug": "xray-radiography"

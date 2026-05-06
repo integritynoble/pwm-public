@@ -1,9 +1,10 @@
 {
   "artifact_id": "L2-463",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-463",
   "principle_ref": "sha256:<L1-463_principle_hash>",
-  "title": "Seismic Rock Physics (Gassmann) — Nominal + Mismatch Specs",
+  "title": "Seismic Rock Physics (Gassmann) \u2014 Nominal + Mismatch Specs",
   "spec_type": "nominal_and_mismatch",
   "six_tuple": {
     "omega": {

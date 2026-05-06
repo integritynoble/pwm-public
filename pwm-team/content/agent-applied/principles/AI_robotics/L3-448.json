@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-448",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-448",
   "parent_l1": "L1-448",
-  "title": "Forward Dynamics — Benchmark Suite",
+  "title": "Forward Dynamics \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "PANDA_dynamics_benchmark",

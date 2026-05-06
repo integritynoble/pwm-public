@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-403",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-403",
   "parent_l1": "L1-403",
-  "title": "Physiologically Based PK (PBPK) — Benchmark Suite",
+  "title": "Physiologically Based PK (PBPK) \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "CHEMBL_PBPK_validation_dataset",

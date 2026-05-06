@@ -1,9 +1,10 @@
 {
   "artifact_id": "L2-415",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-415",
   "principle_ref": "sha256:<L1-415_principle_hash>",
-  "title": "Advection-Dispersion Transport Inversion — Nominal + Mismatch Specs",
+  "title": "Advection-Dispersion Transport Inversion \u2014 Nominal + Mismatch Specs",
   "spec_type": "nominal_and_mismatch",
   "six_tuple": {
     "omega": {

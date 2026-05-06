@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-478",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-478",
   "title": "DLVO Colloidal Force Theory Mismatch-Only Spec",
   "spec_type": "mismatch_only",

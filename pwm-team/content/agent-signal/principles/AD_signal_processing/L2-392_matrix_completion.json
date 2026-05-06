@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-392",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-392",
   "principle_ref": "sha256:<L1-392_principle_hash>",
   "title": "Matrix Completion Uniform-Sampling Spec (MovieLens family)",
@@ -140,7 +141,7 @@
     "S1": "Observation mask and matrix dimensions consistent.",
     "S2": "Candes-Recht theorem guarantees uniqueness when p >= C*mu_0^2*r*(m+n)log^2(m+n)/(mn).",
     "S3": "SVT contraction mapping; alt-min converges geometrically under incoherence; SDP convex.",
-    "S4": "epsilon_fn evaluates; alt-min fails at T4 (p=0.05, r=500, mu_0=10) — hardness rule satisfied."
+    "S4": "epsilon_fn evaluates; alt-min fails at T4 (p=0.05, r=500, mu_0=10) \u2014 hardness rule satisfied."
   },
   "ipfs_cid": null,
   "display_slug": "matrix-completion"

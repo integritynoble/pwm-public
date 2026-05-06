@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-315",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-315",
   "title": "Quantum Tunneling Through Barriers Mismatch-Only Spec",
   "spec_type": "mismatch_only",

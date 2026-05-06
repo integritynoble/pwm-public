@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-401",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "401",
   "title": "Windkessel Cardiac Afterload Model",
   "domain": "Computational Biology",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Windkessel Cardiac Afterload Model: Windkessel model fitting: extract arterial compliance C, resistance R, and characteristic impedance Zc from pressure-flow data. The forward operator produces the measurement through a 3-node primitive DAG (M.ode.windkessel_3element…); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~20; nonlinearity_pressure_compliance, wave_reflection_neglect set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "Windkessel Cardiac Afterload Model: Windkessel model fitting: extract arterial compliance C, resistance R, and characteristic impedance Zc from pressure-flow data. The forward operator produces the measurement through a 3-node primitive DAG (M.ode.windkessel_3element\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~20; nonlinearity_pressure_compliance, wave_reflection_neglect set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "C*dP/dt + P/R = Q - Zc*dQ/dt; 3-element Windkessel (Westkessel model)",
     "world_state_x": "arterial parameters (R_peripheral, C_arterial, Z_c_characteristic)",
     "observation_y": "aortic pressure P(t) and flow Q(t) over one or more cardiac cycles",

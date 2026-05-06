@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-136",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-136",
   "principle_ref": "sha256:<L1-136_principle_hash>",
   "title": "Cathodoluminescence Hyperspectral Mapping Spec",

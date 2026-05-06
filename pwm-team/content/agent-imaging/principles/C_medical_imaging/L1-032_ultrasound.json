@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-032",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "032",
   "title": "Clinical B-mode Ultrasound",
   "domain": "Medical Imaging",

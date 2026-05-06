@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-065",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "065",
   "title": "Functional Near-Infrared Spectroscopy (fNIRS)",
   "domain": "Medical Imaging",

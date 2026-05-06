@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-225",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "225",
-  "title": "Hertzian Contact — elastic sphere/cylinder contact",
+  "title": "Hertzian Contact \u2014 elastic sphere/cylinder contact",
   "domain": "Structural Mechanics",
   "sub_domain": "Classical Hertz elastic contact",
   "source_file": "T_structural_mechanics/225_contact_hertzian.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Hertzian Contact — elastic sphere/cylinder contact forward model.",
+    "description": "Hertzian Contact \u2014 elastic sphere/cylinder contact forward model.",
     "forward_model": "p(r) = p_0 * sqrt(1 - r^2/a^2); a = ((3FR)/(4E*))^(1/3)",
     "world_state_x": "contact pressure distribution p(r) and contact radius a",
     "observation_y": "pressure-sensitive film / tactile sensor",

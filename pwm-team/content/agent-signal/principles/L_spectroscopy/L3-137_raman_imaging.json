@@ -1,6 +1,7 @@
 {
   "artifact_id": "L3-137",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-137",
   "parent_l1": "L1-137",
   "title": "Raman Imaging Benchmark Suite (RaDiS + cells + tissue)",
@@ -157,7 +158,7 @@
       }
     ]
   },
-  "hardness_rule_check": "SATISFIED — UNet-Raman fails at T4_tissue corner (fluor=10, drift=10, power_fluct=0.3): 0.08 > epsilon_fn ~ 0.06.",
+  "hardness_rule_check": "SATISFIED \u2014 UNet-Raman fails at T4_tissue corner (fluor=10, drift=10, power_fluct=0.3): 0.08 > epsilon_fn ~ 0.06.",
   "ipfs_cid": null,
   "ground_truth_cid": null,
   "display_slug": "raman-imaging"

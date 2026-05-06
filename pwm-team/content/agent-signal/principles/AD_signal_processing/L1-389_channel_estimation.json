@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-389",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "389",
   "title": "Channel Estimation (pilot-aided wireless channel identification)",
   "domain": "Signal Processing",

@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-299",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-299",
   "title": "Classical Molecular Dynamics Mismatch-Only Spec",
   "spec_type": "mismatch_only",

@@ -1,6 +1,7 @@
 {
   "artifact_id": "L3-129",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-129",
   "parent_l1": "L1-129",
   "title": "Cryo-EM SPA Benchmark Suite (EMDB + EMPIAR)",
@@ -151,7 +152,7 @@
       }
     ]
   },
-  "hardness_rule_check": "SATISFIED — Topaz-ML3D fails at T4_challenging (N=10000, orientation=0.8, het=1.0): 12 Å > epsilon_fn ~ 9 Å.",
+  "hardness_rule_check": "SATISFIED \u2014 Topaz-ML3D fails at T4_challenging (N=10000, orientation=0.8, het=1.0): 12 \u00c5 > epsilon_fn ~ 9 \u00c5.",
   "ipfs_cid": null,
   "ground_truth_cid": null,
   "display_slug": "cryoem-spa"

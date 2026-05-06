@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-139",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "139",
-  "title": "SRS — Stimulated Raman Scattering microscopy",
+  "title": "SRS \u2014 Stimulated Raman Scattering microscopy",
   "domain": "Spectroscopy",
   "sub_domain": "Background-free coherent vibrational microscopy",
   "source_file": "L_spectroscopy/139_srs.md",
@@ -42,7 +43,7 @@
   },
   "W": {
     "existence": true,
-    "uniqueness": "linear in N(r) — direct unmixing",
+    "uniqueness": "linear in N(r) \u2014 direct unmixing",
     "stability": "stable",
     "condition_number_kappa": 50,
     "condition_number_effective": 10,

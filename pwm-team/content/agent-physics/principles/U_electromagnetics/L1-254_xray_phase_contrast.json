@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-254",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "254",
-  "title": "X-ray Phase Contrast — propagation / grating / analyzer",
+  "title": "X-ray Phase Contrast \u2014 propagation / grating / analyzer",
   "domain": "Electromagnetics",
   "sub_domain": "X-ray phase and attenuation imaging",
   "source_file": "U_electromagnetics/254_xray_phase_contrast.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "X-ray Phase Contrast — propagation / grating / analyzer forward model.",
+    "description": "X-ray Phase Contrast \u2014 propagation / grating / analyzer forward model.",
     "forward_model": "I_obs(x) = [(1 - z*Laplacian)/k^2] * I_0(x) * exp(-mu * L); TIE for phase retrieval",
     "world_state_x": "3D complex refractive index decrement delta(x) - j*beta(x)",
     "observation_y": "X-ray CCD images at different propagation distances",

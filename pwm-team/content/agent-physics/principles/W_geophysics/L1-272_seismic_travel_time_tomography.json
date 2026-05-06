@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-272",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "272",
-  "title": "Seismic Travel-Time Tomography — ray-based velocity imaging",
+  "title": "Seismic Travel-Time Tomography \u2014 ray-based velocity imaging",
   "domain": "Geophysics",
   "sub_domain": "First-arrival travel-time tomography",
   "source_file": "W_geophysics/272_seismic_travel_time_tomography.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Seismic Travel-Time Tomography — ray-based velocity imaging forward model.",
+    "description": "Seismic Travel-Time Tomography \u2014 ray-based velocity imaging forward model.",
     "forward_model": "t = int_ray 1/v(x) ds; linearized dt = int_ray (-1/v_0^2) dv(x) ds",
     "world_state_x": "3D seismic velocity v_P(x,y,z)",
     "observation_y": "first-arrival picked travel times per source-receiver pair",

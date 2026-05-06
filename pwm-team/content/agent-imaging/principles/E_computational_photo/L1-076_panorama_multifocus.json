@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-076",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "076",
   "title": "Multi-Focus / Panorama Fusion (all-in-focus composite imaging)",
   "domain": "Computational Photography",

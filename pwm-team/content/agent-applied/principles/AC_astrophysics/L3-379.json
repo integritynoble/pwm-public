@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-379",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-379",
   "parent_l1": "L1-379",
-  "title": "Baryon Acoustic Oscillation (BAO) Fitting — Benchmark Suite",
+  "title": "Baryon Acoustic Oscillation (BAO) Fitting \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "BOSS_DR12_galaxy_catalog",

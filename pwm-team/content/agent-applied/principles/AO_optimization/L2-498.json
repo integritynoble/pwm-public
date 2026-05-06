@@ -1,9 +1,10 @@
 {
   "artifact_id": "L2-498",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-498",
   "principle_ref": "sha256:<L1-498_principle_hash>",
-  "title": "Topology Optimization (SIMP) — Nominal + Mismatch Specs",
+  "title": "Topology Optimization (SIMP) \u2014 Nominal + Mismatch Specs",
   "spec_type": "nominal_and_mismatch",
   "six_tuple": {
     "omega": {

@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-370",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-370",
   "parent_l1": "L1-370",
-  "title": "Stellar Structure Inverse Problem — Benchmark Suite",
+  "title": "Stellar Structure Inverse Problem \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "GOLF_BiSON_helioseismic_frequencies",

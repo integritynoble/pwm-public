@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-258",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "258",
-  "title": "Helmholtz Equation — frequency-domain acoustic scattering / interior field",
+  "title": "Helmholtz Equation \u2014 frequency-domain acoustic scattering / interior field",
   "domain": "Acoustics",
   "sub_domain": "Frequency-domain acoustic inverse scattering",
   "source_file": "V_acoustics/258_helmholtz_acoustic.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Helmholtz Equation — frequency-domain acoustic scattering / interior field forward model.",
+    "description": "Helmholtz Equation \u2014 frequency-domain acoustic scattering / interior field forward model.",
     "forward_model": "(Laplacian + k^2(x)) p(x,omega) = s(x,omega), radiation BC at infinity",
     "world_state_x": "complex pressure field p(x,omega) or wavenumber k^2(x) field in domain Omega_D",
     "observation_y": "complex pressure at N_R receivers for N_F frequencies",

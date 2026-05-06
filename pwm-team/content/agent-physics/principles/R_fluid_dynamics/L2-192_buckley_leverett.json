@@ -1,8 +1,9 @@
 {
   "artifact_id": "L2-192",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-192",
-  "title": "Buckley-Leverett — two-phase displacement saturation Mismatch-Only Spec",
+  "title": "Buckley-Leverett \u2014 two-phase displacement saturation Mismatch-Only Spec",
   "spec_type": "mismatch_only",
   "six_tuple": {
     "omega": {
@@ -127,7 +128,7 @@
     "S1": "Dimensions are consistent across the DAG; forward operator maps state space to measurement space at declared shapes.",
     "S2": "kappa_eff = 15 within tolerance after regularization; RIP-like or coercivity conditions satisfied over most of Omega.",
     "S3": "Solvers converge at rate q=1.5 in well-posed regime; mismatch parameters degrade convergence but not divergence.",
-    "S4": "epsilon_fn evaluates across 10+ random Omega samples; hardness rule verified — no baseline passes everywhere."
+    "S4": "epsilon_fn evaluates across 10+ random Omega samples; hardness rule verified \u2014 no baseline passes everywhere."
   },
   "ipfs_cid": null,
   "display_slug": "buckley-leverett"

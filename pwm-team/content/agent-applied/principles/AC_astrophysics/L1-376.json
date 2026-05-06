@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-376",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "376",
   "title": "Cosmic Ray Propagation Inversion",
   "domain": "Astrophysics",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Cosmic Ray Propagation Inversion: CR propagation inversion: infer diffusion coefficient D, convection velocity, and source distribution from CR flux ratios (B/C, positron fraction). The forward operator produces the measurement through a 3-node primitive DAG (S.diffusion.galactic…); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~50; solar_modulation_uncertainty, cross_section_uncertainty set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "Cosmic Ray Propagation Inversion: CR propagation inversion: infer diffusion coefficient D, convection velocity, and source distribution from CR flux ratios (B/C, positron fraction). The forward operator produces the measurement through a 3-node primitive DAG (S.diffusion.galactic\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~50; solar_modulation_uncertainty, cross_section_uncertainty set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "partial_t N = nabla(D nabla N) - nabla(v_c N) - N/tau + Q(r,E); B/C ratio from propagated spectra",
     "world_state_x": "diffusion coefficient D_0 and spatial/energy dependence, source spectral index gamma_src",
     "observation_y": "B/C, p-bar/p, positron fraction, CR fluxes from AMS-02/PAMELA",

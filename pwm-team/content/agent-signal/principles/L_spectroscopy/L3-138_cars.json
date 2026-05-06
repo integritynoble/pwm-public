@@ -1,6 +1,7 @@
 {
   "artifact_id": "L3-138",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-138",
   "parent_l1": "L1-138",
   "title": "CARS Benchmark Suite (MoPol + Evans-Xie cell + tissue)",
@@ -151,7 +152,7 @@
       }
     ]
   },
-  "hardness_rule_check": "SATISFIED — CARS-Net fails at T4_tissue_blind (rho_NR=5, drift=20 cm^-1): 0.22 > epsilon_fn ~ 0.15.",
+  "hardness_rule_check": "SATISFIED \u2014 CARS-Net fails at T4_tissue_blind (rho_NR=5, drift=20 cm^-1): 0.22 > epsilon_fn ~ 0.15.",
   "ipfs_cid": null,
   "ground_truth_cid": null,
   "display_slug": "cars"

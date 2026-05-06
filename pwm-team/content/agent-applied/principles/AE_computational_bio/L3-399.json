@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-399",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-399",
   "parent_l1": "L1-399",
-  "title": "Cardiac Electrophysiology (Monodomain) — Benchmark Suite",
+  "title": "Cardiac Electrophysiology (Monodomain) \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "EDGAR_electrophysiology_dataset",

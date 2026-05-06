@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-010",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "010",
-  "title": "Stimulated Emission Depletion (STED) — donut super-resolution",
+  "title": "Stimulated Emission Depletion (STED) \u2014 donut super-resolution",
   "domain": "Microscopy",
   "sub_domain": "Donut-PSF super-resolution microscopy",
   "source_file": "A_microscopy/010_sted.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical domain literature for this specific principle.",
   "E": {
-    "description": "Stimulated Emission Depletion (STED) — donut super-resolution: sted donut depletion produces the measurement through a 3-node primitive DAG L.excitation.focused -> L.depletion.donut -> int.temporal, with time-integrated exposure and photon-shot-noise-limited (Poisson counting). Recovery is posed as a linear inverse problem that inverts the forward operator to estimate the scene-side 2D intensity. Difficulty tier delta=5 with effective condition number kappa_eff~20; calibration-level mismatch (donut_zero_depth, depletion_power_drift, anti_stokes_leakage) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
+    "description": "Stimulated Emission Depletion (STED) \u2014 donut super-resolution: sted donut depletion produces the measurement through a 3-node primitive DAG L.excitation.focused -> L.depletion.donut -> int.temporal, with time-integrated exposure and photon-shot-noise-limited (Poisson counting). Recovery is posed as a linear inverse problem that inverts the forward operator to estimate the scene-side 2D intensity. Difficulty tier delta=5 with effective condition number kappa_eff~20; calibration-level mismatch (donut_zero_depth, depletion_power_drift, anti_stokes_leakage) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
     "forward_model": "y(r) = [PSF_sted(r; P_depl) conv f(r)] + n; effective FWHM = FWHM_0 / sqrt(1 + P_depl/P_sat)",
     "world_state_x": "Scene parameter of interest (density / complex field / lifetime / normals depending on spec).",
     "observation_y": "Measured intensity or photon counts from the imaging system.",

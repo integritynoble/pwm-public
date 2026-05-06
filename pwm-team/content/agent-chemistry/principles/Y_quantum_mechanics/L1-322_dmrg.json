@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-322",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "322",
   "title": "Density Matrix Renormalization Group (DMRG)",
   "domain": "Quantum Mechanics",

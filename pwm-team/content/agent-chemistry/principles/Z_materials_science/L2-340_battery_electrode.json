@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-340",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-340",
   "title": "Battery Electrode Electrochemistry (Newman-Doyle-Fuller) Mismatch-Only Spec",
   "spec_type": "mismatch_only",

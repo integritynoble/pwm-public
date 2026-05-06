@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-030",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-030",
   "parent_l1": "L1-030",
-  "title": "Magnetic Resonance Imaging (MRI) — proton-density / T1 / T2 contrast Benchmark Suite",
+  "title": "Magnetic Resonance Imaging (MRI) \u2014 proton-density / T1 / T2 contrast Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "canonical clinical/public dataset for this modality",
@@ -207,7 +208,7 @@
       }
     ]
   },
-  "hardness_rule_check": "SATISFIED — top baseline fails at T4_blind strata corner.",
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind strata corner.",
   "ipfs_cid": null,
   "ground_truth_cid": null,
   "display_slug": "mri"

@@ -1,6 +1,7 @@
 {
   "artifact_id": "L3-019",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-019",
   "parent_l1": "L1-019",
   "title": "Darkfield Microscopy (oblique-illumination scattering imaging) Benchmark Suite",
@@ -171,7 +172,7 @@
       }
     ]
   },
-  "hardness_rule_check": "SATISFIED — top baseline fails at T4_blind strata with simultaneous worst-case mismatch + low photon corner.",
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind strata with simultaneous worst-case mismatch + low photon corner.",
   "ipfs_cid": null,
   "ground_truth_cid": null,
   "display_slug": "darkfield"

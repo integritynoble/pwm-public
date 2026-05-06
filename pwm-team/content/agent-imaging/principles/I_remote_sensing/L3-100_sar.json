@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-100",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-100",
   "parent_l1": "L1-100",
-  "title": "Synthetic Aperture Radar (SAR) — range-Doppler coherent imaging Benchmark Suite",
+  "title": "Synthetic Aperture Radar (SAR) \u2014 range-Doppler coherent imaging Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "canonical remote-sensing dataset for this principle",
@@ -199,7 +200,7 @@
       }
     ]
   },
-  "hardness_rule_check": "SATISFIED — top baseline fails at T4_blind strata corner.",
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind strata corner.",
   "ipfs_cid": null,
   "ground_truth_cid": null,
   "display_slug": "sar"

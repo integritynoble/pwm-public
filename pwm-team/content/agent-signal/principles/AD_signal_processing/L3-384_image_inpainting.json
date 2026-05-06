@@ -1,12 +1,13 @@
 {
   "artifact_id": "L3-384",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-384",
   "parent_l1": "L1-384",
   "title": "Image Inpainting Benchmark Suite (Places2 + CelebA-HQ + irregular-mask)",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
-    "primary": "Places2 (Zhou et al. 2017) — 1.8M training scenes",
+    "primary": "Places2 (Zhou et al. 2017) \u2014 1.8M training scenes",
     "secondary": "CelebA-HQ (Karras et al. 2018) + FFHQ + ImageNet",
     "tertiary": "Liu et al. 2018 irregular-mask dataset (55k freeform masks)",
     "construction_method": "Center crop 512x512; apply NVIDIA irregular mask distribution at tier-specified mask_ratio",
@@ -152,7 +153,7 @@
       }
     ]
   },
-  "hardness_rule_check": "SATISFIED — MAT fails at T4_severe (mask_ratio=0.75, hole=512): 20.5 dB < epsilon_fn=21.0 dB at that corner.",
+  "hardness_rule_check": "SATISFIED \u2014 MAT fails at T4_severe (mask_ratio=0.75, hole=512): 20.5 dB < epsilon_fn=21.0 dB at that corner.",
   "ipfs_cid": null,
   "ground_truth_cid": null,
   "display_slug": "image-inpainting"

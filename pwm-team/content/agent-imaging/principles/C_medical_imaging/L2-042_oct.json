@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-042",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-042",
   "title": "Optical Coherence Tomography (OCT) Mismatch-Only Spec",
   "spec_type": "mismatch_only",

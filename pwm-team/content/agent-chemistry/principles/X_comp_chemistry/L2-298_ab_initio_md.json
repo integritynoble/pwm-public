@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-298",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-298",
   "title": "Ab Initio Molecular Dynamics (Car-Parrinello / BOMD) Mismatch-Only Spec",
   "spec_type": "mismatch_only",

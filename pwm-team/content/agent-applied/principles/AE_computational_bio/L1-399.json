@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-399",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "399",
   "title": "Cardiac Electrophysiology (Monodomain)",
   "domain": "Computational Biology",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Cardiac Electrophysiology (Monodomain): Cardiac EP inversion: recover 3D transmembrane potential distribution from body surface ECG recordings. The forward operator produces the measurement through a 3-node primitive DAG (M.pde.monodomain_bidomain…); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=5 with effective condition number kappa_eff~2000; torso_conductivity_uncertainty, electrode_placement_error_mm set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "Cardiac Electrophysiology (Monodomain): Cardiac EP inversion: recover 3D transmembrane potential distribution from body surface ECG recordings. The forward operator produces the measurement through a 3-node primitive DAG (M.pde.monodomain_bidomain\u2026); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=5 with effective condition number kappa_eff~2000; torso_conductivity_uncertainty, electrode_placement_error_mm set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "J_e = sigma_e * nabla phi_e; phi_body_surface = T * phi_e; T is body-heart transfer matrix",
     "world_state_x": "3D transmembrane potential V_m(x,y,z,t) across cardiac muscle",
     "observation_y": "body surface potentials phi_BSP(t) at N_electrodes ECG/ECGI electrodes",

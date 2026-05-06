@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-434",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "434",
   "title": "PID Controller Tuning",
   "domain": "Control Theory",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "PID Controller Tuning: PID tuning: find Kp, Ki, Kd to minimize IAE/ISE for a given plant while satisfying stability margins. The forward operator produces the measurement through a 3-node primitive DAG (M.pid.transfer_function…); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~10; plant_gain_variation, time_constant_change set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "PID Controller Tuning: PID tuning: find Kp, Ki, Kd to minimize IAE/ISE for a given plant while satisfying stability margins. The forward operator produces the measurement through a 3-node primitive DAG (M.pid.transfer_function\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~10; plant_gain_variation, time_constant_change set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "C(s) = Kp*(1 + 1/(Ti*s) + Td*s); closed-loop T(s) = C(s)*G(s)/(1+C(s)*G(s))",
     "world_state_x": "PID parameters (Kp, Ti, Td) for plant G(s)",
     "observation_y": "step response y(t) and control effort u(t)",

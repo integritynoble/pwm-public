@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-415",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "415",
   "title": "Advection-Dispersion Transport Inversion",
   "domain": "Environmental Science",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Advection-Dispersion Transport Inversion: ADE inversion: recover solute source concentration history from downgradient breakthrough curves. The forward operator produces the measurement through a 3-node primitive DAG (M.ade.advection_dispersion…); recovery is posed as a linear_inverse problem. Difficulty tier delta=3 with effective condition number kappa_eff~200; velocity_field_uncertainty, dispersion_coefficient_uncertainty set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "Advection-Dispersion Transport Inversion: ADE inversion: recover solute source concentration history from downgradient breakthrough curves. The forward operator produces the measurement through a 3-node primitive DAG (M.ade.advection_dispersion\u2026); recovery is posed as a linear_inverse problem. Difficulty tier delta=3 with effective condition number kappa_eff~200; velocity_field_uncertainty, dispersion_coefficient_uncertainty set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "dC/dt + v*(dC/dx) = D*(d ** 2C/dx ** 2) - lambda*C + S(x,t)",
     "world_state_x": "source concentration history S(t) at source location x_s",
     "observation_y": "breakthrough curves C(x_obs, t) at N_monitoring wells",

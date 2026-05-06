@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-006",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-006",
   "title": "Light Sheet Fluorescence Microscopy (LSFM / SPIM) Mismatch-Only Spec",
   "spec_type": "mismatch_only",

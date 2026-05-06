@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-114",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "114",
   "title": "Eddy-Current Testing (near-surface metallic defect detection)",
   "domain": "Industrial Inspection",

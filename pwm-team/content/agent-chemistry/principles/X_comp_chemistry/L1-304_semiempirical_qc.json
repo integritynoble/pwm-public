@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-304",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "304",
   "title": "Semi-Empirical Quantum Chemistry (AM1, PM6, DFTB, xTB)",
   "domain": "Computational Chemistry",

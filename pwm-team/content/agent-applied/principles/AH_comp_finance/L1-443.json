@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-443",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "443",
   "title": "Merton Credit Risk Structural Model",
   "domain": "Computational Finance",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Merton Credit Risk Structural Model: Merton model: recover firm asset value V and asset volatility sigma_V from equity market cap and equity volatility. The forward operator produces the measurement through a 3-node primitive DAG (M.merton.structural…); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=5 with effective condition number kappa_eff~80; debt_complexity_multiple_tranches, default_boundary_uncertainty set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "Merton Credit Risk Structural Model: Merton model: recover firm asset value V and asset volatility sigma_V from equity market cap and equity volatility. The forward operator produces the measurement through a 3-node primitive DAG (M.merton.structural\u2026); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=5 with effective condition number kappa_eff~80; debt_complexity_multiple_tranches, default_boundary_uncertainty set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "E = V*N(d1) - D*e^{-rT}*N(d2) (equity=call on assets); sigma_E = (V/E)*N(d1)*sigma_V",
     "world_state_x": "firm asset value V and asset volatility sigma_V",
     "observation_y": "equity market cap E and equity volatility sigma_E from options",

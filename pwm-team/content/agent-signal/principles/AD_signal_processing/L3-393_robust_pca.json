@@ -1,6 +1,7 @@
 {
   "artifact_id": "L3-393",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-393",
   "parent_l1": "L1-393",
   "title": "Robust PCA Benchmark Suite (video background + face + synthetic)",
@@ -156,7 +157,7 @@
       }
     ]
   },
-  "hardness_rule_check": "SATISFIED — DeepRPCA fails at T4_dense_outliers (s_fraction=0.5, column_corruption=0.3): 0.07 > epsilon_fn ~ 0.05.",
+  "hardness_rule_check": "SATISFIED \u2014 DeepRPCA fails at T4_dense_outliers (s_fraction=0.5, column_corruption=0.3): 0.07 > epsilon_fn ~ 0.05.",
   "ipfs_cid": null,
   "ground_truth_cid": null,
   "display_slug": "robust-pca"

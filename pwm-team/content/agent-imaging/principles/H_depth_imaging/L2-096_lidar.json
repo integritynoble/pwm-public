@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-096",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-096",
   "title": "Scanning LiDAR Mismatch-Only Spec",
   "spec_type": "mismatch_only",
@@ -151,7 +152,7 @@
     "proximity_threshold": 0.1
   },
   "d_spec": 0.56,
-  "d_spec_notes": "Distance from AMCW-ToF spec (L2-095) ~ 0.56 (Related) — shared carrier=photon, integration=temporal, solution=depth, but sensing_mechanism differs (pulsed_dtof_scan vs. amcw_modulated_illumination) and primitives are distinct.",
+  "d_spec_notes": "Distance from AMCW-ToF spec (L2-095) ~ 0.56 (Related) \u2014 shared carrier=photon, integration=temporal, solution=depth, but sensing_mechanism differs (pulsed_dtof_scan vs. amcw_modulated_illumination) and primitives are distinct.",
   "s1_s4_gates": [
     "PASS",
     "PASS",

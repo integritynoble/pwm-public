@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-020",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "020",
-  "title": "Lattice Light Sheet Microscopy (LLSM) — Bessel-lattice 3D imaging",
+  "title": "Lattice Light Sheet Microscopy (LLSM) \u2014 Bessel-lattice 3D imaging",
   "domain": "Microscopy",
   "sub_domain": "High-resolution 3D live imaging via optical lattice",
   "source_file": "A_microscopy/020_lattice_lightsheet.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical domain literature for this specific principle.",
   "E": {
-    "description": "Lattice Light Sheet Microscopy (LLSM) — Bessel-lattice 3D imaging: lattice illumination produces the measurement through a 4-node primitive DAG L.illumination.lattice -> K.psf.detection -> S.scan.axial -> int.temporal, with axial/z-step integration and Poisson signal noise + Gaussian read noise. Recovery is posed as a linear inverse problem that inverts the forward operator to estimate the scene-side 3D intensity. Difficulty tier delta=5 with effective condition number kappa_eff~18; calibration-level mismatch (lattice_registration, dithering_phase_error, sample_induced_aberration) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
+    "description": "Lattice Light Sheet Microscopy (LLSM) \u2014 Bessel-lattice 3D imaging: lattice illumination produces the measurement through a 4-node primitive DAG L.illumination.lattice -> K.psf.detection -> S.scan.axial -> int.temporal, with axial/z-step integration and Poisson signal noise + Gaussian read noise. Recovery is posed as a linear inverse problem that inverts the forward operator to estimate the scene-side 3D intensity. Difficulty tier delta=5 with effective condition number kappa_eff~18; calibration-level mismatch (lattice_registration, dithering_phase_error, sample_induced_aberration) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
     "forward_model": "y(r,z) = integral [lattice(r,z - z_k) * f(r,z) * PSF_det(r,z)] + n",
     "world_state_x": "Scene parameter of interest (density / complex field / lifetime / normals depending on spec).",
     "observation_y": "Measured intensity or photon counts from the imaging system.",

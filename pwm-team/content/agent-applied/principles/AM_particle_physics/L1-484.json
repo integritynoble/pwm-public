@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-484",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "484",
   "title": "Charged Particle Track Reconstruction",
   "domain": "Particle Physics",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Charged Particle Track Reconstruction: Charged particle tracking: reconstruct helical track parameters from silicon detector hits using Kalman filter. The forward operator produces the measurement through a 3-node primitive DAG (S.kalman.track_filter…); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=5 with effective condition number kappa_eff~200; alignment_uncertainty_um, B_field_map_error_T set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "Charged Particle Track Reconstruction: Charged particle tracking: reconstruct helical track parameters from silicon detector hits using Kalman filter. The forward operator produces the measurement through a 3-node primitive DAG (S.kalman.track_filter\u2026); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=5 with effective condition number kappa_eff~200; alignment_uncertainty_um, B_field_map_error_T set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "x_pred_k = F_k * x_{k-1} + noise; H_k * x_k = m_k (measurement); helix in B-field",
     "world_state_x": "track state vector (d0, phi0, pt, dz0, tan_lambda) at perigee",
     "observation_y": "silicon strip/pixel hit positions {u_k, v_k} at N_layers layers",

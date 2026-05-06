@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-048",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "048",
   "title": "Fiber-Optic Endoscopy",
   "domain": "Medical Imaging",

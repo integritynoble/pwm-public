@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-227",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "227",
-  "title": "Poroelasticity — Biot coupled solid/fluid",
+  "title": "Poroelasticity \u2014 Biot coupled solid/fluid",
   "domain": "Structural Mechanics",
   "sub_domain": "Biot consolidation theory",
   "source_file": "T_structural_mechanics/227_poroelasticity.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Poroelasticity — Biot coupled solid/fluid forward model.",
+    "description": "Poroelasticity \u2014 Biot coupled solid/fluid forward model.",
     "forward_model": "div sigma' - alpha grad p = 0; (1/M) dp/dt + alpha div(du/dt) - div(k/mu grad p) = 0",
     "world_state_x": "displacement u(x,t) + pore pressure p(x,t)",
     "observation_y": "piezometer + DIC",

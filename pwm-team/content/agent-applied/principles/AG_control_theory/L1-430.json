@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-430",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "430",
   "title": "Particle Filter (Sequential Monte Carlo)",
   "domain": "Control Theory",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Particle Filter (Sequential Monte Carlo): Particle filter: SMC approximation of arbitrary posterior distribution for nonlinear non-Gaussian state estimation. The forward operator produces the measurement through a 3-node primitive DAG (S.pf.importance_sampling…); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=5 with effective condition number kappa_eff~200; particle_impoverishment, weight_degeneracy_high_dim set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "Particle Filter (Sequential Monte Carlo): Particle filter: SMC approximation of arbitrary posterior distribution for nonlinear non-Gaussian state estimation. The forward operator produces the measurement through a 3-node primitive DAG (S.pf.importance_sampling\u2026); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=5 with effective condition number kappa_eff~200; particle_impoverishment, weight_degeneracy_high_dim set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "p(x_k | y_{1:k}) prop p(y_k | x_k) * p(x_k | x_{k-1}); approximated by N_p particles {x_k ** i, w_k ** i}",
     "world_state_x": "posterior distribution p(x_k | y_{1:k}) represented by weighted particles",
     "observation_y": "sequential observations {y_k} for nonlinear/non-Gaussian system",

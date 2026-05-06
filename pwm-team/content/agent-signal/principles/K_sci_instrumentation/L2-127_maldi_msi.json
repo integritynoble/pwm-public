@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-127",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-127",
   "principle_ref": "sha256:<L1-127_principle_hash>",
   "title": "MALDI-MSI Mapping Spec (tissue lipid family)",
@@ -135,7 +136,7 @@
     "proximity_threshold": 0.1
   },
   "d_spec": 0.3,
-  "d_spec_notes": "Distance from 144 DESI ~= 0.30 (Similar — both MSI, different ionization). Distance from 143 SIMS ~= 0.35 (Related — vacuum vs. atmospheric).",
+  "d_spec_notes": "Distance from 144 DESI ~= 0.30 (Similar \u2014 both MSI, different ionization). Distance from 143 SIMS ~= 0.35 (Related \u2014 vacuum vs. atmospheric).",
   "s1_s4_gates": [
     "PASS",
     "PASS",

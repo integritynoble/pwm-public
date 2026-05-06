@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-324",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "324",
   "title": "Lindblad Master Equation (Open Quantum Systems)",
   "domain": "Quantum Mechanics",

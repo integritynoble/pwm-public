@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-114",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-114",
   "title": "Eddy-Current Testing (near-surface metallic defect detection) Mismatch-Only Spec",
   "spec_type": "mismatch_only",

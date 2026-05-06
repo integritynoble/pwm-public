@@ -1,6 +1,7 @@
 {
   "artifact_id": "L3-134",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-134",
   "parent_l1": "L1-134",
   "title": "XRF Tomography Benchmark Suite",
@@ -161,7 +162,7 @@
       }
     ]
   },
-  "hardness_rule_check": "SATISFIED — XRF-Net fails at T4_severe (self_abs=0.8, live_time=0.1): 0.4 > epsilon_fn ~ 0.25.",
+  "hardness_rule_check": "SATISFIED \u2014 XRF-Net fails at T4_severe (self_abs=0.8, live_time=0.1): 0.4 > epsilon_fn ~ 0.25.",
   "ipfs_cid": null,
   "ground_truth_cid": null,
   "display_slug": "xrf-tomography"

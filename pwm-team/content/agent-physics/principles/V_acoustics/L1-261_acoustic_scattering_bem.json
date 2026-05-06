@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-261",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "261",
-  "title": "Acoustic Scattering — boundary element method (BEM)",
+  "title": "Acoustic Scattering \u2014 boundary element method (BEM)",
   "domain": "Acoustics",
   "sub_domain": "Exterior BEM for acoustic scattering",
   "source_file": "V_acoustics/261_acoustic_scattering_bem.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Acoustic Scattering — boundary element method (BEM) forward model.",
+    "description": "Acoustic Scattering \u2014 boundary element method (BEM) forward model.",
     "forward_model": "p(x) = p_inc(x) - int_Gamma [G(x,y) dp/dn - p dG/dn] dy  (Helmholtz boundary integral)",
     "world_state_x": "complex pressure on scatterer surface Gamma + radiated far-field pattern",
     "observation_y": "far-field pressure at N_R receivers across N_F frequencies",

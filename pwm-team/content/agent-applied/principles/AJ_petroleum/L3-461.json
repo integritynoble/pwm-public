@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-461",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-461",
   "parent_l1": "L1-461",
-  "title": "Hydraulic Fracture Propagation Modeling — Benchmark Suite",
+  "title": "Hydraulic Fracture Propagation Modeling \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "SPE_hydraulic_fracture_benchmark",

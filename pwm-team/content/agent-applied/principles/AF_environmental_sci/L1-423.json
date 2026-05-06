@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-423",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "423",
   "title": "Contaminant Source Identification",
   "domain": "Environmental Science",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Contaminant Source Identification: Contaminant source identification: locate unknown pollution source and quantify emission history from sparse observations. The forward operator produces the measurement through a 3-node primitive DAG (M.transport.adjoint_source…); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=5 with effective condition number kappa_eff~500; transport_model_uncertainty, background_contamination set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "Contaminant Source Identification: Contaminant source identification: locate unknown pollution source and quantify emission history from sparse observations. The forward operator produces the measurement through a 3-node primitive DAG (M.transport.adjoint_source\u2026); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=5 with effective condition number kappa_eff~500; transport_model_uncertainty, background_contamination set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "c(x,t) = integral G(x,t; x_s, t_s) * Q(x_s, t_s) dV dt_s (Green's function convolution)",
     "world_state_x": "source location (x_s, y_s, z_s) and emission rate history Q(t_s)",
     "observation_y": "contaminant concentration measurements c_i(x_i, t_i) at N_sensors locations",

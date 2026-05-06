@@ -1,9 +1,10 @@
 {
   "artifact_id": "L2-369",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-369",
   "principle_ref": "sha256:<L1-369_principle_hash>",
-  "title": "Weak Gravitational Lensing Shear Estimation — Nominal + Mismatch Specs",
+  "title": "Weak Gravitational Lensing Shear Estimation \u2014 Nominal + Mismatch Specs",
   "spec_type": "nominal_and_mismatch",
   "six_tuple": {
     "omega": {

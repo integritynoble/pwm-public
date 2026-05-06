@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-341",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-341",
   "title": "Additive Manufacturing (Selective Laser Melting) Thermal Model Mismatch-Only Spec",
   "spec_type": "mismatch_only",

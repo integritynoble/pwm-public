@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-414",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "414",
   "title": "Gaussian Plume Atmospheric Dispersion",
   "domain": "Environmental Science",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Gaussian Plume Atmospheric Dispersion: Gaussian plume: infer point source emission rate Q and location from downwind concentration measurements. The forward operator produces the measurement through a 3-node primitive DAG (M.gaussian.plume_model…); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~25; wind_direction_uncertainty_deg, stability_class_error set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "Gaussian Plume Atmospheric Dispersion: Gaussian plume: infer point source emission rate Q and location from downwind concentration measurements. The forward operator produces the measurement through a 3-node primitive DAG (M.gaussian.plume_model\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~25; wind_direction_uncertainty_deg, stability_class_error set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "C(x,y,z) = Q/(2*pi*sigma_y*sigma_z*u) * exp(-y ** 2/(2*sigma_y ** 2)) * [exp(-(z-H) ** 2/(2*sigma_z ** 2)) + exp(-(z+H) ** 2/(2*sigma_z ** 2))]",
     "world_state_x": "source emission rate Q (g/s), source height H (m), source location (x0, y0)",
     "observation_y": "ambient concentration measurements C_i (ug/m3) at N_sensors downwind",

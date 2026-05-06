@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-429",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-429",
   "parent_l1": "L1-429",
-  "title": "Unscented Kalman Filter (UKF) — Benchmark Suite",
+  "title": "Unscented Kalman Filter (UKF) \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "bearing_only_tracking_dataset",

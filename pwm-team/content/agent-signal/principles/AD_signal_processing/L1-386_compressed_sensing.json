@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-386",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "386",
   "title": "Compressed Sensing (random-projection linear inverse)",
   "domain": "Signal Processing",

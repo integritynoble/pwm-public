@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-083",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "083",
-  "title": "3D Gaussian Splatting (3DGS) — explicit real-time rendering",
+  "title": "3D Gaussian Splatting (3DGS) \u2014 explicit real-time rendering",
   "domain": "Computational Optics",
   "sub_domain": "Explicit primitive-based 3D reconstruction",
   "source_file": "F_computational_optics/083_3d_gaussian_splatting.md",

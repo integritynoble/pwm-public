@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-522",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "522",
   "title": "Earthquake Magnitude Classification (PWDR)",
   "domain": "Geophysics",
@@ -37,9 +38,9 @@
     "threshold_continuity_proof": "Hanks-Kanamori formula Mw = (2/3) log10(M_0) - 10.7 is logarithmic continuous on M_0 > 0; categorical bins are step functions on Mw with measure-zero hyperplane boundaries at Mw = {2, 4, 5, 6, 7, 8}. Smoothed-grading globally Lipschitz with constant ~0.07 per unit M_0 uncertainty (in log10 space)."
   },
   "related_principles": [
-    "L1-278 (Earthquake Source Inversion — analytical core, physics_core_principle)",
-    "L1-273 (Full Waveform Inversion — sibling seismic forward, informational)",
-    "L1-289 (Tsunami Propagation — sibling for cascade applications, informational)"
+    "L1-278 (Earthquake Source Inversion \u2014 analytical core, physics_core_principle)",
+    "L1-273 (Full Waveform Inversion \u2014 sibling seismic forward, informational)",
+    "L1-289 (Tsunami Propagation \u2014 sibling for cascade applications, informational)"
   ],
   "E": {
     "description": "Earthquake Magnitude Classification (PWDR): wraps L1-278 Earthquake Source Inversion analytical core with deterministic magnitude-scale formulas. Stage 1 (analytical, from L1-278): recover earthquake source parameters (seismic moment M_0, focal mechanism, fault dimensions L*W, average slip D, hypocenter location, origin time) from seismograph network observations via moment-tensor inversion or finite-fault inversion. Stage 2 (deterministic threshold): apply Hanks-Kanamori formula Mw = (2/3) * log10(M_0) - 10.7 to recover moment magnitude; classify into standard bins or compute alternative scales (ML, mb, Ms). Difficulty tier delta = 5 inherited from L1-278. Mismatch parameters: station_coverage_gap, near_field_truncation, hypocenter_localization_error, velocity_model_uncertainty, instrument_response_uncertainty, magnitude_scale_saturation.",
@@ -246,7 +247,7 @@
       "advisory_label": "Distinct (parent-child PWDR pattern)",
       "rationale": "L1-278 recovers continuous source parameters (M_0, focal mechanism, fault dimensions); L1-522 wraps with magnitude-scale formula and categorical bins. Different solution_space (1D magnitude scale + bin vs continuous source-parameter ensemble); adds L.magnitude_formula and L.magnitude_threshold_classifier primitives."
     },
-    "clinical_context": "Universal use: every operational earthquake-monitoring agency globally — USGS National Earthquake Information Center, JMA Japan, EMSC Europe, GFZ Potsdam, ISC International. Earthquake early-warning systems: USGS ShakeAlert (US West Coast since 2018), JMA EEW (Japan since 2007), MyShake. Tsunami warning centers (Pacific Tsunami Warning Center, JMA, ATWC) trigger on Mw thresholds. Reference solvers: SCARDEC (Vallee), W-phase (Duputel-Rivera-Kanamori), GMT for deconvolution. PWDR formulation gives physics-grounded explainability: magnitude is derived from explicit seismic moment recovery, not black-box waveform classifier."
+    "clinical_context": "Universal use: every operational earthquake-monitoring agency globally \u2014 USGS National Earthquake Information Center, JMA Japan, EMSC Europe, GFZ Potsdam, ISC International. Earthquake early-warning systems: USGS ShakeAlert (US West Coast since 2018), JMA EEW (Japan since 2007), MyShake. Tsunami warning centers (Pacific Tsunami Warning Center, JMA, ATWC) trigger on Mw thresholds. Reference solvers: SCARDEC (Vallee), W-phase (Duputel-Rivera-Kanamori), GMT for deconvolution. PWDR formulation gives physics-grounded explainability: magnitude is derived from explicit seismic moment recovery, not black-box waveform classifier."
   },
   "display_slug": "earthquake-magnitude"
 }

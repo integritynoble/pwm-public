@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-377",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-377",
   "parent_l1": "L1-377",
-  "title": "Galaxy SED Fitting — Benchmark Suite",
+  "title": "Galaxy SED Fitting \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "3DHST_CANDELS_photometry",

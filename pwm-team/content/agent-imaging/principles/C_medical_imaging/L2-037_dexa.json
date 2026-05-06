@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-037",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-037",
   "title": "Dual-Energy X-ray Absorptiometry (DEXA) Mismatch-Only Spec",
   "spec_type": "mismatch_only",

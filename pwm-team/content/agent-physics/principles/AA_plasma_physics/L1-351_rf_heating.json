@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-351",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "351",
-  "title": "RF Heating — ICRF / LH / ECH wave absorption",
+  "title": "RF Heating \u2014 ICRF / LH / ECH wave absorption",
   "domain": "Plasma Physics",
   "sub_domain": "Full-wave RF heating of magnetized plasmas",
   "source_file": "AA_plasma_physics/351_rf_heating.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "RF Heating — ICRF / LH / ECH wave absorption forward model.",
+    "description": "RF Heating \u2014 ICRF / LH / ECH wave absorption forward model.",
     "forward_model": "curl curl E - (omega^2/c^2) K . E = i mu_0 omega J_ant; cold/hot dielectric K",
     "world_state_x": "RF power deposition profile P_rf(rho) per species",
     "observation_y": "antenna S-parameters + fast-ion D-alpha + bolometers",

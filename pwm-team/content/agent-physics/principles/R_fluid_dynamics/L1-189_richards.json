@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-189",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "189",
-  "title": "Richards Equation — unsaturated variably-saturated flow",
+  "title": "Richards Equation \u2014 unsaturated variably-saturated flow",
   "domain": "Fluid Dynamics",
   "sub_domain": "Richards eqn for unsaturated flow",
   "source_file": "R_fluid_dynamics/189_richards.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Richards Equation — unsaturated variably-saturated flow forward model.",
+    "description": "Richards Equation \u2014 unsaturated variably-saturated flow forward model.",
     "forward_model": "d theta/dt = div(K(h) * grad(h + z)); h = suction head, theta(h) from van Genuchten",
     "world_state_x": "water content theta(x,t) or suction h(x,t) in unsaturated soil",
     "observation_y": "TDR + tensiometers",

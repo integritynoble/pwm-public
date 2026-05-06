@@ -1,9 +1,10 @@
 {
   "artifact_id": "L2-439",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-439",
   "principle_ref": "sha256:<L1-439_principle_hash>",
-  "title": "Heston Stochastic Volatility Calibration — Nominal + Mismatch Specs",
+  "title": "Heston Stochastic Volatility Calibration \u2014 Nominal + Mismatch Specs",
   "spec_type": "nominal_and_mismatch",
   "six_tuple": {
     "omega": {

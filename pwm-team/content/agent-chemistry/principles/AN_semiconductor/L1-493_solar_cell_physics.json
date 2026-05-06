@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-493",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "493",
   "title": "Solar Cell Device Physics (Shockley-Queisser + drift-diffusion)",
   "domain": "Semiconductor Physics",

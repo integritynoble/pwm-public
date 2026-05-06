@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-390",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "390",
   "title": "Phase Unwrapping (2D modulo-2pi inversion)",
   "domain": "Signal Processing",

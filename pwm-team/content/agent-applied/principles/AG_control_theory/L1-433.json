@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-433",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "433",
   "title": "Model Predictive Control (MPC/NMPC)",
   "domain": "Control Theory",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Model Predictive Control (MPC/NMPC): MPC/NMPC: solve finite-horizon constrained optimization at each time step, apply first control action. The forward operator produces the measurement through a 3-node primitive DAG (M.mpc.prediction_model…); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=5 with effective condition number kappa_eff~500; model_plant_mismatch, disturbance_unforeseen set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "Model Predictive Control (MPC/NMPC): MPC/NMPC: solve finite-horizon constrained optimization at each time step, apply first control action. The forward operator produces the measurement through a 3-node primitive DAG (M.mpc.prediction_model\u2026); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=5 with effective condition number kappa_eff~500; model_plant_mismatch, disturbance_unforeseen set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "min_{u} sum_{k=0}^{N} l(x_k, u_k) + V_f(x_N) s.t. x_{k+1}=f(x_k,u_k), u_min<=u<=u_max, x in X",
     "world_state_x": "optimal control sequence U* = {u_0*, ..., u_{N-1}*} for prediction horizon N",
     "observation_y": "current state x(t) measurement (or estimate), disturbance preview",

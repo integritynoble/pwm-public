@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-125",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-125",
   "principle_ref": "sha256:<L1-125_principle_hash>",
   "title": "X-ray Crystallography SAD-Phasing Spec",
@@ -123,7 +124,7 @@
     "proximity_threshold": 0.1
   },
   "d_spec": 0.55,
-  "d_spec_notes": "Unique — X-ray crystallography is distinct from other spectroscopies (d > 0.50). Distance from XFEL-serial spec ~= 0.30 (Similar, different dataset acquisition).",
+  "d_spec_notes": "Unique \u2014 X-ray crystallography is distinct from other spectroscopies (d > 0.50). Distance from XFEL-serial spec ~= 0.30 (Similar, different dataset acquisition).",
   "s1_s4_gates": [
     "PASS",
     "PASS",
@@ -134,7 +135,7 @@
     "S1": "Reciprocal-lattice dim 3 per reflection; real-space rho at grid.",
     "S2": "Phase problem ill-posed without constraint; SAD/MAD / MR adds unique info.",
     "S3": "Direct methods probabilistic relations converge with extinction; refinement LS.",
-    "S4": "epsilon_fn defined; AlphaFoldMR fails at twinning=0.5 or 4 Å (hardness)."
+    "S4": "epsilon_fn defined; AlphaFoldMR fails at twinning=0.5 or 4 \u00c5 (hardness)."
   },
   "ipfs_cid": null,
   "display_slug": "xray-crystallography"

@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-459",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-459",
   "parent_l1": "L1-459",
-  "title": "Compositional Reservoir Simulation — Benchmark Suite",
+  "title": "Compositional Reservoir Simulation \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "SPE5_compositional_benchmark",

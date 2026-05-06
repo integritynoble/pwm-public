@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-296",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "296",
   "title": "Post-Hartree-Fock Correlated Methods (MP2, CCSD, CI)",
   "domain": "Computational Chemistry",

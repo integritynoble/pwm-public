@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-191",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "191",
-  "title": "Convection-Diffusion-Reaction — transport with source terms",
+  "title": "Convection-Diffusion-Reaction \u2014 transport with source terms",
   "domain": "Fluid Dynamics",
   "sub_domain": "CDR equation for reactive scalar",
   "source_file": "R_fluid_dynamics/191_convection_diffusion_reaction.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Convection-Diffusion-Reaction — transport with source terms forward model.",
+    "description": "Convection-Diffusion-Reaction \u2014 transport with source terms forward model.",
     "forward_model": "dC/dt + u.grad C = D Laplacian C + R(C, T); R from Arrhenius / mass action",
     "world_state_x": "reactive species concentration C(x,t)",
     "observation_y": "concentration probes + spectroscopy",

@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-321",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "321",
   "title": "Quantum Monte Carlo (VMC + DMC)",
   "domain": "Quantum Mechanics",

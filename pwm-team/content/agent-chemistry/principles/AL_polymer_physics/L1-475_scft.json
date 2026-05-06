@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-475",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "475",
   "title": "Self-Consistent Field Theory (SCFT)",
   "domain": "Polymer Physics",
@@ -45,7 +46,7 @@
     "stability": "conditional",
     "condition_number_kappa": 1200,
     "condition_number_effective": 80,
-    "regime": "Multiple local minima (lamellae, gyroid, hexagonal) → non-unique inversion; phase diagram navigation requires morphology seeding."
+    "regime": "Multiple local minima (lamellae, gyroid, hexagonal) \u2192 non-unique inversion; phase diagram navigation requires morphology seeding."
   },
   "C": {
     "solver_class": "Anderson-mixing SCFT on Fourier grid; morphology-conditioned Monte Carlo",

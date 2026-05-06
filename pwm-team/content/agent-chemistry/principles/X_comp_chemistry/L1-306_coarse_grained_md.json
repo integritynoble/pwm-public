@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-306",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "306",
   "title": "Coarse-Grained Molecular Dynamics (MARTINI, Dry-MARTINI)",
   "domain": "Computational Chemistry",

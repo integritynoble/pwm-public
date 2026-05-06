@@ -1,12 +1,13 @@
 {
   "artifact_id": "L1-524",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "524",
   "title": "Stroke Ischemic Core / Penumbra Classification from CT-Perfusion (PWDR)",
   "domain": "Medical Imaging",
   "sub_domain": "Cerebral hemodynamics recovery from dynamic CT-perfusion with mismatch-based stroke triage readout",
   "source_file": "C_medical_imaging/524_stroke_ctp_pwdr.md",
-  "source_data_quality_note": "v2 physical_with_discrete_readout (PWDR) genesis Principle. Wraps L1-029 CT (existing in v1 genesis) with deterministic CT-perfusion threshold rules (CBV / CBF / Tmax) per RAPID / Olea Sphere / Siemens Syngo.via clinical-validation cohorts to assign stroke triage labels {no_lesion, ischemic_core, penumbra_at_risk, large_vessel_occlusion_candidate}. Universal in acute stroke imaging (DAWN, DEFUSE-3 trial criteria) — every Level-1 stroke center performs CTP-based mechanical thrombectomy triage. UTSW Stroke Center Level-1 designation.",
+  "source_data_quality_note": "v2 physical_with_discrete_readout (PWDR) genesis Principle. Wraps L1-029 CT (existing in v1 genesis) with deterministic CT-perfusion threshold rules (CBV / CBF / Tmax) per RAPID / Olea Sphere / Siemens Syngo.via clinical-validation cohorts to assign stroke triage labels {no_lesion, ischemic_core, penumbra_at_risk, large_vessel_occlusion_candidate}. Universal in acute stroke imaging (DAWN, DEFUSE-3 trial criteria) \u2014 every Level-1 stroke center performs CTP-based mechanical thrombectomy triage. UTSW Stroke Center Level-1 designation.",
   "gate_class": "physical_with_discrete_readout",
   "gate_substitutions": {
     "kappa_substitute": null,
@@ -33,9 +34,9 @@
     "threshold_continuity_proof": "CTP thresholds are step functions on continuous hemodynamic parameter values (rCBF, CBV, Tmax); per-class boundaries form measure-zero hyperplanes. Volume aggregation is Lipschitz (sum of indicator-thresholded continuous quantities). Smoothed-classification globally Lipschitz with constant ~0.06 per percentage-point of perfusion-parameter error."
   },
   "related_principles": [
-    "L1-029 (CT — projection / reconstruction analytical core, physics_core_principle)",
-    "L1-038 (CBCT — sibling cone-beam CT, informational)",
-    "L1-039 (X-ray angio — sibling vascular-imaging modality, informational)"
+    "L1-029 (CT \u2014 projection / reconstruction analytical core, physics_core_principle)",
+    "L1-038 (CBCT \u2014 sibling cone-beam CT, informational)",
+    "L1-039 (X-ray angio \u2014 sibling vascular-imaging modality, informational)"
   ],
   "E": {
     "description": "Stroke Ischemic Core / Penumbra Classification (PWDR): wraps L1-029 CT analytical core extended for dynamic perfusion imaging with established CTP threshold rules. Stage 1 (analytical, from L1-029 + dynamic deconvolution): from time-series CTP acquisition (typically 60-90 frames over 50-70 seconds following IV iodinated contrast bolus), recover voxel-resolved hemodynamic parameter maps via SVD-based deconvolution against arterial input function: CBF (cerebral blood flow), CBV (cerebral blood volume), MTT (mean transit time), Tmax (time to maximum residue function). Stage 2 (deterministic threshold): apply RAPID / Olea / Syngo.via thresholds to identify ischemic core (rCBF<0.30 or CBV<2) and penumbra (Tmax>6s); compute volumes; classify into mechanical thrombectomy triage. Difficulty tier delta = 5. Mismatch parameters: AIF_selection_uncertainty, motion_during_acquisition, partial_volume_at_arteries, contrast_bolus_timing, deconvolution_regularization, threshold_calibration_vendor_difference.",
@@ -253,7 +254,7 @@
       "advisory_label": "Distinct (parent-child PWDR pattern with temporal extension)",
       "rationale": "L1-029 CT recovers static 3D attenuation; L1-524 extends to 4D dynamic CTP with deconvolution and adds stroke-triage threshold rules. Different solution_space (1D triage label + per-voxel core/penumbra map vs 3D static attenuation); adds L.dynamic_reconstruction, L.deconvolution_aif, L.cbf_cbv_mtt_tmax, L.ctp_threshold_classifier primitives plus n_c = 2 (vs L1-029's n_c = 0)."
     },
-    "clinical_context": "Universal in acute stroke care at every Level-1 stroke center globally. Mechanical thrombectomy is the standard of care for large-vessel occlusion (LVO) ischemic stroke; CTP-based triage extends the treatment window to 6-24 hours per DAWN/DEFUSE-3 trial criteria. UTSW Stroke Center holds Level-1 designation. Commercial systems: RAPID (iSchemaView, FDA-cleared), Olea Sphere, Siemens Syngo.via, GE CT Perfusion 4D, Brainomix e-Stroke — all are PWDR-shaped systems. PWDR formulation gives physics-grounded explainability: triage decisions derive from explicit perfusion-parameter thresholds tied to clinical-trial validation cohorts."
+    "clinical_context": "Universal in acute stroke care at every Level-1 stroke center globally. Mechanical thrombectomy is the standard of care for large-vessel occlusion (LVO) ischemic stroke; CTP-based triage extends the treatment window to 6-24 hours per DAWN/DEFUSE-3 trial criteria. UTSW Stroke Center holds Level-1 designation. Commercial systems: RAPID (iSchemaView, FDA-cleared), Olea Sphere, Siemens Syngo.via, GE CT Perfusion 4D, Brainomix e-Stroke \u2014 all are PWDR-shaped systems. PWDR formulation gives physics-grounded explainability: triage decisions derive from explicit perfusion-parameter thresholds tied to clinical-trial validation cohorts."
   },
   "display_slug": "stroke-ctp"
 }

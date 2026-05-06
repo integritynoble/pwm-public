@@ -1,6 +1,7 @@
 {
   "artifact_id": "L3-026",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-026",
   "parent_l1": "L1-026",
   "title": "Single-Pixel Imaging Mismatch-Only Benchmark Suite",
@@ -159,7 +160,7 @@
       }
     ]
   },
-  "hardness_rule_check": "SATISFIED — ISTA-Net+ fails at T4_blind (18.8 dB < 18.5 OK at tier epsilon, but fails the full P-bench curve in S4 stratum).",
+  "hardness_rule_check": "SATISFIED \u2014 ISTA-Net+ fails at T4_blind (18.8 dB < 18.5 OK at tier epsilon, but fails the full P-bench curve in S4 stratum).",
   "ipfs_cid": null,
   "ground_truth_cid": null,
   "display_slug": "single-pixel"

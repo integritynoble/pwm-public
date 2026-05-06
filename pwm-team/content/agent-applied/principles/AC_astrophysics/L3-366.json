@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-366",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-366",
   "parent_l1": "L1-366",
-  "title": "CMB Power Spectrum Parameter Estimation — Benchmark Suite",
+  "title": "CMB Power Spectrum Parameter Estimation \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "Planck_2018_CMB_power_spectra",

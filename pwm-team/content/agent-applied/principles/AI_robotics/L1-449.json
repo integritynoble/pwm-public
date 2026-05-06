@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-449",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "449",
   "title": "Inverse Dynamics",
   "domain": "Robotics",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Inverse Dynamics: Inverse dynamics: compute joint torques required to achieve desired trajectory; used for computed torque control and parameter identification. The forward operator produces the measurement through a 3-node primitive DAG (M.rnea.recursive_newton_euler…); recovery is posed as a linear_inverse problem. Difficulty tier delta=3 with effective condition number kappa_eff~50; acceleration_estimation_noise, friction_unmodeled_dynamics set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "Inverse Dynamics: Inverse dynamics: compute joint torques required to achieve desired trajectory; used for computed torque control and parameter identification. The forward operator produces the measurement through a 3-node primitive DAG (M.rnea.recursive_newton_euler\u2026); recovery is posed as a linear_inverse problem. Difficulty tier delta=3 with effective condition number kappa_eff~50; acceleration_estimation_noise, friction_unmodeled_dynamics set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "tau = M(q)*q_ddot + C(q,q_dot)*q_dot + g(q) = Y(q,q_dot,q_ddot) * theta_dyn (linear in inertial params)",
     "world_state_x": "joint torques tau(t) and/or inertial parameters theta_dyn",
     "observation_y": "trajectory {q(t), q_dot(t), q_ddot(t)} and measured torques tau_meas",

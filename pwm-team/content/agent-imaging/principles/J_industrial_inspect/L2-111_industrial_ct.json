@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-111",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-111",
   "title": "Industrial Computed Tomography (high-res x-ray CT for NDT) Mismatch-Only Spec",
   "spec_type": "mismatch_only",

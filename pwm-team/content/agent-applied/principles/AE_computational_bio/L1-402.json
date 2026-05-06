@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-402",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "402",
   "title": "Pharmacokinetics Compartment Model",
   "domain": "Computational Biology",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Pharmacokinetics Compartment Model: PK model fitting: estimate clearance CL, volume V, and absorption k_a from plasma concentration-time data. The forward operator produces the measurement through a 3-node primitive DAG (M.ode.pk_compartments…); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~50; inter_individual_variability, protein_binding_uncertainty set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "Pharmacokinetics Compartment Model: PK model fitting: estimate clearance CL, volume V, and absorption k_a from plasma concentration-time data. The forward operator produces the measurement through a 3-node primitive DAG (M.ode.pk_compartments\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~50; inter_individual_variability, protein_binding_uncertainty set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "dA_1/dt = -k_10*A_1 - k_12*A_1 + k_21*A_2 + F*Dose*k_a*e^{-k_a*t}; C(t) = A_1/V_1",
     "world_state_x": "PK parameters (CL, V_1, k_12, k_21, k_a, F) in 2-compartment model",
     "observation_y": "plasma concentration C(t_i) at N_samples sampling time points",

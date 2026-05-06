@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-035",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "035",
   "title": "Fluoroscopy (real-time X-ray)",
   "domain": "Medical Imaging",

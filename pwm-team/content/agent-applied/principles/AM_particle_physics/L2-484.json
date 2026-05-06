@@ -1,9 +1,10 @@
 {
   "artifact_id": "L2-484",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-484",
   "principle_ref": "sha256:<L1-484_principle_hash>",
-  "title": "Charged Particle Track Reconstruction — Nominal + Mismatch Specs",
+  "title": "Charged Particle Track Reconstruction \u2014 Nominal + Mismatch Specs",
   "spec_type": "nominal_and_mismatch",
   "six_tuple": {
     "omega": {

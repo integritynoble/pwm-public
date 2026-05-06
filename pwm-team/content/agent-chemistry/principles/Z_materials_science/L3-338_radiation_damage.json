@@ -1,6 +1,7 @@
 {
   "artifact_id": "L3-338",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-338",
   "parent_l1": "L1-338",
   "title": "Radiation Damage Cascade Dynamics Benchmark Suite",
@@ -223,7 +224,7 @@
       }
     ]
   },
-  "hardness_rule_check": "SATISFIED — top baseline fails epsilon_fn at T4_blind Omega corner.",
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails epsilon_fn at T4_blind Omega corner.",
   "anti_overfitting_mechanisms": {
     "M1_random_instantiation": "seeded by benchmark hash; non-repeatable holdout",
     "M2_convergence_scoring": "verifies declared convergence rate across Omega",

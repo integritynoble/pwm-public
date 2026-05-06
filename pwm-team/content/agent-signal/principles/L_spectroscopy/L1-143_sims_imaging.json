@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-143",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "143",
-  "title": "SIMS — Secondary-Ion Mass Spectrometry Imaging",
+  "title": "SIMS \u2014 Secondary-Ion Mass Spectrometry Imaging",
   "domain": "Spectroscopy",
   "sub_domain": "Mass-resolved ion imaging of surfaces",
   "source_file": "L_spectroscopy/143_sims_imaging.md",

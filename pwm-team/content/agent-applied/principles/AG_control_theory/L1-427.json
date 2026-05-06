@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-427",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "427",
   "title": "Kalman Filter State Estimation",
   "domain": "Control Theory",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Kalman Filter State Estimation: Kalman filter: optimal linear estimator for Gaussian linear dynamics; minimizes mean squared error of state estimate. The forward operator produces the measurement through a 3-node primitive DAG (S.kalman.predict_update…); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~20; Q_R_mismatch, model_uncertainty set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "Kalman Filter State Estimation: Kalman filter: optimal linear estimator for Gaussian linear dynamics; minimizes mean squared error of state estimate. The forward operator produces the measurement through a 3-node primitive DAG (S.kalman.predict_update\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~20; Q_R_mismatch, model_uncertainty set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "x_{k+1} = A*x_k + B*u_k + w_k, w~N(0,Q); y_k = C*x_k + v_k, v~N(0,R)",
     "world_state_x": "posterior state estimate x_hat_k|k and covariance P_k|k",
     "observation_y": "measurement sequence {y_k} for k=1..N",

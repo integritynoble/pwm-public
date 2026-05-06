@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-387",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "387",
   "title": "Direction-of-Arrival Estimation (narrowband array processing)",
   "domain": "Signal Processing",

@@ -1,12 +1,13 @@
 {
   "artifact_id": "L1-520",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "520",
   "title": "RNA-seq Cell-Type Classification (PWDR)",
   "domain": "Computational Biology",
   "sub_domain": "Single-cell / bulk RNA-seq transcript quantification with marker-gene-panel cell-type categorical readout",
   "source_file": "AE_computational_bio/520_rnaseq_celltype_pwdr.md",
-  "source_data_quality_note": "v2 physical_with_discrete_readout (PWDR) genesis Principle. Wraps L1-413 HMM Sequence Alignment (existing in v1 genesis, sibling computational-biology core; note imperfect fit because RNA-seq quantification is more accurately a Bayesian / EM transcript-abundance recovery — a future dedicated RNA-seq quantification analytical core could be authored). Threshold function applies canonical marker-gene-panel rules (CellMarker, PanglaoDB) to assign cell-type labels. Universal in single-cell biology, immunology, oncology, developmental biology. UTSW Children's Medical Center Research Institute and Simmons Cancer Center single-cell programs.",
+  "source_data_quality_note": "v2 physical_with_discrete_readout (PWDR) genesis Principle. Wraps L1-413 HMM Sequence Alignment (existing in v1 genesis, sibling computational-biology core; note imperfect fit because RNA-seq quantification is more accurately a Bayesian / EM transcript-abundance recovery \u2014 a future dedicated RNA-seq quantification analytical core could be authored). Threshold function applies canonical marker-gene-panel rules (CellMarker, PanglaoDB) to assign cell-type labels. Universal in single-cell biology, immunology, oncology, developmental biology. UTSW Children's Medical Center Research Institute and Simmons Cancer Center single-cell programs.",
   "gate_class": "physical_with_discrete_readout",
   "gate_substitutions": {
     "kappa_substitute": null,
@@ -59,9 +60,9 @@
     "threshold_continuity_proof": "Marker-gene panel scoring is a sum of indicator functions on continuous-valued expression z-scores; per-class boundaries form measure-zero hyperplanes in expression space. Smoothed-classification (softmax with finite temperature) is globally Lipschitz with constant ~0.05 per z-score unit."
   },
   "related_principles": [
-    "L1-413 (HMM Sequence Alignment — sibling computational-biology core, physics_core_principle; note imperfect fit, RNA-seq quantification is a Bayesian / EM transcript-abundance problem)",
-    "L1-403 (PBPK — sibling computational biology, informational)",
-    "L1-412 (protein folding — sibling computational biology, informational)"
+    "L1-413 (HMM Sequence Alignment \u2014 sibling computational-biology core, physics_core_principle; note imperfect fit, RNA-seq quantification is a Bayesian / EM transcript-abundance problem)",
+    "L1-403 (PBPK \u2014 sibling computational biology, informational)",
+    "L1-412 (protein folding \u2014 sibling computational biology, informational)"
   ],
   "E": {
     "description": "RNA-seq Cell-Type Classification (PWDR): wraps RNA-seq alignment + transcript quantification core with canonical marker-gene-panel rules. Stage 1 (analytical, sibling to L1-413): align reads to transcriptome (HISAT2, STAR, kallisto, Salmon); estimate per-transcript abundance via EM (RSEM, Kallisto pseudoalignment) or Bayesian inference (Salmon variational); normalize to counts-per-million or apply scTransform/sctransform Pearson residuals. Stage 2 (deterministic threshold): per-cell argmax over marker-panel scores per CellMarker / PanglaoDB / Tabula Sapiens taxonomies. Difficulty tier delta = 5. Mismatch parameters: dropout_rate, batch_effect, doublet_contamination, ambient_rna_contamination, marker_panel_coverage_uncertainty, taxonomy_disagreement.",

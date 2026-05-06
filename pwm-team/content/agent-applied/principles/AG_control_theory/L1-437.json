@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-437",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "437",
   "title": "Nonlinear Observer Design",
   "domain": "Control Theory",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Nonlinear Observer Design: Nonlinear observer: estimate state of nonlinear system dx/dt = f(x, u), y = h(x) using high-gain or Luenberger design. The forward operator produces the measurement through a 3-node primitive DAG (S.hgo.high_gain_observer…); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=5 with effective condition number kappa_eff~200; Lipschitz_constant_violation, output_noise_amplification set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "Nonlinear Observer Design: Nonlinear observer: estimate state of nonlinear system dx/dt = f(x, u), y = h(x) using high-gain or Luenberger design. The forward operator produces the measurement through a 3-node primitive DAG (S.hgo.high_gain_observer\u2026); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=5 with effective condition number kappa_eff~200; Lipschitz_constant_violation, output_noise_amplification set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "dx_hat/dt = f(x_hat, u) + L(y - h(x_hat)); gain L chosen for exponential error decay",
     "world_state_x": "nonlinear state estimate x_hat(t) with exponential convergence to x(t)",
     "observation_y": "output y(t) = h(x(t)) + noise from output map h",

@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-446",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "446",
   "title": "Forward Kinematics",
   "domain": "Robotics",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Forward Kinematics: Forward kinematics: compute end-effector pose from joint angles using DH parameter chain. The forward operator produces the measurement through a 3-node primitive DAG (M.dh.transformation_matrix…); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~20; DH_calibration_error, joint_flexibility set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "Forward Kinematics: Forward kinematics: compute end-effector pose from joint angles using DH parameter chain. The forward operator produces the measurement through a 3-node primitive DAG (M.dh.transformation_matrix\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~20; DH_calibration_error, joint_flexibility set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "T_0_n = prod_{i=1}^{n} T_{i-1}^i(q_i); T = Rot * Trans using DH convention",
     "world_state_x": "end-effector pose (position + orientation) in task space",
     "observation_y": "joint angles {q_i} from encoders",

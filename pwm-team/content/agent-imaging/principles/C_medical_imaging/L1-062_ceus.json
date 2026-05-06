@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-062",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "062",
   "title": "Contrast-Enhanced Ultrasound (CEUS)",
   "domain": "Medical Imaging",

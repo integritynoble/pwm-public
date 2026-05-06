@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-078",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "078",
-  "title": "Event Camera (DVS) — intensity reconstruction from asynchronous events",
+  "title": "Event Camera (DVS) \u2014 intensity reconstruction from asynchronous events",
   "domain": "Computational Photography",
   "sub_domain": "Asynchronous neuromorphic imaging",
   "source_file": "E_computational_photo/078_event_camera.md",

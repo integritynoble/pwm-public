@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-388",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "388",
   "title": "Blind Source Separation (ICA / cocktail-party problem)",
   "domain": "Signal Processing",

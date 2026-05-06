@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-528",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "528",
   "title": "ECG Arrhythmia Classification (PWDR)",
   "domain": "Signal Processing",
@@ -16,7 +17,7 @@
   "discrete_readout": {
     "threshold_function": "Per-beat: AAMI_class = step on (RR_interval, QRS_morphology_template_distance, P_wave_presence, QRS_width_ms): N (normal sinus) if RR within 60-100 bpm + normal QRS template + P-wave preceding; S (supraventricular ectopic) if RR < 80% prior + abnormal P-wave or no P-wave; V (ventricular ectopic) if QRS_width > 120 ms + abnormal QRS template + no preceding P; F (fusion) if QRS template intermediate; Q (unclassifiable) if pacemaker spikes or unreadable.",
     "lipschitz_constant": 0.05,
-    "underlying_physical_state": "ECG signal feature recovery: R-peak detection (timing), QRS morphology template distance, P-wave detection / classification, beat-to-beat RR interval — recovered from blind-source-separated ECG signal via L1-388",
+    "underlying_physical_state": "ECG signal feature recovery: R-peak detection (timing), QRS morphology template distance, P-wave detection / classification, beat-to-beat RR interval \u2014 recovered from blind-source-separated ECG signal via L1-388",
     "physics_core_principle": "L1-388",
     "label_set_AAMI": [
       "N_normal",
@@ -39,9 +40,9 @@
     "threshold_continuity_proof": "RR interval and QRS width are continuous on R-peak / QRS-onset detection; class boundaries form measure-zero hyperplanes at threshold values. Smoothed-classification globally Lipschitz with constant ~0.05 per millisecond of detection error."
   },
   "related_principles": [
-    "L1-388 (Blind Source Separation — sibling biomedical-signal-processing core, physics_core_principle; note imperfect fit, dedicated ECG-feature-recovery core would be ideal)",
-    "L1-068 (EEG — sibling neuro-electrical signal modality, informational)",
-    "L1-067 (MEG — sibling magnetic neural signal, informational)"
+    "L1-388 (Blind Source Separation \u2014 sibling biomedical-signal-processing core, physics_core_principle; note imperfect fit, dedicated ECG-feature-recovery core would be ideal)",
+    "L1-068 (EEG \u2014 sibling neuro-electrical signal modality, informational)",
+    "L1-067 (MEG \u2014 sibling magnetic neural signal, informational)"
   ],
   "E": {
     "description": "ECG Arrhythmia Classification (PWDR): wraps L1-388-style biomedical signal processing with established AAMI EC57 standard arrhythmia rules. Stage 1 (analytical, sibling to L1-388): from multi-lead or single-lead ECG, separate cardiac signal from baseline drift + powerline interference + EMG via blind source separation (ICA / NMF / wavelet); detect R-peaks via Pan-Tompkins or learned filter; extract per-beat features (RR interval, QRS morphology template, P-wave presence, QRS width, ST elevation/depression). Stage 2 (deterministic threshold): apply AAMI EC57 decision rules to classify each beat. Difficulty tier delta = 3.",
@@ -236,7 +237,7 @@
       "advisory_label": "Distinct (sibling-physics-core PWDR; future dedicated ECG core recommended)",
       "rationale": "L1-388 BSS recovers separated source signals from mixed observations. L1-528 specializes to ECG with cardiac-specific features (R-peak, QRS morphology, P-wave) and adds AAMI EC57 classification. Different solution_space (1D AAMI class per beat vs separated source signals); adds L.r_peak_detection, L.qrs_feature_extraction, L.aami_threshold_classifier primitives. d_principle ~ 0.50."
     },
-    "clinical_context": "Universal in cardiology — every ECG (clinical 12-lead, Holter, telemetry, wearable) is reviewed for arrhythmia. AAMI EC57 is the FDA-recognized testing standard for arrhythmia detection algorithms. UTSW Cardiology Department + ICU monitoring. FDA-cleared autonomous AI: Apple Watch ECG, KardiaMobile (AliveCor), Zio Patch (iRhythm) — all PWDR-shaped. Deep learning systems (Hannun et al. 2019) achieve cardiologist-level performance on Stanford / Geisinger benchmarks."
+    "clinical_context": "Universal in cardiology \u2014 every ECG (clinical 12-lead, Holter, telemetry, wearable) is reviewed for arrhythmia. AAMI EC57 is the FDA-recognized testing standard for arrhythmia detection algorithms. UTSW Cardiology Department + ICU monitoring. FDA-cleared autonomous AI: Apple Watch ECG, KardiaMobile (AliveCor), Zio Patch (iRhythm) \u2014 all PWDR-shaped. Deep learning systems (Hannun et al. 2019) achieve cardiologist-level performance on Stanford / Geisinger benchmarks."
   },
   "display_slug": "ecg-arrhythmia"
 }

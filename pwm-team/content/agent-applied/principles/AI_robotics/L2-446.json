@@ -1,9 +1,10 @@
 {
   "artifact_id": "L2-446",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-446",
   "principle_ref": "sha256:<L1-446_principle_hash>",
-  "title": "Forward Kinematics — Nominal + Mismatch Specs",
+  "title": "Forward Kinematics \u2014 Nominal + Mismatch Specs",
   "spec_type": "nominal_and_mismatch",
   "six_tuple": {
     "omega": {

@@ -1,9 +1,10 @@
 {
   "artifact_id": "L2-406",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-406",
   "principle_ref": "sha256:<L1-406_principle_hash>",
-  "title": "SEIR Epidemic with Exposed Compartment — Nominal + Mismatch Specs",
+  "title": "SEIR Epidemic with Exposed Compartment \u2014 Nominal + Mismatch Specs",
   "spec_type": "nominal_and_mismatch",
   "six_tuple": {
     "omega": {

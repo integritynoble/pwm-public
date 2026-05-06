@@ -1,6 +1,7 @@
 {
   "artifact_id": "L3-070",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-070",
   "parent_l1": "L1-070",
   "title": "Ptychography Mismatch-Only Benchmark Suite",
@@ -168,7 +169,7 @@
       }
     ]
   },
-  "hardness_rule_check": "SATISFIED — PtychoNN fails at T4_blind (20.5 dB < 19.0 epsilon - wait: 20.5 > 19.0 at tier but fails on S4_xlarge stratum of full P-bench where photon_count <= 50 and probe_position_error = 2px simultaneously).",
+  "hardness_rule_check": "SATISFIED \u2014 PtychoNN fails at T4_blind (20.5 dB < 19.0 epsilon - wait: 20.5 > 19.0 at tier but fails on S4_xlarge stratum of full P-bench where photon_count <= 50 and probe_position_error = 2px simultaneously).",
   "ipfs_cid": null,
   "ground_truth_cid": null,
   "display_slug": "ptychography"

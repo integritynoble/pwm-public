@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-165",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-165",
   "title": "Magnetic Force Microscopy (MFM) Mismatch-Only Spec",
   "spec_type": "mismatch_only",

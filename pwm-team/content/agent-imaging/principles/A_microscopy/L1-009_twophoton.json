@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-009",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "009",
   "title": "Two-Photon Microscopy (chi-3 NLO excitation)",
   "domain": "Microscopy",

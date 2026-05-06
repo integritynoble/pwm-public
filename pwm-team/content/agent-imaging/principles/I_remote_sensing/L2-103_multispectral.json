@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-103",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-103",
   "title": "Multispectral Imaging (Landsat/Sentinel-2) Mismatch-Only Spec",
   "spec_type": "mismatch_only",

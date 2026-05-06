@@ -1,9 +1,10 @@
 {
   "artifact_id": "L2-465",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-465",
   "principle_ref": "sha256:<L1-465_principle_hash>",
-  "title": "Well Productivity Index Inversion — Nominal + Mismatch Specs",
+  "title": "Well Productivity Index Inversion \u2014 Nominal + Mismatch Specs",
   "spec_type": "nominal_and_mismatch",
   "six_tuple": {
     "omega": {

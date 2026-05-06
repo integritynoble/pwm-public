@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-494",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "494",
   "title": "LED and Laser Rate Equations",
   "domain": "Semiconductor Physics",

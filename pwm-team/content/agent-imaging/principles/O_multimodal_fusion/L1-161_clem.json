@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-161",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "161",
   "title": "Correlative Light-Electron Microscopy (CLEM)",
   "domain": "Multimodal Fusion",

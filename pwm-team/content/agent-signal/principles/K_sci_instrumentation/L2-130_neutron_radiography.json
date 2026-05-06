@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-130",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-130",
   "principle_ref": "sha256:<L1-130_principle_hash>",
   "title": "Neutron Tomography Spec",

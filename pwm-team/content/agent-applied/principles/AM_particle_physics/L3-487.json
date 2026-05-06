@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-487",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-487",
   "parent_l1": "L1-487",
-  "title": "Jet Reconstruction (Anti-kT) — Benchmark Suite",
+  "title": "Jet Reconstruction (Anti-kT) \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "ATLAS_Run2_dijet_data",

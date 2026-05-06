@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-199",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "199",
-  "title": "Radiative Transfer Equation — radiative heat exchange",
+  "title": "Radiative Transfer Equation \u2014 radiative heat exchange",
   "domain": "Heat Transfer",
   "sub_domain": "RTE inversion for surface emissivity / participating media",
   "source_file": "S_heat_transfer/199_radiation_rte.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Radiative Transfer Equation — radiative heat exchange forward model.",
+    "description": "Radiative Transfer Equation \u2014 radiative heat exchange forward model.",
     "forward_model": "dI/ds = -kappa*I - sigma_s*I + kappa*I_b(T) + (sigma_s/4pi)*int_4pi I(s') Phi(s,s') dOmega'",
     "world_state_x": "spectral radiance I(x, s, lambda) field and temperature/emissivity fields",
     "observation_y": "IR spectroradiometer data at N_F wavebands and N_R view directions",

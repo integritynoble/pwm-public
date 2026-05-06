@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-394",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "394",
   "title": "Spectral Estimation (line spectrum / parametric PSD)",
   "domain": "Signal Processing",
@@ -37,7 +38,7 @@
   },
   "W": {
     "existence": true,
-    "uniqueness": "for well-separated frequencies (delta_omega > 4pi/N) — Rayleigh criterion",
+    "uniqueness": "for well-separated frequencies (delta_omega > 4pi/N) \u2014 Rayleigh criterion",
     "stability": "conditional",
     "condition_number_kappa": 500,
     "condition_number_effective": 10,

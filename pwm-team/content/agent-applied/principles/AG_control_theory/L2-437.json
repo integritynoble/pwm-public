@@ -1,9 +1,10 @@
 {
   "artifact_id": "L2-437",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-437",
   "principle_ref": "sha256:<L1-437_principle_hash>",
-  "title": "Nonlinear Observer Design — Nominal + Mismatch Specs",
+  "title": "Nonlinear Observer Design \u2014 Nominal + Mismatch Specs",
   "spec_type": "nominal_and_mismatch",
   "six_tuple": {
     "omega": {

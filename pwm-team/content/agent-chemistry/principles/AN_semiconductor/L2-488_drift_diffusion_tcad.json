@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-488",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-488",
   "title": "Drift-Diffusion Semiconductor Transport (TCAD) Mismatch-Only Spec",
   "spec_type": "mismatch_only",

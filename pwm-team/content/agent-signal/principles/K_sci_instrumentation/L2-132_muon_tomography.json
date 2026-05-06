@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-132",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-132",
   "principle_ref": "sha256:<L1-132_principle_hash>",
   "title": "Muon Tomography Spec (nuclear safeguards family)",
@@ -112,7 +113,7 @@
     "proximity_threshold": 0.1
   },
   "d_spec": 0.6,
-  "d_spec_notes": "Unique — cosmic-ray-driven carrier. Distance from 131 proton rad ~= 0.35. Distance from 130 neutron rad ~= 0.40.",
+  "d_spec_notes": "Unique \u2014 cosmic-ray-driven carrier. Distance from 131 proton rad ~= 0.35. Distance from 130 neutron rad ~= 0.40.",
   "s1_s4_gates": [
     "PASS",
     "PASS",

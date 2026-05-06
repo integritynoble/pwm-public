@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-416",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-416",
   "parent_l1": "L1-416",
-  "title": "Atmospheric Radiative Transfer Inversion — Benchmark Suite",
+  "title": "Atmospheric Radiative Transfer Inversion \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "AIRS_L1C_radiance_archive",

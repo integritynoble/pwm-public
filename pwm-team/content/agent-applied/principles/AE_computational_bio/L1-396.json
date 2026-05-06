@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-396",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "396",
   "title": "Hodgkin-Huxley Neuron Model Parameter Estimation",
   "domain": "Computational Biology",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Hodgkin-Huxley Neuron Model Parameter Estimation: Hodgkin-Huxley parameter estimation: infer ion channel conductances and gating kinetics from patch-clamp recordings. The forward operator produces the measurement through a 3-node primitive DAG (M.ode.hodgkin_huxley…); recovery is posed as a parameter_estimation problem. Difficulty tier delta=5 with effective condition number kappa_eff~1000; channel_noise_stochastic, dendritic_morphology_neglect set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "Hodgkin-Huxley Neuron Model Parameter Estimation: Hodgkin-Huxley parameter estimation: infer ion channel conductances and gating kinetics from patch-clamp recordings. The forward operator produces the measurement through a 3-node primitive DAG (M.ode.hodgkin_huxley\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=5 with effective condition number kappa_eff~1000; channel_noise_stochastic, dendritic_morphology_neglect set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "C_m * dV/dt = -g_Na*m ** 3*h*(V-E_Na) - g_K*n ** 4*(V-E_K) - g_L*(V-E_L) + I_ext",
     "world_state_x": "HH parameters {g_Na, g_K, g_L, E_Na, E_K, E_L, C_m, tau kinetics}",
     "observation_y": "membrane voltage V(t) and ionic currents I(t) from voltage-clamp experiments",

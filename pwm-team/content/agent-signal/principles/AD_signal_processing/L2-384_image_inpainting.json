@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-384",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-384",
   "principle_ref": "sha256:<L1-384_principle_hash>",
   "title": "Image Inpainting Freeform-Mask Spec (Places2 / CelebA-HQ family)",
@@ -120,7 +121,7 @@
     "proximity_threshold": 0.1
   },
   "d_spec": 0.5,
-  "d_spec_notes": "Distance from 385 denoising ~= 0.45 (Related — both are spatial restoration, different primitives). Distance from 391 sparse recovery ~= 0.55 (different solution space, shared mask primitive).",
+  "d_spec_notes": "Distance from 385 denoising ~= 0.45 (Related \u2014 both are spatial restoration, different primitives). Distance from 391 sparse recovery ~= 0.55 (different solution space, shared mask primitive).",
   "s1_s4_gates": [
     "PASS",
     "PASS",

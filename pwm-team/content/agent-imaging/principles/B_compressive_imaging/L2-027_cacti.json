@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-027",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-027",
   "canonical_reference": "pwm_product/genesis/l2/L2-004.json",
   "title": "CACTI Mismatch-Only Spec (SCI video benchmark family)",

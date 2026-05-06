@@ -1,12 +1,13 @@
 {
   "artifact_id": "L1-525",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "525",
   "title": "Pulmonary Embolism Detection from CT Pulmonary Angiography (PWDR)",
   "domain": "Medical Imaging",
   "sub_domain": "Pulmonary vascular contrast-enhanced reconstruction with embolism location + RV-strain severity readout",
   "source_file": "C_medical_imaging/525_pulmonary_embolism_ctpa_pwdr.md",
-  "source_data_quality_note": "v2 physical_with_discrete_readout (PWDR) genesis Principle. Wraps L1-029 CT (existing in v1 genesis, extended for contrast-enhanced angiography acquisition; sibling L1-039 X-ray angio also informational) with deterministic threshold rules on intraluminal filling defect + RV/LV ratio + Mastora obstruction index to assign categorical PE severity {no_PE, isolated_subsegmental, segmental, lobar, central, saddle}. Universal in emergency / inpatient radiology — CTPA is the gold-standard PE imaging test. UTSW Emergency Department + Pulmonary Hypertension Program high-volume use.",
+  "source_data_quality_note": "v2 physical_with_discrete_readout (PWDR) genesis Principle. Wraps L1-029 CT (existing in v1 genesis, extended for contrast-enhanced angiography acquisition; sibling L1-039 X-ray angio also informational) with deterministic threshold rules on intraluminal filling defect + RV/LV ratio + Mastora obstruction index to assign categorical PE severity {no_PE, isolated_subsegmental, segmental, lobar, central, saddle}. Universal in emergency / inpatient radiology \u2014 CTPA is the gold-standard PE imaging test. UTSW Emergency Department + Pulmonary Hypertension Program high-volume use.",
   "gate_class": "physical_with_discrete_readout",
   "gate_substitutions": {
     "kappa_substitute": null,
@@ -35,10 +36,10 @@
     "threshold_continuity_proof": "Anatomic-location classification is a step function on filling-defect location (segmental tree topology); each location boundary is a measure-zero hyperplane. RV/LV ratio and obstruction index are continuous on chamber-diameter and clot-burden estimates. Smoothed-grading globally Lipschitz with constant ~0.05 per percentage-point of contrast-filling-defect detection error."
   },
   "related_principles": [
-    "L1-029 (CT — projection / reconstruction analytical core, physics_core_principle)",
-    "L1-039 (X-ray angio — sibling vascular contrast modality, informational)",
-    "L1-058 (MRA — sibling MR vessel modality, informational)",
-    "L1-510 (Cardiac 4D-flow MRI — sibling cardiac-chamber assessment, informational)"
+    "L1-029 (CT \u2014 projection / reconstruction analytical core, physics_core_principle)",
+    "L1-039 (X-ray angio \u2014 sibling vascular contrast modality, informational)",
+    "L1-058 (MRA \u2014 sibling MR vessel modality, informational)",
+    "L1-510 (Cardiac 4D-flow MRI \u2014 sibling cardiac-chamber assessment, informational)"
   ],
   "E": {
     "description": "Pulmonary Embolism Detection from CTPA (PWDR): wraps L1-029 CT analytical core (in CTPA acquisition mode) with established radiology grading rules. Stage 1 (analytical, from L1-029): from contrast-enhanced volumetric CT acquired during peak pulmonary-arterial enhancement (timing bolus or test bolus protocol), recover voxel-resolved iodinated-contrast distribution in pulmonary vasculature; segment pulmonary arterial tree (down to subsegmental level); detect intraluminal filling defects; measure RV and LV chamber diameters at maximum dimension. Stage 2 (deterministic threshold): classify defect location into anatomic level; compute Mastora / Qanadli obstruction index; assess RV strain via RV/LV ratio; determine severity tier per ESC 2019 / AHA 2011 risk stratification. Difficulty tier delta = 5. Mismatch parameters: contrast_bolus_timing, motion_during_breath_hold, partial_volume_at_subsegmental, beam_hardening_artifact, AI_threshold_calibration, RV_LV_measurement_axis.",
@@ -248,7 +249,7 @@
       "advisory_label": "Distinct (parent-child PWDR pattern)",
       "rationale": "L1-029 CT recovers static 3D attenuation; L1-525 specializes to CTPA acquisition mode (peak pulmonary-arterial enhancement timing) and adds vascular-segmentation + chamber-measurement + severity-classification primitives. Different solution_space (1D PE severity vs 3D attenuation); adds L.pulmonary_artery_segmentation, L.filling_defect_detection, L.rv_lv_measurement, L.pe_severity_classifier primitives."
     },
-    "clinical_context": "Universal in emergency / inpatient radiology — CTPA is the gold-standard imaging test for suspected pulmonary embolism. Annual incidence ~10/100,000; PE is the third leading cause of cardiovascular death after MI and stroke. ESC 2019 guidelines integrate CTPA findings with biomarkers (troponin, NT-proBNP) and hemodynamics for risk stratification. UTSW Emergency Department + Pulmonary Hypertension Program. Commercial systems: Aidoc PE, RapidAI PE, Lunit INSIGHT CXR (for chest X-ray screening before CTPA), Avicenna.AI CINA — all PWDR-shaped systems. PWDR formulation gives physics-grounded explainability: severity derives from explicit anatomic location + obstruction index + RV/LV ratio tied to ESC 2019 / AHA 2011 guidelines."
+    "clinical_context": "Universal in emergency / inpatient radiology \u2014 CTPA is the gold-standard imaging test for suspected pulmonary embolism. Annual incidence ~10/100,000; PE is the third leading cause of cardiovascular death after MI and stroke. ESC 2019 guidelines integrate CTPA findings with biomarkers (troponin, NT-proBNP) and hemodynamics for risk stratification. UTSW Emergency Department + Pulmonary Hypertension Program. Commercial systems: Aidoc PE, RapidAI PE, Lunit INSIGHT CXR (for chest X-ray screening before CTPA), Avicenna.AI CINA \u2014 all PWDR-shaped systems. PWDR formulation gives physics-grounded explainability: severity derives from explicit anatomic location + obstruction index + RV/LV ratio tied to ESC 2019 / AHA 2011 guidelines."
   },
   "display_slug": "pe-ctpa"
 }

@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-516",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "516",
   "title": "MR Spectroscopy Tumor Grading (PWDR)",
   "domain": "Medical Imaging",
@@ -41,9 +42,9 @@
     "threshold_continuity_proof": "Metabolite-ratio thresholds are step functions on continuous concentration values; per-grade decision boundaries form measure-zero hyperplanes in metabolite-ratio space. Smoothed-grading is globally Lipschitz with constant ~0.08 per ratio unit. Inherits stability from L1-044 MRS."
   },
   "related_principles": [
-    "L1-044 (MRS — chemical-shift-resolved spectroscopy analytical core, physics_core_principle)",
-    "L1-030 (MRI — anatomic localization sibling, informational)",
-    "L1-506 (HP-13C MRI — sibling kinetic-imaging variant for metabolism, n_c=3)"
+    "L1-044 (MRS \u2014 chemical-shift-resolved spectroscopy analytical core, physics_core_principle)",
+    "L1-030 (MRI \u2014 anatomic localization sibling, informational)",
+    "L1-506 (HP-13C MRI \u2014 sibling kinetic-imaging variant for metabolism, n_c=3)"
   ],
   "E": {
     "description": "MR Spectroscopy Tumor Grading (PWDR): wraps L1-044 MRS analytical core with established metabolite-ratio threshold rules from neuro-oncology, prostate cancer, and breast cancer literature. Stage 1 (analytical, from L1-044): voxel-resolved 1H-MRS recovers metabolite concentrations (NAA, Cho, Cr, Cit, lactate, lipid, mI) from chemical-shift-resolved acquisition. Stage 2 (deterministic threshold): per-organ rule applies metabolite-ratio thresholds (Cho/NAA, Cho/Cr, (Cho+Cr)/Cit, Cho/water) to assign tumor grade. Difficulty tier delta = 3. Mismatch parameters: voxel_lipid_contamination, B0_inhomogeneity, water_suppression_residual, partial_volume_csf, threshold_calibration_age_effect.",

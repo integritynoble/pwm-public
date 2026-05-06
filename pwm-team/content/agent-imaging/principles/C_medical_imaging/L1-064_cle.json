@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-064",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "064",
   "title": "Confocal Laser Endomicroscopy (CLE)",
   "domain": "Medical Imaging",

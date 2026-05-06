@@ -1,9 +1,10 @@
 {
   "artifact_id": "L2-400",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-400",
   "principle_ref": "sha256:<L1-400_principle_hash>",
-  "title": "Hemodynamics (Navier-Stokes Cardiovascular) — Nominal + Mismatch Specs",
+  "title": "Hemodynamics (Navier-Stokes Cardiovascular) \u2014 Nominal + Mismatch Specs",
   "spec_type": "nominal_and_mismatch",
   "six_tuple": {
     "omega": {

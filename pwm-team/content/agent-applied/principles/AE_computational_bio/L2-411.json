@@ -1,9 +1,10 @@
 {
   "artifact_id": "L2-411",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-411",
   "principle_ref": "sha256:<L1-411_principle_hash>",
-  "title": "Oxygen Transport (Krogh Cylinder) — Nominal + Mismatch Specs",
+  "title": "Oxygen Transport (Krogh Cylinder) \u2014 Nominal + Mismatch Specs",
   "spec_type": "nominal_and_mismatch",
   "six_tuple": {
     "omega": {

@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-296",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-296",
   "title": "Post-Hartree-Fock Correlated Methods (MP2, CCSD, CI) Mismatch-Only Spec",
   "spec_type": "mismatch_only",

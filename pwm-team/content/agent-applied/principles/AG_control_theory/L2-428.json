@@ -1,9 +1,10 @@
 {
   "artifact_id": "L2-428",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-428",
   "principle_ref": "sha256:<L1-428_principle_hash>",
-  "title": "Extended Kalman Filter (EKF) — Nominal + Mismatch Specs",
+  "title": "Extended Kalman Filter (EKF) \u2014 Nominal + Mismatch Specs",
   "spec_type": "nominal_and_mismatch",
   "six_tuple": {
     "omega": {

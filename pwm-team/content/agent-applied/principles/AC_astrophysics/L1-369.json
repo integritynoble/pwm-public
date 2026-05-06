@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-369",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "369",
   "title": "Weak Gravitational Lensing Shear Estimation",
   "domain": "Astrophysics",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Weak Gravitational Lensing Shear Estimation: Weak lensing: measure coherent distortion of galaxy shapes to infer projected matter distribution. The forward operator produces the measurement through a 3-node primitive DAG (S.shear.ellipticity…); recovery is posed as a statistical_inverse problem. Difficulty tier delta=5 with effective condition number kappa_eff~20; PSF_leakage, multiplicative_shear_bias_m set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "Weak Gravitational Lensing Shear Estimation: Weak lensing: measure coherent distortion of galaxy shapes to infer projected matter distribution. The forward operator produces the measurement through a 3-node primitive DAG (S.shear.ellipticity\u2026); recovery is posed as a statistical_inverse problem. Difficulty tier delta=5 with effective condition number kappa_eff~20; PSF_leakage, multiplicative_shear_bias_m set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "gamma_obs = gamma_true + e_intrinsic + noise; xi_pm(theta) = <gamma*_t gamma_t>(theta)",
     "world_state_x": "matter power spectrum P(k) and cosmological parameters (sigma_8, Omega_m)",
     "observation_y": "galaxy ellipticities e_obs for N_gal galaxies across survey area",

@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-436",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-436",
   "parent_l1": "L1-436",
-  "title": "Ensemble Kalman Filter (EnKF) — Benchmark Suite",
+  "title": "Ensemble Kalman Filter (EnKF) \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "Lorenz96_EnKF_benchmark",

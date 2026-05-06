@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-044",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "044",
   "title": "Magnetic Resonance Spectroscopy (MRS)",
   "domain": "Medical Imaging",

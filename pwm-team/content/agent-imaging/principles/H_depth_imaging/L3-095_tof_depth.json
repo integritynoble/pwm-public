@@ -1,6 +1,7 @@
 {
   "artifact_id": "L3-095",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-095",
   "parent_l1": "L1-095",
   "title": "AMCW-ToF Depth Benchmark Suite",
@@ -168,7 +169,7 @@
       }
     ]
   },
-  "hardness_rule_check": "SATISFIED — ToF-DeepNet fails T4_blind (MPI=0.3 + motion=0.05 + f_mod=20 MHz + ambient=50 klx corner exceeds epsilon).",
+  "hardness_rule_check": "SATISFIED \u2014 ToF-DeepNet fails T4_blind (MPI=0.3 + motion=0.05 + f_mod=20 MHz + ambient=50 klx corner exceeds epsilon).",
   "ipfs_cid": null,
   "ground_truth_cid": null,
   "display_slug": "tof-depth"

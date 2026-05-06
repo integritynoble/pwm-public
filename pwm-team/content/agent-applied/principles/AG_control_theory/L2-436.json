@@ -1,9 +1,10 @@
 {
   "artifact_id": "L2-436",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-436",
   "principle_ref": "sha256:<L1-436_principle_hash>",
-  "title": "Ensemble Kalman Filter (EnKF) — Nominal + Mismatch Specs",
+  "title": "Ensemble Kalman Filter (EnKF) \u2014 Nominal + Mismatch Specs",
   "spec_type": "nominal_and_mismatch",
   "six_tuple": {
     "omega": {

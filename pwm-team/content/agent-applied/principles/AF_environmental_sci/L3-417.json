@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-417",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-417",
   "parent_l1": "L1-417",
-  "title": "General Circulation Model (GCM) Inversion — Benchmark Suite",
+  "title": "General Circulation Model (GCM) Inversion \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "ERA5_reanalysis_ECMWF",

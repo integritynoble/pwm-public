@@ -1,9 +1,10 @@
 {
   "artifact_id": "L2-500",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-500",
   "principle_ref": "sha256:<L1-500_principle_hash>",
-  "title": "Optimal Experimental Design — Nominal + Mismatch Specs",
+  "title": "Optimal Experimental Design \u2014 Nominal + Mismatch Specs",
   "spec_type": "nominal_and_mismatch",
   "six_tuple": {
     "omega": {

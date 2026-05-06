@@ -1,9 +1,10 @@
 {
   "artifact_id": "L2-451",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-451",
   "principle_ref": "sha256:<L1-451_principle_hash>",
-  "title": "Rigid Body Dynamics Simulation — Nominal + Mismatch Specs",
+  "title": "Rigid Body Dynamics Simulation \u2014 Nominal + Mismatch Specs",
   "spec_type": "nominal_and_mismatch",
   "six_tuple": {
     "omega": {

@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-111",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "111",
   "title": "Industrial Computed Tomography (high-res x-ray CT for NDT)",
   "domain": "Industrial Inspection",

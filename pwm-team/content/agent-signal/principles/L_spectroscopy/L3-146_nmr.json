@@ -1,6 +1,7 @@
 {
   "artifact_id": "L3-146",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-146",
   "parent_l1": "L1-146",
   "title": "NMR Benchmark Suite (BMRB + metabolomics + synthetic)",
@@ -154,7 +155,7 @@
       }
     ]
   },
-  "hardness_rule_check": "SATISFIED — DeepNMR fails at T4_low_b0 (SNR=-5, B0=60MHz, K=200): 0.10 > epsilon_fn ~ 0.08.",
+  "hardness_rule_check": "SATISFIED \u2014 DeepNMR fails at T4_low_b0 (SNR=-5, B0=60MHz, K=200): 0.10 > epsilon_fn ~ 0.08.",
   "ipfs_cid": null,
   "ground_truth_cid": null,
   "display_slug": "nmr"

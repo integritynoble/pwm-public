@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-081",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "081",
   "title": "Integral Photography (Lippmann-style MLA capture + reconstruction)",
   "domain": "Computational Optics",

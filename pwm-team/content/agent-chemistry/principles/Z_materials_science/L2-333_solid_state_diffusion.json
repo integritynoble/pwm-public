@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-333",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-333",
   "title": "Solid-State Diffusion (Fick + Onsager) Mismatch-Only Spec",
   "spec_type": "mismatch_only",

@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-460",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "460",
   "title": "Reservoir History Matching",
   "domain": "Petroleum Engineering",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Reservoir History Matching: Reservoir history matching: infer 3D permeability/porosity fields from historical production data using ensemble methods or adjoint. The forward operator produces the measurement through a 3-node primitive DAG (S.ensemble.kalman_filter_reservoir…); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=10 with effective condition number kappa_eff~100000.0; structural_uncertainty, rel_perm_uncertainty set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "Reservoir History Matching: Reservoir history matching: infer 3D permeability/porosity fields from historical production data using ensemble methods or adjoint. The forward operator produces the measurement through a 3-node primitive DAG (S.ensemble.kalman_filter_reservoir\u2026); recovery is posed as a nonlinear_inverse problem. Difficulty tier delta=10 with effective condition number kappa_eff~100000.0; structural_uncertainty, rel_perm_uncertainty set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "d_obs = G(m) + epsilon; m = {log(K), phi} per cell; G = reservoir simulator",
     "world_state_x": "3D permeability K(x,y,z) and porosity phi(x,y,z) fields",
     "observation_y": "historical production rates {q_o, q_w, q_g}(t) and BHP at N_wells wells",

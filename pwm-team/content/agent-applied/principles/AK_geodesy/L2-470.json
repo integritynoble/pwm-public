@@ -1,9 +1,10 @@
 {
   "artifact_id": "L2-470",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-470",
   "principle_ref": "sha256:<L1-470_principle_hash>",
-  "title": "Photogrammetry Structure-from-Motion — Nominal + Mismatch Specs",
+  "title": "Photogrammetry Structure-from-Motion \u2014 Nominal + Mismatch Specs",
   "spec_type": "nominal_and_mismatch",
   "six_tuple": {
     "omega": {

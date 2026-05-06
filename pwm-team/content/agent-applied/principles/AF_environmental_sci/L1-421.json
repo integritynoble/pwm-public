@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-421",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "421",
   "title": "River Hydraulics Shallow Water Inversion",
   "domain": "Environmental Science",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "River Hydraulics Shallow Water Inversion: River hydraulics inversion: infer Manning's roughness and bathymetry from water level and discharge observations. The forward operator produces the measurement through a 3-node primitive DAG (M.swe.saint_venant…); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~80; bank_overflow_uncertainty, sediment_transport_coupling set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "River Hydraulics Shallow Water Inversion: River hydraulics inversion: infer Manning's roughness and bathymetry from water level and discharge observations. The forward operator produces the measurement through a 3-node primitive DAG (M.swe.saint_venant\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~80; bank_overflow_uncertainty, sediment_transport_coupling set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "dA/dt + dQ/dx = q_lat; dQ/dt + d(Q ** 2/A)/dx + g*A*dh/dx + g*A*S_f = 0; S_f = n ** 2*Q ** 2/(A ** 2*R^{4/3})",
     "world_state_x": "Manning's roughness n(x) and cross-section bathymetry A(h, x) along river reach",
     "observation_y": "water stage H(t) at N_gauges gauging stations and discharge Q(t)",

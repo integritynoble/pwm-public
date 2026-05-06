@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-222",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "222",
-  "title": "XFEM — extended finite element for cracks",
+  "title": "XFEM \u2014 extended finite element for cracks",
   "domain": "Structural Mechanics",
   "sub_domain": "Enriched FE with discontinuous shape functions",
   "source_file": "T_structural_mechanics/222_xfem.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "XFEM — extended finite element for cracks forward model.",
+    "description": "XFEM \u2014 extended finite element for cracks forward model.",
     "forward_model": "u_h = sum N_i u_i + sum N_j (H(x) - H_j) a_j + sum N_k F_l(x) b_kl (crack-tip enrichment)",
     "world_state_x": "crack path phi(x) + enriched displacement coefficients",
     "observation_y": "DIC near crack + global response",

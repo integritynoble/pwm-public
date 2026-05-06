@@ -1,6 +1,7 @@
 {
   "artifact_id": "L3-083",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-083",
   "parent_l1": "L1-083",
   "title": "3DGS Novel-View Synthesis Benchmark Suite",
@@ -168,7 +169,7 @@
       }
     ]
   },
-  "hardness_rule_check": "SATISFIED — Mip-Splatting fails T4_blind (K=20 + N_budget_too_small=0.8 + pose_error=0.1 rad; under-densified scene cannot cover view gaps).",
+  "hardness_rule_check": "SATISFIED \u2014 Mip-Splatting fails T4_blind (K=20 + N_budget_too_small=0.8 + pose_error=0.1 rad; under-densified scene cannot cover view gaps).",
   "ipfs_cid": null,
   "ground_truth_cid": null,
   "display_slug": "3d-gaussian-splatting"

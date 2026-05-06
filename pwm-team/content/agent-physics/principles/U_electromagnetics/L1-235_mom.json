@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-235",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "235",
-  "title": "Method of Moments (MoM) — integral-equation EM",
+  "title": "Method of Moments (MoM) \u2014 integral-equation EM",
   "domain": "Electromagnetics",
   "sub_domain": "Surface/volume integral-equation MoM",
   "source_file": "U_electromagnetics/235_mom.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Method of Moments (MoM) — integral-equation EM forward model.",
+    "description": "Method of Moments (MoM) \u2014 integral-equation EM forward model.",
     "forward_model": "Z I = V; Z_mn = <f_m, L f_n>; L = k^2 int G(r,r') f dS - grad int G(r,r') div f dS",
     "world_state_x": "surface current density J_s(r) on scatterer/antenna",
     "observation_y": "far-field pattern / S-parameters",

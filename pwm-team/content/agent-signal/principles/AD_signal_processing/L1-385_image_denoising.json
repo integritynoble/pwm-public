@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-385",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "385",
   "title": "Image Denoising (Gaussian, Poisson, mixed)",
   "domain": "Signal Processing",
@@ -38,7 +39,7 @@
     "condition_number_kappa": 1,
     "condition_number_effective": 1,
     "condition_number_mismatched": 3,
-    "regime": "Identity operator with additive noise — trivially well-posed in forward sense; inverse relies on prior (TV, non-local, learned). Mismatch primarily in noise-model specification."
+    "regime": "Identity operator with additive noise \u2014 trivially well-posed in forward sense; inverse relies on prior (TV, non-local, learned). Mismatch primarily in noise-model specification."
   },
   "C": {
     "solver_class": "TV (ROF), BM3D, NLM, Wiener, DnCNN, N2N, Noise2Void, Restormer, SwinIR",

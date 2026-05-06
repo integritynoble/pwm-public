@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-433",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-433",
   "parent_l1": "L1-433",
-  "title": "Model Predictive Control (MPC/NMPC) — Benchmark Suite",
+  "title": "Model Predictive Control (MPC/NMPC) \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "MPC_benchmark_chemical_reactor",

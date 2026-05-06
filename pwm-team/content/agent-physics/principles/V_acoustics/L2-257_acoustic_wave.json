@@ -1,8 +1,9 @@
 {
   "artifact_id": "L2-257",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-257",
-  "title": "Acoustic Wave Equation — time-domain pressure field reconstruction Mismatch-Only Spec",
+  "title": "Acoustic Wave Equation \u2014 time-domain pressure field reconstruction Mismatch-Only Spec",
   "spec_type": "mismatch_only",
   "six_tuple": {
     "omega": {
@@ -172,7 +173,7 @@
     "S1": "Dimensions are consistent across the DAG; forward operator maps state space to measurement space at declared shapes.",
     "S2": "kappa_eff = 40 within tolerance after regularization; RIP-like or coercivity conditions satisfied over most of Omega.",
     "S3": "Solvers converge at rate q=2.0 in well-posed regime; mismatch parameters degrade convergence but not divergence.",
-    "S4": "epsilon_fn evaluates across 10+ random Omega samples; hardness rule verified — no baseline passes everywhere."
+    "S4": "epsilon_fn evaluates across 10+ random Omega samples; hardness rule verified \u2014 no baseline passes everywhere."
   },
   "ipfs_cid": null,
   "display_slug": "acoustic-wave"

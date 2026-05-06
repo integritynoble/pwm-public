@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-108",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "108",
-  "title": "Interferometric SAR (InSAR) — deformation + DEM",
+  "title": "Interferometric SAR (InSAR) \u2014 deformation + DEM",
   "domain": "Remote Sensing",
   "sub_domain": "Coherent SAR interferometry",
   "source_file": "I_remote_sensing/108_insar.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical remote-sensing literature for this principle.",
   "E": {
-    "description": "Interferometric SAR (InSAR) — deformation + DEM: insar coherent interferometry produces the measurement through a 5-node primitive DAG L.emit.chirp -> S.scan.platform -> L.interferometric_phase -> L.phase_unwrap -> int.spatial, with time-integrated exposure and multiplicative speckle (Rayleigh amplitude / exponential intensity). Recovery is posed as a non-convex inverse problem that inverts the forward operator to estimate the scene-side 2D deformation or DEM. Difficulty tier delta=5 with effective condition number kappa_eff~25; calibration-level mismatch (atmospheric_phase_screen, baseline_error, temporal_decorrelation) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
+    "description": "Interferometric SAR (InSAR) \u2014 deformation + DEM: insar coherent interferometry produces the measurement through a 5-node primitive DAG L.emit.chirp -> S.scan.platform -> L.interferometric_phase -> L.phase_unwrap -> int.spatial, with time-integrated exposure and multiplicative speckle (Rayleigh amplitude / exponential intensity). Recovery is posed as a non-convex inverse problem that inverts the forward operator to estimate the scene-side 2D deformation or DEM. Difficulty tier delta=5 with effective condition number kappa_eff~25; calibration-level mismatch (atmospheric_phase_screen, baseline_error, temporal_decorrelation) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
     "forward_model": "phi_diff(x,y) = (4*pi/lambda) * (R1 - R2); recover Delta_h or deformation after flat-earth + topo corrections + unwrap",
     "world_state_x": "Scene-side quantity of interest (reflectance / velocity / phase / concentration)",
     "observation_y": "Sensor output at declared resolution + noise",

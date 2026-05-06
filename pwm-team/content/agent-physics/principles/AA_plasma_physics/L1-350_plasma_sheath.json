@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-350",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "350",
-  "title": "Plasma Sheath — Debye-scale boundary layer",
+  "title": "Plasma Sheath \u2014 Debye-scale boundary layer",
   "domain": "Plasma Physics",
   "sub_domain": "Plasma-wall sheath region",
   "source_file": "AA_plasma_physics/350_plasma_sheath.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Plasma Sheath — Debye-scale boundary layer forward model.",
+    "description": "Plasma Sheath \u2014 Debye-scale boundary layer forward model.",
     "forward_model": "Laplacian phi = -e(n_i - n_e)/eps_0; n_e = n_0 exp(e phi/T_e); n_i from fluid eqs",
     "world_state_x": "potential phi(z), density n(z), ion velocity u_i(z) in sheath",
     "observation_y": "Langmuir probe I-V curves",

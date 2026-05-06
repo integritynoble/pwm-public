@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-136",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "136",
   "title": "Cathodoluminescence (CL) Imaging & Spectroscopy",
   "domain": "Scientific Instrumentation",

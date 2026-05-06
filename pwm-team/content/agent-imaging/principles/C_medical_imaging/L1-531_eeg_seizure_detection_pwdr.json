@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-531",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "531",
   "title": "EEG Seizure Detection (PWDR)",
   "domain": "Medical Imaging",
@@ -16,7 +17,7 @@
   "discrete_readout": {
     "threshold_function": "Per-segment (typically 10-second window): seizure = step on (rhythmic_pattern_frequency_Hz, evolution_in_frequency_AND_amplitude_AND_morphology, duration_seconds, spatial_distribution): seizure_focal if rhythmic >5 Hz pattern with evolution lasting > 10 seconds in localized channels; generalized if pattern across all channels symmetrically; status_epilepticus if seizure lasting > 5 minutes OR > 2 seizures without recovery between. Per ILAE 2017 Operational Classification + Trinka 2015 status epilepticus definition.",
     "lipschitz_constant": 0.05,
-    "underlying_physical_state": "EEG signal feature recovery: spectral content per channel, rhythmic pattern detection (continuous wavelet transform or short-time FFT), spatial coherence between channels, evolution of dominant frequency/amplitude over time — recovered from L1-068 EEG core",
+    "underlying_physical_state": "EEG signal feature recovery: spectral content per channel, rhythmic pattern detection (continuous wavelet transform or short-time FFT), spatial coherence between channels, evolution of dominant frequency/amplitude over time \u2014 recovered from L1-068 EEG core",
     "physics_core_principle": "L1-068",
     "label_set_seizure_type": [
       "non_seizure",
@@ -37,10 +38,10 @@
     "threshold_continuity_proof": "Spectral power and coherence are continuous on EEG features; class boundaries are step functions on dominant-frequency, evolution-duration, spatial-distribution. Smoothed-detection globally Lipschitz with constant ~0.05 per percentage-point of feature-recovery error."
   },
   "related_principles": [
-    "L1-068 (EEG — scalp electrostatic analytical core, physics_core_principle)",
-    "L1-067 (MEG — sibling magnetic neural modality, informational)",
-    "L1-507 (Joint MEG-EEG — sibling source-imaging multi-physics, n_c=2, informational)",
-    "L1-528 (ECG arrhythmia — sibling biopotential signal PWDR, informational)"
+    "L1-068 (EEG \u2014 scalp electrostatic analytical core, physics_core_principle)",
+    "L1-067 (MEG \u2014 sibling magnetic neural modality, informational)",
+    "L1-507 (Joint MEG-EEG \u2014 sibling source-imaging multi-physics, n_c=2, informational)",
+    "L1-528 (ECG arrhythmia \u2014 sibling biopotential signal PWDR, informational)"
   ],
   "E": {
     "description": "EEG Seizure Detection (PWDR): wraps L1-068 EEG with ILAE 2017 + Trinka 2015 + AAN clinical neurophysiology rules. Stage 1 (analytical, from L1-068): from multi-channel scalp EEG (typically 19-256 channels per international 10-20 / 10-10 systems), recover per-channel spectral content (delta 0.5-4 Hz, theta 4-8 Hz, alpha 8-13 Hz, beta 13-30 Hz, gamma 30-80 Hz), spatial coherence patterns, evolution of dominant frequency/amplitude/morphology, artifact rejection (eye blinks, muscle, cardiac). Stage 2 (deterministic threshold): apply rhythmic-pattern + evolution + duration + spatial-distribution rules. Difficulty tier delta = 5.",
@@ -229,7 +230,7 @@
     "coupling_count_n_c": 1,
     "joint_well_posedness_references": [
       "Fisher RS et al. (2017) Operational classification of seizure types by the International League Against Epilepsy: Position Paper of the ILAE Commission for Classification and Terminology. Epilepsia 58(4):522-530.",
-      "Trinka E et al. (2015) A definition and classification of status epilepticus — Report of the ILAE Task Force on Classification of Status Epilepticus. Epilepsia 56(10):1515-1523.",
+      "Trinka E et al. (2015) A definition and classification of status epilepticus \u2014 Report of the ILAE Task Force on Classification of Status Epilepticus. Epilepsia 56(10):1515-1523.",
       "Hirsch LJ et al. (2013) American Clinical Neurophysiology Society's standardized critical care EEG terminology. J Clin Neurophysiol 30(1):1-27.",
       "Roy S et al. (2019) ChronoNet: a deep recurrent neural network for abnormal EEG identification. AIME 2019.",
       "Acharya UR et al. (2018) Deep convolutional neural network for the automated detection and diagnosis of seizure using EEG signals. Comput Biol Med 100:270-278.",

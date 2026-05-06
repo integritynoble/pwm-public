@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-128",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-128",
   "principle_ref": "sha256:<L1-128_principle_hash>",
   "title": "APT Reconstruction Spec (hemispherical projection family)",
@@ -130,7 +131,7 @@
     "proximity_threshold": 0.1
   },
   "d_spec": 0.65,
-  "d_spec_notes": "Unique — no other principle uses field-evaporation + TOF in 3D voxelization. Distance to SIMS ~= 0.55 (Related, different projection and ionization mechanisms).",
+  "d_spec_notes": "Unique \u2014 no other principle uses field-evaporation + TOF in 3D voxelization. Distance to SIMS ~= 0.55 (Related, different projection and ionization mechanisms).",
   "s1_s4_gates": [
     "PASS",
     "PASS",

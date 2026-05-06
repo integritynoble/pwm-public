@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-512",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "512",
   "title": "PillCam-SPECTRA Bleeding-Region Detection (PWDR)",
   "domain": "Medical Imaging",
@@ -28,9 +29,9 @@
     "threshold_continuity_proof": "Each per-class score is an indicator function of a Lipschitz-continuous combination of (c_chrom, mu_s'); argmax is locally Lipschitz-continuous on the open set where one class strictly dominates. Boundaries between classes form measure-zero hyperplanes in chromophore space; a smoothed-argmax (softmax with finite temperature) is globally Lipschitz with constant ~0.10 per unit chromophore-concentration range. Inherits underlying-state stability from L1-511 (kappa_eff ~ 15)."
   },
   "related_principles": [
-    "L1-511 (PillCam-SPECTRA Optical-Property Recovery — analytical core, physics_core_principle)",
-    "L1-040 (DOT — sibling diffuse-optical-imaging primitive, informational)",
-    "L1-048 (fiber_endoscopy — sibling endoscopic geometry, informational)"
+    "L1-511 (PillCam-SPECTRA Optical-Property Recovery \u2014 analytical core, physics_core_principle)",
+    "L1-040 (DOT \u2014 sibling diffuse-optical-imaging primitive, informational)",
+    "L1-048 (fiber_endoscopy \u2014 sibling endoscopic geometry, informational)"
   ],
   "E": {
     "description": "PillCam-SPECTRA Bleeding-Region Detection (PWDR): the v2 physical_with_discrete_readout wrapper around L1-511 analytical core. The forward operator is the composition (threshold_function . L1-511_forward): multispectral capsule frames -> recovered chromophore concentrations (c_HbO2, c_Hb, c_water, c_lipid, c_melanin)(r) via L1-511 -> categorical labels {normal, bleeding, polyp, suspected_neoplasia, mucosal_inflammation}(r) via piecewise-constant threshold function on chromophore concentrations and reduced scattering coefficient mu_s'. The threshold is locally Lipschitz-continuous on the underlying physical state with global Lipschitz constant ~0.10 (per the smoothed-softmax formulation in discrete_readout.threshold_function). Recovery is posed as the joint problem: (i) recover continuous physical state via L1-511 (analytical S1-S4); (ii) apply deterministic threshold to produce categorical readout (S1-S4 inherited via Lipschitz continuity). The gate_substitutions field populates only conservation_substitute (softmax simplex closure on categorical readout); kappa_substitute and h_substitute are null because the physics core retains its analytical kappa and h. Difficulty tier delta = 3 inherited from L1-511. Mismatch parameters extend the L1-511 set: threshold_calibration_uncertainty, between-region_smoothing_artifact, motion-induced_label_flicker, capsule_orientation_mucosal_assignment.",
@@ -84,7 +85,7 @@
     "L_DAG": 6.9,
     "n_c": 1,
     "coupling_constraints": [
-      "fluence_to_absorption: inherited from L1-511 analytical core — multiplicative coupling between mu_a and detected intensity through diffuse-reflectance fluence kernel"
+      "fluence_to_absorption: inherited from L1-511 analytical core \u2014 multiplicative coupling between mu_a and detected intensity through diffuse-reflectance fluence kernel"
     ]
   },
   "W": {
@@ -260,7 +261,7 @@
   "ipfs_cid": null,
   "recast_attempted": {
     "considered": true,
-    "recast_path": "Original framing: 'Classify capsule frames into {normal, bleeding, polyp, ...}' (would be data_driven_statistical with empirical CNN). Option-3 recast: 'Recover continuous tissue optical state (mu_a, mu_s', chromophores) via diffuse-reflectance physics; apply deterministic threshold to chromophore values to produce categorical readout' — this is the physical_with_discrete_readout class authored here. Recast is feasible because mucosal optical properties have a well-defined physical forward model (radiative transfer / diffusion) and the clinical labels (bleeding, polyp, etc.) are deterministic functions of the underlying physical state.",
+    "recast_path": "Original framing: 'Classify capsule frames into {normal, bleeding, polyp, ...}' (would be data_driven_statistical with empirical CNN). Option-3 recast: 'Recover continuous tissue optical state (mu_a, mu_s', chromophores) via diffuse-reflectance physics; apply deterministic threshold to chromophore values to produce categorical readout' \u2014 this is the physical_with_discrete_readout class authored here. Recast is feasible because mucosal optical properties have a well-defined physical forward model (radiative transfer / diffusion) and the clinical labels (bleeding, polyp, etc.) are deterministic functions of the underlying physical state.",
     "reason_rejected": null
   },
   "v3_metadata": {
@@ -273,15 +274,15 @@
       "Yudovsky D, Pilon L (2010) Rapid and accurate estimation of blood saturation, melanin content, and epidermis thickness from spectral diffuse reflectance. Appl Opt 49(10):1707-1719.",
       "Lu G, Fei B (2014) Medical hyperspectral imaging: a review. J Biomed Opt 19(1):010901.",
       "Iddan G, Meron G, Glukhovsky A, Swain P (2000) Wireless capsule endoscopy. Nature 405(6785):417 (foundational PillCam reference).",
-      "PWM_GATE_CLASSES_AND_SCALING.md Case A — physically-grounded recast pattern (the canonical PWDR formulation)."
+      "PWM_GATE_CLASSES_AND_SCALING.md Case A \u2014 physically-grounded recast pattern (the canonical PWDR formulation)."
     ],
     "distinctness_audit": {
       "closest_existing_principle": "L1-511 PillCam-SPECTRA Optical-Property Recovery (analytical core)",
       "d_principle_estimate": 0.35,
       "advisory_label": "Distinct (parent-child relationship)",
-      "rationale": "L1-511 is the analytical core (recovers continuous chromophore concentrations); L1-512 is the PWDR wrapper that applies a deterministic threshold to produce categorical labels. They are paired by design — L1-511 has gate_class='analytical' and L1-512 has gate_class='physical_with_discrete_readout' with physics_core_principle='L1-511'. d_principle ~ 0.35 reflects that they share most physics primitives (L.optical_source, L.diffuse_reflectance, L.beer_lambert, L.detector_response, L.chromophore_unmixing) but L1-512 adds L.threshold_classifier and a fundamentally different solution_space (2D_categorical_mucosal_label_map vs L1-511's 2D_chromophore_concentration). Pair-authoring is the canonical Option-3 recast pattern from PWM_GATE_CLASSES_AND_SCALING.md."
+      "rationale": "L1-511 is the analytical core (recovers continuous chromophore concentrations); L1-512 is the PWDR wrapper that applies a deterministic threshold to produce categorical labels. They are paired by design \u2014 L1-511 has gate_class='analytical' and L1-512 has gate_class='physical_with_discrete_readout' with physics_core_principle='L1-511'. d_principle ~ 0.35 reflects that they share most physics primitives (L.optical_source, L.diffuse_reflectance, L.beer_lambert, L.detector_response, L.chromophore_unmixing) but L1-512 adds L.threshold_classifier and a fundamentally different solution_space (2D_categorical_mucosal_label_map vs L1-511's 2D_chromophore_concentration). Pair-authoring is the canonical Option-3 recast pattern from PWM_GATE_CLASSES_AND_SCALING.md."
     },
-    "clinical_context": "Clinical capsule endoscopy is FDA-cleared for occult GI bleeding evaluation, Crohn's surveillance, NSAID enteropathy, and obstetric bleeding. Multispectral / hyperspectral PillCam variants extend reading-friendly diagnostic value via automated bleeding / polyp / neoplasia detection. Director's GI_Multi_Task active research project aligns directly. Pre-clinical to early clinical; current commercial monochrome systems include Medtronic PillCam SB3 / Crohn's, Olympus Endocapsule 10, Intromedic MiroCam — multispectral upgrades pending. PWDR formulation (L1-511 + L1-512) provides the physics-grounded foundation for AI-assisted reading: discrimination is performed on physics-derived chromophore quantities rather than raw pixel intensities, giving interpretable thresholds and inheriting analytical S1-S4 certificates."
+    "clinical_context": "Clinical capsule endoscopy is FDA-cleared for occult GI bleeding evaluation, Crohn's surveillance, NSAID enteropathy, and obstetric bleeding. Multispectral / hyperspectral PillCam variants extend reading-friendly diagnostic value via automated bleeding / polyp / neoplasia detection. Director's GI_Multi_Task active research project aligns directly. Pre-clinical to early clinical; current commercial monochrome systems include Medtronic PillCam SB3 / Crohn's, Olympus Endocapsule 10, Intromedic MiroCam \u2014 multispectral upgrades pending. PWDR formulation (L1-511 + L1-512) provides the physics-grounded foundation for AI-assisted reading: discrimination is performed on physics-derived chromophore quantities rather than raw pixel intensities, giving interpretable thresholds and inheriting analytical S1-S4 certificates."
   },
   "display_slug": "pillcam-bleeding"
 }

@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-152",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "152",
   "title": "XFEL Serial Femtosecond Crystallography (SFX)",
   "domain": "Ultrafast Imaging",

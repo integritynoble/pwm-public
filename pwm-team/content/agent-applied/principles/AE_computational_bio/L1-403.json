@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-403",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "403",
   "title": "Physiologically Based PK (PBPK)",
   "domain": "Computational Biology",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Physiologically Based PK (PBPK): PBPK model: mechanistic organ-level pharmacokinetics connecting tissue concentrations to plasma via physiological parameters. The forward operator produces the measurement through a 3-node primitive DAG (M.ode.pbpk_organs…); recovery is posed as a parameter_estimation problem. Difficulty tier delta=5 with effective condition number kappa_eff~500; in_vitro_in_vivo_extrapolation_IVIVE_bias, enzyme_induction_inhibition set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "Physiologically Based PK (PBPK): PBPK model: mechanistic organ-level pharmacokinetics connecting tissue concentrations to plasma via physiological parameters. The forward operator produces the measurement through a 3-node primitive DAG (M.ode.pbpk_organs\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=5 with effective condition number kappa_eff~500; in_vitro_in_vivo_extrapolation_IVIVE_bias, enzyme_induction_inhibition set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "dA_org/dt = Q_org*(C_arterial - C_venous_org) - CL_int*C_org; conservation of mass across organs",
     "world_state_x": "tissue-specific partition coefficients Kp and metabolic clearance CL_int per organ",
     "observation_y": "plasma and (optionally) tissue concentration-time profiles from in vivo or in vitro data",

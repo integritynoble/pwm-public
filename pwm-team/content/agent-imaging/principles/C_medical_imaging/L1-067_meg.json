@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-067",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "067",
   "title": "Magnetoencephalography (MEG)",
   "domain": "Medical Imaging",

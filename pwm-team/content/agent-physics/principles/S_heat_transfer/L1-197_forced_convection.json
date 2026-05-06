@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-197",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "197",
-  "title": "Forced Convection — conjugate heat transfer inversion",
+  "title": "Forced Convection \u2014 conjugate heat transfer inversion",
   "domain": "Heat Transfer",
   "sub_domain": "Convective heat transfer coefficient estimation",
   "source_file": "S_heat_transfer/197_forced_convection.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Forced Convection — conjugate heat transfer inversion forward model.",
+    "description": "Forced Convection \u2014 conjugate heat transfer inversion forward model.",
     "forward_model": "q'' = h(x) * (T_wall - T_inf); Nu = f(Re, Pr) via forced convection correlation",
     "world_state_x": "local convective heat transfer coefficient h(x) map",
     "observation_y": "IR surface temperature of an active-heated wall under known q''",

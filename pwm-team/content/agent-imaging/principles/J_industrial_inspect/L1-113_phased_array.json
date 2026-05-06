@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-113",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "113",
   "title": "Phased-Array Ultrasonic Testing (PAUT)",
   "domain": "Industrial Inspection",

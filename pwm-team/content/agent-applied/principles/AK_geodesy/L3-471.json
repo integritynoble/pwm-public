@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-471",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-471",
   "parent_l1": "L1-471",
-  "title": "Satellite Gravity Gradiometry (GOCE) — Benchmark Suite",
+  "title": "Satellite Gravity Gradiometry (GOCE) \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "GOCE_L1b_EGG_archive_ESA",

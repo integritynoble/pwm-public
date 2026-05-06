@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-294",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "294",
   "title": "Kohn-Sham Density Functional Theory",
   "domain": "Computational Chemistry",

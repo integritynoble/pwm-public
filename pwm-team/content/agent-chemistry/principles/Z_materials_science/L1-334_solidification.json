@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-334",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "334",
   "title": "Dendritic Solidification",
   "domain": "Materials Science",

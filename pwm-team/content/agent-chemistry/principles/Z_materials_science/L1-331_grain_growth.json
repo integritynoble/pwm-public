@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-331",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "331",
   "title": "Grain Growth and Recrystallization",
   "domain": "Materials Science",

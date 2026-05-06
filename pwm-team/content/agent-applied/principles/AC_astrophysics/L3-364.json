@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-364",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-364",
   "parent_l1": "L1-364",
-  "title": "N-body Gravitational Simulation — Benchmark Suite",
+  "title": "N-body Gravitational Simulation \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "solar_system_JPL_horizons",

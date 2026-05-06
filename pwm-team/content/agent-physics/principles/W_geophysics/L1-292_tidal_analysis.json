@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-292",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "292",
-  "title": "Tidal Analysis — harmonic tidal constituent extraction",
+  "title": "Tidal Analysis \u2014 harmonic tidal constituent extraction",
   "domain": "Geophysics",
   "sub_domain": "Harmonic tidal analysis from tide gauge",
   "source_file": "W_geophysics/292_tidal_analysis.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Tidal Analysis — harmonic tidal constituent extraction forward model.",
+    "description": "Tidal Analysis \u2014 harmonic tidal constituent extraction forward model.",
     "forward_model": "h(t) = Z_0 + sum_i f_i * A_i * cos(omega_i t + phi_i + u_i); nodal correction f, u",
     "world_state_x": "amplitudes A_i and phases phi_i of tidal constituents (M2, S2, N2, K1, O1, ...)",
     "observation_y": "tide-gauge water level time series",

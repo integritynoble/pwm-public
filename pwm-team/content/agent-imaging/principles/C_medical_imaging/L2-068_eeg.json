@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-068",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-068",
   "title": "Electroencephalography (EEG) Mismatch-Only Spec",
   "spec_type": "mismatch_only",

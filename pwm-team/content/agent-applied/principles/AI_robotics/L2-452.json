@@ -1,9 +1,10 @@
 {
   "artifact_id": "L2-452",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-452",
   "principle_ref": "sha256:<L1-452_principle_hash>",
-  "title": "Multibody Dynamics with Constraints — Nominal + Mismatch Specs",
+  "title": "Multibody Dynamics with Constraints \u2014 Nominal + Mismatch Specs",
   "spec_type": "nominal_and_mismatch",
   "six_tuple": {
     "omega": {

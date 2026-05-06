@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-142",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "142",
   "title": "Brillouin Microscopy (acousto-optic inelastic scattering)",
   "domain": "Spectroscopy",

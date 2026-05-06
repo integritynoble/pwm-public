@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-308",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "308",
   "title": "Free Energy Perturbation (FEP + TI + BAR)",
   "domain": "Computational Chemistry",

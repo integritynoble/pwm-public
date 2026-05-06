@@ -1,6 +1,7 @@
 {
   "artifact_id": "L3-097",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-097",
   "parent_l1": "L1-097",
   "title": "Structured-Light Depth Benchmark Suite",
@@ -170,7 +171,7 @@
       }
     ]
   },
-  "hardness_rule_check": "SATISFIED — DeepSL fails at T4_blind (specular=0.5 + SSS=0.3 + ambient=100klx + K=4 corner).",
+  "hardness_rule_check": "SATISFIED \u2014 DeepSL fails at T4_blind (specular=0.5 + SSS=0.3 + ambient=100klx + K=4 corner).",
   "ipfs_cid": null,
   "ground_truth_cid": null,
   "display_slug": "structured-light"

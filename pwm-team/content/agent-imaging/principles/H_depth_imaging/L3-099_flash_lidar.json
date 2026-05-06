@@ -1,6 +1,7 @@
 {
   "artifact_id": "L3-099",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-099",
   "parent_l1": "L1-099",
   "title": "Flash-LiDAR SPAD-Array Benchmark Suite",
@@ -170,7 +171,7 @@
       }
     ]
   },
-  "hardness_rule_check": "SATISFIED — DeepFlashLidar fails T4_photon_starved (1 MHz ambient + 2 photons/pixel signal + 50% pile-up corner exceeds reconstructable SNR floor).",
+  "hardness_rule_check": "SATISFIED \u2014 DeepFlashLidar fails T4_photon_starved (1 MHz ambient + 2 photons/pixel signal + 50% pile-up corner exceeds reconstructable SNR floor).",
   "ipfs_cid": null,
   "ground_truth_cid": null,
   "display_slug": "flash-lidar"

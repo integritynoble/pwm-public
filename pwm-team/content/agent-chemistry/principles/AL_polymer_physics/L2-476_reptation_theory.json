@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-476",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-476",
   "title": "de Gennes-Doi-Edwards Reptation Theory Mismatch-Only Spec",
   "spec_type": "mismatch_only",

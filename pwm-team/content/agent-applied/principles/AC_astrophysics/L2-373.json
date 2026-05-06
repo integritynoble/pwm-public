@@ -1,9 +1,10 @@
 {
   "artifact_id": "L2-373",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-373",
   "principle_ref": "sha256:<L1-373_principle_hash>",
-  "title": "Pulsar Timing Array GW Background — Nominal + Mismatch Specs",
+  "title": "Pulsar Timing Array GW Background \u2014 Nominal + Mismatch Specs",
   "spec_type": "nominal_and_mismatch",
   "six_tuple": {
     "omega": {

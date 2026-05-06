@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-137",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "137",
   "title": "Raman Imaging (spontaneous inelastic photon scattering)",
   "domain": "Spectroscopy",

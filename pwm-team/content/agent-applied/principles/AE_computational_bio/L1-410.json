@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-410",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "410",
   "title": "Tumor Growth Model Inversion",
   "domain": "Computational Biology",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Tumor Growth Model Inversion: Tumor growth inversion: estimate tumor growth rate lambda and carrying capacity K from longitudinal imaging data. The forward operator produces the measurement through a 3-node primitive DAG (M.ode.gompertz_logistic…); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~20; imaging_noise_percent, resistant_subclone_emergence set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "Tumor Growth Model Inversion: Tumor growth inversion: estimate tumor growth rate lambda and carrying capacity K from longitudinal imaging data. The forward operator produces the measurement through a 3-node primitive DAG (M.ode.gompertz_logistic\u2026); recovery is posed as a parameter_estimation problem. Difficulty tier delta=3 with effective condition number kappa_eff~20; imaging_noise_percent, resistant_subclone_emergence set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "Gompertz: dV/dt = lambda * V * ln(K/V); Logistic: dV/dt = r*V*(1-V/K); Exponential-Linear for early growth",
     "world_state_x": "tumor growth parameters (lambda/r, K, V0) and treatment effect delta_kill",
     "observation_y": "tumor volume V(t_i) from CT/MRI imaging at N_timepoints",

@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-102",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-102",
   "title": "Hyperspectral Imaging (pushbroom / AVIRIS-style) Mismatch-Only Spec",
   "spec_type": "mismatch_only",

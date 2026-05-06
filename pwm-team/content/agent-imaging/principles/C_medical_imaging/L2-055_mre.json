@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-055",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-055",
   "title": "Magnetic Resonance Elastography (MRE) Mismatch-Only Spec",
   "spec_type": "mismatch_only",

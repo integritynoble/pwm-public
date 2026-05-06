@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-321",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-321",
   "title": "Quantum Monte Carlo (VMC + DMC) Mismatch-Only Spec",
   "spec_type": "mismatch_only",

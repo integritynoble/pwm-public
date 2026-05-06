@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-232",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "232",
-  "title": "Maxwell Full-Wave — time-domain 3D Maxwell equations",
+  "title": "Maxwell Full-Wave \u2014 time-domain 3D Maxwell equations",
   "domain": "Electromagnetics",
   "sub_domain": "3D vector Maxwell time-domain simulation",
   "source_file": "U_electromagnetics/232_maxwell_fullwave.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Maxwell Full-Wave — time-domain 3D Maxwell equations forward model.",
+    "description": "Maxwell Full-Wave \u2014 time-domain 3D Maxwell equations forward model.",
     "forward_model": "curl E = -mu*dH/dt; curl H = eps*dE/dt + sigma*E + J_src",
     "world_state_x": "3D vector fields E(x,t), H(x,t) or material parameters eps(x), mu(x), sigma(x)",
     "observation_y": "near-field probe / far-field antenna data",

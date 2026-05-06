@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-293",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "293",
-  "title": "Subsurface Temperature — geothermal gradient inversion",
+  "title": "Subsurface Temperature \u2014 geothermal gradient inversion",
   "domain": "Geophysics",
   "sub_domain": "Borehole temperature geothermal gradient",
   "source_file": "W_geophysics/293_subsurface_temperature.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Subsurface Temperature — geothermal gradient inversion forward model.",
+    "description": "Subsurface Temperature \u2014 geothermal gradient inversion forward model.",
     "forward_model": "q = -k * dT/dz; steady-state T(z) = T_surf + q/k * z + paleoclimate perturbation",
     "world_state_x": "geothermal gradient dT/dz, heat flux q, paleoclimate history",
     "observation_y": "borehole temperature log T(z) at multiple depths",

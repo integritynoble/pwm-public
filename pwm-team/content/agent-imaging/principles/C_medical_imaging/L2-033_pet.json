@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-033",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-033",
   "title": "Positron Emission Tomography (PET) Mismatch-Only Spec",
   "spec_type": "mismatch_only",

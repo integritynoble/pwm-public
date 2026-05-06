@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-148",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "148",
   "title": "Isotope-Ratio Mass Spectrometry (IRMS)",
   "domain": "Spectroscopy",

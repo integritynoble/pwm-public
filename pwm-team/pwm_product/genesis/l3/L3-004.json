@@ -1,6 +1,7 @@
 {
   "artifact_id": "L3-004",
   "layer": "L3",
+  "registration_tier": "founder_vetted",
   "parent_l2": "L2-004",
   "parent_l1": "L1-004",
   "title": "CACTI Mismatch-Only Benchmark Suite (P-benchmark + 4 I-benchmark tiers)",

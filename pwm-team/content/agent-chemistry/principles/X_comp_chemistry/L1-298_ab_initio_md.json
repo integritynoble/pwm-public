@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-298",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "298",
   "title": "Ab Initio Molecular Dynamics (Car-Parrinello / BOMD)",
   "domain": "Computational Chemistry",

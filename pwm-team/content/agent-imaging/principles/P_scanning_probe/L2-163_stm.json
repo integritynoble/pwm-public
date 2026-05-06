@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-163",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-163",
   "title": "Scanning Tunneling Microscopy (STM) Mismatch-Only Spec",
   "spec_type": "mismatch_only",

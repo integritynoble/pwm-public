@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-434",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-434",
   "parent_l1": "L1-434",
-  "title": "PID Controller Tuning — Benchmark Suite",
+  "title": "PID Controller Tuning \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "SISO_PID_benchmark_suite_IFAC",

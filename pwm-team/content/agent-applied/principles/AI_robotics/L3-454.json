@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-454",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-454",
   "parent_l1": "L1-454",
-  "title": "Spacecraft Attitude Determination — Benchmark Suite",
+  "title": "Spacecraft Attitude Determination \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "Champ_GRACE_attitude_dataset",

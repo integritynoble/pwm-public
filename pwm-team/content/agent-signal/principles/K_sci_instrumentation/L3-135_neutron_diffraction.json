@@ -1,6 +1,7 @@
 {
   "artifact_id": "L3-135",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-135",
   "parent_l1": "L1-135",
   "title": "Neutron Diffraction Benchmark Suite",
@@ -148,7 +149,7 @@
       }
     ]
   },
-  "hardness_rule_check": "SATISFIED — neutron-Net fails at T4_severe (pref_orient=0.5, N=1000): Rwp 0.3 > epsilon_fn ~ 0.22.",
+  "hardness_rule_check": "SATISFIED \u2014 neutron-Net fails at T4_severe (pref_orient=0.5, N=1000): Rwp 0.3 > epsilon_fn ~ 0.22.",
   "ipfs_cid": null,
   "ground_truth_cid": null,
   "display_slug": "neutron-diffraction"

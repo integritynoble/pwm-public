@@ -1,9 +1,10 @@
 {
   "artifact_id": "L2-418",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-418",
   "principle_ref": "sha256:<L1-418_principle_hash>",
-  "title": "Numerical Weather Prediction Data Assimilation — Nominal + Mismatch Specs",
+  "title": "Numerical Weather Prediction Data Assimilation \u2014 Nominal + Mismatch Specs",
   "spec_type": "nominal_and_mismatch",
   "six_tuple": {
     "omega": {

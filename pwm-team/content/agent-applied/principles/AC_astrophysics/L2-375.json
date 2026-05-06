@@ -1,9 +1,10 @@
 {
   "artifact_id": "L2-375",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-375",
   "principle_ref": "sha256:<L1-375_principle_hash>",
-  "title": "Accretion Disk Structure Inversion — Nominal + Mismatch Specs",
+  "title": "Accretion Disk Structure Inversion \u2014 Nominal + Mismatch Specs",
   "spec_type": "nominal_and_mismatch",
   "six_tuple": {
     "omega": {

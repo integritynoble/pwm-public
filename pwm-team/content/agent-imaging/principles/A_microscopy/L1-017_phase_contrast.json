@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-017",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "017",
   "title": "Zernike Phase-Contrast Microscopy",
   "domain": "Microscopy",

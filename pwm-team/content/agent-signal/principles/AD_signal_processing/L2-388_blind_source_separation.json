@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-388",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-388",
   "principle_ref": "sha256:<L1-388_principle_hash>",
   "title": "BSS Instantaneous-Mixing Spec (ICA benchmark family)",
@@ -135,7 +136,7 @@
     "proximity_threshold": 0.1
   },
   "d_spec": 0.55,
-  "d_spec_notes": "Distance from convolutive-BSS spec ~= 0.30 (adds reverberation dim). Distance from 393 robust PCA ~= 0.60 (Novel — different problem class).",
+  "d_spec_notes": "Distance from convolutive-BSS spec ~= 0.30 (adds reverberation dim). Distance from 393 robust PCA ~= 0.60 (Novel \u2014 different problem class).",
   "s1_s4_gates": [
     "PASS",
     "PASS",

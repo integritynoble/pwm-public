@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-028",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "028",
   "title": "Low-Rank Matrix Sensing (compressive matrix recovery)",
   "domain": "Compressive Imaging",

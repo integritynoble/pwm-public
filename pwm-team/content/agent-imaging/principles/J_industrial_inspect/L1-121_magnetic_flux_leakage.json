@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-121",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "121",
-  "title": "Magnetic Flux Leakage (MFL) — pipeline & rail inspection",
+  "title": "Magnetic Flux Leakage (MFL) \u2014 pipeline & rail inspection",
   "domain": "Industrial Inspection",
   "sub_domain": "Ferromagnetic defect detection via DC flux",
   "source_file": "J_industrial_inspect/121_magnetic_flux_leakage.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (fan-out artifact). Physics below is grounded in canonical NDT/NDE literature for this principle.",
   "E": {
-    "description": "Magnetic Flux Leakage (MFL) — pipeline & rail inspection: magnetic flux leakage produces the measurement through a 4-node primitive DAG L.dc_magnetize -> L.flux_leakage -> D.hall_sensor -> int.spatial, with spatially-projected accumulation and additive Gaussian thermal/electronic noise. Recovery is posed as a non-convex inverse problem that inverts the forward operator to estimate the scene-side 2D defect geometry. Difficulty tier delta=3 with effective condition number kappa_eff~10; calibration-level mismatch (liftoff_variation, magnetization_non_uniformity, external_interference) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
+    "description": "Magnetic Flux Leakage (MFL) \u2014 pipeline & rail inspection: magnetic flux leakage produces the measurement through a 4-node primitive DAG L.dc_magnetize -> L.flux_leakage -> D.hall_sensor -> int.spatial, with spatially-projected accumulation and additive Gaussian thermal/electronic noise. Recovery is posed as a non-convex inverse problem that inverts the forward operator to estimate the scene-side 2D defect geometry. Difficulty tier delta=3 with effective condition number kappa_eff~10; calibration-level mismatch (liftoff_variation, magnetization_non_uniformity, external_interference) sets the accuracy floor at the Omega boundary. See the forward_model field for the closed-form imaging equation.",
     "forward_model": "B_leak(x,y) = integral m(defect(r)) * kernel(r - (x,y), lift_off, velocity) + n",
     "world_state_x": "Defect / strain / composition map depending on principle",
     "observation_y": "Sensor output at declared geometry",

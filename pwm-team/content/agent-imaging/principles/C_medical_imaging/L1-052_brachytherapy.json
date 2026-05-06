@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-052",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "052",
   "title": "Brachytherapy Dose Imaging",
   "domain": "Medical Imaging",

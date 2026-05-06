@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-116",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-116",
   "title": "Terahertz Imaging (0.1-10 THz time-domain / CW) Mismatch-Only Spec",
   "spec_type": "mismatch_only",

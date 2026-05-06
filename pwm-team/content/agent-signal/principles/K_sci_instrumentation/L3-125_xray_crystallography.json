@@ -1,6 +1,7 @@
 {
   "artifact_id": "L3-125",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-125",
   "parent_l1": "L1-125",
   "title": "X-ray Crystallography Benchmark Suite (PDB + synchrotron + XFEL)",
@@ -145,7 +146,7 @@
       }
     ]
   },
-  "hardness_rule_check": "SATISFIED — AlphaFoldMR fails at T4_extreme (4 Å, twinning=0.5): R_free 0.48 > epsilon_fn ~ 0.42.",
+  "hardness_rule_check": "SATISFIED \u2014 AlphaFoldMR fails at T4_extreme (4 \u00c5, twinning=0.5): R_free 0.48 > epsilon_fn ~ 0.42.",
   "ipfs_cid": null,
   "ground_truth_cid": null,
   "display_slug": "xray-crystallography"

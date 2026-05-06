@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-187",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "187",
-  "title": "Lattice Boltzmann Method (LBM) — mesoscale fluid",
+  "title": "Lattice Boltzmann Method (LBM) \u2014 mesoscale fluid",
   "domain": "Fluid Dynamics",
   "sub_domain": "Lattice-Boltzmann BGK for incompressible flow",
   "source_file": "R_fluid_dynamics/187_lbm.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Lattice Boltzmann Method (LBM) — mesoscale fluid forward model.",
+    "description": "Lattice Boltzmann Method (LBM) \u2014 mesoscale fluid forward model.",
     "forward_model": "f_i(x + c_i dt, t+dt) = f_i(x,t) - (1/tau)(f_i - f_i^eq)",
     "world_state_x": "distribution f_i at lattice nodes + recovered rho, u via moments",
     "observation_y": "microfluidic PIV",

@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-420",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-420",
   "parent_l1": "L1-420",
-  "title": "Sea Ice Thermodynamic-Dynamic Inversion — Benchmark Suite",
+  "title": "Sea Ice Thermodynamic-Dynamic Inversion \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "NSIDC_DMSP_SSM_I_SSMIS_passive_MW",

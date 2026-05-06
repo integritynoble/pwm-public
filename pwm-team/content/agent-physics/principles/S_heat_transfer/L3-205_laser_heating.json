@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-205",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-205",
   "parent_l1": "L1-205",
-  "title": "Laser Heating — short-pulse temperature rise inversion Benchmark Suite",
+  "title": "Laser Heating \u2014 short-pulse temperature rise inversion Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "canonical Heat Transfer dataset for this principle",
@@ -250,7 +251,7 @@
       }
     ]
   },
-  "hardness_rule_check": "SATISFIED — top baseline fails at T4_blind Omega corner under max mismatch.",
+  "hardness_rule_check": "SATISFIED \u2014 top baseline fails at T4_blind Omega corner under max mismatch.",
   "anti_overfitting_mechanisms": {
     "M1_random_instantiation": "generator/instantiate.py uses G(SHA256(h_sub || k)) seeded per submission.",
     "M2_convergence_scoring": "convergence/check_convergence.py verifies declared q-rate across mesh refinements.",

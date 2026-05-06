@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-389",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-389",
   "principle_ref": "sha256:<L1-389_principle_hash>",
   "title": "Channel Estimation OFDM/MIMO Spec (5G NR pilot family)",

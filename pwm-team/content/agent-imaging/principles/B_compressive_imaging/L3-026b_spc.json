@@ -1,6 +1,7 @@
 {
   "artifact_id": "L3-026b",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-026b",
   "parent_l1": "L1-026b",
   "title": "SPC Mismatch-Only Benchmark Suite",
@@ -155,7 +156,7 @@
       }
     ]
   },
-  "hardness_rule_check": "SATISFIED — LISTA fails at T4_undersampled (20.3 dB > 19.0 epsilon here but fails strata S3/S4 in full P-bench due to RIP degradation at 5% sampling).",
+  "hardness_rule_check": "SATISFIED \u2014 LISTA fails at T4_undersampled (20.3 dB > 19.0 epsilon here but fails strata S3/S4 in full P-bench due to RIP degradation at 5% sampling).",
   "ipfs_cid": null,
   "ground_truth_cid": null,
   "display_slug": "spc"

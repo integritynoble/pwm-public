@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-369",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-369",
   "parent_l1": "L1-369",
-  "title": "Weak Gravitational Lensing Shear Estimation — Benchmark Suite",
+  "title": "Weak Gravitational Lensing Shear Estimation \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "DES_Y3_shear_catalog",

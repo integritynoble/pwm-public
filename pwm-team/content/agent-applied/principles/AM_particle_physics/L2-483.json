@@ -1,9 +1,10 @@
 {
   "artifact_id": "L2-483",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-483",
   "principle_ref": "sha256:<L1-483_principle_hash>",
-  "title": "Calorimeter Energy Response Inversion — Nominal + Mismatch Specs",
+  "title": "Calorimeter Energy Response Inversion \u2014 Nominal + Mismatch Specs",
   "spec_type": "nominal_and_mismatch",
   "six_tuple": {
     "omega": {

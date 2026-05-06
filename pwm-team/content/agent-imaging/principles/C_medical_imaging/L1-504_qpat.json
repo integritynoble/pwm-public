@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-504",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "504",
   "title": "Quantitative Photoacoustic Tomography (qPAT)",
   "domain": "Medical Imaging",
@@ -10,9 +11,9 @@
   "gate_class": "analytical",
   "gate_substitutions": null,
   "related_principles": [
-    "L1-040 (DOT — diffuse optical tomography component, informational)",
-    "L1-041 (PAT — acoustic-only variant, d_principle ~ 0.42)",
-    "L1-032 (ultrasound — acoustic propagation primitive, informational)"
+    "L1-040 (DOT \u2014 diffuse optical tomography component, informational)",
+    "L1-041 (PAT \u2014 acoustic-only variant, d_principle ~ 0.42)",
+    "L1-032 (ultrasound \u2014 acoustic propagation primitive, informational)"
   ],
   "E": {
     "description": "Quantitative Photoacoustic Tomography (qPAT): joint multi-physics forward couples optical radiative transfer / diffusion (light fluence Phi(r, lambda) under tissue scattering and absorption), Grueneisen-coupled thermoelastic source generation (initial pressure p_0 = Gamma * mu_a * Phi), and acoustic wave propagation (p(r, t) from p_0(r) under tissue speed-of-sound c(r)). The forward DAG has 8 primitives with two coupling constraints (n_c = 2): (i) light-fluence to energy-absorption multiplicative coupling H = mu_a * Phi, position-dependent and saturating at high absorption; (ii) thermoelastic-source to acoustic-wave causal coupling p_0 -> p, governed by the homogeneous wave equation in tissue. Recovery is posed as the joint inverse problem that recovers mu_a(r, lambda) (and optionally mu_s'(r) via multi-illumination) from measured p(r, t) across N_wavelengths. Multi-spectral acquisition disambiguates chromophore concentrations (oxy-hemoglobin, deoxy-hemoglobin, melanin, lipid, water, contrast agents). Difficulty tier delta = 5 with raw condition number kappa ~ 300 (limited by acoustic bandwidth and high-absorption non-uniqueness) and effective kappa_eff ~ 40 after model-based two-step or one-step Bal-Uhlmann reconstruction. Mismatch parameters: mu_s_prime_uncertainty, gruneisen_uncertainty, acoustic_speed_heterogeneity, transducer_position_error, light_fluence_inhomogeneity, background_absorption_drift. Additive Gaussian thermal noise sets the data-fidelity floor. See forward_model field for the closed-form joint imaging equation.",
@@ -61,8 +62,8 @@
     "L_DAG": 8.5,
     "n_c": 2,
     "coupling_constraints": [
-      "fluence_to_absorption: H = mu_a * Phi — multiplicative coupling between optical fluence and absorption coefficient; position-dependent; saturating at high absorption (the canonical qPAT non-uniqueness in single-illumination two-step inversion)",
-      "thermoelastic_to_acoustic: p_0 = Gamma * H -> p(r,t) via homogeneous wave equation — causal time-domain coupling; Grueneisen Gamma varies with tissue type and temperature (~0.2 in water, ~0.7 in lipid)"
+      "fluence_to_absorption: H = mu_a * Phi \u2014 multiplicative coupling between optical fluence and absorption coefficient; position-dependent; saturating at high absorption (the canonical qPAT non-uniqueness in single-illumination two-step inversion)",
+      "thermoelastic_to_acoustic: p_0 = Gamma * H -> p(r,t) via homogeneous wave equation \u2014 causal time-domain coupling; Grueneisen Gamma varies with tissue type and temperature (~0.2 in water, ~0.7 in lipid)"
     ]
   },
   "W": {
@@ -71,7 +72,7 @@
     "stability": "conditional",
     "condition_number_kappa": 300,
     "condition_number_effective": 40,
-    "regime": "Existence of recovered 3D multi-spectral absorption coefficient mu_a(r, lambda) is guaranteed within the declared Omega bounds. Uniqueness holds under multi-illumination or multi-wavelength acquisition (Bal-Uhlmann 2010; Bal-Ren 2011); single-illumination single-wavelength qPAT is non-unique due to the multiplicative H = mu_a * Phi coupling and is excluded from the spec range. Stability is moderately conditioned (kappa_eff ~ 40 after model-based reconstruction) — acoustic bandwidth dominates spatial resolution; mu_s_prime_uncertainty dominates absorption-coefficient bias; gruneisen_uncertainty contributes a scaling factor. Joint Hadamard well-posedness for the coupled optical-thermoelastic-acoustic forward is established by Cox-Arridge-Beard (2009), Bal-Uhlmann (2010), Bal-Ren (2011), Tarvainen et al. (2013), and Cox-Tarvainen-Arridge (2014). See joint_well_posedness_references."
+    "regime": "Existence of recovered 3D multi-spectral absorption coefficient mu_a(r, lambda) is guaranteed within the declared Omega bounds. Uniqueness holds under multi-illumination or multi-wavelength acquisition (Bal-Uhlmann 2010; Bal-Ren 2011); single-illumination single-wavelength qPAT is non-unique due to the multiplicative H = mu_a * Phi coupling and is excluded from the spec range. Stability is moderately conditioned (kappa_eff ~ 40 after model-based reconstruction) \u2014 acoustic bandwidth dominates spatial resolution; mu_s_prime_uncertainty dominates absorption-coefficient bias; gruneisen_uncertainty contributes a scaling factor. Joint Hadamard well-posedness for the coupled optical-thermoelastic-acoustic forward is established by Cox-Arridge-Beard (2009), Bal-Uhlmann (2010), Bal-Ren (2011), Tarvainen et al. (2013), and Cox-Tarvainen-Arridge (2014). See joint_well_posedness_references."
   },
   "C": {
     "solver_class": "linear-operator + convex optimisation [two-step: UBP + GN-IR for mu_a; one-step: Bal-Uhlmann joint inversion] | gradient-based MCMC [Bayesian qPAT, Tarvainen]| linear-operator + deep neural prior [DAS-Net, J-Net]",
@@ -271,7 +272,7 @@
       "closest_existing_principle": "L1-041 PAT",
       "d_principle_estimate": 0.42,
       "advisory_label": "Distinct",
-      "rationale": "L1-041 PAT uses sensing_mechanism = photoacoustic_pa with primitives focused on the acoustic forward (treats absorption A(r) as input) and solution_space = 3D pressure / activity. L1-504 qPAT uses sensing_mechanism = thermoelastic_with_optical_diffusion with primitives spanning optical (L.optical_diffusion, L.beer_lambert), thermoelastic (L.thermoelastic_grueneisen), and acoustic (L.acoustic_wave_propagation, L.transducer_detection); solution_space = 3D_spectral_chromophore_quantitative (recovers mu_a(r, lambda) and chromophore concentrations). Jaccard distance over (sensing_mechanism, solution_space, primitives) ~ 0.42 — solidly Distinct under v1 advisory thresholds (>= 0.30). Adds three new primitives (L.optical_diffusion, L.beer_lambert, L.thermoelastic_grueneisen) and the multiplicative non-linear coupling H = mu_a * Phi that is absent from L1-041's linear acoustic forward."
+      "rationale": "L1-041 PAT uses sensing_mechanism = photoacoustic_pa with primitives focused on the acoustic forward (treats absorption A(r) as input) and solution_space = 3D pressure / activity. L1-504 qPAT uses sensing_mechanism = thermoelastic_with_optical_diffusion with primitives spanning optical (L.optical_diffusion, L.beer_lambert), thermoelastic (L.thermoelastic_grueneisen), and acoustic (L.acoustic_wave_propagation, L.transducer_detection); solution_space = 3D_spectral_chromophore_quantitative (recovers mu_a(r, lambda) and chromophore concentrations). Jaccard distance over (sensing_mechanism, solution_space, primitives) ~ 0.42 \u2014 solidly Distinct under v1 advisory thresholds (>= 0.30). Adds three new primitives (L.optical_diffusion, L.beer_lambert, L.thermoelastic_grueneisen) and the multiplicative non-linear coupling H = mu_a * Phi that is absent from L1-041's linear acoustic forward."
     },
     "clinical_context": "Active research / early clinical: multi-spectral qPAT recovers oxygen saturation maps (sO2), total hemoglobin, lipid/water fraction, and exogenous contrast-agent uptake. Applications in oncology (tumor angiogenesis, hypoxia mapping, treatment response), vascular imaging (peripheral artery disease, stroke), lymph-node mapping (breast cancer staging), preclinical small-animal imaging. UTSW imaging research has active photoacoustic programs. Commercial systems: iThera Medical MSOT inSight/Acuity, FUJIFILM-VisualSonics Vevo LAZR. Imaging depth typically 1-5 cm depending on wavelength."
   },

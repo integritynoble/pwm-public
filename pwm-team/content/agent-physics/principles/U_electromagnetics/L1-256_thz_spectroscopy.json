@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-256",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "256",
-  "title": "THz Time-Domain Spectroscopy — material parameter extraction",
+  "title": "THz Time-Domain Spectroscopy \u2014 material parameter extraction",
   "domain": "Electromagnetics",
   "sub_domain": "THz-TDS complex refractive-index extraction",
   "source_file": "U_electromagnetics/256_thz_spectroscopy.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "THz Time-Domain Spectroscopy — material parameter extraction forward model.",
+    "description": "THz Time-Domain Spectroscopy \u2014 material parameter extraction forward model.",
     "forward_model": "E_sample(omega) = T(omega) * E_ref(omega); T from transfer function with n_complex(omega)",
     "world_state_x": "complex refractive index n~(omega) = n(omega) + j*kappa(omega)",
     "observation_y": "THz-TDS time-domain pulse before and after sample",

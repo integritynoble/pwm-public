@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-200",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "200",
-  "title": "Participating Media — RTE with gas/soot emission-absorption",
+  "title": "Participating Media \u2014 RTE with gas/soot emission-absorption",
   "domain": "Heat Transfer",
   "sub_domain": "Line-by-line gas spectroscopy + soot radiation",
   "source_file": "S_heat_transfer/200_participating_media.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Participating Media — RTE with gas/soot emission-absorption forward model.",
+    "description": "Participating Media \u2014 RTE with gas/soot emission-absorption forward model.",
     "forward_model": "I(lambda) = int_0^L kappa_lambda(T,xi) * I_b(lambda,T) * exp(-int_0^s kappa_lambda ds') ds",
     "world_state_x": "3D temperature + soot volume fraction + species concentration fields",
     "observation_y": "multispectral pyrometer + tomographic line-of-sight integrated radiance",

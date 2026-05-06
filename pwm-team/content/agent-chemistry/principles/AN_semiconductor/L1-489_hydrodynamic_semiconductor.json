@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-489",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "489",
   "title": "Hydrodynamic Semiconductor Transport",
   "domain": "Semiconductor Physics",

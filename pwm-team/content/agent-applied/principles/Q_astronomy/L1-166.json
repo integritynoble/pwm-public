@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-166",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "166",
   "title": "Stellar Coronagraphy PSF Subtraction",
   "domain": "Astronomy",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is a widefield-fluorescence fan-out artifact; principle grounded in domain literature.",
   "E": {
-    "description": "Stellar Coronagraphy PSF Subtraction: High-contrast imaging: subtract stellar PSF residuals (speckles) to detect faint companions using reference differential imaging or ADI. The forward operator produces the measurement through a 3-node primitive DAG (K.psf.coronagraph…); recovery is posed as a linear_inverse problem. Difficulty tier delta=3 with effective condition number kappa_eff~100; speckle_evolution_rate, wavefront_error_drift set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
+    "description": "Stellar Coronagraphy PSF Subtraction: High-contrast imaging: subtract stellar PSF residuals (speckles) to detect faint companions using reference differential imaging or ADI. The forward operator produces the measurement through a 3-node primitive DAG (K.psf.coronagraph\u2026); recovery is posed as a linear_inverse problem. Difficulty tier delta=3 with effective condition number kappa_eff~100; speckle_evolution_rate, wavefront_error_drift set the accuracy floor at the Omega boundary. See the forward_model field for the closed-form equation.",
     "forward_model": "I(r,theta) = PSF_star(r,theta) * alpha + companion_signal + speckle_noise(r,theta)",
     "world_state_x": "companion flux map f(r,theta) in R^{H x W}, contrast ~1e-5 to 1e-8",
     "observation_y": "focal plane intensity image I in R^{H x W} (speckle + shot noise dominated)",

@@ -1,9 +1,10 @@
 {
   "artifact_id": "L2-468",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-468",
   "principle_ref": "sha256:<L1-468_principle_hash>",
-  "title": "Satellite Radar Altimetry — Nominal + Mismatch Specs",
+  "title": "Satellite Radar Altimetry \u2014 Nominal + Mismatch Specs",
   "spec_type": "nominal_and_mismatch",
   "six_tuple": {
     "omega": {

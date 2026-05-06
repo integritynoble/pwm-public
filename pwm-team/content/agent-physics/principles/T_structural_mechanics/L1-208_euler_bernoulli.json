@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-208",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "208",
-  "title": "Euler-Bernoulli Beam — thin-beam bending",
+  "title": "Euler-Bernoulli Beam \u2014 thin-beam bending",
   "domain": "Structural Mechanics",
   "sub_domain": "Classical thin-beam bending PDE",
   "source_file": "T_structural_mechanics/208_euler_bernoulli.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Euler-Bernoulli Beam — thin-beam bending forward model.",
+    "description": "Euler-Bernoulli Beam \u2014 thin-beam bending forward model.",
     "forward_model": "EI * d^4 w/dx^4 = q(x); with BCs at x=0,L",
     "world_state_x": "beam deflection w(x) under distributed load q(x)",
     "observation_y": "LVDT + strain-gauge measurements along beam",

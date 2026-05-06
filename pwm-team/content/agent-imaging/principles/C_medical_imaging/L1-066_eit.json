@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-066",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "066",
   "title": "Electrical Impedance Tomography (EIT)",
   "domain": "Medical Imaging",

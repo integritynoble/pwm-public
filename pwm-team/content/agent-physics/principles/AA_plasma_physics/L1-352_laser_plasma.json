@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-352",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "352",
-  "title": "Laser-Plasma Interaction — relativistic electron acceleration",
+  "title": "Laser-Plasma Interaction \u2014 relativistic electron acceleration",
   "domain": "Plasma Physics",
   "sub_domain": "Ultra-intense laser-driven plasma",
   "source_file": "AA_plasma_physics/352_laser_plasma.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Laser-Plasma Interaction — relativistic electron acceleration forward model.",
+    "description": "Laser-Plasma Interaction \u2014 relativistic electron acceleration forward model.",
     "forward_model": "Relativistic PIC / Vlasov + Maxwell; wakefield E_acc ~ mc omega_p / e at a_0 ~ 1",
     "world_state_x": "accelerated electron beam energy distribution + wakefield structure",
     "observation_y": "electron spectrometer + optical probe shadowgraphy + betatron X-rays",

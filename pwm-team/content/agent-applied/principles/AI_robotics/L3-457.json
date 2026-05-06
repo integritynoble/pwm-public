@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-457",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-457",
   "parent_l1": "L1-457",
-  "title": "Hydrodynamic Lubrication (Reynolds Equation) — Benchmark Suite",
+  "title": "Hydrodynamic Lubrication (Reynolds Equation) \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "bearings_tribology_benchmark_ASME",

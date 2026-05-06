@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-134",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "134",
-  "title": "XRF Tomography — X-ray Fluorescence CT",
+  "title": "XRF Tomography \u2014 X-ray Fluorescence CT",
   "domain": "Scientific Instrumentation",
   "sub_domain": "Elemental 3D tomography via fluorescence detection",
   "source_file": "K_scientific_instrumentation/134_xrf_tomography.md",

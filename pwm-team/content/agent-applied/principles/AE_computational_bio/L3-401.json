@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-401",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-401",
   "parent_l1": "L1-401",
-  "title": "Windkessel Cardiac Afterload Model — Benchmark Suite",
+  "title": "Windkessel Cardiac Afterload Model \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "PhysioNet_MIMIC_arterial_line",

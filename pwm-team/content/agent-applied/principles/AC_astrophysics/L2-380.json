@@ -1,9 +1,10 @@
 {
   "artifact_id": "L2-380",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-380",
   "principle_ref": "sha256:<L1-380_principle_hash>",
-  "title": "Exoplanet Transit Photometry Inversion — Nominal + Mismatch Specs",
+  "title": "Exoplanet Transit Photometry Inversion \u2014 Nominal + Mismatch Specs",
   "spec_type": "nominal_and_mismatch",
   "six_tuple": {
     "omega": {

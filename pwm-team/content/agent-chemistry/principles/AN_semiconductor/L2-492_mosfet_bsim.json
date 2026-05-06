@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-492",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-492",
   "title": "BSIM Compact MOSFET Model Mismatch-Only Spec",
   "spec_type": "mismatch_only",

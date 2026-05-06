@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-068",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "068",
   "title": "Electroencephalography (EEG)",
   "domain": "Medical Imaging",

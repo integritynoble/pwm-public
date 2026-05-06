@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-050",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "050",
   "title": "OCT Angiography (OCTA)",
   "domain": "Medical Imaging",

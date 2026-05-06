@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-003",
   "layer": "L2",
+  "registration_tier": "founder_vetted",
   "parent_l1": "L1-003",
   "principle_ref": "sha256:<L1-003_principle_hash>",
   "title": "CASSI Mismatch-Only Spec (KAIST benchmark family)",

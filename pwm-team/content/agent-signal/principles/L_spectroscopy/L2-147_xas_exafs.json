@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-147",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-147",
   "principle_ref": "sha256:<L1-147_principle_hash>",
   "title": "EXAFS Radial-Fit Spec",
@@ -132,7 +133,7 @@
     "proximity_threshold": 0.1
   },
   "d_spec": 0.58,
-  "d_spec_notes": "Unique spec — X-ray spectroscopy different from other vibrational/electronic specs (d~0.55+). Distance from XANES-only spec ~= 0.25 (Similar).",
+  "d_spec_notes": "Unique spec \u2014 X-ray spectroscopy different from other vibrational/electronic specs (d~0.55+). Distance from XANES-only spec ~= 0.25 (Similar).",
   "s1_s4_gates": [
     "PASS",
     "PASS",

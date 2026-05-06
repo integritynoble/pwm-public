@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-498",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-498",
   "parent_l1": "L1-498",
-  "title": "Topology Optimization (SIMP) — Benchmark Suite",
+  "title": "Topology Optimization (SIMP) \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "benchmark_mbb_beam_50x100",

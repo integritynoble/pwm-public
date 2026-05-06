@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-164",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "164",
   "title": "Near-Field Scanning Optical Microscopy (NSOM/SNOM)",
   "domain": "Scanning Probe",

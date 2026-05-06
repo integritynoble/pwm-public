@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-521",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "521",
   "title": "Drug-Target Binding Affinity Classification (PWDR)",
   "domain": "Computational Chemistry",
@@ -34,9 +35,9 @@
     "threshold_continuity_proof": "Affinity classification is a step function on continuous Delta-G_binding values; per-class boundaries form measure-zero hyperplanes at Delta-G = {-5, -7, -9, -11} kcal/mol. Smoothed-classification globally Lipschitz with constant ~0.10 per kcal/mol of energy uncertainty."
   },
   "related_principles": [
-    "L1-294 (DFT — quantum-chemistry energy minimization core, physics_core_principle)",
-    "L1-298 (ab initio MD — sibling for dynamic free-energy calculations, informational)",
-    "L1-412 (protein folding energy landscape — sibling computational biology, n_c=4, informational)"
+    "L1-294 (DFT \u2014 quantum-chemistry energy minimization core, physics_core_principle)",
+    "L1-298 (ab initio MD \u2014 sibling for dynamic free-energy calculations, informational)",
+    "L1-412 (protein folding energy landscape \u2014 sibling computational biology, n_c=4, informational)"
   ],
   "E": {
     "description": "Drug-Target Binding Affinity Classification (PWDR): wraps L1-294 DFT analytical core with established medicinal-chemistry affinity-class thresholds. Stage 1 (analytical, from L1-294): compute drug-target binding free energy Delta-G_binding via FEP / TI / MM-PBSA / DFT-corrected docking using DFT-derived atomic charges and force-field parameters. Stage 2 (deterministic threshold): apply standard medicinal-chemistry thresholds at Delta-G = {-5, -7, -9, -11} kcal/mol to assign categorical label. Difficulty tier delta = 5. Mismatch parameters: force_field_uncertainty, sampling_convergence_error, water_model_uncertainty, protein_flexibility_truncation, drug_protonation_state, conformational_search_incompleteness.",
@@ -92,7 +93,7 @@
     "stability": "conditional",
     "condition_number_kappa": 100,
     "condition_number_effective": 25,
-    "regime": "Existence guaranteed within Omega bounds. Uniqueness conditional on adequate sampling (typically ≥100 ns of FEP for druglike ligands) and convergent thermodynamic cycle. Stability dominated by force_field_uncertainty (~1-2 kcal/mol systematic error) and sampling_convergence_error. Joint Hadamard well-posedness for the coupled DFT + MD + FEP + threshold forward established by Wang 2015 (FEP+ benchmark), Mey 2020 (best practices for FEP), Cournia 2020 (relative binding free energy review), Lipinski 1997 (Rule of 5), Veber 2002 (drug-likeness rules), Hopkins 2004 (ligand efficiency)."
+    "regime": "Existence guaranteed within Omega bounds. Uniqueness conditional on adequate sampling (typically \u2265100 ns of FEP for druglike ligands) and convergent thermodynamic cycle. Stability dominated by force_field_uncertainty (~1-2 kcal/mol systematic error) and sampling_convergence_error. Joint Hadamard well-posedness for the coupled DFT + MD + FEP + threshold forward established by Wang 2015 (FEP+ benchmark), Mey 2020 (best practices for FEP), Cournia 2020 (relative binding free energy review), Lipinski 1997 (Rule of 5), Veber 2002 (drug-likeness rules), Hopkins 2004 (ligand efficiency)."
   },
   "C": {
     "solver_class": "linear-operator + statistical sampling [FEP / TI / replica-exchange MD] + categorical-readout [affinity threshold] | machine-learned [deep neural force fields, Schrodinger FEP+] | linear-operator + deep neural [DeepBind, AtomNet]",

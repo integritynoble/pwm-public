@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-004",
   "layer": "L2",
+  "registration_tier": "founder_vetted",
   "parent_l1": "L1-004",
   "principle_ref": "sha256:<L1-004_principle_hash>",
   "title": "CACTI Mismatch-Only Spec (standard SCI video benchmark family)",

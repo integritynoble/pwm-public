@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-291",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "291",
-  "title": "Well Test Analysis — transient pressure testing",
+  "title": "Well Test Analysis \u2014 transient pressure testing",
   "domain": "Geophysics",
   "sub_domain": "Pressure-transient analysis (PTA) for reservoir properties",
   "source_file": "W_geophysics/291_well_test_analysis.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Well Test Analysis — transient pressure testing forward model.",
+    "description": "Well Test Analysis \u2014 transient pressure testing forward model.",
     "forward_model": "dp/dt = (k/(phi*mu*c_t)) * (1/r) * d/dr(r * dp/dr); log-log derivative diagnostic",
     "world_state_x": "permeability-thickness kh, skin factor s, boundary distance",
     "observation_y": "downhole pressure vs time during drawdown/buildup",

@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-329",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "329",
   "title": "CALPHAD Thermodynamic Modeling",
   "domain": "Materials Science",

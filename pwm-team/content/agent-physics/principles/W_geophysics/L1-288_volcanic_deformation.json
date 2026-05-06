@@ -1,8 +1,9 @@
 {
   "artifact_id": "L1-288",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "288",
-  "title": "Volcanic Deformation — InSAR/GPS source modeling",
+  "title": "Volcanic Deformation \u2014 InSAR/GPS source modeling",
   "domain": "Geophysics",
   "sub_domain": "Mogi / dike / sill source inversion",
   "source_file": "W_geophysics/288_volcanic_deformation.md",
@@ -11,7 +12,7 @@
   "related_principles": [],
   "source_data_quality_note": "Source MD is widefield-fluorescence template (genesis fan-out artifact). Physics below is grounded in canonical domain literature for this principle (see title for reference).",
   "E": {
-    "description": "Volcanic Deformation — InSAR/GPS source modeling forward model.",
+    "description": "Volcanic Deformation \u2014 InSAR/GPS source modeling forward model.",
     "forward_model": "u_z = (1-nu)*a^3 * dP / (mu * R^3); Mogi point-source closed form",
     "world_state_x": "volumetric source geometry (depth, volume change) beneath volcano",
     "observation_y": "InSAR displacement interferograms + GPS velocities",

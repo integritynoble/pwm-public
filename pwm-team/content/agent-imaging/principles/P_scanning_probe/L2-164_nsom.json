@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-164",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-164",
   "title": "Near-Field Scanning Optical Microscopy (NSOM/SNOM) Mismatch-Only Spec",
   "spec_type": "mismatch_only",

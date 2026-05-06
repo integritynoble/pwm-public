@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-122",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "122",
   "title": "Guided-Wave Ultrasonic Testing (long-range pipe/rail inspection)",
   "domain": "Industrial Inspection",

@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-139",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-139",
   "principle_ref": "sha256:<L1-139_principle_hash>",
   "title": "SRS Hyperspectral Unmixing Spec",
@@ -132,7 +133,7 @@
     "proximity_threshold": 0.1
   },
   "d_spec": 0.25,
-  "d_spec_notes": "Distance from 138 CARS ~= 0.20 (Similar — coherent Raman, SRS is linear/background-free). Distance from 137 Raman ~= 0.28 (Related).",
+  "d_spec_notes": "Distance from 138 CARS ~= 0.20 (Similar \u2014 coherent Raman, SRS is linear/background-free). Distance from 137 Raman ~= 0.28 (Related).",
   "s1_s4_gates": [
     "PASS",
     "PASS",
@@ -141,7 +142,7 @@
   ],
   "s1_s4_justifications": {
     "S1": "Linear forward model; dims consistent.",
-    "S2": "Linear in N ⇒ unique unmixing with full-rank library; kappa_eff ~ 10.",
+    "S2": "Linear in N \u21d2 unique unmixing with full-rank library; kappa_eff ~ 10.",
     "S3": "CLS closed-form; NNLS active-set finite-termination.",
     "S4": "epsilon_fn defined; SRS-UNet fails at RIN=1e-5 + xpm=0.2 (hardness)."
   },

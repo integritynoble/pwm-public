@@ -1,9 +1,10 @@
 {
   "artifact_id": "L3-374",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-374",
   "parent_l1": "L1-374",
-  "title": "Gravitational Wave Parameter Estimation — Benchmark Suite",
+  "title": "Gravitational Wave Parameter Estimation \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {
     "primary": "GWTC-3_LIGO_events",

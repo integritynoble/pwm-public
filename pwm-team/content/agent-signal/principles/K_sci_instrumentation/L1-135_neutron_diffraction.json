@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-135",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "135",
   "title": "Neutron Diffraction (powder / single crystal)",
   "domain": "Scientific Instrumentation",
@@ -17,7 +18,7 @@
     "observation_y": "Diffracted intensity I vs. TOF (spallation) or angle (reactor)",
     "physical_parameters_theta": [
       "Source type (reactor continuous or spallation TOF)",
-      "Wavelength range (0.5-6 Å)",
+      "Wavelength range (0.5-6 \u00c5)",
       "Angular / TOF resolution",
       "Background (furnace, cryostat)",
       "Sample absorption (Cd, B, Gd especially)",
@@ -50,7 +51,7 @@
   "C": {
     "solver_class": "Le Bail profile, Rietveld refinement (GSAS-II, Fullprof, Jana), Le Bail + ab initio structure solution, symmetry-mode analysis, learned (neutron-Net)",
     "convergence_rate_q": 2.0,
-    "error_bound": "Rwp < 0.05 goal; atomic-position precision ~ 0.01 Å at high-res",
+    "error_bound": "Rwp < 0.05 goal; atomic-position precision ~ 0.01 \u00c5 at high-res",
     "complexity": "Rietveld O(iter * N_refl * N_param)"
   },
   "physics_fingerprint": {

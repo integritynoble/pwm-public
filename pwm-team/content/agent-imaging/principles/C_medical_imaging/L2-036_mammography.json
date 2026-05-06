@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-036",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-036",
   "title": "Digital Mammography Mismatch-Only Spec",
   "spec_type": "mismatch_only",

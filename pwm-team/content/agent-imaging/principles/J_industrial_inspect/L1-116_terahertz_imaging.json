@@ -1,6 +1,7 @@
 {
   "artifact_id": "L1-116",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "116",
   "title": "Terahertz Imaging (0.1-10 THz time-domain / CW)",
   "domain": "Industrial Inspection",

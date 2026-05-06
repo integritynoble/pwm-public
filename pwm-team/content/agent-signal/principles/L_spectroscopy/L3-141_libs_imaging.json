@@ -1,6 +1,7 @@
 {
   "artifact_id": "L3-141",
   "layer": "L3",
+  "registration_tier": "stub",
   "parent_l2": "L2-141",
   "parent_l1": "L1-141",
   "title": "LIBS Imaging Benchmark Suite (geology + alloy + biological)",
@@ -152,7 +153,7 @@
       }
     ]
   },
-  "hardness_rule_check": "SATISFIED — LIBSNet fails at T4_extreme (self_abs=0.5, matrix=0.3): 0.35 > epsilon_fn ~ 0.25.",
+  "hardness_rule_check": "SATISFIED \u2014 LIBSNet fails at T4_extreme (self_abs=0.5, matrix=0.3): 0.35 > epsilon_fn ~ 0.25.",
   "ipfs_cid": null,
   "ground_truth_cid": null,
   "display_slug": "libs-imaging"

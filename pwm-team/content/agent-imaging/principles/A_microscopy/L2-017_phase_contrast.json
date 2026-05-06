@@ -1,6 +1,7 @@
 {
   "artifact_id": "L2-017",
   "layer": "L2",
+  "registration_tier": "stub",
   "parent_l1": "L1-017",
   "title": "Zernike Phase-Contrast Microscopy Mismatch-Only Spec",
   "spec_type": "mismatch_only",

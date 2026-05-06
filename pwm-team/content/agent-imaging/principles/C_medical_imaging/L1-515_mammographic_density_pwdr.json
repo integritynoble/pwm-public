@@ -1,12 +1,13 @@
 {
   "artifact_id": "L1-515",
   "layer": "L1",
+  "registration_tier": "stub",
   "principle_number": "515",
   "title": "Mammographic Breast Density Classification BI-RADS (PWDR)",
   "domain": "Medical Imaging",
   "sub_domain": "Mammographic glandular-tissue density reconstruction with BI-RADS density category readout",
   "source_file": "C_medical_imaging/515_mammographic_density_pwdr.md",
-  "source_data_quality_note": "v2 physical_with_discrete_readout (PWDR) genesis Principle. Wraps L1-036 mammography (analytical core) with the deterministic BI-RADS Atlas (5th edition) density-category rule on volumetric glandular-tissue fraction. Universal clinical use — every screening mammogram in the United States since 2014 is graded with a BI-RADS density category by federal mammography quality standards (MQSA). UTSW Simmons Cancer Center runs high-volume breast-imaging; aligns with standard-of-care.",
+  "source_data_quality_note": "v2 physical_with_discrete_readout (PWDR) genesis Principle. Wraps L1-036 mammography (analytical core) with the deterministic BI-RADS Atlas (5th edition) density-category rule on volumetric glandular-tissue fraction. Universal clinical use \u2014 every screening mammogram in the United States since 2014 is graded with a BI-RADS density category by federal mammography quality standards (MQSA). UTSW Simmons Cancer Center runs high-volume breast-imaging; aligns with standard-of-care.",
   "gate_class": "physical_with_discrete_readout",
   "gate_substitutions": {
     "kappa_substitute": null,
@@ -27,9 +28,9 @@
     "threshold_continuity_proof": "Volumetric breast density is a continuous-valued integrated functional of the recovered glandular-fraction map g(r). BI-RADS category boundaries at 25%/50%/75% are step functions; smoothed-grading is globally Lipschitz with constant ~0.04 per percentage-point of VBD. Inherits stability from L1-036 mammography reconstruction."
   },
   "related_principles": [
-    "L1-036 (mammography — full-field digital mammography analytical core, physics_core_principle)",
-    "L1-063 (DBT — digital breast tomosynthesis sibling, informational)",
-    "L1-038 (CBCT — cone-beam-CT sibling, informational)"
+    "L1-036 (mammography \u2014 full-field digital mammography analytical core, physics_core_principle)",
+    "L1-063 (DBT \u2014 digital breast tomosynthesis sibling, informational)",
+    "L1-038 (CBCT \u2014 cone-beam-CT sibling, informational)"
   ],
   "E": {
     "description": "Mammographic Breast Density Classification (PWDR): wraps L1-036 mammography analytical core with the ACR BI-RADS Atlas 5th edition density-grading rule. Stage 1 (analytical, from L1-036): reconstruct breast tissue composition g(r) (glandular-tissue volume fraction per voxel) from FFDM cranio-caudal + medio-lateral-oblique views via dual-energy decomposition or single-energy calibration with reference to fat/fibroglandular calibration phantoms. Compute volumetric breast density VBD = integral g(r) dV / volume_breast. Stage 2 (deterministic threshold): apply BI-RADS thresholds at 25%/50%/75% to assign category {A, B, C, D}; secondary spatial-heterogeneity rule discriminates heterogeneously vs homogeneously dense in C and D categories. Difficulty tier delta = 3 inherited from L1-036. Mismatch parameters: compression_thickness_calibration_error, exposure_factor_drift, calibration_phantom_uncertainty, age_related_density_shift, automated_vs_radiologist_disagreement.",
@@ -228,7 +229,7 @@
     "coupling_count_n_c": 1,
     "joint_well_posedness_references": [
       "Sickles EA, D'Orsi CJ, Bassett LW et al. (2013) ACR BI-RADS Mammography. ACR BI-RADS Atlas, Breast Imaging Reporting and Data System, 5th ed.",
-      "Highnam R, Brady M, Yaffe MJ, Karssemeijer N, Harvey J (2010) Robust breast composition measurement — VolparaDensity. IWDM 2010, LNCS 6136:342-349.",
+      "Highnam R, Brady M, Yaffe MJ, Karssemeijer N, Harvey J (2010) Robust breast composition measurement \u2014 VolparaDensity. IWDM 2010, LNCS 6136:342-349.",
       "Hartman K, Highnam R, Warren R, Jackson V (2013) Volumetric assessment of breast tissue composition from FFDM images: feasibility of a model-based approach. IWDM 2008.",
       "Yaffe MJ (2008) Mammographic density. Measurement of mammographic density. Breast Cancer Res 10(3):209.",
       "Boyd NF, Guo H, Martin LJ et al. (2007) Mammographic density and the risk and detection of breast cancer. NEJM 356(3):227-236.",
@@ -241,7 +242,7 @@
       "advisory_label": "Distinct (parent-child PWDR pattern)",
       "rationale": "L1-036 mammography recovers projection / volumetric tissue contrast; L1-515 wraps with BI-RADS density-grading rule. Different solution_space (1D BI-RADS density category vs 2D mammographic projection); adds L.dual_energy_decomposition, L.glandular_fraction_recovery, L.vbd_aggregation, L.birads_threshold_classifier primitives."
     },
-    "clinical_context": "Universal clinical use — every screening mammogram in the United States since 2014 is graded with a BI-RADS density category, mandated by federal Mammography Quality Standards Act (MQSA). Density category influences supplemental screening decisions: women with category C or D ('dense breasts') have higher breast cancer risk and reduced mammography sensitivity, often qualifying for supplemental screening US or MR. UTSW Simmons Cancer Center runs the largest breast-imaging program in North Texas; aligns directly with FDA-mandated standard-of-care. Commercial automated systems: Volpara, Quantra (FDA-cleared); deep-learning variants (DenseNet density classifier) also FDA-cleared. PWDR formulation provides physics-grounded explainability: density category is derived from explicit volumetric glandular fraction, not black-box CNN."
+    "clinical_context": "Universal clinical use \u2014 every screening mammogram in the United States since 2014 is graded with a BI-RADS density category, mandated by federal Mammography Quality Standards Act (MQSA). Density category influences supplemental screening decisions: women with category C or D ('dense breasts') have higher breast cancer risk and reduced mammography sensitivity, often qualifying for supplemental screening US or MR. UTSW Simmons Cancer Center runs the largest breast-imaging program in North Texas; aligns directly with FDA-mandated standard-of-care. Commercial automated systems: Volpara, Quantra (FDA-cleared); deep-learning variants (DenseNet density classifier) also FDA-cleared. PWDR formulation provides physics-grounded explainability: density category is derived from explicit volumetric glandular fraction, not black-box CNN."
   },
   "display_slug": "mammographic-density"
 }
