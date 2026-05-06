@@ -64,10 +64,19 @@ def load_all() -> dict[str, list[dict]]:
 # no reference solver, no dataset, not registered on-chain. Surfaced via
 # /api/principles?tier=stub|all so contributors can browse the claim board
 # without polluting the default mineable view.
+def content_dir() -> Path:
+    """Where to walk for cataloged-but-not-registered principle stubs.
+
+    Defaults to PWM_TEAM_ROOT/content for local dev; production deploy
+    overrides via PWM_CONTENT_DIR=/app/content (set in Dockerfile.production).
+    """
+    return Path(os.environ.get("PWM_CONTENT_DIR", str(PWM_TEAM_ROOT / "content")))
+
+
 @lru_cache(maxsize=1)
 def load_content_l1() -> list[dict]:
-    """Walk pwm-team/content/agent-*/principles/ for L1-*.json files."""
-    content_root = PWM_TEAM_ROOT / "content"
+    """Walk content/agent-*/principles/ for L1-*.json files."""
+    content_root = content_dir()
     if not content_root.exists():
         return []
     seen_ids: set[str] = set()
@@ -87,7 +96,7 @@ def load_content_l1() -> list[dict]:
             continue
         seen_ids.add(artifact_id)
         try:
-            rel = str(path.relative_to(PWM_TEAM_ROOT))
+            rel = str(path.relative_to(content_root))
         except ValueError:
             rel = str(path)
         data.setdefault("_source_path", rel)

@@ -55,6 +55,7 @@ COPY pwm-team/pwm_product/genesis                                /app/genesis
 COPY pwm-team/pwm_product/demos                                  /app/demos
 COPY pwm-team/pwm_product/benchmark_cards                        /app/benchmark_cards
 COPY pwm-team/pwm_product/walkthroughs                           /app/walkthroughs
+COPY pwm-team/content                                            /app/content
 
 # Built frontend (standalone output from Stage 1)
 COPY --from=frontend /build/.next/standalone /app/frontend
@@ -73,6 +74,7 @@ ENV PYTHONPATH=/app \
     PWM_ABI_DIR=/app/coord/contracts_abi \
     PWM_ADDRESSES=/app/coord/addresses.json \
     PWM_GENESIS_DIR=/app/genesis \
+    PWM_CONTENT_DIR=/app/content \
     PWM_DEMOS_DIR=/app/demos \
     PWM_WALKTHROUGHS_DIR=/app/walkthroughs \
     PWM_CARDS_DIR=/app/benchmark_cards \
