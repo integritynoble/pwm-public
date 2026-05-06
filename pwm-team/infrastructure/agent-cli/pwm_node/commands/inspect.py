@@ -89,19 +89,79 @@ def run(args: argparse.Namespace) -> int:
             print(f"Primitives:   {', '.join(primitives)}")
 
     elif layer == "L2":
-        # Spec-layer detail: parent links + six-tuple + d_spec + ibenchmark range.
+        # Spec-layer detail: parent links + full six-tuple + s1-s4 gates +
+        # d_spec + ibenchmark range. The customer guide explicitly documents
+        # the six-tuple block (omega, E, B, I, O, epsilon_fn) and the
+        # s1-s4 gate verdicts as the L2 inspect surface, so render both
+        # whenever the manifest carries the fields.
         if artifact.get("parent_l1"):
             print(f"Parent L1:    {artifact['parent_l1']}")
         if artifact.get("spec_type"):
             print(f"Spec type:    {artifact['spec_type']}")
         if artifact.get("d_spec") is not None:
             print(f"d_spec:       {artifact['d_spec']}")
-        st = artifact.get("six_tuple", {})
-        if st.get("epsilon_fn"):
-            eps = st["epsilon_fn"]
-            print(f"epsilon_fn:   {eps if isinstance(eps, str) else '<...>'}")
-        ibr = artifact.get("ibenchmark_range", {})
-        center = ibr.get("center_ibenchmark", {})
+
+        st = artifact.get("six_tuple") or {}
+        if st:
+            print("six_tuple:")
+            # omega — parameter space (dict of name -> [lo, hi] ranges or values)
+            omega = st.get("omega") or {}
+            if omega:
+                # Pretty-print as a compact one-line summary; long manifests
+                # have 10+ keys so wrap to 80 cols by chunking.
+                pieces = []
+                for k, v in omega.items():
+                    if isinstance(v, list) and len(v) == 2:
+                        pieces.append(f"{k}=[{v[0]}-{v[1]}]")
+                    else:
+                        pieces.append(f"{k}={v}")
+                # Print on one line if short, else break onto continuations
+                line = "  Omega:      " + " ".join(pieces)
+                if len(line) <= 100:
+                    print(line)
+                else:
+                    print(f"  Omega:      ({len(pieces)} dimensions)")
+                    for p in pieces:
+                        print(f"    {p}")
+            # E — forward operator + DAG primitive chain
+            e = st.get("E") or {}
+            if e:
+                if e.get("forward"):
+                    print(f"  E:          forward: {e['forward']}")
+                if e.get("primitive_chain"):
+                    print(f"              chain:   {e['primitive_chain']}")
+            # B — boundary constraints (dict of named flags / strings)
+            b = st.get("B") or {}
+            if b:
+                # Only print key names when value is True/string; skip falsy
+                keys = [k for k, v in b.items() if v]
+                if keys:
+                    print(f"  B:          {', '.join(keys)}")
+            # I — initialization strategy (dict)
+            i = st.get("I") or {}
+            if i:
+                strategy = i.get("strategy") or i
+                print(f"  I:          {strategy}")
+            # O — observable list
+            o = st.get("O") or []
+            if o:
+                if isinstance(o, list):
+                    print(f"  O:          {', '.join(str(x) for x in o)}")
+                else:
+                    print(f"  O:          {o}")
+            # epsilon_fn — acceptance threshold formula
+            if st.get("epsilon_fn"):
+                eps = st["epsilon_fn"]
+                print(f"  epsilon_fn: {eps if isinstance(eps, str) else '<...>'}")
+
+        # S1-S4 gate verdicts — verifies the spec passes the four hardness +
+        # convergence gates. Customer guide claims this row.
+        gates = artifact.get("s1_s4_gates") or []
+        if gates:
+            print(f"S1-S4:        {gates}")
+
+        ibr = artifact.get("ibenchmark_range") or {}
+        center = ibr.get("center_ibenchmark") or {}
         if center:
             print(f"Center rho:   {center.get('rho', '?')}")
             if center.get("epsilon") is not None:

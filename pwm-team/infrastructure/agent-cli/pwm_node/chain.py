@@ -63,15 +63,45 @@ class ContractRef:
 
 
 def _interfaces_dir(start: Path | None = None) -> Path:
-    """Walk up from ``start`` (or cwd) looking for the pwm-team/ root."""
+    """Walk up from ``start`` (or cwd) looking for an interfaces dir.
+
+    Probes two candidate locations in order:
+
+      1. ``pwm-team/infrastructure/agent-contracts/`` — mirror-included
+         (ships in pwm-public). Holds the canonical ``addresses.json``
+         (deploy-script-updated) and ``contracts_abi/*.json``.
+      2. ``pwm-team/coordination/agent-coord/interfaces/`` — internal coord
+         path (NOT in pwm-public mirror; source-tree only). Legacy fallback
+         used by founder workflows pre-migration.
+
+    The mirror path is checked first so external pwm-public consumers get
+    a working CLI by default. ``PWM_INTERFACES_DIR`` env var overrides both.
+
+    Required contents at the chosen path: ``addresses.json`` (file) and
+    ``contracts_abi/`` (dir with one ``<ContractName>.json`` per contract).
+    """
+    env_override = os.environ.get("PWM_INTERFACES_DIR")
+    if env_override:
+        p = Path(env_override).resolve()
+        if p.is_dir():
+            return p
+        raise ChainError(f"PWM_INTERFACES_DIR={env_override} is not a directory")
+
     cur = (start or Path.cwd()).resolve()
+    candidates = (
+        ("pwm-team", "infrastructure", "agent-contracts"),
+        ("pwm-team", "coordination", "agent-coord", "interfaces"),
+    )
     for p in [cur, *cur.parents]:
-        probe = p / "pwm-team" / "coordination" / "agent-coord" / "interfaces"
-        if probe.is_dir():
-            return probe
+        for parts in candidates:
+            probe = p.joinpath(*parts)
+            if (probe / "addresses.json").is_file() and (probe / "contracts_abi").is_dir():
+                return probe
     raise ChainError(
-        "Cannot find pwm-team/coordination/agent-coord/interfaces/ by walking up from "
-        f"{cur}. Pass interfaces_dir= to PWMChain explicitly."
+        "Cannot find a pwm-team interfaces dir (with addresses.json + contracts_abi/) "
+        f"by walking up from {cur}. Tried pwm-team/infrastructure/agent-contracts/ "
+        "and pwm-team/coordination/agent-coord/interfaces/. Pass interfaces_dir= to "
+        "PWMChain explicitly or set PWM_INTERFACES_DIR."
     )
 
 
