@@ -237,6 +237,32 @@ def test_benchmark_detail_by_artifact_id(seeded_env):
     assert body["leaderboard"][0]["cert_hash"] == refs["cert_hash"]
 
 
+def test_benchmark_detail_by_slug_resolves_to_artifact_id(seeded_env):
+    """Regression for slug-form URL: `/api/benchmarks/test-bench` must
+    resolve to the same on-chain row as the artifact-id-form URL.
+
+    Prior to 2026-05-06 the endpoint only called genesis.by_artifact_id
+    (no slug fallback), so /api/benchmarks/cassi returned
+    `genesis: null, chain: null` even though L3-003.json had
+    `display_slug: "cassi"`. This regressed Phase 2 task 2.12 of the
+    customer-experience plan ("slug-based URL routing").
+    """
+    client, refs = seeded_env
+    # The seeded fixture's L3-001 has display_slug "test-bench".
+    r = client.get("/api/benchmarks/test-bench")
+    assert r.status_code == 200
+    body = r.json()
+    # Slug resolved to the L3-001 genesis entry:
+    assert body["genesis"] is not None, "slug URL must resolve genesis entry"
+    assert body["genesis"]["artifact_id"] == "L3-001"
+    assert body["genesis"]["display_slug"] == "test-bench"
+    # Chain side resolves through the slug-derived artifact_id:
+    assert body["chain"] is not None, "slug URL must surface chain row"
+    assert body["chain"]["hash"] == refs["bench_hash"]
+    # Leaderboard is non-empty:
+    assert len(body["leaderboard"]) == 1
+
+
 def test_health_counts_include_minting(seeded_env):
     client, _ = seeded_env
     body = client.get("/api/health").json()

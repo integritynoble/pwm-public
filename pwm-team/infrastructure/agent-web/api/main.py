@@ -284,8 +284,9 @@ def _demo_for_benchmark(benchmark_ref: str) -> dict | None:
 
 @app.get("/api/benchmarks/{benchmark_ref}")
 def benchmark_detail(benchmark_ref: str):
-    # Accept either an artifact_id (L3-003) or an on-chain hash.
-    genesis_entry = genesis.by_artifact_id(benchmark_ref) or None
+    # Accept artifact_id (L3-003), display_slug (cassi), or on-chain hash.
+    # resolve_ref tries artifact_id first, then display_slug.
+    genesis_entry = genesis.resolve_ref(benchmark_ref, prefer_layer="l3")
     conn = store.get_conn()
     try:
         # Resolve the on-chain row in this order:
@@ -299,7 +300,12 @@ def benchmark_detail(benchmark_ref: str):
         if benchmark_ref.startswith("0x"):
             chain_row = store.get_artifact(conn, benchmark_ref)
         else:
-            chain_row = store.get_artifact_by_artifact_id(conn, benchmark_ref)
+            # If the input is a slug, resolve_ref already mapped it to the
+            # genesis entry; use its artifact_id for the chain lookup.
+            artifact_id_for_chain = (
+                (genesis_entry or {}).get("artifact_id") or benchmark_ref
+            )
+            chain_row = store.get_artifact_by_artifact_id(conn, artifact_id_for_chain)
             if chain_row is None and genesis_entry and genesis_entry.get("chain_hash"):
                 chain_row = store.get_artifact(conn, genesis_entry["chain_hash"])
         chain_hash = (chain_row or {}).get("hash")
