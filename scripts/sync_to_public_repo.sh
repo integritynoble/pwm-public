@@ -201,6 +201,29 @@ on tamper-resistant on-chain benchmarks. This is the **public mirror**
 — the canonical reference implementation, customer guide, and contract
 sources.
 
+---
+
+## ⚠️ Launch status (2026-05-07)
+
+**This repository is in pre-mainnet testing.** Read before relying on anything here:
+
+| Network | Status today | What works | What does NOT work |
+|---|---|---|---|
+| **Ethereum Sepolia testnet** (chainId 11155111) | ✓ Live | Full mining flow, real cert submissions, leaderboard, all examples in the customer guide | Sepolia ETH has no monetary value — testnet only |
+| **Base mainnet** (chainId 8453) | ✗ Not yet deployed | Nothing — `addresses.json:mainnet` is intentionally null | All production mining; targeted for D9 of the deploy runbook (~3-4 weeks from this README's date) |
+
+**The 531 cataloged Principles** are organized into 3 registration tiers:
+
+- **2 Tier 1 founder-vetted** (CASSI L1-003 + CACTI L1-004) — registered on Sepolia, mineable today
+- **0 Tier 2 community-proposed** — the post-launch growth path
+- **529 Tier 3 stubs** — declared scientific inventory awaiting external contributors. **Not registered on-chain, not mineable, no reward pool.**
+
+If you're here to mine, only L3-003 and L3-004 produce certs that can earn rewards. If you're here to claim a stub, see the contribution flow at the end of this README.
+
+For details on the tier system + economic protections see `pwm-team/customer_guide/PWM_PRINCIPLES_SPECS_BENCHMARKS_SOLUTIONS_GUIDE_2026-05-03.md` § "Registration tiers".
+
+---
+
 ## Quick start (consumers)
 
 ```bash
