@@ -13,6 +13,7 @@
     "L1-026 (general single-pixel-camera principle; sibling spec with random-Gaussian/Bernoulli measurement basis instead of Hadamard, d_principle ~= 0.38)"
   ],
   "reference_mine_example": "papers/Proof-of-Solution/mine_example/spc.md",
+  "source_data_quality_note": "The source MD at B_compressive_imaging/026_single_pixel.md is identity-polished as Single-Pixel Camera but its physics body is still the widefield-fluorescence template (genesis fan-out artifact; see line 5 of the MD: 'physics body still widefield-templated'). Physics below is extracted from the canonical papers/Proof-of-Solution/mine_example/spc.md reference and standard compressed-sensing literature. Authoritative SPC content is queued for re-author at pwm_product/genesis/l{1,2,3}/L{1,2,3}-005.json.",
   "E": {
     "description": "SPC: a DMD (digital micromirror device) imposes a sequence of Hadamard-style binary +/-1 patterns on the incoming optical field, and a single photodetector integrates the pattern-weighted irradiance; m scalar measurements permit recovery of the H*W image when m/n ~ 0.25 and the image is sparse.",
     "forward_model": "y_k = <phi_k, x> + n_k,  Phi from Hadamard basis at sampling ratio m/n",
