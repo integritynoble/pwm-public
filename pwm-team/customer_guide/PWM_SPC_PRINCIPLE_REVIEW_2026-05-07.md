@@ -219,6 +219,26 @@ L3 is where the spec meets data. SPC's L3 carries **both an I-benchmark suite
 (4 difficulty tiers) and a P-benchmark (rho=50 aggregate)** in a single
 `combined_P_and_I` artifact.
 
+## 3.0 Canonical P-benchmark vs I-benchmark (per `pwm_overview.md` Figure 0d)
+
+Every spec produces **both** a P-benchmark and an I-benchmark. They share
+the same Ω / E / B / I / O / ε definitions but draw evaluation instances
+differently:
+
+| Aspect | **P-benchmark** | **I-benchmark** |
+|---|---|---|
+| Full name | Parametric Benchmark | Instance Benchmark |
+| Ω draw | Random Ω drawn from the full declared range *at evaluation time* | Fixed `Ω_i` snapped to a standard size tier (stored in benchmark) |
+| ε threshold | `epsilon_fn(Ω)` AST-sandboxed expression evaluated per draw | Pre-computed scalars from `epsilon_fn` at each `Ω_i` |
+| rho | **always 50** (full-range generalization required) | **1 / 3 / 5 / 10** depending on the spec's declared difficulty tier |
+| Tests | Broad generalization across Ω | Performance at a specific operating point |
+| Count per spec | 1 | 1 |
+
+**S4 gate at L2** rejects spec submissions that don't include one worked
+example of each. SPC's L3-026b includes both: the rho=50 P-benchmark
+(below in § 3.3) and a **4-tier I-benchmark suite** (§ 3.2) with rho ∈
+{1, 3, 5, 10} per tier.
+
 ## 3.1 Dataset registry
 
 | Dataset | Source | Construction |
@@ -240,12 +260,15 @@ Each I-benchmark is a single-instance evaluation (`rho` small, fixed ω) with
 its own ε floor. Solvers can clear individual tiers without saturating the
 full P-benchmark.
 
-| Tier | n_pixels | sampling | noise | gain α | illum σ | ε (dB) | d_ibench |
-|---|---|---|---|---|---|---|---|
-| **T1_nominal** | 4,096 (64×64) | 0.25 | 0.01 | 0.0 | 0.0 | **27.0** | 0.14 |
-| **T2_gain_drift** | 4,096 (64×64) | 0.25 | 0.02 | 0.0015 | 5.0 | **24.5** | 0.30 |
-| **T3_blind_calibration** | 16,384 (128×128) | 0.15 | 0.03 | 0.0025 | 10.0 | **22.0** | 0.50 |
-| **T4_undersampled** | 65,536 (256×256) | 0.05 | 0.05 | 0.003 | 15.0 | **19.0** | 0.72 |
+| Tier | rho | n_pixels | sampling | noise | gain α | illum σ | ε (dB) | d_ibench |
+|---|---|---|---|---|---|---|---|---|
+| **T1_nominal** | 1 | 4,096 (64×64) | 0.25 | 0.01 | 0.0 | 0.0 | **27.0** | 0.14 |
+| **T2_gain_drift** | 3 | 4,096 (64×64) | 0.25 | 0.02 | 0.0015 | 5.0 | **24.5** | 0.30 |
+| **T3_blind_calibration** | 5 | 16,384 (128×128) | 0.15 | 0.03 | 0.0025 | 10.0 | **22.0** | 0.50 |
+| **T4_undersampled** | 10 | 65,536 (256×256) | 0.05 | 0.05 | 0.003 | 15.0 | **19.0** | 0.72 |
+
+The rho values follow the canonical 1/3/5/10 progression — each tier draws
+that many instances at the fixed `Ω_i` and reports an aggregate score.
 
 ### Authored baseline performance per tier (PSNR / Q)
 
@@ -472,6 +495,7 @@ the customer guide a non-CASSI, non-CACTI third example.
 **Source paper / mine_example reference:**
 
 - `papers/Proof-of-Solution/mine_example/spc.md` (referenced from L1's `reference_mine_example`)
+- `papers/Proof-of-Solution/mine_example/pwm_overview.md` — canonical 4-layer pipeline definition; § Figure 0d defines spec.md six-tuple format and the P-benchmark vs I-benchmark distinction this doc inherits
 
 **Related stub** (general single-pixel, NOT Hadamard-specific):
 
