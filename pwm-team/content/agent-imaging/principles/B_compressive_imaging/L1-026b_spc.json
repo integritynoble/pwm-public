@@ -6,12 +6,13 @@
   "title": "Single-Pixel Camera (SPC) with Hadamard structured illumination",
   "domain": "Compressive Imaging",
   "sub_domain": "Structured-illumination single-pixel",
-  "source_file": "B_compressive_imaging/026_spc.md",
+  "source_file": "B_compressive_imaging/026_single_pixel.md",
   "gate_class": "analytical",
   "gate_substitutions": null,
-  "related_principles": [],
+  "related_principles": [
+    "L1-026 (general single-pixel-camera principle; sibling spec with random-Gaussian/Bernoulli measurement basis instead of Hadamard, d_principle ~= 0.38)"
+  ],
   "reference_mine_example": "papers/Proof-of-Solution/mine_example/spc.md",
-  "source_data_quality_note": "The source MD at B_compressive_imaging/026_spc.md contains the widefield-fluorescence template (genesis fan-out artifact). Physics below is extracted from the canonical mine_example/spc.md reference.",
   "E": {
     "description": "SPC: a DMD (digital micromirror device) imposes a sequence of Hadamard-style binary +/-1 patterns on the incoming optical field, and a single photodetector integrates the pattern-weighted irradiance; m scalar measurements permit recovery of the H*W image when m/n ~ 0.25 and the image is sparse.",
     "forward_model": "y_k = <phi_k, x> + n_k,  Phi from Hadamard basis at sampling ratio m/n",
