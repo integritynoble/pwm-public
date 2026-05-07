@@ -472,6 +472,16 @@ state directly via `cast call` or web3.py.
 > on the roadmap. Until then the two URLs above are the canonical
 > verification path.
 
+> **Concrete worked example with real on-chain data:** see
+> [`PWM_VERIFY_MST_L_CASSI_CLAIM_2026-05-06.md`](PWM_VERIFY_MST_L_CASSI_CLAIM_2026-05-06.md)
+> — five layers of verification depth (from "look at the explorer page" →
+> "rebuild the cert payload bytes from scratch and re-keccak") for the
+> live MST-L 35.295 dB CASSI cert
+> (`0x7c7740faad378c8514128903a26165d5e5d303b56e2b5b4649917265c5a3ee13`,
+> tx `0x8883a90d…`, block 10778856 on Sepolia). That doc walks the
+> same flow as this section but with a real cert hash you can paste
+> into Etherscan today.
+
 ### Download a published Solution as a reference
 
 If the cert payload includes an off-chain `solution_uri` (typically
@@ -667,6 +677,17 @@ hashing strips it before computing keccak256, so:
    is Aidoc's published wallet, cert finalized (challenge period clean)
 4. Regulator can re-download the L3-523 holdout split and
    independently re-verify if desired
+
+> **Worked example (real cert, real chain data):** the L3-523/Aidoc
+> example above is hypothetical (L3-523 isn't registered on-chain
+> yet — it's a Tier-3 stub). For a regulator-style verification
+> against a *real* on-chain cert today, follow
+> [`PWM_VERIFY_MST_L_CASSI_CLAIM_2026-05-06.md`](PWM_VERIFY_MST_L_CASSI_CLAIM_2026-05-06.md).
+> It walks the same Journey C steps against the live MST-L CASSI
+> cert (`0x7c7740…e13`, Q_int 35, PSNR 35.295 dB) at five increasing
+> depth levels — explorer page → Etherscan event → contract
+> state read → re-derive cert hash from the payload bytes → rerun
+> the solver and confirm the same Q.
 
 ### Journey D — External developer writing a new Principle (Bounty #7 Tier B)
 
