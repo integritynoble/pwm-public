@@ -31,7 +31,7 @@
     "E": {
       "forward": "y_k = <phi_k_Hadamard, x> + n_k  (phi_k_Hadamard potentially corrupted by gain drift and illumination falloff)",
       "operator": "spc_forward_mismatch",
-      "primitive_chain": "S.pattern.hadamard -> L.inner_product -> int.temporal -> D.scalar",
+      "primitive_chain": "S.pattern.hadamard -> L.inner_product -> int.spatial -> D.scalar",
       "inverse": "recover x in R^n from m Hadamard-projection scalars y"
     },
     "B": {

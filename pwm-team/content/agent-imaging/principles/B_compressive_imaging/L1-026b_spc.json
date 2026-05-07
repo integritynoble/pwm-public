@@ -27,17 +27,17 @@
     ]
   },
   "G": {
-    "dag": "S.pattern.hadamard -> L.inner_product -> int.temporal -> D.scalar",
+    "dag": "S.pattern.hadamard -> L.inner_product -> int.spatial -> D.scalar",
     "vertices": [
       "S.pattern.hadamard",
       "L.inner_product",
-      "int.temporal",
+      "int.spatial",
       "D.scalar"
     ],
     "arcs": [
       "S.pattern.hadamard -> L.inner_product",
-      "L.inner_product -> int.temporal",
-      "int.temporal -> D.scalar"
+      "L.inner_product -> int.spatial",
+      "int.spatial -> D.scalar"
     ],
     "L_DAG": 3.0,
     "n_c": 0
@@ -48,7 +48,8 @@
     "stability": "conditional",
     "condition_number_kappa": 3000,
     "condition_number_effective": 30,
-    "regime": "Hadamard measurement at 25% sampling satisfies RIP for sparse recovery; Gate-1 minimum compression ratio ~5%. Residual-based calibration fails for SPC (undetermined self-consistency); TV-based objective required for gain-drift and illumination-non-uniformity correction."
+    "condition_number_mismatched": 120,
+    "regime": "Hadamard measurement at 25% sampling satisfies RIP for sparse recovery; Gate-1 minimum compression ratio ~5%. Residual-based calibration fails for SPC (undetermined self-consistency); TV-based objective required for gain-drift and illumination-non-uniformity correction. Mismatched conditioning estimate (kappa~120) extrapolated from CASSI's effective×4 ratio (50→200); refine with empirical sweeps over gain_alpha and illum_sigma when available."
   },
   "C": {
     "solver_class": "FISTA-TV, ISTA-Net, LISTA, or learned deep unrolling",
@@ -66,7 +67,7 @@
     "primitives": [
       "S.pattern.hadamard",
       "L.inner_product",
-      "int.temporal",
+      "int.spatial",
       "D.scalar"
     ]
   },
