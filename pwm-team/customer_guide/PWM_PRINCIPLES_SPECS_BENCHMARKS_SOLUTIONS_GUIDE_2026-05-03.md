@@ -376,18 +376,30 @@ pwm-node --network testnet inspect L3-003
 
 ```bash
 # Option 1 (recommended): web "Get this benchmark" card on the explorer
-# https://explorer.pwm.platformai.org/benchmarks/L3-003 — bundles the
-# T1_nominal split as a single zip download.
+# https://explorer.pwm.platformai.org/benchmarks/L3-003 — serves per-sample
+# downloads from /api/demos/cassi/sample_NN/{snapshot,ground_truth,solution}
+# .{npz,png} + meta.json. Multiple samples available (sample_01, sample_02,
+# …); each is a complete evaluator input + reference output you can feed
+# straight into pwm-node mine --dry-run --solver your.py.
 
 # Option 2 (post-launch): once the IPFS pinning bounty (Bounty #6) ships,
-# CIDs will land in the L3 manifest's `dataset_registry` and you'll be
-# able to fetch them directly:
+# CIDs will land in the L3 manifest's `dataset_registry` and you'll be able
+# to fetch the full T1_nominal/T2_low/… splits directly:
 #   ipfs get <CID-from-L3-manifest> -o ./cassi_data/
-# Today, dataset_registry in the manifest holds dataset NAMES + construction
-# notes only (KAIST-30, CAVE, ICVL); the explorer card is the working path.
+# Today, dataset_registry in the manifest holds textual dataset names +
+# construction notes only (KAIST-30, CAVE, ICVL, the build recipe, dev/
+# holdout instance counts) — `ipfs_cid` and `ground_truth_cid` are
+# explicitly null. The explorer card is the working path until pinning.
 
-# Option 3: dataset metadata for reference
-jq -r '.dataset_registry' pwm-team/pwm_product/genesis/l3/L3-003.json
+# Option 3: source-author releases (full datasets, license-permitting)
+#   KAIST-30 hyperspectral:  http://vclab.kaist.ac.kr/iccv2017p1/index.html
+#   CAVE multispectral:      https://www.cs.columbia.edu/CAVE/databases/multispectral/
+#   ICVL hyperspectral:      http://icvl.cs.bgu.ac.il/hyperspectral/
+
+# Option 4: read dataset metadata as currently committed
+jq '.dataset_registry' pwm-team/pwm_product/genesis/l3/L3-003.json
+# Returns: {primary, secondary, tertiary, construction_method,
+#           num_dev_instances_per_tier, holdout_instances_per_tier}
 ```
 
 ### Evaluate your own solver locally (no on-chain submission, no wallet needed)
