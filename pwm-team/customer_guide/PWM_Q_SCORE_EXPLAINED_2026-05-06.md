@@ -40,46 +40,96 @@ Source: `pwm-team/infrastructure/agent-contracts/contracts/PWMCertificate.sol:54
 
 ## How Q is derived from the actual reconstruction
 
-Different benchmarks use different primary metrics, but the pattern is the
-same: take the raw scientific metric, normalize it against the benchmark's
-epsilon-threshold function, clip to [0, 1].
+PWM's L3 benchmarks are **P-benchmarks** — rho=50 instances drawn across
+the parameter space Ω, scored as a *distribution* not a single PSNR.
+So Q is a weighted aggregate of how the solver performs across many
+instances, not a normalisation of one reading.
+
+The scoring engine
+(`pwm-team/infrastructure/agent-scoring/pwm_scoring/score.py:_compute_q_p`)
+mixes three signals:
 
 ```
-                              raw metric                  Q (in [0,1])              Q_int
-                              ──────────                  ────────────              ─────
-CASSI / CACTI:           PSNR_dB (e.g. 26.5 dB)    ───→   normalize vs eps   ───→   85
-Chest CT severity:       AUROC (e.g. 0.92)          ───→   already in [0,1]   ───→   92
-QSM:                     SSIM (e.g. 0.78)           ───→   already in [0,1]   ───→   78
+Q_p = 0.40 · coverage + 0.40 · margin + 0.20 · stratum_pass_frac
 ```
 
-For PSNR-based benchmarks the typical formula:
+(With Track C cross-bench transfer enabled, the weights shift to
+0.35/0.35/0.15/0.15 with `degradation_score` as the fourth term.)
 
-```
-Q = clip( (PSNR_dB - PSNR_floor) / (PSNR_ceiling - PSNR_floor), 0, 1 )
-```
+| Term | What it measures |
+|---|---|
+| **coverage** | Fraction of the rho instances whose `PSNR / epsilon_fn(Ω) ≥ 1.0` — i.e. how many instances cleared the per-instance threshold. |
+| **margin** | Mean of `(PSNR/epsilon − 1)` across the *passing* instances, saturated at 1.0. Rewards beating the threshold by a margin, not just barely clearing it. |
+| **stratum_pass_frac** | Fraction of Track-A strata (S1_small / S2_medium / S3_large / S4_xlarge) whose worst-case PSNR cleared its centroid epsilon. Penalises solvers that fail entire H×W regimes. |
 
-`PSNR floor` is "the bar you must clear to get any credit" and `PSNR ceiling`
-is "where Q saturates at 1.0". Each L3 manifest declares its own
-floor/ceiling/metric in the `scoring` field.
+`epsilon_fn(Ω)` is the per-instance acceptance threshold declared by
+the parent L2 spec. For CASSI L2-003 it's
+`25.0 + 2.0·log2(H/64) + 1.5·log10(photon_count/50)` — bigger images and
+higher-photon scenes raise the bar.
+
+Final clamp + integer conversion:
+
+```python
+Q     = max(0.0, min(1.0, Q_p))     # already in [0,1] by construction
+Q_int = round(Q * 100)              # uint8 in [0, 100], goes on-chain
+```
 
 ---
 
-## Concrete CASSI example
+## Quick read of the four reference baselines on L3-003
 
-For CASSI L3-003 with the GAP-TV reference solver:
+The `baselines[]` entries in L3-003.json are *authored reference values*
+— the benchmark author runs each baseline solver across rho=50 and
+records the resulting Q. They're stored as manifest data, not
+re-computed from a single PSNR every time the page loads.
+
+| Baseline | Authored PSNR (T1_nominal) | Authored Q | What this means |
+|---|---|---|---|
+| GAP-TV | 26.0 dB | 0.62 | Classical floor — passes only some instances; modest margin |
+| ADMM-CASSI | 28.5 dB | 0.76 | Classical ceiling — most instances pass, larger margin |
+| PnP-HSICNN | 31.8 dB | 0.89 | Plug-and-play — nearly all instances pass with comfortable margin |
+| MST-L | 35.295 dB | 0.95 | Deep-learning landmark — the current SOTA reference |
+
+The Q values aren't directly derivable from the single PSNR shown — they
+embed the author's per-instance + per-stratum results. To verify a
+specific Q in production, run the actual solver across rho=50 instances
+and call `score_solution()`; that's what `pwm-node mine` does.
+
+---
+
+## Concrete CASSI example — what `mine` reports today
+
+For a CASSI run that scores rho=50 instances, `pwm-node mine` reports
+each component before quantising:
 
 ```
-raw PSNR        = 26.49 dB        (your reconstruction's quality)
-PSNR floor      = 24.00 dB        (declared in benchmark — minimum)
-PSNR ceiling    = 26.94 dB        (declared in benchmark — saturates at this)
-
-Q   = (26.49 - 24.00) / (26.94 - 24.00) = 2.49 / 2.94 = 0.847
-Q_int = round(0.847 × 100) = 85    ← this is what goes on-chain
+[mine] Track A: stratum_results — 4 strata × 5 instances each
+[mine] Track B: median PSNR vs epsilon_fn(median Ω) → pass/fail
+[mine] coverage          = 0.96   (48 of 50 instances cleared epsilon_fn)
+[mine] margin            = 0.18   (mean of (PSNR/eps − 1) on passing)
+[mine] stratum_pass_frac = 1.00   (4 of 4 strata passed)
+[mine] Q_p   = 0.40·0.96 + 0.40·0.18 + 0.20·1.00 = 0.656
+[mine] Q     = clip(Q_p, 0, 1)        → 0.656
+[mine] Q_int = round(0.656 · 100)     → 66
 ```
 
-That `85` shows up in your cert payload
-(`pwm_work_*/cert_payload.json:Q_int: 85`) and on the explorer's leaderboard
-column labeled `Q`.
+The on-chain `CertificateSubmitted` event then carries `Q_int = 66`
+(and not the headline 35.295 dB PSNR you'd read off the off-chain
+`cert-meta` row). That's why the leaderboard's `Q` column and the
+solver's published PSNR look like different numbers — they
+intentionally measure different things:
+
+- **PSNR (off-chain meta)** — single-instance image quality, nice for
+  a paper headline.
+- **Q_int (on-chain, 0-100)** — aggregate of coverage/margin/stratum
+  across the full rho=50 sweep, deterministic across implementations,
+  ranking-grade.
+
+The MST-L cert at `0x7c7740…e13` shows `Q_int = 35` because its
+production scoring run gave a `Q_p` of about 0.35 against the full
+benchmark, even though its headline PSNR on the *one instance the
+submitter highlighted* is 35.295 dB. Both numbers are accurate; they
+just answer different questions.
 
 ---
 
