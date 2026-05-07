@@ -44,7 +44,14 @@ _UI_ONLY_FIELDS = frozenset({
     "display_color",
     "ui_metadata",
     "registration_tier",
+    "display_baselines",  # leaderboard-floor sidecar; e.g. deep-learning
+                          # SOTA landmarks added off-chain via cert-meta.
 })
+# TODO: consolidate this set with scripts/register_genesis.py::UI_ONLY_FIELDS
+# into a single shared module so future schema additions can't drift between
+# the registration path and the mining path. The 2026-05-07 audit caught a
+# divergence (display_baselines was added to register_genesis 2026-05-06 but
+# never propagated here, breaking benchmarkHash equality on dry-runs).
 
 
 def _canonical_for_hashing(obj):
@@ -63,9 +70,10 @@ def _canonical_json(obj) -> bytes:
 
     Must match scripts/register_genesis.py::_canonical_json so the
     benchmarkHash we compute here equals the hash that was registered on-chain.
-    Filters UI_ONLY_FIELDS (display_slug, display_color, ui_metadata)
-    before serializing — see PWM_HUMAN_READABLE_IDS_AND_CONTRIBUTION_FLOW_2026-05-03.md
-    for the rationale.
+    Filters the full UI_ONLY_FIELDS set above (display_slug, display_color,
+    ui_metadata, registration_tier, display_baselines) before serializing —
+    see PWM_HUMAN_READABLE_IDS_AND_CONTRIBUTION_FLOW_2026-05-03.md for the
+    rationale.
     """
     filtered = _canonical_for_hashing(obj)
     return json.dumps(filtered, sort_keys=True, separators=(",", ":")).encode("utf-8")
