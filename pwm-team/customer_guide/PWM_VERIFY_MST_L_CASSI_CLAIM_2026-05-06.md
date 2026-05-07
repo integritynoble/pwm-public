@@ -162,6 +162,189 @@ requires payload sharing.
 
 ---
 
+## Publishing your payload (optional, but high-trust)
+
+Layer 4 only works if the submitter publishes the cert payload bytes.
+By default, after running `pwm-node mine`, your `cert_payload.json`
+sits in a local working directory (`pwm_work_<timestamp>/`) and stays
+on your machine. Third parties can verify Layers 1, 2, 3, and 5 but
+not Layer 4 without those bytes.
+
+This section is for submitters who want their certs to be Layer-4-
+verifiable by anyone (paper reviewers, regulators, auditors, the
+general public).
+
+### When to publish your payload
+
+| Scenario | Publish? |
+|---|---|
+| You're submitting a routine cert with no external scrutiny | No need — Layer 1-3 + 5 are sufficient |
+| You're citing the cert in a paper / FDA submission / grant application | **Yes** — reviewers will want byte-level reproducibility |
+| You want the cert to serve as a third-party-verifiable benchmark claim | **Yes** — Layer 4 is the bridge from "the score is locked" to "the score is reproducible from raw bytes" |
+| You're competing for a high-value rank-1 spot and want to defuse "did you actually compute this?" challenges | **Yes** — preempts disputes during the 7-day challenge window |
+
+### What's in the payload (and what's NOT)
+
+A `cert_payload.json` contains exactly the 12 fields that the canonical
+hash covers — the same fields the chain bound when you submitted:
+
+```json
+{
+  "Q_int": 35,
+  "benchmarkHash": "0xdc8ad0dc68682eff750188c8d4d84179b3f7deddee1af562bc3b085794048b4a",
+  "principleId": 3,
+  "delta": 3,
+  "spWallet": "0x0c566f0F87cD062C3DE95943E50d572c74A87dEd",
+  "acWallet": "0x0c566f0F87cD062C3DE95943E50d572c74A87dEd",
+  "cpWallet": "0x0c566f0F87cD062C3DE95943E50d572c74A87dEd",
+  "creatorL1": "0x...",
+  "creatorL2": "0x...",
+  "creatorL3": "0x...",
+  "shareRatioP": 5000,
+  "submittedAt": 1777772748,
+  "_meta": { ... }   // optional inspection-only sidecar; stripped before hashing
+}
+```
+
+**Safe to publish:** all 12 chain-bound fields above are already public
+(they're on-chain or derived from on-chain values).
+
+**Never publish:**
+- Your private key (`PWM_PRIVATE_KEY`) — this is **not** in the payload, but check no `.env` file or environment dump leaks alongside the payload.
+- The reconstruction `.npz` itself, unless you separately want IPFS-pinning. The `.npz` is what Layer 5 verifies; the payload is just the cert metadata.
+
+### Two publishing options
+
+**Option A — commit to the public repo (recommended for permanent claims)**
+
+```bash
+# On the machine where mining ran (the GPU box for MST-L):
+cd <your-pwm-checkout>/pwm-team/infrastructure/agent-cli
+
+# Find the working dir for the cert you want to publish
+ls pwm_work_*/cert_payload.json | xargs grep -l '"Q_int": 35'
+# pwm_work_1777772700/cert_payload.json    <-- the MST-L one
+
+# Stage it under a public-facing path
+mkdir -p ../../proof_certs/mst_l_l3_003/
+cp pwm_work_1777772700/cert_payload.json ../../proof_certs/mst_l_l3_003/cert_payload.json
+
+# Optional: also include a README pointing at the on-chain cert
+cat > ../../proof_certs/mst_l_l3_003/README.md <<'EOF'
+# MST-L L3-003 cert payload
+
+On-chain cert: 0x7c7740faad378c8514128903a26165d5e5d303b56e2b5b4649917265c5a3ee13
+Tx:            0x8883a90d0e3fd01b8bb4221c9a10331ca9a9cf1532d117320bf2ce90a19e19c5
+Submitter:     0x0c566f0F87cD062C3DE95943E50d572c74A87dEd
+Q_int:         35
+PSNR:          35.30 dB
+
+Verify byte-exactness:
+  python3 scripts/verify_cert_payload.py proof_certs/mst_l_l3_003/cert_payload.json
+EOF
+
+git add ../../proof_certs/mst_l_l3_003/
+git commit -m "proof: publish MST-L L3-003 cert payload for Layer 4 verification"
+git push
+```
+
+After the next pwm-public mirror sync, anyone can clone the repo and
+re-derive the hash:
+
+```bash
+git clone https://github.com/integritynoble/pwm-public.git
+cd pwm-public
+python3 scripts/verify_cert_payload.py proof_certs/mst_l_l3_003/cert_payload.json
+# Recomputed cert_hash: 0x7c7740faad378c…
+# On-chain cert_hash:  0x7c7740faad378c…
+# Match: True
+```
+
+**Option B — paste as a GitHub Gist (good for one-off publication)**
+
+```bash
+# Authenticate gh once: gh auth login
+gh gist create pwm_work_1777772700/cert_payload.json \
+  --public \
+  --desc "MST-L cert payload for L3-003 (cert 0x7c7740faad378c…)"
+
+# Output: a gist URL like https://gist.github.com/…/abc123
+# Paste that URL into your paper / FDA submission alongside the cert hash
+```
+
+The Gist is git-tracked too, so its content can't be silently edited
+without leaving a revision history.
+
+### A `verify_cert_payload.py` helper script (suggested)
+
+Adding a one-line CLI wrapper to the public repo would let any third
+party run the recipe without copy-pasting Python. Suggested file:
+`scripts/verify_cert_payload.py`:
+
+```python
+#!/usr/bin/env python3
+"""Verify a published cert_payload.json against the on-chain cert hash.
+
+Usage:
+    python3 scripts/verify_cert_payload.py path/to/cert_payload.json [expected_cert_hash]
+
+If expected_cert_hash is omitted, just prints the recomputed hash so
+the caller can compare to whichever on-chain hash they expected.
+"""
+import json, sys
+from pathlib import Path
+from web3 import Web3
+
+# Must match scripts/register_genesis.py::UI_ONLY_FIELDS exactly
+UI_ONLY = {"display_slug", "display_color", "ui_metadata", "registration_tier", "display_baselines"}
+
+def main():
+    if len(sys.argv) < 2:
+        print("Usage: verify_cert_payload.py <cert_payload.json> [expected_hash]")
+        sys.exit(2)
+    payload = json.loads(Path(sys.argv[1]).read_text())
+    chain_payload = {k: v for k, v in payload.items() if not k.startswith("_")}
+    canonical = {k: v for k, v in chain_payload.items() if k not in UI_ONLY}
+    canonical_bytes = json.dumps(canonical, sort_keys=True, separators=(",", ":")).encode()
+    recomputed = "0x" + Web3.keccak(canonical_bytes).hex().lstrip("0x").zfill(64)
+    print(f"Recomputed cert_hash: {recomputed}")
+    if len(sys.argv) >= 3:
+        expected = sys.argv[2].lower()
+        if not expected.startswith("0x"):
+            expected = "0x" + expected
+        match = recomputed.lower() == expected
+        print(f"Expected cert_hash:  {expected}")
+        print(f"Match: {match}")
+        sys.exit(0 if match else 1)
+
+if __name__ == "__main__":
+    main()
+```
+
+### Privacy tradeoff
+
+Publishing the payload exposes a few extra bits not strictly required
+by the on-chain cert:
+
+- **Wallet associations:** if `acWallet ≠ cpWallet ≠ spWallet`, you reveal the team's role split. Most miners use the same wallet for all three (single-wallet mining), in which case nothing extra leaks.
+- **shareRatioP:** the AC/CP split percentage. Already on-chain via the cert struct, so no real leakage.
+- **submittedAt:** identical to the block timestamp; on-chain.
+- **_meta block** (if present): can include solver runtime, framework version, GPU model. Strip the `_meta` key before publishing if you'd rather keep your hardware setup private.
+
+Most submitters can publish freely. If you have a reason to keep wallet
+associations private, switch to a single-wallet mining setup before
+mining the cert you plan to publish.
+
+### Summary
+
+| If you... | Then... |
+|---|---|
+| Want maximum third-party trust | Publish the payload (Option A or B). Layer 4 becomes available to everyone. |
+| Want the cert to be tamper-resistant but private | Just submit the cert. Layers 1-3 (and Layer 5 for anyone with GPU + dataset) still apply. |
+| Cite the cert in a paper / regulator submission | **Publish.** Reviewers expect byte-level reproducibility for high-stakes claims. |
+
+---
+
 ## Layer 5 — Re-run MST-L on the benchmark dataset (~1-2 hours, GPU required)
 
 The deepest check: actually re-run the solver and confirm the PSNR
