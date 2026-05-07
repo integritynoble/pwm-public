@@ -236,29 +236,38 @@ https://explorer.pwm.platformai.org/benchmarks/L3-003
 ### L4-Test-1: Dry-run mine with the GAP-TV reference solver (CPU works!)
 
 ```bash
-cd /home/spiritai/pwm/Physics_World_Model/pwm
+# Use an ABSOLUTE solver path — pwm-node mine cd's into the work dir
+# before invoking the solver, so a relative path will fail to resolve.
+cd $(pwd)
+mkdir -p /tmp/pwm_l4_test/input
+cp pwm-team/pwm_product/demos/cassi/sample_01/snapshot.npz /tmp/pwm_l4_test/input/
+cp pwm-team/pwm_product/demos/cassi/sample_01/ground_truth.npz /tmp/pwm_l4_test/input/
+
 pwm-node mine L3-003 \
-  --solver pwm-team/pwm_product/reference_solvers/cassi/cassi_gap_tv.py \
+  --solver $(pwd)/pwm-team/pwm_product/reference_solvers/cassi/cassi_gap_tv.py \
+  --work-dir /tmp/pwm_l4_test \
   --dry-run
 ```
 
 | | |
 |---|---|
 | **Goal** | Compute Q without submitting a tx (no wallet needed) |
-| **Expected** | After ~30 sec on CPU: `[mine] PSNR=26.5 dB  Q=0.85  Q_int=85`, plus a would-be `cert_hash` printed. No tx broadcast. |
-| **Pass** | ✓ Q_int=85 (or close) appears |
+| **Expected** | After ~60 sec on CPU: a JSON cert payload with `Q_int: 85`, `benchmarkHash: "0xdc8ad0dc…"`, `principleId: 3`, `delta: 3`, all five wallet addresses set to `0x000…000` (since no `PWM_PRIVATE_KEY` is set), and `gate_verdicts: {S1: pass, …, S4: pass}`. No tx broadcast. |
+| **Pass** | ✓ `Q_int: 85` and `benchmarkHash: "0xdc8ad0dc…"` appear in the JSON output |
+
+> Note: the bundled `pwm_product/demos/cassi/sample_*/snapshot.npz` files use the InverseNet wide-snapshot convention (keys `y, mask, step` with y shape `(256, 310)`). The solver auto-detects this and dispatches to the wide-form forward/adjoint. If you see `KeyError: 'shifts'`, you're on an old `cassi_gap_tv.py` — pull the latest from the repo.
 
 ### L4-Test-2: Look at the cert payload it would have submitted
 
 ```bash
-ls -t pwm_work_*/cert_payload.json | head -1 | xargs cat | python3 -m json.tool | head -20
+python3 -m json.tool /tmp/pwm_l4_test/cert_payload.json
 ```
 
 | | |
 |---|---|
 | **Goal** | See the 12-field cert struct that mining produces |
-| **Expected** | JSON with `Q_int: 85`, `benchmarkHash: "0xdc8ad0dc…"`, `principleId: 3`, the 5 wallet addresses, `submittedAt`, etc. |
-| **Pass** | ✓ Q_int + benchmarkHash visible |
+| **Expected** | JSON with `Q_int: 85`, `benchmarkHash: "0xdc8ad0dc…"`, `principleId: 3`, the 5 wallet addresses, `certHash`, `delta`, `shareRatioP: 5000`, etc. |
+| **Pass** | ✓ Q_int=85 + benchmarkHash visible |
 
 ### L4-Test-3: Verify the existing MST-L cert (Layer 1)
 

@@ -55,7 +55,12 @@ SOLVER_VERSION = "1.0.0"
 
 
 def forward(x, mask, shifts):
-    """y = sum_b mask * shift(x_b, shifts[b])."""
+    """y = sum_b mask * shift(x_b, shifts[b]) — Meng-2020 narrow convention.
+
+    Snapshot has the same width as mask; band content that shifts past the
+    edge is truncated. Used when the L3 demo data was generated with the
+    in-place dispersion convention.
+    """
     import numpy as np
     H, W, N = x.shape
     y = np.zeros((H, W), dtype=x.dtype)
@@ -72,7 +77,7 @@ def forward(x, mask, shifts):
 
 
 def adjoint(y, mask, shifts, n_bands):
-    """Phi^T: scatter y back to each band with the inverse shift."""
+    """Phi^T: scatter y back to each band with the inverse shift (narrow form)."""
     import numpy as np
     H, W = y.shape
     x = np.zeros((H, W, n_bands), dtype=y.dtype)
@@ -88,16 +93,44 @@ def adjoint(y, mask, shifts, n_bands):
     return x
 
 
-def gap_scale(mask, shifts, n_bands):
+def forward_wide(x, mask, shifts):
+    """y = sum_b mask * x_b placed at column shifts[b] — InverseNet wide convention.
+
+    Snapshot width is mask_W + max(shifts) — every band's shifted contribution
+    fits without truncation. This is what `regenerate_demos_inversenet.py`
+    produces and what the bundled `pwm_product/demos/cassi/sample_*` files use.
+    """
+    import numpy as np
+    H, mask_W, N = x.shape
+    snap_W = mask_W + int(shifts[-1])
+    y = np.zeros((H, snap_W), dtype=x.dtype)
+    for b in range(N):
+        s = int(shifts[b])
+        y[:, s:s + mask_W] += mask * x[:, :, b]
+    return y
+
+
+def adjoint_wide(y_wide, mask, shifts, n_bands):
+    """Phi^T for the InverseNet wide convention — slice each band's window back."""
+    import numpy as np
+    H, mask_W = mask.shape
+    x = np.zeros((H, mask_W, n_bands), dtype=y_wide.dtype)
+    for b in range(n_bands):
+        s = int(shifts[b])
+        x[:, :, b] = mask * y_wide[:, s:s + mask_W]
+    return x
+
+
+def gap_scale(mask, shifts, n_bands, wide: bool = False):
     """Phi Phi^T 1 — pixel-wise normalization for the GAP residual step."""
     import numpy as np
-    # Phi^T(1) for each band is the mask shifted by s_b, squared (since mask is {0,1}).
-    # Phi of that sums over bands → each snapshot pixel's "weight" = # of bands whose
-    # mask (shifted by s_b) covers it.
-    H, W = mask.shape
-    ones_snapshot = np.ones((H, W), dtype=mask.dtype)
-    back = adjoint(ones_snapshot, mask, shifts, n_bands)  # (H,W,N) each = mask_shifted
-    scale = forward(back, mask, shifts)                    # sum over bands of mask_shifted^2
+    fwd = forward_wide if wide else forward
+    adj = adjoint_wide if wide else adjoint
+    H, mask_W = mask.shape
+    snap_W = mask_W + int(shifts[-1]) if wide else mask_W
+    ones_snapshot = np.ones((H, snap_W), dtype=mask.dtype)
+    back = adj(ones_snapshot, mask, shifts, n_bands)
+    scale = fwd(back, mask, shifts)
     # avoid divide-by-zero
     scale = np.where(scale > 1e-8, scale, 1.0)
     return scale
@@ -154,24 +187,33 @@ def tv_denoise_cube(x, tau=0.01, n_inner=5):
 
 def gap_tv(y, mask, shifts, n_bands, n_iters=30, tv_lambda=0.005,
            tv_decay=0.98, verbose=False):
-    """GAP-TV reconstruction."""
+    """GAP-TV reconstruction.
+
+    Auto-detects the snapshot convention: if y.shape[1] > mask.shape[1] the
+    InverseNet wide form is in use (regenerate_demos_inversenet.py output);
+    otherwise the Meng-2020 narrow form. Both give the same reconstruction
+    quality on synthetic data; the wide form is more accurate near the
+    snapshot edges where the narrow form truncates.
+    """
     import numpy as np
-    H, W = y.shape
-    scale = gap_scale(mask, shifts, n_bands)
+    wide = y.shape[1] > mask.shape[1]
+    fwd = forward_wide if wide else forward
+    adj = adjoint_wide if wide else adjoint
+    scale = gap_scale(mask, shifts, n_bands, wide=wide)
     # Warm start: one back-projection, scale-corrected so forward(x) ~ y.
-    x = adjoint(y, mask, shifts, n_bands) / n_bands
+    x = adj(y, mask, shifts, n_bands) / n_bands
 
     lam = tv_lambda
     for k in range(n_iters):
-        y_hat = forward(x, mask, shifts)
+        y_hat = fwd(x, mask, shifts)
         residual = (y - y_hat) / scale
-        x = x + adjoint(residual, mask, shifts, n_bands)
+        x = x + adj(residual, mask, shifts, n_bands)
         x = np.clip(x, 0.0, None)            # non-negativity
         x = tv_denoise_cube(x, tau=lam)
         lam *= tv_decay
         if verbose and (k == 0 or (k + 1) % 5 == 0 or k + 1 == n_iters):
-            data_residual = float(np.linalg.norm(y - forward(x, mask, shifts)))
-            print(f"  iter {k + 1:3d}/{n_iters}  ||r||_2 = {data_residual:.4f}")
+            data_residual = float(np.linalg.norm(y - fwd(x, mask, shifts)))
+            print(f"  iter {k + 1:3d}/{n_iters}  ||r||_2 = {data_residual:.4f}  conv={'wide' if wide else 'narrow'}")
     return x
 
 
@@ -233,7 +275,19 @@ def main(argv: list[str] | None = None) -> int:
         data = np.load(snap_path)
         y = data["y"].astype(np.float32)
         mask = data["mask"].astype(np.float32)
-        shifts = data["shifts"].astype(np.int32)
+        # Accept either explicit `shifts` (Meng-2020 form) or scalar `step`
+        # (InverseNet form); compute shifts from step + snapshot shape if needed.
+        if "shifts" in data:
+            shifts = data["shifts"].astype(np.int32)
+        elif "step" in data:
+            step = int(data["step"])
+            n_bands = (int(y.shape[1]) - int(mask.shape[1])) // step + 1 if y.shape[1] > mask.shape[1] else 28
+            shifts = np.array([b * step for b in range(n_bands)], dtype=np.int32)
+        else:
+            raise KeyError(
+                f"snapshot.npz must contain either 'shifts' (int array) or 'step' (scalar). "
+                f"Got keys: {list(data.keys())}"
+            )
         source = "input"
     else:
         print(f"[{SOLVER_NAME}] no snapshot.npz — generating synthetic problem for smoke test")
