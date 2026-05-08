@@ -77,6 +77,23 @@ export type PrinciplesList = {
   domains: string[];
   tier_counts: { founder_vetted: number; community_proposed: number; stub: number; total: number };
   tier: 'mineable' | 'stub' | 'all';
+  facet_counts?: {
+    carrier: Record<string, number>;
+    problem_class: Record<string, number>;
+    noise_model: Record<string, number>;
+  };
+  active_facets?: {
+    carrier: string | null;
+    problem_class: string | null;
+    noise_model: string | null;
+  };
+};
+
+export type PrincipleFacets = {
+  tier?: 'mineable' | 'stub' | 'all';
+  carrier?: string;
+  problem_class?: string;
+  noise_model?: string;
 };
 
 export type PrincipleDetail = {
@@ -203,8 +220,15 @@ export type Bounty = {
 
 export const api = {
   overview: () => get<Overview>('/api/overview'),
-  principles: (tier?: 'mineable' | 'stub' | 'all') =>
-    get<PrinciplesList>(`/api/principles${tier ? `?tier=${tier}` : ''}`),
+  principles: (facets?: PrincipleFacets) => {
+    const params = new URLSearchParams();
+    if (facets?.tier) params.set('tier', facets.tier);
+    if (facets?.carrier) params.set('carrier', facets.carrier);
+    if (facets?.problem_class) params.set('problem_class', facets.problem_class);
+    if (facets?.noise_model) params.set('noise_model', facets.noise_model);
+    const qs = params.toString();
+    return get<PrinciplesList>(`/api/principles${qs ? '?' + qs : ''}`);
+  },
   principle: (id: string) => get<PrincipleDetail>(`/api/principles/${encodeURIComponent(id)}`),
   benchmarks: () => get<BenchmarksList>('/api/benchmarks'),
   benchmark: (ref: string) => get<BenchmarkDetail>(`/api/benchmarks/${encodeURIComponent(ref)}`),

@@ -143,12 +143,36 @@ def all_principles_by_tier() -> dict[str, list[dict]]:
 
 
 def principle_by_artifact_id_any(artifact_id: str) -> dict | None:
-    """Lookup an L1 principle in genesis OR content tree by artifact_id."""
-    hit = by_artifact_id(artifact_id)
-    if hit is not None:
+    """Lookup an L1 principle in genesis OR content tree.
+
+    Resolution order (matches `pwm-node inspect` exactly):
+      1. Genesis tree by artifact_id  (e.g. "L1-003")
+      2. Genesis tree by display_slug (e.g. "cassi" → L1-003)
+      3. Content tree by artifact_id  (e.g. "L1-026b" — Tier-3 stub)
+      4. Content tree by display_slug (e.g. "spc" → L1-026b stub)
+
+    Web URL `/principles/cassi` and `/principles/spc` both work via this.
+    """
+    target = (artifact_id or "").strip()
+    if not target:
+        return None
+    target_lower = target.lower()
+
+    # 1. Genesis tree by artifact_id
+    hit = by_artifact_id(target)
+    if hit is not None and hit.get("layer") == "L1":
         return hit
+
+    # 2. Genesis tree by display_slug (L1 only — web detail page is for L1s)
+    slug_hit = by_slug(target_lower, layer="l1")
+    if slug_hit is not None:
+        return slug_hit
+
+    # 3 + 4. Content tree by artifact_id OR display_slug
     for p in load_content_l1():
-        if p.get("artifact_id") == artifact_id:
+        if p.get("artifact_id") == target:
+            return p
+        if (p.get("display_slug") or "").lower() == target_lower:
             return p
     return None
 

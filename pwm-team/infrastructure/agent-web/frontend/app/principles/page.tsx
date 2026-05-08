@@ -21,11 +21,19 @@ function tierBadge(tier: string | undefined) {
 export default async function PrinciplesPage({
   searchParams,
 }: {
-  searchParams: Promise<{ domain?: string; q?: string; tier?: string }>;
+  searchParams: Promise<{
+    domain?: string; q?: string; tier?: string;
+    carrier?: string; problem_class?: string; noise_model?: string;
+  }>;
 }) {
   const params = await searchParams;
   const tier: Tier = isTier(params.tier);
-  const data = await api.principles(tier);
+  const data = await api.principles({
+    tier,
+    carrier: params.carrier,
+    problem_class: params.problem_class,
+    noise_model: params.noise_model,
+  });
   if (!data) return <ApiDown />;
 
   const domainFilter = params.domain;
@@ -45,20 +53,56 @@ export default async function PrinciplesPage({
   const counts = data.tier_counts;
   const mineableCount = counts.founder_vetted + counts.community_proposed;
 
-  const tierTab = (label: string, value: Tier, count: number) => {
+  // Common URL param builder so all pills + form preserve the user's state
+  const buildHref = (overrides: Record<string, string | undefined>) => {
     const qs = new URLSearchParams();
-    qs.set('tier', value);
-    if (domainFilter) qs.set('domain', domainFilter);
-    if (q) qs.set('q', q);
+    const fields: Record<string, string | undefined> = {
+      tier, q: params.q, domain: domainFilter,
+      carrier: params.carrier, problem_class: params.problem_class,
+      noise_model: params.noise_model, ...overrides,
+    };
+    for (const [k, v] of Object.entries(fields)) {
+      if (v) qs.set(k, v);
+    }
+    return `/principles?${qs.toString()}`;
+  };
+
+  const tierTab = (label: string, value: Tier, count: number) => {
     const active = tier === value;
     return (
       <Link
-        href={`/principles?${qs.toString()}`}
+        href={buildHref({ tier: value })}
         className={`pwm-pill ${active ? '!text-white !border-pwm-accent' : ''}`}
       >
         {label} <span className="text-pwm-muted">({count})</span>
       </Link>
     );
+  };
+
+  const facetPill = (
+    axis: 'carrier' | 'problem_class' | 'noise_model',
+    value: string,
+    count: number,
+  ) => {
+    const active = (params[axis] ?? '') === value;
+    // Click an active pill to clear it; click an inactive pill to select it
+    const overrides = { [axis]: active ? undefined : value };
+    return (
+      <Link
+        key={`${axis}-${value}`}
+        href={buildHref(overrides)}
+        className={`pwm-pill ${active ? '!text-white !border-pwm-accent' : ''}`}
+      >
+        {value} <span className="text-pwm-muted">({count})</span>
+      </Link>
+    );
+  };
+
+  // Sort facet values by descending count and keep top 8 per axis (everything else
+  // is a long tail of single-instance values that just clutter the UI)
+  const topFacets = (axis: 'carrier' | 'problem_class' | 'noise_model'): [string, number][] => {
+    const m = data.facet_counts?.[axis] ?? {};
+    return Object.entries(m).filter(([, n]) => n >= 3).sort(([, a], [, b]) => b - a).slice(0, 8);
   };
 
   return (
@@ -100,6 +144,9 @@ export default async function PrinciplesPage({
       <form action="/principles" method="GET" className="flex gap-2">
         <input type="hidden" name="tier" value={tier} />
         {domainFilter && <input type="hidden" name="domain" value={domainFilter} />}
+        {params.carrier && <input type="hidden" name="carrier" value={params.carrier} />}
+        {params.problem_class && <input type="hidden" name="problem_class" value={params.problem_class} />}
+        {params.noise_model && <input type="hidden" name="noise_model" value={params.noise_model} />}
         <input
           type="search"
           name="q"
@@ -112,29 +159,59 @@ export default async function PrinciplesPage({
         </button>
       </form>
 
+      {/* Faceted physics filters — click to toggle, click again to clear */}
+      {data.facet_counts && (
+        <div className="pwm-card border-slate-700 space-y-3">
+          <div className="text-sm">
+            <span className="text-pwm-muted">Filter by physics:</span>
+            {(params.carrier || params.problem_class || params.noise_model) && (
+              <Link href={buildHref({ carrier: undefined, problem_class: undefined, noise_model: undefined })}
+                    className="ml-3 pwm-link text-xs">clear all facets</Link>
+            )}
+          </div>
+          {topFacets('carrier').length > 0 && (
+            <div className="flex flex-wrap items-baseline gap-2 text-xs">
+              <span className="text-pwm-muted w-24 shrink-0">Carrier</span>
+              {topFacets('carrier').map(([v, n]) => facetPill('carrier', v, n))}
+            </div>
+          )}
+          {topFacets('problem_class').length > 0 && (
+            <div className="flex flex-wrap items-baseline gap-2 text-xs">
+              <span className="text-pwm-muted w-24 shrink-0">Problem class</span>
+              {topFacets('problem_class').map(([v, n]) => facetPill('problem_class', v, n))}
+            </div>
+          )}
+          {topFacets('noise_model').length > 0 && (
+            <div className="flex flex-wrap items-baseline gap-2 text-xs">
+              <span className="text-pwm-muted w-24 shrink-0">Noise model</span>
+              {topFacets('noise_model').map(([v, n]) => facetPill('noise_model', v, n))}
+            </div>
+          )}
+          <p className="text-xs text-pwm-muted italic">
+            Photon, electron, mechanical, etc. drawn from each manifest&apos;s
+            <code className="px-1">physics_fingerprint</code> block. Combine multiple facets to narrow further.
+          </p>
+        </div>
+      )}
+
       {data.domains.length > 0 && (
         <div className="flex flex-wrap gap-2">
+          <span className="pwm-pill text-pwm-muted !border-transparent">Domain:</span>
           <Link
-            href={`/principles?tier=${tier}${q ? `&q=${encodeURIComponent(q)}` : ''}`}
+            href={buildHref({ domain: undefined })}
             className={`pwm-pill ${!domainFilter ? '!text-white !border-pwm-accent' : ''}`}
           >
             All
           </Link>
-          {data.domains.map((d) => {
-            const qs = new URLSearchParams();
-            qs.set('tier', tier);
-            qs.set('domain', d);
-            if (q) qs.set('q', q);
-            return (
-              <Link
-                key={d}
-                href={`/principles?${qs.toString()}`}
-                className={`pwm-pill ${domainFilter === d ? '!text-white !border-pwm-accent' : ''}`}
-              >
-                {d}
-              </Link>
-            );
-          })}
+          {data.domains.map((d) => (
+            <Link
+              key={d}
+              href={buildHref({ domain: d })}
+              className={`pwm-pill ${domainFilter === d ? '!text-white !border-pwm-accent' : ''}`}
+            >
+              {d}
+            </Link>
+          ))}
         </div>
       )}
 

@@ -196,13 +196,51 @@ The physics declaration: forward model + parameter space + DAG primitive chain +
 
 ## L1 — How CONSUMERS use existing Principles
 
-### Browse the catalog (web)
+### ★ Find a Principle for your problem (recommended starting point)
 
-`https://explorer.pwm.platformai.org/principles` — shows artifacts
-registered on the live network (today: 2 founder-vetted Principles
-on Sepolia — CASSI and CACTI).
+If you have a problem in mind and don't know the artifact ID, use the
+faceted matcher — it accepts a free-text description and ranks all
+531 catalog entries by similarity:
 
-### Browse the catalog (CLI)
+```bash
+# Plain-English search
+pwm-node match "I have a hyperspectral inverse problem with coded aperture and dispersion"
+#   → #1 L3-003 (CASSI)  score 12.5
+#   → #2 L3-004 (CACTI)  score 5.0
+
+pwm-node match "single-photon detector measures Hadamard-modulated patterns"
+#   → matches L1-026b (SPC)
+
+pwm-node match "iron-rich brain tissue from gradient-echo MRI phase"
+#   → matches L1-503 (QSM)
+```
+
+Or web-side: `https://explorer.pwm.platformai.org/match` — same logic,
+browser UI, ranked candidate cards with explanations.
+
+**This is the right entry point for 90% of users** — you almost
+never need to type an L1-XXX ID directly.
+
+### Browse the catalog by name or slug
+
+Once you know what you want, all three forms work:
+
+```bash
+# By artifact ID (chain-grade)
+pwm-node inspect L1-003
+pwm-node inspect L3-026b   # works for Tier-3 stubs too (resolves the content tree)
+
+# By display_slug (human-readable)
+pwm-node inspect cassi     # → L1-003
+pwm-node inspect cacti     # → L1-004
+pwm-node inspect spc       # → L1-026b
+pwm-node inspect qsm       # → L1-503
+```
+
+Web URLs accept either form too: `/principles/L1-003` and
+`/principles/cassi` open the same detail page.
+
+### Browse the catalog (CLI listing)
 
 ```bash
 # L1 Principles registered on the active network (default genesis dir):
@@ -213,6 +251,18 @@ pwm-node principles
 # L3 Benchmarks registered on the active network:
 pwm-node benchmarks
 ```
+
+### Browse the catalog (web)
+
+`https://explorer.pwm.platformai.org/principles` — three tabs at top:
+
+- **Mineable (2)** — registered on Sepolia, has reward pool (CASSI + CACTI)
+- **Claim Board (529)** — Tier-3 stubs awaiting external contributors
+- **All (531)** — combined view
+
+Plus filters by domain (Imaging, Physics, Applied, Chemistry, Signal)
+and a free-text search box across title + domain + sub_domain +
+forward_model.
 
 Both commands are offline-by-default — no `--network` flag needed for
 catalog reads.

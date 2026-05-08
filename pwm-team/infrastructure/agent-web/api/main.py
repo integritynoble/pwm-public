@@ -161,12 +161,24 @@ def activity_feed(limit: int = 50):
 
 
 @app.get("/api/principles")
-def principles_list(tier: str = "mineable"):
+def principles_list(
+    tier: str = "mineable",
+    carrier: str | None = None,
+    problem_class: str | None = None,
+    noise_model: str | None = None,
+):
     """List L1 principles. ?tier=mineable (default) returns founder_vetted +
     community_proposed; ?tier=stub returns the claim-board inventory only;
     ?tier=all returns everything across both buckets.
 
-    Tier counts are always returned so the UI can show "showing 2 of 531".
+    Faceted filters (each independent, AND-combined):
+      ?carrier=photon|electron|mechanical|acoustic|x_ray|...
+      ?problem_class=linear_inverse|nonlinear_inverse|parameter_estimation|...
+      ?noise_model=gaussian|shot_poisson|poisson|...
+
+    Returns `tier_counts` (always) and `facet_counts` (per-value counts
+    on the post-tier set, so the UI can show "20 photon / 5 electron"
+    even while another facet is selected).
     """
     buckets = genesis.all_principles_by_tier()
     counts = {k: len(v) for k, v in buckets.items()}
@@ -176,17 +188,42 @@ def principles_list(tier: str = "mineable"):
     mineable_ids = {p.get("artifact_id") for p in mineable}
 
     if tier == "stub":
-        selected = buckets.get("stub", [])
-        summaries = [genesis.summarize_stub_principle(p) for p in selected]
+        selected_raw = buckets.get("stub", [])
     elif tier == "all":
-        selected = mineable + buckets.get("stub", [])
-        summaries = [
-            genesis.summarize_principle(p) if p.get("artifact_id") in mineable_ids
-            else genesis.summarize_stub_principle(p)
-            for p in selected
-        ]
-    else:  # "mineable" (default)
-        summaries = [genesis.summarize_principle(p) for p in mineable]
+        selected_raw = mineable + buckets.get("stub", [])
+    else:  # "mineable"
+        selected_raw = mineable
+
+    def matches(p: dict) -> bool:
+        pf = p.get("physics_fingerprint") or {}
+        if carrier and pf.get("carrier") != carrier:
+            return False
+        if problem_class and pf.get("problem_class") != problem_class:
+            return False
+        if noise_model and pf.get("noise_model") != noise_model:
+            return False
+        return True
+
+    filtered = [p for p in selected_raw if matches(p)]
+
+    # Facet counts computed on the post-tier set (BEFORE applying facets)
+    # so the UI can show how many entries each value has within the
+    # current tier scope, even while other facets are active.
+    facet_counts: dict[str, dict[str, int]] = {
+        "carrier": {}, "problem_class": {}, "noise_model": {},
+    }
+    for p in selected_raw:
+        pf = p.get("physics_fingerprint") or {}
+        for axis in facet_counts:
+            v = pf.get(axis)
+            if v:
+                facet_counts[axis][v] = facet_counts[axis].get(v, 0) + 1
+
+    summaries = [
+        genesis.summarize_principle(p) if p.get("artifact_id") in mineable_ids
+        else genesis.summarize_stub_principle(p)
+        for p in filtered
+    ]
 
     chain_principles = []
     conn = store.get_conn()
@@ -200,6 +237,12 @@ def principles_list(tier: str = "mineable"):
         "domains": list(genesis.principle_domains(include_stubs=(tier in ("stub", "all")))),
         "tier_counts": counts,
         "tier": tier,
+        "facet_counts": facet_counts,
+        "active_facets": {
+            "carrier": carrier,
+            "problem_class": problem_class,
+            "noise_model": noise_model,
+        },
     }
     return _cached(body)
 

@@ -34,13 +34,71 @@ def _find_by_id(genesis_dir: Path, target: str) -> tuple[dict, str] | None:
     return None
 
 
+def _find_by_slug(genesis_dir: Path, target: str) -> tuple[dict, str] | None:
+    """Return (artifact, layer) for the first artifact with display_slug == target.
+
+    Searches L3 first (most-common consumer-facing layer), then L2, then L1.
+    Mirrors api/genesis.py::by_slug to keep CLI and web behaviours in sync.
+    """
+    target_lower = target.lower()
+    for layer in ("L3", "L2", "L1"):
+        for a in _load_layer(genesis_dir, layer):
+            if (a.get("display_slug") or "").lower() == target_lower:
+                return a, layer
+    return None
+
+
+def _find_in_content_tree(target: str) -> tuple[dict, str] | None:
+    """Fallback for stubs not in the genesis tree — walk pwm-team/content/.
+
+    Matches by artifact_id OR display_slug. Returns (artifact, layer) or None.
+    Lets `pwm-node inspect L1-026b` (and `inspect spc`) succeed for the 529
+    Tier-3 stubs that don't ship in the genesis dir.
+    """
+    target_lower = target.lower()
+    # Probe a few likely repo-root candidates so this works whether the
+    # caller is in pwm/ or pwm-public/ or running globally.
+    here = Path(__file__).resolve()
+    for parent in here.parents:
+        candidate = parent / "pwm-team" / "content"
+        if candidate.is_dir():
+            content_root = candidate
+            break
+    else:
+        return None
+    for path in content_root.rglob("L*-*.json"):
+        try:
+            a = json.loads(path.read_text())
+        except (json.JSONDecodeError, OSError):
+            continue
+        if not isinstance(a, dict):
+            continue
+        if a.get("artifact_id") == target or (a.get("display_slug") or "").lower() == target_lower:
+            aid = a.get("artifact_id") or ""
+            layer = aid.split("-", 1)[0] if aid else "L1"
+            return a, layer
+    return None
+
+
 def run(args: argparse.Namespace) -> int:
-    """Resolve and print an artifact. Returns 0 on hit, 3 on miss."""
+    """Resolve and print an artifact. Returns 0 on hit, 3 on miss.
+
+    Resolution order:
+      1. Genesis tree by artifact_id ("L1-003", "L3-026b")
+      2. Genesis tree by display_slug ("cassi", "cacti")
+      3. Content tree (Tier-3 stubs) by either artifact_id or display_slug
+    """
     target = args.target
     hit = _find_by_id(args.genesis_dir, target)
     if hit is None:
+        hit = _find_by_slug(args.genesis_dir, target)
+    if hit is None:
+        hit = _find_in_content_tree(target)
+    if hit is None:
         print(
             f"[pwm-node inspect] no offline match for '{target}'. "
+            f"Try `pwm-node match \"<your problem in plain English>\"` for fuzzy search, "
+            f"or `pwm-node principles` to list all entries. "
             f"If this is a cert_hash, retry with --network testnet (not yet implemented in Phase C-stub).",
         )
         return 3
