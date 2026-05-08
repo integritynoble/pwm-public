@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-252",
+  "artifact_id": "L3-252-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-252",
+  "parent_l2": "L2-252-001",
   "parent_l1": "L1-252",
   "title": "Inverse Synthetic Aperture Radar (ISAR) \u2014 rotating-target imaging Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

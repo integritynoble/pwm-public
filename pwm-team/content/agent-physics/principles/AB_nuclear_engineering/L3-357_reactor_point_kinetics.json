@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-357",
+  "artifact_id": "L3-357-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-357",
+  "parent_l2": "L2-357-001",
   "parent_l1": "L1-357",
   "title": "Point Reactor Kinetics \u2014 power transient modeling Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

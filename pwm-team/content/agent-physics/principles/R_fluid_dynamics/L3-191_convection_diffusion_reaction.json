@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-191",
+  "artifact_id": "L3-191-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-191",
+  "parent_l2": "L2-191-001",
   "parent_l1": "L1-191",
   "title": "Convection-Diffusion-Reaction \u2014 transport with source terms Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-249",
+  "artifact_id": "L3-249-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-249",
+  "parent_l2": "L2-249-001",
   "parent_l1": "L1-249",
   "title": "Metamaterial / Metasurface \u2014 effective medium inversion Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

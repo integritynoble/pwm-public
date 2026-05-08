@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-226",
+  "artifact_id": "L3-226-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-226",
+  "parent_l2": "L2-226-001",
   "parent_l1": "L1-226",
   "title": "Frictional Contact \u2014 Coulomb / state-rate friction Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

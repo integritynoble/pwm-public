@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-521",
+  "artifact_id": "L3-521-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-521",
+  "parent_l2": "L2-521-001",
   "parent_l1": "L1-521",
   "title": "Drug-Target Binding Affinity Classification (PWDR) \u2014 P-benchmark Skeleton",
   "benchmark_type": "P_benchmark",

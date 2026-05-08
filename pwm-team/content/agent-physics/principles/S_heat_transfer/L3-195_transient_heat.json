@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-195",
+  "artifact_id": "L3-195-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-195",
+  "parent_l2": "L2-195-001",
   "parent_l1": "L1-195",
   "title": "Transient Heat Conduction \u2014 inverse heat conduction (IHCP) Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

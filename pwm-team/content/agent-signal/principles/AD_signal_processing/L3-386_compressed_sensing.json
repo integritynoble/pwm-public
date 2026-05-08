@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-386",
+  "artifact_id": "L3-386-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-386",
+  "parent_l2": "L2-386-001",
   "parent_l1": "L1-386",
   "title": "Compressed Sensing Benchmark Suite (synthetic sparse + CS-MRI)",
   "benchmark_type": "combined_P_and_I",

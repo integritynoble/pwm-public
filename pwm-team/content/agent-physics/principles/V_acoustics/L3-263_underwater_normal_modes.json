@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-263",
+  "artifact_id": "L3-263-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-263",
+  "parent_l2": "L2-263-001",
   "parent_l1": "L1-263",
   "title": "Underwater Normal Modes \u2014 modal propagation (KRAKEN) Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-219",
+  "artifact_id": "L3-219-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-219",
+  "parent_l2": "L2-219-001",
   "parent_l1": "L1-219",
   "title": "Creep Mechanics \u2014 high-temperature rate-dependent Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

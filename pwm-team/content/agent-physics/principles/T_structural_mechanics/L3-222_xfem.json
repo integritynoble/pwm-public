@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-222",
+  "artifact_id": "L3-222-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-222",
+  "parent_l2": "L2-222-001",
   "parent_l1": "L1-222",
   "title": "XFEM \u2014 extended finite element for cracks Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

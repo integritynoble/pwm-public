@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-529",
+  "artifact_id": "L3-529-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-529",
+  "parent_l2": "L2-529-001",
   "parent_l1": "L1-529",
   "title": "Glaucoma Optic-Disc Cupping Classification (PWDR) \u2014 P-benchmark Skeleton",
   "benchmark_type": "P_benchmark",

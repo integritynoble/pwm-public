@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-100",
+  "artifact_id": "L3-100-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-100",
+  "parent_l2": "L2-100-001",
   "parent_l1": "L1-100",
   "title": "Synthetic Aperture Radar (SAR) \u2014 range-Doppler coherent imaging Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

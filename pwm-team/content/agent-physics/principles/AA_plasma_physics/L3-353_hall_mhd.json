@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-353",
+  "artifact_id": "L3-353-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-353",
+  "parent_l2": "L2-353-001",
   "parent_l1": "L1-353",
   "title": "Hall MHD \u2014 ion-scale physics in reconnection Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

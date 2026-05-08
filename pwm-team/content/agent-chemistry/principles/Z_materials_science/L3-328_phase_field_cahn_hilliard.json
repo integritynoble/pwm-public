@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-328",
+  "artifact_id": "L3-328-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-328",
+  "parent_l2": "L2-328-001",
   "parent_l1": "L1-328",
   "title": "Cahn-Hilliard Phase Separation Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

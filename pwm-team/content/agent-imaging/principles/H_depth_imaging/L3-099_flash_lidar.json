@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-099",
+  "artifact_id": "L3-099-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-099",
+  "parent_l2": "L2-099-001",
   "parent_l1": "L1-099",
   "title": "Flash-LiDAR SPAD-Array Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

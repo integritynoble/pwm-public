@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-267",
+  "artifact_id": "L3-267-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-267",
+  "parent_l2": "L2-267-001",
   "parent_l1": "L1-267",
   "title": "Acoustic Emission \u2014 source localization Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

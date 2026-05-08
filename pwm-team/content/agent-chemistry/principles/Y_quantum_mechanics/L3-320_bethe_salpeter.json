@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-320",
+  "artifact_id": "L3-320-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-320",
+  "parent_l2": "L2-320-001",
   "parent_l1": "L1-320",
   "title": "Bethe-Salpeter Equation for Excitons Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

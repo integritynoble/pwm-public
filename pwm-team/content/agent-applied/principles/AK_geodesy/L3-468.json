@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-468",
+  "artifact_id": "L3-468-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-468",
+  "parent_l2": "L2-468-001",
   "parent_l1": "L1-468",
   "title": "Satellite Radar Altimetry \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

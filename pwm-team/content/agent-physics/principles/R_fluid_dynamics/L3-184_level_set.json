@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-184",
+  "artifact_id": "L3-184-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-184",
+  "parent_l2": "L2-184-001",
   "parent_l1": "L1-184",
   "title": "Level-Set Method \u2014 implicit interface evolution Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

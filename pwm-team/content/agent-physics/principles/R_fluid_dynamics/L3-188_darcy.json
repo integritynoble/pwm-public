@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-188",
+  "artifact_id": "L3-188-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-188",
+  "parent_l2": "L2-188-001",
   "parent_l1": "L1-188",
   "title": "Darcy Flow \u2014 low-Re porous-medium flow Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

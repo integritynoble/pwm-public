@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-497",
+  "artifact_id": "L3-497-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-497",
+  "parent_l2": "L2-497-001",
   "parent_l1": "L1-497",
   "title": "Phonon Boltzmann Transport Equation Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

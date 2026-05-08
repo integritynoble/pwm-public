@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-359",
+  "artifact_id": "L3-359-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-359",
+  "parent_l2": "L2-359-001",
   "parent_l1": "L1-359",
   "title": "Reactor Thermal-Hydraulics \u2014 coupled T/H with neutronics Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

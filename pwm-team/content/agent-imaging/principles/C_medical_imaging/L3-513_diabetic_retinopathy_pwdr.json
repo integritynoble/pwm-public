@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-513",
+  "artifact_id": "L3-513-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-513",
+  "parent_l2": "L2-513-001",
   "parent_l1": "L1-513",
   "title": "Diabetic Retinopathy Grading from Fundus Imaging (PWDR) \u2014 P-benchmark Skeleton",
   "benchmark_type": "P_benchmark",

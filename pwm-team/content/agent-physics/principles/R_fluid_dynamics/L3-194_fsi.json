@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-194",
+  "artifact_id": "L3-194-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-194",
+  "parent_l2": "L2-194-001",
   "parent_l1": "L1-194",
   "title": "Fluid-Structure Interaction (FSI) \u2014 coupled fluid + solid Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-144",
+  "artifact_id": "L3-144-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-144",
+  "parent_l2": "L2-144-001",
   "parent_l1": "L1-144",
   "title": "DESI-MSI Benchmark Suite (tissue + pharma + plant)",
   "benchmark_type": "combined_P_and_I",

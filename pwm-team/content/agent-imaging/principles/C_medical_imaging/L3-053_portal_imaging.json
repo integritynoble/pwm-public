@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-053",
+  "artifact_id": "L3-053-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-053",
+  "parent_l2": "L2-053-001",
   "parent_l1": "L1-053",
   "title": "Electronic Portal Imaging (EPID) Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

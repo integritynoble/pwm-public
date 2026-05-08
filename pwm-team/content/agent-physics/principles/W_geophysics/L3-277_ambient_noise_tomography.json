@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-277",
+  "artifact_id": "L3-277-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-277",
+  "parent_l2": "L2-277-001",
   "parent_l1": "L1-277",
   "title": "Ambient-Noise Tomography \u2014 Green-function retrieval Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

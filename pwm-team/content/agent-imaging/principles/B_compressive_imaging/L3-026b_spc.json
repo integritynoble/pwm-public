@@ -1,9 +1,9 @@
 {
-  "artifact_id": "L3-026b",
+  "artifact_id": "L3-026-002-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-026b",
-  "parent_l1": "L1-026b",
+  "parent_l2": "L2-026-002",
+  "parent_l1": null,
   "title": "SPC Mismatch-Only Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {

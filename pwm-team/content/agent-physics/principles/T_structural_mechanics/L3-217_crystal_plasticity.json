@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-217",
+  "artifact_id": "L3-217-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-217",
+  "parent_l2": "L2-217-001",
   "parent_l1": "L1-217",
   "title": "Crystal Plasticity \u2014 slip-system resolved plasticity Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

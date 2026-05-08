@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-343",
+  "artifact_id": "L3-343-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-343",
+  "parent_l2": "L2-343-001",
   "parent_l1": "L1-343",
   "title": "Resistive MHD \u2014 finite-resistivity plasma Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

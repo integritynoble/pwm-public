@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-076",
+  "artifact_id": "L3-076-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-076",
+  "parent_l2": "L2-076-001",
   "parent_l1": "L1-076",
   "title": "Multi-Focus Fusion Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

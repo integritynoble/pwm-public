@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-160",
+  "artifact_id": "L3-160-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-160",
+  "parent_l2": "L2-160-001",
   "parent_l1": "L1-160",
   "title": "CT-FLIT (Fluorescence Lifetime Imaging Tomography) Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

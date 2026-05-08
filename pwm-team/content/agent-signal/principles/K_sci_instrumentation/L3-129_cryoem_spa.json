@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-129",
+  "artifact_id": "L3-129-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-129",
+  "parent_l2": "L2-129-001",
   "parent_l1": "L1-129",
   "title": "Cryo-EM SPA Benchmark Suite (EMDB + EMPIAR)",
   "benchmark_type": "combined_P_and_I",

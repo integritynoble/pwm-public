@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-297",
+  "artifact_id": "L3-297-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-297",
+  "parent_l2": "L2-297-001",
   "parent_l1": "L1-297",
   "title": "Time-Dependent Density Functional Theory (TDDFT) Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

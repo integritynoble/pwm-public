@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-056",
+  "artifact_id": "L3-056-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-056",
+  "parent_l2": "L2-056-001",
   "parent_l1": "L1-056",
   "title": "Chemical Exchange Saturation Transfer (CEST) MRI Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

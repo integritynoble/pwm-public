@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-248",
+  "artifact_id": "L3-248-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-248",
+  "parent_l2": "L2-248-001",
   "parent_l1": "L1-248",
   "title": "Photonic Inverse Design \u2014 nanostructure topology optimization Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

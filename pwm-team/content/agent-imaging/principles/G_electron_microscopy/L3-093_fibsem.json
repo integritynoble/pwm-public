@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-093",
+  "artifact_id": "L3-093-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-093",
+  "parent_l2": "L2-093-001",
   "parent_l1": "L1-093",
   "title": "Focused Ion Beam SEM (FIB-SEM) \u2014 serial sectioning 3D imaging Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

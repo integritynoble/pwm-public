@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-166",
+  "artifact_id": "L3-166-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-166",
+  "parent_l2": "L2-166-001",
   "parent_l1": "L1-166",
   "title": "Stellar Coronagraphy PSF Subtraction \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

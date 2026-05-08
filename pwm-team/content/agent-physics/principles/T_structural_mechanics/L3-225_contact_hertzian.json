@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-225",
+  "artifact_id": "L3-225-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-225",
+  "parent_l2": "L2-225-001",
   "parent_l1": "L1-225",
   "title": "Hertzian Contact \u2014 elastic sphere/cylinder contact Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-301",
+  "artifact_id": "L3-301-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-301",
+  "parent_l2": "L2-301-001",
   "parent_l1": "L1-301",
   "title": "Combustion Chemistry and Ignition Kinetics Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

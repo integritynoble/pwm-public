@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-268",
+  "artifact_id": "L3-268-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-268",
+  "parent_l2": "L2-268-001",
   "parent_l1": "L1-268",
   "title": "Vibroacoustics \u2014 structure-acoustic coupling Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

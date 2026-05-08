@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-178",
+  "artifact_id": "L3-178-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-178",
+  "parent_l2": "L2-178-001",
   "parent_l1": "L1-178",
   "title": "Spalart-Allmaras \u2014 one-eq turbulence model Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-201",
+  "artifact_id": "L3-201-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-201",
+  "parent_l2": "L2-201-001",
   "parent_l1": "L1-201",
   "title": "Conjugate Heat Transfer \u2014 coupled fluid-solid thermal Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

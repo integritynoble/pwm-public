@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-208",
+  "artifact_id": "L3-208-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-208",
+  "parent_l2": "L2-208-001",
   "parent_l1": "L1-208",
   "title": "Euler-Bernoulli Beam \u2014 thin-beam bending Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

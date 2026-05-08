@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-088",
+  "artifact_id": "L3-088-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-088",
+  "parent_l2": "L2-088-001",
   "parent_l1": "L1-088",
   "title": "4D-STEM \u2014 pixelated-detector scanning diffraction imaging Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

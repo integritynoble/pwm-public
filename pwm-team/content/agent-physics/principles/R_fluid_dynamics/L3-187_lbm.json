@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-187",
+  "artifact_id": "L3-187-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-187",
+  "parent_l2": "L2-187-001",
   "parent_l1": "L1-187",
   "title": "Lattice Boltzmann Method (LBM) \u2014 mesoscale fluid Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

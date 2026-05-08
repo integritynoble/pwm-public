@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-440",
+  "artifact_id": "L3-440-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-440",
+  "parent_l2": "L2-440-001",
   "parent_l1": "L1-440",
   "title": "Hull-White Interest Rate Model Calibration \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

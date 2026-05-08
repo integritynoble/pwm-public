@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-315",
+  "artifact_id": "L3-315-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-315",
+  "parent_l2": "L2-315-001",
   "parent_l1": "L1-315",
   "title": "Quantum Tunneling Through Barriers Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

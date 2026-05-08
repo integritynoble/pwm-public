@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-345",
+  "artifact_id": "L3-345-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-345",
+  "parent_l2": "L2-345-001",
   "parent_l1": "L1-345",
   "title": "Gyrokinetic \u2014 5D reduced plasma kinetic Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

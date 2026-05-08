@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-209",
+  "artifact_id": "L3-209-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-209",
+  "parent_l2": "L2-209-001",
   "parent_l1": "L1-209",
   "title": "Timoshenko Beam \u2014 shear-deformation thick-beam Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

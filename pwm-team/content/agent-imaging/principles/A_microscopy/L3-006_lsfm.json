@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-006",
+  "artifact_id": "L3-006-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-006",
+  "parent_l2": "L2-006-001",
   "parent_l1": "L1-006",
   "title": "Light Sheet Fluorescence Microscopy (LSFM / SPIM) Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

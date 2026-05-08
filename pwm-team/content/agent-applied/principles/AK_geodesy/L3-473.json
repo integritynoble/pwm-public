@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-473",
+  "artifact_id": "L3-473-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-473",
+  "parent_l2": "L2-473-001",
   "parent_l1": "L1-473",
   "title": "Radiometric Sensor Calibration \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

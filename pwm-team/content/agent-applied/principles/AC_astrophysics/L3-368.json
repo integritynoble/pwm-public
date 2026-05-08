@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-368",
+  "artifact_id": "L3-368-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-368",
+  "parent_l2": "L2-368-001",
   "parent_l1": "L1-368",
   "title": "Strong Gravitational Lensing Inversion \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

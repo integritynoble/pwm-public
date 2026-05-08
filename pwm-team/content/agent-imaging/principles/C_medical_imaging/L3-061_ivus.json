@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-061",
+  "artifact_id": "L3-061-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-061",
+  "parent_l2": "L2-061-001",
   "parent_l1": "L1-061",
   "title": "Intravascular Ultrasound (IVUS) Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

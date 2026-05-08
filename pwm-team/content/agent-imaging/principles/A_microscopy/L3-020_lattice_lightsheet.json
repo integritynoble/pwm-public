@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-020",
+  "artifact_id": "L3-020-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-020",
+  "parent_l2": "L2-020-001",
   "parent_l1": "L1-020",
   "title": "Lattice Light Sheet Microscopy (LLSM) \u2014 Bessel-lattice 3D imaging Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

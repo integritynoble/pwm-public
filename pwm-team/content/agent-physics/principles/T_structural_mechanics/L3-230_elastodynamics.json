@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-230",
+  "artifact_id": "L3-230-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-230",
+  "parent_l2": "L2-230-001",
   "parent_l1": "L1-230",
   "title": "Elastodynamics \u2014 dynamic wave propagation in solids Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

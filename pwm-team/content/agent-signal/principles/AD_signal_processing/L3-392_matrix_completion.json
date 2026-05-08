@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-392",
+  "artifact_id": "L3-392-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-392",
+  "parent_l2": "L2-392-001",
   "parent_l1": "L1-392",
   "title": "Matrix Completion Benchmark Suite (MovieLens + Netflix + synthetic)",
   "benchmark_type": "combined_P_and_I",

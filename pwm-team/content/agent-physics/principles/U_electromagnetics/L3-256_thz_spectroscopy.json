@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-256",
+  "artifact_id": "L3-256-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-256",
+  "parent_l2": "L2-256-001",
   "parent_l1": "L1-256",
   "title": "THz Time-Domain Spectroscopy \u2014 material parameter extraction Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

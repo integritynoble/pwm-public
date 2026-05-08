@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-242",
+  "artifact_id": "L3-242-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-242",
+  "parent_l2": "L2-242-001",
   "parent_l1": "L1-242",
   "title": "Geometric Optics \u2014 ray tracing / eikonal Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

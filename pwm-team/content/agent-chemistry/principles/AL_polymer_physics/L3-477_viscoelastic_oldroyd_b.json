@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-477",
+  "artifact_id": "L3-477-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-477",
+  "parent_l2": "L2-477-001",
   "parent_l1": "L1-477",
   "title": "Oldroyd-B Viscoelastic Constitutive Model Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-271",
+  "artifact_id": "L3-271-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-271",
+  "parent_l2": "L2-271-001",
   "parent_l1": "L1-271",
   "title": "Outdoor Noise Propagation \u2014 atmospheric refraction + ground effect Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

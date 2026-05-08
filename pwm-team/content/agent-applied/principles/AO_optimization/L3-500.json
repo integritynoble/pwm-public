@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-500",
+  "artifact_id": "L3-500-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-500",
+  "parent_l2": "L2-500-001",
   "parent_l1": "L1-500",
   "title": "Optimal Experimental Design \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

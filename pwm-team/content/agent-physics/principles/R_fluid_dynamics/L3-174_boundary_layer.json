@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-174",
+  "artifact_id": "L3-174-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-174",
+  "parent_l2": "L2-174-001",
   "parent_l1": "L1-174",
   "title": "Boundary Layer \u2014 Prandtl / Blasius near-wall flow Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

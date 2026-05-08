@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-203",
+  "artifact_id": "L3-203-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-203",
+  "parent_l2": "L2-203-001",
   "parent_l1": "L1-203",
   "title": "Thermoelectric Transport \u2014 coupled Seebeck-Peltier Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

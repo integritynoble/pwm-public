@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-032",
+  "artifact_id": "L3-032-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-032",
+  "parent_l2": "L2-032-001",
   "parent_l1": "L1-032",
   "title": "Clinical B-mode Ultrasound Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

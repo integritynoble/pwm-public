@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-149",
+  "artifact_id": "L3-149-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-149",
+  "parent_l2": "L2-149-001",
   "parent_l1": "L1-149",
   "title": "Streak Camera \u2014 picosecond 1D time-resolved imaging Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

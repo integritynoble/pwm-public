@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-239",
+  "artifact_id": "L3-239-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-239",
+  "parent_l2": "L2-239-001",
   "parent_l1": "L1-239",
   "title": "Waveguide Modes \u2014 dispersion and S-parameter analysis Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-290",
+  "artifact_id": "L3-290-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-290",
+  "parent_l2": "L2-290-001",
   "parent_l1": "L1-290",
   "title": "Geothermal Reservoir \u2014 coupled thermo-hydraulic inversion Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

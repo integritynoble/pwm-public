@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-092",
+  "artifact_id": "L3-092-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-092",
+  "parent_l2": "L2-092-001",
   "parent_l1": "L1-092",
   "title": "Cryo-Electron Tomography (cryoET) \u2014 in-situ 3D biology at nm scale Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

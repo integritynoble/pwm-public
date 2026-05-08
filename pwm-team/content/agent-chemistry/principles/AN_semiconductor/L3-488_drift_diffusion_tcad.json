@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-488",
+  "artifact_id": "L3-488-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-488",
+  "parent_l2": "L2-488-001",
   "parent_l1": "L1-488",
   "title": "Drift-Diffusion Semiconductor Transport (TCAD) Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

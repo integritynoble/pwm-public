@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-079",
+  "artifact_id": "L3-079-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-079",
+  "parent_l2": "L2-079-001",
   "parent_l1": "L1-079",
   "title": "HDR Multi-Exposure Fusion Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

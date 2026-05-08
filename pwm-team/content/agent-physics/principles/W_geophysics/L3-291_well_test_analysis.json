@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-291",
+  "artifact_id": "L3-291-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-291",
+  "parent_l2": "L2-291-001",
   "parent_l1": "L1-291",
   "title": "Well Test Analysis \u2014 transient pressure testing Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

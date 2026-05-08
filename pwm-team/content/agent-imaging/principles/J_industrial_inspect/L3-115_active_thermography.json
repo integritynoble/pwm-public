@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-115",
+  "artifact_id": "L3-115-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-115",
+  "parent_l2": "L2-115-001",
   "parent_l1": "L1-115",
   "title": "Active Thermography (pulsed / lock-in IR inspection) Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

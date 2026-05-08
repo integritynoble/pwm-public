@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-524",
+  "artifact_id": "L3-524-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-524",
+  "parent_l2": "L2-524-001",
   "parent_l1": "L1-524",
   "title": "Stroke Ischemic Core / Penumbra Classification from CT-Perfusion (PWDR) \u2014 P-benchmark Skeleton",
   "benchmark_type": "P_benchmark",

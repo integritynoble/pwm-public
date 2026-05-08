@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-289",
+  "artifact_id": "L3-289-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-289",
+  "parent_l2": "L2-289-001",
   "parent_l1": "L1-289",
   "title": "Tsunami Propagation \u2014 shallow-water wave simulation Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

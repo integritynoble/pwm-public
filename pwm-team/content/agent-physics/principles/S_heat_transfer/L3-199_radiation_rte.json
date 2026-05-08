@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-199",
+  "artifact_id": "L3-199-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-199",
+  "parent_l2": "L2-199-001",
   "parent_l1": "L1-199",
   "title": "Radiative Transfer Equation \u2014 radiative heat exchange Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

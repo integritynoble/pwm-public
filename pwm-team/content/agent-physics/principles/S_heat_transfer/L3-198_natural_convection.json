@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-198",
+  "artifact_id": "L3-198-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-198",
+  "parent_l2": "L2-198-001",
   "parent_l1": "L1-198",
   "title": "Natural Convection \u2014 buoyancy-driven flow heat transfer Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

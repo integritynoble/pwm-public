@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-533",
+  "artifact_id": "L3-533-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-533",
+  "parent_l2": "L2-533-001",
   "parent_l1": "L1-533",
   "title": "Confocal Z-Stack (3D axial deconvolution) Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

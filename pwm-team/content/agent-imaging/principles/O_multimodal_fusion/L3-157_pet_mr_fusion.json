@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-157",
+  "artifact_id": "L3-157-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-157",
+  "parent_l2": "L2-157-001",
   "parent_l1": "L1-157",
   "title": "PET-MR Fusion (molecular + multi-contrast soft tissue) Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

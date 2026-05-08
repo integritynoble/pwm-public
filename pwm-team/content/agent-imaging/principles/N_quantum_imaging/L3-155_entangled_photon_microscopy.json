@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-155",
+  "artifact_id": "L3-155-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-155",
+  "parent_l2": "L2-155-001",
   "parent_l1": "L1-155",
   "title": "Entangled-Photon Microscopy (N00N / SPDC imaging) Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

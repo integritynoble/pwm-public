@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-283",
+  "artifact_id": "L3-283-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-283",
+  "parent_l2": "L2-283-001",
   "parent_l1": "L1-283",
   "title": "Electrical Resistivity Tomography (ERT) \u2014 near-surface Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

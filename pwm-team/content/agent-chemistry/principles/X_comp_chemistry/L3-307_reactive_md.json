@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-307",
+  "artifact_id": "L3-307-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-307",
+  "parent_l2": "L2-307-001",
   "parent_l1": "L1-307",
   "title": "Reactive Molecular Dynamics (ReaxFF + Bond Order) Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

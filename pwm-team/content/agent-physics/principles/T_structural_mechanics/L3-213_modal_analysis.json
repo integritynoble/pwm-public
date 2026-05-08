@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-213",
+  "artifact_id": "L3-213-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-213",
+  "parent_l2": "L2-213-001",
   "parent_l1": "L1-213",
   "title": "Modal Analysis \u2014 natural frequencies and mode shapes Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

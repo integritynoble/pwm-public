@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-270",
+  "artifact_id": "L3-270-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-270",
+  "parent_l2": "L2-270-001",
   "parent_l1": "L1-270",
   "title": "Aeroacoustics \u2014 Lighthill analogy (jet/airframe noise) Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

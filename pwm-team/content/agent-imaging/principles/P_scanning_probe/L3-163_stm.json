@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-163",
+  "artifact_id": "L3-163-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-163",
+  "parent_l2": "L2-163-001",
   "parent_l1": "L1-163",
   "title": "Scanning Tunneling Microscopy (STM) Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

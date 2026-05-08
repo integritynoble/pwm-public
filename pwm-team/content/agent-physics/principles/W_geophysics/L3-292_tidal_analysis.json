@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-292",
+  "artifact_id": "L3-292-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-292",
+  "parent_l2": "L2-292-001",
   "parent_l1": "L1-292",
   "title": "Tidal Analysis \u2014 harmonic tidal constituent extraction Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

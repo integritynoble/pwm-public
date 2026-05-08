@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-058",
+  "artifact_id": "L3-058-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-058",
+  "parent_l2": "L2-058-001",
   "parent_l1": "L1-058",
   "title": "MR Angiography (time-of-flight / phase-contrast) Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

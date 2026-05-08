@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-036",
+  "artifact_id": "L3-036-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-036",
+  "parent_l2": "L2-036-001",
   "parent_l1": "L1-036",
   "title": "Digital Mammography Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

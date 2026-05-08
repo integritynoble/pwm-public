@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-159",
+  "artifact_id": "L3-159-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-159",
+  "parent_l2": "L2-159-001",
   "parent_l1": "L1-159",
   "title": "US-MRI Fusion (biopsy guidance / cardiac) Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

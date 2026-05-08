@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-462",
+  "artifact_id": "L3-462-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-462",
+  "parent_l2": "L2-462-001",
   "parent_l1": "L1-462",
   "title": "Enhanced Oil Recovery (EOR) Modeling \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

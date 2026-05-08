@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-124",
+  "artifact_id": "L3-124-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-124",
+  "parent_l2": "L2-124-001",
   "parent_l1": "L1-124",
   "title": "Vibration-Based Damage Detection (modal analysis NDT) Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

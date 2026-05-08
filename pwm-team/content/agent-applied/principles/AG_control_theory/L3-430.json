@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-430",
+  "artifact_id": "L3-430-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-430",
+  "parent_l2": "L2-430-001",
   "parent_l1": "L1-430",
   "title": "Particle Filter (Sequential Monte Carlo) \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

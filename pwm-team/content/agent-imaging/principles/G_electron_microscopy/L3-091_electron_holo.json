@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-091",
+  "artifact_id": "L3-091-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-091",
+  "parent_l2": "L2-091-001",
   "parent_l1": "L1-091",
   "title": "Off-Axis Electron Holography \u2014 nanoscale phase imaging Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-453",
+  "artifact_id": "L3-453-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-453",
+  "parent_l2": "L2-453-001",
   "parent_l1": "L1-453",
   "title": "Vehicle Dynamics (Bicycle Model) \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

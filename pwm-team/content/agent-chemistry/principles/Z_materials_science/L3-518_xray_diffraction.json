@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-518",
+  "artifact_id": "L3-518-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-518",
+  "parent_l2": "L2-518-001",
   "parent_l1": "L1-518",
   "title": "X-ray Diffraction Crystal Structure Recovery (analytical core) \u2014 P-benchmark Skeleton",
   "benchmark_type": "P_benchmark",

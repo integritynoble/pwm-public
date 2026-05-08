@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-296",
+  "artifact_id": "L3-296-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-296",
+  "parent_l2": "L2-296-001",
   "parent_l1": "L1-296",
   "title": "Post-Hartree-Fock Correlated Methods (MP2, CCSD, CI) Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

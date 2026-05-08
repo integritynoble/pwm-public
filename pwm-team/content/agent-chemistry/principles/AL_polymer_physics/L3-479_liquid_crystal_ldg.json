@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-479",
+  "artifact_id": "L3-479-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-479",
+  "parent_l2": "L2-479-001",
   "parent_l1": "L1-479",
   "title": "Landau-de Gennes Liquid Crystal Theory Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

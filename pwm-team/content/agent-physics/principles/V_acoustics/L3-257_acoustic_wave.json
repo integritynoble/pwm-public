@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-257",
+  "artifact_id": "L3-257-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-257",
+  "parent_l2": "L2-257-001",
   "parent_l1": "L1-257",
   "title": "Acoustic Wave Equation \u2014 time-domain pressure field reconstruction Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

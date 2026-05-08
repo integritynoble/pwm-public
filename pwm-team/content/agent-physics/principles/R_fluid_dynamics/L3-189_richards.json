@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-189",
+  "artifact_id": "L3-189-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-189",
+  "parent_l2": "L2-189-001",
   "parent_l1": "L1-189",
   "title": "Richards Equation \u2014 unsaturated variably-saturated flow Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

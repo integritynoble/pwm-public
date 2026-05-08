@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-228",
+  "artifact_id": "L3-228-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-228",
+  "parent_l2": "L2-228-001",
   "parent_l1": "L1-228",
   "title": "Thermoelasticity \u2014 coupled thermal-mechanical Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-272",
+  "artifact_id": "L3-272-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-272",
+  "parent_l2": "L2-272-001",
   "parent_l1": "L1-272",
   "title": "Seismic Travel-Time Tomography \u2014 ray-based velocity imaging Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

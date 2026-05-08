@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-084",
+  "artifact_id": "L3-084-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-084",
+  "parent_l2": "L2-084-001",
   "parent_l1": "L1-084",
   "title": "Scanning Electron Microscopy (SEM) \u2014 secondary-electron surface imaging Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

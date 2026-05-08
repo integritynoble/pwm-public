@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-025",
+  "artifact_id": "L3-025-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-025",
+  "parent_l2": "L2-025-001",
   "parent_l1": "L1-025",
   "canonical_reference": "pwm_product/genesis/l3/L3-003.json",
   "title": "CASSI Mismatch-Only Benchmark Suite (4 I-benchmark tiers + P-benchmark)",

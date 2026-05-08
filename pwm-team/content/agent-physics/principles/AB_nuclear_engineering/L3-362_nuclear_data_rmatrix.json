@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-362",
+  "artifact_id": "L3-362-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-362",
+  "parent_l2": "L2-362-001",
   "parent_l1": "L1-362",
   "title": "Nuclear Data \u2014 R-matrix resonance evaluation Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

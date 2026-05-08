@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-354",
+  "artifact_id": "L3-354-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-354",
+  "parent_l2": "L2-354-001",
   "parent_l1": "L1-354",
   "title": "Neutron Transport \u2014 linear Boltzmann equation Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

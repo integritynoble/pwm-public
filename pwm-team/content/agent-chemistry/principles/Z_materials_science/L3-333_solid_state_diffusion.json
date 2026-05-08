@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-333",
+  "artifact_id": "L3-333-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-333",
+  "parent_l2": "L2-333-001",
   "parent_l1": "L1-333",
   "title": "Solid-State Diffusion (Fick + Onsager) Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-192",
+  "artifact_id": "L3-192-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-192",
+  "parent_l2": "L2-192-001",
   "parent_l1": "L1-192",
   "title": "Buckley-Leverett \u2014 two-phase displacement saturation Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

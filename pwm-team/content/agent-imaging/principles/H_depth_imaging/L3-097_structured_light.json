@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-097",
+  "artifact_id": "L3-097-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-097",
+  "parent_l2": "L2-097-001",
   "parent_l1": "L1-097",
   "title": "Structured-Light Depth Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

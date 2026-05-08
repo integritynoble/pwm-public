@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-016",
+  "artifact_id": "L3-016-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-016",
+  "parent_l2": "L2-016-001",
   "parent_l1": "L1-016",
   "title": "Image Scanning Microscopy (ISM) \u2014 pixel reassignment super-resolution Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

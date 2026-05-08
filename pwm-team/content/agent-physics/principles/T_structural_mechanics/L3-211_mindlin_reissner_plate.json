@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-211",
+  "artifact_id": "L3-211-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-211",
+  "parent_l2": "L2-211-001",
   "parent_l1": "L1-211",
   "title": "Mindlin-Reissner Plate \u2014 thick-plate with shear Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-142",
+  "artifact_id": "L3-142-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-142",
+  "parent_l2": "L2-142-001",
   "parent_l1": "L1-142",
   "title": "Brillouin Microscopy Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

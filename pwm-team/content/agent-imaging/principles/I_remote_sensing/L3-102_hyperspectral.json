@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-102",
+  "artifact_id": "L3-102-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-102",
+  "parent_l2": "L2-102-001",
   "parent_l1": "L1-102",
   "title": "Hyperspectral Imaging (pushbroom / AVIRIS-style) Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

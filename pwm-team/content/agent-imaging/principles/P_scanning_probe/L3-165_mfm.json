@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-165",
+  "artifact_id": "L3-165-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-165",
+  "parent_l2": "L2-165-001",
   "parent_l1": "L1-165",
   "title": "Magnetic Force Microscopy (MFM) Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

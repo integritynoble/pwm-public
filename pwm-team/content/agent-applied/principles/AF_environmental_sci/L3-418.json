@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-418",
+  "artifact_id": "L3-418-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-418",
+  "parent_l2": "L2-418-001",
   "parent_l1": "L1-418",
   "title": "Numerical Weather Prediction Data Assimilation \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

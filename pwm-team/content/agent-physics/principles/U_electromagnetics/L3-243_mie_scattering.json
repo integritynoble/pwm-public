@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-243",
+  "artifact_id": "L3-243-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-243",
+  "parent_l2": "L2-243-001",
   "parent_l1": "L1-243",
   "title": "Mie Scattering \u2014 rigorous spherical-particle scattering Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

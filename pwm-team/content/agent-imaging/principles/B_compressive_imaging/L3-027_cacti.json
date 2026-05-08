@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-027",
+  "artifact_id": "L3-027-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-027",
+  "parent_l2": "L2-027-001",
   "parent_l1": "L1-027",
   "canonical_reference": "pwm_product/genesis/l3/L3-004.json",
   "title": "CACTI Mismatch-Only Benchmark Suite",

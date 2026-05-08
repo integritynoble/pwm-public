@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-151",
+  "artifact_id": "L3-151-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-151",
+  "parent_l2": "L2-151-001",
   "parent_l1": "L1-151",
   "title": "Compressed Ultrafast Photography (CUP) \u2014 trillion fps imaging Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

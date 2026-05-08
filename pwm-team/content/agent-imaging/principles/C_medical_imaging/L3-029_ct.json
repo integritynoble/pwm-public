@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-029",
+  "artifact_id": "L3-029-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-029",
+  "parent_l2": "L2-029-001",
   "parent_l1": "L1-029",
   "title": "Computed Tomography (CT) \u2014 fan/cone-beam X-ray reconstruction Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-397",
+  "artifact_id": "L3-397-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-397",
+  "parent_l2": "L2-397-001",
   "parent_l1": "L1-397",
   "title": "FitzHugh-Nagumo Excitability Model \u2014 Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

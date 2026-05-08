@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-288",
+  "artifact_id": "L3-288-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-288",
+  "parent_l2": "L2-288-001",
   "parent_l1": "L1-288",
   "title": "Volcanic Deformation \u2014 InSAR/GPS source modeling Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

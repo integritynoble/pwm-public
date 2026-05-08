@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-202",
+  "artifact_id": "L3-202-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-202",
+  "parent_l2": "L2-202-001",
   "parent_l1": "L1-202",
   "title": "Phase Change Material \u2014 Stefan moving-boundary problem Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

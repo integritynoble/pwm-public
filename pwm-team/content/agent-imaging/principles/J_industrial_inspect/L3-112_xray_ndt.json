@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-112",
+  "artifact_id": "L3-112-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-112",
+  "parent_l2": "L2-112-001",
   "parent_l1": "L1-112",
   "title": "X-ray Non-Destructive Testing (2D radiography) Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

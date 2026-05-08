@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-059",
+  "artifact_id": "L3-059-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-059",
+  "parent_l2": "L2-059-001",
   "parent_l1": "L1-059",
   "title": "Susceptibility-Weighted Imaging (SWI) Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

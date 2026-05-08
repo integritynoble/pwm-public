@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-261",
+  "artifact_id": "L3-261-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-261",
+  "parent_l2": "L2-261-001",
   "parent_l1": "L1-261",
   "title": "Acoustic Scattering \u2014 boundary element method (BEM) Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

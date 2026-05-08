@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-147",
+  "artifact_id": "L3-147-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-147",
+  "parent_l2": "L2-147-001",
   "parent_l1": "L1-147",
   "title": "XAS/EXAFS Benchmark Suite (catalysis + battery + Pauling-standards)",
   "benchmark_type": "combined_P_and_I",

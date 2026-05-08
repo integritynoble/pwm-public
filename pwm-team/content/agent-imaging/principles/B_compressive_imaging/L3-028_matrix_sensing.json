@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-028",
+  "artifact_id": "L3-028-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-028",
+  "parent_l2": "L2-028-001",
   "parent_l1": "L1-028",
   "title": "Gaussian Matrix Sensing Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-015",
+  "artifact_id": "L3-015-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-015",
+  "parent_l2": "L2-015-001",
   "parent_l1": "L1-015",
   "title": "MINFLUX (minimum-photon single-molecule localization) Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-121",
+  "artifact_id": "L3-121-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-121",
+  "parent_l2": "L2-121-001",
   "parent_l1": "L1-121",
   "title": "Magnetic Flux Leakage (MFL) \u2014 pipeline & rail inspection Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

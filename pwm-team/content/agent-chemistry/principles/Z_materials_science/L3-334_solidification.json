@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-334",
+  "artifact_id": "L3-334-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-334",
+  "parent_l2": "L2-334-001",
   "parent_l1": "L1-334",
   "title": "Dendritic Solidification Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

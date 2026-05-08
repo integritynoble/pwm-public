@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-389",
+  "artifact_id": "L3-389-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-389",
+  "parent_l2": "L2-389-001",
   "parent_l1": "L1-389",
   "title": "Channel Estimation Benchmark Suite (5G NR + mmWave + COST-2100)",
   "benchmark_type": "combined_P_and_I",

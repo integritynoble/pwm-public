@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-525",
+  "artifact_id": "L3-525-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-525",
+  "parent_l2": "L2-525-001",
   "parent_l1": "L1-525",
   "title": "Pulmonary Embolism Detection from CT Pulmonary Angiography (PWDR) \u2014 P-benchmark Skeleton",
   "benchmark_type": "P_benchmark",

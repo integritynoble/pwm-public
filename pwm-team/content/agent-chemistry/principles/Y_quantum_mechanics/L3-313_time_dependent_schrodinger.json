@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-313",
+  "artifact_id": "L3-313-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-313",
+  "parent_l2": "L2-313-001",
   "parent_l1": "L1-313",
   "title": "Time-Dependent Schr\u00f6dinger Equation Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-216",
+  "artifact_id": "L3-216-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-216",
+  "parent_l2": "L2-216-001",
   "parent_l1": "L1-216",
   "title": "J2 Plasticity \u2014 von Mises rate-independent Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

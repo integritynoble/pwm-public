@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-388",
+  "artifact_id": "L3-388-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-388",
+  "parent_l2": "L2-388-001",
   "parent_l1": "L1-388",
   "title": "BSS Benchmark Suite (WSJ0-2mix + SiSEC + synthetic)",
   "benchmark_type": "combined_P_and_I",

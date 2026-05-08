@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-287",
+  "artifact_id": "L3-287-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-287",
+  "parent_l2": "L2-287-001",
   "parent_l1": "L1-287",
   "title": "Glacial Isostatic Adjustment (GIA) \u2014 post-glacial rebound Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

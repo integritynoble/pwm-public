@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-306",
+  "artifact_id": "L3-306-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-306",
+  "parent_l2": "L2-306-001",
   "parent_l1": "L1-306",
   "title": "Coarse-Grained Molecular Dynamics (MARTINI, Dry-MARTINI) Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-206",
+  "artifact_id": "L3-206-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-206",
+  "parent_l2": "L2-206-001",
   "parent_l1": "L1-206",
   "title": "Cryogenic Storage Boiloff \u2014 MLI heat-leak estimation Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

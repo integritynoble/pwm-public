@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-519",
+  "artifact_id": "L3-519-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-519",
+  "parent_l2": "L2-519-001",
   "parent_l1": "L1-519",
   "title": "X-ray Diffraction Crystal Space-Group Classification (PWDR) \u2014 P-benchmark Skeleton",
   "benchmark_type": "P_benchmark",

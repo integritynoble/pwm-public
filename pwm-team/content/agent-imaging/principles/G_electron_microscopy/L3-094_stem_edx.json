@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-094",
+  "artifact_id": "L3-094-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-094",
+  "parent_l2": "L2-094-001",
   "parent_l1": "L1-094",
   "title": "STEM-EDX \u2014 X-ray energy-dispersive elemental mapping Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

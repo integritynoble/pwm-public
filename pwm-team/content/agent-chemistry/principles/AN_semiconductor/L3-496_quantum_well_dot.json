@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-496",
+  "artifact_id": "L3-496-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-496",
+  "parent_l2": "L2-496-001",
   "parent_l1": "L1-496",
   "title": "Quantum Well and Quantum Dot Electronic Structure Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

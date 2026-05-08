@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-273",
+  "artifact_id": "L3-273-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-273",
+  "parent_l2": "L2-273-001",
   "parent_l1": "L1-273",
   "title": "Full Waveform Inversion (FWI) \u2014 subsurface velocity imaging Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

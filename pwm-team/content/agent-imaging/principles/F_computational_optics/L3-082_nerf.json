@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-082",
+  "artifact_id": "L3-082-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-082",
+  "parent_l2": "L2-082-001",
   "parent_l1": "L1-082",
   "title": "NeRF Novel-View Synthesis Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

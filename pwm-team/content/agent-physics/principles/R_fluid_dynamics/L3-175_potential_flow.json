@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-175",
+  "artifact_id": "L3-175-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-175",
+  "parent_l2": "L2-175-001",
   "parent_l1": "L1-175",
   "title": "Potential Flow \u2014 irrotational inviscid Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

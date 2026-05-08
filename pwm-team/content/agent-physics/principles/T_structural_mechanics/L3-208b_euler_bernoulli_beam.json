@@ -1,9 +1,9 @@
 {
-  "artifact_id": "L3-208b",
+  "artifact_id": "L3-208-002-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-208b",
-  "parent_l1": "L1-208b",
+  "parent_l2": "L2-208-002",
+  "parent_l1": null,
   "title": "Euler-Bernoulli Beam \u2014 energy (variational) formulation Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
   "dataset_registry": {

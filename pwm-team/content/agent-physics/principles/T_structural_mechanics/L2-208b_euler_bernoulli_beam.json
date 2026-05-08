@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L2-208b",
+  "artifact_id": "L2-208-002",
   "layer": "L2",
   "registration_tier": "stub",
-  "parent_l1": "L1-208b",
+  "parent_l1": "L1-208",
   "title": "Euler-Bernoulli Beam \u2014 energy (variational) formulation Mismatch-Only Spec",
   "spec_type": "mismatch_only",
   "six_tuple": {

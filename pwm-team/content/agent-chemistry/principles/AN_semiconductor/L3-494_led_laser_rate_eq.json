@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-494",
+  "artifact_id": "L3-494-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-494",
+  "parent_l2": "L2-494-001",
   "parent_l1": "L1-494",
   "title": "LED and Laser Rate Equations Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

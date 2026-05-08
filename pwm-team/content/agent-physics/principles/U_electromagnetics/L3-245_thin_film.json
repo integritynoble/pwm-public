@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-245",
+  "artifact_id": "L3-245-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-245",
+  "parent_l2": "L2-245-001",
   "parent_l1": "L1-245",
   "title": "Thin Film Interference \u2014 transfer-matrix optical design Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

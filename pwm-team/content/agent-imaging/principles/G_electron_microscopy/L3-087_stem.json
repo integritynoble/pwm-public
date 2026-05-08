@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-087",
+  "artifact_id": "L3-087-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-087",
+  "parent_l2": "L2-087-001",
   "parent_l1": "L1-087",
   "title": "Scanning TEM (STEM) \u2014 HAADF / BF imaging with convergent beam Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

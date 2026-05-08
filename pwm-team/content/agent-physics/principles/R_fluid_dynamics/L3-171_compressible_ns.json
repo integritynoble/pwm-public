@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-171",
+  "artifact_id": "L3-171-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-171",
+  "parent_l2": "L2-171-001",
   "parent_l1": "L1-171",
   "title": "Compressible Navier-Stokes \u2014 viscous shock/boundary-layer Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

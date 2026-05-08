@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-286",
+  "artifact_id": "L3-286-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-286",
+  "parent_l2": "L2-286-001",
   "parent_l1": "L1-286",
   "title": "Mantle Convection \u2014 high-Ra thermal convection Benchmark Suite",
   "benchmark_type": "combined_P_and_I",

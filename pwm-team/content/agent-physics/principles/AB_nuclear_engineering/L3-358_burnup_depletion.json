@@ -1,8 +1,8 @@
 {
-  "artifact_id": "L3-358",
+  "artifact_id": "L3-358-001-001",
   "layer": "L3",
   "registration_tier": "stub",
-  "parent_l2": "L2-358",
+  "parent_l2": "L2-358-001",
   "parent_l1": "L1-358",
   "title": "Burnup / Depletion \u2014 fuel nuclide evolution Benchmark Suite",
   "benchmark_type": "combined_P_and_I",
