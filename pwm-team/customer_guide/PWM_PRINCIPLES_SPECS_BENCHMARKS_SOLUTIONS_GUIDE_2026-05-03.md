@@ -260,6 +260,25 @@ pwm-node inspect qsm                 # → L1-503 (Tier-3 stub Principle)
 | "How is X mathematically specified?" (six-tuple, ε function) | **L2** | `pwm-node inspect cassi --layer L2` |
 | "What benchmark do I mine against for X?" (rho=50, dataset, baselines) | **L3** | `pwm-node inspect cassi --layer L3` |
 
+### Artifact-ID naming convention
+
+PWM uses hierarchical IDs that encode the parent/child path:
+
+| Layer | New (canonical) form | Example |
+|---|---|---|
+| L1 Principle | `L1-NNN` | `L1-003` |
+| L2 Spec | `L2-NNN-MMM` | `L2-003-001` (first spec under L1-003) |
+| L3 Benchmark | `L3-NNN-MMM-PPP` | `L3-003-001-001` (first benchmark under L2-003-001) |
+| L4 Cert | `0x<keccak256-hash>` | `0x7c7740fa…` (content-addressed; not path-based) |
+
+Numeric segments are 3-digit zero-padded for stable lexicographic sort.
+The 6 founder-vetted artifacts registered on Sepolia (`L1-003`, `L2-003`,
+`L3-003`, `L1-004`, `L2-004`, `L3-004`) keep their **legacy flat form
+forever** — renaming them would orphan the on-chain registration.
+Tooling treats the legacy form as an alias for the implicit hierarchical
+form: `pwm-node inspect L2-003-001` and `pwm-node inspect L2-003` both
+resolve to the same registered artifact.
+
 ### Cardinality — the protocol is a tree, not a chain
 
 The 4 layers form a one-to-many tree:

@@ -142,6 +142,26 @@ def all_principles_by_tier() -> dict[str, list[dict]]:
     return buckets
 
 
+def _try_legacy_alias(target: str) -> str | None:
+    """Map a hierarchical artifact_id to its flat-form legacy alias.
+
+    Per PWM_HIERARCHICAL_ARTIFACT_NAMING_2026-05-08.md § Phase C:
+      L2-003-001     → L2-003   (one trailing -001 stripped)
+      L1-003-001     → L1-003   (atypical; one stripped)
+      L3-003-001-001 → L3-003   (two trailing -001 stripped)
+      L2-003-002     → None     (sibling-002 isn't an alias)
+      L2-003         → None     (already flat)
+    """
+    if not isinstance(target, str) or not target.startswith(("L1-", "L2-", "L3-")):
+        return None
+    parts = target.split("-")
+    if len(parts) < 3:
+        return None
+    while len(parts) >= 3 and parts[-1] == "001":
+        parts = parts[:-1]
+    return "-".join(parts) if len(parts) >= 2 else None
+
+
 def principle_by_artifact_id_any(artifact_id: str) -> dict | None:
     """Lookup an L1 principle in genesis OR content tree.
 
@@ -150,8 +170,10 @@ def principle_by_artifact_id_any(artifact_id: str) -> dict | None:
       2. Genesis tree by display_slug (e.g. "cassi" → L1-003)
       3. Content tree by artifact_id  (e.g. "L1-026b" — Tier-3 stub)
       4. Content tree by display_slug (e.g. "spc" → L1-026b stub)
+      5. Legacy alias fallback (e.g. "L1-003-001" → "L1-003")
 
-    Web URL `/principles/cassi` and `/principles/spc` both work via this.
+    Web URL `/principles/cassi`, `/principles/spc`, AND `/principles/L1-003-001`
+    all work via this resolver.
     """
     target = (artifact_id or "").strip()
     if not target:
@@ -174,6 +196,11 @@ def principle_by_artifact_id_any(artifact_id: str) -> dict | None:
             return p
         if (p.get("display_slug") or "").lower() == target_lower:
             return p
+
+    # 5. Legacy alias: strip trailing -001 segments and retry
+    flat = _try_legacy_alias(target)
+    if flat and flat != target:
+        return principle_by_artifact_id_any(flat)
     return None
 
 

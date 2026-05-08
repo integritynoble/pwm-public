@@ -26,12 +26,47 @@ def _load_layer(genesis_dir: Path, layer: str) -> list[dict]:
 
 
 def _find_by_id(genesis_dir: Path, target: str) -> tuple[dict, str] | None:
-    """Return (artifact, layer) for the first artifact with artifact_id == target."""
+    """Return (artifact, layer) for the first artifact with artifact_id == target.
+
+    Honors the legacy↔hierarchical alias rules from
+    PWM_HIERARCHICAL_ARTIFACT_NAMING_2026-05-08.md § Phase C:
+    `L2-003-001` → resolves to legacy `L2-003` (the registered artifact),
+    `L3-003-001-001` → resolves to legacy `L3-003`. Trailing `-001` segments
+    are stripped before fallback lookup.
+    """
     for layer in ("L1", "L2", "L3"):
         for a in _load_layer(genesis_dir, layer):
             if a.get("artifact_id") == target:
                 return a, layer
+    # Phase C alias: try the flat-form variant if user passed hierarchical
+    flat = _try_legacy_alias(target)
+    if flat and flat != target:
+        for layer in ("L1", "L2", "L3"):
+            for a in _load_layer(genesis_dir, layer):
+                if a.get("artifact_id") == flat:
+                    return a, layer
     return None
+
+
+def _try_legacy_alias(target: str) -> str | None:
+    """Map a hierarchical artifact_id to its flat-form legacy alias.
+
+    Examples:
+      L2-003-001        → L2-003     (one trailing -001 stripped)
+      L3-003-001-001    → L3-003     (two trailing -001 stripped)
+      L1-003-001        → L1-003     (atypical; one trailing -001 stripped)
+      L2-003-002        → None       (not a -001-only suffix; no alias)
+      L2-003            → None       (already flat)
+    """
+    if not isinstance(target, str) or not target.startswith(("L1-", "L2-", "L3-")):
+        return None
+    parts = target.split("-")
+    if len(parts) < 3:
+        return None
+    # Strip trailing "-001" segments (only when they're literally "001")
+    while len(parts) >= 3 and parts[-1] == "001":
+        parts = parts[:-1]
+    return "-".join(parts) if len(parts) >= 2 else None
 
 
 def _find_by_slug(genesis_dir: Path, target: str, prefer_layer: str | None = None) -> tuple[dict, str] | None:
