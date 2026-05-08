@@ -26,17 +26,17 @@
     ]
   },
   "G": {
-    "dag": "E.momentum -> E.UCM_stress -> M.coupled_solve -> O.stress_field",
+    "dag": "E.momentum -> E.UCM_stress -> O.iter -> O.stress_field",
     "vertices": [
       "E.momentum",
       "E.UCM_stress",
-      "M.coupled_solve",
+      "O.iter",
       "O.stress_field"
     ],
     "arcs": [
-      "E.momentum -> M.coupled_solve",
-      "E.UCM_stress -> M.coupled_solve",
-      "M.coupled_solve -> O.stress_field"
+      "E.momentum -> O.iter",
+      "E.UCM_stress -> O.iter",
+      "O.iter -> O.stress_field"
     ],
     "L_DAG": 3.6,
     "n_c": 1
@@ -65,7 +65,7 @@
     "primitives": [
       "E.momentum",
       "E.UCM_stress",
-      "M.coupled_solve",
+      "O.iter",
       "O.stress_field"
     ]
   },

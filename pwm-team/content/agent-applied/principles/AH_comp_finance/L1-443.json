@@ -24,14 +24,14 @@
     ]
   },
   "G": {
-    "dag": "M.merton.structural -> O.newton.system_2eq -> S.bs.equity_as_call",
+    "dag": "N.pointwise -> O.newton.system_2eq -> S.bs.equity_as_call",
     "vertices": [
-      "M.merton.structural",
+      "N.pointwise",
       "O.newton.system_2eq",
       "S.bs.equity_as_call"
     ],
     "arcs": [
-      "M.merton.structural -> O.newton.system_2eq",
+      "N.pointwise -> O.newton.system_2eq",
       "O.newton.system_2eq -> S.bs.equity_as_call"
     ],
     "L_DAG": 2.5,
@@ -60,7 +60,7 @@
     "noise_model": "market_gaussian",
     "solution_space": "firm_value_vol_vector",
     "primitives": [
-      "M.merton.structural",
+      "N.pointwise",
       "O.newton.system_2eq",
       "S.bs.equity_as_call"
     ]

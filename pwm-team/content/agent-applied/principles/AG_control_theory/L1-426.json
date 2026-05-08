@@ -24,14 +24,14 @@
     ]
   },
   "G": {
-    "dag": "M.ss.matrices_ABCD -> S.observability.gramian -> O.lyapunov.stability",
+    "dag": "E.eigensolve -> S.observability.gramian -> O.lyapunov.stability",
     "vertices": [
-      "M.ss.matrices_ABCD",
+      "E.eigensolve",
       "S.observability.gramian",
       "O.lyapunov.stability"
     ],
     "arcs": [
-      "M.ss.matrices_ABCD -> S.observability.gramian",
+      "E.eigensolve -> S.observability.gramian",
       "S.observability.gramian -> O.lyapunov.stability"
     ],
     "L_DAG": 2.5,
@@ -60,7 +60,7 @@
     "noise_model": "gaussian",
     "solution_space": "state_vector",
     "primitives": [
-      "M.ss.matrices_ABCD",
+      "E.eigensolve",
       "S.observability.gramian",
       "O.lyapunov.stability"
     ]

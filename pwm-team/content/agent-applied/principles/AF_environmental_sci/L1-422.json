@@ -24,14 +24,14 @@
     ]
   },
   "G": {
-    "dag": "M.mpm.bedload_formula -> S.vanrijn.suspended_load -> O.chi2.bedload_flux",
+    "dag": "N.pointwise -> S.vanrijn.suspended_load -> O.chi2.bedload_flux",
     "vertices": [
-      "M.mpm.bedload_formula",
+      "N.pointwise",
       "S.vanrijn.suspended_load",
       "O.chi2.bedload_flux"
     ],
     "arcs": [
-      "M.mpm.bedload_formula -> S.vanrijn.suspended_load",
+      "N.pointwise -> S.vanrijn.suspended_load",
       "S.vanrijn.suspended_load -> O.chi2.bedload_flux"
     ],
     "L_DAG": 2.8,
@@ -60,7 +60,7 @@
     "noise_model": "lognormal",
     "solution_space": "sediment_flux_parameter_vector",
     "primitives": [
-      "M.mpm.bedload_formula",
+      "N.pointwise",
       "S.vanrijn.suspended_load",
       "O.chi2.bedload_flux"
     ]

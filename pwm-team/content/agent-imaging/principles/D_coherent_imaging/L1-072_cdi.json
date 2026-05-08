@@ -26,15 +26,15 @@
     ]
   },
   "G": {
-    "dag": "M.support_mask -> F.fourier -> L.modulus_squared -> int.spatial",
+    "dag": "B.support -> F.fourier -> L.modulus_squared -> int.spatial",
     "vertices": [
-      "M.support_mask",
+      "B.support",
       "F.fourier",
       "L.modulus_squared",
       "int.spatial"
     ],
     "arcs": [
-      "M.support_mask -> F.fourier",
+      "B.support -> F.fourier",
       "F.fourier -> L.modulus_squared",
       "L.modulus_squared -> int.spatial"
     ],
@@ -63,7 +63,7 @@
     "noise_model": "shot_poisson",
     "solution_space": "complex_2D",
     "primitives": [
-      "M.support_mask",
+      "B.support",
       "F.fourier",
       "L.modulus_squared",
       "int.spatial"

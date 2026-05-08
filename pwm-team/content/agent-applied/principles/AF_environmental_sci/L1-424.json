@@ -24,14 +24,14 @@
     ]
   },
   "G": {
-    "dag": "M.agcm.tracer_transport -> O.bayesian.flux_inversion -> S.prior.biosphere_model",
+    "dag": "D.space -> O.bayesian.flux_inversion -> S.prior.biosphere_model",
     "vertices": [
-      "M.agcm.tracer_transport",
+      "D.space",
       "O.bayesian.flux_inversion",
       "S.prior.biosphere_model"
     ],
     "arcs": [
-      "M.agcm.tracer_transport -> O.bayesian.flux_inversion",
+      "D.space -> O.bayesian.flux_inversion",
       "O.bayesian.flux_inversion -> S.prior.biosphere_model"
     ],
     "L_DAG": 4.5,
@@ -60,7 +60,7 @@
     "noise_model": "observation_gaussian",
     "solution_space": "NEE_flux_map",
     "primitives": [
-      "M.agcm.tracer_transport",
+      "D.space",
       "O.bayesian.flux_inversion",
       "S.prior.biosphere_model"
     ]

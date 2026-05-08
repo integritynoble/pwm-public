@@ -25,14 +25,14 @@
     ]
   },
   "G": {
-    "dag": "M.ps.parton_shower_dipole -> S.hadronization.lund_string -> O.chi2.event_shape",
+    "dag": "G.structured -> S.hadronization.lund_string -> O.chi2.event_shape",
     "vertices": [
-      "M.ps.parton_shower_dipole",
+      "G.structured",
       "S.hadronization.lund_string",
       "O.chi2.event_shape"
     ],
     "arcs": [
-      "M.ps.parton_shower_dipole -> S.hadronization.lund_string",
+      "G.structured -> S.hadronization.lund_string",
       "S.hadronization.lund_string -> O.chi2.event_shape"
     ],
     "L_DAG": 4.5,
@@ -61,7 +61,7 @@
     "noise_model": "monte_carlo_statistical",
     "solution_space": "shower_parameter_vector",
     "primitives": [
-      "M.ps.parton_shower_dipole",
+      "G.structured",
       "S.hadronization.lund_string",
       "O.chi2.event_shape"
     ]

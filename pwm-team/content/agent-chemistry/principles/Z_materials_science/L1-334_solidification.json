@@ -25,17 +25,17 @@
     ]
   },
   "G": {
-    "dag": "E.phi_evolution -> E.thermal_diffusion -> M.coupled -> O.dendrite_morphology",
+    "dag": "E.phi_evolution -> E.thermal_diffusion -> O.iter -> O.dendrite_morphology",
     "vertices": [
       "E.phi_evolution",
       "E.thermal_diffusion",
-      "M.coupled",
+      "O.iter",
       "O.dendrite_morphology"
     ],
     "arcs": [
       "E.phi_evolution -> E.thermal_diffusion",
-      "E.thermal_diffusion -> M.coupled",
-      "M.coupled -> O.dendrite_morphology"
+      "E.thermal_diffusion -> O.iter",
+      "O.iter -> O.dendrite_morphology"
     ],
     "L_DAG": 3.8,
     "n_c": 0
@@ -64,7 +64,7 @@
     "primitives": [
       "E.phi_evolution",
       "E.thermal_diffusion",
-      "M.coupled",
+      "O.iter",
       "O.dendrite_morphology"
     ]
   },

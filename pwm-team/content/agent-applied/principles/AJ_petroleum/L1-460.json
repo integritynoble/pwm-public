@@ -24,15 +24,15 @@
     ]
   },
   "G": {
-    "dag": "S.ensemble.kalman_filter_reservoir -> M.adjoint.gradient_simulator -> O.misfit.production",
+    "dag": "S.ensemble.kalman_filter_reservoir -> O.iter -> O.misfit.production",
     "vertices": [
       "S.ensemble.kalman_filter_reservoir",
-      "M.adjoint.gradient_simulator",
+      "O.iter",
       "O.misfit.production"
     ],
     "arcs": [
-      "S.ensemble.kalman_filter_reservoir -> M.adjoint.gradient_simulator",
-      "M.adjoint.gradient_simulator -> O.misfit.production"
+      "S.ensemble.kalman_filter_reservoir -> O.iter",
+      "O.iter -> O.misfit.production"
     ],
     "L_DAG": 5.0,
     "n_c": 2
@@ -61,7 +61,7 @@
     "solution_space": "3D_permeability_field",
     "primitives": [
       "S.ensemble.kalman_filter_reservoir",
-      "M.adjoint.gradient_simulator",
+      "O.iter",
       "O.misfit.production"
     ]
   },

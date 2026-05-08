@@ -25,15 +25,15 @@
     ]
   },
   "G": {
-    "dag": "K.psf.caustic -> M.sensor_crop -> int.temporal",
+    "dag": "K.psf.caustic -> S.select -> int.temporal",
     "vertices": [
       "K.psf.caustic",
-      "M.sensor_crop",
+      "S.select",
       "int.temporal"
     ],
     "arcs": [
-      "K.psf.caustic -> M.sensor_crop",
-      "M.sensor_crop -> int.temporal"
+      "K.psf.caustic -> S.select",
+      "S.select -> int.temporal"
     ],
     "L_DAG": 2.6,
     "n_c": 0
@@ -61,7 +61,7 @@
     "solution_space": "2D_spatial",
     "primitives": [
       "K.psf.caustic",
-      "M.sensor_crop",
+      "S.select",
       "int.temporal"
     ]
   },

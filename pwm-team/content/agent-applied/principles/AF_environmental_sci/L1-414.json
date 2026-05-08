@@ -24,14 +24,14 @@
     ]
   },
   "G": {
-    "dag": "M.gaussian.plume_model -> O.least_squares.source_inversion -> S.stability.pasquill_gifford",
+    "dag": "D.space -> O.least_squares.source_inversion -> S.stability.pasquill_gifford",
     "vertices": [
-      "M.gaussian.plume_model",
+      "D.space",
       "O.least_squares.source_inversion",
       "S.stability.pasquill_gifford"
     ],
     "arcs": [
-      "M.gaussian.plume_model -> O.least_squares.source_inversion",
+      "D.space -> O.least_squares.source_inversion",
       "O.least_squares.source_inversion -> S.stability.pasquill_gifford"
     ],
     "L_DAG": 2.5,
@@ -60,7 +60,7 @@
     "noise_model": "lognormal",
     "solution_space": "source_strength_location",
     "primitives": [
-      "M.gaussian.plume_model",
+      "D.space",
       "O.least_squares.source_inversion",
       "S.stability.pasquill_gifford"
     ]

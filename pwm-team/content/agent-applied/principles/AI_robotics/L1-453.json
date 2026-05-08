@@ -24,14 +24,14 @@
     ]
   },
   "G": {
-    "dag": "M.bicycle.lateral_dynamics -> S.tire.pacejka_model -> O.ekf.vehicle_state",
+    "dag": "D.time -> S.tire.pacejka_model -> O.ekf.vehicle_state",
     "vertices": [
-      "M.bicycle.lateral_dynamics",
+      "D.time",
       "S.tire.pacejka_model",
       "O.ekf.vehicle_state"
     ],
     "arcs": [
-      "M.bicycle.lateral_dynamics -> S.tire.pacejka_model",
+      "D.time -> S.tire.pacejka_model",
       "S.tire.pacejka_model -> O.ekf.vehicle_state"
     ],
     "L_DAG": 3.0,
@@ -60,7 +60,7 @@
     "noise_model": "gaussian",
     "solution_space": "vehicle_state_vector",
     "primitives": [
-      "M.bicycle.lateral_dynamics",
+      "D.time",
       "S.tire.pacejka_model",
       "O.ekf.vehicle_state"
     ]

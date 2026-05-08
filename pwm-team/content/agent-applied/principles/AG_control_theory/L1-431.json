@@ -24,15 +24,15 @@
     ]
   },
   "G": {
-    "dag": "S.n4sid.subspace_id -> M.arx.regression -> O.chi2.one_step_ahead",
+    "dag": "S.n4sid.subspace_id -> N.pointwise -> O.chi2.one_step_ahead",
     "vertices": [
       "S.n4sid.subspace_id",
-      "M.arx.regression",
+      "N.pointwise",
       "O.chi2.one_step_ahead"
     ],
     "arcs": [
-      "S.n4sid.subspace_id -> M.arx.regression",
-      "M.arx.regression -> O.chi2.one_step_ahead"
+      "S.n4sid.subspace_id -> N.pointwise",
+      "N.pointwise -> O.chi2.one_step_ahead"
     ],
     "L_DAG": 3.0,
     "n_c": 0
@@ -61,7 +61,7 @@
     "solution_space": "system_matrices_ABCD",
     "primitives": [
       "S.n4sid.subspace_id",
-      "M.arx.regression",
+      "N.pointwise",
       "O.chi2.one_step_ahead"
     ]
   },

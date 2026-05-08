@@ -24,14 +24,14 @@
     ]
   },
   "G": {
-    "dag": "M.eos.peng_robinson -> S.flash.rachford_rice -> O.material_balance.compositional",
+    "dag": "N.pointwise -> S.flash.rachford_rice -> O.material_balance.compositional",
     "vertices": [
-      "M.eos.peng_robinson",
+      "N.pointwise",
       "S.flash.rachford_rice",
       "O.material_balance.compositional"
     ],
     "arcs": [
-      "M.eos.peng_robinson -> S.flash.rachford_rice",
+      "N.pointwise -> S.flash.rachford_rice",
       "S.flash.rachford_rice -> O.material_balance.compositional"
     ],
     "L_DAG": 4.5,
@@ -60,7 +60,7 @@
     "noise_model": "measurement_gaussian",
     "solution_space": "3D_composition_pressure",
     "primitives": [
-      "M.eos.peng_robinson",
+      "N.pointwise",
       "S.flash.rachford_rice",
       "O.material_balance.compositional"
     ]

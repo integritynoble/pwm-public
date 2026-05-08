@@ -24,17 +24,17 @@
     ]
   },
   "G": {
-    "dag": "E.hf_reference -> E.correlation_expand -> M.amplitude_solve -> O.correlated_energy",
+    "dag": "E.hf_reference -> E.correlation_expand -> E.eigensolve -> O.correlated_energy",
     "vertices": [
       "E.hf_reference",
       "E.correlation_expand",
-      "M.amplitude_solve",
+      "E.eigensolve",
       "O.correlated_energy"
     ],
     "arcs": [
       "E.hf_reference -> E.correlation_expand",
-      "E.correlation_expand -> M.amplitude_solve",
-      "M.amplitude_solve -> O.correlated_energy"
+      "E.correlation_expand -> E.eigensolve",
+      "E.eigensolve -> O.correlated_energy"
     ],
     "L_DAG": 4.0,
     "n_c": 0
@@ -63,7 +63,7 @@
     "primitives": [
       "E.hf_reference",
       "E.correlation_expand",
-      "M.amplitude_solve",
+      "E.eigensolve",
       "O.correlated_energy"
     ]
   },

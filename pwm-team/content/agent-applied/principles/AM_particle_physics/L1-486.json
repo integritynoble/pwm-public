@@ -24,14 +24,14 @@
     ]
   },
   "G": {
-    "dag": "M.recoil.wimp_nucleus -> S.background.rejection_signal_region -> O.likelihood.profile",
+    "dag": "N.pointwise -> S.background.rejection_signal_region -> O.likelihood.profile",
     "vertices": [
-      "M.recoil.wimp_nucleus",
+      "N.pointwise",
       "S.background.rejection_signal_region",
       "O.likelihood.profile"
     ],
     "arcs": [
-      "M.recoil.wimp_nucleus -> S.background.rejection_signal_region",
+      "N.pointwise -> S.background.rejection_signal_region",
       "S.background.rejection_signal_region -> O.likelihood.profile"
     ],
     "L_DAG": 3.5,
@@ -60,7 +60,7 @@
     "noise_model": "poisson",
     "solution_space": "WIMP_cross_section_mass",
     "primitives": [
-      "M.recoil.wimp_nucleus",
+      "N.pointwise",
       "S.background.rejection_signal_region",
       "O.likelihood.profile"
     ]

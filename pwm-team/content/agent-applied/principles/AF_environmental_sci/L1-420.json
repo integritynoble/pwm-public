@@ -24,15 +24,15 @@
     ]
   },
   "G": {
-    "dag": "S.passive_microwave.brightness_temp -> M.sea_ice.thermodynamic_dynamic -> O.chi2.sia_sie",
+    "dag": "S.passive_microwave.brightness_temp -> D.space -> O.chi2.sia_sie",
     "vertices": [
       "S.passive_microwave.brightness_temp",
-      "M.sea_ice.thermodynamic_dynamic",
+      "D.space",
       "O.chi2.sia_sie"
     ],
     "arcs": [
-      "S.passive_microwave.brightness_temp -> M.sea_ice.thermodynamic_dynamic",
-      "M.sea_ice.thermodynamic_dynamic -> O.chi2.sia_sie"
+      "S.passive_microwave.brightness_temp -> D.space",
+      "D.space -> O.chi2.sia_sie"
     ],
     "L_DAG": 3.5,
     "n_c": 1
@@ -61,7 +61,7 @@
     "solution_space": "sea_ice_state_vector",
     "primitives": [
       "S.passive_microwave.brightness_temp",
-      "M.sea_ice.thermodynamic_dynamic",
+      "D.space",
       "O.chi2.sia_sie"
     ]
   },

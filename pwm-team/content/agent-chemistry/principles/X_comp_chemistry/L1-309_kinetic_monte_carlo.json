@@ -23,15 +23,15 @@
     ]
   },
   "G": {
-    "dag": "E.rate_catalog -> M.gillespie_sample -> O.trajectory_distribution",
+    "dag": "E.rate_catalog -> int.stochastic -> O.trajectory_distribution",
     "vertices": [
       "E.rate_catalog",
-      "M.gillespie_sample",
+      "int.stochastic",
       "O.trajectory_distribution"
     ],
     "arcs": [
-      "E.rate_catalog -> M.gillespie_sample",
-      "M.gillespie_sample -> O.trajectory_distribution"
+      "E.rate_catalog -> int.stochastic",
+      "int.stochastic -> O.trajectory_distribution"
     ],
     "L_DAG": 3.0,
     "n_c": 0
@@ -59,7 +59,7 @@
     "solution_space": "kmc_trajectory_ensemble",
     "primitives": [
       "E.rate_catalog",
-      "M.gillespie_sample",
+      "int.stochastic",
       "O.trajectory_distribution"
     ]
   },

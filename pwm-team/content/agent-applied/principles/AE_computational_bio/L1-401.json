@@ -24,14 +24,14 @@
     ]
   },
   "G": {
-    "dag": "M.ode.windkessel_3element -> O.least_squares.pressure_fit -> S.gradient.ode_params",
+    "dag": "D.time -> O.least_squares.pressure_fit -> S.gradient.ode_params",
     "vertices": [
-      "M.ode.windkessel_3element",
+      "D.time",
       "O.least_squares.pressure_fit",
       "S.gradient.ode_params"
     ],
     "arcs": [
-      "M.ode.windkessel_3element -> O.least_squares.pressure_fit",
+      "D.time -> O.least_squares.pressure_fit",
       "O.least_squares.pressure_fit -> S.gradient.ode_params"
     ],
     "L_DAG": 2.2,
@@ -60,7 +60,7 @@
     "noise_model": "measurement_gaussian",
     "solution_space": "windkessel_parameter_vector",
     "primitives": [
-      "M.ode.windkessel_3element",
+      "D.time",
       "O.least_squares.pressure_fit",
       "S.gradient.ode_params"
     ]

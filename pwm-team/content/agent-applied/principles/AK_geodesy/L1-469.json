@@ -24,14 +24,14 @@
     ]
   },
   "G": {
-    "dag": "M.tof.range_equation -> S.boresight.calibration -> O.icp.registration",
+    "dag": "N.pointwise -> S.boresight.calibration -> O.icp.registration",
     "vertices": [
-      "M.tof.range_equation",
+      "N.pointwise",
       "S.boresight.calibration",
       "O.icp.registration"
     ],
     "arcs": [
-      "M.tof.range_equation -> S.boresight.calibration",
+      "N.pointwise -> S.boresight.calibration",
       "S.boresight.calibration -> O.icp.registration"
     ],
     "L_DAG": 2.8,
@@ -60,7 +60,7 @@
     "noise_model": "gaussian",
     "solution_space": "3D_point_cloud",
     "primitives": [
-      "M.tof.range_equation",
+      "N.pointwise",
       "S.boresight.calibration",
       "O.icp.registration"
     ]

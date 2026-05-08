@@ -24,14 +24,14 @@
     ]
   },
   "G": {
-    "dag": "M.dglap.splitting_functions -> F.mellin.transform -> O.chi2.cross_section_data",
+    "dag": "N.pointwise -> F.mellin.transform -> O.chi2.cross_section_data",
     "vertices": [
-      "M.dglap.splitting_functions",
+      "N.pointwise",
       "F.mellin.transform",
       "O.chi2.cross_section_data"
     ],
     "arcs": [
-      "M.dglap.splitting_functions -> F.mellin.transform",
+      "N.pointwise -> F.mellin.transform",
       "F.mellin.transform -> O.chi2.cross_section_data"
     ],
     "L_DAG": 5.0,
@@ -60,7 +60,7 @@
     "noise_model": "experimental_gaussian",
     "solution_space": "PDF_function_space",
     "primitives": [
-      "M.dglap.splitting_functions",
+      "N.pointwise",
       "F.mellin.transform",
       "O.chi2.cross_section_data"
     ]

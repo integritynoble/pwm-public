@@ -23,15 +23,15 @@
     ]
   },
   "G": {
-    "dag": "E.gibbs_surface -> M.free_energy_minimize -> O.phase_equilibrium",
+    "dag": "E.gibbs_surface -> O.regularize -> O.phase_equilibrium",
     "vertices": [
       "E.gibbs_surface",
-      "M.free_energy_minimize",
+      "O.regularize",
       "O.phase_equilibrium"
     ],
     "arcs": [
-      "E.gibbs_surface -> M.free_energy_minimize",
-      "M.free_energy_minimize -> O.phase_equilibrium"
+      "E.gibbs_surface -> O.regularize",
+      "O.regularize -> O.phase_equilibrium"
     ],
     "L_DAG": 3.3,
     "n_c": 0
@@ -59,7 +59,7 @@
     "solution_space": "gibbs_energy_surfaces",
     "primitives": [
       "E.gibbs_surface",
-      "M.free_energy_minimize",
+      "O.regularize",
       "O.phase_equilibrium"
     ]
   },

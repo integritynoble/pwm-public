@@ -26,16 +26,16 @@
     ]
   },
   "G": {
-    "dag": "E.doi_edwards_tube -> M.relaxation_modes -> int.rheology -> O.viscoelastic_spectrum",
+    "dag": "E.doi_edwards_tube -> O.composite_method -> int.rheology -> O.viscoelastic_spectrum",
     "vertices": [
       "E.doi_edwards_tube",
-      "M.relaxation_modes",
+      "O.composite_method",
       "int.rheology",
       "O.viscoelastic_spectrum"
     ],
     "arcs": [
-      "E.doi_edwards_tube -> M.relaxation_modes",
-      "M.relaxation_modes -> int.rheology",
+      "E.doi_edwards_tube -> O.composite_method",
+      "O.composite_method -> int.rheology",
       "int.rheology -> O.viscoelastic_spectrum"
     ],
     "L_DAG": 3.5,
@@ -64,7 +64,7 @@
     "solution_space": "relaxation_spectrum_H_tau",
     "primitives": [
       "E.doi_edwards_tube",
-      "M.relaxation_modes",
+      "O.composite_method",
       "int.rheology",
       "O.viscoelastic_spectrum"
     ]

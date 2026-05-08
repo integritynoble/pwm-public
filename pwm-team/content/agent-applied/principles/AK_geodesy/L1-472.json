@@ -24,14 +24,14 @@
     ]
   },
   "G": {
-    "dag": "M.mixing.linear_model -> O.nonneg_ls.fcls -> S.endmember.extraction",
+    "dag": "L.linear_op -> O.nonneg_ls.fcls -> S.endmember.extraction",
     "vertices": [
-      "M.mixing.linear_model",
+      "L.linear_op",
       "O.nonneg_ls.fcls",
       "S.endmember.extraction"
     ],
     "arcs": [
-      "M.mixing.linear_model -> O.nonneg_ls.fcls",
+      "L.linear_op -> O.nonneg_ls.fcls",
       "O.nonneg_ls.fcls -> S.endmember.extraction"
     ],
     "L_DAG": 2.8,
@@ -60,7 +60,7 @@
     "noise_model": "gaussian",
     "solution_space": "abundance_map",
     "primitives": [
-      "M.mixing.linear_model",
+      "L.linear_op",
       "O.nonneg_ls.fcls",
       "S.endmember.extraction"
     ]

@@ -24,14 +24,14 @@
     ]
   },
   "G": {
-    "dag": "M.garch.conditional_variance -> O.mle.log_likelihood -> S.recursion.garch_update",
+    "dag": "N.pointwise -> O.mle.log_likelihood -> S.recursion.garch_update",
     "vertices": [
-      "M.garch.conditional_variance",
+      "N.pointwise",
       "O.mle.log_likelihood",
       "S.recursion.garch_update"
     ],
     "arcs": [
-      "M.garch.conditional_variance -> O.mle.log_likelihood",
+      "N.pointwise -> O.mle.log_likelihood",
       "O.mle.log_likelihood -> S.recursion.garch_update"
     ],
     "L_DAG": 2.5,
@@ -60,7 +60,7 @@
     "noise_model": "gaussian_student_t",
     "solution_space": "conditional_vol_series",
     "primitives": [
-      "M.garch.conditional_variance",
+      "N.pointwise",
       "O.mle.log_likelihood",
       "S.recursion.garch_update"
     ]

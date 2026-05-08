@@ -25,15 +25,15 @@
     ]
   },
   "G": {
-    "dag": "S.radiative.transfer_lte -> M.spectrum.synthesis -> O.chi2.spectral_lines",
+    "dag": "S.radiative.transfer_lte -> G.structured -> O.chi2.spectral_lines",
     "vertices": [
       "S.radiative.transfer_lte",
-      "M.spectrum.synthesis",
+      "G.structured",
       "O.chi2.spectral_lines"
     ],
     "arcs": [
-      "S.radiative.transfer_lte -> M.spectrum.synthesis",
-      "M.spectrum.synthesis -> O.chi2.spectral_lines"
+      "S.radiative.transfer_lte -> G.structured",
+      "G.structured -> O.chi2.spectral_lines"
     ],
     "L_DAG": 3.5,
     "n_c": 1
@@ -62,7 +62,7 @@
     "solution_space": "1D_atmospheric_profile",
     "primitives": [
       "S.radiative.transfer_lte",
-      "M.spectrum.synthesis",
+      "G.structured",
       "O.chi2.spectral_lines"
     ]
   },

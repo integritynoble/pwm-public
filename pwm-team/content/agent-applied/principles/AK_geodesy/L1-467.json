@@ -24,14 +24,14 @@
     ]
   },
   "G": {
-    "dag": "M.ode.equations_of_motion -> S.kalman.orbit_filter -> O.least_squares.batch",
+    "dag": "D.time -> S.kalman.orbit_filter -> O.least_squares.batch",
     "vertices": [
-      "M.ode.equations_of_motion",
+      "D.time",
       "S.kalman.orbit_filter",
       "O.least_squares.batch"
     ],
     "arcs": [
-      "M.ode.equations_of_motion -> S.kalman.orbit_filter",
+      "D.time -> S.kalman.orbit_filter",
       "S.kalman.orbit_filter -> O.least_squares.batch"
     ],
     "L_DAG": 3.2,
@@ -60,7 +60,7 @@
     "noise_model": "gaussian",
     "solution_space": "6D_orbital_state_vector",
     "primitives": [
-      "M.ode.equations_of_motion",
+      "D.time",
       "S.kalman.orbit_filter",
       "O.least_squares.batch"
     ]

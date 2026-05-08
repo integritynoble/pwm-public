@@ -23,15 +23,15 @@
     ]
   },
   "G": {
-    "dag": "E.Fock_basis -> M.Lanczos -> O.eigensystem",
+    "dag": "E.Fock_basis -> E.eigensolve -> O.eigensystem",
     "vertices": [
       "E.Fock_basis",
-      "M.Lanczos",
+      "E.eigensolve",
       "O.eigensystem"
     ],
     "arcs": [
-      "E.Fock_basis -> M.Lanczos",
-      "M.Lanczos -> O.eigensystem"
+      "E.Fock_basis -> E.eigensolve",
+      "E.eigensolve -> O.eigensystem"
     ],
     "L_DAG": 3.2,
     "n_c": 0
@@ -59,7 +59,7 @@
     "solution_space": "many_body_eigenstates",
     "primitives": [
       "E.Fock_basis",
-      "M.Lanczos",
+      "E.eigensolve",
       "O.eigensystem"
     ]
   },

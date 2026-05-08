@@ -23,15 +23,15 @@
     ]
   },
   "G": {
-    "dag": "E.enzyme_substrate -> M.steady_state -> O.rate_v",
+    "dag": "E.enzyme_substrate -> O.composite_method -> O.rate_v",
     "vertices": [
       "E.enzyme_substrate",
-      "M.steady_state",
+      "O.composite_method",
       "O.rate_v"
     ],
     "arcs": [
-      "E.enzyme_substrate -> M.steady_state",
-      "M.steady_state -> O.rate_v"
+      "E.enzyme_substrate -> O.composite_method",
+      "O.composite_method -> O.rate_v"
     ],
     "L_DAG": 2.5,
     "n_c": 0
@@ -59,7 +59,7 @@
     "solution_space": "V_KM_parameter_pair",
     "primitives": [
       "E.enzyme_substrate",
-      "M.steady_state",
+      "O.composite_method",
       "O.rate_v"
     ]
   },

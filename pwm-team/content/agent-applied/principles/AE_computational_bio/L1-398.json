@@ -24,14 +24,14 @@
     ]
   },
   "G": {
-    "dag": "M.pde.cable_equation -> S.green_function.cable -> O.tikhonov.cable_inversion",
+    "dag": "D.space -> S.green_function.cable -> O.tikhonov.cable_inversion",
     "vertices": [
-      "M.pde.cable_equation",
+      "D.space",
       "S.green_function.cable",
       "O.tikhonov.cable_inversion"
     ],
     "arcs": [
-      "M.pde.cable_equation -> S.green_function.cable",
+      "D.space -> S.green_function.cable",
       "S.green_function.cable -> O.tikhonov.cable_inversion"
     ],
     "L_DAG": 3.0,
@@ -60,7 +60,7 @@
     "noise_model": "gaussian",
     "solution_space": "dendritic_conductance_distribution",
     "primitives": [
-      "M.pde.cable_equation",
+      "D.space",
       "S.green_function.cable",
       "O.tikhonov.cable_inversion"
     ]

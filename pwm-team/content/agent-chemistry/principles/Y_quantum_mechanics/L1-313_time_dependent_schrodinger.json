@@ -23,17 +23,17 @@
     ]
   },
   "G": {
-    "dag": "E.hamiltonian_t -> E.laser_coupling -> M.time_integrate -> O.time_resolved",
+    "dag": "E.hamiltonian_t -> E.laser_coupling -> D.time -> O.time_resolved",
     "vertices": [
       "E.hamiltonian_t",
       "E.laser_coupling",
-      "M.time_integrate",
+      "D.time",
       "O.time_resolved"
     ],
     "arcs": [
       "E.hamiltonian_t -> E.laser_coupling",
-      "E.laser_coupling -> M.time_integrate",
-      "M.time_integrate -> O.time_resolved"
+      "E.laser_coupling -> D.time",
+      "D.time -> O.time_resolved"
     ],
     "L_DAG": 3.5,
     "n_c": 0
@@ -62,7 +62,7 @@
     "primitives": [
       "E.hamiltonian_t",
       "E.laser_coupling",
-      "M.time_integrate",
+      "D.time",
       "O.time_resolved"
     ]
   },

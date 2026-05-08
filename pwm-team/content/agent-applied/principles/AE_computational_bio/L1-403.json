@@ -24,14 +24,14 @@
     ]
   },
   "G": {
-    "dag": "M.ode.pbpk_organs -> S.qsr.tissue_binding -> O.nlme.pbpk_fit",
+    "dag": "D.time -> S.qsr.tissue_binding -> O.nlme.pbpk_fit",
     "vertices": [
-      "M.ode.pbpk_organs",
+      "D.time",
       "S.qsr.tissue_binding",
       "O.nlme.pbpk_fit"
     ],
     "arcs": [
-      "M.ode.pbpk_organs -> S.qsr.tissue_binding",
+      "D.time -> S.qsr.tissue_binding",
       "S.qsr.tissue_binding -> O.nlme.pbpk_fit"
     ],
     "L_DAG": 4.0,
@@ -60,7 +60,7 @@
     "noise_model": "lognormal",
     "solution_space": "PBPK_parameter_vector",
     "primitives": [
-      "M.ode.pbpk_organs",
+      "D.time",
       "S.qsr.tissue_binding",
       "O.nlme.pbpk_fit"
     ]

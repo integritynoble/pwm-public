@@ -24,14 +24,14 @@
     ]
   },
   "G": {
-    "dag": "M.nwp.nonlinear_forecast -> S.adjoint.gradient_4dvar -> O.cost_function.4dvar",
+    "dag": "D.space -> S.adjoint.gradient_4dvar -> O.cost_function.4dvar",
     "vertices": [
-      "M.nwp.nonlinear_forecast",
+      "D.space",
       "S.adjoint.gradient_4dvar",
       "O.cost_function.4dvar"
     ],
     "arcs": [
-      "M.nwp.nonlinear_forecast -> S.adjoint.gradient_4dvar",
+      "D.space -> S.adjoint.gradient_4dvar",
       "S.adjoint.gradient_4dvar -> O.cost_function.4dvar"
     ],
     "L_DAG": 4.5,
@@ -60,7 +60,7 @@
     "noise_model": "gaussian",
     "solution_space": "initial_condition_vector",
     "primitives": [
-      "M.nwp.nonlinear_forecast",
+      "D.space",
       "S.adjoint.gradient_4dvar",
       "O.cost_function.4dvar"
     ]

@@ -27,19 +27,19 @@
     ]
   },
   "G": {
-    "dag": "F.conservative -> F.dissipative -> F.random -> integrate.verlet -> O.structural",
+    "dag": "F.conservative -> F.dissipative -> F.random -> D.time.symplectic -> O.structural",
     "vertices": [
       "F.conservative",
       "F.dissipative",
       "F.random",
-      "integrate.verlet",
+      "D.time.symplectic",
       "O.structural"
     ],
     "arcs": [
-      "F.conservative -> integrate.verlet",
-      "F.dissipative -> integrate.verlet",
-      "F.random -> integrate.verlet",
-      "integrate.verlet -> O.structural"
+      "F.conservative -> D.time.symplectic",
+      "F.dissipative -> D.time.symplectic",
+      "F.random -> D.time.symplectic",
+      "D.time.symplectic -> O.structural"
     ],
     "L_DAG": 4.2,
     "n_c": 1
@@ -69,7 +69,7 @@
       "F.conservative",
       "F.dissipative",
       "F.random",
-      "integrate.verlet",
+      "D.time.symplectic",
       "O.structural"
     ]
   },

@@ -24,14 +24,14 @@
     ]
   },
   "G": {
-    "dag": "M.ode.fitzhugh_nagumo -> O.chi2.phase_portrait -> S.continuation.bifurcation",
+    "dag": "D.time -> O.chi2.phase_portrait -> S.continuation.bifurcation",
     "vertices": [
-      "M.ode.fitzhugh_nagumo",
+      "D.time",
       "O.chi2.phase_portrait",
       "S.continuation.bifurcation"
     ],
     "arcs": [
-      "M.ode.fitzhugh_nagumo -> O.chi2.phase_portrait",
+      "D.time -> O.chi2.phase_portrait",
       "O.chi2.phase_portrait -> S.continuation.bifurcation"
     ],
     "L_DAG": 2.5,
@@ -60,7 +60,7 @@
     "noise_model": "gaussian",
     "solution_space": "FHN_parameter_vector",
     "primitives": [
-      "M.ode.fitzhugh_nagumo",
+      "D.time",
       "O.chi2.phase_portrait",
       "S.continuation.bifurcation"
     ]

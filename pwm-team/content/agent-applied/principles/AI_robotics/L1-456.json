@@ -24,14 +24,14 @@
     ]
   },
   "G": {
-    "dag": "M.blade.element_momentum -> S.bvp.flapping_equation -> O.chi2.thrust_torque",
+    "dag": "O.composite_method -> S.bvp.flapping_equation -> O.chi2.thrust_torque",
     "vertices": [
-      "M.blade.element_momentum",
+      "O.composite_method",
       "S.bvp.flapping_equation",
       "O.chi2.thrust_torque"
     ],
     "arcs": [
-      "M.blade.element_momentum -> S.bvp.flapping_equation",
+      "O.composite_method -> S.bvp.flapping_equation",
       "S.bvp.flapping_equation -> O.chi2.thrust_torque"
     ],
     "L_DAG": 4.0,
@@ -60,7 +60,7 @@
     "noise_model": "gaussian",
     "solution_space": "rotor_parameter_vector",
     "primitives": [
-      "M.blade.element_momentum",
+      "O.composite_method",
       "S.bvp.flapping_equation",
       "O.chi2.thrust_torque"
     ]

@@ -23,17 +23,17 @@
     ]
   },
   "G": {
-    "dag": "E.potential_ext -> E.hartree_xc -> M.scf_eigensolve -> O.density_energy",
+    "dag": "E.potential_ext -> E.hartree_xc -> E.eigensolve -> O.density_energy",
     "vertices": [
       "E.potential_ext",
       "E.hartree_xc",
-      "M.scf_eigensolve",
+      "E.eigensolve",
       "O.density_energy"
     ],
     "arcs": [
       "E.potential_ext -> E.hartree_xc",
-      "E.hartree_xc -> M.scf_eigensolve",
-      "M.scf_eigensolve -> O.density_energy"
+      "E.hartree_xc -> E.eigensolve",
+      "E.eigensolve -> O.density_energy"
     ],
     "L_DAG": 3.3,
     "n_c": 0
@@ -62,7 +62,7 @@
     "primitives": [
       "E.potential_ext",
       "E.hartree_xc",
-      "M.scf_eigensolve",
+      "E.eigensolve",
       "O.density_energy"
     ]
   },

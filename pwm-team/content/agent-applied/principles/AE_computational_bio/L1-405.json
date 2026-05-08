@@ -24,14 +24,14 @@
     ]
   },
   "G": {
-    "dag": "M.ode.sir_model -> O.likelihood.incidence_nb -> S.mcmc.epidemic_posterior",
+    "dag": "D.time -> O.likelihood.incidence_nb -> S.mcmc.epidemic_posterior",
     "vertices": [
-      "M.ode.sir_model",
+      "D.time",
       "O.likelihood.incidence_nb",
       "S.mcmc.epidemic_posterior"
     ],
     "arcs": [
-      "M.ode.sir_model -> O.likelihood.incidence_nb",
+      "D.time -> O.likelihood.incidence_nb",
       "O.likelihood.incidence_nb -> S.mcmc.epidemic_posterior"
     ],
     "L_DAG": 2.5,
@@ -60,7 +60,7 @@
     "noise_model": "negative_binomial",
     "solution_space": "SIR_parameter_vector",
     "primitives": [
-      "M.ode.sir_model",
+      "D.time",
       "O.likelihood.incidence_nb",
       "S.mcmc.epidemic_posterior"
     ]

@@ -24,14 +24,14 @@
     ]
   },
   "G": {
-    "dag": "M.lambert.problem_solver -> S.gooding.algorithm -> O.chi2.residuals_orbit",
+    "dag": "D.time -> S.gooding.algorithm -> O.chi2.residuals_orbit",
     "vertices": [
-      "M.lambert.problem_solver",
+      "D.time",
       "S.gooding.algorithm",
       "O.chi2.residuals_orbit"
     ],
     "arcs": [
-      "M.lambert.problem_solver -> S.gooding.algorithm",
+      "D.time -> S.gooding.algorithm",
       "S.gooding.algorithm -> O.chi2.residuals_orbit"
     ],
     "L_DAG": 2.8,
@@ -60,7 +60,7 @@
     "noise_model": "observation_gaussian",
     "solution_space": "orbital_elements_vector",
     "primitives": [
-      "M.lambert.problem_solver",
+      "D.time",
       "S.gooding.algorithm",
       "O.chi2.residuals_orbit"
     ]

@@ -24,15 +24,15 @@
     ]
   },
   "G": {
-    "dag": "E.force_field -> M.verlet_integrate -> O.trajectory",
+    "dag": "E.force_field -> D.time.symplectic -> O.trajectory",
     "vertices": [
       "E.force_field",
-      "M.verlet_integrate",
+      "D.time.symplectic",
       "O.trajectory"
     ],
     "arcs": [
-      "E.force_field -> M.verlet_integrate",
-      "M.verlet_integrate -> O.trajectory"
+      "E.force_field -> D.time.symplectic",
+      "D.time.symplectic -> O.trajectory"
     ],
     "L_DAG": 3.0,
     "n_c": 0
@@ -60,7 +60,7 @@
     "solution_space": "atomic_trajectory",
     "primitives": [
       "E.force_field",
-      "M.verlet_integrate",
+      "D.time.symplectic",
       "O.trajectory"
     ]
   },

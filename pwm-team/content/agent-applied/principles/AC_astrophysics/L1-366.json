@@ -24,15 +24,15 @@
     ]
   },
   "G": {
-    "dag": "S.boltzmann.transfer -> M.fisher.fisher_matrix -> O.mcmc.sampler",
+    "dag": "S.boltzmann.transfer -> O.regularize -> O.mcmc.sampler",
     "vertices": [
       "S.boltzmann.transfer",
-      "M.fisher.fisher_matrix",
+      "O.regularize",
       "O.mcmc.sampler"
     ],
     "arcs": [
-      "S.boltzmann.transfer -> M.fisher.fisher_matrix",
-      "M.fisher.fisher_matrix -> O.mcmc.sampler"
+      "S.boltzmann.transfer -> O.regularize",
+      "O.regularize -> O.mcmc.sampler"
     ],
     "L_DAG": 3.8,
     "n_c": 0
@@ -61,7 +61,7 @@
     "solution_space": "cosmological_parameter_vector",
     "primitives": [
       "S.boltzmann.transfer",
-      "M.fisher.fisher_matrix",
+      "O.regularize",
       "O.mcmc.sampler"
     ]
   },

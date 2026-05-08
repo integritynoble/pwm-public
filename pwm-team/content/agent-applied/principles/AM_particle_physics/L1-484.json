@@ -24,15 +24,15 @@
     ]
   },
   "G": {
-    "dag": "S.kalman.track_filter -> M.helix.propagation -> O.chi2.hit_residuals",
+    "dag": "S.kalman.track_filter -> D.time -> O.chi2.hit_residuals",
     "vertices": [
       "S.kalman.track_filter",
-      "M.helix.propagation",
+      "D.time",
       "O.chi2.hit_residuals"
     ],
     "arcs": [
-      "S.kalman.track_filter -> M.helix.propagation",
-      "M.helix.propagation -> O.chi2.hit_residuals"
+      "S.kalman.track_filter -> D.time",
+      "D.time -> O.chi2.hit_residuals"
     ],
     "L_DAG": 4.0,
     "n_c": 1
@@ -61,7 +61,7 @@
     "solution_space": "track_parameter_vector",
     "primitives": [
       "S.kalman.track_filter",
-      "M.helix.propagation",
+      "D.time",
       "O.chi2.hit_residuals"
     ]
   },

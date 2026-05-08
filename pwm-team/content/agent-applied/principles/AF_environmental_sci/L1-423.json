@@ -24,14 +24,14 @@
     ]
   },
   "G": {
-    "dag": "M.transport.adjoint_source -> O.bayesian.mcmc_source -> S.green_function.transport",
+    "dag": "O.iter -> O.bayesian.mcmc_source -> S.green_function.transport",
     "vertices": [
-      "M.transport.adjoint_source",
+      "O.iter",
       "O.bayesian.mcmc_source",
       "S.green_function.transport"
     ],
     "arcs": [
-      "M.transport.adjoint_source -> O.bayesian.mcmc_source",
+      "O.iter -> O.bayesian.mcmc_source",
       "O.bayesian.mcmc_source -> S.green_function.transport"
     ],
     "L_DAG": 4.0,
@@ -60,7 +60,7 @@
     "noise_model": "lognormal",
     "solution_space": "source_location_strength_time",
     "primitives": [
-      "M.transport.adjoint_source",
+      "O.iter",
       "O.bayesian.mcmc_source",
       "S.green_function.transport"
     ]

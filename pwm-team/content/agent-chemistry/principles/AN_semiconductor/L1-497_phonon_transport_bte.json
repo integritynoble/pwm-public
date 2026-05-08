@@ -24,17 +24,17 @@
     ]
   },
   "G": {
-    "dag": "E.phonon_dispersion -> E.scattering_rates -> M.BTE_iterative -> O.kappa",
+    "dag": "E.phonon_dispersion -> E.scattering_rates -> O.composite_method -> O.kappa",
     "vertices": [
       "E.phonon_dispersion",
       "E.scattering_rates",
-      "M.BTE_iterative",
+      "O.composite_method",
       "O.kappa"
     ],
     "arcs": [
       "E.phonon_dispersion -> E.scattering_rates",
-      "E.scattering_rates -> M.BTE_iterative",
-      "M.BTE_iterative -> O.kappa"
+      "E.scattering_rates -> O.composite_method",
+      "O.composite_method -> O.kappa"
     ],
     "L_DAG": 3.6,
     "n_c": 0
@@ -63,7 +63,7 @@
     "primitives": [
       "E.phonon_dispersion",
       "E.scattering_rates",
-      "M.BTE_iterative",
+      "O.composite_method",
       "O.kappa"
     ]
   },

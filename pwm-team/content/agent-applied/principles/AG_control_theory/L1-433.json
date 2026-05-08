@@ -24,14 +24,14 @@
     ]
   },
   "G": {
-    "dag": "M.mpc.prediction_model -> O.qp.nlp_solver -> S.feasibility.constraint_satisfaction",
+    "dag": "O.iter -> O.qp.nlp_solver -> S.feasibility.constraint_satisfaction",
     "vertices": [
-      "M.mpc.prediction_model",
+      "O.iter",
       "O.qp.nlp_solver",
       "S.feasibility.constraint_satisfaction"
     ],
     "arcs": [
-      "M.mpc.prediction_model -> O.qp.nlp_solver",
+      "O.iter -> O.qp.nlp_solver",
       "O.qp.nlp_solver -> S.feasibility.constraint_satisfaction"
     ],
     "L_DAG": 4.0,
@@ -60,7 +60,7 @@
     "noise_model": "deterministic",
     "solution_space": "control_sequence_vector",
     "primitives": [
-      "M.mpc.prediction_model",
+      "O.iter",
       "O.qp.nlp_solver",
       "S.feasibility.constraint_satisfaction"
     ]

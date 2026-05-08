@@ -24,14 +24,14 @@
     ]
   },
   "G": {
-    "dag": "M.fisher.information -> O.d_optimality.criterion -> S.gradient.update",
+    "dag": "O.regularize -> O.d_optimality.criterion -> S.gradient.update",
     "vertices": [
-      "M.fisher.information",
+      "O.regularize",
       "O.d_optimality.criterion",
       "S.gradient.update"
     ],
     "arcs": [
-      "M.fisher.information -> O.d_optimality.criterion",
+      "O.regularize -> O.d_optimality.criterion",
       "O.d_optimality.criterion -> S.gradient.update"
     ],
     "L_DAG": 2.8,
@@ -60,7 +60,7 @@
     "noise_model": "gaussian",
     "solution_space": "experiment_design_vector",
     "primitives": [
-      "M.fisher.information",
+      "O.regularize",
       "O.d_optimality.criterion",
       "S.gradient.update"
     ]

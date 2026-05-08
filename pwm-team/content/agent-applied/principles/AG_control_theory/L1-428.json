@@ -24,15 +24,15 @@
     ]
   },
   "G": {
-    "dag": "S.ekf.jacobian_linearization -> M.ode.runge_kutta -> O.innov.consistency_check",
+    "dag": "S.ekf.jacobian_linearization -> D.time.explicit -> O.innov.consistency_check",
     "vertices": [
       "S.ekf.jacobian_linearization",
-      "M.ode.runge_kutta",
+      "D.time.explicit",
       "O.innov.consistency_check"
     ],
     "arcs": [
-      "S.ekf.jacobian_linearization -> M.ode.runge_kutta",
-      "M.ode.runge_kutta -> O.innov.consistency_check"
+      "S.ekf.jacobian_linearization -> D.time.explicit",
+      "D.time.explicit -> O.innov.consistency_check"
     ],
     "L_DAG": 3.0,
     "n_c": 0
@@ -61,7 +61,7 @@
     "solution_space": "nonlinear_state_estimate",
     "primitives": [
       "S.ekf.jacobian_linearization",
-      "M.ode.runge_kutta",
+      "D.time.explicit",
       "O.innov.consistency_check"
     ]
   },

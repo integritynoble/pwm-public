@@ -24,14 +24,14 @@
     ]
   },
   "G": {
-    "dag": "M.darcy.radial_flow -> S.pta.derivative_analysis -> O.semi_log.straight_line",
+    "dag": "D.space -> S.pta.derivative_analysis -> O.semi_log.straight_line",
     "vertices": [
-      "M.darcy.radial_flow",
+      "D.space",
       "S.pta.derivative_analysis",
       "O.semi_log.straight_line"
     ],
     "arcs": [
-      "M.darcy.radial_flow -> S.pta.derivative_analysis",
+      "D.space -> S.pta.derivative_analysis",
       "S.pta.derivative_analysis -> O.semi_log.straight_line"
     ],
     "L_DAG": 2.5,
@@ -60,7 +60,7 @@
     "noise_model": "measurement_gaussian",
     "solution_space": "reservoir_property_vector",
     "primitives": [
-      "M.darcy.radial_flow",
+      "D.space",
       "S.pta.derivative_analysis",
       "O.semi_log.straight_line"
     ]

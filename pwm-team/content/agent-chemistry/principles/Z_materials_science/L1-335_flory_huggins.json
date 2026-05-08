@@ -24,17 +24,17 @@
     ]
   },
   "G": {
-    "dag": "E.mixing_entropy -> E.interaction_chi -> M.binodal_compute -> O.phase_diagram",
+    "dag": "E.mixing_entropy -> E.interaction_chi -> E.eigensolve -> O.phase_diagram",
     "vertices": [
       "E.mixing_entropy",
       "E.interaction_chi",
-      "M.binodal_compute",
+      "E.eigensolve",
       "O.phase_diagram"
     ],
     "arcs": [
       "E.mixing_entropy -> E.interaction_chi",
-      "E.interaction_chi -> M.binodal_compute",
-      "M.binodal_compute -> O.phase_diagram"
+      "E.interaction_chi -> E.eigensolve",
+      "E.eigensolve -> O.phase_diagram"
     ],
     "L_DAG": 3.0,
     "n_c": 0
@@ -63,7 +63,7 @@
     "primitives": [
       "E.mixing_entropy",
       "E.interaction_chi",
-      "M.binodal_compute",
+      "E.eigensolve",
       "O.phase_diagram"
     ]
   },

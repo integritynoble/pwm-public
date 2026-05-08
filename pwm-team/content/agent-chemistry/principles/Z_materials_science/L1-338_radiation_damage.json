@@ -24,17 +24,17 @@
     ]
   },
   "G": {
-    "dag": "E.NRT_cascade -> E.cluster_dynamics -> M.rate_theory -> O.defect_distribution",
+    "dag": "E.NRT_cascade -> E.cluster_dynamics -> N.pointwise -> O.defect_distribution",
     "vertices": [
       "E.NRT_cascade",
       "E.cluster_dynamics",
-      "M.rate_theory",
+      "N.pointwise",
       "O.defect_distribution"
     ],
     "arcs": [
       "E.NRT_cascade -> E.cluster_dynamics",
-      "E.cluster_dynamics -> M.rate_theory",
-      "M.rate_theory -> O.defect_distribution"
+      "E.cluster_dynamics -> N.pointwise",
+      "N.pointwise -> O.defect_distribution"
     ],
     "L_DAG": 4.2,
     "n_c": 0
@@ -63,7 +63,7 @@
     "primitives": [
       "E.NRT_cascade",
       "E.cluster_dynamics",
-      "M.rate_theory",
+      "N.pointwise",
       "O.defect_distribution"
     ]
   },

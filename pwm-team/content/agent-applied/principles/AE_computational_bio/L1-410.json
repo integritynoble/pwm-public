@@ -24,14 +24,14 @@
     ]
   },
   "G": {
-    "dag": "M.ode.gompertz_logistic -> O.nls.tumor_fit -> S.bootstrap.uncertainty_tumor",
+    "dag": "D.time -> O.nls.tumor_fit -> S.bootstrap.uncertainty_tumor",
     "vertices": [
-      "M.ode.gompertz_logistic",
+      "D.time",
       "O.nls.tumor_fit",
       "S.bootstrap.uncertainty_tumor"
     ],
     "arcs": [
-      "M.ode.gompertz_logistic -> O.nls.tumor_fit",
+      "D.time -> O.nls.tumor_fit",
       "O.nls.tumor_fit -> S.bootstrap.uncertainty_tumor"
     ],
     "L_DAG": 2.5,
@@ -60,7 +60,7 @@
     "noise_model": "lognormal",
     "solution_space": "tumor_growth_parameter_vector",
     "primitives": [
-      "M.ode.gompertz_logistic",
+      "D.time",
       "O.nls.tumor_fit",
       "S.bootstrap.uncertainty_tumor"
     ]

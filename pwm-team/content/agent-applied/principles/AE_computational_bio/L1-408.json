@@ -24,14 +24,14 @@
     ]
   },
   "G": {
-    "dag": "M.wf.wright_fisher_drift -> O.likelihood.allele_frequency -> S.mcmc.popgen_posterior",
+    "dag": "N.pointwise -> O.likelihood.allele_frequency -> S.mcmc.popgen_posterior",
     "vertices": [
-      "M.wf.wright_fisher_drift",
+      "N.pointwise",
       "O.likelihood.allele_frequency",
       "S.mcmc.popgen_posterior"
     ],
     "arcs": [
-      "M.wf.wright_fisher_drift -> O.likelihood.allele_frequency",
+      "N.pointwise -> O.likelihood.allele_frequency",
       "O.likelihood.allele_frequency -> S.mcmc.popgen_posterior"
     ],
     "L_DAG": 3.0,
@@ -60,7 +60,7 @@
     "noise_model": "multinomial",
     "solution_space": "population_genetic_parameter_vector",
     "primitives": [
-      "M.wf.wright_fisher_drift",
+      "N.pointwise",
       "O.likelihood.allele_frequency",
       "S.mcmc.popgen_posterior"
     ]

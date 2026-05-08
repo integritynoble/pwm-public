@@ -24,19 +24,19 @@
     ]
   },
   "G": {
-    "dag": "E.continuity -> E.momentum_balance -> E.energy_balance -> M.coupled_solve -> O.hot_carrier_IV",
+    "dag": "E.continuity -> E.momentum_balance -> E.energy_balance -> O.iter -> O.hot_carrier_IV",
     "vertices": [
       "E.continuity",
       "E.momentum_balance",
       "E.energy_balance",
-      "M.coupled_solve",
+      "O.iter",
       "O.hot_carrier_IV"
     ],
     "arcs": [
-      "E.continuity -> M.coupled_solve",
-      "E.momentum_balance -> M.coupled_solve",
-      "E.energy_balance -> M.coupled_solve",
-      "M.coupled_solve -> O.hot_carrier_IV"
+      "E.continuity -> O.iter",
+      "E.momentum_balance -> O.iter",
+      "E.energy_balance -> O.iter",
+      "O.iter -> O.hot_carrier_IV"
     ],
     "L_DAG": 4.2,
     "n_c": 1
@@ -66,7 +66,7 @@
       "E.continuity",
       "E.momentum_balance",
       "E.energy_balance",
-      "M.coupled_solve",
+      "O.iter",
       "O.hot_carrier_IV"
     ]
   },

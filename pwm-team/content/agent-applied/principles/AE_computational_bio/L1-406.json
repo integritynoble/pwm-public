@@ -24,14 +24,14 @@
     ]
   },
   "G": {
-    "dag": "M.ode.seir_model -> O.likelihood.seir_incidence -> S.mcmc.seir_posterior",
+    "dag": "D.time -> O.likelihood.seir_incidence -> S.mcmc.seir_posterior",
     "vertices": [
-      "M.ode.seir_model",
+      "D.time",
       "O.likelihood.seir_incidence",
       "S.mcmc.seir_posterior"
     ],
     "arcs": [
-      "M.ode.seir_model -> O.likelihood.seir_incidence",
+      "D.time -> O.likelihood.seir_incidence",
       "O.likelihood.seir_incidence -> S.mcmc.seir_posterior"
     ],
     "L_DAG": 2.8,
@@ -60,7 +60,7 @@
     "noise_model": "negative_binomial",
     "solution_space": "SEIR_parameter_vector",
     "primitives": [
-      "M.ode.seir_model",
+      "D.time",
       "O.likelihood.seir_incidence",
       "S.mcmc.seir_posterior"
     ]

@@ -24,14 +24,14 @@
     ]
   },
   "G": {
-    "dag": "M.swe.saint_venant -> O.least_squares.rating_curve -> S.fdm.flood_routing",
+    "dag": "D.space -> O.least_squares.rating_curve -> S.fdm.flood_routing",
     "vertices": [
-      "M.swe.saint_venant",
+      "D.space",
       "O.least_squares.rating_curve",
       "S.fdm.flood_routing"
     ],
     "arcs": [
-      "M.swe.saint_venant -> O.least_squares.rating_curve",
+      "D.space -> O.least_squares.rating_curve",
       "O.least_squares.rating_curve -> S.fdm.flood_routing"
     ],
     "L_DAG": 3.0,
@@ -60,7 +60,7 @@
     "noise_model": "gaussian",
     "solution_space": "Manning_roughness_bathymetry",
     "primitives": [
-      "M.swe.saint_venant",
+      "D.space",
       "O.least_squares.rating_curve",
       "S.fdm.flood_routing"
     ]

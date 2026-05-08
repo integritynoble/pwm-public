@@ -24,15 +24,15 @@
     ]
   },
   "G": {
-    "dag": "S.gravity.gradient_tensor -> M.spherical_harmonics.synthesis -> O.tikhonov.regularization",
+    "dag": "S.gravity.gradient_tensor -> G.structured -> O.tikhonov.regularization",
     "vertices": [
       "S.gravity.gradient_tensor",
-      "M.spherical_harmonics.synthesis",
+      "G.structured",
       "O.tikhonov.regularization"
     ],
     "arcs": [
-      "S.gravity.gradient_tensor -> M.spherical_harmonics.synthesis",
-      "M.spherical_harmonics.synthesis -> O.tikhonov.regularization"
+      "S.gravity.gradient_tensor -> G.structured",
+      "G.structured -> O.tikhonov.regularization"
     ],
     "L_DAG": 3.5,
     "n_c": 0
@@ -61,7 +61,7 @@
     "solution_space": "spherical_harmonic_gravity",
     "primitives": [
       "S.gravity.gradient_tensor",
-      "M.spherical_harmonics.synthesis",
+      "G.structured",
       "O.tikhonov.regularization"
     ]
   },

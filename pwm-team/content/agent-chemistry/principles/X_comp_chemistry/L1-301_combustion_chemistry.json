@@ -23,17 +23,17 @@
     ]
   },
   "G": {
-    "dag": "E.detailed_mechanism -> E.energy_balance -> M.stiff_ODE -> O.ignition_delay",
+    "dag": "E.detailed_mechanism -> E.energy_balance -> D.time.implicit -> O.ignition_delay",
     "vertices": [
       "E.detailed_mechanism",
       "E.energy_balance",
-      "M.stiff_ODE",
+      "D.time.implicit",
       "O.ignition_delay"
     ],
     "arcs": [
       "E.detailed_mechanism -> E.energy_balance",
-      "E.energy_balance -> M.stiff_ODE",
-      "M.stiff_ODE -> O.ignition_delay"
+      "E.energy_balance -> D.time.implicit",
+      "D.time.implicit -> O.ignition_delay"
     ],
     "L_DAG": 3.5,
     "n_c": 0
@@ -62,7 +62,7 @@
     "primitives": [
       "E.detailed_mechanism",
       "E.energy_balance",
-      "M.stiff_ODE",
+      "D.time.implicit",
       "O.ignition_delay"
     ]
   },

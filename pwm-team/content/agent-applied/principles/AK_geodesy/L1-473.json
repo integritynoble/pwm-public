@@ -24,15 +24,15 @@
     ]
   },
   "G": {
-    "dag": "S.calibration.vicarious -> M.toa.reflectance_model -> O.least_squares.calibration",
+    "dag": "S.calibration.vicarious -> G.structured -> O.least_squares.calibration",
     "vertices": [
       "S.calibration.vicarious",
-      "M.toa.reflectance_model",
+      "G.structured",
       "O.least_squares.calibration"
     ],
     "arcs": [
-      "S.calibration.vicarious -> M.toa.reflectance_model",
-      "M.toa.reflectance_model -> O.least_squares.calibration"
+      "S.calibration.vicarious -> G.structured",
+      "G.structured -> O.least_squares.calibration"
     ],
     "L_DAG": 2.5,
     "n_c": 0
@@ -61,7 +61,7 @@
     "solution_space": "calibration_coefficient_vector",
     "primitives": [
       "S.calibration.vicarious",
-      "M.toa.reflectance_model",
+      "G.structured",
       "O.least_squares.calibration"
     ]
   },

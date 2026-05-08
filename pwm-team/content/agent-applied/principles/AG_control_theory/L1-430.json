@@ -24,15 +24,15 @@
     ]
   },
   "G": {
-    "dag": "S.pf.importance_sampling -> M.pf.systematic_resampling -> O.ess.effective_sample_size",
+    "dag": "S.pf.importance_sampling -> O.regularize -> O.ess.effective_sample_size",
     "vertices": [
       "S.pf.importance_sampling",
-      "M.pf.systematic_resampling",
+      "O.regularize",
       "O.ess.effective_sample_size"
     ],
     "arcs": [
-      "S.pf.importance_sampling -> M.pf.systematic_resampling",
-      "M.pf.systematic_resampling -> O.ess.effective_sample_size"
+      "S.pf.importance_sampling -> O.regularize",
+      "O.regularize -> O.ess.effective_sample_size"
     ],
     "L_DAG": 3.5,
     "n_c": 0
@@ -61,7 +61,7 @@
     "solution_space": "particle_distribution",
     "primitives": [
       "S.pf.importance_sampling",
-      "M.pf.systematic_resampling",
+      "O.regularize",
       "O.ess.effective_sample_size"
     ]
   },

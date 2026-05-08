@@ -25,14 +25,14 @@
     ]
   },
   "G": {
-    "dag": "M.bs.formula -> O.chi2.market_price -> S.newton.root_finding",
+    "dag": "N.pointwise -> O.chi2.market_price -> S.newton.root_finding",
     "vertices": [
-      "M.bs.formula",
+      "N.pointwise",
       "O.chi2.market_price",
       "S.newton.root_finding"
     ],
     "arcs": [
-      "M.bs.formula -> O.chi2.market_price",
+      "N.pointwise -> O.chi2.market_price",
       "O.chi2.market_price -> S.newton.root_finding"
     ],
     "L_DAG": 2.0,
@@ -61,7 +61,7 @@
     "noise_model": "market_bid_ask_gaussian",
     "solution_space": "implied_vol_surface",
     "primitives": [
-      "M.bs.formula",
+      "N.pointwise",
       "O.chi2.market_price",
       "S.newton.root_finding"
     ]

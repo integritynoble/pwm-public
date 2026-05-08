@@ -24,14 +24,14 @@
     ]
   },
   "G": {
-    "dag": "M.nwp.primitive_equations -> S.4dvar.adjoint_method -> O.cost_function.background_observation",
+    "dag": "D.space -> S.4dvar.adjoint_method -> O.cost_function.background_observation",
     "vertices": [
-      "M.nwp.primitive_equations",
+      "D.space",
       "S.4dvar.adjoint_method",
       "O.cost_function.background_observation"
     ],
     "arcs": [
-      "M.nwp.primitive_equations -> S.4dvar.adjoint_method",
+      "D.space -> S.4dvar.adjoint_method",
       "S.4dvar.adjoint_method -> O.cost_function.background_observation"
     ],
     "L_DAG": 5.5,
@@ -60,7 +60,7 @@
     "noise_model": "observation_gaussian",
     "solution_space": "atmospheric_state_vector",
     "primitives": [
-      "M.nwp.primitive_equations",
+      "D.space",
       "S.4dvar.adjoint_method",
       "O.cost_function.background_observation"
     ]

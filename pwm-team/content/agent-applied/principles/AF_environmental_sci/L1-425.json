@@ -24,14 +24,14 @@
     ]
   },
   "G": {
-    "dag": "M.darcy.groundwater_flow -> S.ade.solute_transport -> O.bayesian.heterogeneous_K",
+    "dag": "D.space -> S.ade.solute_transport -> O.bayesian.heterogeneous_K",
     "vertices": [
-      "M.darcy.groundwater_flow",
+      "D.space",
       "S.ade.solute_transport",
       "O.bayesian.heterogeneous_K"
     ],
     "arcs": [
-      "M.darcy.groundwater_flow -> S.ade.solute_transport",
+      "D.space -> S.ade.solute_transport",
       "S.ade.solute_transport -> O.bayesian.heterogeneous_K"
     ],
     "L_DAG": 4.5,
@@ -60,7 +60,7 @@
     "noise_model": "measurement_gaussian",
     "solution_space": "3D_hydraulic_conductivity",
     "primitives": [
-      "M.darcy.groundwater_flow",
+      "D.space",
       "S.ade.solute_transport",
       "O.bayesian.heterogeneous_K"
     ]

@@ -24,17 +24,17 @@
     ]
   },
   "G": {
-    "dag": "F.filter.density -> S.simp.penalty -> M.fem.stiffness -> O.compliance.gradient",
+    "dag": "F.filter.density -> S.simp.penalty -> L.linear_op -> O.compliance.gradient",
     "vertices": [
       "F.filter.density",
       "S.simp.penalty",
-      "M.fem.stiffness",
+      "L.linear_op",
       "O.compliance.gradient"
     ],
     "arcs": [
       "F.filter.density -> S.simp.penalty",
-      "S.simp.penalty -> M.fem.stiffness",
-      "M.fem.stiffness -> O.compliance.gradient"
+      "S.simp.penalty -> L.linear_op",
+      "L.linear_op -> O.compliance.gradient"
     ],
     "L_DAG": 3.5,
     "n_c": 1
@@ -64,7 +64,7 @@
     "primitives": [
       "F.filter.density",
       "S.simp.penalty",
-      "M.fem.stiffness",
+      "L.linear_op",
       "O.compliance.gradient"
     ]
   },

@@ -24,17 +24,17 @@
     ]
   },
   "G": {
-    "dag": "E.free_energy -> E.gradient_flow -> M.time_integrate -> O.domain_map",
+    "dag": "E.free_energy -> E.gradient_flow -> D.time -> O.domain_map",
     "vertices": [
       "E.free_energy",
       "E.gradient_flow",
-      "M.time_integrate",
+      "D.time",
       "O.domain_map"
     ],
     "arcs": [
       "E.free_energy -> E.gradient_flow",
-      "E.gradient_flow -> M.time_integrate",
-      "M.time_integrate -> O.domain_map"
+      "E.gradient_flow -> D.time",
+      "D.time -> O.domain_map"
     ],
     "L_DAG": 3.5,
     "n_c": 0
@@ -63,7 +63,7 @@
     "primitives": [
       "E.free_energy",
       "E.gradient_flow",
-      "M.time_integrate",
+      "D.time",
       "O.domain_map"
     ]
   },

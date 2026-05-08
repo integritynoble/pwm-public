@@ -24,14 +24,14 @@
     ]
   },
   "G": {
-    "dag": "M.arps.hyperbolic_decline -> O.least_squares.nls -> S.bootstrapping.uncertainty",
+    "dag": "N.pointwise -> O.least_squares.nls -> S.bootstrapping.uncertainty",
     "vertices": [
-      "M.arps.hyperbolic_decline",
+      "N.pointwise",
       "O.least_squares.nls",
       "S.bootstrapping.uncertainty"
     ],
     "arcs": [
-      "M.arps.hyperbolic_decline -> O.least_squares.nls",
+      "N.pointwise -> O.least_squares.nls",
       "O.least_squares.nls -> S.bootstrapping.uncertainty"
     ],
     "L_DAG": 2.0,
@@ -60,7 +60,7 @@
     "noise_model": "lognormal",
     "solution_space": "decline_parameter_vector",
     "primitives": [
-      "M.arps.hyperbolic_decline",
+      "N.pointwise",
       "O.least_squares.nls",
       "S.bootstrapping.uncertainty"
     ]

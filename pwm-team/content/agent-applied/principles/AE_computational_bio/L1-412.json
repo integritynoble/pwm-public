@@ -24,14 +24,14 @@
     ]
   },
   "G": {
-    "dag": "M.energy.force_field -> S.md.molecular_dynamics -> O.rmsd.structure_comparison",
+    "dag": "N.pointwise -> S.md.molecular_dynamics -> O.rmsd.structure_comparison",
     "vertices": [
-      "M.energy.force_field",
+      "N.pointwise",
       "S.md.molecular_dynamics",
       "O.rmsd.structure_comparison"
     ],
     "arcs": [
-      "M.energy.force_field -> S.md.molecular_dynamics",
+      "N.pointwise -> S.md.molecular_dynamics",
       "S.md.molecular_dynamics -> O.rmsd.structure_comparison"
     ],
     "L_DAG": 6.5,
@@ -60,7 +60,7 @@
     "noise_model": "shot_poisson",
     "solution_space": "3D_protein_structure",
     "primitives": [
-      "M.energy.force_field",
+      "N.pointwise",
       "S.md.molecular_dynamics",
       "O.rmsd.structure_comparison"
     ]

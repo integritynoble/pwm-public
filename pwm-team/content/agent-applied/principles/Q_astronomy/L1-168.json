@@ -24,17 +24,17 @@
     ]
   },
   "G": {
-    "dag": "F.fourier.nufft -> S.closure.phase -> M.sparse.regularization -> O.chi2.visibility",
+    "dag": "F.fourier.nufft -> S.closure.phase -> O.regularize -> O.chi2.visibility",
     "vertices": [
       "F.fourier.nufft",
       "S.closure.phase",
-      "M.sparse.regularization",
+      "O.regularize",
       "O.chi2.visibility"
     ],
     "arcs": [
       "F.fourier.nufft -> S.closure.phase",
-      "S.closure.phase -> M.sparse.regularization",
-      "M.sparse.regularization -> O.chi2.visibility"
+      "S.closure.phase -> O.regularize",
+      "O.regularize -> O.chi2.visibility"
     ],
     "L_DAG": 4.5,
     "n_c": 1
@@ -64,7 +64,7 @@
     "primitives": [
       "F.fourier.nufft",
       "S.closure.phase",
-      "M.sparse.regularization",
+      "O.regularize",
       "O.chi2.visibility"
     ]
   },

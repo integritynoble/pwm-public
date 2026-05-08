@@ -24,15 +24,15 @@
     ]
   },
   "G": {
-    "dag": "S.rt.disort_solver -> M.mol.absorption_xsection -> O.optimal_estimation.rodgers",
+    "dag": "S.rt.disort_solver -> L.linear_op -> O.optimal_estimation.rodgers",
     "vertices": [
       "S.rt.disort_solver",
-      "M.mol.absorption_xsection",
+      "L.linear_op",
       "O.optimal_estimation.rodgers"
     ],
     "arcs": [
-      "S.rt.disort_solver -> M.mol.absorption_xsection",
-      "M.mol.absorption_xsection -> O.optimal_estimation.rodgers"
+      "S.rt.disort_solver -> L.linear_op",
+      "L.linear_op -> O.optimal_estimation.rodgers"
     ],
     "L_DAG": 4.0,
     "n_c": 1
@@ -61,7 +61,7 @@
     "solution_space": "1D_atmospheric_profile",
     "primitives": [
       "S.rt.disort_solver",
-      "M.mol.absorption_xsection",
+      "L.linear_op",
       "O.optimal_estimation.rodgers"
     ]
   },

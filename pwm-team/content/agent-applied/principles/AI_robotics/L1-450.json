@@ -24,14 +24,14 @@
     ]
   },
   "G": {
-    "dag": "M.collocation.direct_transcription -> O.nlp.ipopt_solver -> S.warm_start.previous_solution",
+    "dag": "O.iter -> O.nlp.ipopt_solver -> S.warm_start.previous_solution",
     "vertices": [
-      "M.collocation.direct_transcription",
+      "O.iter",
       "O.nlp.ipopt_solver",
       "S.warm_start.previous_solution"
     ],
     "arcs": [
-      "M.collocation.direct_transcription -> O.nlp.ipopt_solver",
+      "O.iter -> O.nlp.ipopt_solver",
       "O.nlp.ipopt_solver -> S.warm_start.previous_solution"
     ],
     "L_DAG": 4.5,
@@ -60,7 +60,7 @@
     "noise_model": "deterministic",
     "solution_space": "optimal_trajectory",
     "primitives": [
-      "M.collocation.direct_transcription",
+      "O.iter",
       "O.nlp.ipopt_solver",
       "S.warm_start.previous_solution"
     ]

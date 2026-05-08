@@ -25,15 +25,15 @@
     ]
   },
   "G": {
-    "dag": "S.mc.path_generation -> O.discounting.expectation -> M.variance.reduction",
+    "dag": "S.mc.path_generation -> O.discounting.expectation -> O.regularize",
     "vertices": [
       "S.mc.path_generation",
       "O.discounting.expectation",
-      "M.variance.reduction"
+      "O.regularize"
     ],
     "arcs": [
       "S.mc.path_generation -> O.discounting.expectation",
-      "O.discounting.expectation -> M.variance.reduction"
+      "O.discounting.expectation -> O.regularize"
     ],
     "L_DAG": 2.5,
     "n_c": 0
@@ -63,7 +63,7 @@
     "primitives": [
       "S.mc.path_generation",
       "O.discounting.expectation",
-      "M.variance.reduction"
+      "O.regularize"
     ]
   },
   "difficulty_delta": 3,

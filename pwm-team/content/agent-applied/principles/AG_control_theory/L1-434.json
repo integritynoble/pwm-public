@@ -24,14 +24,14 @@
     ]
   },
   "G": {
-    "dag": "M.pid.transfer_function -> S.zn.tuning_rule -> O.iae.integral_criterion",
+    "dag": "N.pointwise -> S.zn.tuning_rule -> O.iae.integral_criterion",
     "vertices": [
-      "M.pid.transfer_function",
+      "N.pointwise",
       "S.zn.tuning_rule",
       "O.iae.integral_criterion"
     ],
     "arcs": [
-      "M.pid.transfer_function -> S.zn.tuning_rule",
+      "N.pointwise -> S.zn.tuning_rule",
       "S.zn.tuning_rule -> O.iae.integral_criterion"
     ],
     "L_DAG": 2.0,
@@ -60,7 +60,7 @@
     "noise_model": "gaussian",
     "solution_space": "PID_parameter_vector",
     "primitives": [
-      "M.pid.transfer_function",
+      "N.pointwise",
       "S.zn.tuning_rule",
       "O.iae.integral_criterion"
     ]

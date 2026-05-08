@@ -27,17 +27,17 @@
     ]
   },
   "G": {
-    "dag": "E.carrier_rate -> E.photon_rate -> M.coupled_ODE -> O.LI_modulation",
+    "dag": "E.carrier_rate -> E.photon_rate -> D.time.implicit -> O.LI_modulation",
     "vertices": [
       "E.carrier_rate",
       "E.photon_rate",
-      "M.coupled_ODE",
+      "D.time.implicit",
       "O.LI_modulation"
     ],
     "arcs": [
-      "E.carrier_rate -> M.coupled_ODE",
-      "E.photon_rate -> M.coupled_ODE",
-      "M.coupled_ODE -> O.LI_modulation"
+      "E.carrier_rate -> D.time.implicit",
+      "E.photon_rate -> D.time.implicit",
+      "D.time.implicit -> O.LI_modulation"
     ],
     "L_DAG": 3.3,
     "n_c": 0
@@ -66,7 +66,7 @@
     "primitives": [
       "E.carrier_rate",
       "E.photon_rate",
-      "M.coupled_ODE",
+      "D.time.implicit",
       "O.LI_modulation"
     ]
   },

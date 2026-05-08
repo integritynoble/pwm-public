@@ -25,17 +25,17 @@
     ]
   },
   "G": {
-    "dag": "E.strain -> E.kp_Hamiltonian -> M.scf_Schrodinger_Poisson -> O.states_transitions",
+    "dag": "E.strain -> E.kp_Hamiltonian -> O.iter -> O.states_transitions",
     "vertices": [
       "E.strain",
       "E.kp_Hamiltonian",
-      "M.scf_Schrodinger_Poisson",
+      "O.iter",
       "O.states_transitions"
     ],
     "arcs": [
       "E.strain -> E.kp_Hamiltonian",
-      "E.kp_Hamiltonian -> M.scf_Schrodinger_Poisson",
-      "M.scf_Schrodinger_Poisson -> O.states_transitions"
+      "E.kp_Hamiltonian -> O.iter",
+      "O.iter -> O.states_transitions"
     ],
     "L_DAG": 3.6,
     "n_c": 1
@@ -64,7 +64,7 @@
     "primitives": [
       "E.strain",
       "E.kp_Hamiltonian",
-      "M.scf_Schrodinger_Poisson",
+      "O.iter",
       "O.states_transitions"
     ]
   },

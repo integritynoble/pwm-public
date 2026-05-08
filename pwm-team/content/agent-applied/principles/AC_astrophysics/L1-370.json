@@ -24,15 +24,15 @@
     ]
   },
   "G": {
-    "dag": "S.helioseismic.kernel -> O.rnla.inversion -> M.ode.stellar_structure",
+    "dag": "S.helioseismic.kernel -> O.rnla.inversion -> D.time",
     "vertices": [
       "S.helioseismic.kernel",
       "O.rnla.inversion",
-      "M.ode.stellar_structure"
+      "D.time"
     ],
     "arcs": [
       "S.helioseismic.kernel -> O.rnla.inversion",
-      "O.rnla.inversion -> M.ode.stellar_structure"
+      "O.rnla.inversion -> D.time"
     ],
     "L_DAG": 3.0,
     "n_c": 0
@@ -62,7 +62,7 @@
     "primitives": [
       "S.helioseismic.kernel",
       "O.rnla.inversion",
-      "M.ode.stellar_structure"
+      "D.time"
     ]
   },
   "difficulty_delta": 3,

@@ -24,14 +24,14 @@
     ]
   },
   "G": {
-    "dag": "M.pde.monodomain_bidomain -> S.eikonal.fast_marching -> O.ecg.inverse_body_surface",
+    "dag": "D.space -> S.eikonal.fast_marching -> O.ecg.inverse_body_surface",
     "vertices": [
-      "M.pde.monodomain_bidomain",
+      "D.space",
       "S.eikonal.fast_marching",
       "O.ecg.inverse_body_surface"
     ],
     "arcs": [
-      "M.pde.monodomain_bidomain -> S.eikonal.fast_marching",
+      "D.space -> S.eikonal.fast_marching",
       "S.eikonal.fast_marching -> O.ecg.inverse_body_surface"
     ],
     "L_DAG": 4.5,
@@ -60,7 +60,7 @@
     "noise_model": "observation_gaussian",
     "solution_space": "3D_transmembrane_potential",
     "primitives": [
-      "M.pde.monodomain_bidomain",
+      "D.space",
       "S.eikonal.fast_marching",
       "O.ecg.inverse_body_surface"
     ]

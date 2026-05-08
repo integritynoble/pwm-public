@@ -23,15 +23,15 @@
     ]
   },
   "G": {
-    "dag": "E.onsager_flux -> M.integrate -> O.concentration_profile",
+    "dag": "E.onsager_flux -> D.time -> O.concentration_profile",
     "vertices": [
       "E.onsager_flux",
-      "M.integrate",
+      "D.time",
       "O.concentration_profile"
     ],
     "arcs": [
-      "E.onsager_flux -> M.integrate",
-      "M.integrate -> O.concentration_profile"
+      "E.onsager_flux -> D.time",
+      "D.time -> O.concentration_profile"
     ],
     "L_DAG": 3.0,
     "n_c": 0
@@ -59,7 +59,7 @@
     "solution_space": "concentration_field_c_i",
     "primitives": [
       "E.onsager_flux",
-      "M.integrate",
+      "D.time",
       "O.concentration_profile"
     ]
   },

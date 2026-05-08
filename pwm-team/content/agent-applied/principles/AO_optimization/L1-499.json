@@ -24,15 +24,15 @@
     ]
   },
   "G": {
-    "dag": "S.shape.derivative -> M.fem.adjoint -> O.gradient.descent",
+    "dag": "S.shape.derivative -> O.iter -> O.gradient.descent",
     "vertices": [
       "S.shape.derivative",
-      "M.fem.adjoint",
+      "O.iter",
       "O.gradient.descent"
     ],
     "arcs": [
-      "S.shape.derivative -> M.fem.adjoint",
-      "M.fem.adjoint -> O.gradient.descent"
+      "S.shape.derivative -> O.iter",
+      "O.iter -> O.gradient.descent"
     ],
     "L_DAG": 3.0,
     "n_c": 0
@@ -61,7 +61,7 @@
     "solution_space": "2D_boundary_curve",
     "primitives": [
       "S.shape.derivative",
-      "M.fem.adjoint",
+      "O.iter",
       "O.gradient.descent"
     ]
   },

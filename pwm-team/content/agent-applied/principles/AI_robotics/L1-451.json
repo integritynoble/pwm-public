@@ -24,14 +24,14 @@
     ]
   },
   "G": {
-    "dag": "M.euler.rigid_body_equations -> S.quaternion.integration -> O.lyapunov.energy_based",
+    "dag": "D.time -> S.quaternion.integration -> O.lyapunov.energy_based",
     "vertices": [
-      "M.euler.rigid_body_equations",
+      "D.time",
       "S.quaternion.integration",
       "O.lyapunov.energy_based"
     ],
     "arcs": [
-      "M.euler.rigid_body_equations -> S.quaternion.integration",
+      "D.time -> S.quaternion.integration",
       "S.quaternion.integration -> O.lyapunov.energy_based"
     ],
     "L_DAG": 2.8,
@@ -60,7 +60,7 @@
     "noise_model": "gaussian",
     "solution_space": "6DOF_state_trajectory",
     "primitives": [
-      "M.euler.rigid_body_equations",
+      "D.time",
       "S.quaternion.integration",
       "O.lyapunov.energy_based"
     ]

@@ -24,15 +24,15 @@
     ]
   },
   "G": {
-    "dag": "S.ukf.sigma_points_UT -> M.statistical.moment_propagation -> O.innov.sigma_point_update",
+    "dag": "S.ukf.sigma_points_UT -> O.regularize -> O.innov.sigma_point_update",
     "vertices": [
       "S.ukf.sigma_points_UT",
-      "M.statistical.moment_propagation",
+      "O.regularize",
       "O.innov.sigma_point_update"
     ],
     "arcs": [
-      "S.ukf.sigma_points_UT -> M.statistical.moment_propagation",
-      "M.statistical.moment_propagation -> O.innov.sigma_point_update"
+      "S.ukf.sigma_points_UT -> O.regularize",
+      "O.regularize -> O.innov.sigma_point_update"
     ],
     "L_DAG": 3.0,
     "n_c": 0
@@ -61,7 +61,7 @@
     "solution_space": "nonlinear_state_estimate",
     "primitives": [
       "S.ukf.sigma_points_UT",
-      "M.statistical.moment_propagation",
+      "O.regularize",
       "O.innov.sigma_point_update"
     ]
   },

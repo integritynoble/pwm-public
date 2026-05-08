@@ -24,17 +24,17 @@
     ]
   },
   "G": {
-    "dag": "E.G_function -> E.W_screening -> M.self_energy -> O.quasiparticle",
+    "dag": "E.G_function -> E.W_screening -> N.pointwise -> O.quasiparticle",
     "vertices": [
       "E.G_function",
       "E.W_screening",
-      "M.self_energy",
+      "N.pointwise",
       "O.quasiparticle"
     ],
     "arcs": [
       "E.G_function -> E.W_screening",
-      "E.W_screening -> M.self_energy",
-      "M.self_energy -> O.quasiparticle"
+      "E.W_screening -> N.pointwise",
+      "N.pointwise -> O.quasiparticle"
     ],
     "L_DAG": 4.0,
     "n_c": 0
@@ -63,7 +63,7 @@
     "primitives": [
       "E.G_function",
       "E.W_screening",
-      "M.self_energy",
+      "N.pointwise",
       "O.quasiparticle"
     ]
   },

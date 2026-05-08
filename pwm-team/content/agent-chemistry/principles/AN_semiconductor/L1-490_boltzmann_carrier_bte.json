@@ -24,17 +24,17 @@
     ]
   },
   "G": {
-    "dag": "E.band_structure -> E.scattering_rates -> M.MC_transport -> O.moments",
+    "dag": "E.band_structure -> E.scattering_rates -> int.stochastic -> O.moments",
     "vertices": [
       "E.band_structure",
       "E.scattering_rates",
-      "M.MC_transport",
+      "int.stochastic",
       "O.moments"
     ],
     "arcs": [
       "E.band_structure -> E.scattering_rates",
-      "E.scattering_rates -> M.MC_transport",
-      "M.MC_transport -> O.moments"
+      "E.scattering_rates -> int.stochastic",
+      "int.stochastic -> O.moments"
     ],
     "L_DAG": 3.7,
     "n_c": 0
@@ -63,7 +63,7 @@
     "primitives": [
       "E.band_structure",
       "E.scattering_rates",
-      "M.MC_transport",
+      "int.stochastic",
       "O.moments"
     ]
   },

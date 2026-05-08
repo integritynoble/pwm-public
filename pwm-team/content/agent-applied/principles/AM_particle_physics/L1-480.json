@@ -25,15 +25,15 @@
     ]
   },
   "G": {
-    "dag": "S.hmc.hybrid_monte_carlo -> M.dirac.wilson_fermion -> O.correlator.hadron_spectrum",
+    "dag": "S.hmc.hybrid_monte_carlo -> D.space -> O.correlator.hadron_spectrum",
     "vertices": [
       "S.hmc.hybrid_monte_carlo",
-      "M.dirac.wilson_fermion",
+      "D.space",
       "O.correlator.hadron_spectrum"
     ],
     "arcs": [
-      "S.hmc.hybrid_monte_carlo -> M.dirac.wilson_fermion",
-      "M.dirac.wilson_fermion -> O.correlator.hadron_spectrum"
+      "S.hmc.hybrid_monte_carlo -> D.space",
+      "D.space -> O.correlator.hadron_spectrum"
     ],
     "L_DAG": 6.0,
     "n_c": 3
@@ -62,7 +62,7 @@
     "solution_space": "QCD_observable_spectrum",
     "primitives": [
       "S.hmc.hybrid_monte_carlo",
-      "M.dirac.wilson_fermion",
+      "D.space",
       "O.correlator.hadron_spectrum"
     ]
   },

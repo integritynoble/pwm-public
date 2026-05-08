@@ -23,14 +23,14 @@
     ]
   },
   "G": {
-    "dag": "M.fractional_flow.buckley_leverett -> S.fdm.convection_diffusion -> O.recovery_factor.prediction",
+    "dag": "D.space -> S.fdm.convection_diffusion -> O.recovery_factor.prediction",
     "vertices": [
-      "M.fractional_flow.buckley_leverett",
+      "D.space",
       "S.fdm.convection_diffusion",
       "O.recovery_factor.prediction"
     ],
     "arcs": [
-      "M.fractional_flow.buckley_leverett -> S.fdm.convection_diffusion",
+      "D.space -> S.fdm.convection_diffusion",
       "S.fdm.convection_diffusion -> O.recovery_factor.prediction"
     ],
     "L_DAG": 3.8,
@@ -59,7 +59,7 @@
     "noise_model": "measurement_gaussian",
     "solution_space": "3D_saturation_composition",
     "primitives": [
-      "M.fractional_flow.buckley_leverett",
+      "D.space",
       "S.fdm.convection_diffusion",
       "O.recovery_factor.prediction"
     ]

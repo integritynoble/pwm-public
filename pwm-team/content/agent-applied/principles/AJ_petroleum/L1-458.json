@@ -24,14 +24,14 @@
     ]
   },
   "G": {
-    "dag": "M.darcy.multiphase_flow -> S.fdm.implicit_pressure -> O.material_balance.residual",
+    "dag": "D.space -> S.fdm.implicit_pressure -> O.material_balance.residual",
     "vertices": [
-      "M.darcy.multiphase_flow",
+      "D.space",
       "S.fdm.implicit_pressure",
       "O.material_balance.residual"
     ],
     "arcs": [
-      "M.darcy.multiphase_flow -> S.fdm.implicit_pressure",
+      "D.space -> S.fdm.implicit_pressure",
       "S.fdm.implicit_pressure -> O.material_balance.residual"
     ],
     "L_DAG": 3.5,
@@ -60,7 +60,7 @@
     "noise_model": "measurement_gaussian",
     "solution_space": "3D_pressure_saturation_field",
     "primitives": [
-      "M.darcy.multiphase_flow",
+      "D.space",
       "S.fdm.implicit_pressure",
       "O.material_balance.residual"
     ]

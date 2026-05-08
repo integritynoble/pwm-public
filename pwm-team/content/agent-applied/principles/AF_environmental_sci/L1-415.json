@@ -24,14 +24,14 @@
     ]
   },
   "G": {
-    "dag": "M.ade.advection_dispersion -> O.tikhonov.regularization -> S.fdm.crank_nicolson",
+    "dag": "D.space -> O.tikhonov.regularization -> S.fdm.crank_nicolson",
     "vertices": [
-      "M.ade.advection_dispersion",
+      "D.space",
       "O.tikhonov.regularization",
       "S.fdm.crank_nicolson"
     ],
     "arcs": [
-      "M.ade.advection_dispersion -> O.tikhonov.regularization",
+      "D.space -> O.tikhonov.regularization",
       "O.tikhonov.regularization -> S.fdm.crank_nicolson"
     ],
     "L_DAG": 3.0,
@@ -60,7 +60,7 @@
     "noise_model": "gaussian",
     "solution_space": "1D_concentration_source",
     "primitives": [
-      "M.ade.advection_dispersion",
+      "D.space",
       "O.tikhonov.regularization",
       "S.fdm.crank_nicolson"
     ]

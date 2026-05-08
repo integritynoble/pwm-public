@@ -25,14 +25,14 @@
     ]
   },
   "G": {
-    "dag": "M.lens.deflection -> S.source.pixelization -> O.chi2.image_plane",
+    "dag": "L.linear_op -> S.source.pixelization -> O.chi2.image_plane",
     "vertices": [
-      "M.lens.deflection",
+      "L.linear_op",
       "S.source.pixelization",
       "O.chi2.image_plane"
     ],
     "arcs": [
-      "M.lens.deflection -> S.source.pixelization",
+      "L.linear_op -> S.source.pixelization",
       "S.source.pixelization -> O.chi2.image_plane"
     ],
     "L_DAG": 4.2,
@@ -61,7 +61,7 @@
     "noise_model": "shot_poisson",
     "solution_space": "2D_lens_mass_distribution",
     "primitives": [
-      "M.lens.deflection",
+      "L.linear_op",
       "S.source.pixelization",
       "O.chi2.image_plane"
     ]

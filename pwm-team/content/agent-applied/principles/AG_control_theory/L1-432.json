@@ -24,14 +24,14 @@
     ]
   },
   "G": {
-    "dag": "M.riccati.algebraic -> S.lqr.gain_computation -> O.lyapunov.closed_loop",
+    "dag": "E.eigensolve -> S.lqr.gain_computation -> O.lyapunov.closed_loop",
     "vertices": [
-      "M.riccati.algebraic",
+      "E.eigensolve",
       "S.lqr.gain_computation",
       "O.lyapunov.closed_loop"
     ],
     "arcs": [
-      "M.riccati.algebraic -> S.lqr.gain_computation",
+      "E.eigensolve -> S.lqr.gain_computation",
       "S.lqr.gain_computation -> O.lyapunov.closed_loop"
     ],
     "L_DAG": 2.5,
@@ -60,7 +60,7 @@
     "noise_model": "deterministic",
     "solution_space": "control_gain_matrix",
     "primitives": [
-      "M.riccati.algebraic",
+      "E.eigensolve",
       "S.lqr.gain_computation",
       "O.lyapunov.closed_loop"
     ]

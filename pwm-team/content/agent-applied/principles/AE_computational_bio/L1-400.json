@@ -24,14 +24,14 @@
     ]
   },
   "G": {
-    "dag": "M.ns.incompressible -> S.fsi.fluid_structure -> O.chi2.4dflow_mri",
+    "dag": "D.space -> S.fsi.fluid_structure -> O.chi2.4dflow_mri",
     "vertices": [
-      "M.ns.incompressible",
+      "D.space",
       "S.fsi.fluid_structure",
       "O.chi2.4dflow_mri"
     ],
     "arcs": [
-      "M.ns.incompressible -> S.fsi.fluid_structure",
+      "D.space -> S.fsi.fluid_structure",
       "S.fsi.fluid_structure -> O.chi2.4dflow_mri"
     ],
     "L_DAG": 4.5,
@@ -60,7 +60,7 @@
     "noise_model": "measurement_gaussian",
     "solution_space": "3D_velocity_pressure_field",
     "primitives": [
-      "M.ns.incompressible",
+      "D.space",
       "S.fsi.fluid_structure",
       "O.chi2.4dflow_mri"
     ]

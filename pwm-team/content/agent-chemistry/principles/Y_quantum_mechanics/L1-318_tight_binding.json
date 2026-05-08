@@ -24,15 +24,15 @@
     ]
   },
   "G": {
-    "dag": "E.SK_parameters -> M.eigensolve -> O.DOS_band",
+    "dag": "E.SK_parameters -> E.eigensolve -> O.DOS_band",
     "vertices": [
       "E.SK_parameters",
-      "M.eigensolve",
+      "E.eigensolve",
       "O.DOS_band"
     ],
     "arcs": [
-      "E.SK_parameters -> M.eigensolve",
-      "M.eigensolve -> O.DOS_band"
+      "E.SK_parameters -> E.eigensolve",
+      "E.eigensolve -> O.DOS_band"
     ],
     "L_DAG": 3.0,
     "n_c": 0
@@ -60,7 +60,7 @@
     "solution_space": "tb_parameter_vector",
     "primitives": [
       "E.SK_parameters",
-      "M.eigensolve",
+      "E.eigensolve",
       "O.DOS_band"
     ]
   },

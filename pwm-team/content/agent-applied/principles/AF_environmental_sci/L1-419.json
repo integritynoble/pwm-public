@@ -24,14 +24,14 @@
     ]
   },
   "G": {
-    "dag": "M.primitive.boussinesq_ocean -> S.adjoint.ocean_4dvar -> O.cost.ECCO_objective",
+    "dag": "D.space -> S.adjoint.ocean_4dvar -> O.cost.ECCO_objective",
     "vertices": [
-      "M.primitive.boussinesq_ocean",
+      "D.space",
       "S.adjoint.ocean_4dvar",
       "O.cost.ECCO_objective"
     ],
     "arcs": [
-      "M.primitive.boussinesq_ocean -> S.adjoint.ocean_4dvar",
+      "D.space -> S.adjoint.ocean_4dvar",
       "S.adjoint.ocean_4dvar -> O.cost.ECCO_objective"
     ],
     "L_DAG": 5.5,
@@ -60,7 +60,7 @@
     "noise_model": "observation_gaussian",
     "solution_space": "3D_ocean_state",
     "primitives": [
-      "M.primitive.boussinesq_ocean",
+      "D.space",
       "S.adjoint.ocean_4dvar",
       "O.cost.ECCO_objective"
     ]

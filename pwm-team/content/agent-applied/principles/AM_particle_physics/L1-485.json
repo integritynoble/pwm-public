@@ -24,14 +24,14 @@
     ]
   },
   "G": {
-    "dag": "M.pmns.mixing_matrix -> S.matter.msw_effect -> O.chi2.event_rates",
+    "dag": "L.linear_op -> S.matter.msw_effect -> O.chi2.event_rates",
     "vertices": [
-      "M.pmns.mixing_matrix",
+      "L.linear_op",
       "S.matter.msw_effect",
       "O.chi2.event_rates"
     ],
     "arcs": [
-      "M.pmns.mixing_matrix -> S.matter.msw_effect",
+      "L.linear_op -> S.matter.msw_effect",
       "S.matter.msw_effect -> O.chi2.event_rates"
     ],
     "L_DAG": 3.5,
@@ -60,7 +60,7 @@
     "noise_model": "poisson",
     "solution_space": "PMNS_parameter_vector",
     "primitives": [
-      "M.pmns.mixing_matrix",
+      "L.linear_op",
       "S.matter.msw_effect",
       "O.chi2.event_rates"
     ]

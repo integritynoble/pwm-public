@@ -25,14 +25,14 @@
     ]
   },
   "G": {
-    "dag": "M.heston.characteristic_function -> F.fourier.carr_madan -> O.chi2.vol_surface",
+    "dag": "N.pointwise -> F.fourier.carr_madan -> O.chi2.vol_surface",
     "vertices": [
-      "M.heston.characteristic_function",
+      "N.pointwise",
       "F.fourier.carr_madan",
       "O.chi2.vol_surface"
     ],
     "arcs": [
-      "M.heston.characteristic_function -> F.fourier.carr_madan",
+      "N.pointwise -> F.fourier.carr_madan",
       "F.fourier.carr_madan -> O.chi2.vol_surface"
     ],
     "L_DAG": 3.5,
@@ -61,7 +61,7 @@
     "noise_model": "market_bid_ask_gaussian",
     "solution_space": "stochastic_vol_parameter_vector",
     "primitives": [
-      "M.heston.characteristic_function",
+      "N.pointwise",
       "F.fourier.carr_madan",
       "O.chi2.vol_surface"
     ]

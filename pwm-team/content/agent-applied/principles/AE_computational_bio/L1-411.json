@@ -24,14 +24,14 @@
     ]
   },
   "G": {
-    "dag": "M.pde.krogh_cylinder -> S.fdm.oxygen_diffusion -> O.chi2.po2_profile",
+    "dag": "D.space -> S.fdm.oxygen_diffusion -> O.chi2.po2_profile",
     "vertices": [
-      "M.pde.krogh_cylinder",
+      "D.space",
       "S.fdm.oxygen_diffusion",
       "O.chi2.po2_profile"
     ],
     "arcs": [
-      "M.pde.krogh_cylinder -> S.fdm.oxygen_diffusion",
+      "D.space -> S.fdm.oxygen_diffusion",
       "S.fdm.oxygen_diffusion -> O.chi2.po2_profile"
     ],
     "L_DAG": 2.8,
@@ -60,7 +60,7 @@
     "noise_model": "gaussian",
     "solution_space": "oxygen_distribution_field",
     "primitives": [
-      "M.pde.krogh_cylinder",
+      "D.space",
       "S.fdm.oxygen_diffusion",
       "O.chi2.po2_profile"
     ]

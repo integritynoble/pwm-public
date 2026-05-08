@@ -23,17 +23,17 @@
     ]
   },
   "G": {
-    "dag": "E.bead_mapping -> E.CG_forcefield -> M.MD_integrate -> O.mesoscale_observable",
+    "dag": "E.bead_mapping -> E.CG_forcefield -> D.time.symplectic -> O.mesoscale_observable",
     "vertices": [
       "E.bead_mapping",
       "E.CG_forcefield",
-      "M.MD_integrate",
+      "D.time.symplectic",
       "O.mesoscale_observable"
     ],
     "arcs": [
       "E.bead_mapping -> E.CG_forcefield",
-      "E.CG_forcefield -> M.MD_integrate",
-      "M.MD_integrate -> O.mesoscale_observable"
+      "E.CG_forcefield -> D.time.symplectic",
+      "D.time.symplectic -> O.mesoscale_observable"
     ],
     "L_DAG": 3.1,
     "n_c": 0
@@ -62,7 +62,7 @@
     "primitives": [
       "E.bead_mapping",
       "E.CG_forcefield",
-      "M.MD_integrate",
+      "D.time.symplectic",
       "O.mesoscale_observable"
     ]
   },

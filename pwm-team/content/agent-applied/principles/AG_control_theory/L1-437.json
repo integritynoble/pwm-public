@@ -24,15 +24,15 @@
     ]
   },
   "G": {
-    "dag": "S.hgo.high_gain_observer -> M.lyapunov.convergence_proof -> O.iss.input_to_state",
+    "dag": "S.hgo.high_gain_observer -> O.regularize -> O.iss.input_to_state",
     "vertices": [
       "S.hgo.high_gain_observer",
-      "M.lyapunov.convergence_proof",
+      "O.regularize",
       "O.iss.input_to_state"
     ],
     "arcs": [
-      "S.hgo.high_gain_observer -> M.lyapunov.convergence_proof",
-      "M.lyapunov.convergence_proof -> O.iss.input_to_state"
+      "S.hgo.high_gain_observer -> O.regularize",
+      "O.regularize -> O.iss.input_to_state"
     ],
     "L_DAG": 3.5,
     "n_c": 0
@@ -61,7 +61,7 @@
     "solution_space": "nonlinear_state_estimate",
     "primitives": [
       "S.hgo.high_gain_observer",
-      "M.lyapunov.convergence_proof",
+      "O.regularize",
       "O.iss.input_to_state"
     ]
   },

@@ -22,17 +22,17 @@
     ]
   },
   "G": {
-    "dag": "E.bond_order -> E.reaxff -> M.integrate_reactive -> O.reaction_trace",
+    "dag": "E.bond_order -> E.reaxff -> D.time -> O.reaction_trace",
     "vertices": [
       "E.bond_order",
       "E.reaxff",
-      "M.integrate_reactive",
+      "D.time",
       "O.reaction_trace"
     ],
     "arcs": [
       "E.bond_order -> E.reaxff",
-      "E.reaxff -> M.integrate_reactive",
-      "M.integrate_reactive -> O.reaction_trace"
+      "E.reaxff -> D.time",
+      "D.time -> O.reaction_trace"
     ],
     "L_DAG": 3.5,
     "n_c": 0
@@ -61,7 +61,7 @@
     "primitives": [
       "E.bond_order",
       "E.reaxff",
-      "M.integrate_reactive",
+      "D.time",
       "O.reaction_trace"
     ]
   },

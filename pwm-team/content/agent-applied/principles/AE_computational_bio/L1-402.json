@@ -24,14 +24,14 @@
     ]
   },
   "G": {
-    "dag": "M.ode.pk_compartments -> O.nls.pk_fit -> S.bootstrap.uncertainty_PK",
+    "dag": "D.time -> O.nls.pk_fit -> S.bootstrap.uncertainty_PK",
     "vertices": [
-      "M.ode.pk_compartments",
+      "D.time",
       "O.nls.pk_fit",
       "S.bootstrap.uncertainty_PK"
     ],
     "arcs": [
-      "M.ode.pk_compartments -> O.nls.pk_fit",
+      "D.time -> O.nls.pk_fit",
       "O.nls.pk_fit -> S.bootstrap.uncertainty_PK"
     ],
     "L_DAG": 2.5,
@@ -60,7 +60,7 @@
     "noise_model": "lognormal",
     "solution_space": "PK_parameter_vector",
     "primitives": [
-      "M.ode.pk_compartments",
+      "D.time",
       "O.nls.pk_fit",
       "S.bootstrap.uncertainty_PK"
     ]

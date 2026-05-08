@@ -24,14 +24,14 @@
     ]
   },
   "G": {
-    "dag": "M.hmm.profile_model -> S.viterbi.alignment -> O.baum_welch.em_training",
+    "dag": "N.pointwise -> S.viterbi.alignment -> O.baum_welch.em_training",
     "vertices": [
-      "M.hmm.profile_model",
+      "N.pointwise",
       "S.viterbi.alignment",
       "O.baum_welch.em_training"
     ],
     "arcs": [
-      "M.hmm.profile_model -> S.viterbi.alignment",
+      "N.pointwise -> S.viterbi.alignment",
       "S.viterbi.alignment -> O.baum_welch.em_training"
     ],
     "L_DAG": 3.5,
@@ -60,7 +60,7 @@
     "noise_model": "multinomial",
     "solution_space": "HMM_profile_parameter_matrix",
     "primitives": [
-      "M.hmm.profile_model",
+      "N.pointwise",
       "S.viterbi.alignment",
       "O.baum_welch.em_training"
     ]

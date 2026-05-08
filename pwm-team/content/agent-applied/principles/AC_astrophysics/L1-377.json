@@ -26,14 +26,14 @@
     ]
   },
   "G": {
-    "dag": "M.sed.stellar_population -> S.dust.attenuation_calzetti -> O.chi2.photometric",
+    "dag": "G.structured -> S.dust.attenuation_calzetti -> O.chi2.photometric",
     "vertices": [
-      "M.sed.stellar_population",
+      "G.structured",
       "S.dust.attenuation_calzetti",
       "O.chi2.photometric"
     ],
     "arcs": [
-      "M.sed.stellar_population -> S.dust.attenuation_calzetti",
+      "G.structured -> S.dust.attenuation_calzetti",
       "S.dust.attenuation_calzetti -> O.chi2.photometric"
     ],
     "L_DAG": 3.0,
@@ -62,7 +62,7 @@
     "noise_model": "observation_gaussian",
     "solution_space": "galaxy_parameter_vector",
     "primitives": [
-      "M.sed.stellar_population",
+      "G.structured",
       "S.dust.attenuation_calzetti",
       "O.chi2.photometric"
     ]

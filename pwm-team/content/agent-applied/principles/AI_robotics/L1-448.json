@@ -24,14 +24,14 @@
     ]
   },
   "G": {
-    "dag": "M.newton_euler.forward -> S.articulated_body.aba -> O.ode.integration",
+    "dag": "D.time -> S.articulated_body.aba -> O.ode.integration",
     "vertices": [
-      "M.newton_euler.forward",
+      "D.time",
       "S.articulated_body.aba",
       "O.ode.integration"
     ],
     "arcs": [
-      "M.newton_euler.forward -> S.articulated_body.aba",
+      "D.time -> S.articulated_body.aba",
       "S.articulated_body.aba -> O.ode.integration"
     ],
     "L_DAG": 3.0,
@@ -60,7 +60,7 @@
     "noise_model": "gaussian",
     "solution_space": "joint_acceleration_vector",
     "primitives": [
-      "M.newton_euler.forward",
+      "D.time",
       "S.articulated_body.aba",
       "O.ode.integration"
     ]

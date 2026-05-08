@@ -24,15 +24,15 @@
     ]
   },
   "G": {
-    "dag": "E.MPO_hamiltonian -> M.sweep_optimize -> O.gs_energy",
+    "dag": "E.MPO_hamiltonian -> O.regularize -> O.gs_energy",
     "vertices": [
       "E.MPO_hamiltonian",
-      "M.sweep_optimize",
+      "O.regularize",
       "O.gs_energy"
     ],
     "arcs": [
-      "E.MPO_hamiltonian -> M.sweep_optimize",
-      "M.sweep_optimize -> O.gs_energy"
+      "E.MPO_hamiltonian -> O.regularize",
+      "O.regularize -> O.gs_energy"
     ],
     "L_DAG": 3.8,
     "n_c": 0
@@ -60,7 +60,7 @@
     "solution_space": "matrix_product_state",
     "primitives": [
       "E.MPO_hamiltonian",
-      "M.sweep_optimize",
+      "O.regularize",
       "O.gs_energy"
     ]
   },

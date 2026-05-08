@@ -25,19 +25,19 @@
     ]
   },
   "G": {
-    "dag": "E.electrolyte_transport -> E.solid_diffusion -> E.butler_volmer -> M.P2D_couple -> O.V_cell",
+    "dag": "E.electrolyte_transport -> E.solid_diffusion -> E.butler_volmer -> O.iter -> O.V_cell",
     "vertices": [
       "E.electrolyte_transport",
       "E.solid_diffusion",
       "E.butler_volmer",
-      "M.P2D_couple",
+      "O.iter",
       "O.V_cell"
     ],
     "arcs": [
       "E.electrolyte_transport -> E.solid_diffusion",
       "E.solid_diffusion -> E.butler_volmer",
-      "E.butler_volmer -> M.P2D_couple",
-      "M.P2D_couple -> O.V_cell"
+      "E.butler_volmer -> O.iter",
+      "O.iter -> O.V_cell"
     ],
     "L_DAG": 4.1,
     "n_c": 0
@@ -67,7 +67,7 @@
       "E.electrolyte_transport",
       "E.solid_diffusion",
       "E.butler_volmer",
-      "M.P2D_couple",
+      "O.iter",
       "O.V_cell"
     ]
   },

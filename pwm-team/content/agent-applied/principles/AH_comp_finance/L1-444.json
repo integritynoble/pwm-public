@@ -24,14 +24,14 @@
     ]
   },
   "G": {
-    "dag": "M.covariance.sample_shrinkage -> O.qp.quadratic_programming -> S.efficient_frontier.trace",
+    "dag": "O.regularize -> O.qp.quadratic_programming -> S.efficient_frontier.trace",
     "vertices": [
-      "M.covariance.sample_shrinkage",
+      "O.regularize",
       "O.qp.quadratic_programming",
       "S.efficient_frontier.trace"
     ],
     "arcs": [
-      "M.covariance.sample_shrinkage -> O.qp.quadratic_programming",
+      "O.regularize -> O.qp.quadratic_programming",
       "O.qp.quadratic_programming -> S.efficient_frontier.trace"
     ],
     "L_DAG": 2.5,
@@ -60,7 +60,7 @@
     "noise_model": "estimation_gaussian",
     "solution_space": "portfolio_weight_vector",
     "primitives": [
-      "M.covariance.sample_shrinkage",
+      "O.regularize",
       "O.qp.quadratic_programming",
       "S.efficient_frontier.trace"
     ]

@@ -23,15 +23,15 @@
     ]
   },
   "G": {
-    "dag": "E.curvature_flow -> M.topology_update -> O.grain_statistics",
+    "dag": "E.curvature_flow -> O.regularize -> O.grain_statistics",
     "vertices": [
       "E.curvature_flow",
-      "M.topology_update",
+      "O.regularize",
       "O.grain_statistics"
     ],
     "arcs": [
-      "E.curvature_flow -> M.topology_update",
-      "M.topology_update -> O.grain_statistics"
+      "E.curvature_flow -> O.regularize",
+      "O.regularize -> O.grain_statistics"
     ],
     "L_DAG": 3.1,
     "n_c": 0
@@ -59,7 +59,7 @@
     "solution_space": "grain_orientation_map",
     "primitives": [
       "E.curvature_flow",
-      "M.topology_update",
+      "O.regularize",
       "O.grain_statistics"
     ]
   },

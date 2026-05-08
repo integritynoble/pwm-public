@@ -25,14 +25,14 @@
     ]
   },
   "G": {
-    "dag": "M.transit.mandel_agol -> O.chi2.lightcurve_transit -> S.limb.darkening",
+    "dag": "D.time -> O.chi2.lightcurve_transit -> S.limb.darkening",
     "vertices": [
-      "M.transit.mandel_agol",
+      "D.time",
       "O.chi2.lightcurve_transit",
       "S.limb.darkening"
     ],
     "arcs": [
-      "M.transit.mandel_agol -> O.chi2.lightcurve_transit",
+      "D.time -> O.chi2.lightcurve_transit",
       "O.chi2.lightcurve_transit -> S.limb.darkening"
     ],
     "L_DAG": 2.5,
@@ -61,7 +61,7 @@
     "noise_model": "shot_poisson",
     "solution_space": "transit_parameter_vector",
     "primitives": [
-      "M.transit.mandel_agol",
+      "D.time",
       "O.chi2.lightcurve_transit",
       "S.limb.darkening"
     ]

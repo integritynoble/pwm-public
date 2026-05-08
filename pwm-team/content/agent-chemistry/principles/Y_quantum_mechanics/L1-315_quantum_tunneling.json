@@ -23,15 +23,15 @@
     ]
   },
   "G": {
-    "dag": "E.barrier_profile -> M.transfer_matrix -> O.T_E",
+    "dag": "E.barrier_profile -> E.eigensolve -> O.T_E",
     "vertices": [
       "E.barrier_profile",
-      "M.transfer_matrix",
+      "E.eigensolve",
       "O.T_E"
     ],
     "arcs": [
-      "E.barrier_profile -> M.transfer_matrix",
-      "M.transfer_matrix -> O.T_E"
+      "E.barrier_profile -> E.eigensolve",
+      "E.eigensolve -> O.T_E"
     ],
     "L_DAG": 3.0,
     "n_c": 0
@@ -59,7 +59,7 @@
     "solution_space": "V_x_barrier_profile",
     "primitives": [
       "E.barrier_profile",
-      "M.transfer_matrix",
+      "E.eigensolve",
       "O.T_E"
     ]
   },

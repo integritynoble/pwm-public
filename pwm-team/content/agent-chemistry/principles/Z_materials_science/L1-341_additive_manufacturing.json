@@ -24,19 +24,19 @@
     ]
   },
   "G": {
-    "dag": "E.thermal -> E.fluid -> E.phase_change -> M.multiphysics -> O.melt_pool",
+    "dag": "E.thermal -> E.fluid -> E.phase_change -> O.iter -> O.melt_pool",
     "vertices": [
       "E.thermal",
       "E.fluid",
       "E.phase_change",
-      "M.multiphysics",
+      "O.iter",
       "O.melt_pool"
     ],
     "arcs": [
       "E.thermal -> E.fluid",
       "E.fluid -> E.phase_change",
-      "E.phase_change -> M.multiphysics",
-      "M.multiphysics -> O.melt_pool"
+      "E.phase_change -> O.iter",
+      "O.iter -> O.melt_pool"
     ],
     "L_DAG": 3.9,
     "n_c": 0
@@ -66,7 +66,7 @@
       "E.thermal",
       "E.fluid",
       "E.phase_change",
-      "M.multiphysics",
+      "O.iter",
       "O.melt_pool"
     ]
   },

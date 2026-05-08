@@ -24,17 +24,17 @@
     ]
   },
   "G": {
-    "dag": "E.hamiltonian_build -> E.self_energy -> M.dyson_solve -> O.current_LDOS",
+    "dag": "E.hamiltonian_build -> E.self_energy -> E.eigensolve -> O.current_LDOS",
     "vertices": [
       "E.hamiltonian_build",
       "E.self_energy",
-      "M.dyson_solve",
+      "E.eigensolve",
       "O.current_LDOS"
     ],
     "arcs": [
-      "E.hamiltonian_build -> M.dyson_solve",
-      "E.self_energy -> M.dyson_solve",
-      "M.dyson_solve -> O.current_LDOS"
+      "E.hamiltonian_build -> E.eigensolve",
+      "E.self_energy -> E.eigensolve",
+      "E.eigensolve -> O.current_LDOS"
     ],
     "L_DAG": 4.0,
     "n_c": 2
@@ -63,7 +63,7 @@
     "primitives": [
       "E.hamiltonian_build",
       "E.self_energy",
-      "M.dyson_solve",
+      "E.eigensolve",
       "O.current_LDOS"
     ]
   },

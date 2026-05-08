@@ -24,17 +24,17 @@
     ]
   },
   "G": {
-    "dag": "E.deposition_flux -> E.surface_diffusion -> M.nucleation_coalescence -> O.film_morphology",
+    "dag": "E.deposition_flux -> E.surface_diffusion -> N.pointwise -> O.film_morphology",
     "vertices": [
       "E.deposition_flux",
       "E.surface_diffusion",
-      "M.nucleation_coalescence",
+      "N.pointwise",
       "O.film_morphology"
     ],
     "arcs": [
       "E.deposition_flux -> E.surface_diffusion",
-      "E.surface_diffusion -> M.nucleation_coalescence",
-      "M.nucleation_coalescence -> O.film_morphology"
+      "E.surface_diffusion -> N.pointwise",
+      "N.pointwise -> O.film_morphology"
     ],
     "L_DAG": 3.7,
     "n_c": 0
@@ -63,7 +63,7 @@
     "primitives": [
       "E.deposition_flux",
       "E.surface_diffusion",
-      "M.nucleation_coalescence",
+      "N.pointwise",
       "O.film_morphology"
     ]
   },

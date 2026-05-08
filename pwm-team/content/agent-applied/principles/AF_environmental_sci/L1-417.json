@@ -24,14 +24,14 @@
     ]
   },
   "G": {
-    "dag": "M.primitive.equations -> S.spectral.dynamical_core -> O.chi2.reanalysis_comparison",
+    "dag": "D.space -> S.spectral.dynamical_core -> O.chi2.reanalysis_comparison",
     "vertices": [
-      "M.primitive.equations",
+      "D.space",
       "S.spectral.dynamical_core",
       "O.chi2.reanalysis_comparison"
     ],
     "arcs": [
-      "M.primitive.equations -> S.spectral.dynamical_core",
+      "D.space -> S.spectral.dynamical_core",
       "S.spectral.dynamical_core -> O.chi2.reanalysis_comparison"
     ],
     "L_DAG": 6.0,
@@ -60,7 +60,7 @@
     "noise_model": "observation_gaussian",
     "solution_space": "climate_forcing_parameter_vector",
     "primitives": [
-      "M.primitive.equations",
+      "D.space",
       "S.spectral.dynamical_core",
       "O.chi2.reanalysis_comparison"
     ]

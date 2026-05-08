@@ -23,17 +23,17 @@
     ]
   },
   "G": {
-    "dag": "E.hamiltonian -> E.dissipators -> M.time_evolve -> O.observables",
+    "dag": "E.hamiltonian -> E.dissipators -> D.time -> O.observables",
     "vertices": [
       "E.hamiltonian",
       "E.dissipators",
-      "M.time_evolve",
+      "D.time",
       "O.observables"
     ],
     "arcs": [
       "E.hamiltonian -> E.dissipators",
-      "E.dissipators -> M.time_evolve",
-      "M.time_evolve -> O.observables"
+      "E.dissipators -> D.time",
+      "D.time -> O.observables"
     ],
     "L_DAG": 3.5,
     "n_c": 0
@@ -62,7 +62,7 @@
     "primitives": [
       "E.hamiltonian",
       "E.dissipators",
-      "M.time_evolve",
+      "D.time",
       "O.observables"
     ]
   },

@@ -24,15 +24,15 @@
     ]
   },
   "G": {
-    "dag": "E.crystal_potential -> M.bloch_eigensolve -> O.band_structure",
+    "dag": "E.crystal_potential -> E.eigensolve -> O.band_structure",
     "vertices": [
       "E.crystal_potential",
-      "M.bloch_eigensolve",
+      "E.eigensolve",
       "O.band_structure"
     ],
     "arcs": [
-      "E.crystal_potential -> M.bloch_eigensolve",
-      "M.bloch_eigensolve -> O.band_structure"
+      "E.crystal_potential -> E.eigensolve",
+      "E.eigensolve -> O.band_structure"
     ],
     "L_DAG": 3.2,
     "n_c": 0
@@ -60,7 +60,7 @@
     "solution_space": "band_structure_E_n_k",
     "primitives": [
       "E.crystal_potential",
-      "M.bloch_eigensolve",
+      "E.eigensolve",
       "O.band_structure"
     ]
   },

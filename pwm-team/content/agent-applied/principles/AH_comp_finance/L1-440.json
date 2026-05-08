@@ -24,14 +24,14 @@
     ]
   },
   "G": {
-    "dag": "M.hw.short_rate_model -> S.trinomial.tree -> O.chi2.swaption_prices",
+    "dag": "N.pointwise -> S.trinomial.tree -> O.chi2.swaption_prices",
     "vertices": [
-      "M.hw.short_rate_model",
+      "N.pointwise",
       "S.trinomial.tree",
       "O.chi2.swaption_prices"
     ],
     "arcs": [
-      "M.hw.short_rate_model -> S.trinomial.tree",
+      "N.pointwise -> S.trinomial.tree",
       "S.trinomial.tree -> O.chi2.swaption_prices"
     ],
     "L_DAG": 3.0,
@@ -60,7 +60,7 @@
     "noise_model": "market_gaussian",
     "solution_space": "short_rate_parameter_vector",
     "primitives": [
-      "M.hw.short_rate_model",
+      "N.pointwise",
       "S.trinomial.tree",
       "O.chi2.swaption_prices"
     ]

@@ -25,17 +25,17 @@
     ]
   },
   "G": {
-    "dag": "E.quantum_chemistry -> E.TS_structure -> M.partition_functions -> O.rate_k_T",
+    "dag": "E.quantum_chemistry -> E.TS_structure -> E.eigensolve -> O.rate_k_T",
     "vertices": [
       "E.quantum_chemistry",
       "E.TS_structure",
-      "M.partition_functions",
+      "E.eigensolve",
       "O.rate_k_T"
     ],
     "arcs": [
       "E.quantum_chemistry -> E.TS_structure",
-      "E.TS_structure -> M.partition_functions",
-      "M.partition_functions -> O.rate_k_T"
+      "E.TS_structure -> E.eigensolve",
+      "E.eigensolve -> O.rate_k_T"
     ],
     "L_DAG": 3.4,
     "n_c": 0
@@ -64,7 +64,7 @@
     "primitives": [
       "E.quantum_chemistry",
       "E.TS_structure",
-      "M.partition_functions",
+      "E.eigensolve",
       "O.rate_k_T"
     ]
   },

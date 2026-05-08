@@ -24,14 +24,14 @@
     ]
   },
   "G": {
-    "dag": "M.lagrange.multiplier_dynamics -> S.baumgarte.stabilization -> O.constraint.violation_check",
+    "dag": "D.time -> S.baumgarte.stabilization -> O.constraint.violation_check",
     "vertices": [
-      "M.lagrange.multiplier_dynamics",
+      "D.time",
       "S.baumgarte.stabilization",
       "O.constraint.violation_check"
     ],
     "arcs": [
-      "M.lagrange.multiplier_dynamics -> S.baumgarte.stabilization",
+      "D.time -> S.baumgarte.stabilization",
       "S.baumgarte.stabilization -> O.constraint.violation_check"
     ],
     "L_DAG": 3.5,
@@ -60,7 +60,7 @@
     "noise_model": "deterministic",
     "solution_space": "generalized_acceleration_vector",
     "primitives": [
-      "M.lagrange.multiplier_dynamics",
+      "D.time",
       "S.baumgarte.stabilization",
       "O.constraint.violation_check"
     ]

@@ -25,16 +25,16 @@
     ]
   },
   "G": {
-    "dag": "E.free_energy_LdG -> M.minimize_euler_lagrange -> O.Q_tensor_field -> O.optical_image",
+    "dag": "E.free_energy_LdG -> O.regularize -> O.Q_tensor_field -> O.optical_image",
     "vertices": [
       "E.free_energy_LdG",
-      "M.minimize_euler_lagrange",
+      "O.regularize",
       "O.Q_tensor_field",
       "O.optical_image"
     ],
     "arcs": [
-      "E.free_energy_LdG -> M.minimize_euler_lagrange",
-      "M.minimize_euler_lagrange -> O.Q_tensor_field",
+      "E.free_energy_LdG -> O.regularize",
+      "O.regularize -> O.Q_tensor_field",
       "O.Q_tensor_field -> O.optical_image"
     ],
     "L_DAG": 3.8,
@@ -63,7 +63,7 @@
     "solution_space": "Q_tensor_5component_field",
     "primitives": [
       "E.free_energy_LdG",
-      "M.minimize_euler_lagrange",
+      "O.regularize",
       "O.Q_tensor_field",
       "O.optical_image"
     ]

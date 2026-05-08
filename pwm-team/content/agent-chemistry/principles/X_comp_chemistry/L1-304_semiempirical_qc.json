@@ -22,15 +22,15 @@
     ]
   },
   "G": {
-    "dag": "E.parameterized_fock -> M.scf -> O.observables",
+    "dag": "E.parameterized_fock -> O.iter -> O.observables",
     "vertices": [
       "E.parameterized_fock",
-      "M.scf",
+      "O.iter",
       "O.observables"
     ],
     "arcs": [
-      "E.parameterized_fock -> M.scf",
-      "M.scf -> O.observables"
+      "E.parameterized_fock -> O.iter",
+      "O.iter -> O.observables"
     ],
     "L_DAG": 3.0,
     "n_c": 0
@@ -58,7 +58,7 @@
     "solution_space": "semi_empirical_wavefunction",
     "primitives": [
       "E.parameterized_fock",
-      "M.scf",
+      "O.iter",
       "O.observables"
     ]
   },

@@ -24,17 +24,17 @@
     ]
   },
   "G": {
-    "dag": "E.elastic_field -> E.peach_koehler -> M.node_integrate -> O.stress_strain",
+    "dag": "E.elastic_field -> E.peach_koehler -> D.time -> O.stress_strain",
     "vertices": [
       "E.elastic_field",
       "E.peach_koehler",
-      "M.node_integrate",
+      "D.time",
       "O.stress_strain"
     ],
     "arcs": [
       "E.elastic_field -> E.peach_koehler",
-      "E.peach_koehler -> M.node_integrate",
-      "M.node_integrate -> O.stress_strain"
+      "E.peach_koehler -> D.time",
+      "D.time -> O.stress_strain"
     ],
     "L_DAG": 3.8,
     "n_c": 0
@@ -63,7 +63,7 @@
     "primitives": [
       "E.elastic_field",
       "E.peach_koehler",
-      "M.node_integrate",
+      "D.time",
       "O.stress_strain"
     ]
   },

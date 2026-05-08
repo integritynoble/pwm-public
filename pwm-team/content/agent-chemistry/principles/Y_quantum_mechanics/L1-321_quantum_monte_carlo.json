@@ -24,15 +24,15 @@
     ]
   },
   "G": {
-    "dag": "E.trial_wavefunction -> M.metropolis_stoch -> O.energies",
+    "dag": "E.trial_wavefunction -> int.stochastic -> O.energies",
     "vertices": [
       "E.trial_wavefunction",
-      "M.metropolis_stoch",
+      "int.stochastic",
       "O.energies"
     ],
     "arcs": [
-      "E.trial_wavefunction -> M.metropolis_stoch",
-      "M.metropolis_stoch -> O.energies"
+      "E.trial_wavefunction -> int.stochastic",
+      "int.stochastic -> O.energies"
     ],
     "L_DAG": 3.8,
     "n_c": 0
@@ -60,7 +60,7 @@
     "solution_space": "many_body_wavefunction",
     "primitives": [
       "E.trial_wavefunction",
-      "M.metropolis_stoch",
+      "int.stochastic",
       "O.energies"
     ]
   },

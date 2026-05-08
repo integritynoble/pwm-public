@@ -23,14 +23,14 @@
     ]
   },
   "G": {
-    "dag": "M.rnea.recursive_newton_euler -> S.regressor.inertia_parameters -> O.least_squares.param_id",
+    "dag": "D.time -> S.regressor.inertia_parameters -> O.least_squares.param_id",
     "vertices": [
-      "M.rnea.recursive_newton_euler",
+      "D.time",
       "S.regressor.inertia_parameters",
       "O.least_squares.param_id"
     ],
     "arcs": [
-      "M.rnea.recursive_newton_euler -> S.regressor.inertia_parameters",
+      "D.time -> S.regressor.inertia_parameters",
       "S.regressor.inertia_parameters -> O.least_squares.param_id"
     ],
     "L_DAG": 2.8,
@@ -59,7 +59,7 @@
     "noise_model": "gaussian",
     "solution_space": "joint_torque_vector",
     "primitives": [
-      "M.rnea.recursive_newton_euler",
+      "D.time",
       "S.regressor.inertia_parameters",
       "O.least_squares.param_id"
     ]

@@ -23,17 +23,17 @@
     ]
   },
   "G": {
-    "dag": "E.GW_bands -> E.kernel_K_eh -> M.BSE_eigensolve -> O.absorption",
+    "dag": "E.GW_bands -> E.kernel_K_eh -> E.eigensolve -> O.absorption",
     "vertices": [
       "E.GW_bands",
       "E.kernel_K_eh",
-      "M.BSE_eigensolve",
+      "E.eigensolve",
       "O.absorption"
     ],
     "arcs": [
       "E.GW_bands -> E.kernel_K_eh",
-      "E.kernel_K_eh -> M.BSE_eigensolve",
-      "M.BSE_eigensolve -> O.absorption"
+      "E.kernel_K_eh -> E.eigensolve",
+      "E.eigensolve -> O.absorption"
     ],
     "L_DAG": 4.2,
     "n_c": 0
@@ -62,7 +62,7 @@
     "primitives": [
       "E.GW_bands",
       "E.kernel_K_eh",
-      "M.BSE_eigensolve",
+      "E.eigensolve",
       "O.absorption"
     ]
   },

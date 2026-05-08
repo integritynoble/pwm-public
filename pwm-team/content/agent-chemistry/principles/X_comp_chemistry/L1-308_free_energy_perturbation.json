@@ -24,17 +24,17 @@
     ]
   },
   "G": {
-    "dag": "E.alchemical_hamiltonian -> M.sample_per_lambda -> M.combine_estimator -> O.DG",
+    "dag": "E.alchemical_hamiltonian -> S.select -> O.regularize -> O.DG",
     "vertices": [
       "E.alchemical_hamiltonian",
-      "M.sample_per_lambda",
-      "M.combine_estimator",
+      "S.select",
+      "O.regularize",
       "O.DG"
     ],
     "arcs": [
-      "E.alchemical_hamiltonian -> M.sample_per_lambda",
-      "M.sample_per_lambda -> M.combine_estimator",
-      "M.combine_estimator -> O.DG"
+      "E.alchemical_hamiltonian -> S.select",
+      "S.select -> O.regularize",
+      "O.regularize -> O.DG"
     ],
     "L_DAG": 3.7,
     "n_c": 0
@@ -62,8 +62,8 @@
     "solution_space": "DG_curve_lambda",
     "primitives": [
       "E.alchemical_hamiltonian",
-      "M.sample_per_lambda",
-      "M.combine_estimator",
+      "S.select",
+      "O.regularize",
       "O.DG"
     ]
   },

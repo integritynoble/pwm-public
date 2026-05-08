@@ -24,14 +24,14 @@
     ]
   },
   "G": {
-    "dag": "M.felsenstein.pruning_algorithm -> S.mcmc.tree_space_bayesian -> O.atr.total_tree_likelihood",
+    "dag": "N.pointwise -> S.mcmc.tree_space_bayesian -> O.atr.total_tree_likelihood",
     "vertices": [
-      "M.felsenstein.pruning_algorithm",
+      "N.pointwise",
       "S.mcmc.tree_space_bayesian",
       "O.atr.total_tree_likelihood"
     ],
     "arcs": [
-      "M.felsenstein.pruning_algorithm -> S.mcmc.tree_space_bayesian",
+      "N.pointwise -> S.mcmc.tree_space_bayesian",
       "S.mcmc.tree_space_bayesian -> O.atr.total_tree_likelihood"
     ],
     "L_DAG": 4.5,
@@ -60,7 +60,7 @@
     "noise_model": "multinomial",
     "solution_space": "phylogenetic_tree_topology",
     "primitives": [
-      "M.felsenstein.pruning_algorithm",
+      "N.pointwise",
       "S.mcmc.tree_space_bayesian",
       "O.atr.total_tree_likelihood"
     ]

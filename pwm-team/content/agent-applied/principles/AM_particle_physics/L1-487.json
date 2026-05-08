@@ -24,15 +24,15 @@
     ]
   },
   "G": {
-    "dag": "S.antikt.sequential_clustering -> M.pileup.area_subtraction -> O.jet.energy_scale_correction",
+    "dag": "S.antikt.sequential_clustering -> S.select -> O.jet.energy_scale_correction",
     "vertices": [
       "S.antikt.sequential_clustering",
-      "M.pileup.area_subtraction",
+      "S.select",
       "O.jet.energy_scale_correction"
     ],
     "arcs": [
-      "S.antikt.sequential_clustering -> M.pileup.area_subtraction",
-      "M.pileup.area_subtraction -> O.jet.energy_scale_correction"
+      "S.antikt.sequential_clustering -> S.select",
+      "S.select -> O.jet.energy_scale_correction"
     ],
     "L_DAG": 3.0,
     "n_c": 0
@@ -61,7 +61,7 @@
     "solution_space": "jet_4vector_list",
     "primitives": [
       "S.antikt.sequential_clustering",
-      "M.pileup.area_subtraction",
+      "S.select",
       "O.jet.energy_scale_correction"
     ]
   },

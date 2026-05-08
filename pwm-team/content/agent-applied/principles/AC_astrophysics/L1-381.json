@@ -25,14 +25,14 @@
     ]
   },
   "G": {
-    "dag": "M.sed.salt2_template -> S.calibration.standardization -> O.chi2.hubble_residual",
+    "dag": "G.structured -> S.calibration.standardization -> O.chi2.hubble_residual",
     "vertices": [
-      "M.sed.salt2_template",
+      "G.structured",
       "S.calibration.standardization",
       "O.chi2.hubble_residual"
     ],
     "arcs": [
-      "M.sed.salt2_template -> S.calibration.standardization",
+      "G.structured -> S.calibration.standardization",
       "S.calibration.standardization -> O.chi2.hubble_residual"
     ],
     "L_DAG": 2.8,
@@ -61,7 +61,7 @@
     "noise_model": "observation_gaussian",
     "solution_space": "distance_modulus_H0",
     "primitives": [
-      "M.sed.salt2_template",
+      "G.structured",
       "S.calibration.standardization",
       "O.chi2.hubble_residual"
     ]

@@ -24,14 +24,14 @@
     ]
   },
   "G": {
-    "dag": "M.hill.emax_model -> O.nls.pd_fit -> S.bayesian.pd_posterior",
+    "dag": "N.pointwise -> O.nls.pd_fit -> S.bayesian.pd_posterior",
     "vertices": [
-      "M.hill.emax_model",
+      "N.pointwise",
       "O.nls.pd_fit",
       "S.bayesian.pd_posterior"
     ],
     "arcs": [
-      "M.hill.emax_model -> O.nls.pd_fit",
+      "N.pointwise -> O.nls.pd_fit",
       "O.nls.pd_fit -> S.bayesian.pd_posterior"
     ],
     "L_DAG": 2.0,
@@ -60,7 +60,7 @@
     "noise_model": "lognormal",
     "solution_space": "PD_parameter_vector",
     "primitives": [
-      "M.hill.emax_model",
+      "N.pointwise",
       "O.nls.pd_fit",
       "S.bayesian.pd_posterior"
     ]

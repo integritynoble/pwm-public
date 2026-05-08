@@ -23,15 +23,15 @@
     ]
   },
   "G": {
-    "dag": "E.tddft_kernel -> M.casida_eigensolve -> O.excitations",
+    "dag": "E.tddft_kernel -> E.eigensolve -> O.excitations",
     "vertices": [
       "E.tddft_kernel",
-      "M.casida_eigensolve",
+      "E.eigensolve",
       "O.excitations"
     ],
     "arcs": [
-      "E.tddft_kernel -> M.casida_eigensolve",
-      "M.casida_eigensolve -> O.excitations"
+      "E.tddft_kernel -> E.eigensolve",
+      "E.eigensolve -> O.excitations"
     ],
     "L_DAG": 3.6,
     "n_c": 0
@@ -59,7 +59,7 @@
     "solution_space": "excitation_spectrum",
     "primitives": [
       "E.tddft_kernel",
-      "M.casida_eigensolve",
+      "E.eigensolve",
       "O.excitations"
     ]
   },

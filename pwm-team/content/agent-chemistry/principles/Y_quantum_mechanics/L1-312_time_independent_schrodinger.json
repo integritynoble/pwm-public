@@ -23,15 +23,15 @@
     ]
   },
   "G": {
-    "dag": "E.hamiltonian -> M.eigensolve -> O.spectra_wavefunctions",
+    "dag": "E.hamiltonian -> E.eigensolve -> O.spectra_wavefunctions",
     "vertices": [
       "E.hamiltonian",
-      "M.eigensolve",
+      "E.eigensolve",
       "O.spectra_wavefunctions"
     ],
     "arcs": [
-      "E.hamiltonian -> M.eigensolve",
-      "M.eigensolve -> O.spectra_wavefunctions"
+      "E.hamiltonian -> E.eigensolve",
+      "E.eigensolve -> O.spectra_wavefunctions"
     ],
     "L_DAG": 3.0,
     "n_c": 0
@@ -59,7 +59,7 @@
     "solution_space": "wavefunctions_and_eigenvalues",
     "primitives": [
       "E.hamiltonian",
-      "M.eigensolve",
+      "E.eigensolve",
       "O.spectra_wavefunctions"
     ]
   },

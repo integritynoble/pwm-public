@@ -25,19 +25,19 @@
     ]
   },
   "G": {
-    "dag": "E.poisson -> E.continuity_n -> E.continuity_p -> M.gummel_coupled -> O.terminal_IV",
+    "dag": "E.poisson -> E.continuity_n -> E.continuity_p -> O.iter -> O.terminal_IV",
     "vertices": [
       "E.poisson",
       "E.continuity_n",
       "E.continuity_p",
-      "M.gummel_coupled",
+      "O.iter",
       "O.terminal_IV"
     ],
     "arcs": [
-      "E.poisson -> M.gummel_coupled",
-      "E.continuity_n -> M.gummel_coupled",
-      "E.continuity_p -> M.gummel_coupled",
-      "M.gummel_coupled -> O.terminal_IV"
+      "E.poisson -> O.iter",
+      "E.continuity_n -> O.iter",
+      "E.continuity_p -> O.iter",
+      "O.iter -> O.terminal_IV"
     ],
     "L_DAG": 4.0,
     "n_c": 0
@@ -67,7 +67,7 @@
       "E.poisson",
       "E.continuity_n",
       "E.continuity_p",
-      "M.gummel_coupled",
+      "O.iter",
       "O.terminal_IV"
     ]
   },

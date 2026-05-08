@@ -24,17 +24,17 @@
     ]
   },
   "G": {
-    "dag": "E.force_constants -> E.dynamical_matrix -> M.eigensolve -> O.phonon_dispersion",
+    "dag": "E.force_constants -> E.dynamical_matrix -> E.eigensolve -> O.phonon_dispersion",
     "vertices": [
       "E.force_constants",
       "E.dynamical_matrix",
-      "M.eigensolve",
+      "E.eigensolve",
       "O.phonon_dispersion"
     ],
     "arcs": [
       "E.force_constants -> E.dynamical_matrix",
-      "E.dynamical_matrix -> M.eigensolve",
-      "M.eigensolve -> O.phonon_dispersion"
+      "E.dynamical_matrix -> E.eigensolve",
+      "E.eigensolve -> O.phonon_dispersion"
     ],
     "L_DAG": 3.3,
     "n_c": 0
@@ -63,7 +63,7 @@
     "primitives": [
       "E.force_constants",
       "E.dynamical_matrix",
-      "M.eigensolve",
+      "E.eigensolve",
       "O.phonon_dispersion"
     ]
   },

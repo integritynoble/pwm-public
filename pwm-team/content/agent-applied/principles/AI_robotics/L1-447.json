@@ -24,15 +24,15 @@
     ]
   },
   "G": {
-    "dag": "S.ik.jacobian_pseudo_inverse -> M.dls.damped_least_squares -> O.gradient.task_space",
+    "dag": "S.ik.jacobian_pseudo_inverse -> O.regularize -> O.gradient.task_space",
     "vertices": [
       "S.ik.jacobian_pseudo_inverse",
-      "M.dls.damped_least_squares",
+      "O.regularize",
       "O.gradient.task_space"
     ],
     "arcs": [
-      "S.ik.jacobian_pseudo_inverse -> M.dls.damped_least_squares",
-      "M.dls.damped_least_squares -> O.gradient.task_space"
+      "S.ik.jacobian_pseudo_inverse -> O.regularize",
+      "O.regularize -> O.gradient.task_space"
     ],
     "L_DAG": 3.0,
     "n_c": 1
@@ -61,7 +61,7 @@
     "solution_space": "joint_angle_vector",
     "primitives": [
       "S.ik.jacobian_pseudo_inverse",
-      "M.dls.damped_least_squares",
+      "O.regularize",
       "O.gradient.task_space"
     ]
   },

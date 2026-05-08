@@ -24,17 +24,17 @@
     ]
   },
   "G": {
-    "dag": "E.threshold_model -> E.mobility_model -> M.smooth_interp -> O.IV",
+    "dag": "E.threshold_model -> E.mobility_model -> K.filter -> O.IV",
     "vertices": [
       "E.threshold_model",
       "E.mobility_model",
-      "M.smooth_interp",
+      "K.filter",
       "O.IV"
     ],
     "arcs": [
-      "E.threshold_model -> M.smooth_interp",
-      "E.mobility_model -> M.smooth_interp",
-      "M.smooth_interp -> O.IV"
+      "E.threshold_model -> K.filter",
+      "E.mobility_model -> K.filter",
+      "K.filter -> O.IV"
     ],
     "L_DAG": 3.2,
     "n_c": 0
@@ -63,7 +63,7 @@
     "primitives": [
       "E.threshold_model",
       "E.mobility_model",
-      "M.smooth_interp",
+      "K.filter",
       "O.IV"
     ]
   },

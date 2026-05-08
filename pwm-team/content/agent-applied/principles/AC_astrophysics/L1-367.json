@@ -24,15 +24,15 @@
     ]
   },
   "G": {
-    "dag": "F.fourier.harmonic -> S.quadratic.estimator -> M.wiener.filter",
+    "dag": "F.fourier.harmonic -> S.quadratic.estimator -> K.filter",
     "vertices": [
       "F.fourier.harmonic",
       "S.quadratic.estimator",
-      "M.wiener.filter"
+      "K.filter"
     ],
     "arcs": [
       "F.fourier.harmonic -> S.quadratic.estimator",
-      "S.quadratic.estimator -> M.wiener.filter"
+      "S.quadratic.estimator -> K.filter"
     ],
     "L_DAG": 3.5,
     "n_c": 0
@@ -62,7 +62,7 @@
     "primitives": [
       "F.fourier.harmonic",
       "S.quadratic.estimator",
-      "M.wiener.filter"
+      "K.filter"
     ]
   },
   "difficulty_delta": 5,

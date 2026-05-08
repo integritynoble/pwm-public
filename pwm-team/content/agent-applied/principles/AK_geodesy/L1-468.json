@@ -24,15 +24,15 @@
     ]
   },
   "G": {
-    "dag": "S.altimeter.retracker_brown -> M.waveform.ocean_reflection -> O.least_squares.retrack",
+    "dag": "S.altimeter.retracker_brown -> G.structured -> O.least_squares.retrack",
     "vertices": [
       "S.altimeter.retracker_brown",
-      "M.waveform.ocean_reflection",
+      "G.structured",
       "O.least_squares.retrack"
     ],
     "arcs": [
-      "S.altimeter.retracker_brown -> M.waveform.ocean_reflection",
-      "M.waveform.ocean_reflection -> O.least_squares.retrack"
+      "S.altimeter.retracker_brown -> G.structured",
+      "G.structured -> O.least_squares.retrack"
     ],
     "L_DAG": 2.5,
     "n_c": 0
@@ -61,7 +61,7 @@
     "solution_space": "1D_sea_surface_height",
     "primitives": [
       "S.altimeter.retracker_brown",
-      "M.waveform.ocean_reflection",
+      "G.structured",
       "O.least_squares.retrack"
     ]
   },

@@ -25,15 +25,15 @@
     ]
   },
   "G": {
-    "dag": "S.interpolation.cubic_spline -> M.arbitrage.butterfly_spread -> O.svi.calibration",
+    "dag": "S.interpolation.cubic_spline -> N.pointwise -> O.svi.calibration",
     "vertices": [
       "S.interpolation.cubic_spline",
-      "M.arbitrage.butterfly_spread",
+      "N.pointwise",
       "O.svi.calibration"
     ],
     "arcs": [
-      "S.interpolation.cubic_spline -> M.arbitrage.butterfly_spread",
-      "M.arbitrage.butterfly_spread -> O.svi.calibration"
+      "S.interpolation.cubic_spline -> N.pointwise",
+      "N.pointwise -> O.svi.calibration"
     ],
     "L_DAG": 3.0,
     "n_c": 1
@@ -62,7 +62,7 @@
     "solution_space": "implied_vol_surface",
     "primitives": [
       "S.interpolation.cubic_spline",
-      "M.arbitrage.butterfly_spread",
+      "N.pointwise",
       "O.svi.calibration"
     ]
   },

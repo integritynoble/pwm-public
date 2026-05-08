@@ -24,14 +24,14 @@
     ]
   },
   "G": {
-    "dag": "M.reynolds.thin_film -> S.fdm.cavitation_constraint -> O.least_squares.bearing",
+    "dag": "D.space -> S.fdm.cavitation_constraint -> O.least_squares.bearing",
     "vertices": [
-      "M.reynolds.thin_film",
+      "D.space",
       "S.fdm.cavitation_constraint",
       "O.least_squares.bearing"
     ],
     "arcs": [
-      "M.reynolds.thin_film -> S.fdm.cavitation_constraint",
+      "D.space -> S.fdm.cavitation_constraint",
       "S.fdm.cavitation_constraint -> O.least_squares.bearing"
     ],
     "L_DAG": 2.8,
@@ -60,7 +60,7 @@
     "noise_model": "measurement_gaussian",
     "solution_space": "pressure_film_field",
     "primitives": [
-      "M.reynolds.thin_film",
+      "D.space",
       "S.fdm.cavitation_constraint",
       "O.least_squares.bearing"
     ]

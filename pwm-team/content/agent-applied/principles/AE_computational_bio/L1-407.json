@@ -24,14 +24,14 @@
     ]
   },
   "G": {
-    "dag": "M.ode.lotka_volterra -> O.nls.population_fit -> S.continuation.bifurcation_LV",
+    "dag": "D.time -> O.nls.population_fit -> S.continuation.bifurcation_LV",
     "vertices": [
-      "M.ode.lotka_volterra",
+      "D.time",
       "O.nls.population_fit",
       "S.continuation.bifurcation_LV"
     ],
     "arcs": [
-      "M.ode.lotka_volterra -> O.nls.population_fit",
+      "D.time -> O.nls.population_fit",
       "O.nls.population_fit -> S.continuation.bifurcation_LV"
     ],
     "L_DAG": 2.5,
@@ -60,7 +60,7 @@
     "noise_model": "lognormal",
     "solution_space": "LV_parameter_vector",
     "primitives": [
-      "M.ode.lotka_volterra",
+      "D.time",
       "O.nls.population_fit",
       "S.continuation.bifurcation_LV"
     ]

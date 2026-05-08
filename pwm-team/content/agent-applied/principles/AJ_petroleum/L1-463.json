@@ -25,14 +25,14 @@
     ]
   },
   "G": {
-    "dag": "M.gassmann.fluid_substitution -> S.hertz_mindlin.dry_frame -> O.chi2.elastic_moduli",
+    "dag": "D.space -> S.hertz_mindlin.dry_frame -> O.chi2.elastic_moduli",
     "vertices": [
-      "M.gassmann.fluid_substitution",
+      "D.space",
       "S.hertz_mindlin.dry_frame",
       "O.chi2.elastic_moduli"
     ],
     "arcs": [
-      "M.gassmann.fluid_substitution -> S.hertz_mindlin.dry_frame",
+      "D.space -> S.hertz_mindlin.dry_frame",
       "S.hertz_mindlin.dry_frame -> O.chi2.elastic_moduli"
     ],
     "L_DAG": 3.0,
@@ -61,7 +61,7 @@
     "noise_model": "measurement_gaussian",
     "solution_space": "elastic_moduli_vector",
     "primitives": [
-      "M.gassmann.fluid_substitution",
+      "D.space",
       "S.hertz_mindlin.dry_frame",
       "O.chi2.elastic_moduli"
     ]

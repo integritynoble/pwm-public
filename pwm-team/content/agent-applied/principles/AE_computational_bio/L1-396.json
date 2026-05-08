@@ -24,14 +24,14 @@
     ]
   },
   "G": {
-    "dag": "M.ode.hodgkin_huxley -> O.chi2.voltage_trace -> S.mcmc.bayesian_parameter",
+    "dag": "D.time -> O.chi2.voltage_trace -> S.mcmc.bayesian_parameter",
     "vertices": [
-      "M.ode.hodgkin_huxley",
+      "D.time",
       "O.chi2.voltage_trace",
       "S.mcmc.bayesian_parameter"
     ],
     "arcs": [
-      "M.ode.hodgkin_huxley -> O.chi2.voltage_trace",
+      "D.time -> O.chi2.voltage_trace",
       "O.chi2.voltage_trace -> S.mcmc.bayesian_parameter"
     ],
     "L_DAG": 3.5,
@@ -60,7 +60,7 @@
     "noise_model": "gaussian",
     "solution_space": "HH_parameter_vector",
     "primitives": [
-      "M.ode.hodgkin_huxley",
+      "D.time",
       "O.chi2.voltage_trace",
       "S.mcmc.bayesian_parameter"
     ]

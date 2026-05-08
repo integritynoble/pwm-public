@@ -23,15 +23,15 @@
     ]
   },
   "G": {
-    "dag": "E.fock_operator -> M.scf_iterate -> O.hf_wavefunction",
+    "dag": "E.fock_operator -> O.iter -> O.hf_wavefunction",
     "vertices": [
       "E.fock_operator",
-      "M.scf_iterate",
+      "O.iter",
       "O.hf_wavefunction"
     ],
     "arcs": [
-      "E.fock_operator -> M.scf_iterate",
-      "M.scf_iterate -> O.hf_wavefunction"
+      "E.fock_operator -> O.iter",
+      "O.iter -> O.hf_wavefunction"
     ],
     "L_DAG": 3.1,
     "n_c": 0
@@ -59,7 +59,7 @@
     "solution_space": "hf_mo_coefficients",
     "primitives": [
       "E.fock_operator",
-      "M.scf_iterate",
+      "O.iter",
       "O.hf_wavefunction"
     ]
   },

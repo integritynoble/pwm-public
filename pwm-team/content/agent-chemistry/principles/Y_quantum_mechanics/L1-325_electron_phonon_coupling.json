@@ -23,17 +23,17 @@
     ]
   },
   "G": {
-    "dag": "E.phonon_dispersion -> E.electron_phonon -> M.Eliashberg -> O.Tc",
+    "dag": "E.phonon_dispersion -> E.electron_phonon -> O.composite_method -> O.Tc",
     "vertices": [
       "E.phonon_dispersion",
       "E.electron_phonon",
-      "M.Eliashberg",
+      "O.composite_method",
       "O.Tc"
     ],
     "arcs": [
       "E.phonon_dispersion -> E.electron_phonon",
-      "E.electron_phonon -> M.Eliashberg",
-      "M.Eliashberg -> O.Tc"
+      "E.electron_phonon -> O.composite_method",
+      "O.composite_method -> O.Tc"
     ],
     "L_DAG": 3.9,
     "n_c": 0
@@ -62,7 +62,7 @@
     "primitives": [
       "E.phonon_dispersion",
       "E.electron_phonon",
-      "M.Eliashberg",
+      "O.composite_method",
       "O.Tc"
     ]
   },

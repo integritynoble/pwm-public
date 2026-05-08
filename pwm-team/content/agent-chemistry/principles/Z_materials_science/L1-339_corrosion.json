@@ -25,17 +25,17 @@
     ]
   },
   "G": {
-    "dag": "E.butler_volmer -> E.mass_transport -> M.mixed_potential -> O.corrosion_rate",
+    "dag": "E.butler_volmer -> E.mass_transport -> O.composite_method -> O.corrosion_rate",
     "vertices": [
       "E.butler_volmer",
       "E.mass_transport",
-      "M.mixed_potential",
+      "O.composite_method",
       "O.corrosion_rate"
     ],
     "arcs": [
       "E.butler_volmer -> E.mass_transport",
-      "E.mass_transport -> M.mixed_potential",
-      "M.mixed_potential -> O.corrosion_rate"
+      "E.mass_transport -> O.composite_method",
+      "O.composite_method -> O.corrosion_rate"
     ],
     "L_DAG": 3.3,
     "n_c": 0
@@ -64,7 +64,7 @@
     "primitives": [
       "E.butler_volmer",
       "E.mass_transport",
-      "M.mixed_potential",
+      "O.composite_method",
       "O.corrosion_rate"
     ]
   },

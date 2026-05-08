@@ -24,15 +24,15 @@
     ]
   },
   "G": {
-    "dag": "S.quest.quaternion_estimator -> M.gyro.integration -> O.ekf.attitude_ekf",
+    "dag": "S.quest.quaternion_estimator -> D.time -> O.ekf.attitude_ekf",
     "vertices": [
       "S.quest.quaternion_estimator",
-      "M.gyro.integration",
+      "D.time",
       "O.ekf.attitude_ekf"
     ],
     "arcs": [
-      "S.quest.quaternion_estimator -> M.gyro.integration",
-      "M.gyro.integration -> O.ekf.attitude_ekf"
+      "S.quest.quaternion_estimator -> D.time",
+      "D.time -> O.ekf.attitude_ekf"
     ],
     "L_DAG": 3.0,
     "n_c": 0
@@ -61,7 +61,7 @@
     "solution_space": "quaternion_attitude",
     "primitives": [
       "S.quest.quaternion_estimator",
-      "M.gyro.integration",
+      "D.time",
       "O.ekf.attitude_ekf"
     ]
   },

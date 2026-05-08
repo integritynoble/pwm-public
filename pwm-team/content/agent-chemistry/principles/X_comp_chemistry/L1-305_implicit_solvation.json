@@ -23,17 +23,17 @@
     ]
   },
   "G": {
-    "dag": "E.cavity_tessellate -> E.reaction_field -> M.scf_solvent -> O.DG_solv",
+    "dag": "E.cavity_tessellate -> E.reaction_field -> O.iter -> O.DG_solv",
     "vertices": [
       "E.cavity_tessellate",
       "E.reaction_field",
-      "M.scf_solvent",
+      "O.iter",
       "O.DG_solv"
     ],
     "arcs": [
       "E.cavity_tessellate -> E.reaction_field",
-      "E.reaction_field -> M.scf_solvent",
-      "M.scf_solvent -> O.DG_solv"
+      "E.reaction_field -> O.iter",
+      "O.iter -> O.DG_solv"
     ],
     "L_DAG": 3.2,
     "n_c": 0
@@ -62,7 +62,7 @@
     "primitives": [
       "E.cavity_tessellate",
       "E.reaction_field",
-      "M.scf_solvent",
+      "O.iter",
       "O.DG_solv"
     ]
   },

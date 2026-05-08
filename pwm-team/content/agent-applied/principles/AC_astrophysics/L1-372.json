@@ -25,14 +25,14 @@
     ]
   },
   "G": {
-    "dag": "M.sed.supernova_template -> O.chi2.lightcurve -> S.k_correction.photometric",
+    "dag": "G.structured -> O.chi2.lightcurve -> S.k_correction.photometric",
     "vertices": [
-      "M.sed.supernova_template",
+      "G.structured",
       "O.chi2.lightcurve",
       "S.k_correction.photometric"
     ],
     "arcs": [
-      "M.sed.supernova_template -> O.chi2.lightcurve",
+      "G.structured -> O.chi2.lightcurve",
       "O.chi2.lightcurve -> S.k_correction.photometric"
     ],
     "L_DAG": 2.8,
@@ -61,7 +61,7 @@
     "noise_model": "observation_gaussian",
     "solution_space": "lc_parameter_vector",
     "primitives": [
-      "M.sed.supernova_template",
+      "G.structured",
       "O.chi2.lightcurve",
       "S.k_correction.photometric"
     ]

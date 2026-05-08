@@ -24,14 +24,14 @@
     ]
   },
   "G": {
-    "dag": "M.pseudorange.geometry -> S.kalman.navigation -> O.least_squares.weighted",
+    "dag": "Pi.geometry -> S.kalman.navigation -> O.least_squares.weighted",
     "vertices": [
-      "M.pseudorange.geometry",
+      "Pi.geometry",
       "S.kalman.navigation",
       "O.least_squares.weighted"
     ],
     "arcs": [
-      "M.pseudorange.geometry -> S.kalman.navigation",
+      "Pi.geometry -> S.kalman.navigation",
       "S.kalman.navigation -> O.least_squares.weighted"
     ],
     "L_DAG": 2.8,
@@ -60,7 +60,7 @@
     "noise_model": "gaussian",
     "solution_space": "3D_position_velocity",
     "primitives": [
-      "M.pseudorange.geometry",
+      "Pi.geometry",
       "S.kalman.navigation",
       "O.least_squares.weighted"
     ]

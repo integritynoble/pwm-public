@@ -24,15 +24,15 @@
     ]
   },
   "G": {
-    "dag": "S.diffusion.galactic -> M.loss.ionization_synchrotron -> O.chi2.cr_ratios",
+    "dag": "S.diffusion.galactic -> G.structured -> O.chi2.cr_ratios",
     "vertices": [
       "S.diffusion.galactic",
-      "M.loss.ionization_synchrotron",
+      "G.structured",
       "O.chi2.cr_ratios"
     ],
     "arcs": [
-      "S.diffusion.galactic -> M.loss.ionization_synchrotron",
-      "M.loss.ionization_synchrotron -> O.chi2.cr_ratios"
+      "S.diffusion.galactic -> G.structured",
+      "G.structured -> O.chi2.cr_ratios"
     ],
     "L_DAG": 3.2,
     "n_c": 0
@@ -61,7 +61,7 @@
     "solution_space": "CR_spectral_source_distribution",
     "primitives": [
       "S.diffusion.galactic",
-      "M.loss.ionization_synchrotron",
+      "G.structured",
       "O.chi2.cr_ratios"
     ]
   },

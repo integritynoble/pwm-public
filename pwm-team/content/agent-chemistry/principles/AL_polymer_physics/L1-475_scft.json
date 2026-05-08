@@ -25,16 +25,16 @@
     ]
   },
   "G": {
-    "dag": "E.propagator_diffusion -> M.self_consistent_iterate -> O.density_field -> O.scattering",
+    "dag": "E.propagator_diffusion -> O.iter -> O.density_field -> O.scattering",
     "vertices": [
       "E.propagator_diffusion",
-      "M.self_consistent_iterate",
+      "O.iter",
       "O.density_field",
       "O.scattering"
     ],
     "arcs": [
-      "E.propagator_diffusion -> M.self_consistent_iterate",
-      "M.self_consistent_iterate -> O.density_field",
+      "E.propagator_diffusion -> O.iter",
+      "O.iter -> O.density_field",
       "O.density_field -> O.scattering"
     ],
     "L_DAG": 3.8,
@@ -63,7 +63,7 @@
     "solution_space": "3D_composition_field",
     "primitives": [
       "E.propagator_diffusion",
-      "M.self_consistent_iterate",
+      "O.iter",
       "O.density_field",
       "O.scattering"
     ]

@@ -24,14 +24,14 @@
     ]
   },
   "G": {
-    "dag": "M.shower.em_hadronic -> S.clustering.topo_clustering -> O.chi2.energy_response",
+    "dag": "G.structured -> S.clustering.topo_clustering -> O.chi2.energy_response",
     "vertices": [
-      "M.shower.em_hadronic",
+      "G.structured",
       "S.clustering.topo_clustering",
       "O.chi2.energy_response"
     ],
     "arcs": [
-      "M.shower.em_hadronic -> S.clustering.topo_clustering",
+      "G.structured -> S.clustering.topo_clustering",
       "S.clustering.topo_clustering -> O.chi2.energy_response"
     ],
     "L_DAG": 3.5,
@@ -60,7 +60,7 @@
     "noise_model": "detector_gaussian",
     "solution_space": "energy_calibration_coefficients",
     "primitives": [
-      "M.shower.em_hadronic",
+      "G.structured",
       "S.clustering.topo_clustering",
       "O.chi2.energy_response"
     ]

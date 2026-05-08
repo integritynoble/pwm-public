@@ -24,14 +24,14 @@
     ]
   },
   "G": {
-    "dag": "M.dh.transformation_matrix -> S.chain.product -> O.pose.cartesian",
+    "dag": "E.eigensolve -> S.chain.product -> O.pose.cartesian",
     "vertices": [
-      "M.dh.transformation_matrix",
+      "E.eigensolve",
       "S.chain.product",
       "O.pose.cartesian"
     ],
     "arcs": [
-      "M.dh.transformation_matrix -> S.chain.product",
+      "E.eigensolve -> S.chain.product",
       "S.chain.product -> O.pose.cartesian"
     ],
     "L_DAG": 2.0,
@@ -60,7 +60,7 @@
     "noise_model": "gaussian",
     "solution_space": "cartesian_pose_vector",
     "primitives": [
-      "M.dh.transformation_matrix",
+      "E.eigensolve",
       "S.chain.product",
       "O.pose.cartesian"
     ]

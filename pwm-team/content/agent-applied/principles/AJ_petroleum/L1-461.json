@@ -24,14 +24,14 @@
     ]
   },
   "G": {
-    "dag": "M.pkn.fracture_model -> S.pressure_decline.analysis -> O.microseismic.inversion",
+    "dag": "N.pointwise -> S.pressure_decline.analysis -> O.microseismic.inversion",
     "vertices": [
-      "M.pkn.fracture_model",
+      "N.pointwise",
       "S.pressure_decline.analysis",
       "O.microseismic.inversion"
     ],
     "arcs": [
-      "M.pkn.fracture_model -> S.pressure_decline.analysis",
+      "N.pointwise -> S.pressure_decline.analysis",
       "S.pressure_decline.analysis -> O.microseismic.inversion"
     ],
     "L_DAG": 4.0,
@@ -60,7 +60,7 @@
     "noise_model": "microseismic_gaussian",
     "solution_space": "fracture_geometry_vector",
     "primitives": [
-      "M.pkn.fracture_model",
+      "N.pointwise",
       "S.pressure_decline.analysis",
       "O.microseismic.inversion"
     ]

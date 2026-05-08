@@ -24,15 +24,15 @@
     ]
   },
   "G": {
-    "dag": "E.lippmann_schwinger -> M.partial_wave -> O.cross_section",
+    "dag": "E.lippmann_schwinger -> E.eigensolve -> O.cross_section",
     "vertices": [
       "E.lippmann_schwinger",
-      "M.partial_wave",
+      "E.eigensolve",
       "O.cross_section"
     ],
     "arcs": [
-      "E.lippmann_schwinger -> M.partial_wave",
-      "M.partial_wave -> O.cross_section"
+      "E.lippmann_schwinger -> E.eigensolve",
+      "E.eigensolve -> O.cross_section"
     ],
     "L_DAG": 3.3,
     "n_c": 0
@@ -60,7 +60,7 @@
     "solution_space": "phase_shifts_scattering_amplitude",
     "primitives": [
       "E.lippmann_schwinger",
-      "M.partial_wave",
+      "E.eigensolve",
       "O.cross_section"
     ]
   },

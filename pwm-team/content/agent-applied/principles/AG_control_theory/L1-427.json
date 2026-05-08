@@ -24,15 +24,15 @@
     ]
   },
   "G": {
-    "dag": "S.kalman.predict_update -> M.riccati.steady_state -> O.innov.sequence_whiteness",
+    "dag": "S.kalman.predict_update -> E.eigensolve -> O.innov.sequence_whiteness",
     "vertices": [
       "S.kalman.predict_update",
-      "M.riccati.steady_state",
+      "E.eigensolve",
       "O.innov.sequence_whiteness"
     ],
     "arcs": [
-      "S.kalman.predict_update -> M.riccati.steady_state",
-      "M.riccati.steady_state -> O.innov.sequence_whiteness"
+      "S.kalman.predict_update -> E.eigensolve",
+      "E.eigensolve -> O.innov.sequence_whiteness"
     ],
     "L_DAG": 2.8,
     "n_c": 0
@@ -61,7 +61,7 @@
     "solution_space": "state_estimate_covariance",
     "primitives": [
       "S.kalman.predict_update",
-      "M.riccati.steady_state",
+      "E.eigensolve",
       "O.innov.sequence_whiteness"
     ]
   },

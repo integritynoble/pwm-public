@@ -25,16 +25,16 @@
     ]
   },
   "G": {
-    "dag": "L.project.pupil -> M.microlens_array -> L.rearrange -> int.spatial",
+    "dag": "L.project.pupil -> L.linear_op -> L.rearrange -> int.spatial",
     "vertices": [
       "L.project.pupil",
-      "M.microlens_array",
+      "L.linear_op",
       "L.rearrange",
       "int.spatial"
     ],
     "arcs": [
-      "L.project.pupil -> M.microlens_array",
-      "M.microlens_array -> L.rearrange",
+      "L.project.pupil -> L.linear_op",
+      "L.linear_op -> L.rearrange",
       "L.rearrange -> int.spatial"
     ],
     "L_DAG": 3.0,
@@ -63,7 +63,7 @@
     "solution_space": "4D_light_field",
     "primitives": [
       "L.project.pupil",
-      "M.microlens_array",
+      "L.linear_op",
       "L.rearrange",
       "int.spatial"
     ]

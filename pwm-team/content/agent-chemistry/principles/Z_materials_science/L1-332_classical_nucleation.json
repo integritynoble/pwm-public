@@ -24,17 +24,17 @@
     ]
   },
   "G": {
-    "dag": "E.cluster_thermodynamics -> E.nucleation_barrier -> M.kinetic_factor -> O.J_rate",
+    "dag": "E.cluster_thermodynamics -> E.nucleation_barrier -> K.filter -> O.J_rate",
     "vertices": [
       "E.cluster_thermodynamics",
       "E.nucleation_barrier",
-      "M.kinetic_factor",
+      "K.filter",
       "O.J_rate"
     ],
     "arcs": [
       "E.cluster_thermodynamics -> E.nucleation_barrier",
-      "E.nucleation_barrier -> M.kinetic_factor",
-      "M.kinetic_factor -> O.J_rate"
+      "E.nucleation_barrier -> K.filter",
+      "K.filter -> O.J_rate"
     ],
     "L_DAG": 3.1,
     "n_c": 0
@@ -63,7 +63,7 @@
     "primitives": [
       "E.cluster_thermodynamics",
       "E.nucleation_barrier",
-      "M.kinetic_factor",
+      "K.filter",
       "O.J_rate"
     ]
   },

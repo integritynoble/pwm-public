@@ -25,17 +25,17 @@
     ]
   },
   "G": {
-    "dag": "E.richardson_emission -> E.barrier_lowering -> M.IV_integrate -> O.IV_vs_T",
+    "dag": "E.richardson_emission -> E.barrier_lowering -> D.time -> O.IV_vs_T",
     "vertices": [
       "E.richardson_emission",
       "E.barrier_lowering",
-      "M.IV_integrate",
+      "D.time",
       "O.IV_vs_T"
     ],
     "arcs": [
-      "E.richardson_emission -> M.IV_integrate",
-      "E.barrier_lowering -> M.IV_integrate",
-      "M.IV_integrate -> O.IV_vs_T"
+      "E.richardson_emission -> D.time",
+      "E.barrier_lowering -> D.time",
+      "D.time -> O.IV_vs_T"
     ],
     "L_DAG": 3.1,
     "n_c": 0
@@ -64,7 +64,7 @@
     "primitives": [
       "E.richardson_emission",
       "E.barrier_lowering",
-      "M.IV_integrate",
+      "D.time",
       "O.IV_vs_T"
     ]
   },
