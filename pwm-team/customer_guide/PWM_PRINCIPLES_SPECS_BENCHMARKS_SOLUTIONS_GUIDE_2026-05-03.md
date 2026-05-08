@@ -152,28 +152,41 @@ export SEPOLIA_RPC_URL=https://ethereum-sepolia-rpc.publicnode.com
 export PWM_RPC_URL=$SEPOLIA_RPC_URL
 
 # 2. For miners running deep-learning solvers (MST-L, EfficientSCI, etc.),
-#    pwm_core is a separate package vendored as a submodule. To pull it
-#    into the working tree, clone with --recursive (or run the submodule
-#    init step against an existing clone). Install Git LFS first so the
-#    pretrained .pth weight files come down with the submodule:
+#    pwm_core is a SEPARATE PACKAGE vendored as a submodule at public/.
+#    If you cloned WITHOUT --recurse-submodules, the public/ directory is
+#    empty and `pip install -e public/packages/pwm_core` will fail.
 #
-#      # one-time on this machine:
-#      git lfs install
-#      # then either:
-#      git clone --recursive https://github.com/integritynoble/pwm-public.git
-#      # or against an existing clone:
-#      git submodule update --init --recursive
-#      git -C public lfs pull
+#    Fix (one-time):
+#      git lfs install                                    # one-time per machine
+#      git submodule update --init --recursive            # pulls the submodule
+#      git -C public lfs pull                             # pulls the .pth weights (~750 MB)
 #
-#    Verify weights landed (and auto-fix common issues):
-#      bash scripts/download_weights.sh
+#    Verify weights landed (≈750 MB; auto-fix script handles broken symlinks):
+#      ls -la public/packages/pwm_core/weights/mst/mst_l.pth   # should be ~750 MB
+#      bash scripts/download_weights.sh                          # re-fetch if broken
 #
-#    Then install pwm_core + a CUDA-matched torch wheel:
+#    For NEXT-TIME clones, use one shot:
+#      git clone --recurse-submodules https://github.com/integritynoble/pwm-public.git
+#
+#    Then install pwm_core + the right torch wheel for your hardware:
 pip install -e public/packages/pwm_core
+
+# Pick ONE torch install line based on your machine:
+#   GPU (NVIDIA, CUDA 12.8):
 pip install torch torchvision --index-url https://download.pytorch.org/whl/cu128
-# (adjust the cu128 wheel suffix to match your local CUDA version; CPU-only
-#  also works for development, just slower)
+#   GPU (NVIDIA, CUDA 12.1):
+#   pip install torch torchvision --index-url https://download.pytorch.org/whl/cu121
+#   CPU-only (Windows / Mac / Linux without GPU):
+#   pip install torch torchvision --index-url https://download.pytorch.org/whl/cpu
+#   (CPU works for L1-L3 inspection + the GAP-TV reference solver. MST-L is
+#    too heavy for CPU in practice — use CPU for development, GPU for production.)
 ```
+
+**Don't have a GPU? You can skip MST-L entirely.** The L1-L3 inspection +
+mining flows use the `cassi_gap_tv.py` reference solver, which runs on
+numpy with no torch weights needed. MST-L is only required if you want to
+match the rank-1 cert on Sepolia (Q_int=35, PSNR 35.30 dB). For
+familiarization, GAP-TV at PSNR ~26 dB is plenty.
 
 ---
 
