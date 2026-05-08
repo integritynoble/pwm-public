@@ -33,50 +33,18 @@ from pathlib import Path
 _ZERO_ADDR = "0x" + "0" * 40
 
 
-# UI-only fields excluded from canonical-JSON hashing. MUST match
-# scripts/register_genesis.py::UI_ONLY_FIELDS exactly — otherwise the
-# benchmarkHash this CLI computes will diverge from what's on-chain
-# and `submit_certificate` will revert with "benchmark not registered".
-# Smoke-test 2026-05-03 caught this divergence before the public-repo
-# cutover; that's what the test_hash_convention.py regression covers.
-_UI_ONLY_FIELDS = frozenset({
-    "display_slug",
-    "display_color",
-    "ui_metadata",
-    "registration_tier",
-    "display_baselines",  # leaderboard-floor sidecar; e.g. deep-learning
-                          # SOTA landmarks added off-chain via cert-meta.
-})
-# TODO: consolidate this set with scripts/register_genesis.py::UI_ONLY_FIELDS
-# into a single shared module so future schema additions can't drift between
-# the registration path and the mining path. The 2026-05-07 audit caught a
-# divergence (display_baselines was added to register_genesis 2026-05-06 but
-# never propagated here, breaking benchmarkHash equality on dry-runs).
-
-
-def _canonical_for_hashing(obj):
-    """Strip UI-only fields recursively at top level before hashing.
-
-    Keeps the on-chain hash invariant under UI-metadata edits, matching
-    `scripts/register_genesis.py::_canonical_for_hashing`.
-    """
-    if isinstance(obj, dict):
-        return {k: v for k, v in obj.items() if k not in _UI_ONLY_FIELDS}
-    return obj
-
-
-def _canonical_json(obj) -> bytes:
-    """Stable-serialize to bytes: sorted keys, compact separators, UTF-8.
-
-    Must match scripts/register_genesis.py::_canonical_json so the
-    benchmarkHash we compute here equals the hash that was registered on-chain.
-    Filters the full UI_ONLY_FIELDS set above (display_slug, display_color,
-    ui_metadata, registration_tier, display_baselines) before serializing —
-    see PWM_HUMAN_READABLE_IDS_AND_CONTRIBUTION_FLOW_2026-05-03.md for the
-    rationale.
-    """
-    filtered = _canonical_for_hashing(obj)
-    return json.dumps(filtered, sort_keys=True, separators=(",", ":")).encode("utf-8")
+# Canonical-JSON hashing is shared with scripts/register_genesis.py
+# via pwm_node.canonical so the two consumers can't drift. The 2026-05-07
+# audit caught exactly this drift (display_baselines was added to
+# register_genesis on 2026-05-06 but never propagated to the duplicate
+# set that used to live here, breaking benchmarkHash equality). Now both
+# import from the same module — adding a new UI-only field in the future
+# is a one-line edit in canonical.py.
+from pwm_node.canonical import (
+    UI_ONLY_FIELDS as _UI_ONLY_FIELDS,
+    canonical_for_hashing as _canonical_for_hashing,
+    canonical_json as _canonical_json,
+)
 
 
 def _keccak256_hex(data: bytes) -> str:

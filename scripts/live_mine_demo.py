@@ -66,7 +66,28 @@ def main() -> int:
                     help="Q × 100. Default: block_number mod 100 (keeps successive runs unique).")
     ap.add_argument("--share-ratio-p", type=int, default=5000,
                     help="SP share × 10000, range [1000, 9000] per contract.")
+    ap.add_argument(
+        "--allow-mainnet",
+        action="store_true",
+        help="Required when --network is mainnet/base/arbitrum/optimism. "
+             "Without this flag, the script refuses to broadcast on a live "
+             "mainnet to prevent typo-cost incidents (e.g. `--network "
+             "mainnet` typed instead of `--network testnet`).",
+    )
     args = ap.parse_args()
+
+    # Mainnet broadcast safety gate: every non-testnet network requires an
+    # explicit --allow-mainnet flag. Typo-resistance — refuse to broadcast
+    # against live value unless the operator explicitly opts in.
+    _MAINNET_NETWORKS = frozenset({"mainnet", "base", "arbitrum", "optimism"})
+    if args.network in _MAINNET_NETWORKS and not args.allow_mainnet:
+        logger.error(
+            f"refusing to broadcast on '{args.network}' without --allow-mainnet. "
+            "If you really intend to submit a cert on a live mainnet, re-run "
+            "with --allow-mainnet. For testnet runs use --network testnet, "
+            "baseSepolia, or arbSepolia (no flag needed)."
+        )
+        return 2
 
     try:
         from web3 import Web3

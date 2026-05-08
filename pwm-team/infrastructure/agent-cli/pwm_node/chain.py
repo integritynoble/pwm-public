@@ -42,10 +42,16 @@ CONTRACT_NAMES = (
 )
 
 
-# Default RPC endpoints per network. Override via PWM_RPC_URL env var.
+# Default RPC endpoints per network. Lookup key is `net_info["network"]`
+# from addresses.json (testnet→"sepolia", mainnet→"base"). Override via
+# PWM_RPC_URL env var. Note: PWM's mainnet target is Base (chainId 8453),
+# NOT Ethereum mainnet — see addresses.json:mainnet for the canonical
+# chainId. The legacy "mainnet" key is preserved as an alias for "base"
+# for callers that pass network="mainnet" without consulting addresses.json.
 DEFAULT_RPCS = {
     "sepolia": "https://rpc.sepolia.org",
-    "mainnet": "https://eth.llamarpc.com",
+    "base": "https://mainnet.base.org",
+    "mainnet": "https://mainnet.base.org",
 }
 
 
