@@ -1,6 +1,6 @@
 # PWM Layers — Complete Guide: Create + Use (L1 / L2 / L3 / L4)
 
-**Date:** 2026-05-03 (refreshed 2026-05-06 — registration tiers + CLI flag fix)
+**Date:** 2026-05-03 (refreshed 2026-05-08 — slug-aware lookup + faceted physics search)
 **Audience:** Researchers, students, industry teams, regulators, external developers, founders
 **Network:** Ethereum Sepolia testnet (chainId 11155111) for examples. Base mainnet at launch reuses the same `--network mainnet` flag; the chain selection is determined by which `addresses.json` entry the CLI resolves (`testnet` → Sepolia today; `mainnet` → Base mainnet at launch).
 **Canonical public repo:** `https://github.com/integritynoble/pwm-public`
@@ -254,15 +254,34 @@ pwm-node benchmarks
 
 ### Browse the catalog (web)
 
-`https://explorer.pwm.platformai.org/principles` — three tabs at top:
+`https://explorer.pwm.platformai.org/principles` — four discovery surfaces
+on one page:
 
-- **Mineable (2)** — registered on Sepolia, has reward pool (CASSI + CACTI)
-- **Claim Board (529)** — Tier-3 stubs awaiting external contributors
-- **All (531)** — combined view
+1. **Three tier tabs** at top:
+   - **Mineable (2)** — registered on Sepolia, has reward pool (CASSI + CACTI)
+   - **Claim Board (529)** — Tier-3 stubs awaiting external contributors
+   - **All (531)** — combined view
 
-Plus filters by domain (Imaging, Physics, Applied, Chemistry, Signal)
-and a free-text search box across title + domain + sub_domain +
-forward_model.
+2. **Free-text search** across `title + domain + sub_domain + forward_model`
+
+3. **Domain pills** (Imaging, Physics, Applied, Chemistry, Signal — 41 sub-domains across the 5 agents)
+
+4. **Faceted physics filters** (the new bit) drawn from each manifest's `physics_fingerprint` block. Click a pill to toggle, click again to clear:
+   - **Carrier** — `photon` (127), `mechanical` (56), `acoustic` (42), `electron` (41), …
+   - **Problem class** — `linear_inverse` (201), `nonlinear_inverse` (203), `parameter_estimation` (62), …
+   - **Noise model** — `gaussian` (318), `shot_poisson` (82), `poisson` (28), …
+
+Filters AND-combine. Three concrete URLs (try them):
+```
+https://explorer.pwm.platformai.org/principles?tier=all&carrier=photon
+   → 127 photon-based imaging Principles
+
+https://explorer.pwm.platformai.org/principles?tier=all&carrier=photon&problem_class=linear_inverse
+   → 58 linear-inverse photon Principles (CASSI, CACTI, SPC, etc.)
+
+https://explorer.pwm.platformai.org/principles?tier=all&carrier=acoustic&noise_model=gaussian
+   → ultrasound / acoustic imaging entries with Gaussian noise
+```
 
 Both commands are offline-by-default — no `--network` flag needed for
 catalog reads.
@@ -389,7 +408,8 @@ The mathematical contract: six-tuple (Ω, E, B, I, O, ε) for a concrete instanc
 ### Read the math contract
 
 ```bash
-pwm-node --network testnet inspect L2-003
+pwm-node inspect L2-003           # by artifact ID
+pwm-node inspect cassi            # by display_slug — same result, both resolve to L2-003
 # Output:
 #   six_tuple:
 #     Ω = parameter space (allowed dispersions, mask types, photon levels)
@@ -477,7 +497,8 @@ DOES change the keccak256 — only use it on Tier-3 stubs.
 ### Inspect via CLI
 
 ```bash
-pwm-node --network testnet inspect L3-003
+pwm-node inspect L3-003           # by artifact ID
+pwm-node inspect cassi            # by slug — resolves to L3-003 (consumer-facing)
 # Prints title, parent L2/L1, n_dev_instances, scoring metric,
 # current rank-1 score, dataset CIDs, ω parameters
 ```
@@ -845,14 +866,17 @@ hashing strips it before computing keccak256, so:
 
 | Want to… | Command |
 |---|---|
-| Browse all Principles (web) | `https://explorer.pwm.platformai.org/principles` |
-| Browse all Principles (CLI) | `pwm-node principles` |
-| Browse all Benchmarks (CLI) | `pwm-node benchmarks` |
-| Find a Principle for your problem | `pwm-node match "<description>"` |
-| Read one Principle | `pwm-node inspect L1-XXX` |
-| Read one Spec | `pwm-node inspect L2-XXX` |
-| Read one Benchmark | `pwm-node inspect L3-XXX` |
-| Download a benchmark dataset | "Get this benchmark" card on `/benchmarks/L3-XXX` |
+| **Find a Principle from a free-text description** ★ | `pwm-node match "<your problem in plain English>"` |
+| Browse all Principles (web — 4 facets + 3 tier tabs) | `https://explorer.pwm.platformai.org/principles?tier=all` |
+| Filter web catalog by physics | `https://explorer.pwm.platformai.org/principles?tier=all&carrier=photon&problem_class=linear_inverse` |
+| Filter web catalog by domain | `https://explorer.pwm.platformai.org/principles?domain=Imaging` |
+| Browse registered Principles (CLI) | `pwm-node principles` |
+| Browse registered Benchmarks (CLI) | `pwm-node benchmarks` |
+| Read one Principle (by ID or slug) | `pwm-node inspect L1-003` *or* `pwm-node inspect cassi` |
+| Read one Spec | `pwm-node inspect L2-XXX` *or* `pwm-node inspect <slug>` |
+| Read one Benchmark | `pwm-node inspect L3-XXX` *or* `pwm-node inspect <slug>` |
+| Read a Tier-3 stub (content tree) | `pwm-node inspect L1-026b` *or* `pwm-node inspect spc` |
+| Download a benchmark dataset | "Get this benchmark" card on `/benchmarks/L3-XXX` *or* `/benchmarks/<slug>` |
 | Compare your solver locally (no tx) | `pwm-node mine L3-XXX --solver your.py --dry-run` |
 | Submit cert on-chain | `pwm-node mine L3-XXX --solver your.py` |
 | Verify someone's published claim | `https://explorer.pwm.platformai.org/cert/0x...` (or Etherscan tx URL) |
