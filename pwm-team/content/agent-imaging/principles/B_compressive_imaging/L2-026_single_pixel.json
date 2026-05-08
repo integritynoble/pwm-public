@@ -35,7 +35,7 @@
     "E": {
       "forward": "y = Phi * vec(x) + n  (Phi is the declared sensing matrix, potentially corrupted by gain drift / illumination non-uniformity)",
       "operator": "single_pixel_forward_mismatch",
-      "primitive_chain": "S.pattern.random -> L.inner_product -> int.temporal -> D.scalar",
+      "primitive_chain": "S.pattern.random -> L.inner_product -> int.spatial -> D.scalar",
       "inverse": "recover x in R^n from y in R^m with m << n"
     },
     "B": {

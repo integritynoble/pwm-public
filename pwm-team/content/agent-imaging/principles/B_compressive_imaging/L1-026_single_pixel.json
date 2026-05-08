@@ -24,17 +24,17 @@
     ]
   },
   "G": {
-    "dag": "S.pattern.random -> L.inner_product -> int.temporal -> D.scalar",
+    "dag": "S.pattern.random -> L.inner_product -> int.spatial -> D.scalar",
     "vertices": [
       "S.pattern.random",
       "L.inner_product",
-      "int.temporal",
+      "int.spatial",
       "D.scalar"
     ],
     "arcs": [
       "S.pattern.random -> L.inner_product",
-      "L.inner_product -> int.temporal",
-      "int.temporal -> D.scalar"
+      "L.inner_product -> int.spatial",
+      "int.spatial -> D.scalar"
     ],
     "L_DAG": 3.0,
     "n_c": 0
@@ -63,7 +63,7 @@
     "primitives": [
       "S.pattern.random",
       "L.inner_product",
-      "int.temporal",
+      "int.spatial",
       "D.scalar"
     ]
   },
