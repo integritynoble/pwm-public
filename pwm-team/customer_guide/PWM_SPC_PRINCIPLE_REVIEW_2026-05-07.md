@@ -81,11 +81,28 @@ recover `x` from an underdetermined system. Solved via convex optimization
 ## 1.3 DAG primitive chain (G)
 
 ```
-S.pattern.hadamard  →  L.inner_product  →  int.temporal  →  D.scalar
-   (DMD pattern)        (photon × pattern)   (integrate)     (single readout)
+S.pattern.hadamard  →  L.inner_product  →  int.spatial  →  D.scalar
+   (DMD pattern)        (photon × pattern)   (integrate)    (single readout)
 ```
 
 **L_DAG = 3.0** (4 primitives, 3 edges) · **n_c = 0** (single physics, no coupling)
+
+> **Mapping to the canonical 12-primitive basis** (`papers/Proof-of-Solution/mine_example/primitives.md`):
+> the 4-node descriptive DAG above uses readable domain labels.
+> Canonical-primitive equivalents (only `∫.spatial` is in the strict
+> 12-primitive basis as-is — the other three are descriptive aliases):
+>
+> | Descriptive label here | Canonical primitive (primitives.md) |
+> |---|---|
+> | `S.pattern.hadamard` (DMD pattern) | `G.structured.random` — line 505: "random pattern (SPC, coded illumination)" |
+> | `L.inner_product` (photon × pattern) | `L.diag.binary` — line 118: "binary mask {0,1} — coded aperture, SPC". The `<φ_k, x>` inner product = element-wise multiply (`L.diag.binary`) followed by sum (`∫.spatial`). |
+> | `int.spatial` (integrate over the bucket detector's field) | `∫.spatial` — line 88: "sum over spatial region (SPC bucket detector)" — matches verbatim |
+> | `D.scalar` (single-pixel readout) | not a separate primitive; `D` is not in the 12-primitive root basis. The scalar readout is just the output of `∫.spatial`. |
+>
+> Line 567 of primitives.md gives SPC's strict 2-primitive
+> signature directly: `#26 SPC = [L.diag.binary] → [∫.spatial]`.
+> The 4-node form here is for human readability; both forms describe
+> the same physics.
 
 ## 1.4 Physical parameters θ
 
@@ -134,7 +151,7 @@ approximation of `x`.
 | problem_class | linear_inverse |
 | noise_model | gaussian |
 | solution_space | 2D_spatial |
-| primitives | `S.pattern.hadamard`, `L.inner_product`, `int.temporal`, `D.scalar` |
+| primitives | `S.pattern.hadamard`, `L.inner_product`, `int.spatial`, `D.scalar` (descriptive aliases; canonical 2-primitive form per `primitives.md` line 567 = `[L.diag.binary] → [∫.spatial]`) |
 | difficulty_delta | 3 (standard tier) |
 | error_metric | PSNR_dB (secondary: SSIM) |
 
@@ -169,7 +186,7 @@ y_k = ⟨φ_k_Hadamard, x⟩ + n_k
 where φ_k may be corrupted by gain drift α and illumination falloff σ.
 ```
 
-**Primitive chain:** `S.pattern.hadamard → L.inner_product → int.temporal → D.scalar`
+**Primitive chain:** `S.pattern.hadamard → L.inner_product → int.spatial → D.scalar` (descriptive form; canonical 2-primitive equivalent per `primitives.md` line 567 is `[L.diag.binary] → [∫.spatial]` — see § 1.3 mapping table)
 **Inverse:** recover `x ∈ ℝⁿ` from `m` Hadamard-projection scalars `y`.
 
 ## 2.3 B — boundary constraints
