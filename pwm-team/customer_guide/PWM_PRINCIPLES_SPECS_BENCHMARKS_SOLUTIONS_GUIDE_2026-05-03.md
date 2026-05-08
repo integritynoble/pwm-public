@@ -769,6 +769,50 @@ swapping the `testnet` entry in `addresses.json` to point at the
 Base Sepolia contracts during Step 5, then swapping back. It's not
 a separate CLI flag.
 
+## Cross-chain consistency (Sepolia testnet ↔ Base mainnet)
+
+Common Director question: *"Will users browsing or verifying a
+benchmark / cert have the same experience on testnet and on
+mainnet?"*
+
+Short answer: **yes, by design.** The protocol is chain-agnostic at
+every layer except chain identity itself.
+
+**Identical across both chains** (no work — already designed in):
+
+| What | Same across Sepolia + Base mainnet? |
+|---|---|
+| `pwm-node` CLI commands | ✅ same; `--network testnet/mainnet` is the only diff |
+| Explorer URL pattern | ✅ same paths (`/cert/0x…`, `/benchmarks/L3-003`, …) |
+| Manifest `keccak256(canonical_json)` | ✅ chain-agnostic — same hash on both chains |
+| L4 cert payload structure | ✅ same 12 chain-bound + 3 `_meta` fields |
+| S1-S4 gate code | ✅ same Python (`pwm_scoring/gates.py`) — chain-blind |
+| Reward share formula (40/5/2/1×7) | ✅ constitutional — hardcoded in `PWMReward.sol` |
+| Solver invocation contract | ✅ `--input <dir> --output <dir>` — chain-blind |
+
+**Necessarily different** (chain identity):
+
+| What | Sepolia | Base mainnet |
+|---|---|---|
+| Chain ID | 11155111 | 8453 |
+| Tx explorer | `sepolia.etherscan.io` | `basescan.org` |
+| Gas currency | free Sepolia ETH (faucet) | real ETH on Base |
+| Reward currency | testnet PWM (no real value) | real PWM (tradeable) |
+| Leaderboard population | per-chain cert sets | per-chain cert sets |
+| Per-benchmark challenge window | independently tunable per chain | independently tunable per chain |
+
+**A user submitting the same solver to both chains gets the same
+`certHash`** — the canonical cert payload is identical on both
+chains; only the on-chain registration triple `(chainId,
+registry_addr, hash)` differs. This makes "did the same solver
+produce the same result on both chains" trivial to verify.
+
+For the full cross-chain UX design — including three identified UX
+gaps (chain badge on explorer, `pwm-node compare` command,
+multi-broadcast `pwm-node mine --networks testnet,mainnet`) plus
+implementation sketches and recommended priorities — see
+[`PWM_CROSS_CHAIN_UX_DESIGN_2026-05-08.md`](PWM_CROSS_CHAIN_UX_DESIGN_2026-05-08.md).
+
 ## Bug-fix playbook (after deployment)
 
 Common Director question: *"What if there are bugs in my deployed
