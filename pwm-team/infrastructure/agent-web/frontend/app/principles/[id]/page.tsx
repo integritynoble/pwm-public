@@ -163,8 +163,16 @@ export default async function PrincipleDetail({
               <tbody>
                 {data.specs.map((s) => (
                   <tr key={s.artifact_id}>
-                    <td className="font-mono">{s.artifact_id}</td>
-                    <td>{s.title}</td>
+                    <td className="font-mono">
+                      <Link className="pwm-link" href={`/specs/${s.artifact_id}`}>
+                        {s.artifact_id}
+                      </Link>
+                    </td>
+                    <td>
+                      <Link className="pwm-link" href={`/specs/${s.artifact_id}`}>
+                        {s.title}
+                      </Link>
+                    </td>
                     <td>{s.spec_type}</td>
                     <td>{s.d_spec ?? '—'}</td>
                   </tr>

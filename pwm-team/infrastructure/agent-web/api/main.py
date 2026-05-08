@@ -291,6 +291,50 @@ def principle_detail(principle_id: str):
     })
 
 
+@app.get("/api/specs/{spec_id}")
+def spec_detail(spec_id: str):
+    """L2 spec detail page — covers the six-tuple contract + child L3 list.
+
+    Accepts artifact_id (`L2-003`, `L2-026-002`), legacy alias (`L2-003-001`
+    auto-resolves to `L2-003`), or display_slug (`spc` → L2-026-002).
+    """
+    s = genesis.spec_by_artifact_id_any(spec_id)
+    if not s:
+        raise HTTPException(status_code=404, detail=f"spec not found: {spec_id}")
+
+    aid = s.get("artifact_id") or spec_id
+    parent_l1_id = s.get("parent_l1")
+    parent_l1 = genesis.principle_by_artifact_id_any(parent_l1_id) if parent_l1_id else None
+
+    # Sibling specs (other L2s under the same L1) — useful for discoverability
+    siblings = []
+    if parent_l1_id:
+        siblings = [
+            genesis.summarize_spec(x)
+            for x in genesis._load_content_layer("l2")
+            if x.get("parent_l1") == parent_l1_id and x.get("artifact_id") != aid
+        ]
+        # Also include genesis-tree siblings (e.g., L2-003 alongside any future L2-003-002)
+        siblings.extend(
+            genesis.summarize_spec(x)
+            for x in genesis.specs()
+            if x.get("parent_l1") == parent_l1_id and x.get("artifact_id") != aid
+            and x.get("artifact_id") not in {sb.get("artifact_id") for sb in siblings}
+        )
+
+    children = [genesis.summarize_benchmark(b) for b in genesis.benchmarks_for_spec_any(aid)]
+
+    return _cached({
+        "spec": s,
+        "parent_principle": (
+            genesis.summarize_principle(parent_l1) if parent_l1 else None
+        ),
+        "siblings": siblings,
+        "child_benchmarks": children,
+        "is_stub": (s.get("registration_tier") or "stub") == "stub",
+    })
+
+
 @app.get("/api/benchmarks")
 def benchmarks_list():
     conn = store.get_conn()

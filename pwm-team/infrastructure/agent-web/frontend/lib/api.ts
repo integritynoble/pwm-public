@@ -112,6 +112,23 @@ export type PrincipleDetail = {
   is_stub?: boolean;
 };
 
+export type SpecSummary = {
+  artifact_id: string;
+  parent_l1?: string;
+  title?: string;
+  spec_type?: string;
+  d_spec?: number;
+  ibenchmark_center?: any;
+};
+
+export type SpecDetail = {
+  spec: any;
+  parent_principle: PrincipleSummary | null;
+  siblings: SpecSummary[];
+  child_benchmarks: BenchmarkSummary[];
+  is_stub: boolean;
+};
+
 export type BenchmarkSummary = {
   artifact_id: string;
   parent_l2?: string;
@@ -230,6 +247,7 @@ export const api = {
     return get<PrinciplesList>(`/api/principles${qs ? '?' + qs : ''}`);
   },
   principle: (id: string) => get<PrincipleDetail>(`/api/principles/${encodeURIComponent(id)}`),
+  spec: (id: string) => get<SpecDetail>(`/api/specs/${encodeURIComponent(id)}`),
   benchmarks: () => get<BenchmarksList>('/api/benchmarks'),
   benchmark: (ref: string) => get<BenchmarkDetail>(`/api/benchmarks/${encodeURIComponent(ref)}`),
   pools: () => get<Pools>('/api/pools'),

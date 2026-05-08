@@ -162,6 +162,85 @@ def _try_legacy_alias(target: str) -> str | None:
     return "-".join(parts) if len(parts) >= 2 else None
 
 
+def _load_content_layer(layer: str) -> list[dict]:
+    """Walk the content tree for L1/L2/L3 manifests. Cached.
+
+    Uses content_dir() which respects the PWM_CONTENT_DIR env var so this
+    works in both dev (PWM_TEAM_ROOT/content) and the Docker container
+    (/app/content).
+    """
+    if layer == "l1":
+        return load_content_l1()
+    # Reuse the rglob walker for L2/L3 (small, ~530 files each)
+    content_root = content_dir()
+    if not content_root.exists():
+        return []
+    layer_upper = layer.upper()
+    seen: set[str] = set()
+    out: list[dict] = []
+    for path in sorted(content_root.rglob(f"{layer_upper}-*.json")):
+        try:
+            data = json.loads(path.read_text())
+        except (OSError, json.JSONDecodeError):
+            continue
+        if not isinstance(data, dict):
+            continue
+        aid = data.get("artifact_id") or ""
+        if not aid.startswith(f"{layer_upper}-") or aid in seen:
+            continue
+        seen.add(aid)
+        try:
+            rel = str(path.relative_to(PWM_TEAM_ROOT))
+        except ValueError:
+            rel = str(path)
+        data.setdefault("_source_path", rel)
+        out.append(data)
+    return out
+
+
+def spec_by_artifact_id_any(artifact_id: str) -> dict | None:
+    """Lookup an L2 spec across genesis + content trees with the same
+    resolution rules as principle_by_artifact_id_any.
+
+    Resolution order:
+      1. Genesis tree by artifact_id (exact)
+      2. Genesis tree by display_slug (L2 layer)
+      3. Content tree by artifact_id
+      4. Content tree by display_slug
+      5. Legacy alias fallback (L2-003-001 → L2-003)
+    """
+    target = (artifact_id or "").strip()
+    if not target:
+        return None
+    target_lower = target.lower()
+    hit = by_artifact_id(target)
+    if hit is not None and hit.get("layer") == "L2":
+        return hit
+    slug_hit = by_slug(target_lower, layer="l2")
+    if slug_hit is not None:
+        return slug_hit
+    for s in _load_content_layer("l2"):
+        if s.get("artifact_id") == target:
+            return s
+        if (s.get("display_slug") or "").lower() == target_lower:
+            return s
+    flat = _try_legacy_alias(target)
+    if flat and flat != target:
+        return spec_by_artifact_id_any(flat)
+    return None
+
+
+def benchmarks_for_spec_any(l2_id: str) -> list[dict]:
+    """All L3 benchmarks whose parent_l2 equals l2_id, across both trees."""
+    out = [b for b in benchmarks() if b.get("parent_l2") == l2_id]
+    seen = {b.get("artifact_id") for b in out if b.get("artifact_id")}
+    for b in _load_content_layer("l3"):
+        if b.get("parent_l2") == l2_id and b.get("artifact_id") not in seen:
+            out.append(b)
+            seen.add(b.get("artifact_id"))
+    return out
+
+
 def principle_by_artifact_id_any(artifact_id: str) -> dict | None:
     """Lookup an L1 principle in genesis OR content tree.
 
