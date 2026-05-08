@@ -1,6 +1,6 @@
 # PWM Layers — Complete Guide: Create + Use (L1 / L2 / L3 / L4)
 
-**Date:** 2026-05-03 (refreshed 2026-05-08 — slug-aware lookup + faceted physics search)
+**Date:** 2026-05-03 (refreshed 2026-05-08 — slug-aware lookup, faceted search, hierarchical IDs Phase A+B+C, /specs/ web detail page)
 **Audience:** Researchers, students, industry teams, regulators, external developers, founders
 **Network:** Ethereum Sepolia testnet (chainId 11155111) for examples. Base mainnet at launch reuses the same `--network mainnet` flag; the chain selection is determined by which `addresses.json` entry the CLI resolves (`testnet` → Sepolia today; `mainnet` → Base mainnet at launch).
 **Canonical public repo:** `https://github.com/integritynoble/pwm-public`
@@ -264,20 +264,43 @@ pwm-node inspect qsm                 # → L1-503 (Tier-3 stub Principle)
 
 PWM uses hierarchical IDs that encode the parent/child path:
 
-| Layer | New (canonical) form | Example |
+| Layer | Form | Example |
 |---|---|---|
-| L1 Principle | `L1-NNN` | `L1-003` |
-| L2 Spec | `L2-NNN-MMM` | `L2-003-001` (first spec under L1-003) |
-| L3 Benchmark | `L3-NNN-MMM-PPP` | `L3-003-001-001` (first benchmark under L2-003-001) |
+| L1 Principle | `L1-NNN` (one segment) | `L1-003` |
+| L2 Spec | `L2-NNN-MMM` (two segments) | `L2-003-001` (first spec under L1-003) |
+| L3 Benchmark | `L3-NNN-MMM-PPP` (three segments) | `L3-003-001-001` (first benchmark under L2-003-001) |
 | L4 Cert | `0x<keccak256-hash>` | `0x7c7740fa…` (content-addressed; not path-based) |
 
-Numeric segments are 3-digit zero-padded for stable lexicographic sort.
-The 6 founder-vetted artifacts registered on Sepolia (`L1-003`, `L2-003`,
-`L3-003`, `L1-004`, `L2-004`, `L3-004`) keep their **legacy flat form
-forever** — renaming them would orphan the on-chain registration.
-Tooling treats the legacy form as an alias for the implicit hierarchical
-form: `pwm-node inspect L2-003-001` and `pwm-node inspect L2-003` both
-resolve to the same registered artifact.
+Numeric segments are 3-digit zero-padded for stable lexicographic sort
+(`L2-003-009` < `L2-003-010` works only with leading zeros).
+
+**Two coexisting forms via the legacy-alias rule:**
+
+The 6 founder-vetted artifacts registered on Sepolia keep their flat
+legacy form forever (renaming would orphan the on-chain registration):
+
+| Legacy flat form (registered on-chain) | Treated by tooling as alias for |
+|---|---|
+| `L1-003`, `L1-004` | `L1-003-001`, `L1-004-001` (same artifact) |
+| `L2-003`, `L2-004` | `L2-003-001`, `L2-004-001` |
+| `L3-003`, `L3-004` | `L3-003-001-001`, `L3-004-001-001` |
+
+So `pwm-node inspect L2-003`, `pwm-node inspect L2-003-001`, and
+`/specs/L2-003-001` all resolve to the same registered artifact.
+
+**The other ~1060 catalog artifacts use the hierarchical form natively**
+after the 2026-05-08 Phase B renumbering. For example, the SPC modality:
+
+```
+L1-026  Single-Pixel Compressive Imaging        (the unified principle)
+  ├── L2-026-001  random-basis sampling spec
+  └── L2-026-002  Hadamard-structured spec       (was L2-026b)
+        └── L3-026-002-001                       (was L3-026b)
+```
+
+When a contributor adds a new spec under any L1, it gets the next
+available `-MMM` slot (e.g., `L2-003-002` for a CASSI oracle-assisted
+variant), with new benchmarks at `L3-003-002-001`, etc.
 
 ### Cardinality — the protocol is a tree, not a chain
 
@@ -326,7 +349,8 @@ So why the "many" framing if today is 1:1? Two reasons:
 Web URLs work the same way:
 - `/principles/L1-003` and `/principles/cassi` → same L1 detail page
 - `/benchmarks/L3-003` and `/benchmarks/cassi` → same L3 detail page
-- `/specs/L2-003` (no slug shortcut for specs in the web today — use the L2 ID)
+- `/specs/L2-003` and `/specs/cassi` → same L2 detail page (slug + alias both supported as of 2026-05-08)
+- `/specs/L2-026-002` and `/specs/spc` → SPC Hadamard sub-spec under L1-026
 
 ### Browse the catalog (CLI listing)
 
@@ -493,10 +517,23 @@ The mathematical contract: six-tuple (Ω, E, B, I, O, ε) for a concrete instanc
 
 ## L2 — How CONSUMERS use existing Specs
 
+### Find a Spec by browsing or matching
+
+```bash
+# List every L2 under a given L1 (artifact ID or slug both work)
+pwm-node specs --principle L1-003          # → 1 row: L2-003 (CASSI)
+pwm-node specs --principle cassi           # same result
+
+# Or browse the web — the L1 detail page lists all child L2s in a table
+# with hyperlinked rows that take you to /specs/<id>
+#   https://explorer.pwm.platformai.org/principles/L1-003
+```
+
 ### Read the math contract
 
 ```bash
 pwm-node inspect L2-003                # by artifact ID (unambiguous)
+pwm-node inspect L2-003-001            # legacy alias (Phase C) — same result
 pwm-node inspect cassi --layer L2      # by slug + layer flag (default would be L1)
 # Output:
 #   six_tuple:
@@ -512,6 +549,20 @@ pwm-node inspect cassi --layer L2      # by slug + layer flag (default would be 
 
 This is what solver authors implement against — the input/output schema
 + acceptance threshold.
+
+### Read on the web (dedicated /specs/<id> page, shipped 2026-05-08)
+
+```
+https://explorer.pwm.platformai.org/specs/L2-003           — by artifact ID
+https://explorer.pwm.platformai.org/specs/L2-003-001       — legacy alias resolves to same page
+https://explorer.pwm.platformai.org/specs/cassi            — by slug
+https://explorer.pwm.platformai.org/specs/L2-026-002       — Phase B hierarchical form (Hadamard SPC)
+https://explorer.pwm.platformai.org/specs/spc              — slug for the Hadamard sub-spec
+```
+
+The page renders a 6-card grid for the six-tuple (Ω / E / B / I / O / ε)
+plus a sibling-spec table (other L2s under the same L1) and a child-
+benchmark table linking to each L3.
 
 ### Read the JSON
 
@@ -961,9 +1012,12 @@ hashing strips it before computing keccak256, so:
 | Browse registered Principles (CLI) | `pwm-node principles` |
 | Browse registered Benchmarks (CLI) | `pwm-node benchmarks` |
 | Read one Principle (by ID or slug) | `pwm-node inspect L1-003` *or* `pwm-node inspect cassi` (slug → L1 by default) |
-| Read one Spec | `pwm-node inspect L2-003` *or* `pwm-node inspect cassi --layer L2` |
-| Read one Benchmark | `pwm-node inspect L3-003` *or* `pwm-node inspect cassi --layer L3` |
-| Read a Tier-3 stub (content tree) | `pwm-node inspect L1-026b` *or* `pwm-node inspect spc` (defaults to L1; `--layer L3` for benchmark) |
+| Read one Spec (CLI) | `pwm-node inspect L2-003` *or* `pwm-node inspect cassi --layer L2` |
+| Read one Spec (web) | `https://explorer.pwm.platformai.org/specs/L2-003` *or* `/specs/cassi` |
+| Read one Benchmark (CLI) | `pwm-node inspect L3-003` *or* `pwm-node inspect cassi --layer L3` |
+| List L2 specs under an L1 | `pwm-node specs --principle L1-003` *or* `pwm-node specs --principle cassi` |
+| List L3 benchmarks under an L2 | `pwm-node benchmarks --spec L2-003` |
+| Read a Tier-3 stub (content tree) | `pwm-node inspect L1-026` (or `spc`); `--layer L2` for the SPC sub-spec → `L2-026-002` |
 | Download a benchmark dataset | "Get this benchmark" card on `/benchmarks/L3-XXX` *or* `/benchmarks/<slug>` |
 | Compare your solver locally (no tx) | `pwm-node mine L3-XXX --solver your.py --dry-run` |
 | Submit cert on-chain | `pwm-node mine L3-XXX --solver your.py` |
