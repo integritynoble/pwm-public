@@ -278,6 +278,31 @@ changed, but only via:
 These are constitutional. Changing them would require a contract
 re-deploy under a new audit tag — i.e. a hard fork.
 
+### Per-benchmark `challengePeriodSeconds` override
+
+The 7-day default is right for new benchmarks but overkill for
+proven ones. The contract supports per-benchmark overrides via
+`PWMGovernance.setParameter("benchmark.challengeWindow", N)`.
+Recommended values by benchmark maturity:
+
+| Benchmark state | challengePeriodSeconds | Rationale |
+|---|---|---|
+| Newly registered (no finalized certs yet) | **604,800 sec (7 days)** — default | Full window for community to discover bugs |
+| Active (≤ 25 finalized, 0 upheld) | **604,800 sec (7 days)** | Default still fits; track-record too short to shorten |
+| Proven (≥ 25 finalized, 12+ months, 0 upheld) | **259,200 sec (3 days)** | Track record demonstrates fraud is rare; tighter window cuts miner reward latency 4× |
+| Frontier (δ ≥ 10) | **1,209,600 sec (14 days)** — hardcoded | Larger solvers + datasets; higher stakes |
+| Compromised (recent fraud upheld) | **1,209,600 sec (14 days)** — promote up | Tighten verification until 30+ days clean |
+
+The contract already exposes this; the auto-promote / demote state
+machine (cert counts → window adjustment) is **not** implemented —
+multisig manually tunes proven benchmarks for now.
+
+For the full design rationale (why 7 days, why L4 cannot follow a
+mandatory testnet → mainnet flow, the four properties that would
+break, the L1/L2/L3 ladder that already does the testnet-first
+thing), see
+[`PWM_DEPLOYMENT_FLOW_DESIGN_2026-05-08.md`](PWM_DEPLOYMENT_FLOW_DESIGN_2026-05-08.md).
+
 ---
 
 ## Practical strategy: how to avoid most bugs in the first place
