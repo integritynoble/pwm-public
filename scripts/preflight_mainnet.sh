@@ -19,6 +19,25 @@ set -uo pipefail
 REPO_ROOT="$(cd "$(dirname "${BASH_SOURCE[0]}")/.." && pwd)"
 cd "$REPO_ROOT"
 
+# ---- Python interpreter resolution (venv-aware) -------------------------
+# Prefer a project venv over PATH. On Windows the venv ships only `python.exe`,
+# and the bare `python3` lookup falls through to the Microsoft Store stub which
+# has none of our deps (web3, pytest). Detect once and shadow `python3` so all
+# call sites below stay unchanged.
+if [ -z "${PYTHON:-}" ]; then
+  if   [ -x ".venv/Scripts/python.exe" ]; then PYTHON=".venv/Scripts/python.exe"  # Windows venv
+  elif [ -x ".venv/bin/python3"        ]; then PYTHON=".venv/bin/python3"          # Unix venv
+  elif [ -x "venv/Scripts/python.exe"  ]; then PYTHON="venv/Scripts/python.exe"
+  elif [ -x "venv/bin/python3"         ]; then PYTHON="venv/bin/python3"
+  elif command -v python3 >/dev/null 2>&1; then PYTHON="python3"
+  elif command -v python  >/dev/null 2>&1; then PYTHON="python"
+  else
+    echo "ERROR: no python3 / python found. Activate a venv or set \$PYTHON." >&2
+    exit 1
+  fi
+fi
+python3() { "$PYTHON" "$@"; }
+
 # ---- ANSI helpers --------------------------------------------------------
 RED=$'\033[31m'; GREEN=$'\033[32m'; YELLOW=$'\033[33m'; CYAN=$'\033[36m'; RESET=$'\033[0m'
 PASS_COUNT=0; FAIL_COUNT=0; WARN_COUNT=0
