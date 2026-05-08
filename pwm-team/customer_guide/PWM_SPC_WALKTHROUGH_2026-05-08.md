@@ -64,11 +64,44 @@ quadruple `P = (E, G, W, C)`.
     │        │ The mathematical operator: unknowns → observables.                 │
     │        │ Taken from the seed's E field.                                     │
     │        │                                                                     │
-    │        │ SPC: y = Φ x + n                                                  │
-    │        │      Φ ∈ ℝ^{m×n}  Walsh-Hadamard rows in {-1,+1}                  │
-    │        │      x ∈ ℝⁿ       (vectorised image, n = H·W)                     │
-    │        │      y ∈ ℝᵐ       (m bucket-detector readings)                    │
-    │        │      n ∼ 𝒩(0, σ²) (additive Gaussian)                              │
+    │        │ SPC matrix form:                                                   │
+    │        │   y = Φ x + n                                                     │
+    │        │   Φ ∈ ℝ^{m×n}  Walsh-Hadamard rows in {-1,+1}                     │
+    │        │   x ∈ ℝⁿ       (vectorised image, n = H·W)                        │
+    │        │   y ∈ ℝᵐ       (m bucket-detector readings)                       │
+    │        │   n ∼ 𝒩(0, σ²) (additive Gaussian)                                 │
+    │        │                                                                     │
+    │        │ SPC in the 12-primitive basis (per primitives.md):                 │
+    │        │                                                                     │
+    │        │   y_k = ∫.spatial[ L.diag.binary( G.structured.random(k), x ) ]   │
+    │        │          + n_k                       for k = 1, …, m              │
+    │        │                                                                     │
+    │        │   stacked over k, using stack[·]·: ℝ → ℝᵐ:                         │
+    │        │   y   = stack_{k=1..m}(                                            │
+    │        │           ∫.spatial[ L.diag.binary(                                │
+    │        │             G.structured.random(k), x                              │
+    │        │           ) ]                                                      │
+    │        │         ) + n                                                      │
+    │        │                                                                     │
+    │        │ Each primitive's role (matches G's DAG below):                     │
+    │        │   G.structured.random(k)  — k-th Walsh-Hadamard {-1,+1} pattern φₖ │
+    │        │                              (primitives.md line 505)              │
+    │        │   L.diag.binary(φₖ, x)    — element-wise multiply: φₖ ⊙ x ∈ ℝⁿ    │
+    │        │                              (primitives.md line 118)              │
+    │        │   ∫.spatial[ · ]           — sum across the bucket detector's      │
+    │        │                              spatial field → scalar yₖ ∈ ℝ        │
+    │        │                              (primitives.md line 88)               │
+    │        │                                                                     │
+    │        │ Composition equivalence: the inner product ⟨φₖ, x⟩ from the        │
+    │        │ matrix form factors as element-wise multiply (L.diag.binary)       │
+    │        │ followed by spatial sum (∫.spatial); no separate "inner-product"   │
+    │        │ primitive is needed in the canonical basis.                        │
+    │        │                                                                     │
+    │        │ Strict 2-primitive signature (primitives.md line 567):             │
+    │        │   #26 SPC = [L.diag.binary] → [∫.spatial]                         │
+    │        │ The G.structured.random step is the upstream pattern generator    │
+    │        │ kept explicit in this walkthrough for clarity; both forms          │
+    │        │ describe the same physics.                                         │
     ├────────┼────────────────────────────────────────────────────────────────────┤
     │   G    │ DAG DECOMPOSITION  G = (V, A)                                      │
     │        │ Directed acyclic graph where:                                      │
