@@ -91,9 +91,20 @@ def build_parser() -> argparse.ArgumentParser:
     # inspect — resolve a hash/id to its artifact (offline variant reads genesis dir)
     ip = sub.add_parser(
         "inspect",
-        help="Look up a principle/spec/benchmark/cert by id or hash.",
+        help="Look up a principle/spec/benchmark/cert by id, slug, or hash.",
     )
-    ip.add_argument("target", help="cert_hash, benchmark_id, spec_id, or principle_id.")
+    ip.add_argument(
+        "target",
+        help="Artifact id (L1-003, L2-003, L3-003), slug (cassi, cacti, spc), or cert_hash.",
+    )
+    ip.add_argument(
+        "--layer",
+        choices=["L1", "L2", "L3", "l1", "l2", "l3", "1", "2", "3"],
+        default=None,
+        help="When the target is a slug that matches multiple layers (e.g. 'cassi' "
+             "matches L1-003 + L2-003 + L3-003), pick which layer to return. "
+             "Default: L1 (the Principle), matching the web /principles/<slug> route.",
+    )
     ip.set_defaults(handler=inspect.run)
 
     # verify — run local S1-S4 check on a solver output (offline)

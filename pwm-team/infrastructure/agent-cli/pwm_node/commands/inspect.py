@@ -34,30 +34,53 @@ def _find_by_id(genesis_dir: Path, target: str) -> tuple[dict, str] | None:
     return None
 
 
-def _find_by_slug(genesis_dir: Path, target: str) -> tuple[dict, str] | None:
+def _find_by_slug(genesis_dir: Path, target: str, prefer_layer: str | None = None) -> tuple[dict, str] | None:
     """Return (artifact, layer) for the first artifact with display_slug == target.
 
-    Searches L3 first (most-common consumer-facing layer), then L2, then L1.
-    Mirrors api/genesis.py::by_slug to keep CLI and web behaviours in sync.
+    Default search order is L1 → L2 → L3 (matches web /principles/<slug>;
+    L1 is "what is this principle?", the most fundamental answer).
+    A user wanting the spec/benchmark instead passes prefer_layer=L2|L3.
     """
     target_lower = target.lower()
-    for layer in ("L3", "L2", "L1"):
+    if prefer_layer:
+        layers: tuple[str, ...] = (prefer_layer.upper(),)
+    else:
+        layers = ("L1", "L2", "L3")
+    for layer in layers:
         for a in _load_layer(genesis_dir, layer):
             if (a.get("display_slug") or "").lower() == target_lower:
                 return a, layer
     return None
 
 
-def _find_in_content_tree(target: str) -> tuple[dict, str] | None:
-    """Fallback for stubs not in the genesis tree — walk pwm-team/content/.
+def _slug_siblings(genesis_dir: Path, target: str, found_layer: str) -> list[str]:
+    """For a slug match, find all OTHER layers that share the same slug.
 
-    Matches by artifact_id OR display_slug. Returns (artifact, layer) or None.
-    Lets `pwm-node inspect L1-026b` (and `inspect spc`) succeed for the 529
-    Tier-3 stubs that don't ship in the genesis dir.
+    Used to print a hint like "(slug 'cassi' also matches L2-003, L3-003 —
+    use --layer L2/L3 to switch)".
     """
     target_lower = target.lower()
-    # Probe a few likely repo-root candidates so this works whether the
-    # caller is in pwm/ or pwm-public/ or running globally.
+    siblings: list[str] = []
+    for layer in ("L1", "L2", "L3"):
+        if layer == found_layer.upper():
+            continue
+        for a in _load_layer(genesis_dir, layer):
+            if (a.get("display_slug") or "").lower() == target_lower:
+                aid = a.get("artifact_id")
+                if aid:
+                    siblings.append(aid)
+                break
+    return siblings
+
+
+def _find_in_content_tree(target: str, prefer_layer: str | None = None) -> tuple[dict, str] | None:
+    """Fallback for stubs not in the genesis tree — walk pwm-team/content/.
+
+    Matches by artifact_id OR display_slug. When prefer_layer is set,
+    only return artifacts on that layer (used to disambiguate slugs
+    that span L1/L2/L3 — e.g. 'spc' matches L1-026b + L2-026b + L3-026b).
+    """
+    target_lower = target.lower()
     here = Path(__file__).resolve()
     for parent in here.parents:
         candidate = parent / "pwm-team" / "content"
@@ -66,17 +89,74 @@ def _find_in_content_tree(target: str) -> tuple[dict, str] | None:
             break
     else:
         return None
-    for path in content_root.rglob("L*-*.json"):
-        try:
-            a = json.loads(path.read_text())
-        except (json.JSONDecodeError, OSError):
+    prefer_upper = prefer_layer.upper() if prefer_layer else None
+    # First pass: prefer_layer-only
+    if prefer_upper:
+        for path in content_root.rglob(f"{prefer_upper}-*.json"):
+            try:
+                a = json.loads(path.read_text())
+            except (json.JSONDecodeError, OSError):
+                continue
+            if not isinstance(a, dict):
+                continue
+            if a.get("artifact_id") == target or (a.get("display_slug") or "").lower() == target_lower:
+                return a, prefer_upper
+        return None
+    # No layer preference: fall back to L1 → L2 → L3 priority
+    for layer_pref in ("L1", "L2", "L3"):
+        for path in content_root.rglob(f"{layer_pref}-*.json"):
+            try:
+                a = json.loads(path.read_text())
+            except (json.JSONDecodeError, OSError):
+                continue
+            if not isinstance(a, dict):
+                continue
+            if a.get("artifact_id") == target or (a.get("display_slug") or "").lower() == target_lower:
+                aid = a.get("artifact_id") or ""
+                layer = aid.split("-", 1)[0] if aid else layer_pref
+                return a, layer
+    return None
+
+
+def _content_tree_siblings(target: str, found_layer: str) -> list[str]:
+    """Find sibling-layer artifact_ids for a slug match in the content tree."""
+    target_lower = target.lower()
+    here = Path(__file__).resolve()
+    for parent in here.parents:
+        candidate = parent / "pwm-team" / "content"
+        if candidate.is_dir():
+            content_root = candidate
+            break
+    else:
+        return []
+    siblings: list[str] = []
+    for layer in ("L1", "L2", "L3"):
+        if layer == found_layer.upper():
             continue
-        if not isinstance(a, dict):
-            continue
-        if a.get("artifact_id") == target or (a.get("display_slug") or "").lower() == target_lower:
-            aid = a.get("artifact_id") or ""
-            layer = aid.split("-", 1)[0] if aid else "L1"
-            return a, layer
+        for path in content_root.rglob(f"{layer}-*.json"):
+            try:
+                a = json.loads(path.read_text())
+            except (json.JSONDecodeError, OSError):
+                continue
+            if isinstance(a, dict) and (a.get("display_slug") or "").lower() == target_lower:
+                aid = a.get("artifact_id")
+                if aid:
+                    siblings.append(aid)
+                    break
+    return siblings
+
+
+def _normalize_layer(layer_arg: str | None) -> str | None:
+    """Normalize the --layer flag value to L1 / L2 / L3 (or None)."""
+    if not layer_arg:
+        return None
+    s = str(layer_arg).strip().upper()
+    if s in ("1", "L1"):
+        return "L1"
+    if s in ("2", "L2"):
+        return "L2"
+    if s in ("3", "L3"):
+        return "L3"
     return None
 
 
@@ -84,19 +164,34 @@ def run(args: argparse.Namespace) -> int:
     """Resolve and print an artifact. Returns 0 on hit, 3 on miss.
 
     Resolution order:
-      1. Genesis tree by artifact_id ("L1-003", "L3-026b")
-      2. Genesis tree by display_slug ("cassi", "cacti")
-      3. Content tree (Tier-3 stubs) by either artifact_id or display_slug
+      1. Genesis tree by artifact_id ("L1-003", "L3-026b") — exact match
+      2. Genesis tree by slug ("cassi") — defaults to L1, --layer to override
+      3. Content tree by either artifact_id or slug (same layer rules)
+
+    For slug matches, prints sibling-layer hints if other layers share the
+    same slug — e.g. `inspect cassi` shows L1-003 plus a note that L2-003
+    and L3-003 also exist under that slug.
     """
     target = args.target
-    hit = _find_by_id(args.genesis_dir, target)
+    prefer_layer = _normalize_layer(getattr(args, "layer", None))
+    is_artifact_id = "-" in target and target.split("-", 1)[0].upper() in ("L1", "L2", "L3")
+
+    # Exact artifact_id always wins (no ambiguity)
+    hit = None
+    if is_artifact_id:
+        hit = _find_by_id(args.genesis_dir, target)
+        if hit is None:
+            hit = _find_in_content_tree(target)
+    else:
+        # Slug path: honor --layer; default L1
+        hit = _find_by_slug(args.genesis_dir, target, prefer_layer=prefer_layer)
+        if hit is None:
+            hit = _find_in_content_tree(target, prefer_layer=prefer_layer)
+
     if hit is None:
-        hit = _find_by_slug(args.genesis_dir, target)
-    if hit is None:
-        hit = _find_in_content_tree(target)
-    if hit is None:
+        layer_msg = f" --layer {prefer_layer}" if prefer_layer else ""
         print(
-            f"[pwm-node inspect] no offline match for '{target}'. "
+            f"[pwm-node inspect] no offline match for '{target}'{layer_msg}. "
             f"Try `pwm-node match \"<your problem in plain English>\"` for fuzzy search, "
             f"or `pwm-node principles` to list all entries. "
             f"If this is a cert_hash, retry with --network testnet (not yet implemented in Phase C-stub).",
@@ -112,6 +207,20 @@ def run(args: argparse.Namespace) -> int:
     print(f"{title} ({aid})")
     if slug:
         print(f"  slug: {slug}")
+
+    # If the user passed a slug (not an artifact_id), tell them which layer
+    # got returned and what other layers are available under the same slug.
+    # Prevents the "I asked for cassi and got L3, but I wanted L1" surprise.
+    if not is_artifact_id and slug:
+        siblings = _slug_siblings(args.genesis_dir, target, layer)
+        if not siblings:
+            siblings = _content_tree_siblings(target, layer)
+        if siblings:
+            sib_list = ", ".join(siblings)
+            print(f"  layer: {layer.upper()} (slug '{slug}' also matches {sib_list} — use --layer to switch)")
+        else:
+            print(f"  layer: {layer.upper()}")
+
     print(f"=== {aid} ({layer.upper()}) ===")
     print(f"Title:        {title}")
 

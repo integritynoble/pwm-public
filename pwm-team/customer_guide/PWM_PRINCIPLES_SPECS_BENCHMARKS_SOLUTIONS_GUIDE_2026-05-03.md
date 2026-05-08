@@ -223,22 +223,47 @@ never need to type an L1-XXX ID directly.
 
 ### Browse the catalog by name or slug
 
-Once you know what you want, all three forms work:
+A slug like `cassi` is shared across the L1 Principle, L2 Spec, AND L3
+Benchmark for the same modality (they all have `display_slug: "cassi"`
+in their JSON). The CLI resolves to **L1 by default** (matching the web
+`/principles/<slug>` route — "L1 = what is this Principle?"), with a
+hint about which other layers share the slug. Use `--layer` to pick
+a different layer:
 
 ```bash
-# By artifact ID (chain-grade)
-pwm-node inspect L1-003
-pwm-node inspect L3-026b   # works for Tier-3 stubs too (resolves the content tree)
+# By artifact ID (always unambiguous, chain-grade)
+pwm-node inspect L1-003          # the Principle
+pwm-node inspect L2-003          # the Spec
+pwm-node inspect L3-003          # the Benchmark
+pwm-node inspect L3-026b         # works for Tier-3 stubs too (content tree)
 
-# By display_slug (human-readable)
-pwm-node inspect cassi     # → L1-003
-pwm-node inspect cacti     # → L1-004
-pwm-node inspect spc       # → L1-026b
-pwm-node inspect qsm       # → L1-503
+# By display_slug (human-readable; defaults to L1, hints at siblings)
+pwm-node inspect cassi
+#   → Coded Aperture Snapshot Spectral Imaging (CASSI) (L1-003)
+#   →   slug: cassi
+#   →   layer: L1 (slug 'cassi' also matches L2-003, L3-003 — use --layer to switch)
+
+pwm-node inspect cassi --layer L2     # → L2-003 (the math-contract Spec)
+pwm-node inspect cassi --layer L3     # → L3-003 (the mineable Benchmark)
+
+# Other modality slugs all follow the same pattern
+pwm-node inspect cacti               # → L1-004 (Principle); --layer L3 → L3-004
+pwm-node inspect spc                 # → L1-026b (Tier-3 stub Principle)
+pwm-node inspect qsm                 # → L1-503 (Tier-3 stub Principle)
 ```
 
-Web URLs accept either form too: `/principles/L1-003` and
-`/principles/cassi` open the same detail page.
+**Quick mental model:**
+
+| Want to know | Use this layer | Example |
+|---|---|---|
+| "What is X?" (physics, forward model, DAG) | **L1** (default) | `pwm-node inspect cassi` |
+| "How is X mathematically specified?" (six-tuple, ε function) | **L2** | `pwm-node inspect cassi --layer L2` |
+| "What benchmark do I mine against for X?" (rho=50, dataset, baselines) | **L3** | `pwm-node inspect cassi --layer L3` |
+
+Web URLs work the same way:
+- `/principles/L1-003` and `/principles/cassi` → same L1 detail page
+- `/benchmarks/L3-003` and `/benchmarks/cassi` → same L3 detail page
+- `/specs/L2-003` (no slug shortcut for specs in the web today — use the L2 ID)
 
 ### Browse the catalog (CLI listing)
 
@@ -408,8 +433,8 @@ The mathematical contract: six-tuple (Ω, E, B, I, O, ε) for a concrete instanc
 ### Read the math contract
 
 ```bash
-pwm-node inspect L2-003           # by artifact ID
-pwm-node inspect cassi            # by display_slug — same result, both resolve to L2-003
+pwm-node inspect L2-003                # by artifact ID (unambiguous)
+pwm-node inspect cassi --layer L2      # by slug + layer flag (default would be L1)
 # Output:
 #   six_tuple:
 #     Ω = parameter space (allowed dispersions, mask types, photon levels)
@@ -497,8 +522,8 @@ DOES change the keccak256 — only use it on Tier-3 stubs.
 ### Inspect via CLI
 
 ```bash
-pwm-node inspect L3-003           # by artifact ID
-pwm-node inspect cassi            # by slug — resolves to L3-003 (consumer-facing)
+pwm-node inspect L3-003                # by artifact ID (unambiguous)
+pwm-node inspect cassi --layer L3      # by slug + layer flag (default would be L1)
 # Prints title, parent L2/L1, n_dev_instances, scoring metric,
 # current rank-1 score, dataset CIDs, ω parameters
 ```
@@ -872,10 +897,10 @@ hashing strips it before computing keccak256, so:
 | Filter web catalog by domain | `https://explorer.pwm.platformai.org/principles?domain=Imaging` |
 | Browse registered Principles (CLI) | `pwm-node principles` |
 | Browse registered Benchmarks (CLI) | `pwm-node benchmarks` |
-| Read one Principle (by ID or slug) | `pwm-node inspect L1-003` *or* `pwm-node inspect cassi` |
-| Read one Spec | `pwm-node inspect L2-XXX` *or* `pwm-node inspect <slug>` |
-| Read one Benchmark | `pwm-node inspect L3-XXX` *or* `pwm-node inspect <slug>` |
-| Read a Tier-3 stub (content tree) | `pwm-node inspect L1-026b` *or* `pwm-node inspect spc` |
+| Read one Principle (by ID or slug) | `pwm-node inspect L1-003` *or* `pwm-node inspect cassi` (slug → L1 by default) |
+| Read one Spec | `pwm-node inspect L2-003` *or* `pwm-node inspect cassi --layer L2` |
+| Read one Benchmark | `pwm-node inspect L3-003` *or* `pwm-node inspect cassi --layer L3` |
+| Read a Tier-3 stub (content tree) | `pwm-node inspect L1-026b` *or* `pwm-node inspect spc` (defaults to L1; `--layer L3` for benchmark) |
 | Download a benchmark dataset | "Get this benchmark" card on `/benchmarks/L3-XXX` *or* `/benchmarks/<slug>` |
 | Compare your solver locally (no tx) | `pwm-node mine L3-XXX --solver your.py --dry-run` |
 | Submit cert on-chain | `pwm-node mine L3-XXX --solver your.py` |
