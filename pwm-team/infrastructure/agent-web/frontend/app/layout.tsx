@@ -1,5 +1,6 @@
 import type { Metadata } from 'next';
 import Link from 'next/link';
+import { ChainBadge } from '@/components/ChainBadge';
 import './globals.css';
 
 export const metadata: Metadata = {
@@ -18,7 +19,7 @@ const NAV = [
   { href: '/roadmap', label: 'Roadmap' },
 ];
 
-export default function RootLayout({ children }: { children: React.ReactNode }) {
+export default async function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en">
       <body>
@@ -30,6 +31,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
               </div>
               <span className="font-semibold tracking-tight">PWM Explorer</span>
               <span className="pwm-pill ml-2">reference impl</span>
+              <ChainBadge />
             </Link>
             <nav className="flex flex-wrap gap-4 text-sm">
               {NAV.map((n) => (
