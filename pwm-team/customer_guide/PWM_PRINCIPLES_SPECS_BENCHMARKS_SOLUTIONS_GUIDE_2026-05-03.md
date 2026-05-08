@@ -319,13 +319,13 @@ L1 Principle              (one per modality)
                             already busy today)
 ```
 
-**Today's catalog is sparse — it ships as a 1:1:1 chain plus many L4s:**
+**Today's catalog is sparse — mostly 1:1:1 with the first 1:N already realized:**
 
 | Layer | Count today | Cardinality realized |
 |---|---|---|
-| L1 Principle | 533 | one per modality ✓ |
-| L2 Spec | 533 | exactly 1 L2 per L1 (1:1) |
-| L3 Benchmark | 533 | exactly 1 L3 per L2 (1:1) |
+| L1 Principle | **531** | one per modality (post Phase-B suffix-variant merge of 4 L1s on 2026-05-08) |
+| L2 Spec | **533** | typically 1 L2 per L1 — **but 1:N is now realized**: e.g., L1-026 has both L2-026-001 and L2-026-002 (mismatch-only + oracle-assisted) |
+| L3 Benchmark | **533** | typically 1 L3 per L2 (1:N possible going forward; same merge pattern can spawn multiple L3s under one L2) |
 | L4 Cert | 11 (Sepolia) | many per L3 ✓ (10 on L3-003, 1 on L3-004) |
 
 So why the "many" framing if today is 1:1? Two reasons:
@@ -425,13 +425,14 @@ Or read the JSON directly:
 ```bash
 cat pwm-team/pwm_product/genesis/l1/L1-003.json
 # Or by domain (manifests are nested under topic subdirs):
-find pwm-team/content/agent-imaging/principles   -name "L1-*.json" | wc -l   # 165 medical imaging
-find pwm-team/content/agent-physics/principles   -name "L1-*.json" | wc -l   # 148 physics
+find pwm-team/content/agent-imaging/principles   -name "L1-*.json" | wc -l   # 164 imaging   (was 165 pre Phase-B; 1 suffix-variant merged 2026-05-08)
+find pwm-team/content/agent-physics/principles   -name "L1-*.json" | wc -l   # 147 physics  (was 148 pre Phase-B)
 find pwm-team/content/agent-applied/principles   -name "L1-*.json" | wc -l   # 112 applied
 find pwm-team/content/agent-chemistry/principles -name "L1-*.json" | wc -l   #  67 chemistry
 find pwm-team/content/agent-signal/principles    -name "L1-*.json" | wc -l   #  39 signal processing
-# Total: 531 cataloged L1 Principles across all domains (mostly Tier 3
-# stubs awaiting contributor authoring — see "Registration tiers" below).
+# Subtotal: 529 cataloged Tier-3 stubs across all domains
+# +2 founder-vetted in pwm-team/pwm_product/genesis/l1/  (CASSI L1-003, CACTI L1-004)
+# = 531 total L1 manifests (matches the cardinality table above).
 ```
 
 ### Find a Principle for your problem
