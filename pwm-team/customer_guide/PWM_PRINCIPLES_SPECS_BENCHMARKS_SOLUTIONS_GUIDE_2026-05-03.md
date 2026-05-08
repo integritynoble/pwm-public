@@ -95,12 +95,59 @@ visit `https://explorer.pwm.platformai.org`.
 
 Add to the consumer setup above:
 
+#### How to get a `PWM_PRIVATE_KEY` (if you don't have one)
+
+`PWM_PRIVATE_KEY` is just a regular Ethereum private key — a 64-hex-character
+string. Three ways to obtain one:
+
+**Path A — MetaMask (easiest, ~3 min)**
+1. Install MetaMask: https://metamask.io
+2. Create a new wallet → write down the seed phrase
+3. Switch network to **Sepolia testnet** (built-in)
+4. Account icon → **Account Details** → **Show private key** → copy
+5. The 64-hex string IS your `PWM_PRIVATE_KEY`
+
+**Path B — programmatic (CI / scripts, ~30 s)**
 ```bash
-# 1. Funded testnet wallet (free Sepolia ETH from a faucet):
+python3 -c "
+from eth_account import Account
+import secrets
+acct = Account.from_key('0x' + secrets.token_hex(32))
+print(f'Address:     {acct.address}')
+print(f'Private key: {acct.key.hex()}')
+"
+```
+
+**Path C — Foundry**
+```bash
+cast wallet new
+```
+
+Whichever path you use, the output is two strings: an **address**
+(`0x742d35…`, public — share for funding) and a **private key**
+(`0xac0974…`, secret — never share, never commit, never paste anywhere
+public). The private key is what you export.
+
+**⚠ Security rules** (build the habit even on testnet):
+- Never commit the key to git
+- Never reuse a dev-machine env-var key on Base mainnet
+- The Sepolia key is throwaway-grade — generate a fresh one anytime
+- For Base mainnet, use a **hardware wallet**, not an env var
+
+#### Set the env vars + fund the wallet
+
+```bash
+# 1. Funded testnet wallet (free Sepolia ETH from a faucet — request to your
+#    ADDRESS, not your private key, e.g. 0x742d35…):
 #      https://sepoliafaucet.com
 #      https://www.alchemy.com/faucets/ethereum-sepolia
 #      https://faucet.quicknode.com/ethereum/sepolia
-export PWM_PRIVATE_KEY=0x<your-Sepolia-key>
+#    Verify funding arrived:
+#      curl -sX POST https://ethereum-sepolia-rpc.publicnode.com \
+#        -H 'content-type: application/json' \
+#        -d '{"jsonrpc":"2.0","id":1,"method":"eth_getBalance","params":["0xYOUR_ADDR","latest"]}'
+#    A typical mining session uses ~0.001 ETH; 0.05 ETH lasts a long time.
+export PWM_PRIVATE_KEY=0x<paste-the-64-hex-private-key-here>
 export SEPOLIA_RPC_URL=https://ethereum-sepolia-rpc.publicnode.com
 export PWM_RPC_URL=$SEPOLIA_RPC_URL
 
