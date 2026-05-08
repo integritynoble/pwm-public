@@ -769,6 +769,44 @@ swapping the `testnet` entry in `addresses.json` to point at the
 Base Sepolia contracts during Step 5, then swapping back. It's not
 a separate CLI flag.
 
+## Bug-fix playbook (after deployment)
+
+Common Director question: *"What if there are bugs in my deployed
+artifacts? Can I fix them?"*
+
+Short answer: **the on-chain hash never changes** — that's a hard
+constraint by design (the whole "verify any cert forever" guarantee
+depends on it). But there are real escape hatches; they just don't
+mutate the original artifact's hash. Five categories:
+
+| Bug type | Fixable? | How |
+|---|---|---|
+| Typo in `display_slug`, wrong `registration_tier`, missing deep-learning floor | ✅ Yes, hash-invariant | Edit the field directly. `UI_ONLY_FIELDS = {display_slug, display_color, ui_metadata, registration_tier, display_baselines}` are stripped before keccak256. |
+| Wrong solver label / PSNR / framework on a cert you submitted | ✅ Yes, off-chain only | `POST /api/cert-meta/{cert_hash}` — `cert_meta` lives in the indexer SQL, not on-chain. |
+| Bug in the **forward model**, **DAG primitives**, **ε_fn**, **dataset CIDs**, or any `baselines[*]` entry | ❌ No, the hash *will* change | Cut a new version (`L1-XXX-v2`) — the old version stays valid forever; new mining moves to v2. |
+| Fraudulent or wrong L4 cert someone submitted | ✅ Yes, during the 7-day window | Anyone calls `PWMCertificate.challenge(certHash, proof)`; if upheld, cert invalidated and challenger gets the staked PWM. |
+| Pool size, reward %, mint emission, finalization window | ✅ Yes, multisig-gated | `PWMGovernance.setParameter` with 48h time-lock + 3-of-5 founder approval. |
+
+**Four habits to avoid most bugs in the first place:**
+
+1. **Use `registration_tier` as a staging gate** — every new manifest starts as `"stub"` (in catalog, **not on-chain**, fully editable). Promote to `community_proposed` only after verifier-agent triple-review; promote to `founder_vetted` only after live mining proves it out.
+2. **Mine on Sepolia first** — testnet costs ~$0 in real money. Bugs found on Sepolia are free (cut a v2); the same bug on mainnet costs locked-pool churn.
+3. **Adopt versioning convention up front** — name everything `L<n>-<id>-v<N>` even if N=1 today. Makes the path to v2 obvious when needed.
+4. **Treat the `_meta` cert sidecar as your scratchpad** — anything off-chain (solver label, PSNR-as-dB, framework, IPFS pointers) corrects via cert-meta. Reserve the on-chain payload for what genuinely cannot move.
+
+**Constitutional invariants** (cannot change even via multisig — would
+need a contract re-deploy under a new audit tag):
+
+- `M_pool` minting cap (17.22M PWM = 82% of 21M total)
+- The 7-rank-payout shape (40% / 5% / 2% / 1%×7)
+- The `principle:5%, spec:10%, L3:15%, treasury:15%` royalty split
+- The `keccak256(canonical_json)` hashing recipe
+
+For the full playbook with worked examples (cutting a v2 step-by-step,
+challenging a fraudulent cert, all 9 governance-tunable parameters,
+the M/Σ/D-style canonical-vs-descriptive primitive examples we hit
+on SPC), see `PWM_BUG_FIX_PLAYBOOK_2026-05-08.md` in this directory.
+
 ## Common confusions
 
 | ❓ | ✓ |
