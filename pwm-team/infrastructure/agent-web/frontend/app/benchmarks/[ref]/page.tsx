@@ -33,6 +33,11 @@ export default async function BenchmarkDetail({ params }: { params: Promise<{ re
   const tier = g?.ibenchmark_range?.center_ibenchmark ?? {};
   const bounds = g?.ibenchmark_range?.tier_bounds ?? {};
   const baselines = g?.protocol_fields?.baselines ?? [];
+  // The two evaluation surfaces this manifest carries (combined_P_and_I type):
+  //   p_benchmark      — rho=50 distributional benchmark (the headline)
+  //   ibenchmarks[]    — fixed-Ω tiers (T1..T4) for tier-specific scoring
+  const ibenches: any[] = Array.isArray(g?.ibenchmarks) ? g.ibenchmarks : [];
+  const pbench: any = g?.p_benchmark ?? null;
 
   const chainHashForLeaderboard = chain?.hash;
 
@@ -102,9 +107,111 @@ export default async function BenchmarkDetail({ params }: { params: Promise<{ re
         </section>
       )}
 
+      {pbench && (
+        <section className="pwm-card">
+          <h2 className="text-lg font-semibold mb-2">
+            P-benchmark <span className="text-pwm-muted text-sm font-normal">— rho={pbench.rho ?? '?'} distribution over Ω</span>
+          </h2>
+          <p className="text-sm text-pwm-muted mb-3">
+            The headline ranking score. Solvers are evaluated on{' '}
+            <span className="font-mono">{pbench.rho ?? '?'}</span> instances drawn parametrically across the full Ω,
+            scored as a distribution. This is what the leaderboard&apos;s rank-1 chases.
+          </p>
+          {pbench.dataset_p_benchmark && (
+            <div className="text-sm mb-3">
+              <span className="text-pwm-muted">Dataset:</span>{' '}
+              <span className="font-mono text-xs">{pbench.dataset_p_benchmark.name}</span>
+              {pbench.dataset_p_benchmark.num_dev_instances && (
+                <span className="text-pwm-muted ml-2">({pbench.dataset_p_benchmark.num_dev_instances} dev instances)</span>
+              )}
+            </div>
+          )}
+          {Array.isArray(pbench.baselines) && pbench.baselines.length > 0 && (
+            <table className="pwm-table text-sm">
+              <thead>
+                <tr><th>Authored baseline</th><th>overall_Q</th><th>≈ Q_int</th></tr>
+              </thead>
+              <tbody>
+                {pbench.baselines.map((b: any) => (
+                  <tr key={b.name}>
+                    <td>{b.name}</td>
+                    <td className="font-mono">{b.overall_Q ?? '?'}</td>
+                    <td className="font-mono">{b.overall_Q != null ? Math.round(b.overall_Q * 100) : '?'}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+          <p className="text-xs text-pwm-muted italic mt-3">
+            To take rank 1 of the P-benchmark, beat the highest authored Q above. See{' '}
+            <Link href="/specs/L2-003" className="pwm-link">L2 spec</Link> for the epsilon_fn used per draw.
+          </p>
+        </section>
+      )}
+
+      {ibenches.length > 0 && (
+        <section className="pwm-card">
+          <h2 className="text-lg font-semibold mb-2">
+            I-benchmark tiers <span className="text-pwm-muted text-sm font-normal">— {ibenches.length} fixed-Ω operating points</span>
+          </h2>
+          <p className="text-sm text-pwm-muted mb-3">
+            Each tier is a single-instance evaluation at a specific Ω with its own ε floor.
+            Solvers may pass individual tiers without saturating the full P-benchmark.
+          </p>
+          <div className="overflow-x-auto">
+            <table className="pwm-table text-sm">
+              <thead>
+                <tr>
+                  <th>Tier</th>
+                  <th>ρ</th>
+                  <th>ε (dB)</th>
+                  <th>Ω parameters</th>
+                  <th>d_ibench</th>
+                  <th>Top authored baseline</th>
+                </tr>
+              </thead>
+              <tbody>
+                {ibenches.map((t: any) => {
+                  const omega = t.omega_tier ?? {};
+                  const omegaSummary = Object.entries(omega)
+                    .slice(0, 3)
+                    .map(([k, v]) => `${k}=${v}`)
+                    .join(', ');
+                  const topBase = Array.isArray(t.baselines) && t.baselines.length > 0
+                    ? t.baselines.reduce((best: any, b: any) =>
+                        (best == null || (b.score ?? -Infinity) > (best.score ?? -Infinity)) ? b : best, null)
+                    : null;
+                  return (
+                    <tr key={t.tier}>
+                      <td className="font-mono">{t.tier}</td>
+                      <td>{t.rho ?? '?'}</td>
+                      <td>{t.epsilon ?? '?'}</td>
+                      <td className="text-xs text-pwm-muted">{omegaSummary}{Object.keys(omega).length > 3 ? ' …' : ''}</td>
+                      <td>{t.d_ibench ?? '—'}</td>
+                      <td>
+                        {topBase ? (
+                          <span>
+                            <span className="font-mono">{topBase.name}</span> = {topBase.score} ({topBase.metric ?? 'PSNR_dB'})
+                            <span className="text-pwm-muted ml-1">Q={topBase.Q}</span>
+                          </span>
+                        ) : '—'}
+                      </td>
+                    </tr>
+                  );
+                })}
+              </tbody>
+            </table>
+          </div>
+        </section>
+      )}
+
       {baselines.length > 0 && (
         <section className="pwm-card">
-          <h2 className="text-lg font-semibold mb-2">Baselines</h2>
+          <h2 className="text-lg font-semibold mb-2">L2-spec authored baselines</h2>
+          <p className="text-sm text-pwm-muted mb-3">
+            Reference solver scores authored at the L2-spec layer (separate from the P/I-benchmark
+            authored baselines above — these are mathematical-contract level).
+          </p>
           <table className="pwm-table">
             <thead>
               <tr><th>Name</th><th>Method</th><th>Expected PSNR</th></tr>
