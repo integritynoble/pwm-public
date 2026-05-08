@@ -48,6 +48,94 @@ A Principle is the mathematical foundation for an entire family of
 inverse problems. Per `pwm_overview1.md` § 3, every Principle is the
 quadruple `P = (E, G, W, C)`.
 
+## 1.0 The formal definition (verbatim from `pwm_overview.md` Figure 0b)
+
+```
+    ┌─────────────────────────────────────────────────────────────────────────────┐
+    │  DEFINITION: PRINCIPLE  P = (E, G, W, C)                                   │
+    │                                                                             │
+    │  The output of Layer 1.  Extracted from seeds after Valid(B) passes.       │
+    └─────────────────────────────────────────────────────────────────────────────┘
+
+    ┌────────┬────────────────────────────────────────────────────────────────────┐
+    │ Symbol │ What it is — instantiated for SPC                                  │
+    ├────────┼────────────────────────────────────────────────────────────────────┤
+    │   E    │ FORWARD MODEL                                                      │
+    │        │ The mathematical operator: unknowns → observables.                 │
+    │        │ Taken from the seed's E field.                                     │
+    │        │                                                                     │
+    │        │ SPC: y = Φ x + n                                                  │
+    │        │      Φ ∈ ℝ^{m×n}  Walsh-Hadamard rows in {-1,+1}                  │
+    │        │      x ∈ ℝⁿ       (vectorised image, n = H·W)                     │
+    │        │      y ∈ ℝᵐ       (m bucket-detector readings)                    │
+    │        │      n ∼ 𝒩(0, σ²) (additive Gaussian)                              │
+    ├────────┼────────────────────────────────────────────────────────────────────┤
+    │   G    │ DAG DECOMPOSITION  G = (V, A)                                      │
+    │        │ Directed acyclic graph where:                                      │
+    │        │   V = nodes (primitives from the 12-element general basis)        │
+    │        │   A = arcs (data dependencies between primitives)                  │
+    │        │ Made explicit by S1 (dimensional consistency across nodes).        │
+    │        │                                                                     │
+    │        │ The 12 general computational primitives:                           │
+    │        │   ∂  ∫  L  N  E  F  Π  S  K  B  G  O                              │
+    │        │                                                                     │
+    │        │ Derived quantities (and W.κ):                                      │
+    │        │   |V|  = number of distinct primitive nodes                        │
+    │        │   n_c  = number of coupling interfaces (feedback loops)            │
+    │        │   L_DAG = (|V| − 1) + log₁₀(κ / κ₀) + n_c                          │
+    │        │           where κ from W, κ₀ = 10                                  │
+    │        │   δ = tier(L_DAG):                                                 │
+    │        │        L_DAG < 2.0 → δ=1 (textbook)                                │
+    │        │        [2.0, 5.0) → δ=3 (standard)                                 │
+    │        │        [5.0, 7.0) → δ=5 (advanced)                                 │
+    │        │        [7.0, 10)  → δ=10 (frontier)                                │
+    │        │        ≥ 10.0     → δ=50 (grand challenge)                         │
+    │        │                                                                     │
+    │        │ SPC instantiation:                                                 │
+    │        │   strict signature  : [L.diag.binary] → [∫.spatial]                │
+    │        │                       (primitives.md line 567)                     │
+    │        │   elaborated         : [G.structured.random] → [L.diag.binary]    │
+    │        │                       → [∫.spatial]                                │
+    │        │   |V| = 3, n_c = 0, κ_eff = 30, κ₀ = 10                            │
+    │        │   L_DAG = 2 + log₁₀(30/10) + 0 = 2 + 0.48 = 2.48 → δ = 3 (standard)│
+    ├────────┼────────────────────────────────────────────────────────────────────┤
+    │   W    │ WELL-POSEDNESS CERTIFICATE                                         │
+    │        │                                                                     │
+    │        │ W = (existence, uniqueness, stability, κ, mismatch)                │
+    │        │                                                                     │
+    │        │ All from S2 (mathematical well-posedness).                          │
+    │        │ Physical grounding (instrument, units, physics_ref) is              │
+    │        │ handled by P1-P10, NOT by W. W is purely mathematical.              │
+    │        │                                                                     │
+    │        │ SPC instantiation:                                                 │
+    │        │   existence  : true (linear inverse, Φ has full row rank)          │
+    │        │   uniqueness : true (under sparsity prior; RIP holds at m/n ≥ 5%) │
+    │        │   stability  : conditional (Lipschitz w.r.t. y under TV regularizer)│
+    │        │   κ_raw           : 3000   (unregularised pseudo-inverse)          │
+    │        │   κ_effective     :   30   (after TV-prior regularisation)         │
+    │        │   κ_mismatched    :  120   (when gain α > 0 and illum σ > 0       │
+    │        │                              corrupt the assumed Φ)                │
+    │        │   mismatch sources: gain drift α, illumination falloff σ           │
+    ├────────┼────────────────────────────────────────────────────────────────────┤
+    │   C    │ ERROR-BOUNDING METHODOLOGY  C = (e, q, T)                          │
+    │        │   e  = error metric (PSNR, RMSE, relative error, ...)              │
+    │        │   q  = theoretical convergence rate for the problem class          │
+    │        │   T  = certificate template (what S4 cert must report)             │
+    │        │ Produced by S3 and S4.                                              │
+    │        │                                                                     │
+    │        │ SPC instantiation:                                                 │
+    │        │   e  = PSNR_dB (primary), SSIM (secondary)                          │
+    │        │   q  = 2.0    (linear in iteration count under sparsity prior)     │
+    │        │   T  = { residual_norm = ‖y − Φx̂‖₂,                              │
+    │        │          rate_log_residual / log_iter,                              │
+    │        │          recovery_bound = C₁·σ/√m + C₂·‖x − x_s‖₁ }                │
+    │        │   complexity per iteration: O(n log n)                              │
+    │        │                              (fast Walsh-Hadamard transform)        │
+    └────────┴────────────────────────────────────────────────────────────────────┘
+```
+
+The four sub-sections below (1.1–1.8) walk each component in detail.
+
 ## 1.1 What is SPC?
 
 SPC is a compressive imaging modality where:
@@ -238,6 +326,125 @@ The spec is the **mathematical contract** — a six-tuple `(Ω, E, B, I,
 O, ε)` per `pwm_overview1.md` § 4 — that turns the L1 physics into a
 concrete instance schema solvers must conform to.
 
+## 2.0 The formal spec.md format (verbatim from `pwm_overview.md` Figure 0d)
+
+```
+    ┌─────────────────────────────────────────────────────────────────────────────┐
+    │  THE spec.md FORMAT: ONE FLAT SIX-TUPLE                                    │
+    └─────────────────────────────────────────────────────────────────────────────┘
+
+    Every mineable task is a single file with seven fields:
+
+        spec.md  =  S = (Ω, E, B, I, O, ε)  +  principle_ref
+
+          principle_ref: hash          # hash of the Principle P = (E,G,W,C)
+          omega:    Domain             # Ω: parameter range (system + mismatch)
+          E:        OperatorGraph      # E: forward model / DAG primitive chain
+          B:        BoundaryConstraints# B: constraints on the solution
+          I:        InputData          # I: input data + committed dataset
+          O:        Observables        # O: what the certificate must report
+          epsilon:  Tolerance          # ε: pass/fail thresholds (epsilon_fn)
+
+        That's it. No layers, no indirection, no separate files.
+
+    ┌─────────────────────────────────────────────────────────────────────────────┐
+    │ WHAT USED TO BE ELSEWHERE          NOW LIVES IN                            │
+    ├─────────────────────────────────────────────────────────────────────────────┤
+    │ domain_id, carrier, modality    →  Principle (already in G)                │
+    │ primitives                      →  Principle (already in G)                │
+    │ quality_metrics                 →  Principle (already in C)                │
+    │ expert_baseline, evaluator      →  Benchmark (L3)                          │
+    │ system_elements (hardware)      →  Principle (physical context)            │
+    │ dataset pointer                 →  I (input data in six-tuple)             │
+    │ difficulty (L_DAG, δ)           →  Principle (already computed)            │
+    │ instance_params                 →  Ω (domain parameters)                   │
+    └─────────────────────────────────────────────────────────────────────────────┘
+```
+
+The full L2-026b spec.md (`spec_range` block) follows the canonical
+CASSI shape — `center_spec` + `allowed_*` lists + `omega_bounds` +
+`epsilon_bounds`:
+
+```yaml
+# spc/spc_mismatch_only.yaml — SPC L2-026b spec.md
+principle_ref: sha256:<L1-026b_hash>     # hash of L1-026b after Tier-1 promotion
+
+spec_range:
+  # The canonical center spec — defined by the Principle creator.
+  # New specs are evaluated for distance FROM this center.
+  center_spec:
+    problem_class:    spc_reconstruction
+    forward_operator: spc_hadamard
+    input_format:     measurement_plus_pattern_set    # measurements + pattern row IDs
+    omega:
+      n_pixels:       4096      # 64 × 64 image
+      sampling_ratio: 0.25      # 25% Nyquist
+      noise_level:    0.01      # σ of additive Gaussian
+      gain_alpha:     0.0       # nominal — no mismatch
+      illum_sigma:    0.0       # nominal — no mismatch
+    epsilon_fn_center: "27.0 dB PSNR"
+
+  # Which forward-operator families are in scope for this Principle
+  allowed_forward_operators:
+    - spc_hadamard               # Walsh-Hadamard {-1,+1} basis (this spec)
+    - spc_walsh                  # equivalent up to row permutation
+
+  # Which problem classes this Principle covers
+  allowed_problem_classes:
+    - spc_reconstruction
+    - sparse_recovery
+
+  # Which Ω dimension names are valid for specs under this Principle
+  # (system parameters + mismatch parameters)
+  allowed_omega_dimensions:
+    - n_pixels                   # n = H × W (image size)
+    - sampling_ratio             # m / n
+    - noise_level                # detector σ
+    # Mismatch parameters — physical calibration drift
+    - gain_alpha                 # per-measurement gain drift
+    - illum_sigma                # DMD illumination Gaussian falloff (px)
+
+  # Valid value ranges for each Ω dimension
+  omega_bounds:
+    n_pixels:       [1024, 65536]    # 32×32 → 256×256
+    sampling_ratio: [0.05, 0.50]     # 5% Nyquist → 50% Nyquist
+    noise_level:    [0.001, 0.05]
+    # Physically realistic mismatch bounds
+    gain_alpha:     [0.0, 0.003]     # ≤0.3% gain drift per measurement
+    illum_sigma:    [0.0, 15.0]      # ≤15 px Gaussian falloff width
+
+  # Valid quality threshold range (prevents trivially easy or impossible specs)
+  epsilon_bounds:
+    psnr_db: [18.0, 40.0]
+
+# epsilon_fn maps any Ω point → minimum acceptable PSNR
+epsilon_fn:
+  PSNR: "22.0 + 6.0 * log2(sampling_ratio / 0.05) + 1.5 * log10(photon_count / 100)"
+  SSIM: "0.55"
+  residual_norm: "0.05"
+
+# d_spec from the canonical center
+d_spec: 0.38                # vs L2-026 random-projection variant
+d_spec_notes: "Differs in structured_basis (Hadamard vs random Gaussian/Bernoulli)
+               and operator_class id; same omega axis count, different labels."
+
+s1_s4_gates: ["PASS", "PASS", "PASS", "PASS"]
+```
+
+**Key difference: seed vs spec.md** (per `pwm_overview.md` Figure 0d):
+
+| Seed | spec.md |
+|---|---|
+| 3 fields | 7 fields (six-tuple + `principle_ref`) |
+| equations + goal | precise grid, data commitment, thresholds |
+| informal | formal YAML with hash-committed data |
+| anyone can write | requires Principle + S1-S4 to validate |
+| Layer 1 input | Layer 2 output → Layers 3/4 input |
+| FREE to submit | earns reward when accepted |
+
+The nine sub-sections below (2.1–2.9) walk each part of the spec in
+detail.
+
 ## 2.1 Ω — parameter space
 
 `Ω` declares the full RANGE of parameters over which the spec is
@@ -378,6 +585,107 @@ and an I-benchmark; the S4 gate at L2 enforces this.
 | ε threshold | `ε_fn(ω)` evaluated per draw | Pre-computed scalar from `ε_fn` at each `ω_i` |
 | `rho` | **always 50** (full-range generalisation) | **1 / 3 / 5 / 10** per difficulty tier |
 | Tests | Broad generalisation across `Ω` | Performance at one operating point |
+
+## 3.0 The canonical L3 directory format (verbatim from `pwm_overview.md` Figure 5a)
+
+A registered SPC benchmark publishes a complete, self-contained,
+hash-committed dataset. All six anti-overfitting mechanisms (M1-M6)
+are embedded as concrete files inside the dataset.
+
+```
+benchmark_spc_mismatch_only/                   # the SPC L3-026b benchmark dataset
+│
+├── manifest.yaml                              # dataset identity + immutability hashes
+│       spec_ref:       sha256:<L2-026b_hash>
+│       principle_ref:  sha256:<L1-026b_hash>
+│       dataset_hash:   sha256:<entire-dir>
+│       generator_hash: sha256:<generate.py>
+│       hadamard_seed:  sha256:<seed-string>   # row-permutation seed
+│
+├── instances/                                 # 20 READY-TO-USE dev instances per tier
+│   ├── T1_nominal/
+│   │   ├── dev_001/
+│   │   │   ├── input.npz        # (measurements y in ℝᵐ, pattern_ids in ℤᵐ)
+│   │   │   ├── ground_truth.npz # true image x in ℝ^{64×64}
+│   │   │   └── params.yaml      # ω = (n_pixels=4096, sampling=0.25, noise=0.01, …)
+│   │   ├── dev_002/ … dev_020/
+│   ├── T2_gain_drift/  dev_001..020
+│   ├── T3_blind_calibration/  dev_001..020
+│   └── T4_undersampled/  dev_001..020         # 80 dev instances total across 4 tiers
+│
+├── baselines/                                 # M5: method-signature diversity (3 distinct classes)
+│   ├── fista_tv/
+│   │   ├── solution.npz          # baseline output across all 80 dev instances
+│   │   ├── metrics.yaml          # PSNR/SSIM/residual_norm per instance
+│   │   └── method.yaml           # method_sig: "L+O" (linear inverse + optimisation)
+│   ├── gap_tv_mle/               # method_sig: "L+O"
+│   └── lista/                    # method_sig: "L+N" (linear inverse + neural)
+│
+├── scoring/                                   # M3: deterministic worst-case scoring
+│   ├── score.py                  # Q_p = 0.40·coverage + 0.40·margin + 0.20·stratum_pass_frac
+│   ├── thresholds.yaml           # ε values from spec.md (T1=27, T2=24.5, T3=22, T4=19)
+│   ├── worst_case.py             # Track A: min(PSNR/ε) per stratum
+│   ├── median_case.py            # Track B: median PSNR over 50 instances
+│   ├── worst_case_parametric.py  # P-benchmark: stratified M3 across H×W strata
+│   └── median_case_parametric.py # P-benchmark: 50 uniform Ω samples, median Q
+│
+├── convergence/                               # M2: convergence-based scoring
+│   ├── check_convergence.py      # verifies O(1/√m) recovery rate vs measurement count
+│   └── resolutions.yaml          # m ∈ {0.05·n, 0.10·n, 0.25·n, 0.50·n}
+│
+├── generator/                                 # M1: parameterised random instantiation
+│   ├── generate.py               # G(SHA256(h_sub‖k)) draws ω ∼ Ω, builds Φ, samples y
+│   ├── params.yaml               # mirrors L2-026b omega_bounds
+│   ├── instantiate.py            # wraps generate.py + writes input.npz/ground_truth.npz
+│   └── requirements.txt          # numpy, scipy, hadamard helpers
+│
+├── adversarial/                               # M4: community adversarial testing
+│   ├── submit_adversarial.py     # accepts ω that breaks the published SOTA
+│   └── adversarial_log.yaml      # record of accepted adversarial instances
+│
+├── gates/                                     # M6: S1-S4 gate checks
+│   ├── check_s1.py               # dimensional consistency (Φ shape, x/y shapes)
+│   ├── check_s2.py               # well-posedness (RIP at the declared sampling)
+│   ├── check_s3.py               # convergence rate (q ≥ 2 within 100 iters)
+│   ├── check_s4.py               # error bound (recovery within C₁σ/√m + C₂‖x − x_s‖₁)
+│   └── run_all_gates.py          # orchestrates S1-S4 in sequence
+│
+└── README.md                                  # human-readable usage guide
+```
+
+**Where the six anti-overfitting mechanisms live in SPC's L3:**
+
+| Mech | Purpose | Embedded as |
+|---|---|---|
+| M1 | Random instantiation (prevents overfitting to dev) | `generator/instantiate.py` — `G(SHA256(h_sub‖k))` builds fresh `(Φ, y, x)` triples for any submission |
+| M2 | Convergence-based scoring (detects fake solvers) | `convergence/check_convergence.py` — verifies `‖x̂_m − x‖₂ ∝ 1/√m` |
+| M3 | Cross-instance worst-case (no cherry-picking) | `scoring/worst_case.py` — `Q = min(PSNR/ε)` across the rho instances per tier |
+| M4 | Community adversarial testing (PoInf-rewarded) | `adversarial/submit_adversarial.py` + `adversarial_log.yaml` — finder-bounty for ω that breaks SOTA |
+| M5 | Method-signature diversity (cross-method agreement) | `baselines/*/method.yaml` — three distinct method_sigs (L+O, L+O, L+N); novel signatures earn novelty bonus |
+| M6 | S1-S4 gate checks (mathematical verification) | `gates/check_s1..s4.py` — same checks as L1/L2 but evaluated on the dataset |
+
+**Immutability — once published, NOTHING changes:**
+
+- All 80 dev instances (20 × 4 tiers) are fixed forever
+- The Hadamard pattern matrix is fixed (same SHA256 seed = same Φ)
+- Generator code is fixed (same hash = same outputs)
+- Baselines are fixed (FISTA-TV / GAP-TV-MLE / LISTA scores are immutable references)
+- Scoring function is fixed (no mid-stream Q formula changes)
+- Thresholds are fixed (T1=27, T2=24.5, T3=22, T4=19 dB)
+- S1-S4 gate code is fixed (same checks for every solver)
+
+```
+Hash chain:
+   Principle (sha256:L1-026b)  ← spec.md (sha256:L2-026b)  ← Benchmark (sha256:L3-026b)
+```
+
+New version of any layer? → New hash, new artifact ID; old version
+stays valid and citable. Immutability is the foundation of the
+"verify any cert against an immutable benchmark forever" guarantee.
+
+The four sub-sections below (3.1–3.4) walk SPC's specific dataset
+registry, I-benchmark tier table, P-benchmark formula, and M1-M6
+implementations.
 
 ## 3.1 Dataset registry
 
