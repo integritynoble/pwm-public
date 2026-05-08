@@ -88,6 +88,21 @@ def build_parser() -> argparse.ArgumentParser:
     pp.add_argument("--spec", help="Filter by spec ID (e.g. L2-003).")
     pp.set_defaults(handler=benchmarks._run_principles)
 
+    # specs — list L2 specs, optionally filtered by parent L1. Closes
+    # the L1→L2 traversal gap surfaced 2026-05-08 (Gap 2): without this,
+    # users couldn't enumerate the L2 children of a given L1 from the CLI.
+    sp_specs = sub.add_parser(
+        "specs",
+        help="List L2 Specs (optionally filtered by parent L1 — "
+             "e.g. `pwm-node specs --principle L1-003` or `pwm-node specs --principle cassi`).",
+    )
+    sp_specs.add_argument(
+        "--principle",
+        help="Filter by parent L1 (artifact_id like L1-003, or display_slug like cassi).",
+    )
+    sp_specs.add_argument("--domain", help="Filter by parent L1 domain (e.g. imaging).")
+    sp_specs.set_defaults(handler=benchmarks._run_specs)
+
     # inspect — resolve a hash/id to its artifact (offline variant reads genesis dir)
     ip = sub.add_parser(
         "inspect",

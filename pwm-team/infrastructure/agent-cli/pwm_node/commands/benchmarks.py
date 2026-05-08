@@ -164,6 +164,110 @@ def _run_benchmarks(args: argparse.Namespace) -> int:
     return 0
 
 
+# ---------- specs (L2 listing — new 2026-05-08) ----------
+
+
+def _resolve_l1_filter(genesis_dir: Path, raw: str) -> str | None:
+    """Resolve an L1 reference (artifact_id like 'L1-003' or slug like 'cassi')
+    to its canonical artifact_id. Returns None if no match.
+
+    Walks both genesis tree and the content tree (Tier-3 stubs) so users
+    can filter L2 listings by either form.
+    """
+    if not raw:
+        return None
+    raw_lc = raw.lower()
+    # Direct artifact_id match first
+    for a in _load_l1_artifacts(genesis_dir):
+        if a.get("artifact_id") == raw:
+            return raw
+        if (a.get("display_slug") or "").lower() == raw_lc:
+            return a.get("artifact_id")
+    # Content tree fallback for stubs
+    here = Path(__file__).resolve()
+    for parent in here.parents:
+        candidate = parent / "pwm-team" / "content"
+        if candidate.is_dir():
+            for path in candidate.rglob("L1-*.json"):
+                try:
+                    a = json.loads(path.read_text())
+                except (json.JSONDecodeError, OSError):
+                    continue
+                if not isinstance(a, dict):
+                    continue
+                if a.get("artifact_id") == raw or (a.get("display_slug") or "").lower() == raw_lc:
+                    return a.get("artifact_id")
+            break
+    return None
+
+
+def _load_l2_artifacts(genesis_dir: Path) -> list[dict]:
+    """Read every L2-*.json under genesis_dir/l2/ AND content tree."""
+    out = _load_layer_artifacts(genesis_dir, "l2")
+    seen = {a.get("artifact_id") for a in out if a.get("artifact_id")}
+    here = Path(__file__).resolve()
+    for parent in here.parents:
+        candidate = parent / "pwm-team" / "content"
+        if candidate.is_dir():
+            for path in candidate.rglob("L2-*.json"):
+                try:
+                    a = json.loads(path.read_text())
+                except (json.JSONDecodeError, OSError):
+                    continue
+                if isinstance(a, dict) and a.get("artifact_id") not in seen:
+                    out.append(a)
+                    seen.add(a.get("artifact_id"))
+            break
+    return out
+
+
+def _run_specs(args: argparse.Namespace) -> int:
+    """List L2 Specs (with optional --principle filter for L1→L2 traversal).
+
+    Closes the L1→L2 enumeration gap surfaced 2026-05-08: without this,
+    users couldn't list the L2 children of a given L1 from the CLI.
+    """
+    arts = _load_l2_artifacts(args.genesis_dir)
+    if not arts:
+        print(f"[pwm-node specs] no L2 artifacts found.")
+        return 0
+
+    # Optional filter: by parent L1 (accept either artifact_id or slug)
+    if getattr(args, "principle", None):
+        l1_id = _resolve_l1_filter(args.genesis_dir, args.principle)
+        if l1_id is None:
+            print(f"[pwm-node specs] no L1 found matching '{args.principle}'. "
+                  f"Try `pwm-node principles` to list available L1s.")
+            return 3
+        arts = [a for a in arts if a.get("parent_l1") == l1_id]
+        if not arts:
+            print(f"[pwm-node specs] no L2 specs registered under {l1_id}.")
+            return 0
+        print(f"L2 Specs under {l1_id}:")
+    else:
+        print(f"All L2 Specs (genesis + content tree):")
+
+    if getattr(args, "domain", None):
+        needle = args.domain.lower()
+        arts = [a for a in arts if needle in (a.get("title", "") or "").lower()]
+
+    header = (
+        f"{'Title':<55} {'ID':<10} {'Parent L1':<10} {'Slug':<22} {'Tier':<18}"
+    )
+    print(header)
+    print("-" * len(header))
+    for a in arts:
+        title = (a.get("title", "?"))[:55]
+        aid = a.get("artifact_id", "?")
+        parent_l1 = a.get("parent_l1", "?")
+        slug = (a.get("display_slug") or "")[:22]
+        tier = (a.get("registration_tier") or "stub")[:18]
+        print(f"{title:<55} {aid:<10} {parent_l1:<10} {slug:<22} {tier:<18}")
+    print()
+    print(f"  ({len(arts)} L2 spec{'s' if len(arts) != 1 else ''} listed)")
+    return 0
+
+
 # ---------- back-compat dispatch ----------
 
 
