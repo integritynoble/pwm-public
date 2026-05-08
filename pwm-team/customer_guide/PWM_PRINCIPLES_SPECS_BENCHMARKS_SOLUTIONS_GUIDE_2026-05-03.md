@@ -260,6 +260,50 @@ pwm-node inspect qsm                 # → L1-503 (Tier-3 stub Principle)
 | "How is X mathematically specified?" (six-tuple, ε function) | **L2** | `pwm-node inspect cassi --layer L2` |
 | "What benchmark do I mine against for X?" (rho=50, dataset, baselines) | **L3** | `pwm-node inspect cassi --layer L3` |
 
+### Cardinality — the protocol is a tree, not a chain
+
+The 4 layers form a one-to-many tree:
+
+```
+L1 Principle              (one per modality)
+  ↓
+  L2 Spec, L2 Spec'        (one OR many per L1 — different mathematical
+   ↓        ↓               formulations, e.g. mismatch-only vs
+                            oracle-assisted, or different parameter ranges)
+  L3 Bench, L3 Bench'      (one OR many per L2 — different datasets,
+   ↓         ↓              different difficulty progressions)
+  L4 cert × N, L4 cert × M (many per L3 — every mining submission is
+                            its own cert; this is the only "many" that's
+                            already busy today)
+```
+
+**Today's catalog is sparse — it ships as a 1:1:1 chain plus many L4s:**
+
+| Layer | Count today | Cardinality realized |
+|---|---|---|
+| L1 Principle | 533 | one per modality ✓ |
+| L2 Spec | 533 | exactly 1 L2 per L1 (1:1) |
+| L3 Benchmark | 533 | exactly 1 L3 per L2 (1:1) |
+| L4 Cert | 11 (Sepolia) | many per L3 ✓ (10 on L3-003, 1 on L3-004) |
+
+So why the "many" framing if today is 1:1? Two reasons:
+
+1. **L3 carries multiplicity internally.** Each L3 manifest already
+   contains a rho=50 **P-benchmark** + multiple **I-benchmark tiers**
+   (T1_nominal, T2_low, T3_moderate, T4_blind). When you mine, you
+   evaluate against the full P-benchmark distribution + each I-tier.
+   So the "many benchmarks under one spec" pattern is realized via
+   embedded tiers in 2026, not separate L3 files.
+
+2. **The future shape is many.** As contributors author variants,
+   expect multiple L2s per L1 (e.g., a CASSI L2-003 mismatch-only
+   alongside an L2-003-oracle for oracle-assisted reconstruction)
+   and multiple L3s per L2 (e.g., an L3-003-kaist using KAIST-10
+   alongside an L3-003-cave using the CAVE multispectral set). When
+   that happens, slugs will need to disambiguate
+   (`inspect cassi-oracle --layer L2`); for now the 1:1 mapping
+   means `cassi` resolves cleanly across all three layers.
+
 Web URLs work the same way:
 - `/principles/L1-003` and `/principles/cassi` → same L1 detail page
 - `/benchmarks/L3-003` and `/benchmarks/cassi` → same L3 detail page
