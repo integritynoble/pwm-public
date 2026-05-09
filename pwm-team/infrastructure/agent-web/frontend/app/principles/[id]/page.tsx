@@ -15,7 +15,12 @@ export async function generateMetadata({
   if (!data) return { title: `${id} not found · PWM Explorer` };
   const title = `${data.principle.title} (${data.principle.artifact_id}) · PWM`;
   const description: string = data.principle?.E?.description?.slice(0, 200) ?? `PWM principle ${id}`;
-  return { title, description };
+  return {
+    title,
+    description,
+    openGraph: { title, description, siteName: 'PWM Explorer', type: 'website' },
+    twitter: { card: 'summary', title, description },
+  };
 }
 
 export default async function PrincipleDetail({

@@ -14,10 +14,24 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { ref } = await params;
   const data = await api.benchmark(ref);
-  const title = data?.genesis?.title
-    ? `${data.genesis.title} · PWM benchmark`
+  const g = data?.genesis;
+  const title = g?.title
+    ? `${g.title} · PWM benchmark`
     : `Benchmark ${ref.slice(0, 10)}… · PWM`;
-  return { title };
+  const ibench = g?.ibenchmarks?.[0];
+  const baselineStr = Array.isArray(ibench?.baselines) && ibench.baselines.length
+    ? ` Baseline: ${ibench.baselines[0].name} ${ibench.baselines[0].score} ${ibench.baselines[0].metric ?? ''}.`
+    : '';
+  const description = (g?.benchmark_type
+    ? `${g.benchmark_type} benchmark${baselineStr}`
+    : `PWM L3 benchmark ${ref}.${baselineStr}`) +
+    ' Mine via pwm-node, verify on-chain forever.';
+  return {
+    title,
+    description,
+    openGraph: { title, description, siteName: 'PWM Explorer', type: 'website' },
+    twitter: { card: 'summary', title, description },
+  };
 }
 
 export default async function BenchmarkDetail({ params }: { params: Promise<{ ref: string }> }) {

@@ -11,7 +11,30 @@ export async function generateMetadata({
   params: Promise<{ hash: string }>;
 }): Promise<Metadata> {
   const { hash } = await params;
-  return { title: `Certificate ${hash.slice(0, 10)}… · PWM` };
+  const data = await api.cert(hash);
+  // The API returns extra fields (solver_label, psnr_db, block_number)
+  // beyond what's in the static CertDetail type — accept the cast.
+  const c = data?.certificate as
+    | (NonNullable<typeof data>['certificate'] & {
+        solver_label?: string;
+        psnr_db?: number;
+        block_number?: number;
+      })
+    | undefined;
+  const label = c?.solver_label ? c.solver_label : 'Unlabeled';
+  const psnr = c?.psnr_db != null ? `${c.psnr_db.toFixed(2)} dB` : null;
+  const qInt = c?.q_int != null ? `Q_int=${c.q_int}` : null;
+  const headline = [label, psnr, qInt].filter(Boolean).join(' · ') || `${hash.slice(0, 10)}…`;
+  const title = `Certificate ${headline} · PWM`;
+  const description = `On-chain L4 certificate ${hash.slice(0, 14)}…${
+    c ? ` — submitted by ${c.submitter?.slice(0, 10) ?? '?'}…, block ${c.block_number ?? '?'}.` : ''
+  } Verifiable forever against the immutable benchmark.`;
+  return {
+    title,
+    description,
+    openGraph: { title, description, siteName: 'PWM Explorer', type: 'website' },
+    twitter: { card: 'summary', title, description },
+  };
 }
 
 export default async function CertificatePage({ params }: { params: Promise<{ hash: string }> }) {

@@ -14,7 +14,12 @@ export async function generateMetadata({
   if (!data) return { title: `${id} not found · PWM Explorer` };
   const title = `${data.spec.title} (${data.spec.artifact_id}) · PWM Spec`;
   const description: string = data.spec?.six_tuple?.E?.forward?.slice(0, 200) ?? `PWM L2 spec ${id}`;
-  return { title, description };
+  return {
+    title,
+    description,
+    openGraph: { title, description, siteName: 'PWM Explorer', type: 'website' },
+    twitter: { card: 'summary', title, description },
+  };
 }
 
 function tierBadge(tier: string | undefined) {
