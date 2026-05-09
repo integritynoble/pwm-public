@@ -66,9 +66,17 @@ def health():
             "SELECT value FROM meta WHERE key='last_block'"
         ).fetchone()
         last_block = int(last_block_row[0]) if last_block_row else None
-        # Freshness: the indexer writes `last_block` each scan. If it hasn't
-        # been updated for > PWM_STALE_SECONDS (default 10 min = 2x the bounty
-        # "updates within <=5 min" criterion), we report degraded.
+        # Freshness signal: the indexer writes a `last_scan_at` heartbeat
+        # every poll iteration regardless of whether new events arrive. We
+        # call the indexer "degraded" only when *that* heartbeat is stale,
+        # not when the chain is quiet — a quiet chain (Sepolia at idle, or
+        # mainnet between events) should still report healthy. Falls back
+        # to latest_event_ts only if the indexer predates the heartbeat
+        # write (legacy DBs), so the upgrade is backward-compatible.
+        last_scan_row = conn.execute(
+            "SELECT value FROM meta WHERE key='last_scan_at'"
+        ).fetchone()
+        last_scan_at = int(last_scan_row[0]) if last_scan_row else None
         latest_event_row = conn.execute(
             "SELECT MAX(timestamp) FROM ("
             " SELECT timestamp FROM artifacts UNION ALL"
@@ -83,9 +91,12 @@ def health():
         latest_event_ts = int(latest_event_row[0]) if latest_event_row and latest_event_row[0] else None
         stale_seconds = int(os.environ.get("PWM_STALE_SECONDS", "600"))
         now = int(time.time())
+        # Pick the freshness signal: prefer indexer heartbeat; fall back to
+        # latest event for legacy DBs that have no heartbeat yet.
+        freshness_ts = last_scan_at if last_scan_at is not None else latest_event_ts
         if last_block is None:
             status = "bootstrapping"
-        elif latest_event_ts and (now - latest_event_ts) > stale_seconds:
+        elif freshness_ts and (now - freshness_ts) > stale_seconds:
             status = "degraded"
         else:
             status = "healthy"
@@ -93,6 +104,7 @@ def health():
             "ok": True,
             "status": status,
             "last_indexed_block": last_block,
+            "last_scan_at": last_scan_at,
             "latest_event_timestamp": latest_event_ts,
             "counts": store.counts(conn),
             "genesis": {

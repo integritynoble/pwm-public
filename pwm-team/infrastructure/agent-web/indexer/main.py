@@ -111,6 +111,7 @@ class Indexer:
         from_block = self._resolve_start_block()
         log.info("Indexing from block %d to head %d", from_block, latest)
         head = self._safe_backfill(from_block, latest, initial=True)
+        self._heartbeat()
         while True:
             time.sleep(self.cfg.poll_interval_seconds)
             try:
@@ -119,11 +120,20 @@ class Indexer:
                 log.warning("eth_blockNumber failed (%s); will retry in %ds",
                             exc, self.cfg.poll_interval_seconds)
                 continue
+            # Heartbeat before the new-events check: a successful eth_blockNumber
+            # call proves the indexer is alive and reaching the RPC, even if
+            # there are no new events yet. The /api/health endpoint uses this
+            # to distinguish "indexer stuck" from "chain is quiet."
+            self._heartbeat()
             if new_head <= head:
                 continue
             new_head_after = self._safe_backfill(head + 1, new_head, initial=False)
             if new_head_after is not None:
                 head = new_head_after
+
+    def _heartbeat(self) -> None:
+        with db_mod.transaction(self.conn):
+            db_mod.set_meta(self.conn, "last_scan_at", str(int(time.time())))
 
     def _safe_backfill(self, from_block: int, to_block: int, *, initial: bool) -> int | None:
         """Wraps _backfill so a transient RPC failure (e.g. RPC node behind
