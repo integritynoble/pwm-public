@@ -98,25 +98,43 @@ def seeded_env(tmp_path, monkeypatch):
     (genesis_root / "l1").mkdir(parents=True)
     (genesis_root / "l2").mkdir(parents=True)
     (genesis_root / "l3").mkdir(parents=True)
+    # Real genesis manifests carry `layer` + `registration_tier`. Without
+    # them principle_by_artifact_id_any() rejects the hit (line 264 check
+    # `hit.get("layer") == "L1"`) and the default tier=mineable filter
+    # buckets the principle as `stub` and excludes it from the list.
     (genesis_root / "l1" / "L1-001.json").write_text(json.dumps({
-        "artifact_id": "L1-001", "title": "Test Principle", "domain": "Test",
+        "artifact_id": "L1-001", "layer": "L1",
+        "registration_tier": "founder_vetted",
+        "title": "Test Principle", "domain": "Test",
         "E": {"forward_model": "y = A x + n"},
         "G": {"L_DAG": 1.0},
         "difficulty_delta": 2, "difficulty_tier": "standard",
         "spec_range": {"center_spec": {"epsilon_fn_center": "30.0 dB PSNR"}},
     }))
     (genesis_root / "l2" / "L2-001.json").write_text(json.dumps({
-        "artifact_id": "L2-001", "parent_l1": "L1-001",
+        "artifact_id": "L2-001", "layer": "L2", "parent_l1": "L1-001",
+        "registration_tier": "founder_vetted",
         "title": "Test Spec", "spec_type": "center", "d_spec": 0.0,
         "ibenchmark_range": {"center_ibenchmark": {"rho": 1, "epsilon": 30.0}},
     }))
     (genesis_root / "l3" / "L3-001.json").write_text(json.dumps({
-        "artifact_id": "L3-001", "parent_l2": "L2-001",
+        "artifact_id": "L3-001", "layer": "L3", "parent_l2": "L2-001",
+        "registration_tier": "founder_vetted",
         "title": "Test Benchmark",
         "display_slug": "test-bench",
         "ibenchmark": {"rho": 1, "epsilon": 30.0, "omega_tier": {"H": 128}},
     }))
     monkeypatch.setenv("PWM_GENESIS_DIR", str(genesis_root))
+
+    # Isolate the principles list from the real repo's content/ stub tree.
+    # genesis.all_principles_by_tier() walks PWM_CONTENT_DIR (default
+    # PWM_TEAM_ROOT/content) for Tier-3 stubs; without overriding it,
+    # tests inherit the live repo's 529 stubs and the seeded L1-001
+    # gets shadowed by real content like the widefield-fluorescence
+    # principle. Pointing at an empty tmp dir restores test isolation.
+    content_root = tmp_path / "content_empty"
+    content_root.mkdir()
+    monkeypatch.setenv("PWM_CONTENT_DIR", str(content_root))
 
     # 4. Point bounties at a fixture dir.
     bounties_dir = tmp_path / "bounties"
