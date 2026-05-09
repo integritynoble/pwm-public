@@ -39,7 +39,7 @@ def list_bounties() -> list[dict]:
     for path in sorted(root.glob("*.md")):
         if path.name.upper() == "INDEX.MD":
             continue
-        text = path.read_text()
+        text = path.read_text(encoding="utf-8")
         title = path.stem
         amount = None
         header = _HEADER_RE.search(text)

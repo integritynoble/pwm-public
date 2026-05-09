@@ -53,7 +53,7 @@ class IndexerConfig:
 def load_config() -> IndexerConfig:
     network = os.environ.get("PWM_NETWORK", "testnet")
     addresses_file = Path(os.environ.get("PWM_ADDRESSES", str(DEFAULT_ADDRESSES)))
-    addresses_all = json.loads(addresses_file.read_text())
+    addresses_all = json.loads(addresses_file.read_text(encoding="utf-8"))
     network_addresses = addresses_all.get(network, {})
 
     rpc_from_env = os.environ.get("PWM_RPC_URL")
@@ -81,5 +81,5 @@ def load_config() -> IndexerConfig:
 
 
 def load_abi(abi_dir: Path, name: str) -> list[dict]:
-    data = json.loads((abi_dir / f"{name}.json").read_text())
+    data = json.loads((abi_dir / f"{name}.json").read_text(encoding="utf-8"))
     return data["abi"]

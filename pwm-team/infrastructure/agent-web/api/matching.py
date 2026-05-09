@@ -116,7 +116,7 @@ def _load_cards() -> list[dict]:
     out: list[dict] = []
     for p in sorted(cards_dir.glob("L3-*.yaml")):
         try:
-            data = yaml.safe_load(p.read_text()) or {}
+            data = yaml.safe_load(p.read_text(encoding="utf-8")) or {}
         except Exception:
             continue
         if isinstance(data, dict) and "auto" in data:

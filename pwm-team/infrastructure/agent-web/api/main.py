@@ -50,7 +50,7 @@ def _load_addresses() -> dict:
         _default_addr = "/coord/addresses.json"
     p = Path(os.environ.get("PWM_ADDRESSES", _default_addr))
     try:
-        return json.loads(p.read_text())
+        return json.loads(p.read_text(encoding="utf-8"))
     except OSError:
         return {}
 

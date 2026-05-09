@@ -50,8 +50,8 @@ def load_all() -> dict[str, list[dict]]:
             continue
         for path in sorted(layer_dir.glob("*.json")):
             try:
-                data = json.loads(path.read_text())
-            except (OSError, json.JSONDecodeError):
+                data = json.loads(path.read_text(encoding="utf-8"))
+            except (OSError, json.JSONDecodeError, UnicodeDecodeError):
                 continue
             data.setdefault("_source_path", str(path.relative_to(root)))
             data.setdefault("_content_hash", _canonical_hash({k: v for k, v in data.items() if not k.startswith("_")}))
@@ -83,8 +83,8 @@ def load_content_l1() -> list[dict]:
     out: list[dict] = []
     for path in sorted(content_root.rglob("L1-*.json")):
         try:
-            data = json.loads(path.read_text())
-        except (OSError, json.JSONDecodeError):
+            data = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError, UnicodeDecodeError):
             continue
         if not isinstance(data, dict):
             continue
@@ -180,8 +180,8 @@ def _load_content_layer(layer: str) -> list[dict]:
     out: list[dict] = []
     for path in sorted(content_root.rglob(f"{layer_upper}-*.json")):
         try:
-            data = json.loads(path.read_text())
-        except (OSError, json.JSONDecodeError):
+            data = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, json.JSONDecodeError, UnicodeDecodeError):
             continue
         if not isinstance(data, dict):
             continue

@@ -29,7 +29,7 @@ def get_conn() -> sqlite3.Connection:
         conn = sqlite3.connect(path)
         schema = Path(__file__).resolve().parents[1] / "indexer" / "schema.sql"
         if schema.exists():
-            conn.executescript(schema.read_text())
+            conn.executescript(schema.read_text(encoding="utf-8"))
             conn.commit()
         conn.row_factory = sqlite3.Row
         return conn
@@ -179,7 +179,7 @@ def get_writable_conn() -> sqlite3.Connection:
     # Ensure schema exists (idempotent IF NOT EXISTS).
     schema = Path(__file__).resolve().parents[1] / "indexer" / "schema.sql"
     if schema.exists():
-        conn.executescript(schema.read_text())
+        conn.executescript(schema.read_text(encoding="utf-8"))
         conn.commit()
     return conn
 
